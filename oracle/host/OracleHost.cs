@@ -171,17 +171,19 @@ namespace LibsJsOracle
     {
         public string Type;
         public string Id;
-        /// <summary>The call threw, so the server may or may not have committed the item.</summary>
+        /// <summary>The call failed in transport, so the server may or may not have committed the item.</summary>
         public bool Unconfirmed;
     }
 
     /// <summary>
     /// The items one call created: each top-level request Item with
-    /// action="add" or "create", unless the response is a fault. An add without
-    /// an id (the engine's PackageDefinition, PackageGroup, PackageElement and
+    /// action="add", unless the response is a fault. An add without an id (the
+    /// engine's PackageDefinition, PackageGroup, PackageElement and
     /// DatabaseUpgrade rows) takes the id of the response's Result item of
-    /// that type. A call that threw may still have been committed, so its adds
-    /// count too, unconfirmed and with only the ids the request names.
+    /// that type. A call that failed in transport (it threw, or IOM wrote its
+    /// own HttpServerConnection fault, as for a timeout) may still have been
+    /// committed, so its add and create items count too, unconfirmed and with
+    /// only the ids the request names.
     /// </summary>
     public static class CreatedItems
     {
@@ -210,14 +212,25 @@ namespace LibsJsOracle
             {
                 return created;
             }
+            bool unconfirmed = threw;
             var results = new List<XmlElement>();
             if (!threw)
             {
-                if (res.SelectSingleNode(Body + "/*[local-name()='Fault']") != null) return created;
-                foreach (XmlElement result in res.SelectNodes(Body + "/*[local-name()='Result']/Item")) results.Add(result);
+                XmlNode fault = res.SelectSingleNode(Body + "/*[local-name()='Fault']");
+                if (fault != null)
+                {
+                    XmlNode actor = fault.SelectSingleNode("*[local-name()='faultactor']");
+                    if (actor == null || actor.InnerText != "HttpServerConnection") return created;
+                    unconfirmed = true;
+                }
+                else
+                {
+                    foreach (XmlElement result in res.SelectNodes(Body + "/*[local-name()='Result']/Item")) results.Add(result);
+                }
             }
             foreach (XmlElement item in adds)
             {
+                if (!unconfirmed && item.GetAttribute("action") != "add") continue;
                 string type = item.GetAttribute("type");
                 string id = item.GetAttribute("id");
                 if (id.Length == 0)
@@ -229,7 +242,7 @@ namespace LibsJsOracle
                         results.Remove(result);
                     }
                 }
-                created.Add(new CreatedItem { Type = type, Id = id, Unconfirmed = threw });
+                created.Add(new CreatedItem { Type = type, Id = id, Unconfirmed = unconfirmed });
             }
             return created;
         }
@@ -448,7 +461,7 @@ namespace LibsJsOracle
                     if (id.Length == 0)
                     {
                         reason = c.Unconfirmed
-                            ? "its call threw and the request names no id, so whether it was created is unknown"
+                            ? "its call failed in transport and the request names no id, so whether it was created is unknown"
                             : "the server returned no id";
                     }
                     else

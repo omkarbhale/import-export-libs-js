@@ -38,7 +38,7 @@ export interface RecordRequest {
 export interface ItemRef {
   type: string;
   id: string;
-  /** Its call threw, so the item may never have been committed. */
+  /** Its call failed in transport, so the item may never have been committed. */
   unconfirmed?: true;
 }
 
