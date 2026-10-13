@@ -449,6 +449,7 @@ namespace LibsJsOracle
             var all = new List<string>();
             var deleted = new List<string>();
             var kept = new List<string>();
+            var unverified = new List<string>();
             foreach (CreatedItem c in created) all.Add(Entry(c, null));
             for (int i = created.Count - 1; i >= 0; i--)
             {
@@ -467,7 +468,11 @@ namespace LibsJsOracle
                     else
                     {
                         string owner = Owner(inn, type, id, 0);
-                        if (owner == null) continue; // already gone, with its source
+                        if (owner == null)
+                        {
+                            if (c.Unconfirmed) unverified.Add(Entry(c, null));
+                            continue; // already gone, with its source
+                        }
                         if (!Scratch.Is(owner))
                         {
                             reason = "belongs to '" + owner + "', not " + Scratch.Prefix + "*";
@@ -489,7 +494,7 @@ namespace LibsJsOracle
                 else kept.Add(Entry(c, reason));
             }
             return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[" + string.Join(",", deleted.ToArray()) +
-                   "],\"kept\":[" + string.Join(",", kept.ToArray()) + "]}";
+                   "],\"kept\":[" + string.Join(",", kept.ToArray()) + "],\"unverified\":[" + string.Join(",", unverified.ToArray()) + "]}";
         }
 
         /// <summary>

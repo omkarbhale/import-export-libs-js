@@ -218,13 +218,19 @@ export async function main(argv: readonly string[]): Promise<number> {
           } else {
             process.stdout.write(
               [
-                `cleanup: created ${cleanup.created.length}, deleted ${cleanup.deleted.length}, kept ${cleanup.kept.length}`,
+                `cleanup: created ${cleanup.created.length}, deleted ${cleanup.deleted.length}, kept ${cleanup.kept.length}, unverified ${cleanup.unverified.length}`,
                 ...cleanup.created.map((c) => `  created ${c.type} ${c.id}${c.unconfirmed ? " (unconfirmed: its call failed in transport)" : ""}`),
                 ...cleanup.deleted.map((d) => `  deleted ${d.type} ${d.id}`),
                 ...cleanup.kept.map((k) => `  kept ${k.type} ${k.id}: ${k.reason}`),
+                ...cleanup.unverified.map((u) => `  unverified ${u.type} ${u.id}`),
               ].join("\n") + "\n",
             );
-            leftBehind = cleanup.kept.length > 0;
+            if (cleanup.unverified.length > 0) {
+              process.stderr.write(
+                "unverified items were not found after their call failed in transport; the server may still commit them, so re-check those ids later\n",
+              );
+            }
+            leftBehind = cleanup.kept.length > 0 || cleanup.unverified.length > 0;
           }
         }
         if (result.remainingSecrets.length > 0) {

@@ -47,6 +47,8 @@ export interface CleanupReport {
   created: ItemRef[];
   deleted: ItemRef[];
   kept: (ItemRef & { reason: string })[];
+  /** Unconfirmed items not found at cleanup: the server may still commit them, so they need a re-check later. */
+  unverified: ItemRef[];
 }
 
 export interface RecordResult {
