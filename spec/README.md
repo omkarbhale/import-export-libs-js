@@ -72,4 +72,5 @@ A symbol is written `src/<path>.ts#<ExportName>`, or `src/<path>.ts#<ExportName>
 - a method is still `unmapped`;
 - a mapped TypeScript symbol does not exist;
 - a rule is defined in an area document but cited nowhere (no `@spec` tag and no source-map entry);
-- a rule is cited, or registered in `bugs.md`, but defined nowhere, is defined twice, or has no engine variant.
+- a rule is cited, or registered in `bugs.md`, but defined nowhere, is defined twice, or has no engine variant;
+- a rule has a variant for an engine other than `12.0`, `14.0.7` and `14.35`.
