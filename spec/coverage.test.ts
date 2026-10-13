@@ -70,6 +70,7 @@ function input(overrides: Partial<CoverageInput>): CoverageInput {
     reachable: reachableOf(sourceMap),
     reachableSchema: repo.reachableSchema,
     oracleDigests: {},
+    completeEngines: [],
     ...overrides,
   };
 }
@@ -96,6 +97,16 @@ describe("spec coverage", () => {
     const sourceMap = { builds: [build([mapped(), unmapped], { inProgress: true })] };
     expect(checkCoverage(input({ sourceMap }))).toEqual([]);
     expect(pendingMethods(sourceMap)).toEqual(["[14.0.7] A.B::C System.Boolean applyAML(System.String)"]);
+  });
+
+  it("fails on an in-progress build of an engine declared complete, and on its unmapped methods", () => {
+    const unmapped = mapped({ fullName: "A.B::C", status: "unmapped", rules: [], symbols: [] });
+    const sourceMap = { builds: [build([mapped(), unmapped], { inProgress: true })] };
+    expect(checkCoverage(input({ sourceMap, completeEngines: ["14.0.7"] }))).toEqual([
+      "source-map.json build 14.0.7 is inProgress, but src/engines.ts declares engine 14.0.7 complete",
+      "[14.0.7] A.B::C is reachable but unmapped",
+    ]);
+    expect(checkCoverage(input({ sourceMap, completeEngines: ["14.35"] }))).toEqual([]);
   });
 
   it("fails when a build and its reachable set disagree on methods or locks", () => {

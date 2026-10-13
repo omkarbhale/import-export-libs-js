@@ -49,19 +49,102 @@ describe("slices", () => {
     "\tpublic string Name { get; set; }",
     "}",
   ];
+  const member = (name: string, declaringType = "N.C") => ({ declaringType, name });
+  const lambda = { declaringType: "N.C/<>c", name: "<M>b__0_0" };
 
   it("widens a method's span to its attributes, declaration and braces", () => {
-    expect(sliceMethod(file, 6, 13)).toMatchObject({ startLine: 3, endLine: 14 });
-    expect(sliceMethod(file, 5, 14).text.split("\n")[0]).toBe("\t[Attr]");
+    expect(sliceMethod(file, 6, 13, member("M"))).toMatchObject({ startLine: 3, endLine: 14 });
+    expect(sliceMethod(file, 5, 14, member("M")).text.split("\n")[0]).toBe("\t[Attr]");
+  });
+
+  it("slices a state machine's MoveNext as the method it implements", () => {
+    expect(sliceMethod(file, 6, 13, member("MoveNext", "N.C/<M>d__1"))).toMatchObject({ startLine: 3, endLine: 14 });
   });
 
   it("keeps a delegate's own braces and the line that opens it", () => {
-    expect(sliceMethod(file, 10, 10)).toMatchObject({ startLine: 8, endLine: 11 });
+    expect(sliceMethod(file, 10, 10, lambda)).toMatchObject({ startLine: 8, endLine: 11 });
   });
 
   it("keeps a lambda that is part of an expression as its bare span", () => {
     const query = ["\t\treturn from x in xs", "\t\t\tselect x.Name;"];
-    expect(sliceMethod(query, 2, 2)).toEqual({ startLine: 2, endLine: 2, text: "\t\t\tselect x.Name;" });
+    expect(sliceMethod(query, 2, 2, lambda)).toEqual({ startLine: 2, endLine: 2, text: "\t\t\tselect x.Name;" });
+  });
+
+  // The shapes of ILSpy's output that once bound the wrong C# (14.0.7's
+  // FileInfoWrapper::get_Name, CItemHelper::GetTypeAmlInner,
+  // DelayedResolutionManager::ProcessRelatedItem, CItemException::.ctor and
+  // SUImportContext::set_bFast).
+  const shapes = [
+    "public class D : Base",
+    "{",
+    "\tpublic string Name => name;",
+    "",
+    "\t[Attr]",
+    "\tpublic bool Fast",
+    "\t{",
+    "\t\tget",
+    "\t\t{",
+    "\t\t\treturn false;",
+    "\t\t}",
+    "\t\tset",
+    "\t\t{",
+    "\t\t}",
+    "\t}",
+    "",
+    "\t[Attr]",
+    "\tpublic D(int a)",
+    "\t\t: base(a)",
+    "\t{",
+    "\t\tRun(a);",
+    "\t}",
+    "",
+    "\t[Attr]",
+    "\tprivate int Load(int a)",
+    "\t{",
+    "\t\t//IL_0006: Expected O, but got Unknown",
+    "\t\ttry",
+    "\t\t{",
+    "\t\t\treturn Run(a);",
+    "\t\t}",
+    "\t\tcatch",
+    "\t\t{",
+    "\t\t\tthrow;",
+    "\t\t}",
+    "\t}",
+    "",
+    "\tpublic int Next()",
+    "\t{",
+    "\t\treturn 0;",
+    "\t}",
+    "",
+    "\tpublic class Inner",
+    "\t{",
+    "\t\tpublic int Size => 1;",
+    "\t}",
+    "}",
+  ];
+  const range = (startLine: number, endLine: number, name: string, declaringType = "N.D") => {
+    const slice = sliceMethod(shapes, startLine, endLine, { declaringType, name });
+    return [slice.startLine, slice.endLine];
+  };
+
+  it("slices an expression-bodied member as its one line, not its type", () => {
+    expect(range(3, 3, "get_Name")).toEqual([3, 3]);
+    expect(range(45, 45, "get_Size", "N.D/Inner")).toEqual([45, 45]);
+  });
+
+  it("slices each accessor of a block-bodied property as its own block", () => {
+    expect(range(10, 10, "get_Fast")).toEqual([8, 11]);
+    expect(range(14, 14, "set_Fast")).toEqual([12, 14]);
+  });
+
+  it("keeps a constructor's declaration above its base call", () => {
+    expect(range(20, 22, ".ctor")).toEqual([17, 22]);
+  });
+
+  it("finds the declaration above ILSpy's notes and a leading try, and stops at the member's own brace", () => {
+    expect(range(29, 35, "Load")).toEqual([24, 36]);
+    expect(range(30, 30, "Load")).toEqual([24, 36]);
   });
 
   it("finds an auto-property's declaration for its accessors", () => {

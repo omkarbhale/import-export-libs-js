@@ -77,7 +77,7 @@ function build(engine: string, dllArg: string, hostArgs: string[], refArg: strin
     const span = spans.get(method.token);
     const fileLines = span && files.get(span.document);
     if (!span || !fileLines) continue;
-    const slice = sliceMethod(fileLines, span.startLine - 1, span.endLine - 1);
+    const slice = sliceMethod(fileLines, span.startLine - 1, span.endLine - 1, method);
     decomp.set(method.token, { path: span.document, startLine: slice.startLine, endLine: slice.endLine, text: slice.text });
   }
   const typeDocuments = new Map<string, string>();

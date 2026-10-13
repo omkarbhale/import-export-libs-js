@@ -679,11 +679,11 @@
         "signatureSha256": "5085ae946cf1ec3c6cd7475a01e605de423df82ef0c2399a377c77c88a9f9e62",
         "ilSha256": "405a941a02e74fd8deef74a3aa823a67d9be05b7a09b5681cdf74d8478d0fcb0",
         "bodySha256": "fb13df5dc50bbeaa17e015d1ebb9ef1f61835cd5f51d6aa7962c81f2450387d9",
-        "textSha256": "f9633193ca788d2fd3475290913e7a86fb57dc1d4ecca5c751aaca2626e73c61"
+        "textSha256": "e3a8c7af6e4ac86f8b57112e35100d78813f8bc77eb08bc88557695342583eb5"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemException.cs",
-        "startLine": 49,
+        "startLine": 47,
         "endLine": 57
       }
     },
@@ -695,11 +695,11 @@
         "signatureSha256": "41ef7599c331971ac3d457cde8a7cdfe688983d6b732cfaeaa43dfad0ac8e04a",
         "ilSha256": "92eed71505f6fc663cdffba57df6b03d992c0e80017683300237a2e1fb79ad91",
         "bodySha256": "1c97f09c1518c701c96fb5dbbcd5a53b3bc56b10941fd165b014359c5290abb9",
-        "textSha256": "b8f6350ae60d118de6a534d3df4aa0e09c2e50c6c8402366e0ecca691554b9fa"
+        "textSha256": "8c656366fd43da28ce1db4e5daf3ca97d128ef477aa0805376af73d7aae965bb"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemException.cs",
-        "startLine": 40,
+        "startLine": 35,
         "endLine": 45
       }
     },
@@ -711,11 +711,11 @@
         "signatureSha256": "6811abf448a6298fb1c05650cff41cda7e7d6111d2f16bf83db06c27212d4414",
         "ilSha256": "5f964b3e198eccdf296dbe552aafdd28b6ab711ce858a786a83a1edf01ff879f",
         "bodySha256": "58b93e48b8895ada96e9ca9cb3f4fe61b7db4ad14486137bd7dbf528a2be38c3",
-        "textSha256": "917c15381836e7c8b08b98c88f6636d235131191e671aa23d1f20d5ef743b610"
+        "textSha256": "417ad5ce3e224d019f09e0226a33b34152deb60351fe5cb76a0e3b72606da79f"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemException.cs",
-        "startLine": 61,
+        "startLine": 59,
         "endLine": 69
       }
     },
@@ -1301,12 +1301,12 @@
         "signatureSha256": "b225e4e6c002b95c16aa4348471ed66bdd775458a1f35f3d66b76039e6b42ce6",
         "ilSha256": "a62de01bbd9b11a60fe8e77ba37533a132f59385951b537cd93a078ab51efa44",
         "bodySha256": "118f619e382a95ea2eb86b767820a0d1f170895878410cfcfca045589fee8eae",
-        "textSha256": "9484455ac56fbc0373b3251d93f9aa67c470285d2e59cced18855807d5d2778a"
+        "textSha256": "7061d7f33c4737288ec92e407adc6a0d12675d2c16d88fdc9be585383c75896d"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
-        "startLine": 711,
-        "endLine": 756
+        "startLine": 708,
+        "endLine": 741
       }
     },
     {
@@ -1653,12 +1653,12 @@
         "signatureSha256": "37fcc0070f6be15c65813e3846426e567add09dc0d139babb2ebb92820beac2d",
         "ilSha256": "522549e79c9409deda3c8c2994e992e3a2d592f0b9a09ba8512a7c99beaab25b",
         "bodySha256": "4481cb6f929a3666e4c0350601835a3d62243e18c483dd4e3b214b30f18c105c",
-        "textSha256": "e0aea37f1033bff1726cfa8db0e62ed56ce68963e3e43ba07f6d86474b585c03"
+        "textSha256": "08216c92f4a7d4277203578bc502a6bd07e8682671ae692c072df6c5f4c87315"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
-        "startLine": 1306,
-        "endLine": 1349
+        "startLine": 1303,
+        "endLine": 1350
       }
     },
     {
@@ -1701,12 +1701,12 @@
         "signatureSha256": "977828c63c8ee13c42ea294b7bc84e4db654b36ef0614210f75aea8dd8950aa8",
         "ilSha256": "cdafa07b84cdc6831e365bacda37139c63ad18e54453550bdc2ad1da59f00204",
         "bodySha256": "2bc2cf8b90d717cbc17e0dc783fbada826aab0d57327d951d65b1874839f55e6",
-        "textSha256": "edae3ca0ed543ce5c1243181ca361e5885ce8dfa499908f61d2f7e379f085cf7"
+        "textSha256": "8e818c4e622839855e46a0aa99894196242b8ff4481b7f56bc2c5a4817dbee3a"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
-        "startLine": 1423,
-        "endLine": 1435
+        "startLine": 1421,
+        "endLine": 1436
       }
     },
     {
@@ -1919,12 +1919,12 @@
         "signatureSha256": "e252751d0ab4f7c7976cb4f7555674ce1191450a18b4d1d5ce9e6ed613e90ed7",
         "ilSha256": "c4b3a988d619f110003ba85ad57dff8760a65b24d530e3d2e6539e78000381f9",
         "bodySha256": "33fc3825ad13fe47f5b7fdbb451b680e483a2a8f2d13767a20f0e8d6e9503f6c",
-        "textSha256": "9a163da5221f24067d796e04a24dc12ceed84f83b7da3e94726564dabf0d3004"
+        "textSha256": "4bc9fbd880c397e973ea2d386cb0e7b7355720c1b97b445347943cacb4f0690f"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
-        "startLine": 95,
-        "endLine": 115
+        "startLine": 92,
+        "endLine": 116
       }
     },
     {
@@ -1935,12 +1935,12 @@
         "signatureSha256": "e252751d0ab4f7c7976cb4f7555674ce1191450a18b4d1d5ce9e6ed613e90ed7",
         "ilSha256": "6b8d548606a89f0acee4835194eac47397d3998d38d631ab1a90b2eb557949ed",
         "bodySha256": "fbd6bff23bc4e183c91b0e1d297b30c14f2f4df25214bd546378f69e0bd9e21a",
-        "textSha256": "0a0cf7c75660657b7565cef0b2deb4ea7f785d99924d79becd49ec946c8210c3"
+        "textSha256": "a96941a7e078af6b046d44419d2a652e6f5fb1674b41ba463bbb078f452865c9"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
-        "startLine": 70,
-        "endLine": 89
+        "startLine": 67,
+        "endLine": 90
       }
     },
     {
@@ -1951,12 +1951,12 @@
         "signatureSha256": "8411c334afc4e3822a2c3a8259ea10d09426efdddde739c1724f5b50f5ec6337",
         "ilSha256": "048082218f9eb7555a242d5d1003228b7737ff3fe6e4ad09eb30d61a389bb511",
         "bodySha256": "5d64dd607c023e590358487949f70bc795c31221c8bfe5b2180cf44c6e01bd55",
-        "textSha256": "88cc67f22595ed2f0a06609c17617fdbcc6301d420b76b754c45ccda70cbbe2d"
+        "textSha256": "4c9d620b2cefe90d4b3f7364fd17304c34df5d73b036886f4d79923a37c2bf62"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
-        "startLine": 121,
-        "endLine": 156
+        "startLine": 118,
+        "endLine": 157
       }
     },
     {
@@ -2111,11 +2111,11 @@
         "signatureSha256": "59dd24722c2708ba33188d082723531bd60c9d81a91c2f41751410fe7777f70b",
         "ilSha256": "81c0e3dd9aa93ed0c9a31c84839a51a837b9544ff4ea372f4469c03433b9be97",
         "bodySha256": "183e75f3114bf627c31e9d35d0f21683ea64274443cc30c92a4b5c3f37264b77",
-        "textSha256": "24666b52b6397fe692f7b934e9cdfc6e846a7801963aba6859e8dfc4f02a1526"
+        "textSha256": "24ecfe298b23bd61d77466077aa6ff62c027b7d702317ec855ed65280fd04924"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/HttpConnectorExtension.cs",
-        "startLine": 32,
+        "startLine": 29,
         "endLine": 38
       }
     },
@@ -3081,12 +3081,12 @@
         "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
         "ilSha256": "240a3388eb9161514c7f5b0e599ca31715dd352684d7f05afd420a3ffafa4b2e",
         "bodySha256": "01a5b6d20484f56019e56c9e9faea26efb7a805a1399f60c02d066aa4de60883",
-        "textSha256": "301ce3eb95cfed4ae8c159d9f96b8f95fc0bdd22ac49339b0b69f4252ba0cfbe"
+        "textSha256": "f8af07481b742df0cbc92225ce5beaf7fdfa411bf73035565fa106c5a09b5151"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/LanguagePackPreprocessor.cs",
-        "startLine": 13,
-        "endLine": 289
+        "startLine": 31,
+        "endLine": 31
       }
     },
     {
@@ -3475,12 +3475,12 @@
         "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
         "ilSha256": "109975f9228fb90bd4320edafc45ee707a51f0513eea91bdc0c6be2a55af42ad",
         "bodySha256": "f10124c56ada064f24af4ce25c981ac7d8dfb6c070bbbfb621bfd9fb1e1dd0d8",
-        "textSha256": "3ea7f5d7535af93512f052cf6105e6d85eb88fe3955b8d16515b35927572ee43"
+        "textSha256": "105deb272e46c558fb479790c6606b500bef787f9e97b46e96ed0a445a00ec35"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
-        "startLine": 121,
-        "endLine": 162
+        "startLine": 116,
+        "endLine": 146
       }
     },
     {
@@ -3507,12 +3507,12 @@
         "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
         "ilSha256": "bbe75d648f5ec297685b80b7efcad989bbfc4c3918db09cd0db4e1fa5645f783",
         "bodySha256": "c511d5c19f938d2178a86f66c218bbc883218d3c3c3a0cebb4815c046f962f0f",
-        "textSha256": "7827b2c0191047f5a7397d34ee312850accd8d5061982f9e76e08d6e2f31ae79"
+        "textSha256": "021c77f94466e55f8078c0ab9262e630e8a4b63a0296b1a1fe6e7a8ed5a9a9aa"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
-        "startLine": 3,
-        "endLine": 41
+        "startLine": 11,
+        "endLine": 11
       }
     },
     {
@@ -3539,12 +3539,12 @@
         "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
         "ilSha256": "dc4f49e9e1da9a3be009e1bcb1f99ff1fa3283d9acfeae2282fcafc672f864ae",
         "bodySha256": "2bef66ab4d0078dddb0a9b241e77080f3d8e59cdcafb0b014981c11b7aba7b0d",
-        "textSha256": "7827b2c0191047f5a7397d34ee312850accd8d5061982f9e76e08d6e2f31ae79"
+        "textSha256": "4a777c31d65dd7df9287c3d6ef859c4e0360276edd5e54b2922bc56d0d9b33c0"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
-        "startLine": 3,
-        "endLine": 41
+        "startLine": 13,
+        "endLine": 13
       }
     },
     {
@@ -3857,12 +3857,12 @@
         "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
         "ilSha256": "ae6db1282a680413f5e7d5f2705b3e95105f51e7e3fd1b5cfc0e2c39972464b7",
         "bodySha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
-        "textSha256": "741b0925f240e5cbac5748997f8ffe50c3efccf046c9eb587d3c01edd363bd1e"
+        "textSha256": "c53a00a0f00e98f40d9964ceea791276236ef339bfd24976442fee5970722f83"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
-        "startLine": 10,
-        "endLine": 22
+        "startLine": 19,
+        "endLine": 21
       }
     },
     {
@@ -4507,12 +4507,12 @@
         "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
         "ilSha256": "0c2f6c136a4e769f081fa592c2152703e5cc95023b35aced53f5220ad3b2b7cc",
         "bodySha256": "20f856902692c8278906bdd77746e96212b7406e34e959ceb5a59388166a03f6",
-        "textSha256": "3964e03041656ab4ab4efb3174f0efa580c11f0b6770c3836cff8ecc804edb7d"
+        "textSha256": "95f92347484717ff8c73f50b636126677804836962e396b4bfd11ca588d41be3"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade.Wrappers/FileInfoWrapper.cs",
-        "startLine": 5,
-        "endLine": 40
+        "startLine": 11,
+        "endLine": 11
       }
     },
     {
@@ -4523,12 +4523,12 @@
         "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
         "ilSha256": "39b550a09b6be8e2dd2b09966d470d1d616bfc0740c4cb7d77cf3936f8e3d08f",
         "bodySha256": "5ba3bee907783e624dd411ad6669cce0277db3a6b497aee2f7334a5a70597943",
-        "textSha256": "3964e03041656ab4ab4efb3174f0efa580c11f0b6770c3836cff8ecc804edb7d"
+        "textSha256": "d7ee59e7d2e99f0cfaeb93fc8fd2d3b6a2a96d5f7154f08da5830d7f6d3e0f98"
       },
       "decomp": {
         "path": "Aras.Tools.SolutionUpgrade.Wrappers/FileInfoWrapper.cs",
-        "startLine": 5,
-        "endLine": 40
+        "startLine": 9,
+        "endLine": 9
       }
     }
   ]

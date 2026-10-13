@@ -69,7 +69,7 @@ A symbol is written `src/<path>.ts#<ExportName>`, or `src/<path>.ts#<ExportName>
 
 `tools/rea-map` (see its README) decompiles a build into the gitignored `.decomp/<engine>/`, walks the methods the engine's host executables (`import.exe`, `export.exe`, `ConsoleUpgrade.exe`) can reach, locks each one, and writes `reachable/<engine>.json`. It then merges the build into `source-map.json`: new methods arrive as `unmapped`, methods no longer reachable leave, and a covered method whose code changed goes back to `unmapped`, keeping its rules and symbols for review. Each method in `reachable/<engine>.json` also gives the file and lines of its C# under `.decomp/<engine>/`.
 
-A build new to the map carries `"inProgress": true`. While it does, its `unmapped` methods are listed by the coverage test as pending (vitest todos), so the test shows exactly what is left without failing. Remove the flag when the engine's slice lands; from then on an `unmapped` method fails the test.
+A build new to the map carries `"inProgress": true`. While it does, its `unmapped` methods are listed by the coverage test as pending (vitest todos), so the test shows exactly what is left without failing. The flag is allowed only while the engine is not in `COMPLETE_ENGINES` (`src/engines.ts`). The engine's final slice, and the readiness ticket (wayfinder ticket 65), must add the engine to `COMPLETE_ENGINES` and remove the flag. From then on, an `unmapped` method of that engine fails the test, and so does a build of it that carries the flag.
 
 ## The coverage test
 
@@ -78,7 +78,8 @@ A build new to the map carries `"inProgress": true`. While it does, its `unmappe
 - `source-map.json` or a `reachable/<engine>.json` does not match its schema, or the map lists a build or a method twice;
 - a build's `assemblyVersion` is not its engine's, or its identity differs from its reachable set or, once vendored, from the sha256 of `oracle/native/<engine>/Libs.dll`;
 - a build's methods differ from its reachable set, or a method's lock differs from the generated one;
-- a method is still `unmapped` in a build that is not `inProgress`;
+- a method is still `unmapped` in a build that is not `inProgress`, or whose engine is in `COMPLETE_ENGINES`;
+- a build of an engine in `COMPLETE_ENGINES` carries `inProgress`;
 - a mapped TypeScript symbol does not exist;
 - a rule is defined in an area document but cited nowhere (no `@spec` tag and no source-map entry);
 - a rule is cited, or registered in `bugs.md`, but defined nowhere, is defined twice, or has no engine variant;

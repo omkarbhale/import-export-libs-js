@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import ts from "typescript";
-import { ENGINE_ASSEMBLY_VERSIONS, isEngine } from "../src/engines.js";
+import { COMPLETE_ENGINES, ENGINE_ASSEMBLY_VERSIONS, isEngine } from "../src/engines.js";
 
 /**
  * Enforces spec/README.md: every reachable method mapped, every mapped symbol
@@ -39,6 +39,8 @@ export interface CoverageInput {
   reachableSchema: object;
   /** sha256 of oracle/native/<engine>/Libs.dll, for each engine vendored so far. */
   oracleDigests: Record<string, string>;
+  /** COMPLETE_ENGINES from src/engines.ts: engines whose builds may not be in progress. */
+  completeEngines: readonly string[];
 }
 
 interface SourceMapMethod {
@@ -135,6 +137,10 @@ export function checkCoverage(input: CoverageInput): string[] {
     seenEngines.add(build.engine);
 
     problems.push(...checkIdentity(build, reachableSets.get(build.engine), input.oracleDigests[build.engine]));
+    const complete = input.completeEngines.includes(build.engine);
+    if (build.inProgress && complete) {
+      problems.push(`source-map.json build ${build.engine} is inProgress, but src/engines.ts declares engine ${build.engine} complete`);
+    }
     const reachableLocks = new Map(
       (reachableSets.get(build.engine)?.methods ?? []).map((m) => [`${m.fullName} ${m.signature}`, m.lock]),
     );
@@ -153,7 +159,7 @@ export function checkCoverage(input: CoverageInput): string[] {
         problems.push(`${label} (${method.signature}) has a lock that differs from spec/reachable/${build.engine}.json`);
       }
 
-      if (method.status === "unmapped" && !build.inProgress) problems.push(`${label} is reachable but unmapped`);
+      if (method.status === "unmapped" && (!build.inProgress || complete)) problems.push(`${label} is reachable but unmapped`);
       for (const id of method.rules ?? []) cite(id, `source-map.json ${label}`);
       if (method.status === "mapped") {
         for (const symbol of method.symbols ?? []) {
@@ -356,6 +362,7 @@ export function loadCoverageInput(root: string): CoverageInput {
     }),
     reachableSchema: JSON.parse(read("spec/reachable.schema.json").text) as object,
     oracleDigests,
+    completeEngines: COMPLETE_ENGINES,
   };
 }
 

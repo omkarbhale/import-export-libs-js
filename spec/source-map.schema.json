@@ -36,7 +36,7 @@
         },
         "inProgress": {
           "type": "boolean",
-          "description": "True while the engine's slice is being built: the coverage test lists its unmapped methods as pending instead of failing. tools/rea-map sets it on a new build; remove it when the slice lands."
+          "description": "True while the engine's slice is being built: the coverage test lists its unmapped methods as pending instead of failing. tools/rea-map sets it on a new build; the engine's final slice removes it and adds the engine to COMPLETE_ENGINES in src/engines.ts, after which the flag fails the coverage test."
         },
         "methods": {
           "type": "array",
