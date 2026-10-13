@@ -23,7 +23,7 @@ npm run rea-map -- build 14.0.7 \
   --host <toolset>/ConsoleUpgrade/ConsoleUpgrade.exe
 ```
 
-- `--dll` is the build. Until the oracle harness vendors the toolsets under `oracle/native/<engine>/`, pass a copy from the captain's machine (WSL: `/mnt/c/Users/omkarb/Desktop/ImportExport/23/Import/` for 14.0.7, `…/12/Import/` for 12.0, `…/Delete me/PackageImportExportUtilities35/Import/` for 14.35).
+- `--dll` is the build. `oracle/native/<engine>/` vendors only each toolset's `Import/` folder (see `oracle/README.md`), so the `Export/` and `ConsoleUpgrade/` hosts still come from the captain's machine (WSL: `/mnt/c/Users/omkarb/Desktop/ImportExport/23/` for 14.0.7, `…/12/` for 12.0, `…/Delete me/PackageImportExportUtilities35/` for 14.35). The coverage test fails if the build's sha256 differs from the vendored `Libs.dll`.
 - `--ref` is the folder ILSpy resolves references from (IOM and friends). It defaults to the DLL's folder.
 - `--host` names an executable whose references to `Libs` seed the walk. Use the three hosts of the import, export and language-pack operations: `import.exe`, `export.exe` and `ConsoleUpgrade.exe`, the language-pack host. `PackageDefinition.exe` is a separate tool and stays out.
 

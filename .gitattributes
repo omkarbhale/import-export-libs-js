@@ -3,3 +3,4 @@
 # Fixtures and oracle outputs are byte-exact engine output (BOM, CRLF). Never normalise them.
 fixtures/** -text
 oracle/native/** binary
+oracle/native/manifest.json -text diff

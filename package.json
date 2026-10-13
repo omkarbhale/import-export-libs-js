@@ -28,6 +28,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "oracle": "tsx oracle/src/cli.ts",
     "prepare": "tsup",
     "rea-map": "tsx tools/rea-map/cli.ts"
   },

@@ -14,6 +14,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Test | `npm test` (vitest, includes the spec coverage test) |
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
 | Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
+| Oracle | `npm run oracle -- --engine <v> <export, import or lpimport> ...` records a scrubbed fixture from the real DLLs on dev (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `npm run oracle -- verify` checks the vendored toolsets. |
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
@@ -48,5 +49,6 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 - Use the dev instance only. Never contact olm or prod.
 - Exports and reads are free.
 - Imports use only `LIBSJS-SCRATCH-*` packages and items. Each run cleans up after itself and reports the ids it created and deleted.
+- The oracle's scratch guard only checks names, not which items the engine will change (it picks them by `id` or `where`). So feed it only this repo's own `LIBSJS-SCRATCH-*` fixture packages. Never feed it a foreign package or language pack whose items carry real ids, `edit`, `merge` or `delete` post-actions, or `--merge` against non-scratch items.
 - Clearly non-destructive DB patches are allowed on dev. Anything else goes to the captain first.
 - The password reaches tools only through the environment (`ARAS_PASSWORD`) or stdin, never through a flag or a file.
