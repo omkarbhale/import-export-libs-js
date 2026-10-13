@@ -29,8 +29,8 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 3. **Recording.** This is ticket 03's design: `RecordingHttpServerConnection` subclasses IOM's `HttpServerConnection` and overrides `CallAction`. Libs' `is HttpServerConnection` casts (Login, Timeout) therefore behave exactly as they do under Aras's tools.
    - The recorder is thread-safe, because 14.35 exports through `Parallel.ForEach`.
    - Every call records completion order `seq`, start order `start`, nesting `depth` (IOM's auto-relogin runs inside a call), the managed thread id and Stopwatch ticks.
-   - 12.0's `CItemHelper.Login()` skips any connection that is not exactly `HttpConnectorExtension`. So the 12.0 host logs in first by default (`--no-host-login` turns this off), which matches Aras's own 12.0 tool.
-   - `CItemHelper.logout()` is called at the end, as ConsoleUpgrade does. It has the same exact-type check, so with the recorder it sends nothing.
+   - 12.0's `CItemHelper.Login()` skips any connection that is not exactly `HttpConnectorExtension`. So the 12.0 host logs in first, which matches Aras's own 12.0 tool. The 14.x hosts leave login to Libs.
+   - `CItemHelper.logout()` is always called at the end, as ConsoleUpgrade does. It has the same exact-type check, so with the recorder it sends nothing.
 4. **Messages.** All five `IMessagesFactory` channels are recorded as `error`, `errorQuestion`, `warning`, `status` and `currentPackage`. `errorQuestion` answers `--error-question-answer` (default `no`). The other channels return null, like ConsoleUpgrade.
 5. **Commands.**
    - `export` calls `ExportSolutions` with the given items.
@@ -38,12 +38,14 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
    - `lpimport` (14.0.7 and 14.35) runs ConsoleUpgrade's sequence: `LanguagePackPreprocessor`, then `Action = Import` on its temp manifest.
 
    Running 14.35's `ImportDPPatch` / `ApplyDBUpdateManifest` is not wired yet (ticket 63).
+6. **The scratch guard.** Right before `ImportSolutions`, the host checks what the engine is about to get. Every package in the set must be named `LIBSJS-SCRATCH-*`; for `lpimport` that is the temp manifest's package, `--lp-package`. For `import`, so must every item file `LoadPackageDom` reads for those packages (the file name is the keyed name the engine records), and every top-level item's `name`. For `lpimport`, so must the `keyed_name` of every item in the language pack's `xml/` folder. An empty package set is refused too. Before anything is staged, the WSL side checks the package names the same way.
+7. **Cleanup.** After `import` or `lpimport`, the host stops recording, so nothing from here on reaches the transcript. It then deletes what the run created, newest first. The run created every top-level item that a successful call sent with `action="add"`. For the engine's own PackageDefinition, PackageGroup, PackageElement and DatabaseUpgrade rows, the id comes from the response. An item is deleted only when it belongs to a `LIBSJS-SCRATCH-*` name: a relationship by its source's name, any other item by its name or keyed name. Anything else is kept and reported. Relationships nested inside an added item go with it.
 
 ## A recorded fixture folder
 
 | File | What |
 |---|---|
-| `run.json` | engine, toolset identity, server, user, host parameters, host info (call and message counts, server version, result, error), and what was scrubbed |
+| `run.json` | engine, toolset identity, server, user, host parameters, host info (call and message counts, server version, result, error), `cleanup` for imports (`created`, `deleted`, and `kept` with a reason, each as `type` and `id`), and what was scrubbed |
 | `transcript.jsonl` | one call per line: `event`, `seq`, `start`, `depth`, `thread`, `startTicks`, `endTicks`, `action` (the SOAP action), `request` (the AML given to `CallAction`), `response` (the full response envelope), `error` if the call threw |
 | `messages.jsonl` | one message per line: `event`, `seq`, `thread`, `ticks`, `channel`, `text`, `answer`. `event` counts calls and messages together, so the two streams interleave |
 | `engine.log` | the engine's own log (`LogFilePath`) |
@@ -55,8 +57,8 @@ The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP
 
 ## Rules
 
-- **Dev only.** The oracle refuses any server but the dev instance (`http://localhost/12sp9` from Windows, or `172.19.0.1` from WSL). `import` and `lpimport` refuse packages whose names do not start with `LIBSJS-SCRATCH-`. Cleaning up after an import is the caller's job, and the ids it reports are in `transcript.jsonl`.
-- **The password** arrives only through `ARAS_PASSWORD` or stdin. It reaches PowerShell through `WSLENV` and never through a command line or a file. 14.35's host sends IOM the MD5 hex (`--password-form md5`), because IOM 15 would otherwise send the plain password first.
+- **Dev only.** The oracle refuses any server but the dev instance (`http://localhost/12sp9` from Windows, or `172.19.0.1` from WSL). `import` and `lpimport` refuse any package or item not named `LIBSJS-SCRATCH-*` (step 6). Each one deletes what it created (step 7) and prints the created, deleted and kept ids. A run that keeps anything, or whose host reports no cleanup, exits 1.
+- **The password** arrives only through `ARAS_PASSWORD` or stdin. It reaches PowerShell through `WSLENV` and never through a command line or a file. 14.35's host sends IOM the MD5 hex, because IOM 15 would otherwise send the plain password first. 12.0 and 14.0.7 send it plain.
 - **Scrubbing** (`src/scrub.ts`) runs over every collected file. It replaces password elements and fields, `Authorization` headers, bearer tokens, OAuth token fields, JWTs, and the run password's MD5 and SHA-256 forms. A file with nothing to scrub keeps its exact bytes. A run fails if credential-shaped text survives. `npm test` fails if any file under `fixtures/` contains it.
 - Only Aras's shipped binaries live under `native/`. **Decompiled C# never does**; it goes to the gitignored `.decomp/` (see `AGENTS.md`). `host/` is this repo's own code.
 - To refresh a toolset, run `npm run oracle -- --engine <v> vendor [--from <folder>]`. It re-copies the folder and rewrites its manifest entry.

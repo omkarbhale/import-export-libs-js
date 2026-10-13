@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { DEFAULT_ENGINE, ENGINES, isEngine, type Engine } from "../../src/engines.js";
 import { NATIVE_DIR, ORACLE_DIR, readManifest, verifyToolset } from "./manifest.js";
@@ -24,18 +25,17 @@ Commands:
 
 Connection (dev only): --url (${DEV_SERVER.url}), --database (${DEV_SERVER.database}),
   --user (env ARAS_USER, default root). The password comes from env ARAS_PASSWORD,
-  or stdin when it is not a terminal; never from a flag or file.
+  or stdin when it is not a terminal; never from a flag or file. import and lpimport take
+  LIBSJS-SCRATCH-* packages and items only, and delete what they created when done.
 Output: --out <folder> (default oracle/out/<engine>-<command>-<time>), --keep-windows-run.
 
 Engine options (passed to the engine's host; an option the engine lacks is an error):
   --verbose, --manifest-file <path>, --level <n>, --export-referenced-items,
   --ref-to-unknown-packs RemoveSilently|RemoveWithWarning|DoNotRemove, --use-import,
   --merge, --fast, --release <r>, --description <d>, --vault, --lp-debug,
-  --certificate-store-location|-store-name|-find-type|-find-value <v>, --certificate-valid-only,
   14.35: --languages a,b, --engine-action <Export|ExportLanguageResourcesOnly|ExportMetadataWithLanguageResources>,
          --aml-batch-mode, --aml-batch-max-size <n>, --collect-import-errors, --collect-import-errors-max-count <n>
-Host: --timeout <ms> (600000), --password-form plain|md5, --host-login, --no-host-login (12.0),
-  --no-logout, --error-question-answer yes|no|none (no)
+Host: --timeout <ms> (600000), --error-question-answer yes|no|none (no)
 `;
 
 /** CLI flag -> host parameter, for flags passed straight through. */
@@ -45,13 +45,8 @@ const STRING_OPTIONS: Record<string, string> = {
   "ref-to-unknown-packs": "RefToUnknownPacks",
   release: "Release",
   description: "Description",
-  "certificate-store-location": "CertificateStoreLocation",
-  "certificate-store-name": "CertificateStoreName",
-  "certificate-find-type": "CertificateFindType",
-  "certificate-find-value": "CertificateFindValue",
   "engine-action": "EngineAction",
   "lp-package": "LPPackage",
-  "password-form": "PasswordForm",
   "error-question-answer": "ErrorQuestionAnswer",
 };
 const NUMBER_OPTIONS: Record<string, string> = {
@@ -67,11 +62,8 @@ const SWITCH_OPTIONS: Record<string, string> = {
   fast: "Fast",
   vault: "Vault",
   "lp-debug": "LPDebug",
-  "certificate-valid-only": "CertificateValidOnly",
   "aml-batch-mode": "AmlBatchMode",
   "collect-import-errors": "CollectImportErrors",
-  "host-login": "HostLogin",
-  "no-logout": "NoLogout",
 };
 const LIST_OPTIONS: Record<string, string> = { languages: "Languages", packages: "Packages" };
 
@@ -87,7 +79,6 @@ const OPTIONS = {
   "lp-config": { type: "string" },
   from: { type: "string" },
   "keep-windows-run": { type: "boolean" },
-  "no-host-login": { type: "boolean" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -119,7 +110,6 @@ export function hostParams(values: Values): Record<string, HostValue> {
     const v = values[flag];
     if (typeof v === "string") params[name] = v.split(",").map((s) => s.trim()).filter((s) => s !== "");
   }
-  if (values["no-host-login"] === true) params.HostLogin = false;
   return params;
 }
 
@@ -219,10 +209,29 @@ export async function main(argv: readonly string[]): Promise<number> {
         process.stdout.write(
           `${out}\nhost exit ${result.hostExit}, ${result.calls ?? "?"} calls${result.error ? `\nengine error: ${result.error.split("\n")[0]}` : ""}\n`,
         );
+        let leftBehind = false;
+        if (command !== "export") {
+          const { cleanup } = result;
+          if (cleanup === null) {
+            process.stderr.write("the host reported no cleanup; anything this import created is still on the server\n");
+            leftBehind = true;
+          } else {
+            process.stdout.write(
+              [
+                `cleanup: created ${cleanup.created.length}, deleted ${cleanup.deleted.length}, kept ${cleanup.kept.length}`,
+                ...cleanup.created.map((c) => `  created ${c.type} ${c.id}`),
+                ...cleanup.deleted.map((d) => `  deleted ${d.type} ${d.id}`),
+                ...cleanup.kept.map((k) => `  kept ${k.type} ${k.id}: ${k.reason}`),
+              ].join("\n") + "\n",
+            );
+            leftBehind = cleanup.kept.length > 0;
+          }
+        }
         if (result.remainingSecrets.length > 0) {
           process.stderr.write(`credential-shaped text survived scrubbing:\n  ${result.remainingSecrets.join("\n  ")}\n`);
           return 1;
         }
+        if (leftBehind) return 1;
         return result.hostExit === 0 ? 0 : result.hostExit === 2 ? 2 : 1;
       }
       default:
@@ -238,6 +247,6 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   process.exitCode = await main(process.argv.slice(2));
 }

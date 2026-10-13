@@ -21,13 +21,6 @@ param(
     [Parameter(Mandatory)][string] $ExpectedIomSha256,
     [Parameter(Mandatory)][string] $ExpectedIomMvid,
     [Parameter(Mandatory)][string] $ExpectedIomVersion,
-    # How the password reaches IOM: plain (IOM hashes it) or md5 (the host sends the MD5 hex).
-    [ValidateSet('plain','md5')][string] $PasswordForm = 'plain',
-    # 12.0's CItemHelper.Login() skips any connection that is not exactly HttpConnectorExtension,
-    # so the host logs in first, as Aras's own 12.0 tool effectively does (ticket 03).
-    [bool] $HostLogin = $true,
-    # Skip CItemHelper.logout() at the end (Aras's ConsoleUpgrade logs out).
-    [switch] $NoLogout,
     # What the errorQuestion channel answers: yes continues past an import error.
     [ValidateSet('yes','no','none')][string] $ErrorQuestionAnswer = 'no',
     [int] $Timeout = 600000,
@@ -51,6 +44,6 @@ param(
     [switch] $Vault
 )
 . (Join-Path $PSScriptRoot 'common.ps1')
-$defaults = @{ PasswordForm = $PasswordForm; HostLogin = [bool]$HostLogin; ErrorQuestionAnswer = $ErrorQuestionAnswer; Timeout = $Timeout }
+$defaults = @{ ErrorQuestionAnswer = $ErrorQuestionAnswer; Timeout = $Timeout }
 $result = @(Invoke-OracleHost -Engine '12.0' -BoundParameters $PSBoundParameters -Defaults $defaults)
 exit ([int]$result[-1])

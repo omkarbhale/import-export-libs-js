@@ -21,12 +21,6 @@ param(
     [Parameter(Mandatory)][string] $ExpectedIomSha256,
     [Parameter(Mandatory)][string] $ExpectedIomMvid,
     [Parameter(Mandatory)][string] $ExpectedIomVersion,
-    # How the password reaches IOM: plain (IOM hashes it) or md5 (the host sends the MD5 hex).
-    [ValidateSet('plain','md5')][string] $PasswordForm = 'plain',
-    # Also call IOM Login() before CItemHelper.Login(); 14.x Libs logs in itself.
-    [switch] $HostLogin,
-    # Skip CItemHelper.logout() at the end (Aras's ConsoleUpgrade logs out).
-    [switch] $NoLogout,
     # What the errorQuestion channel answers: yes continues past an import error.
     [ValidateSet('yes','no','none')][string] $ErrorQuestionAnswer = 'no',
     [int] $Timeout = 600000,
@@ -42,11 +36,6 @@ param(
     [string] $LPPath,
     [string] $LPPackage,
     [switch] $LPDebug,
-    [string] $CertificateStoreLocation,
-    [string] $CertificateStoreName,
-    [string] $CertificateFindType,
-    [string] $CertificateFindValue,
-    [switch] $CertificateValidOnly,
     [string] $Level,
     [switch] $ExportReferencedItems,
     [ValidateSet('RemoveSilently','RemoveWithWarning','DoNotRemove')][string] $RefToUnknownPacks,
@@ -58,6 +47,6 @@ param(
     [switch] $Vault
 )
 . (Join-Path $PSScriptRoot 'common.ps1')
-$defaults = @{ PasswordForm = $PasswordForm; HostLogin = [bool]$HostLogin; ErrorQuestionAnswer = $ErrorQuestionAnswer; Timeout = $Timeout }
+$defaults = @{ ErrorQuestionAnswer = $ErrorQuestionAnswer; Timeout = $Timeout }
 $result = @(Invoke-OracleHost -Engine '14.0.7' -BoundParameters $PSBoundParameters -Defaults $defaults)
 exit ([int]$result[-1])

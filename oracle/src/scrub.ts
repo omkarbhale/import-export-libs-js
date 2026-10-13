@@ -32,12 +32,12 @@ const PATTERNS: Pattern[] = [
   },
   {
     name: "password parameter",
-    regex: /([?&;\s]password=)([^&\s"'<]+)/gi,
+    regex: /([?&;\s]password=)([^&\s"'<\\]+)/gi,
     replace: (_m, head) => `${head}${SCRUBBED}`,
   },
   {
     name: "Authorization header",
-    regex: /(\bAuthorization\s*:\s*)([^\r\n"<]+)/gi,
+    regex: /(\bAuthorization\s*:\s*)([^\r\n"<\\]+)/gi,
     replace: (_m, head) => `${head}${SCRUBBED_TOKEN}`,
   },
   {
@@ -47,7 +47,7 @@ const PATTERNS: Pattern[] = [
   },
   {
     name: "OAuth token field",
-    regex: /(\b(?:access_token|refresh_token|id_token)"?\s*[:=]\s*"?)([^"&\s<,}]+)/gi,
+    regex: /(\b(?:access_token|refresh_token|id_token)(?:\\?")?\s*[:=]\s*(?:\\?")?)([^"&\s<,}\\]+)/gi,
     replace: (_m, head) => `${head}${SCRUBBED_TOKEN}`,
   },
   {

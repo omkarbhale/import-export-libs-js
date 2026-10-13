@@ -35,26 +35,44 @@ export interface RecordRequest {
   log?: (text: string) => void;
 }
 
+export interface ItemRef {
+  type: string;
+  id: string;
+}
+
+/** What an import's cleanup did (host.json `cleanup`): every item the run created, and which it deleted or kept. */
+export interface CleanupReport {
+  created: ItemRef[];
+  deleted: ItemRef[];
+  kept: (ItemRef & { reason: string })[];
+}
+
 export interface RecordResult {
   out: string;
   hostExit: number;
   calls: number | null;
   error: string | null;
+  /** import/lpimport: null when the host did not report a cleanup. */
+  cleanup: CleanupReport | null;
   remainingSecrets: string[];
 }
 
-/** A PowerShell single-quoted literal. Tabs and newlines stay literal; only ' needs doubling. */
+/** A PowerShell single-quoted literal. Tabs and newlines stay literal; each quote character (' and U+2018–U+201B) is doubled. */
 export function psLiteral(value: HostValue): string {
   if (typeof value === "boolean") return value ? "$true" : "$false";
   if (typeof value === "number") return String(value);
-  if (typeof value === "string") return `'${value.replace(/'/g, "''")}'`;
+  if (typeof value === "string") return `'${value.replace(/['\u2018-\u201b]/g, "$&$&")}'`;
   return `@(${value.map((v) => psLiteral(v)).join(", ")})`;
 }
 
-/** The launcher splats every parameter, so no value crosses a Windows command line. */
+/**
+ * The launcher splats every parameter, so no value crosses a Windows command
+ * line. It starts with a BOM, because Windows PowerShell 5.1 reads a BOM-less
+ * script in the ANSI code page.
+ */
 export function launcherScript(hostScript: string, params: Record<string, HostValue>): string {
   const lines = Object.entries(params).map(([k, v]) => `    ${k} = ${psLiteral(v)}`);
-  return [
+  return "\ufeff" + [
     "$ErrorActionPreference = 'Stop'",
     "$p = @{",
     ...lines,
@@ -71,15 +89,28 @@ export function assertDevUrl(url: string): void {
   }
 }
 
-/** Import fixtures touch only LIBSJS-SCRATCH-* packages (AGENTS.md). */
+/**
+ * Import fixtures touch only LIBSJS-SCRATCH-* packages (AGENTS.md). This is
+ * the early check; the host checks the packages and item files the engine
+ * actually gets, right before ImportSolutions.
+ */
 export function assertScratchPackages(packages: readonly string[]): void {
+  if (packages.length === 0) throw new Error("refusing to import: no package names found");
   const bad = packages.filter((p) => !p.startsWith("LIBSJS-SCRATCH-"));
   if (bad.length > 0) throw new Error(`refusing to import non-scratch packages: ${bad.join(", ")}`);
 }
 
 /** Package names listed in an imports.mf, read loosely (the engine's own reader is the spec's job). */
 export function manifestPackageNames(manifestText: string): string[] {
-  return [...manifestText.matchAll(/<package\b[^>]*\bname\s*=\s*"([^"]*)"/g)].map((m) => m[1]!);
+  return [...manifestText.matchAll(/<package\b[^>]*?\bname\s*=\s*(["'])(.*?)\1/g)].map((m) => m[2]!);
+}
+
+/** The packages a run hands the engine: lpimport's --lp-package, else --packages, else every package in the manifest. */
+export function importedPackageNames(req: Pick<RecordRequest, "command" | "params" | "inputDir" | "manifestName">): string[] {
+  const { LPPackage, Packages } = req.params;
+  if (req.command === "lpimport") return typeof LPPackage === "string" ? [LPPackage] : [];
+  if (Array.isArray(Packages)) return [...Packages];
+  return manifestPackageNames(readFileSync(join(req.inputDir!, req.manifestName ?? "imports.mf"), "utf8"));
 }
 
 function runId(engine: Engine, command: string): string {
@@ -105,9 +136,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   if (existsSync(req.out) && readdirSync(req.out).length > 0) throw new Error(`${req.out} already exists and is not empty`);
   if (req.command !== "export") {
     if (req.inputDir === undefined) throw new Error(`${req.command} needs a package folder`);
-    const listed = req.params.Packages;
-    const mf = readFileSync(join(req.inputDir, req.manifestName ?? "imports.mf"), "utf8");
-    assertScratchPackages(Array.isArray(listed) ? listed : manifestPackageNames(mf));
+    assertScratchPackages(importedPackageNames(req));
   }
 
   // The hash check: the vendored folder, then the staged copy, before anything is loaded.
@@ -175,6 +204,8 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
     ? (JSON.parse(readFileSync(join(req.out, "host.json"), "utf8")) as Record<string, unknown>)
     : null;
   if (hostInfo !== null) rmSync(join(req.out, "host.json"));
+  const cleanup = (hostInfo?.cleanup as CleanupReport | undefined) ?? null;
+  if (hostInfo !== null) delete hostInfo.cleanup;
   const recordedParams = Object.fromEntries(
     Object.entries(params).filter(([k]) => !/^(ToolsetDir|OutDir|WorkDir|ImportManifest|LPPath)$|^Expected/.test(k)),
   );
@@ -189,6 +220,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
     finishedAt,
     hostExit: result.code,
     host: hostInfo,
+    ...(req.command === "export" ? {} : { cleanup }),
     scrubbed,
   };
   writeFileSync(join(req.out, "run.json"), `${JSON.stringify(run, null, 2)}\n`);
@@ -206,6 +238,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
     hostExit: result.code,
     calls: typeof hostInfo?.calls === "number" ? hostInfo.calls : null,
     error: typeof hostInfo?.error === "string" ? hostInfo.error : null,
+    cleanup,
     remainingSecrets,
   };
 }

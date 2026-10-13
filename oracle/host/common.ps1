@@ -19,11 +19,6 @@ $script:OptionMap = [ordered]@{
     LPPath                   = 'Context.LPPath'
     LPPackage                = 'Context.LPPackage'
     LPDebug                  = 'Context.LPDebug'
-    CertificateStoreLocation = 'Context.CertificateStoreLocation'
-    CertificateStoreName     = 'Context.CertificateStoreName'
-    CertificateFindType      = 'Context.CertificateFindType'
-    CertificateFindValue     = 'Context.CertificateFindValue'
-    CertificateValidOnly     = 'Context.CertificateValidOnly'
     Languages                = 'Context.Languages'
     Level                    = 'Export.sLevel'
     ExportReferencedItems    = 'Export.bExportReferencedItems'
@@ -101,7 +96,8 @@ function Invoke-OracleHost {
 
     $password = $env:ARAS_PASSWORD
     if ([string]::IsNullOrEmpty($password)) { throw 'ARAS_PASSWORD is not set' }
-    if ($Bound['PasswordForm'] -eq 'md5') {
+    # 14.35's host hands IOM the MD5 hex: IOM 15 would otherwise send the plain password first.
+    if ($Engine -eq '14.35') {
         $md5 = [System.Security.Cryptography.MD5]::Create()
         $password = -join ($md5.ComputeHash([Text.Encoding]::UTF8.GetBytes($password)) | ForEach-Object { $_.ToString('x2') })
     }
@@ -112,8 +108,6 @@ function Invoke-OracleHost {
     $request.Database = $Bound['Database']
     $request.User = $Bound['User']
     $request.Password = $password
-    $request.HostLogin = [bool]$Bound['HostLogin']
-    $request.Logout = -not [bool]$Bound['NoLogout']
     $request.Timeout = $Bound['Timeout']
     $request.ErrorQuestionAnswer = switch ($Bound['ErrorQuestionAnswer']) { 'yes' { $true } 'no' { $false } default { $null } }
     $request.OutDir = $Bound['OutDir']

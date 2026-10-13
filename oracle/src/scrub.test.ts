@@ -39,6 +39,20 @@ describe("scrub", () => {
     expect(findSecrets(text)).toEqual([]);
   });
 
+  it("never consumes a JSON escape, so a scrubbed transcript line stays valid JSON", () => {
+    const line = JSON.stringify({
+      request: 'url + "&password=" + pw',
+      response: `Authorization: Bearer ${opaque}" x`,
+      error: `{"access_token":"${opaque}"}`,
+    });
+    const { text } = scrub(line);
+    const parsed = JSON.parse(text) as Record<string, string>;
+    expect(parsed.request).toBe('url + "&password=" + pw');
+    expect(parsed.response).toBe(`Authorization: ${SCRUBBED_TOKEN}" x`);
+    expect(text).not.toContain(opaque);
+    expect(findSecrets(text)).toEqual([]);
+  });
+
   it("replaces a run's own secret and its MD5 and SHA-256 forms", () => {
     const forms = secretForms("pw-for-test");
     expect(forms).toHaveLength(4);

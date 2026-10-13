@@ -70,10 +70,16 @@ namespace LibsJsOracle
         private static long _callSeq;
         private static long _callStart;
         private static long _messageSeq;
+        private static volatile bool _recording;
+        private static readonly List<string[]> _created = new List<string[]>();
         [ThreadStatic] private static int _depth;
 
         public static long Calls { get { lock (Gate) { return _callSeq; } } }
         public static long Messages { get { lock (Gate) { return _messageSeq; } } }
+        public static bool Recording { get { return _recording; } }
+
+        /// <summary>Type and id of every item a recorded call created, in completion order.</summary>
+        public static IList<string[]> Created { get { lock (Gate) { return _created.ToArray(); } } }
 
         public static void Open(string callsPath, string messagesPath)
         {
@@ -82,6 +88,13 @@ namespace LibsJsOracle
             _messages = new StreamWriter(messagesPath, false, utf8);
             _calls.NewLine = "\n";
             _messages.NewLine = "\n";
+            _recording = true;
+        }
+
+        /// <summary>Ends the recording; later calls (the cleanup) pass straight through.</summary>
+        public static void Stop()
+        {
+            lock (Gate) { _recording = false; }
         }
 
         public static void Close()
@@ -109,6 +122,7 @@ namespace LibsJsOracle
         public static void EndCall(long start, int depth, string action, string request, string response,
                                    string error, long startTicks, long endTicks)
         {
+            List<string[]> created = error == null ? CreatedItems.From(request, response) : null;
             lock (Gate)
             {
                 _callSeq++;
@@ -128,6 +142,7 @@ namespace LibsJsOracle
                 line.Append('}');
                 _calls.WriteLine(line.ToString());
                 _calls.Flush();
+                if (created != null) _created.AddRange(created);
             }
         }
 
@@ -152,6 +167,61 @@ namespace LibsJsOracle
         }
     }
 
+    /// <summary>
+    /// The items one call created: each top-level request Item with
+    /// action="add", unless the response is a fault. An add without an id (the
+    /// engine's PackageDefinition, PackageGroup, PackageElement and
+    /// DatabaseUpgrade rows) takes the id of the response's Result item of
+    /// that type.
+    /// </summary>
+    public static class CreatedItems
+    {
+        private const string Body = "/*[local-name()='Envelope']/*[local-name()='Body']";
+
+        public static List<string[]> From(string request, string response)
+        {
+            var created = new List<string[]>();
+            if (request == null || response == null) return created;
+            var req = new XmlDocument();
+            var res = new XmlDocument();
+            var adds = new List<XmlElement>();
+            try
+            {
+                req.LoadXml(request);
+                XmlNodeList items = req.DocumentElement.Name == "Item" ? req.SelectNodes("/Item") : req.DocumentElement.SelectNodes("Item");
+                foreach (XmlElement item in items)
+                {
+                    if (item.GetAttribute("action") == "add") adds.Add(item);
+                }
+                if (adds.Count == 0) return created;
+                res.LoadXml(response);
+            }
+            catch (XmlException)
+            {
+                return created;
+            }
+            if (res.SelectSingleNode(Body + "/*[local-name()='Fault']") != null) return created;
+            var results = new List<XmlElement>();
+            foreach (XmlElement result in res.SelectNodes(Body + "/*[local-name()='Result']/Item")) results.Add(result);
+            foreach (XmlElement item in adds)
+            {
+                string type = item.GetAttribute("type");
+                string id = item.GetAttribute("id");
+                if (id.Length == 0)
+                {
+                    XmlElement result = results.Find(x => x.GetAttribute("type") == type);
+                    if (result != null)
+                    {
+                        id = result.GetAttribute("id");
+                        results.Remove(result);
+                    }
+                }
+                created.Add(new[] { type, id });
+            }
+            return created;
+        }
+    }
+
     public class RecordingHttpServerConnection : HttpServerConnection
     {
         // "en-US" and a null time zone are what Libs' own HttpConnectorExtension passes.
@@ -162,6 +232,11 @@ namespace LibsJsOracle
 
         public override void CallAction(string actionName, XmlDocument inDom, XmlDocument outDom)
         {
+            if (!Rec.Recording)
+            {
+                base.CallAction(actionName, inDom, outDom);
+                return;
+            }
             long start = Rec.BeginCall();
             int depth = Rec.EnterDepth();
             long t0 = Stopwatch.GetTimestamp();
@@ -229,8 +304,6 @@ namespace LibsJsOracle
         public string Database;
         public string User;
         public string Password;
-        public bool HostLogin;
-        public bool Logout;
         public int Timeout;
         public bool? ErrorQuestionAnswer;
         public string OutDir;
@@ -241,6 +314,188 @@ namespace LibsJsOracle
         public Hashtable Context;       // SolutionUpgradeContext property -> string value
         public Hashtable Export;        // SUExportContext property -> string value
         public Hashtable Import;        // SUImportContext property -> string value
+    }
+
+    /// <summary>
+    /// Live imports touch only LIBSJS-SCRATCH-* packages and items (AGENTS.md).
+    /// Checked on what ImportSolutions is about to get: every package name and,
+    /// per package, the item files LoadPackageDom reads, whose file name is the
+    /// keyed name the engine records; for a language pack, the keyed_name of
+    /// every item in its xml folder. An empty package set is refused too.
+    /// </summary>
+    public static class Scratch
+    {
+        public const string Prefix = "LIBSJS-SCRATCH-";
+
+        public static bool Is(string name)
+        {
+            return name != null && name.StartsWith(Prefix, StringComparison.Ordinal);
+        }
+
+        public static void AssertImport(ICollection packages, ImportExportManager manager, string lpPath)
+        {
+            if (packages.Count == 0) throw new InvalidOperationException("refusing to import: no packages to import");
+            var bad = new List<string>();
+            foreach (object p in packages)
+            {
+                string name = p as string;
+                if (!Is(name)) bad.Add("package '" + name + "'");
+                else if (lpPath == null) CheckPackageFiles(name, manager, bad);
+            }
+            if (lpPath != null) CheckLanguagePack(lpPath, bad);
+            if (bad.Count == 0) return;
+            string shown = string.Join(", ", bad.GetRange(0, Math.Min(10, bad.Count)).ToArray());
+            if (bad.Count > 10) shown += " and " + (bad.Count - 10).ToString(CultureInfo.InvariantCulture) + " more";
+            throw new InvalidOperationException("refusing to import non-scratch " + shown);
+        }
+
+        private static void CheckPackageFiles(string package, ImportExportManager manager, List<string> bad)
+        {
+            string path;
+            try
+            {
+                path = ImportExportManager.GetSolutionPath(package, manager.ManifestFileDirectoryPath, manager.ManifestFile);
+            }
+            catch (Exception)
+            {
+                return; // not in the manifest: the engine fails on it before reading a file
+            }
+            if (!Directory.Exists(path)) return;
+            foreach (string dir in Directory.GetDirectories(path))
+            {
+                foreach (string file in Directory.GetFiles(dir, "*.xml"))
+                {
+                    XmlDocument doc = Load(file);
+                    if (doc == null || doc.SelectSingleNode("AML/Item") == null) continue;
+                    if (!Is(Path.GetFileNameWithoutExtension(file))) bad.Add("item file '" + file + "'");
+                    foreach (XmlNode name in doc.SelectNodes("AML/Item/name"))
+                    {
+                        if (!Is(name.InnerText)) bad.Add("item '" + name.InnerText + "' in " + file);
+                    }
+                }
+            }
+        }
+
+        private static void CheckLanguagePack(string lpPath, List<string> bad)
+        {
+            string dir = Path.Combine(Path.GetDirectoryName(lpPath), "xml");
+            if (!Directory.Exists(dir)) return;
+            foreach (string file in Directory.GetFiles(dir, "*.xml"))
+            {
+                XmlDocument doc = Load(file);
+                if (doc == null) continue;
+                foreach (XmlElement item in doc.SelectNodes("export/Item"))
+                {
+                    string keyedName = item.GetAttribute("keyed_name");
+                    if (!Is(keyedName)) bad.Add("language pack item '" + keyedName + "' in " + file);
+                }
+            }
+        }
+
+        /// <summary>Null for a file that is not XML; the engine fails on it before importing that package.</summary>
+        private static XmlDocument Load(string file)
+        {
+            var doc = new XmlDocument();
+            try
+            {
+                doc.Load(file);
+                return doc;
+            }
+            catch (XmlException)
+            {
+                return null;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Deletes what an import created, newest first, through the same
+    /// connection once recording has stopped, so none of it reaches the
+    /// transcript. An item is deleted only when it belongs to a
+    /// LIBSJS-SCRATCH-* name: a relationship (PackageGroup, PackageElement, ...)
+    /// by its source's, any other item by its name or keyed name.
+    /// </summary>
+    public static class Cleanup
+    {
+        public static string Run(Innovator inn, IList<string[]> created)
+        {
+            var all = new List<string>();
+            var deleted = new List<string>();
+            var kept = new List<string>();
+            foreach (string[] c in created) all.Add(Entry(c[0], c[1], null));
+            for (int i = created.Count - 1; i >= 0; i--)
+            {
+                string type = created[i][0];
+                string id = created[i][1];
+                string reason = null;
+                try
+                {
+                    if (id.Length == 0)
+                    {
+                        reason = "the server returned no id";
+                    }
+                    else
+                    {
+                        string owner = Owner(inn, type, id, 0);
+                        if (owner == null) continue; // already gone, with its source
+                        if (!Scratch.Is(owner))
+                        {
+                            reason = "belongs to '" + owner + "', not " + Scratch.Prefix + "*";
+                        }
+                        else
+                        {
+                            Item delete = inn.newItem(type, "delete");
+                            delete.setID(id);
+                            Item result = delete.apply();
+                            if (result.isError()) reason = "delete failed: " + result.getErrorString();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    reason = "cleanup failed: " + e.Message;
+                }
+                if (reason == null) deleted.Add(Entry(type, id, null));
+                else kept.Add(Entry(type, id, reason));
+            }
+            return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[" + string.Join(",", deleted.ToArray()) +
+                   "],\"kept\":[" + string.Join(",", kept.ToArray()) + "]}";
+        }
+
+        /// <summary>
+        /// The name an item belongs to, or null when it no longer exists: a
+        /// relationship's source's, otherwise its own name or keyed name.
+        /// </summary>
+        private static string Owner(Innovator inn, string type, string id, int depth)
+        {
+            Item get = inn.newItem(type, "get");
+            get.setID(id);
+            Item item = get.apply();
+            if (item.isError())
+            {
+                if (item.getErrorCode() == "0") return null;
+                throw new InvalidOperationException(item.getErrorString());
+            }
+            string sourceId = item.getProperty("source_id", "");
+            if (sourceId.Length == 0)
+            {
+                string name = item.getProperty("name", "");
+                return name.Length > 0 ? name : item.getProperty("keyed_name", "");
+            }
+            string sourceType = item.getPropertyAttribute("source_id", "type", "");
+            if (sourceType.Length == 0 || depth >= 3)
+                throw new InvalidOperationException("cannot resolve the source of " + type + " " + id);
+            string source = Owner(inn, sourceType, sourceId, depth + 1);
+            if (source == null) throw new InvalidOperationException("source " + sourceType + " " + sourceId + " not found");
+            return source;
+        }
+
+        private static string Entry(string type, string id, string reason)
+        {
+            string entry = "{\"type\":" + Json.Str(type) + ",\"id\":" + Json.Str(id);
+            if (reason != null) entry += ",\"reason\":" + Json.Str(reason);
+            return entry + "}";
+        }
     }
 
     public static class Host
@@ -255,16 +510,19 @@ namespace LibsJsOracle
             string innovatorVersion = null;
             string result = null;
             int timeoutAfter = 0;
+            string cleanup = null;
             Rec.Open(Path.Combine(r.OutDir, "transcript.jsonl"), Path.Combine(r.OutDir, "messages.jsonl"));
+            RecordingHttpServerConnection conn = null;
             CItemHelper ci = null;
             try
             {
-                var conn = new RecordingHttpServerConnection(r.Url, r.Database, r.User, r.Password);
-                if (r.HostLogin)
-                {
-                    Item login = conn.Login();
-                    if (login.isError()) throw new InvalidOperationException("host login failed: " + login.getErrorString());
-                }
+                conn = new RecordingHttpServerConnection(r.Url, r.Database, r.User, r.Password);
+#if ENGINE_12
+                // 12.0's CItemHelper.Login() skips any connection that is not exactly
+                // HttpConnectorExtension, so the host logs in first, as Aras's 12.0 tool does.
+                Item login = conn.Login();
+                if (login.isError()) throw new InvalidOperationException("host login failed: " + login.getErrorString());
+#endif
                 ci = new CItemHelper(conn);
                 ci.Login();
                 innovatorVersion = Describe(ci.InnovatorVersion);
@@ -296,6 +554,7 @@ namespace LibsJsOracle
                     var importContext = new SUImportContext();
                     Apply(importContext, r.Import, "Import");
                     IDisposable preprocessor = null;
+                    string lpPath = null;
                     try
                     {
                         if (r.Command == "lpimport")
@@ -308,6 +567,7 @@ namespace LibsJsOracle
                             var lp = new LanguagePackPreprocessor(new IOWrapper(), ci, new ManifestFile(),
                                                                   context.LPPath, context.LPPackage, context.LPDebug);
                             preprocessor = lp;
+                            lpPath = context.LPPath;
                             context.Action = ImportExport.Import;
                             context.ManifestFile = lp.TempManifestFilePath;
 #endif
@@ -321,6 +581,7 @@ namespace LibsJsOracle
                         ICollection packages = r.Packages == null
                             ? manager.ManifestFile.GetAllPackageNames()
                             : (ICollection)new ArrayList(r.Packages);
+                        Scratch.AssertImport(packages, manager, lpPath);
                         int rc = manager.ImportSolutions(packages, importContext);
                         result = "ImportSolutions returned " + rc.ToString(CultureInfo.InvariantCulture);
                     }
@@ -342,10 +603,16 @@ namespace LibsJsOracle
             }
             finally
             {
-                if (ci != null && r.Logout)
+                if (ci != null)
                 {
                     try { ci.logout(); }
                     catch (Exception e) { if (error == null) error = "logout: " + e; }
+                }
+                Rec.Stop();
+                if (conn != null && r.Command != "export")
+                {
+                    try { cleanup = Cleanup.Run(IomFactory.CreateInnovator(conn), Rec.Created); }
+                    catch (Exception e) { if (error == null) error = "cleanup: " + e; }
                 }
                 info.Append(",\"calls\":").Append(Json.Num(Rec.Calls));
                 info.Append(",\"messages\":").Append(Json.Num(Rec.Messages));
@@ -355,6 +622,7 @@ namespace LibsJsOracle
             info.Append(",\"timeoutAfterRun\":").Append(Json.Num(timeoutAfter));
             info.Append(",\"result\":").Append(Json.Str(result));
             info.Append(",\"error\":").Append(Json.Str(error));
+            if (cleanup != null) info.Append(",\"cleanup\":").Append(cleanup);
             info.Append('}');
             File.WriteAllText(Path.Combine(r.OutDir, "host.json"), info.ToString(), new UTF8Encoding(false));
             return code;
