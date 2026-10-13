@@ -10,7 +10,7 @@ import { embeddedSources, methodLines } from "./pdb.js";
 import { reachable } from "./reachability.js";
 import { ILSPY_OPTIONS, ILSPY_VERSION, REA_VERSION, checkVersions, decompile, rea } from "./run.js";
 import { sliceMethod, slicePropertyDeclaration } from "./slices.js";
-import { byName, mergeBuild, type ReachableMethod, type ReachableSet, type SourceMap } from "./sourcemap.js";
+import { brokenLocks, byName, mergeBuild, type ReachableMethod, type ReachableSet, type SourceMap } from "./sourcemap.js";
 
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const SOURCE_MAP = join(ROOT, "spec", "source-map.json");
@@ -22,7 +22,8 @@ const USAGE = `Usage:
 build  decompiles the DLL into .decomp/<engine>/, walks the methods its hosts
        can reach, locks each with REA, writes spec/reachable/<engine>.json and
        merges the build into spec/source-map.json (new methods as unmapped).
-diff   compares two builds with REA and lists the rule ids whose locks break.`;
+diff   lists the methods of the old build, already in spec/source-map.json, whose
+       locks break in the new build, and the rule ids to re-verify.`;
 
 const sha256File = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
 const writeJson = (path: string, value: unknown) => writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
@@ -163,36 +164,27 @@ function build(engine: string, dllArg: string, hostArgs: string[], refArg: strin
   for (const name of report.removed) console.log(`  removed: ${name}`);
 }
 
-interface CompareItem {
-  status: string;
-  left: { token: string; declaring_type: string | null; name: string } | null;
-  right: { token: string; declaring_type: string | null; name: string } | null;
-}
-
 function diff(oldArg: string, newArg: string): void {
-  const comparison = rea("compare-managed-members", resolve(oldArg), resolve(newArg)).data.normalized_result as {
+  const newDll = resolve(newArg);
+  const comparison = rea("compare-managed-members", resolve(oldArg), newDll).data.normalized_result as {
     left: { artifact_sha256: string };
     summary: Record<string, number>;
-    methods: CompareItem[];
   };
   const map = JSON.parse(readFileSync(SOURCE_MAP, "utf8")) as SourceMap;
   const build = map.builds.find((b) => b.sha256 === comparison.left.artifact_sha256);
   if (!build) throw new Error(`no build in source-map.json has sha256 ${comparison.left.artifact_sha256}`);
 
-  const byToken = new Map(build.methods.map((m) => [m.lock.token, m]));
-  const rules = new Set<string>();
-  const broken: string[] = [];
-  for (const item of comparison.methods) {
-    if (item.status === "unchanged" || item.status === "added" || !item.left) continue;
-    const method = byToken.get(item.left.token);
-    if (!method) continue;
-    for (const rule of method.rules ?? []) rules.add(rule);
-    broken.push(`${item.status.padEnd(9)} ${method.fullName} ${method.signature}${method.rules?.length ? `  [${method.rules.join(", ")}]` : ""}`);
-  }
+  const members = rea("inspect-managed-members", newDll).data.normalized_result as ReaMembers;
+  const inventory = buildInventory(members, readAssembly(readFileSync(newDll)));
+  const broken = brokenLocks(build, inventory.methods);
+  const rules = new Set(broken.flatMap(({ method }) => method.rules ?? []));
+  const listed = broken.map(({ status, method }) =>
+    `${status.padEnd(7)} ${method.fullName} ${method.signature}${method.rules?.length ? `  [${method.rules.join(", ")}]` : ""}`,
+  );
 
   console.log(`REA: ${Object.entries(comparison.summary).map(([k, v]) => `${v} ${k}`).join(", ")}`);
   console.log(`Locks broken among the ${build.methods.length} methods of build ${build.engine}: ${broken.length}`);
-  for (const line of broken.sort()) console.log(`  ${line}`);
+  for (const line of listed.sort()) console.log(`  ${line}`);
   console.log(`Rule ids to re-verify: ${rules.size === 0 ? "none" : [...rules].sort().join(", ")}`);
 }
 

@@ -46,4 +46,4 @@ Steps:
 npm run rea-map -- diff <old Libs.dll> <new Libs.dll>
 ```
 
-The old build must already be in `source-map.json` (it is found by sha256). The command runs `rea compare-managed-members`, joins its method items to the old build by token, and lists each method whose lock breaks (changed, removed or unknown), with the rule ids to re-verify.
+The old build must already be in `source-map.json` (it is found by sha256). The command prints the summary of `rea compare-managed-members`, then reads the new build's member inventory as `build` does. It matches each method of the old build to the new one by name and signature, as the merge does, not by REA's pairing, which can pair different members. It lists each method whose lock breaks, with the rule ids to re-verify: `changed` when the signature or normalized IL digest differs, and `removed` when the new build has no method with that name and signature.

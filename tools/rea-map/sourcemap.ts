@@ -1,3 +1,5 @@
+import { ENGINES } from "../../src/engines.js";
+
 /**
  * The generated reachable set (`spec/reachable/<engine>.json`) and its merge
  * into the hand-maintained `spec/source-map.json`.
@@ -67,8 +69,14 @@ const key = (m: { fullName: string; signature: string }) => `${m.fullName} ${m.s
 export const byName = (a: { fullName: string; signature: string }, b: { fullName: string; signature: string }) =>
   a.fullName < b.fullName ? -1 : a.fullName > b.fullName ? 1 : a.signature < b.signature ? -1 : a.signature > b.signature ? 1 : 0;
 
+/** The digests that decide whether a method is the same code in another build. */
+export interface Code {
+  signatureSha256: string;
+  ilSha256: string | null;
+}
+
 /** Same code: the token may move between builds, the digests may not. */
-const sameCode = (a: Lock, b: Lock) => a.signatureSha256 === b.signatureSha256 && a.ilSha256 === b.ilSha256;
+const sameCode = (a: Code, b: Code) => a.signatureSha256 === b.signatureSha256 && a.ilSha256 === b.ilSha256;
 
 export function mergeBuild(map: SourceMap, set: ReachableSet): MergeReport {
   const report: MergeReport = { added: [], removed: [], relocked: [] };
@@ -103,8 +111,26 @@ export function mergeBuild(map: SourceMap, set: ReachableSet): MergeReport {
   };
   if (index >= 0) map.builds[index] = build;
   else map.builds.push(build);
-  map.builds.sort((a, b) => ENGINE_ORDER.indexOf(a.engine) - ENGINE_ORDER.indexOf(b.engine));
+  const order = (engine: string) => (ENGINES as readonly string[]).indexOf(engine);
+  map.builds.sort((a, b) => order(a.engine) - order(b.engine));
   return report;
 }
 
-const ENGINE_ORDER = ["12.0", "14.0.7", "14.35"];
+export interface BrokenLock {
+  status: "changed" | "removed";
+  method: SourceMapMethod;
+}
+
+/**
+ * The methods of `build` whose lock breaks in another build's `methods`,
+ * matched by name and signature as `mergeBuild` matches them: changed when the
+ * digests differ, removed when no method has that name and signature.
+ */
+export function brokenLocks(build: SourceMapBuild, methods: ({ fullName: string; signature: string } & Code)[]): BrokenLock[] {
+  const next = new Map(methods.map((m) => [key(m), m]));
+  return build.methods.flatMap((method): BrokenLock[] => {
+    const other = next.get(key(method));
+    if (!other) return [{ status: "removed", method }];
+    return sameCode(method.lock, other) ? [] : [{ status: "changed", method }];
+  });
+}

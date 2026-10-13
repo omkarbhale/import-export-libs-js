@@ -3,7 +3,7 @@ import { BlobReader } from "./metadata.js";
 import { sequencePointSpan } from "./pdb.js";
 import { type Graph, type GraphMethod, reachable } from "./reachability.js";
 import { slicePropertyDeclaration, sliceMethod } from "./slices.js";
-import { mergeBuild, type ReachableSet, type SourceMap } from "./sourcemap.js";
+import { brokenLocks, mergeBuild, type ReachableSet, type SourceMap, type SourceMapBuild } from "./sourcemap.js";
 
 describe("compressed integers", () => {
   it("reads unsigned and signed forms of every width", () => {
@@ -248,5 +248,55 @@ describe("merging into the source map", () => {
       { fullName: "A::Moved", signature: "S", lock: lock("d"), status: "unmapped" },
       { fullName: "A::Same", signature: "S", lock: { ...lock("b"), token: "0x06000009" }, status: "mapped", rules: ["EXP-001"], symbols: ["src/a.ts#a"] },
     ]);
+  });
+
+  it("orders the builds as the engines are listed", () => {
+    const map: SourceMap = { builds: [] };
+    mergeBuild(map, { ...set([]), engine: "14.35" });
+    mergeBuild(map, { ...set([]), engine: "12.0" });
+    mergeBuild(map, set([]));
+    expect(map.builds.map((b) => b.engine)).toEqual(["12.0", "14.0.7", "14.35"]);
+  });
+});
+
+describe("locks broken by a newer build", () => {
+  const sig = "a".repeat(64);
+  const il = (c: string) => c.repeat(64);
+  const build: SourceMapBuild = {
+    engine: "14.0.7",
+    assemblyVersion: "14.0.7.35492",
+    sha256: "c".repeat(64),
+    mvid: "81698344-c4fa-4ec3-a48f-0961032d17f1",
+    methods: [
+      { fullName: "A::Same", signature: "S", lock: { token: "0x06000001", signatureSha256: sig, ilSha256: il("b") }, status: "mapped", rules: ["EXP-001"] },
+      { fullName: "A::get_From", signature: "S", lock: { token: "0x06000002", signatureSha256: sig, ilSha256: il("b") }, status: "mapped", rules: ["EXP-002"] },
+      { fullName: "A::get_Major", signature: "S", lock: { token: "0x06000003", signatureSha256: sig, ilSha256: il("d") }, status: "unmapped" },
+      { fullName: "A::Overload", signature: "S", lock: { token: "0x06000004", signatureSha256: sig, ilSha256: il("b") }, status: "not-ported", reason: "r" },
+    ],
+  };
+
+  it("matches by name and signature, not by token or by a member with the same code", () => {
+    const broken = brokenLocks(build, [
+      { fullName: "A::Same", signature: "S", signatureSha256: sig, ilSha256: il("b") },
+      { fullName: "B::get_Original", signature: "S", signatureSha256: sig, ilSha256: il("b") },
+      { fullName: "A::get_From", signature: "S", signatureSha256: sig, ilSha256: il("e") },
+      { fullName: "A::Overload", signature: "T", signatureSha256: sig, ilSha256: il("b") },
+      { fullName: "A::Added", signature: "S", signatureSha256: sig, ilSha256: il("d") },
+    ]);
+    expect(broken.map(({ status, method }) => [status, method.fullName, method.rules])).toEqual([
+      ["changed", "A::get_From", ["EXP-002"]],
+      ["removed", "A::get_Major", undefined],
+      ["removed", "A::Overload", undefined],
+    ]);
+  });
+
+  it("breaks a lock whose signature digest changed, or whose method lost its body", () => {
+    const broken = brokenLocks(build, [
+      { fullName: "A::Same", signature: "S", signatureSha256: "f".repeat(64), ilSha256: il("b") },
+      { fullName: "A::get_From", signature: "S", signatureSha256: sig, ilSha256: null },
+      { fullName: "A::get_Major", signature: "S", signatureSha256: sig, ilSha256: il("d") },
+      { fullName: "A::Overload", signature: "S", signatureSha256: sig, ilSha256: il("b") },
+    ]);
+    expect(broken.map(({ status, method }) => `${status} ${method.fullName}`)).toEqual(["changed A::Same", "changed A::get_From"]);
   });
 });
