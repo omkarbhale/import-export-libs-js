@@ -38,6 +38,8 @@ export interface RecordRequest {
 export interface ItemRef {
   type: string;
   id: string;
+  /** Its call threw, so the item may never have been committed. */
+  unconfirmed?: true;
 }
 
 /** What an import's cleanup did (host.json `cleanup`): every item the run created, and which it deleted or kept. */

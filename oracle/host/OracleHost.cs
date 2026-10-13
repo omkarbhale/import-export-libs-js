@@ -71,15 +71,15 @@ namespace LibsJsOracle
         private static long _callStart;
         private static long _messageSeq;
         private static volatile bool _recording;
-        private static readonly List<string[]> _created = new List<string[]>();
+        private static readonly List<CreatedItem> _created = new List<CreatedItem>();
         [ThreadStatic] private static int _depth;
 
         public static long Calls { get { lock (Gate) { return _callSeq; } } }
         public static long Messages { get { lock (Gate) { return _messageSeq; } } }
         public static bool Recording { get { return _recording; } }
 
-        /// <summary>Type and id of every item a recorded call created, in completion order.</summary>
-        public static IList<string[]> Created { get { lock (Gate) { return _created.ToArray(); } } }
+        /// <summary>Every item a recorded call created or may have created, in completion order.</summary>
+        public static IList<CreatedItem> Created { get { lock (Gate) { return _created.ToArray(); } } }
 
         public static void Open(string callsPath, string messagesPath)
         {
@@ -122,7 +122,7 @@ namespace LibsJsOracle
         public static void EndCall(long start, int depth, string action, string request, string response,
                                    string error, long startTicks, long endTicks)
         {
-            List<string[]> created = error == null ? CreatedItems.From(request, response) : null;
+            List<CreatedItem> created = CreatedItems.From(request, response, error != null);
             lock (Gate)
             {
                 _callSeq++;
@@ -142,7 +142,7 @@ namespace LibsJsOracle
                 line.Append('}');
                 _calls.WriteLine(line.ToString());
                 _calls.Flush();
-                if (created != null) _created.AddRange(created);
+                _created.AddRange(created);
             }
         }
 
@@ -167,21 +167,30 @@ namespace LibsJsOracle
         }
     }
 
+    public class CreatedItem
+    {
+        public string Type;
+        public string Id;
+        /// <summary>The call threw, so the server may or may not have committed the item.</summary>
+        public bool Unconfirmed;
+    }
+
     /// <summary>
     /// The items one call created: each top-level request Item with
-    /// action="add", unless the response is a fault. An add without an id (the
-    /// engine's PackageDefinition, PackageGroup, PackageElement and
+    /// action="add" or "create", unless the response is a fault. An add without
+    /// an id (the engine's PackageDefinition, PackageGroup, PackageElement and
     /// DatabaseUpgrade rows) takes the id of the response's Result item of
-    /// that type.
+    /// that type. A call that threw may still have been committed, so its adds
+    /// count too, unconfirmed and with only the ids the request names.
     /// </summary>
     public static class CreatedItems
     {
         private const string Body = "/*[local-name()='Envelope']/*[local-name()='Body']";
 
-        public static List<string[]> From(string request, string response)
+        public static List<CreatedItem> From(string request, string response, bool threw)
         {
-            var created = new List<string[]>();
-            if (request == null || response == null) return created;
+            var created = new List<CreatedItem>();
+            if (request == null || (response == null && !threw)) return created;
             var req = new XmlDocument();
             var res = new XmlDocument();
             var adds = new List<XmlElement>();
@@ -191,18 +200,22 @@ namespace LibsJsOracle
                 XmlNodeList items = req.DocumentElement.Name == "Item" ? req.SelectNodes("/Item") : req.DocumentElement.SelectNodes("Item");
                 foreach (XmlElement item in items)
                 {
-                    if (item.GetAttribute("action") == "add") adds.Add(item);
+                    string action = item.GetAttribute("action");
+                    if (action == "add" || action == "create") adds.Add(item);
                 }
                 if (adds.Count == 0) return created;
-                res.LoadXml(response);
+                if (!threw) res.LoadXml(response);
             }
             catch (XmlException)
             {
                 return created;
             }
-            if (res.SelectSingleNode(Body + "/*[local-name()='Fault']") != null) return created;
             var results = new List<XmlElement>();
-            foreach (XmlElement result in res.SelectNodes(Body + "/*[local-name()='Result']/Item")) results.Add(result);
+            if (!threw)
+            {
+                if (res.SelectSingleNode(Body + "/*[local-name()='Fault']") != null) return created;
+                foreach (XmlElement result in res.SelectNodes(Body + "/*[local-name()='Result']/Item")) results.Add(result);
+            }
             foreach (XmlElement item in adds)
             {
                 string type = item.GetAttribute("type");
@@ -216,7 +229,7 @@ namespace LibsJsOracle
                         results.Remove(result);
                     }
                 }
-                created.Add(new[] { type, id });
+                created.Add(new CreatedItem { Type = type, Id = id, Unconfirmed = threw });
             }
             return created;
         }
@@ -413,26 +426,30 @@ namespace LibsJsOracle
     /// connection once recording has stopped, so none of it reaches the
     /// transcript. An item is deleted only when it belongs to a
     /// LIBSJS-SCRATCH-* name: a relationship (PackageGroup, PackageElement, ...)
-    /// by its source's, any other item by its name or keyed name.
+    /// by its source's, any other item by its name or keyed name. An
+    /// unconfirmed item is looked up by id the same way; one with no id is kept.
     /// </summary>
     public static class Cleanup
     {
-        public static string Run(Innovator inn, IList<string[]> created)
+        public static string Run(Innovator inn, IList<CreatedItem> created)
         {
             var all = new List<string>();
             var deleted = new List<string>();
             var kept = new List<string>();
-            foreach (string[] c in created) all.Add(Entry(c[0], c[1], null));
+            foreach (CreatedItem c in created) all.Add(Entry(c, null));
             for (int i = created.Count - 1; i >= 0; i--)
             {
-                string type = created[i][0];
-                string id = created[i][1];
+                CreatedItem c = created[i];
+                string type = c.Type;
+                string id = c.Id;
                 string reason = null;
                 try
                 {
                     if (id.Length == 0)
                     {
-                        reason = "the server returned no id";
+                        reason = c.Unconfirmed
+                            ? "its call threw and the request names no id, so whether it was created is unknown"
+                            : "the server returned no id";
                     }
                     else
                     {
@@ -455,8 +472,8 @@ namespace LibsJsOracle
                 {
                     reason = "cleanup failed: " + e.Message;
                 }
-                if (reason == null) deleted.Add(Entry(type, id, null));
-                else kept.Add(Entry(type, id, reason));
+                if (reason == null) deleted.Add(Entry(c, null));
+                else kept.Add(Entry(c, reason));
             }
             return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[" + string.Join(",", deleted.ToArray()) +
                    "],\"kept\":[" + string.Join(",", kept.ToArray()) + "]}";
@@ -490,9 +507,10 @@ namespace LibsJsOracle
             return source;
         }
 
-        private static string Entry(string type, string id, string reason)
+        private static string Entry(CreatedItem c, string reason)
         {
-            string entry = "{\"type\":" + Json.Str(type) + ",\"id\":" + Json.Str(id);
+            string entry = "{\"type\":" + Json.Str(c.Type) + ",\"id\":" + Json.Str(c.Id);
+            if (c.Unconfirmed) entry += ",\"unconfirmed\":true";
             if (reason != null) entry += ",\"reason\":" + Json.Str(reason);
             return entry + "}";
         }

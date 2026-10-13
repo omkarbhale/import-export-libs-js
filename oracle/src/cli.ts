@@ -219,7 +219,7 @@ export async function main(argv: readonly string[]): Promise<number> {
             process.stdout.write(
               [
                 `cleanup: created ${cleanup.created.length}, deleted ${cleanup.deleted.length}, kept ${cleanup.kept.length}`,
-                ...cleanup.created.map((c) => `  created ${c.type} ${c.id}`),
+                ...cleanup.created.map((c) => `  created ${c.type} ${c.id}${c.unconfirmed ? " (unconfirmed: its call threw)" : ""}`),
                 ...cleanup.deleted.map((d) => `  deleted ${d.type} ${d.id}`),
                 ...cleanup.kept.map((k) => `  kept ${k.type} ${k.id}: ${k.reason}`),
               ].join("\n") + "\n",
