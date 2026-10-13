@@ -5,3 +5,6 @@ coverage/
 
 # Decompiled C# is regenerated locally and never committed (AGENTS.md).
 .decomp/
+
+# Local oracle recordings; fixtures are copied into fixtures/ deliberately.
+oracle/out/

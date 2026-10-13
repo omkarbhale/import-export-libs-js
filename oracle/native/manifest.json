@@ -1,0 +1,324 @@
+{
+  "engines": {
+    "12.0": {
+      "source": "Desktop\\ImportExport\\12\\Import",
+      "libs": {
+        "version": "12.0.0.13341",
+        "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+      },
+      "iom": {
+        "version": "12.0.0.13341",
+        "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+      },
+      "excluded": [
+        {
+          "path": "log/",
+          "reason": "the GUI tool's run logs from the captain's machine; not loaded by the engine"
+        },
+        {
+          "path": "config.xml",
+          "reason": "the GUI tool's saved settings (server URL, user, paths); not loaded by the engine"
+        }
+      ],
+      "files": [
+        {
+          "path": "IOM.dll",
+          "size": 1316536,
+          "sha256": "c99a87a966b2e81988d9ded7bf5257bc82df3e34ba3c6b1b146eff2afa8961fd"
+        },
+        {
+          "path": "Libs.dll",
+          "size": 194232,
+          "sha256": "af4e99e83eba544eccbca1707e9b95c03c0ba06bb777f9dec093541cf91f9f1f"
+        },
+        {
+          "path": "import.exe",
+          "size": 100024,
+          "sha256": "65fd894e0fb5c6d4ad06de64c36cc3554912a48b7a2ba58302415a8f489e7c2f"
+        }
+      ]
+    },
+    "14.0.7": {
+      "source": "Desktop\\ImportExport\\23\\Import",
+      "libs": {
+        "version": "14.0.7.35492",
+        "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+      },
+      "iom": {
+        "version": "14.0.7.35492",
+        "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+      },
+      "excluded": [
+        {
+          "path": "log/",
+          "reason": "the GUI tool's run logs from the captain's machine; not loaded by the engine"
+        },
+        {
+          "path": "config.xml",
+          "reason": "the GUI tool's saved settings (server URL, user, paths); not loaded by the engine"
+        }
+      ],
+      "files": [
+        {
+          "path": "IOM.OAuth.WpfBrowserNavigator.dll",
+          "size": 40504,
+          "sha256": "d5b531e17185bfdd7f75b62d00f6a560906ee7ef944d82451f8571c649feeff5"
+        },
+        {
+          "path": "IOM.dll",
+          "size": 1851960,
+          "sha256": "2e8c4a9dc55c204f679aa2b3ae822657e2ad833110c6a834ffd34140ac1dfe56"
+        },
+        {
+          "path": "Libs.dll",
+          "size": 235576,
+          "sha256": "7e5754908a3848b13a11accebfea2625b7bee139c0a36aa05ed114387146bf58"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.Core.dll",
+          "size": 284064,
+          "sha256": "5a035ee9e6e84eea8f1c216cbf404d31eb4eb5a9b836860876e051b42a94c50d"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.WinForms.dll",
+          "size": 34208,
+          "sha256": "8185c2d97723f850c17e8f38e2569066af8bd6cab10605bab781545324d6bc5c"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.Wpf.dll",
+          "size": 39840,
+          "sha256": "7c82d4927ef79a806552fbe51ba2b87e0731fde55cc005c26d5c5f9dc3e7d811"
+        },
+        {
+          "path": "import.exe",
+          "size": 104504,
+          "sha256": "4a91fffea8c94c1127391e6ca2374725ebcf409a9643bda86dfa256e400d80bc"
+        },
+        {
+          "path": "runtimes/win-arm64/native/WebView2Loader.dll",
+          "size": 127952,
+          "sha256": "7148bd250a64969d900b7703d6a4e9da7998a8ddc1af002e45d1bb043ce9ba06"
+        },
+        {
+          "path": "runtimes/win-x64/native/WebView2Loader.dll",
+          "size": 140184,
+          "sha256": "ad8bb426a8e438493db4d703242f373d9cb36d8c13e88b6647cd083716e09bef"
+        },
+        {
+          "path": "runtimes/win-x86/native/WebView2Loader.dll",
+          "size": 109472,
+          "sha256": "58adea8c6896abf767ef1ee8c764a4c8734c486cfdb4e001529ea01e9d071fb2"
+        }
+      ]
+    },
+    "14.35": {
+      "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+      "libs": {
+        "version": "14.35.0.43890",
+        "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+      },
+      "iom": {
+        "version": "15.0.0.0",
+        "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+      },
+      "excluded": [],
+      "files": [
+        {
+          "path": "Aras.Cryptography.dll",
+          "size": 34056,
+          "sha256": "2edfcb5bb24042c2071aa9f7513b58337d286dd3d1723cce392a33edcc687d65"
+        },
+        {
+          "path": "Aras.Net.dll",
+          "size": 53944,
+          "sha256": "24c64adbc108df9948dffc4cd49cc5136159994f73e77834a03df89bde6b9361"
+        },
+        {
+          "path": "IOM.OAuth.WpfBrowserNavigator.dll",
+          "size": 40712,
+          "sha256": "f94c0dc407453d79a8a0ad84956234ee2f4376775a2ac41181628b70d1c029db"
+        },
+        {
+          "path": "IOM.dll",
+          "size": 390840,
+          "sha256": "275365d6b7ded5e749984d303ba058db835b0e6178df68bcb5e6f19cbb52351c"
+        },
+        {
+          "path": "Libs.dll",
+          "size": 259848,
+          "sha256": "f35cc5ce4e80d49e298825ffbc0dca0ea3e136c74f55ed12e5410e7e13714805"
+        },
+        {
+          "path": "Microsoft.Bcl.AsyncInterfaces.dll",
+          "size": 21064,
+          "sha256": "ed5bc605f7f9fcc382183abef06c354dad946abb42a07631712077b2157d6bc9"
+        },
+        {
+          "path": "Microsoft.IdentityModel.Abstractions.dll",
+          "size": 19904,
+          "sha256": "0e916efb2414cbafae4006356c53babeab65f8df7f0b044dc7a7aa7f68bbd0e4"
+        },
+        {
+          "path": "Microsoft.IdentityModel.JsonWebTokens.dll",
+          "size": 129056,
+          "sha256": "ea30924c67eaa1268c6343434be861c94c7754946eb8477c02f840ca6e8e9ae5"
+        },
+        {
+          "path": "Microsoft.IdentityModel.Logging.dll",
+          "size": 38832,
+          "sha256": "d0cdea787d1f1a9c346dc38278f56927541bc59259635793b801c2dc50cc54c2"
+        },
+        {
+          "path": "Microsoft.IdentityModel.Tokens.dll",
+          "size": 291264,
+          "sha256": "9405e6d022096e96cb4a413588323cd6f6d14c8903702987238bf6ec67e28906"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.Core.dll",
+          "size": 284064,
+          "sha256": "5a035ee9e6e84eea8f1c216cbf404d31eb4eb5a9b836860876e051b42a94c50d"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.WinForms.dll",
+          "size": 34208,
+          "sha256": "8185c2d97723f850c17e8f38e2569066af8bd6cab10605bab781545324d6bc5c"
+        },
+        {
+          "path": "Microsoft.Web.WebView2.Wpf.dll",
+          "size": 39840,
+          "sha256": "7c82d4927ef79a806552fbe51ba2b87e0731fde55cc005c26d5c5f9dc3e7d811"
+        },
+        {
+          "path": "Newtonsoft.Json.dll",
+          "size": 701992,
+          "sha256": "b624949df8b0e3a6153fdfb730a7c6f4990b6592ee0d922e1788433d276610f3"
+        },
+        {
+          "path": "Nito.AsyncEx.Context.dll",
+          "size": 12800,
+          "sha256": "4d5031f18a16f8183a83670cc99f3821d89cee867b7a91e03f1b6c23ae8c3346"
+        },
+        {
+          "path": "Nito.AsyncEx.Tasks.dll",
+          "size": 32768,
+          "sha256": "993fd0748858e6fd9f1f52ca3a3bd89ddc0729fdea7f1e73f564eeb456d94cdf"
+        },
+        {
+          "path": "Nito.Disposables.dll",
+          "size": 7680,
+          "sha256": "d8c35c7dea2588cca38f85f0233cd406d37295d1b91e4a3a05418447877926e1"
+        },
+        {
+          "path": "System.Buffers.dll",
+          "size": 20856,
+          "sha256": "accccfbe45d9f08ffeed9916e37b33e98c65be012cfff6e7fa7b67210ce1fefb"
+        },
+        {
+          "path": "System.Collections.Immutable.dll",
+          "size": 180624,
+          "sha256": "a411a3e3aac75d3211d8a58810b5fe13329e9d0be62cc62c61fb1b3351e11fbd"
+        },
+        {
+          "path": "System.Configuration.ConfigurationManager.dll",
+          "size": 86120,
+          "sha256": "f393396cb12fb0977e50fbbfd5a0ba7e28b97fe93b68a91a6fcbbfbd24cea8bc"
+        },
+        {
+          "path": "System.Data.HashFunction.Core.dll",
+          "size": 18944,
+          "sha256": "6569d28c39cf3723b7ecddebc6522c84fb3b35d625173a09638c050f7f662d51"
+        },
+        {
+          "path": "System.Data.HashFunction.Interfaces.dll",
+          "size": 6144,
+          "sha256": "bcdfb6d836df68d8b2e6e92be6331a34c3b00be38e7955676d2c63d5bb56a159"
+        },
+        {
+          "path": "System.Data.HashFunction.xxHash.dll",
+          "size": 13824,
+          "sha256": "ba08f98042a33bc51e98fde0b703c240d45e54bbee58ace6249507e9bbc7af45"
+        },
+        {
+          "path": "System.IdentityModel.Tokens.Jwt.dll",
+          "size": 84416,
+          "sha256": "0d37dbb22eb6cbcf5bb309f7be7c4390e5f48e72c8f42ab8e619f6614f9dd4a1"
+        },
+        {
+          "path": "System.Memory.dll",
+          "size": 142240,
+          "sha256": "bf3fb84664f4097f1a8a9bc71a51dcf8cf1a905d4080a4d290da1730866e856f"
+        },
+        {
+          "path": "System.Numerics.Vectors.dll",
+          "size": 115856,
+          "sha256": "1d3ef8698281e7cf7371d1554afef5872b39f96c26da772210a33da041ba1183"
+        },
+        {
+          "path": "System.Runtime.CompilerServices.Unsafe.dll",
+          "size": 17000,
+          "sha256": "f6ef966d019b1c406659ce18f3ab00c3c7c9334e4dadc0249bc6721cdb77ee9a"
+        },
+        {
+          "path": "System.Security.AccessControl.dll",
+          "size": 35952,
+          "sha256": "ff14c5f628b9a6798d173aefbba0a43d61e66f715108e2576ac0d3dfab9071d0"
+        },
+        {
+          "path": "System.Security.Permissions.dll",
+          "size": 27752,
+          "sha256": "23b91c7e6e84ab983cc6e18de4d60a06169a26eda82fc01ae297dd014214a023"
+        },
+        {
+          "path": "System.Security.Principal.Windows.dll",
+          "size": 18312,
+          "sha256": "b4d8e15adc235d0e858e39b5133e5d00a4baa8c94f4f39e3b5e791b0f9c0c806"
+        },
+        {
+          "path": "System.Text.Encodings.Web.dll",
+          "size": 59768,
+          "sha256": "09f7d7e7f98be4c21c4dba8c3be7bf9516dbae6dddfb1b827188a9bd874c6724"
+        },
+        {
+          "path": "System.Text.Json.dll",
+          "size": 293248,
+          "sha256": "d2608254043e5b19f6e8335569fc2dd72ae4ce11a3df0d3f1425ac158df93237"
+        },
+        {
+          "path": "System.Threading.Tasks.Extensions.dll",
+          "size": 25984,
+          "sha256": "4f81ffd0dc7204db75afc35ea4291769b07c440592f28894260eea76626a23c6"
+        },
+        {
+          "path": "System.ValueTuple.dll",
+          "size": 25232,
+          "sha256": "e905d102585b22c6df04f219af5cbdbfa7bc165979e9788b62df6dcc165e10f4"
+        },
+        {
+          "path": "import.exe",
+          "size": 97544,
+          "sha256": "bd59dd08878bf8e776237ed018daf84bd7dbe7efefb1c56267ce044a5477cd61"
+        },
+        {
+          "path": "import.exe.config",
+          "size": 2546,
+          "sha256": "a4cc67576a6291cad9425232ca09907dbee24b82139a50789e1fa81b601f6eae"
+        },
+        {
+          "path": "runtimes/win-arm64/native/WebView2Loader.dll",
+          "size": 127952,
+          "sha256": "7148bd250a64969d900b7703d6a4e9da7998a8ddc1af002e45d1bb043ce9ba06"
+        },
+        {
+          "path": "runtimes/win-x64/native/WebView2Loader.dll",
+          "size": 140184,
+          "sha256": "ad8bb426a8e438493db4d703242f373d9cb36d8c13e88b6647cd083716e09bef"
+        },
+        {
+          "path": "runtimes/win-x86/native/WebView2Loader.dll",
+          "size": 109472,
+          "sha256": "58adea8c6896abf767ef1ee8c764a4c8734c486cfdb4e001529ea01e9d071fb2"
+        }
+      ]
+    }
+  }
+}

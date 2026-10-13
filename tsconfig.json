@@ -18,5 +18,5 @@
     "types": ["node"],
     "noEmit": true
   },
-  "include": ["src", "spec", "tools", "*.ts"]
+  "include": ["src", "spec", "tools", "oracle/src", "*.ts"]
 }
