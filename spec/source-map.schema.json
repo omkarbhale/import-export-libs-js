@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/omkarbhale/import-export-libs-js/spec/source-map.schema.json",
+  "title": "Libs.dll source map",
+  "description": "Maps every reachable C# method of each Libs.dll build to the spec rules and TypeScript symbols that cover it, under a REA method lock.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["builds"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "builds": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/build" }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "ruleId": { "type": "string", "pattern": "^(EXP|IMP|MAN|WIRE|LP|DBP)-[0-9]{3}$" },
+    "symbol": {
+      "description": "A TypeScript export, written <path under src/>#<ExportName> or #<ExportName>.<member>.",
+      "type": "string",
+      "pattern": "^src/[A-Za-z0-9_./-]+\\.ts#[A-Za-z_$][A-Za-z0-9_$]*(\\.[A-Za-z_$][A-Za-z0-9_$]*)?$"
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "assemblyVersion", "sha256", "mvid", "methods"],
+      "properties": {
+        "engine": { "enum": ["12.0", "14.0.7", "14.35"] },
+        "assemblyVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "sha256": { "$ref": "#/$defs/sha256", "description": "sha256 of the vendored Libs.dll." },
+        "mvid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Module version id; copies of one build with different bytes share it."
+        },
+        "methods": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/method" }
+        }
+      }
+    },
+    "lock": {
+      "description": "Produced by `rea import-managed-reconstruction` on this exact build.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["token", "signatureSha256", "ilSha256"],
+      "properties": {
+        "token": { "type": "string", "pattern": "^0x06[0-9a-f]{6}$" },
+        "signatureSha256": { "$ref": "#/$defs/sha256" },
+        "ilSha256": { "$ref": "#/$defs/sha256", "description": "Normalized IL digest." },
+        "bodySha256": { "$ref": "#/$defs/sha256" },
+        "reconstructionId": { "type": "string" }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fullName", "signature", "lock", "status"],
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "pattern": "^[^:]+::[^:]+$",
+          "description": "Namespace.Type::Member, as REA names it."
+        },
+        "signature": { "type": "string", "minLength": 1 },
+        "lock": { "$ref": "#/$defs/lock" },
+        "status": { "enum": ["mapped", "not-ported", "unmapped"] },
+        "rules": { "type": "array", "items": { "$ref": "#/$defs/ruleId" }, "uniqueItems": true },
+        "symbols": { "type": "array", "items": { "$ref": "#/$defs/symbol" }, "uniqueItems": true },
+        "reason": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "mapped" } } },
+          "then": {
+            "required": ["rules", "symbols"],
+            "properties": {
+              "rules": { "minItems": 1 },
+              "symbols": { "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "not-ported" } } },
+          "then": { "required": ["reason"], "properties": { "symbols": { "maxItems": 0 } } }
+        }
+      ]
+    }
+  }
+}
