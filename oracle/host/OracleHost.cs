@@ -440,7 +440,8 @@ namespace LibsJsOracle
     /// transcript. An item is deleted only when it belongs to a
     /// LIBSJS-SCRATCH-* name: a relationship (PackageGroup, PackageElement, ...)
     /// by its source's, any other item by its name or keyed name. An
-    /// unconfirmed item is looked up by id the same way; one with no id is kept.
+    /// unconfirmed item is looked up by id the same way; one not found is
+    /// reported as unverified, and one with no id is kept.
     /// </summary>
     public static class Cleanup
     {
@@ -470,8 +471,9 @@ namespace LibsJsOracle
                         string owner = Owner(inn, type, id, 0);
                         if (owner == null)
                         {
+                            // Confirmed: already gone, with its source. Unconfirmed: the server may still commit it.
                             if (c.Unconfirmed) unverified.Add(Entry(c, null));
-                            continue; // already gone, with its source
+                            continue;
                         }
                         if (!Scratch.Is(owner))
                         {

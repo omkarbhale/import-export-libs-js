@@ -51,7 +51,8 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 | `engine.log` | the engine's own log (`LogFilePath`) |
 | `host.log` | the host's console output |
 | `output/` | export: the engine's output folder, byte for byte |
-| `input/` | import: the package folder the engine read |
+| `input/` | import and lpimport: the package folder the engine read |
+| `lp/` | lpimport: the language pack folder (`--lp-dir`) |
 
 The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP envelope and headers below `CallAction`, and the OAuth token exchange happens outside it, so neither is recorded. Ticket 09 specifies them from the IOM decompile.
 
