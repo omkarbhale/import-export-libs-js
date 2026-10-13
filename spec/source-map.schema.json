@@ -49,8 +49,14 @@
         "token": { "type": "string", "pattern": "^0x06[0-9a-f]{6}$" },
         "signatureSha256": { "$ref": "#/$defs/sha256" },
         "ilSha256": { "$ref": "#/$defs/sha256", "description": "Normalized IL digest." },
-        "bodySha256": { "$ref": "#/$defs/sha256" },
-        "reconstructionId": { "type": "string" }
+        "bodySha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "Body digest from `rea import-managed-reconstruction`: sha256 of the bound decompiled text slice."
+        },
+        "reconstructionId": {
+          "type": "string",
+          "description": "Reconstruction record id (mre_...) from `rea import-managed-reconstruction`."
+        }
       }
     },
     "method": {

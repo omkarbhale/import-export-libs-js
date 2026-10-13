@@ -1,0 +1,11 @@
+# Per-repo no-mistakes overrides.
+
+# Pin the canonical checks from AGENTS.md so the gate's test and lint steps run
+# them instead of inferring commands. `npm run typecheck` is the static gate;
+# there is no separate linter. .github/workflows/ci.yml is generated from these
+# with `no-mistakes ci-workflow`. The generator emits a Go toolchain step; the
+# committed workflow replaces it with Node setup and `npm ci`. After changing
+# these commands, regenerate with `--force` and reapply that replacement.
+commands:
+  lint: 'npm run typecheck'
+  test: 'npm test'

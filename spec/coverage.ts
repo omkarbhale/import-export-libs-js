@@ -8,7 +8,7 @@ import ts from "typescript";
  * real, and every rule both defined once and cited somewhere.
  */
 
-const RULE_ID = String.raw`(?:EXP|IMP|MAN|WIRE|LP|DBP)-\d{3}`;
+const RULE_ID = String.raw`(?:EXP|IMP|MAN|WIRE|LP|DBP)-\d{3}(?![\w-])`;
 const RULE_HEADING = new RegExp(String.raw`^(#{2,4})\s+(${RULE_ID})\b`);
 const ANY_HEADING = /^(#{1,6})\s/;
 const VARIANT = /^\s*(?:[-*]\s+)?\[(\d+(?:\.\d+)+)\]/;

@@ -8,7 +8,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 
 | Step | Command |
 |---|---|
-| Setup | `npm install` (Node ≥ 20) |
+| Setup | `npm install` (Node ≥ 20.19 for development; the toolchain needs it) |
 | Build | `npm run build` (tsup, to `dist/`) |
 | Typecheck | `npm run typecheck` |
 | Test | `npm test` (vitest, includes the spec coverage test) |
@@ -16,9 +16,11 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
+`.no-mistakes.yaml` pins these two checks: `commands.lint` is `npm run typecheck` and `commands.test` is `npm test`. `.github/workflows/ci.yml` runs the same two on every pull request and on pushes to `main`. It was generated with `no-mistakes ci-workflow`, with the generator's Go toolchain step replaced by Node setup and `npm ci`. If you change the pinned commands, regenerate it with `no-mistakes ci-workflow --force` and reapply that replacement.
+
 ## Delivery
 
-- One PR per wayfinder ticket, delivered through the no-mistakes pipeline (`/no-mistakes`, or `no-mistakes axi run`). The pipeline runs the commands above.
+- One PR per wayfinder ticket, delivered through the no-mistakes pipeline (`/no-mistakes`, or `no-mistakes axi run`). The pipeline's lint and test steps run the commands pinned in `.no-mistakes.yaml`, and its CI step waits for the `ci.yml` checks on the PR.
 - Never push to `main` directly.
 
 ## Layout
@@ -36,7 +38,7 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 3. **`spec/source-map.json` changes in the same PR as the code.** Every reachable C# method of every build is either mapped to rules and TypeScript symbols, or marked `not-ported` with a reason. Each one carries its REA method lock. `npm test` fails on an unmapped method, a missing symbol, or a rule that is defined but cited nowhere.
 4. **Every reproduced bug is registered in `spec/bugs.md`.** Engine bugs are reproduced on purpose, never fixed silently. Each one has its own rule id.
 5. **No decompiled C# is ever committed.** Regenerate it locally into the gitignored `.decomp/<version>/`. The spec may cite a C# member by name, but it never quotes its code. The XSL logic is re-expressed in TypeScript, not copied.
-6. **Fixtures are scrubbed of credentials.** Never commit a password, token or hash, in fixtures or anywhere else.
+6. **Fixtures are scrubbed of credentials.** Never commit a password, auth or access token, or password hash, in fixtures or anywhere else. REA method locks and DLL digests are not credentials and belong in `spec/source-map.json`.
 7. **Interpolated values are reproduced exactly.** Values interpolated into AML are reproduced exactly as each engine does it, unescaped where the engine does not escape. The library documents this; it does not "fix" it.
 
 ## Live Aras

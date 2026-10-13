@@ -105,6 +105,14 @@ describe("spec coverage", () => {
     expect(checkCoverage(input({ areaDocs, srcFiles: inTest }))).toHaveLength(1);
   });
 
+  it("does not count a mistyped @spec id as a citation of its prefix", () => {
+    const areaDocs = [{ path: AREA_DOC.path, text: `${AREA_DOC.text}\n### IMP-002: Tagged\n\n[14.0.7] Tagged only.\n` }];
+    const typo = [IMPL, { path: "src/import/other.ts", text: "/** @spec IMP-0021 */\nexport const other = 1;\n" }];
+    expect(checkCoverage(input({ areaDocs, srcFiles: typo }))).toEqual([
+      "IMP-002 (spec/import-run.md:7) is cited nowhere: no @spec tag and no source-map entry",
+    ]);
+  });
+
   it("fails on a cited rule that is defined nowhere", () => {
     const srcFiles = [{ path: IMPL.path, text: "/** @spec IMP-001 IMP-009 */\nexport function applyAml(): void {}\n" }];
     expect(checkCoverage(input({ srcFiles }))).toEqual(["IMP-009 is cited in src/import/apply.ts but defined in no spec document"]);
