@@ -13,6 +13,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Typecheck | `npm run typecheck` |
 | Test | `npm test` (vitest, includes the spec coverage test) |
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
+| Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
@@ -26,7 +27,8 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 ## Layout
 
 - `src/`: the library and CLI. Tests sit beside the code as `*.test.ts`.
-- `spec/`: rule documents, `bugs.md`, `source-map.json` and its schema, and the coverage test.
+- `spec/`: rule documents, `bugs.md`, `source-map.json` and its schema, the generated `reachable/<engine>.json` sets, and the coverage test.
+- `tools/rea-map/`: the generator of the decompile, the reachable sets and the method locks.
 - `roadmap/`: decision records, and `hold/` records for out-of-scope pieces.
 - `oracle/`: the real engine DLLs and the Windows harness that drives them.
 - `fixtures/`: recorded engine transcripts and outputs that unit tests replay.
@@ -35,10 +37,10 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 
 1. **The spec comes first.** Write or update the rule in `spec/` before the code that implements it. Code carries `@spec <RULE-ID>` tags back to its rules.
 2. **Every rule has an id with per-engine variants.** Ids look like `EXP-017`, with the prefixes `EXP-`, `IMP-`, `MAN-`, `WIRE-`, `LP-` and `DBP-`. Variants are tagged `[12.0]`, `[14.0.7]` and `[14.35]`. The format is in `spec/README.md`.
-3. **`spec/source-map.json` changes in the same PR as the code.** Every reachable C# method of every build is either mapped to rules and TypeScript symbols, or marked `not-ported` with a reason. Each one carries its REA method lock. `npm test` fails on an unmapped method, a missing symbol, or a rule that is defined but cited nowhere.
+3. **`spec/source-map.json` changes in the same PR as the code.** Every reachable C# method of every build is either mapped to rules and TypeScript symbols, or marked `not-ported` with a reason. Each one carries its REA method lock. `npm test` fails on an unmapped method, a missing symbol, or a rule that is defined but cited nowhere. The one exception is a build marked `inProgress`: its unmapped methods are listed as pending, but only while its engine is not in `COMPLETE_ENGINES` (`src/engines.ts`). The engine's final slice, and the readiness ticket (wayfinder ticket 65), must add the engine to `COMPLETE_ENGINES` and clear `inProgress`. From then on, an unmapped method of that engine always fails.
 4. **Every reproduced bug is registered in `spec/bugs.md`.** Engine bugs are reproduced on purpose, never fixed silently. Each one has its own rule id.
 5. **No decompiled C# is ever committed.** Regenerate it locally into the gitignored `.decomp/<version>/`. The spec may cite a C# member by name, but it never quotes its code. The XSL logic is re-expressed in TypeScript, not copied.
-6. **Fixtures are scrubbed of credentials.** Never commit a password, auth or access token, or password hash, in fixtures or anywhere else. REA method locks and DLL digests are not credentials and belong in `spec/source-map.json`.
+6. **Fixtures are scrubbed of credentials.** Never commit a password, auth or access token, or password hash, in fixtures or anywhere else. REA method locks and DLL digests are not credentials and belong in `spec/source-map.json` and `spec/reachable/<engine>.json`.
 7. **Interpolated values are reproduced exactly.** Values interpolated into AML are reproduced exactly as each engine does it, unescaped where the engine does not escape. The library documents this; it does not "fix" it.
 
 ## Live Aras

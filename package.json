@@ -28,12 +28,14 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "tsup"
+    "prepare": "tsup",
+    "rea-map": "tsx tools/rea-map/cli.ts"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
     "ajv": "^8.20.0",
     "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "vitest": "^4.1.11"
   }

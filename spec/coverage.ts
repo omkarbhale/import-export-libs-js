@@ -1,11 +1,15 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import ts from "typescript";
+import { COMPLETE_ENGINES, ENGINE_ASSEMBLY_VERSIONS, isEngine } from "../src/engines.js";
 
 /**
  * Enforces spec/README.md: every reachable method mapped, every mapped symbol
- * real, and every rule both defined once and cited somewhere.
+ * real, and every rule both defined once and cited somewhere. A build's
+ * methods and identity must match its generated reachable set
+ * (spec/reachable/<engine>.json) and, once vendored, its oracle DLL.
  */
 
 const RULE_ID = String.raw`(?:EXP|IMP|MAN|WIRE|LP|DBP)-\d{3}(?![\w-])`;
@@ -30,18 +34,42 @@ export interface CoverageInput {
   bugs: TextFile;
   /** Every .ts file under src/. */
   srcFiles: TextFile[];
+  /** The generated reachable sets, spec/reachable/<engine>.json. */
+  reachable: { path: string; data: unknown }[];
+  reachableSchema: object;
+  /** sha256 of oracle/native/<engine>/Libs.dll, for each engine vendored so far. */
+  oracleDigests: Record<string, string>;
+  /** COMPLETE_ENGINES from src/engines.ts: engines whose builds may not be in progress. */
+  completeEngines: readonly string[];
 }
 
 interface SourceMapMethod {
   fullName: string;
   signature: string;
+  lock: object;
   status: "mapped" | "not-ported" | "unmapped";
   rules?: string[];
   symbols?: string[];
 }
 
+interface Identity {
+  engine: string;
+  assemblyVersion: string;
+  sha256: string;
+  mvid: string;
+}
+
+interface SourceMapBuild extends Identity {
+  inProgress?: boolean;
+  methods: SourceMapMethod[];
+}
+
 interface SourceMap {
-  builds: { engine: string; methods: SourceMapMethod[] }[];
+  builds: SourceMapBuild[];
+}
+
+interface ReachableSet extends Identity {
+  methods: { fullName: string; signature: string; lock: object }[];
 }
 
 interface RuleDefinition {
@@ -63,6 +91,21 @@ export function checkCoverage(input: CoverageInput): string[] {
     return problems;
   }
   const sourceMap = input.sourceMap as SourceMap;
+
+  // The source-map schema compiled above resolves the reachable schema's $refs.
+  const validateReachable = ajv.compile(input.reachableSchema);
+  const reachableSets = new Map<string, ReachableSet>();
+  for (const file of input.reachable) {
+    if (!validateReachable(file.data)) {
+      for (const error of validateReachable.errors ?? []) {
+        problems.push(`${file.path}${error.instancePath || ""}: ${error.message ?? "invalid"}`);
+      }
+      continue;
+    }
+    const set = file.data as ReachableSet;
+    if (file.path !== `spec/reachable/${set.engine}.json`) problems.push(`${file.path} holds engine ${set.engine}`);
+    reachableSets.set(set.engine, set);
+  }
 
   const definitions = input.areaDocs.flatMap(parseRules);
   const defined = new Map<string, RuleDefinition>();
@@ -93,6 +136,15 @@ export function checkCoverage(input: CoverageInput): string[] {
     if (seenEngines.has(build.engine)) problems.push(`source-map.json lists engine ${build.engine} twice`);
     seenEngines.add(build.engine);
 
+    problems.push(...checkIdentity(build, reachableSets.get(build.engine), input.oracleDigests[build.engine]));
+    const complete = input.completeEngines.includes(build.engine);
+    if (build.inProgress && complete) {
+      problems.push(`source-map.json build ${build.engine} is inProgress, but src/engines.ts declares engine ${build.engine} complete`);
+    }
+    const reachableLocks = new Map(
+      (reachableSets.get(build.engine)?.methods ?? []).map((m) => [`${m.fullName} ${m.signature}`, m.lock]),
+    );
+
     const seenMethods = new Set<string>();
     for (const method of build.methods) {
       const key = `${method.fullName} ${method.signature}`;
@@ -100,7 +152,14 @@ export function checkCoverage(input: CoverageInput): string[] {
       if (seenMethods.has(key)) problems.push(`${label} (${method.signature}) is listed twice`);
       seenMethods.add(key);
 
-      if (method.status === "unmapped") problems.push(`${label} is reachable but unmapped`);
+      const lock = reachableLocks.get(key);
+      if (reachableSets.has(build.engine) && !lock) {
+        problems.push(`${label} (${method.signature}) is not in spec/reachable/${build.engine}.json`);
+      } else if (lock && JSON.stringify(sortKeys(lock)) !== JSON.stringify(sortKeys(method.lock))) {
+        problems.push(`${label} (${method.signature}) has a lock that differs from spec/reachable/${build.engine}.json`);
+      }
+
+      if (method.status === "unmapped" && (!build.inProgress || complete)) problems.push(`${label} is reachable but unmapped`);
       for (const id of method.rules ?? []) cite(id, `source-map.json ${label}`);
       if (method.status === "mapped") {
         for (const symbol of method.symbols ?? []) {
@@ -109,6 +168,12 @@ export function checkCoverage(input: CoverageInput): string[] {
         }
       }
     }
+    for (const key of reachableLocks.keys()) {
+      if (!seenMethods.has(key)) problems.push(`[${build.engine}] ${key} is reachable but missing from source-map.json`);
+    }
+  }
+  for (const engine of reachableSets.keys()) {
+    if (!seenEngines.has(engine)) problems.push(`spec/reachable/${engine}.json has no build in source-map.json`);
   }
 
   for (const file of input.srcFiles) {
@@ -133,6 +198,42 @@ export function checkCoverage(input: CoverageInput): string[] {
   }
 
   return problems;
+}
+
+/** Unmapped methods of in-progress builds: what is left to map, by engine. */
+export function pendingMethods(sourceMap: unknown): string[] {
+  const builds = (sourceMap as Partial<SourceMap>).builds ?? [];
+  return builds.flatMap((build) =>
+    build.inProgress
+      ? build.methods.filter((m) => m.status === "unmapped").map((m) => `[${build.engine}] ${m.fullName} ${m.signature}`)
+      : [],
+  );
+}
+
+function checkIdentity(build: Identity, set: Identity | undefined, oracleSha256: string | undefined): string[] {
+  const problems: string[] = [];
+  const label = `source-map.json build ${build.engine}`;
+  const expected = isEngine(build.engine) ? ENGINE_ASSEMBLY_VERSIONS[build.engine] : undefined;
+  if (build.assemblyVersion !== expected) {
+    problems.push(`${label} has assemblyVersion ${build.assemblyVersion}, but engine ${build.engine} is ${expected}`);
+  }
+  if (!set) {
+    problems.push(`${label} has no generated spec/reachable/${build.engine}.json (run tools/rea-map)`);
+  } else {
+    for (const field of ["assemblyVersion", "sha256", "mvid"] as const) {
+      if (build[field] !== set[field]) {
+        problems.push(`${label} has ${field} ${build[field]}, but spec/reachable/${build.engine}.json has ${set[field]}`);
+      }
+    }
+  }
+  if (oracleSha256 !== undefined && oracleSha256 !== build.sha256) {
+    problems.push(`${label} has sha256 ${build.sha256}, but oracle/native/${build.engine}/Libs.dll is ${oracleSha256}`);
+  }
+  return problems;
+}
+
+function sortKeys(value: object): object {
+  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 /** Rule headings of a Markdown document, ignoring fenced code blocks. */
@@ -241,6 +342,13 @@ function isTestFile(path: string): boolean {
 export function loadCoverageInput(root: string): CoverageInput {
   const read = (path: string): TextFile => ({ path, text: readFileSync(join(root, path), "utf8") });
   const specDocs = readdirSync(join(root, "spec")).filter((name) => name.endsWith(".md"));
+  const reachableDir = join(root, "spec", "reachable");
+  const reachableFiles = existsSync(reachableDir) ? readdirSync(reachableDir).filter((name) => name.endsWith(".json")) : [];
+  const oracleDigests: Record<string, string> = {};
+  for (const engine of Object.keys(ENGINE_ASSEMBLY_VERSIONS)) {
+    const dll = join(root, "oracle", "native", engine, "Libs.dll");
+    if (existsSync(dll)) oracleDigests[engine] = createHash("sha256").update(readFileSync(dll)).digest("hex");
+  }
 
   return {
     sourceMap: JSON.parse(read("spec/source-map.json").text),
@@ -248,6 +356,13 @@ export function loadCoverageInput(root: string): CoverageInput {
     areaDocs: specDocs.filter((name) => name !== "README.md" && name !== "bugs.md").map((name) => read(`spec/${name}`)),
     bugs: read("spec/bugs.md"),
     srcFiles: listTs(root, join(root, "src")).map(read),
+    reachable: reachableFiles.map((name) => {
+      const path = `spec/reachable/${name}`;
+      return { path, data: JSON.parse(read(path).text) as unknown };
+    }),
+    reachableSchema: JSON.parse(read("spec/reachable.schema.json").text) as object,
+    oracleDigests,
+    completeEngines: COMPLETE_ENGINES,
   };
 }
 

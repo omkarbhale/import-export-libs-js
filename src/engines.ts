@@ -16,6 +16,13 @@ export const ENGINE_ASSEMBLY_VERSIONS: Readonly<Record<Engine, string>> = {
   "14.35": "14.35.0.43890",
 };
 
+/**
+ * Engines whose slice is complete: every reachable method of their build in
+ * spec/source-map.json is mapped or not-ported, and the build may not carry
+ * `inProgress`. An engine's final slice adds it here and clears the flag.
+ */
+export const COMPLETE_ENGINES: readonly Engine[] = [];
+
 export function isEngine(value: string): value is Engine {
   return (ENGINES as readonly string[]).includes(value);
 }

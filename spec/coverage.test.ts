@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { checkCoverage, loadCoverageInput, type CoverageInput } from "./coverage.js";
+import { checkCoverage, loadCoverageInput, pendingMethods, type CoverageInput } from "./coverage.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const repo = loadCoverageInput(root);
@@ -11,14 +11,37 @@ const LOCK = {
   ilSha256: "b".repeat(64),
 };
 
-function build(methods: object[]) {
+function build(methods: object[], extra: object = {}) {
   return {
     engine: "14.0.7",
     assemblyVersion: "14.0.7.35492",
     sha256: "c".repeat(64),
     mvid: "81698344-c4fa-4ec3-a48f-0961032d17f1",
+    ...extra,
     methods,
   };
+}
+
+type Method = { fullName: string; signature: string; lock: object };
+type Build = { engine: string; assemblyVersion: string; sha256: string; mvid: string; methods: Method[] };
+
+/** The generated reachable sets that agree with a source map. */
+function reachableOf(sourceMap: unknown): CoverageInput["reachable"] {
+  const sets = new Map<string, object>();
+  for (const b of (sourceMap as { builds: Build[] }).builds) {
+    if (sets.has(b.engine)) continue;
+    const methods = new Map(b.methods.map((m) => [`${m.fullName} ${m.signature}`, { fullName: m.fullName, signature: m.signature, lock: m.lock }]));
+    sets.set(b.engine, {
+      engine: b.engine,
+      assemblyVersion: b.assemblyVersion,
+      sha256: b.sha256,
+      mvid: b.mvid,
+      generator: { rea: "6.4.0", ilspycmd: "8.2.0.7535" },
+      hosts: [{ file: "import.exe", sha256: "d".repeat(64) }],
+      methods: [...methods.values()],
+    });
+  }
+  return [...sets].map(([engine, data]) => ({ path: `spec/reachable/${engine}.json`, data }));
 }
 
 function mapped(overrides: object = {}) {
@@ -37,12 +60,17 @@ const AREA_DOC = { path: "spec/import-run.md", text: "# Import run\n\n### IMP-00
 const IMPL = { path: "src/import/apply.ts", text: "/** @spec IMP-001 */\nexport function applyAml(): void {}\n" };
 
 function input(overrides: Partial<CoverageInput>): CoverageInput {
+  const sourceMap = overrides.sourceMap ?? { builds: [build([mapped()])] };
   return {
-    sourceMap: { builds: [build([mapped()])] },
+    sourceMap,
     schema: repo.schema,
     areaDocs: [AREA_DOC],
     bugs: { path: "spec/bugs.md", text: "# Bugs\n" },
     srcFiles: [IMPL],
+    reachable: reachableOf(sourceMap),
+    reachableSchema: repo.reachableSchema,
+    oracleDigests: {},
+    completeEngines: [],
     ...overrides,
   };
 }
@@ -52,6 +80,9 @@ describe("spec coverage", () => {
     expect(checkCoverage(repo)).toEqual([]);
   });
 
+  // What is left to map in builds still in progress (see spec/README.md).
+  for (const method of pendingMethods(repo.sourceMap)) it.todo(`map ${method}`);
+
   it("passes on a fully mapped build", () => {
     expect(checkCoverage(input({}))).toEqual([]);
   });
@@ -59,6 +90,61 @@ describe("spec coverage", () => {
   it("fails on an unmapped reachable method", () => {
     const sourceMap = { builds: [build([mapped(), mapped({ fullName: "A.B::C", status: "unmapped", rules: [], symbols: [] })])] };
     expect(checkCoverage(input({ sourceMap }))).toEqual(["[14.0.7] A.B::C is reachable but unmapped"]);
+  });
+
+  it("lists unmapped methods of an in-progress build as pending instead of failing", () => {
+    const unmapped = mapped({ fullName: "A.B::C", status: "unmapped", rules: [], symbols: [] });
+    const sourceMap = { builds: [build([mapped(), unmapped], { inProgress: true })] };
+    expect(checkCoverage(input({ sourceMap }))).toEqual([]);
+    expect(pendingMethods(sourceMap)).toEqual(["[14.0.7] A.B::C System.Boolean applyAML(System.String)"]);
+  });
+
+  it("fails on an in-progress build of an engine declared complete, and on its unmapped methods", () => {
+    const unmapped = mapped({ fullName: "A.B::C", status: "unmapped", rules: [], symbols: [] });
+    const sourceMap = { builds: [build([mapped(), unmapped], { inProgress: true })] };
+    expect(checkCoverage(input({ sourceMap, completeEngines: ["14.0.7"] }))).toEqual([
+      "source-map.json build 14.0.7 is inProgress, but src/engines.ts declares engine 14.0.7 complete",
+      "[14.0.7] A.B::C is reachable but unmapped",
+    ]);
+    expect(checkCoverage(input({ sourceMap, completeEngines: ["14.35"] }))).toEqual([]);
+  });
+
+  it("fails when a build and its reachable set disagree on methods or locks", () => {
+    const other = mapped({ fullName: "A.B::C" });
+    const sourceMap = { builds: [build([mapped(), other])] };
+    const reachable = reachableOf({ builds: [build([mapped({ lock: { ...LOCK, ilSha256: "e".repeat(64) } }), mapped({ fullName: "A.B::D" })])] });
+    expect(checkCoverage(input({ sourceMap, reachable }))).toEqual([
+      "[14.0.7] Aras.Tools.SolutionUpgrade.CItemHelper::applyAML (System.Boolean applyAML(System.String)) has a lock that differs from spec/reachable/14.0.7.json",
+      "[14.0.7] A.B::C (System.Boolean applyAML(System.String)) is not in spec/reachable/14.0.7.json",
+      "[14.0.7] A.B::D System.Boolean applyAML(System.String) is reachable but missing from source-map.json",
+    ]);
+  });
+
+  it("fails on a build whose identity disagrees with its engine, reachable set or oracle DLL", () => {
+    const sourceMap = { builds: [build([mapped()], { assemblyVersion: "12.0.0.13341" })] };
+    const reachable = reachableOf({ builds: [build([mapped()], { mvid: "73656177-796f-4071-beb9-1ff7e94a9e63" })] });
+    expect(checkCoverage(input({ sourceMap, reachable, oracleDigests: { "14.0.7": "f".repeat(64) } }))).toEqual([
+      "source-map.json build 14.0.7 has assemblyVersion 12.0.0.13341, but engine 14.0.7 is 14.0.7.35492",
+      "source-map.json build 14.0.7 has assemblyVersion 12.0.0.13341, but spec/reachable/14.0.7.json has 14.0.7.35492",
+      "source-map.json build 14.0.7 has mvid 81698344-c4fa-4ec3-a48f-0961032d17f1, but spec/reachable/14.0.7.json has 73656177-796f-4071-beb9-1ff7e94a9e63",
+      `source-map.json build 14.0.7 has sha256 ${"c".repeat(64)}, but oracle/native/14.0.7/Libs.dll is ${"f".repeat(64)}`,
+    ]);
+  });
+
+  it("fails on a build without a reachable set, and on a reachable set without a build", () => {
+    expect(checkCoverage(input({ reachable: [] }))).toEqual([
+      "source-map.json build 14.0.7 has no generated spec/reachable/14.0.7.json (run tools/rea-map)",
+    ]);
+    const reachable = reachableOf({ builds: [build([mapped()]), build([mapped()], { engine: "14.35", assemblyVersion: "14.35.0.43890" })] });
+    expect(checkCoverage(input({ reachable }))).toEqual(["spec/reachable/14.35.json has no build in source-map.json"]);
+  });
+
+  it("fails on a reachable set that breaks its schema or sits under the wrong name", () => {
+    const [set] = reachableOf({ builds: [build([mapped()])] });
+    const reachable = [{ path: "spec/reachable/14.35.json", data: set?.data }, { path: "spec/reachable/x.json", data: { engine: "14.0.7" } }];
+    const problems = checkCoverage(input({ reachable }));
+    expect(problems).toContain("spec/reachable/14.35.json holds engine 14.0.7");
+    expect(problems.some((p) => p.startsWith("spec/reachable/x.json: must have required property"))).toBe(true);
   });
 
   it("fails on a mapped symbol whose file is missing", () => {
