@@ -31,7 +31,6 @@ export interface RecordRequest {
   /** lpimport: the language pack folder and its config file inside it. */
   lpDir?: string;
   lpConfig?: string;
-  keepWindowsRun?: boolean;
   log?: (text: string) => void;
 }
 
@@ -235,7 +234,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
       remainingSecrets.push(`${path}@${hit.index}: ${hit.pattern}`);
     }
   }
-  if (!req.keepWindowsRun) rmSync(wslRun, { recursive: true, force: true });
+  rmSync(wslRun, { recursive: true, force: true });
   log(`recorded ${relative(process.cwd(), req.out) || basename(req.out)} (${dirname(req.out)})\n`);
   return {
     out: req.out,

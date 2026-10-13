@@ -5,7 +5,6 @@ import { parseArgs } from "node:util";
 import { DEFAULT_ENGINE, ENGINES, isEngine, type Engine } from "../../src/engines.js";
 import { NATIVE_DIR, ORACLE_DIR, readManifest, verifyToolset } from "./manifest.js";
 import { DEV_SERVER, record, type HostValue } from "./record.js";
-import { stageToolset } from "./stage.js";
 import { TOOLSET_SOURCES, vendorToolset } from "./vendor.js";
 import { toWslPath, windowsLocalAppData } from "./windows.js";
 
@@ -20,14 +19,13 @@ Commands:
   import <package folder>              [--manifest imports.mf] [--packages a,b]
   lpimport <package folder>            --lp-dir <folder> [--lp-config ImportConfig.xml] --lp-package <name>
   verify                               check every vendored toolset against manifest.json
-  stage                                verify and stage the toolset under %LOCALAPPDATA%
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
 Connection (dev only): --url (${DEV_SERVER.url}), --database (${DEV_SERVER.database}),
   --user (env ARAS_USER, default root). The password comes from env ARAS_PASSWORD,
   or stdin when it is not a terminal; never from a flag or file. import and lpimport take
   LIBSJS-SCRATCH-* packages and items only, and delete what they created when done.
-Output: --out <folder> (default oracle/out/<engine>-<command>-<time>), --keep-windows-run.
+Output: --out <folder> (default oracle/out/<engine>-<command>-<time>).
 
 Engine options (passed to the engine's host; an option the engine lacks is an error):
   --verbose, --manifest-file <path>, --level <n>, --export-referenced-items,
@@ -78,7 +76,6 @@ const OPTIONS = {
   "lp-dir": { type: "string" },
   "lp-config": { type: "string" },
   from: { type: "string" },
-  "keep-windows-run": { type: "boolean" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -164,11 +161,6 @@ export async function main(argv: readonly string[]): Promise<number> {
         }
         return failed ? 1 : 0;
       }
-      case "stage": {
-        const staged = stageToolset(engine, readManifest());
-        process.stdout.write(`${engine}: staged at ${staged.windows}\n`);
-        return 0;
-      }
       case "vendor": {
         const from =
           (values.from as string | undefined) ??
@@ -204,7 +196,6 @@ export async function main(argv: readonly string[]): Promise<number> {
           ...(typeof values.manifest === "string" ? { manifestName: values.manifest } : {}),
           ...(typeof values["lp-dir"] === "string" ? { lpDir: resolve(values["lp-dir"]) } : {}),
           ...(typeof values["lp-config"] === "string" ? { lpConfig: values["lp-config"] } : {}),
-          keepWindowsRun: values["keep-windows-run"] === true,
         });
         process.stdout.write(
           `${out}\nhost exit ${result.hostExit}, ${result.calls ?? "?"} calls${result.error ? `\nengine error: ${result.error.split("\n")[0]}` : ""}\n`,
