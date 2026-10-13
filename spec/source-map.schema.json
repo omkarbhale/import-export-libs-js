@@ -34,6 +34,10 @@
           "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "description": "Module version id; copies of one build with different bytes share it."
         },
+        "inProgress": {
+          "type": "boolean",
+          "description": "True while the engine's slice is being built: the coverage test lists its unmapped methods as pending instead of failing. tools/rea-map sets it on a new build; remove it when the slice lands."
+        },
         "methods": {
           "type": "array",
           "items": { "$ref": "#/$defs/method" }
@@ -41,7 +45,7 @@
       }
     },
     "lock": {
-      "description": "Produced by `rea import-managed-reconstruction` on this exact build.",
+      "description": "Produced by tools/rea-map with `rea inspect-managed-members` and `rea import-managed-reconstruction` on this exact build. spec/reachable/<engine>.json holds the same lock; the coverage test requires them to agree.",
       "type": "object",
       "additionalProperties": false,
       "required": ["token", "signatureSha256", "ilSha256"],
@@ -51,11 +55,11 @@
         "ilSha256": { "$ref": "#/$defs/sha256", "description": "Normalized IL digest." },
         "bodySha256": {
           "$ref": "#/$defs/sha256",
-          "description": "Body digest from `rea import-managed-reconstruction`: sha256 of the bound decompiled text slice."
+          "description": "Body digest from REA: sha256 of the method's raw IL bytes."
         },
-        "reconstructionId": {
-          "type": "string",
-          "description": "Reconstruction record id (mre_...) from `rea import-managed-reconstruction`."
+        "textSha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "sha256 of the ILSpy C# slice `rea import-managed-reconstruction` bound to the method (LF line endings). Absent when ILSpy writes no C# for it, such as an implicit constructor."
         }
       }
     },
@@ -67,7 +71,7 @@
         "fullName": {
           "type": "string",
           "pattern": "^[^:]+::[^:]+$",
-          "description": "Namespace.Type::Member, as REA names it."
+          "description": "Namespace.Type::Member, with nested types written Outer/Inner."
         },
         "signature": { "type": "string", "minLength": 1 },
         "lock": { "$ref": "#/$defs/lock" },
