@@ -1,0 +1,9 @@
+# Per-repo no-mistakes overrides.
+
+# Pin the canonical checks from AGENTS.md so the gate's test and lint steps run
+# them instead of inferring commands. `npm run typecheck` is the static gate;
+# there is no separate linter. .github/workflows/ci.yml mirrors these; after
+# changing them, regenerate it as AGENTS.md describes.
+commands:
+  lint: 'npm run typecheck'
+  test: 'npm test'

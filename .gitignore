@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+*.log
+
+# Decompiled C# is regenerated locally and never committed (AGENTS.md).
+.decomp/
