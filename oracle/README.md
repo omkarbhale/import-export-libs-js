@@ -37,7 +37,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
    - `import` calls `ImportSolutions` with every package in the manifest, or with `--packages`.
    - `lpimport` (14.0.7 and 14.35) runs ConsoleUpgrade's sequence: `LanguagePackPreprocessor`, then `Action = Import` on its temp manifest.
 
-   Running 14.35's `ImportDPPatch` / `ApplyDBUpdateManifest` is not wired yet (ticket 63).
+   Running 14.35's `ImportDPPatch` / `ApplyDBUpdateManifest` is not wired yet (ticket 72).
 6. **The scratch guard.** Right before `ImportSolutions`, the host checks what the engine is about to get. Every package in the set must be named `LIBSJS-SCRATCH-*`; for `lpimport` that is the temp manifest's package, `--lp-package`. For `import`, so must every item file `LoadPackageDom` reads for those packages (the file name is the keyed name the engine records), and every top-level item's `name`. For `lpimport`, so must the `keyed_name` of every item in the language pack's `xml/` folder. An empty package set is refused too. Before anything is staged, the WSL side checks the package names the same way. The guard checks names only (see Rules).
 7. **Cleanup.** After `import` or `lpimport`, the host stops recording, so nothing from here on reaches the transcript. It then deletes what the run created, newest first. The run created every top-level item that a successful call sent with `action="add"`. For the engine's own PackageDefinition, PackageGroup, PackageElement and DatabaseUpgrade rows, the id comes from the response. A call that failed in transport may still have been committed: either it threw, or IOM wrote its own fault (faultactor `HttpServerConnection`, as for a timeout or a dropped connection). So its `add` and `create` items count too, marked `unconfirmed`, with only the ids the request names. Each is looked up by id and deleted if it exists. One that is not found goes to `unverified`, because the server may still commit it after the client gave up; re-check those ids later. An unconfirmed item with no id is kept. An item is deleted only when it belongs to a `LIBSJS-SCRATCH-*` name: a relationship by its source's name, any other item by its name or keyed name. Anything else is kept and reported. Relationships nested inside an added item go with it.
 
@@ -54,7 +54,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 | `input/` | import and lpimport: the package folder the engine read |
 | `lp/` | lpimport: the language pack folder (`--lp-dir`) |
 
-The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP envelope and headers below `CallAction`, and the OAuth token exchange happens outside it, so neither is recorded. Ticket 09 specifies them from the IOM decompile.
+The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP envelope and headers below `CallAction`, and the OAuth token exchange happens outside it, so neither is recorded. Ticket 09 specifies them from the IOM decompile and a scrubbed proxy capture of the reference host.
 
 ## Rules
 

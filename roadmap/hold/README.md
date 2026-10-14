@@ -10,4 +10,5 @@ In `spec/source-map.json`, a held method that the reachability walk still reache
 | [getdb-list.md](getdb-list.md) | The raw `<GetDB/>` database list |
 | [applysql.md](applysql.md) | `applySQL` outside 14.35's lpimport path |
 | [testability-wrappers.md](testability-wrappers.md) | The C# testability wrappers and interfaces |
-| [generate-hashtable-from-manifest.md](generate-hashtable-from-manifest.md) | `GenerateHashtableFromManifest` |
+
+`GenerateHashtableFromManifest` was held here until 2026-10-14. Aras's own console tool, `ConsoleUpgrade.exe`, uses it for one of its three export selection modes, so those modes came into scope as `export --from-manifest`, `--use-import` and `--all-packages` (wayfinder ticket 66).
