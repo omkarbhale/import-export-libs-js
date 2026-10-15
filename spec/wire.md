@@ -108,7 +108,7 @@ grant_type=password&client_id=IOMApp&scope=Innovator&database=<db>&username=<use
 ```
 
 - The fields are form-encoded in that order (spaces as `+`, other reserved characters percent-encoded).
-- `<digest>` is the password's hash (WIRE-014): the lowercase MD5 hex of its ASCII bytes. The capture shows the 32-character lowercase MD5 form.
+- `<digest>` is the password's hash (WIRE-014): the lowercase MD5 hex of its ASCII bytes. The committed capture has this value replaced by `SCRUBBED` (AGENTS.md rule 6), so its form rests on IOM's hashing as WIRE-014 states, not on the capture.
 - An empty database or user name fails login before any request (faultstring `System.ArgumentException: Database`, or `…: UserName`).
 - A 200 or 400 response is read as JSON. A body with a non-blank `error` is an OAuth error whose code is `error` and whose message is `error_description` (looked up case-insensitively), or `error` when there is no description. Any other status is an OAuth error with code `server_error` and message `(<status name>) <reason phrase>`, for example `(InternalServerError) Internal Server Error`. A body that is not JSON is an OAuth error whose code and message are both the JSON parser's message.
 - Otherwise the token is `access_token`. `expires_in` is ignored: the token is kept for the life of the connection, with no expiry tracking and no refresh.
@@ -233,7 +233,7 @@ SOAPAction: Logoff
 <?xml version='1.0' encoding='utf-8' ?><logoff skip_unlock="1" />
 ```
 
-with the usual headers (WIRE-005). The response is ignored, and a transport failure is swallowed. No token is revoked and no end-session request is made. Under OAuth, an expired token is renewed once (WIRE-018) before the logoff is resent. The library always sends this logoff at the end of a run that logged in, like the reference host, and sends none when login failed.
+with the usual headers (WIRE-005). The response is ignored, and a transport failure is swallowed. No token is revoked and no end-session request is made. Under OAuth, an expired token is renewed once (WIRE-018) before the logoff is resent. The library always sends this logoff at the end of a run whose `CItemHelper.Login()` completed (WIRE-002), like the reference host. It sends none when any step of `CItemHelper.Login()` failed: a login fault (WIRE-017), a probe error (WIRE-021, WIRE-054) or a version refusal (WIRE-023), even though IOM's password login and `ValidateUser` may already have succeeded.
 
 ## Faults
 

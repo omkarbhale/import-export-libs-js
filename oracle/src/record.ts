@@ -186,10 +186,10 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   const secrets = [...secretForms(req.password)];
   const startedAt = new Date().toISOString();
   const result = await runPowerShellFile(winJoin(winRun, "launcher.ps1"), { ARAS_PASSWORD: req.password }, (chunk) =>
-    log(scrub(chunk, [req.password, ...secrets]).text),
+    log(scrub(chunk, [req.password, ...secrets], { literalSecrets: true }).text),
   );
   const finishedAt = new Date().toISOString();
-  writeFileSync(join(wslRun, "host.log"), scrub(result.stdout + result.stderr, [req.password, ...secrets]).text);
+  writeFileSync(join(wslRun, "host.log"), scrub(result.stdout + result.stderr, [req.password, ...secrets], { literalSecrets: true }).text);
 
   // Collect: everything but the launcher, then scrub every file.
   mkdirSync(req.out, { recursive: true });
