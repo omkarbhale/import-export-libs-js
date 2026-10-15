@@ -61,4 +61,18 @@ describe("scrub", () => {
     expect(text).toBe(`a ${SCRUBBED} b ${SCRUBBED} c`);
     expect(counts["run secret"]).toBe(2);
   });
+
+  it("never rewrites a plain-word password outside credential positions", () => {
+    const aml = '<Item type="PackageDefinition"><name>com.aras.innovator.servicereporting</name><keyed_name>Aras Admin</keyed_name></Item>';
+    const form = "grant_type=password&username=admin&password=aras";
+    const { text } = scrub(aml + "\n" + form, ["aras", ...secretForms("aras")]);
+    expect(text).toBe(aml + "\n" + "grant_type=password&username=admin&password=" + SCRUBBED);
+  });
+
+  it("replaces a plain password echoed into host output when scrubbing a log", () => {
+    const log = "Login failed for admin with password pw-for-test (pw-for-test)\n";
+    const { text, counts } = scrub(log, ["pw-for-test", ...secretForms("pw-for-test")], { literalSecrets: true });
+    expect(text).toBe(`Login failed for admin with password ${SCRUBBED} (${SCRUBBED})\n`);
+    expect(counts["run secret"]).toBe(2);
+  });
 });

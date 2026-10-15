@@ -21,6 +21,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 - **`native/manifest.json`**: for each engine, the source folder, every file's size and sha256, the Libs and IOM version and MVID, and the excluded entries. `npm test` checks the vendored folders against it on any OS, reading MVIDs straight from PE metadata (`src/pe.ts`).
 - **`host/`**: the Windows side. `engine-<version>.ps1` is one host per engine. Each exposes that engine's `SolutionUpgradeContext`, `SUExportContext` and `SUImportContext` options as parameters, so an option a build lacks cannot be passed. They share `common.ps1` and `OracleHost.cs`, the recorder, which `Add-Type` compiles against the staged DLLs.
 - **`src/`**: the WSL side (`npm run oracle`): manifest checks, staging, the launcher, collection and scrubbing.
+- **`wire-capture/`**: a one-off recording of an engine's reference host below the AML, for the wire fixtures in `fixtures/wire/`. `ReferenceHost.cs` connects as ConsoleUpgrade does, `proxy.mjs` records every HTTP exchange, and `fixture.ts` scrubs the recording. How to re-record is in each fixture's README.
 
 ## How a run works
 
@@ -54,7 +55,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 | `input/` | import and lpimport: the package folder the engine read |
 | `lp/` | lpimport: the language pack folder (`--lp-dir`) |
 
-The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP envelope and headers below `CallAction`, and the OAuth token exchange happens outside it, so neither is recorded. Ticket 09 specifies them from the IOM decompile and a scrubbed proxy capture of the reference host.
+The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP envelope and headers below `CallAction`, and the OAuth token exchange happens outside it, so neither is recorded. `spec/wire.md` specifies them, with a scrubbed proxy capture of the reference host in `fixtures/wire/` as evidence.
 
 ## Rules
 

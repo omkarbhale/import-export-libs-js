@@ -2,7 +2,7 @@
 
 Recorded oracle runs that the unit tests replay on any OS, with no server and no .NET.
 
-Nothing is here yet. Fixture tickets add one folder per engine version and fixture family. Each fixture holds:
+Fixture tickets add one folder per engine version and fixture family. `wire/` holds the proxy captures of each engine's reference host (see `wire/14.0.7-reference-host/README.md`). Each other fixture holds:
 
 - the AML transcript: every request the engine sent and every response it got, in order;
 - the export output folder (item files and `imports.mf`), or the import input package;
