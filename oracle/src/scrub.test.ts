@@ -61,4 +61,11 @@ describe("scrub", () => {
     expect(text).toBe(`a ${SCRUBBED} b ${SCRUBBED} c`);
     expect(counts["run secret"]).toBe(2);
   });
+
+  it("never rewrites a plain-word password outside credential positions", () => {
+    const aml = '<Item type="PackageDefinition"><name>com.aras.innovator.servicereporting</name><keyed_name>Aras Admin</keyed_name></Item>';
+    const form = "grant_type=password&username=admin&password=aras";
+    const { text } = scrub(aml + "\n" + form, ["aras", ...secretForms("aras")]);
+    expect(text).toBe(aml + "\n" + "grant_type=password&username=admin&password=" + SCRUBBED);
+  });
 });

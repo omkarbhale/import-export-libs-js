@@ -98,16 +98,22 @@ export interface ScrubResult {
   counts: Record<string, number>;
 }
 
+/** An MD5 or SHA-256 hex digest: the only secret shape safe to replace wherever it occurs. */
+const DIGEST = /^(?:[0-9a-f]{32}|[0-9a-f]{64})$/i;
+
 /**
- * Replaces every credential-shaped value and every exact `secrets` string.
- * Text with nothing to scrub comes back unchanged, so byte-exact engine
- * output stays byte-exact.
+ * Replaces every credential-shaped value, and every exact occurrence of the
+ * `secrets` that are hex digests (see `secretForms`). Any other secret, such
+ * as a plain password, is ignored here: it can be a common word that also
+ * occurs in AML, so it is scrubbed only where it sits in a credential
+ * position (the patterns above). Text with nothing to scrub comes back
+ * unchanged, so byte-exact engine output stays byte-exact.
  */
 export function scrub(text: string, secrets: readonly string[] = []): ScrubResult {
   const counts: Record<string, number> = {};
   let out = text;
   for (const secret of secrets) {
-    if (secret === "" || !out.includes(secret)) continue;
+    if (!DIGEST.test(secret) || !out.includes(secret)) continue;
     const parts = out.split(secret);
     counts["run secret"] = (counts["run secret"] ?? 0) + parts.length - 1;
     out = parts.join(SCRUBBED);
