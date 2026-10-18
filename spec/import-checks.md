@@ -229,6 +229,8 @@ A `t` that holds a quote makes the XPath malformed.
 
 The `data_source!=''` and `!=` tests are node-set comparisons: they hold when some `data_source` child has text that differs.
 
+The port compares the data type ordinally for the `mv_list` test, which differs from the engine's culture-sensitive `EndsWith` only for a `data_type` that has a character the collation ignores (such as U+00AD or U+200B) after `mv_list`; the engine takes that for a multi-value list and the port does not.
+
 [12.0] Same: the same selection, the same `data_type` handling and the same request.
 
 [14.35] Same selection, texts and decisions as 14.0.7, with the cache differences of `IMP-102`: step 4 writes the request string, then looks it up; a hit writes nothing more (14.0.7 wrote `  was obtained from cache`), a miss writes `  was obtained from server` before the request is sent (`IMP-181`), and a `CItemException` removes the entry before faultcode `0` records 10000 (probes `n01`, `n02b`).
@@ -243,6 +245,8 @@ The `data_source!=''` and `!=` tests are node-set comparisons: they hold when so
 4. A fault with another faultcode from any request of steps 1 to 3 is thrown.
 
 The handler of step 3 is the one around steps 1 and 2 as well, so a faultcode `0` from `IsVersionable` (the related type is not on the server) or from the relationship lookup (`parentType` is not a RelationshipType name) in step 2 is taken for a missing related item; step 3 then repeats the lookup that failed, which is sent again (IMP-102) and now throws, ending the check (IMP-104).
+
+The port tests the behavior for `float` ordinally, which differs from the engine's culture-sensitive `IndexOf` only for a behavior with a character the collation ignores inside the word (such as `fl\u00ADoat`): the engine finds it and the port does not.
 
 [12.0] Same: the same selection, request, versionable test, behavior lookup and `__find_latest_generation_` marker.
 

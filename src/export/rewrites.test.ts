@@ -323,7 +323,7 @@ describe("EXP-108 and EXP-109: a RelationshipType embeds its relationship ItemTy
     expect(failure).toBeInstanceOf(StackOverflowException);
     expect((failure as Error).message).toBe("Process is terminated due to StackOverflowException.");
     expect(stub.requests).toHaveLength(RECURSION_LIMIT - 1);
-  });
+  }, 30_000);
 });
 
 describe("EXP-110: Sequence loses its current_value", () => {

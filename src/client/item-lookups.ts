@@ -9,6 +9,11 @@ import { element, textElement } from "./request-text.js";
 import { RECURSION_LIMIT, StackOverflowException } from "../recursion-limit.js";
 import type { ArasVersion } from "./version.js";
 
+/** Where a lookup writes its log lines: the engine's `TextWriter` (IMP-132). */
+export interface LookupLog {
+  writeLine(text: string): void;
+}
+
 /** What the lookups need of the helper that owns them. */
 export interface LookupHost {
   readonly inn: Innovator;
@@ -69,28 +74,38 @@ function wrapped(error: unknown, text: string): CItemException {
  * dependency level of a relationship type. Every lookup is a read (`action='get'`). The texts interpolate names
  * and ids as they are, unescaped (EXP-004).
  *
- * @spec EXP-004 EXP-010 EXP-011 EXP-030 EXP-031 EXP-032 EXP-040 EXP-041 EXP-042 EXP-043 EXP-044 EXP-045 EXP-046 EXP-047
+ * @spec EXP-004 EXP-010 EXP-011 EXP-030 EXP-031 EXP-032 EXP-040 EXP-041 EXP-042 EXP-043 EXP-044 EXP-045 EXP-046 EXP-047 IMP-102
  */
 export class ItemLookups {
-  /** `_requestedItems`: the answers of the cached lookups, by their exact engine text, never emptied (EXP-030). */
-  private readonly requestedItems = new Map<string, ResponseDocument>();
+  /**
+   * `_requestedItems`: the answers of the cached lookups, by their exact engine text, never emptied (EXP-030). The
+   * import's reference checks read and fill it too (IMP-102), so it is one dictionary for the helper's whole run.
+   */
+  readonly requestedItems = new Map<string, ResponseDocument>();
   /** The poly-type names: set before the request is sent and kept after a failure (EXP-046, EXP-047). */
   private polytypeNames: string[] | undefined;
 
   constructor(private readonly host: LookupHost) {}
 
   /**
-   * `GetTypeAmlInner`: the cached answer for this text, or the answer to it. Only a successful answer is stored. A
-   * "no items" fault gets a new detail, which names `System.Xml.XmlAttribute` where the type should be (EXP-032).
+   * `GetTypeAmlInner(aml, log, force)`: writes `aml` to the log when there is one, then returns the cached answer for
+   * this text, unless `force` asks for a new one. Only a successful answer is stored, and a forced one replaces the
+   * cached one. A "no items" fault gets a new detail, which names `System.Xml.XmlAttribute` where the type should be
+   * (EXP-032, IMP-180).
    *
-   * @spec EXP-030 EXP-031 EXP-032
+   * @spec EXP-030 EXP-031 EXP-032 IMP-102 IMP-132 IMP-180
    */
-  private async typeAmlInner(aml: string): Promise<ResponseDocument> {
-    const cached = this.requestedItems.get(aml);
-    if (cached) return cached;
+  async getTypeAmlInner(aml: string, log?: LookupLog, force = false): Promise<ResponseDocument> {
     try {
+      log?.writeLine(aml);
+      const cached = force ? undefined : this.requestedItems.get(aml);
+      if (cached) {
+        log?.writeLine("  was obtained from cache");
+        return cached;
+      }
       const response = await this.host.applyAML(aml);
       this.requestedItems.set(aml, response);
+      log?.writeLine("  was obtained from server");
       return response;
     } catch (error) {
       if (error instanceof CItemException && error.faultcode === 0) {
@@ -105,28 +120,28 @@ export class ItemLookups {
    * `GetMetaDataInfo`: the definition of an ItemType or RelationshipType by name. `criteria` is extra markup
    * before the `<name>`, which only the import side passes.
    *
-   * @spec EXP-031
+   * @spec EXP-031 IMP-132
    */
-  getMetaDataInfo(type: MetadataType, name: string, select = "", criteria = ""): Promise<ResponseDocument> {
+  getMetaDataInfo(type: MetadataType, name: string, select = "", criteria = "", log?: LookupLog): Promise<ResponseDocument> {
     const selectAttribute = select === "" ? "" : ` select='${select}'`;
-    return this.typeAmlInner(`<Item type='${type}'${selectAttribute} action='get'>${criteria}<name>${name}</name></Item>`);
+    return this.getTypeAmlInner(`<Item type='${type}'${selectAttribute} action='get'>${criteria}<name>${name}</name></Item>`, log);
   }
 
-  /** `GetItemType(name, select)`. @spec EXP-031 */
-  getItemType(name: string, select = ""): Promise<ResponseDocument> {
-    return this.getMetaDataInfo("ItemType", name, select);
+  /** `GetItemType(name, select, log)`. @spec EXP-031 IMP-132 */
+  getItemType(name: string, select = "", log?: LookupLog): Promise<ResponseDocument> {
+    return this.getMetaDataInfo("ItemType", name, select, "", log);
   }
 
-  /** `GetRelationshipType(name, select)`. @spec EXP-031 */
-  getRelationshipType(name: string, select = ""): Promise<ResponseDocument> {
-    return this.getMetaDataInfo("RelationshipType", name, select);
+  /** `GetRelationshipType(name, select, log)`. @spec EXP-031 IMP-132 */
+  getRelationshipType(name: string, select = "", log?: LookupLog): Promise<ResponseDocument> {
+    return this.getMetaDataInfo("RelationshipType", name, select, "", log);
   }
 
   /**
    * `IsVersionable`: whether the ItemType of that name is versionable, which is when its `is_versionable` is `1`.
    * An answer without the element is a `CItemException`.
    *
-   * @spec EXP-010
+   * @spec EXP-010 IMP-170
    */
   async isVersionable(typeName: string): Promise<boolean> {
     const response = await this.getItemType(typeName, "is_versionable");
@@ -142,7 +157,7 @@ export class ItemLookups {
    * `GetCurrentIdOfVersion`: the id to fetch an item of a versionable type by. The item's own id when it is the
    * current generation, otherwise the id of the current generation of its config id.
    *
-   * @spec EXP-011 EXP-055
+   * @spec EXP-011 EXP-055 IMP-151
    */
   async getCurrentIdOfVersion(id: string, type: string): Promise<string> {
     const failure = (error: unknown) => wrapped(error, `Unable to find a current version of the item (ID='${id}'; Type='${type}')`);
