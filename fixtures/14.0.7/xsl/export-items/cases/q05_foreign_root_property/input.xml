@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Property" id="PF"><name>pf</name><data_type>foreign</data_type><data_source>PF</data_source><foreign_property keyed_name="k"/></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

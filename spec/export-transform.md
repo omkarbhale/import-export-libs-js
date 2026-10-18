@@ -7,7 +7,7 @@ The document has two halves. **Part 1** (`EXP-200` to `EXP-272`) covers the root
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `CItemHelper::ApplyXsl`, `GetXslTransform` and `GetManifestResourceStream`, and the stylesheet resource `Aras.Tools.SolutionUpgrade.export.xsl` that ILSpy extracts next to the project. Rules cite the stylesheet by template, not by quoting it, and give its line numbers as `export.xsl:N`.
-- probes of that stylesheet, run under `XslCompiledTransform` on Windows PowerShell 5.1 with the same loading and invocation as `ApplyXsl` (EXP-200, EXP-201), on hand-written response documents. The worked examples below are reduced from those runs and show the transform's raw output. Part 2 rests on over a thousand such cases, among them a sweep of every cell of the system-property comparison table (EXP-323: each of the 11 compared fields of each of the 32 system properties, changed and removed). Wayfinder ticket 68 turns such probes into recorded fixtures, and tickets 31 and 32 replay them.
+- probes of that stylesheet, run under `XslCompiledTransform` on Windows PowerShell 5.1 with the same loading and invocation as `ApplyXsl` (EXP-200, EXP-201), on hand-written response documents. The worked examples below are reduced from those runs and show the transform's raw output. Part 2 rests on over a thousand such cases, among them a sweep of every cell of the system-property comparison table (EXP-323: each of the 11 compared fields of each of the 32 system properties, changed and removed). Wayfinder ticket 68 turns such probes into recorded fixtures, and tickets 31 and 32 replay them: `fixtures/14.0.7/xsl/export/` and `fixtures/14.0.7/xsl/export-items/` (inputs in `oracle/xsl-cases/`), whose cases ticket 31 compares byte for byte with the part 1 transform. `export-items` holds the ticket 13 probes and the cases that fixed the rules below where the first reading was loose: the root wrapper at any depth (`w`), namespaces (`n`), the lookups of the reference rewrites (`q`), Identity and Method forms (`s`), dropped Items and the reference chain (`t`) and text (`x`).
 - `data/libsjs-06/report.md` (rules X1 to X7 for `XslCompiledTransform`) and `data/libsjs-08/report.md` (finding F6, the empty-text correction to X6).
 - for 14.35: the stylesheet resource of the 14.35 decompile (`.decomp/14.35/`, never committed), compared with 14.0.7's line by line, and the same probes run against the 14.35 `Libs.dll` (`oracle/export-output-probe/probe.ps1`, sections `AX`, `AXF` and `RNN`, recorded in `fixtures/export-output/probe-14.35.txt` with the 14.0.7 run beside it in `probe-14.0.7.txt`).
 
@@ -102,12 +102,12 @@ The port models this with an explicit flag on a written element: "received text"
 
 ### EXP-205: Namespace declarations on copied elements
 
-[14.0.7] `xsl:copy` copies, with the element, every namespace in scope for its source element (ticket 06, X1). An output element created by `xsl:copy` therefore carries an `xmlns:` declaration for each in-scope namespace that its nearest output ancestors have not already declared with the same URI, after its attributes. Elements written as literal result elements (`AML`, the generated `get` Items, the View/Form delete items) carry none.
+[14.0.7] `xsl:copy` copies, with the element, every namespace in scope for its source element (ticket 06, X1), the `xml` prefix excepted. Those bindings are the declarations of its source ancestors and of the element itself, outermost element first and in attribute order within one element. A prefix that an inner element declares again takes the position of the inner declaration, and an inner `xmlns=""` removes the default namespace. An output element created by `xsl:copy` carries a declaration (`xmlns:p="…"`, or `xmlns="…"` for the default namespace) for each of those bindings that is not already in force in the output at that point, after its attributes. What is in force depends on the output ancestors only: a binding that an ancestor declared with the same URI is not repeated, a prefix that is bound to another URI is declared again, and when the element that rebound it is closed the earlier binding is in force again for its following siblings. Elements written as literal result elements (`AML`, the generated `get` Items, the View/Form delete items) carry none of their own. An element in no namespace, copied or literal, whose output ancestors have a default namespace in force carries `xmlns=""`, after the other declarations.
 
 In part 1 every copied element sits below the root Item copy, so:
 
-- the root Item carries `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` (the Envelope's declaration), then any other namespace in scope for it;
-- a nested copied element carries a declaration only for a namespace that the source declares on or below it and that no output ancestor has;
+- the root Item carries `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` (the Envelope's declaration) first, then the other bindings in scope for it, in the order above;
+- a nested copied element carries a declaration only for a binding that the source declares on or below it and that no output ancestor has;
 - the property elements and Items the transform builds itself carry none.
 
 `ApplyXsl` then deletes the exact text of the SOAP-ENV declaration (ticket 06, X2; `EXP-400` to `EXP-499`). Every other declaration survives into the reloaded document, until `RemoveNamespaceNodes` removes prefixed attributes from `Item` elements only. So a declaration on a nested non-Item element stays in the exported file.
@@ -115,7 +115,15 @@ In part 1 every copied element sits below the root Item copy, so:
 ```xml
 <!-- source: Envelope declares SOAP-ENV; the root Item declares i18n; a nested Item declares foo; <n> declares bar -->
 <!-- output -->  <AML><Item type="A" id="1" action="add" xmlns:SOAP-ENV="…" xmlns:i18n="http://www.aras.com/I18N"><label i18n:x="1" xml:lang="en">l</label><Relationships><Item type="B" id="2" action="add" xmlns:foo="urn:foo"><n xmlns:bar="urn:bar">v</n></Item></Relationships></Item></AML>
+<!-- source: Envelope declares q and r; the root Item declares s and t; <x> declares u and v -->
+<!-- output -->  <AML><Item … action="add" xmlns:SOAP-ENV="…" xmlns:q="urn:q" xmlns:r="urn:r" xmlns:s="urn:s" xmlns:t="urn:t"><Relationships><Item … action="add"><x xmlns:u="urn:u" xmlns:v="urn:v" /></Item></Relationships></Item></AML>
+<!-- source: the root Item declares p as urn:1; <x> rebinds it to urn:2; the following <z> declares it as urn:1 again -->
+<!-- output -->  <AML><Item … xmlns:p="urn:1"><x xmlns:p="urn:2"><y p:a="1" /></x><z /></Item></AML>
+<!-- source: <Relationships xmlns="urn:d"> holds an Item with xmlns="" and type Method -->
+<!-- output -->  <Relationships xmlns="urn:d"><Item type="Method" action="get" select="id" xmlns=""><name>n</name></Item></Relationships>
 ```
+
+An Item in a default namespace (`<Item xmlns="urn:d">`) is not an `Item` for any template (EXP-210, EXP-220): a root Item like that is not found, and a nested one is copied as an ordinary element, with all its attributes and no `action`.
 
 [12.0] Same as 14.0.7.
 
@@ -123,7 +131,9 @@ In part 1 every copied element sits below the root Item copy, so:
 
 ### EXP-210: Envelope, Body and Result
 
-[14.0.7] The document node is handled by a template that visits only its `Envelope` child. An `Envelope` is any element whose local name is `Envelope`, a `Body` any child of it whose local name is `Body`, whatever their namespace or prefix. `Result` is different: only a child of `Body` named `Result` with no namespace is visited. The root Items are the `Item` children of that `Result`.
+[14.0.7] The document node is handled by a template that visits only its `Envelope` children. An `Envelope` is any element whose local name is `Envelope`, whatever its namespace or prefix, and its template visits the `Body` children. A `Body` is any element whose local name is `Body`, likewise, and its template visits the `Result` children. `Result` is different: only a `Result` with no namespace is visited, and its template visits the `Item` children with no namespace. The root Items are those Items.
+
+The three templates match their elements wherever they stand, not only at the top. An `Envelope`, a `Body` or a `Result` below the root Item (in the content of a property, say) is not copied: its template runs there, and the `Item` children of a `Result` in it are written as `<AML>` wrappers inside the surrounding output element (`<Item …><Envelope><Body><Result><Item type="B" id="2"/></Result></Body></Envelope></Item>` gives `<Item …><AML><Item type="B" id="2" action="add" /></AML></Item>`). A nested `Body` with no `Envelope` around it does the same. Everything else in those elements, text and other children included, is dropped.
 
 Any other shape writes nothing: a document whose root element is not an `Envelope`, a `Body` without a `Result`, a prefixed `Result` (`SOAP-ENV:Result`), or a `Result` without Item children. The empty output then fails the reload (EXP-201), and the item fails with `Root element is missing. Can't export item.`
 
@@ -320,10 +330,11 @@ An ItemType in any other property (`source_id`, `relationship_id`) is not collap
 
 [14.0.7] In an `Item` of type `Property` that has a `data_type` child equal to `foreign`, the `data_source` element is replaced by `<data_source><Item type="Property" action="get" select="id"><name>NAME</name><source_id>SRC</source_id></Item></data_source>`. The element's own attributes and text are dropped.
 
-- NAME is the string-value of the first `name` child of the first sibling Property Item whose `id` child equals the foreign property's `data_source` text. A sibling is an `Item` of type `Property` with the same parent as the foreign property: its `Relationships` element, or the `Result` for a root Property, which can then find itself. The property's `id` is the element `id`, not the attribute. With no match NAME is empty.
+- The matching siblings are the `Item` children of type `Property` of the foreign property's parent (its `Relationships` element, or the `Result` for a root Property, which can then find itself) that have an `id` child whose string-value equals the string-value of some `data_source` child of the foreign property. The `id` is the element `id`, not the attribute, and the comparison is an exact string comparison of the whole string-value (` A ` is not `A`, and `<id><x>A</x></id>` is `A`). Of two `data_source` children of the foreign property, either can match.
+- NAME is the string-value of the first `name` child in document order among all the matching siblings, so a first match without a `name` child is skipped for the next one that has it. With no match, or no `name` in any, NAME is empty.
 - SRC is the string-value of the foreign property's own first `source_id` child (empty when absent).
 
-Both children are always written, with empty text if need be (EXP-204). A `data_source` of a Property that is not foreign is copied unchanged.
+Both children are always written, with empty text if need be (EXP-204). A Property is foreign when some `data_type` child has the string-value `foreign`, so one of two `data_type` children is enough. A `data_source` of a Property that is not foreign is copied unchanged. Each `data_source` child of a foreign Property is replaced, so two of them give two replacements.
 
 [12.0] Same as 14.0.7.
 
@@ -331,8 +342,8 @@ Both children are always written, with empty text if need be (EXP-204). A `data_
 
 [14.0.7] In the same kind of Property, the `foreign_property` element is replaced by `<foreign_property><Item type="Property" action="get" select="id"><keyed_name>KN</keyed_name><source_id><Item type="ItemType" action="get" select="id"><name>IT</name></Item></source_id></Item></foreign_property>`. The element's own attributes and text are dropped.
 
-- KN is the element's `keyed_name` attribute (empty when absent).
-- IT is the `name` attribute of the `data_source` child of the same sibling Property that EXP-250 finds (the item property the foreign one reads through), that is, the name of the ItemType it points to. It is empty without a match, or when that `data_source` has no `name` attribute.
+- KN is the first `keyed_name` attribute in document order among the `foreign_property` children of the Property (the same value for each of them), empty when none has one.
+- IT is the first `name` attribute in document order among the `data_source` children of the matching siblings that EXP-250 finds (the item property the foreign one reads through), that is, the name of the ItemType it points to. It is empty without a match, or when none of those `data_source` elements has a `name` attribute.
 
 ```xml
 <!-- source: Property PB (foreign) beside Property PA (item, data_source name="Parent") -->
@@ -345,7 +356,7 @@ Both children are always written, with empty text if need be (EXP-204). A `data_
 
 [14.0.7] For a `propertytype_id` that is a child of an `Item` of type `Field`:
 
-- **Dropped** (nothing written) when the string-value of the `name` child of its first `Item` child of type `Property` is one of the system property names: `behavior`, `classification`, `config_id`, `created_by_id`, `created_on`, `css`, `current_state`, `generation`, `history_id`, `id`, `is_current`, `is_released`, `keyed_name`, `release_date`, `effective_date`, `locked_by_id`, `major_rev`, `managed_by_id`, `minor_rev`, `modified_by_id`, `modified_on`, `new_version`, `not_lockable`, `owned_by_id`, `permission_id`, `related_id`, `sort_order`, `source_id`, `state`, `itemtype`, `superseded_date`, `team_id`. The test is a substring test (EXP-271); with no such Item child the name is empty and nothing is dropped.
+- **Dropped** (nothing written) when the string-value of the first `name` child in document order among its `Item` children of type `Property` is one of the system property names: `behavior`, `classification`, `config_id`, `created_by_id`, `created_on`, `css`, `current_state`, `generation`, `history_id`, `id`, `is_current`, `is_released`, `keyed_name`, `release_date`, `effective_date`, `locked_by_id`, `major_rev`, `managed_by_id`, `minor_rev`, `modified_by_id`, `modified_on`, `new_version`, `not_lockable`, `owned_by_id`, `permission_id`, `related_id`, `sort_order`, `source_id`, `state`, `itemtype`, `superseded_date`, `team_id`. The test is a substring test (EXP-271); with no such Item child, or none with a `name`, the name is empty and nothing is dropped. A first Property without a `name` is skipped for the next one that has it.
 - Otherwise the element is copied with its attributes, and its content is the element's string-value when it has no `Item` child, else the first `id` attribute found among its `Item` children (of any type), which writes `<propertytype_id></propertytype_id>` when there is none (EXP-204).
 
 The Field itself stays in the AML either way. The fix pass of part 2 selects Fields by the `keyed_name` attribute of `propertytype_id`, not by this embedded Property, so the two can disagree: a Field whose attribute names a system property but that has no embedded Property keeps its `propertytype_id` and also gets a fix item with empty names.
@@ -378,6 +389,8 @@ A system property is itself dropped from its place by part 2's Property drop lis
 ### EXP-254: The reference of a FileSelectorTemplate is written as CDATA
 
 [14.0.7] A `reference` element is rewritten when its path from an ItemType is exactly `Item[ItemType]/Relationships/Item[DiscussionTemplate]/Relationships/Item[FeedTemplate]/Relationships/Item[FileSelectorTemplate]/reference`, with the ItemType at any depth (the root, or one nested). The element is copied without its attributes, and its content is `<![CDATA[`, the element's string-value, `]]>`, all three written with escaping disabled. The value reaches the output raw: `<`, `&` and quotes unescaped, an entity such as `&amp;amp;` in the source (the text `&amp;`) as `&amp;` inside the CDATA, and line breaks as `\r\n`. An empty `reference` gives `<reference><![CDATA[]]></reference>`.
+
+The value is checked like all text the transform writes: a numeric reference to a character XML cannot hold in a `reference` fails the transform (EXP-361).
 
 A `reference` anywhere else on that path (a FeedTemplate directly under the ItemType, a root that is not an ItemType) is copied unchanged and escaped like any text. The `]]>` inside the value is not split (EXP-270).
 

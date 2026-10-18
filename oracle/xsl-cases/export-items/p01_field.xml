@@ -1,0 +1,10 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Form" id="F1"><name>f</name><Relationships>
+<Item type="Body" id="B1"><Relationships>
+<Item type="Field" id="FL1"><name>f1</name><propertytype_id keyed_name="name" type="Property"><Item type="Property" id="PR1"><name>name</name><source_id keyed_name="Part" type="ItemType">T1</source_id></Item></propertytype_id></Item>
+<Item type="Field" id="FL2"><name>f2</name><propertytype_id keyed_name="id" type="Property"><Item type="Property" id="PR2"><name>id</name><source_id keyed_name="Part" type="ItemType">T1</source_id></Item></propertytype_id></Item>
+<Item type="Field" id="FL3"><name>f3</name><propertytype_id keyed_name="zz" type="Property">PR3</propertytype_id></Item>
+<Item type="Field" id="FL4"><name>f4</name><propertytype_id is_null="1"/></Item>
+<Item type="Field" id="FL5"><name>f5</name><propertytype_id keyed_name="x" type="Property"><Item type="Property" id="PR5"><name>behavior|state</name></Item></propertytype_id></Item>
+<Item type="Field" id="FL6"><name>f6</name><propertytype_id keyed_name="x" type="Property"><Item type="Property" id="PR6"/></propertytype_id></Item>
+<Item type="Other" id="O1"><propertytype_id keyed_name="x" type="Property">O1P</propertytype_id></Item>
+</Relationships></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

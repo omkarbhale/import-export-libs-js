@@ -1,0 +1,11 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships>
+<Item type="View" id="V1" action="add"><role keyed_name="World" type="Identity"><Item type="Identity" action="get" select="id"><name>World</name></Item></role><method keyed_name="mname" type="Method"><Item type="Method" action="get" select="id"><name>mname</name></Item></method></Item>
+<Item type="View" id="V2" action="add"><role keyed_name="Group" type="Identity">R2</role></Item>
+<Item type="Activity Template" id="A1" action="add"><escalate_to keyed_name="Owner" type="Identity"><Item type="Identity" action="get" select="id"><name>Owner</name></Item></escalate_to></Item>
+<Item type="Activity Template Assignment" id="A2" action="add"><escalate_to keyed_name="Group" type="Identity">E2</escalate_to></Item>
+<Item type="Activity Template EMail" id="A3" action="add"><alternate_identity keyed_name="Super User" type="Identity"><Item type="Identity" action="get" select="id"><name>Super User</name></Item></alternate_identity></Item>
+<Item type="Life Cycle Transition" id="L1" action="add"><role keyed_name="Manager" type="Identity"><Item type="Identity" action="get" select="id"><name>Manager</name></Item></role><pre_action keyed_name="pre" type="Method"><Item type="Method" action="get" select="id"><name>pre</name></Item></pre_action><post_action keyed_name="post" type="Method"><Item type="Method" action="get" select="id"><name>post</name></Item></post_action></Item>
+<Item type="Workflow Map" id="W1" action="add"><process_owner keyed_name="Creator" type="Identity"><Item type="Identity" action="get" select="id"><name>Creator</name></Item></process_owner></Item>
+<Item type="Activity Template" id="A4" action="add"><role keyed_name="World" type="Identity">E6</role><alternate_identity keyed_name="World" type="Identity">E7</alternate_identity></Item>
+<Item type="Other" id="O1" action="add"><role keyed_name="World" type="Identity">E8</role><escalate_to keyed_name="World" type="Identity">E9</escalate_to></Item>
+</Relationships></Item></AML>

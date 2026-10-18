@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><n>&amp; &lt; &gt; ]]&gt; " ' &#9; &#xA0; &#x2028; &#x85; &#x7F;&#xD7FF;&#xE000;&#xFFFD;&#x10000;&#x10FFFF;</n></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

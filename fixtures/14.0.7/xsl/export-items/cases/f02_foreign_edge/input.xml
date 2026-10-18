@@ -1,0 +1,8 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" id="IT1"><name>Child</name><Relationships>
+<Item type="Property" id="PA"><id>PA</id><name>parent</name><data_type>item</data_type><data_source keyed_name="Parent" type="ItemType" name="Parent">IT0</data_source></Item>
+<Item type="Property" id="PA2"><id>PA</id><name>parent2</name><data_type>item</data_type><data_source type="ItemType" name="Parent2">IT0</data_source></Item>
+<Item type="Property" id="PB"><id>PB</id><name>pname</name><data_type>foreign</data_type><data_source keyed_name="parent" type="Property" is_null="0">PA</data_source><foreign_property keyed_name="name" type="Property">PX</foreign_property><source_id keyed_name="Child" type="ItemType">IT1</source_id></Item>
+<Item type="Property" id="PC"><id>PC</id><name>pmissing</name><data_type>foreign</data_type><data_source>ZZ</data_source><foreign_property>PX</foreign_property></Item>
+<Item type="Property" id="PD"><id>PD</id><name>pnon</name><data_type>string</data_type><data_source keyed_name="k" type="X">DS</data_source><foreign_property keyed_name="fk">FP</foreign_property></Item>
+<Item type="Property" id="PE"><id>PE</id><name>pempty</name><data_type>foreign</data_type><data_source/><foreign_property/></Item>
+</Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
