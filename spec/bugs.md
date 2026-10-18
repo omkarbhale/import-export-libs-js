@@ -563,6 +563,7 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the list of polymorphic ItemType names is a shared static that the first worker assigns empty before it requests the names and fills. A worker that runs `ReplaceReferencesToPolyLists` in that window reads an empty or partly filled list and converts no list Property whose data source is polymorphic. With the request held for three seconds, one of eight items was converted and seven were not.
 - **Why it is a bug:** the output of an item depends on whether another item happened to ask first. A correct engine would wait for the names or fetch them before the loop.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`, `Aras.Tools.SolutionUpgrade.CItemHelper::ReplaceReferencesToPolyLists`.
+- **Versions:** 14.35.
 
 ## DBP-090: a branch and a message that can never run
 
