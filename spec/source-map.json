@@ -9032,7 +9032,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-141"
           ]
         },
         {
@@ -9047,7 +9048,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-142",
+            "LP-186"
           ]
         },
         {
@@ -9062,7 +9065,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-142",
+            "LP-186"
           ]
         },
         {
@@ -9076,7 +9081,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-142",
+            "LP-186"
           ]
         },
         {
@@ -9163,7 +9170,8 @@
           "status": "unmapped",
           "rules": [
             "EXP-060",
-            "EXP-062"
+            "EXP-062",
+            "LP-126"
           ]
         },
         {
@@ -9197,7 +9205,9 @@
             "EXP-026",
             "EXP-061",
             "EXP-062",
-            "EXP-065"
+            "EXP-065",
+            "LP-124",
+            "LP-126"
           ]
         },
         {
@@ -9257,7 +9267,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-144"
           ]
         },
         {
@@ -9308,7 +9319,13 @@
             "EXP-418",
             "EXP-419",
             "EXP-428",
-            "EXP-460"
+            "EXP-460",
+            "LP-100",
+            "LP-124",
+            "LP-140",
+            "LP-145",
+            "LP-151",
+            "LP-182"
           ]
         },
         {
@@ -9321,7 +9338,11 @@
             "bodySha256": "3261101fa371ce1bf2056286b96ced6f06bfecb88a0a83fa498d6942ee6cef61",
             "textSha256": "0d6beed4623ef1e30f2dcb9fd720a5848312536bedd73fd53aff16f6baf4f31a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-122",
+            "LP-125"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::GetDefaultSelectAttribute",
@@ -9348,7 +9369,15 @@
             "bodySha256": "d0b29a2df06d15f34327247a3b3d0955c681e7f35032351d8fdc22032ca8b671",
             "textSha256": "80f4532a5011bca6794fe6b7b08c9423d33a26136a5cbe408ef9a5966415c1dd"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-120",
+            "LP-121",
+            "LP-126",
+            "LP-127",
+            "LP-182",
+            "LP-184"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::GetRelationshipRequestByExistingDocument",
@@ -9365,7 +9394,9 @@
             "EXP-003",
             "EXP-024",
             "EXP-025",
-            "EXP-049"
+            "EXP-049",
+            "LP-125",
+            "LP-184"
           ]
         },
         {
@@ -9381,7 +9412,12 @@
           "status": "unmapped",
           "rules": [
             "EXP-061",
-            "EXP-063"
+            "EXP-063",
+            "LP-122",
+            "LP-123",
+            "LP-124",
+            "LP-126",
+            "LP-184"
           ]
         },
         {
@@ -9424,7 +9460,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-141"
           ]
         },
         {
@@ -9439,7 +9476,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-143",
+            "LP-183"
           ]
         },
         {
@@ -9469,7 +9508,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-049"
+            "EXP-049",
+            "LP-125"
           ]
         },
         {
@@ -9525,7 +9565,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-400"
+            "EXP-400",
+            "LP-142",
+            "LP-186"
           ]
         },
         {
@@ -10686,7 +10728,12 @@
             "ilSha256": "436dbdfcbf037e4bf25d2ab49a8dd3dc3cea6bc904ab9f5f34953ad6db1c8852",
             "bodySha256": "ffa64cf911addaba9ccaca685baaabd15922a8737f69bdfc5e001dfb594cb477"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::MoveNext",
@@ -10698,7 +10745,12 @@
             "bodySha256": "63c457ba54aa9ac10d625d76835b64c697c71ae41bbdad310e7930b85122d814",
             "textSha256": "810bc143463d160651a2010769cb45b93e8984b4581bd2fe8ff7101b9825288f"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.Collections.Generic.IEnumerable<Aras.Tools.SolutionUpgrade.Interfaces.LanguageInfo>.GetEnumerator",
@@ -10709,7 +10761,12 @@
             "ilSha256": "47b6fd411e5d210c121d32b5bd6da3cc53fc712853ed37889ce27c9352651ac5",
             "bodySha256": "051ed7bc85c94ba42910618882017044c9cb717001dd30d2ccf0b204de2523e6"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.Collections.Generic.IEnumerator<Aras.Tools.SolutionUpgrade.Interfaces.LanguageInfo>.get_Current",
@@ -10720,7 +10777,12 @@
             "ilSha256": "b3ddf85a2663ad36761327c94acf1a97c5a9952f484b5bae2e69ac0a7d2cda31",
             "bodySha256": "72d6139f097256668dc0920611cb816f8443a8f8a696ab4b13833ffcbd0dd5d3"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.Collections.IEnumerable.GetEnumerator",
@@ -10731,7 +10793,12 @@
             "ilSha256": "fd47e8f865710e88d33feffd6b790b94464ffe8ca2161e819d497ac04713e300",
             "bodySha256": "c633e42c3d86a570cdd52e73db8810386f2278ebb7e0e854109a632d55e15ad4"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.Collections.IEnumerator.Reset",
@@ -10742,7 +10809,12 @@
             "ilSha256": "fc0639b6a65bad7cd481dcb27e91a6dd7d61395c2d56c35e96a63f9459f3ebdd",
             "bodySha256": "b5a8e39e871166dd37fb343e9e826d233ef800d714fd2fa1e4f1db8e4483cbaa"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.Collections.IEnumerator.get_Current",
@@ -10753,7 +10825,12 @@
             "ilSha256": "b3ddf85a2663ad36761327c94acf1a97c5a9952f484b5bae2e69ac0a7d2cda31",
             "bodySha256": "72d6139f097256668dc0920611cb816f8443a8f8a696ab4b13833ffcbd0dd5d3"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<GetLanguagesFromInnovator>d__95::System.IDisposable.Dispose",
@@ -10764,7 +10841,12 @@
             "ilSha256": "ae6db1282a680413f5e7d5f2705b3e95105f51e7e3fd1b5cfc0e2c39972464b7",
             "bodySha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "LP-115",
+            "LP-180",
+            "LP-181"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::.cctor",
@@ -11315,7 +11397,11 @@
           "status": "unmapped",
           "rules": [
             "IMP-622",
-            "IMP-623"
+            "IMP-623",
+            "LP-115",
+            "LP-127",
+            "LP-180",
+            "LP-181"
           ]
         },
         {
@@ -13140,7 +13226,9 @@
           "status": "unmapped",
           "rules": [
             "IMP-620",
-            "IMP-621"
+            "IMP-621",
+            "LP-111",
+            "LP-112"
           ]
         },
         {
@@ -13155,7 +13243,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-620"
+            "IMP-620",
+            "LP-111",
+            "LP-112"
           ]
         },
         {
@@ -13215,7 +13305,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-621"
+            "IMP-621",
+            "LP-114",
+            "LP-180"
           ]
         },
         {
@@ -13326,6 +13418,13 @@
             "IMP-635",
             "IMP-640",
             "LP-004",
+            "LP-100",
+            "LP-110",
+            "LP-111",
+            "LP-112",
+            "LP-113",
+            "LP-114",
+            "LP-185",
             "WIRE-031"
           ]
         },
@@ -13628,7 +13727,8 @@
             "EXP-555",
             "EXP-556",
             "EXP-557",
-            "EXP-558"
+            "EXP-558",
+            "LP-150"
           ]
         },
         {
@@ -13970,7 +14070,9 @@
           "status": "unmapped",
           "rules": [
             "IMP-621",
-            "IMP-623"
+            "IMP-623",
+            "LP-114",
+            "LP-180"
           ]
         },
         {
@@ -14484,7 +14586,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-622"
+            "IMP-622",
+            "LP-115"
           ]
         },
         {
@@ -14499,7 +14602,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-622"
+            "IMP-622",
+            "LP-115"
           ]
         },
         {
@@ -14514,7 +14618,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-622"
+            "IMP-622",
+            "LP-115"
           ]
         },
         {
@@ -14529,7 +14634,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-622"
+            "IMP-622",
+            "LP-115"
           ]
         },
         {
@@ -16206,7 +16312,9 @@
           "rules": [
             "EXP-501",
             "IMP-600",
-            "IMP-601"
+            "IMP-601",
+            "LP-101",
+            "LP-110"
           ]
         },
         {
@@ -16515,7 +16623,9 @@
           "rules": [
             "EXP-501",
             "IMP-600",
-            "IMP-601"
+            "IMP-601",
+            "LP-101",
+            "LP-110"
           ]
         },
         {

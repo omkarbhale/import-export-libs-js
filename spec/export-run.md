@@ -62,7 +62,7 @@ Export never reads `Password` (only the host does, to log in), `Verbose` or `LPD
 
 [12.0] `SUExportContext` is the same four settings. `SolutionUpgradeContext` has the properties `Action`, `Url`, `Password`, `DataBase`, `UserName`, `WorkingDirectory`, `Verbose`, `LogFilePath`, `ManifestFile` and `Timeout`; it has no `LPPath`, `LPPackage` or `LPDebug` and no certificate settings. The `ImportExport` enum has `Import` and `Export` only. Export reads `ManifestFile`, `LogFilePath`, `WorkingDirectory` and `Timeout`, with the effects of 14.0.7, and `Action` only in the constructor, to tell an import from an export. Nothing is logged from the settings, as there is no header.
 
-[14.35] Same four export settings and the same defaults. `SolutionUpgradeContext` has one more property, `Languages` (a string array, null by default), and `Action` has three more values: `ExportLanguageResourcesOnly`, `ExportMetadataWithLanguageResources` and `ImportDPPatch` (ticket 54 and the DB patch ticket). `ExportProc` passes the context's `Action` and `Languages` to every `PackageItem` call, and the constructor works on `Languages` only for imports and the language exports (EXP-502). With `Action = Export` and no languages, which is what a plain export sets, nothing of them changes a result (EXP-400).
+[14.35] Same four export settings and the same defaults. `SolutionUpgradeContext` has one more property, `Languages` (a string array, null by default), and `Action` has three more values: `ExportLanguageResourcesOnly`, `ExportMetadataWithLanguageResources` and `ImportDPPatch` (the first two: LP-100; the last: the DB patch rules). `ExportProc` passes the context's `Action` and `Languages` to every `PackageItem` call, and the constructor works on `Languages` only for imports and the language exports (EXP-502). With `Action = Export` and no languages, which is what a plain export sets, nothing of them changes a result (EXP-400).
 
 ### EXP-502: The manager is built around a helper, a context and a message factory
 
@@ -77,7 +77,7 @@ The helper, the loaded manifest and the engine's `IOWrapper` are read through th
 
 [12.0] Same checks, in the same order, and the same timeout and manifest loading, with the differences of the older code: the manager has no `IOWrapper`, so `File.Exists(ManifestFile)` and the load go to the path as given (no normalisation, EXP-421), and the manifest is read with `XmlDocument.Load(path)` (MAN-003), which honours the encoding declaration and throws on invalid bytes, where 14.0.7 reads text and calls `LoadXml`.
 
-[14.35] Same for an export with `Action = Export` and no languages. The constructor does more only for an import (it scans every package of the manifest for language codes, ticket 53) and for the language exports, which resolve the language list through the server (ticket 54). It ends with a check of the selected languages that does nothing when there are none. `ExportSolutions` itself reads `ItemHelper`, the context and the message factory as before.
+[14.35] Same for an export with `Action = Export` and no languages. The constructor does more only for an import (it scans every package of the manifest for language codes, ticket 53) and for the language exports, which resolve the language list through the server (LP-110 to LP-115). It ends with a check of the selected languages that does nothing when there are none. `ExportSolutions` itself reads `ItemHelper`, the context and the message factory as before.
 
 ## Messages and the log
 

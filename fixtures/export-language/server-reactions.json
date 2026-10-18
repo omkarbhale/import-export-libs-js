@@ -1,0 +1,64 @@
+{
+  "recordedOn": "2026-10-19",
+  "server": { "profile": "dev", "database": "12sp9", "release": "12 SP9" },
+  "client": "the dev MCP client, which prints each answer as JSON and drops null properties; it reports a get that finds nothing as count 0 and does not show the SOAP envelope or the fault code",
+  "readOnly": true,
+  "cases": [
+    {
+      "id": "languages",
+      "request": "<AML><Item type=\"Language\" action=\"get\" select=\"code,name\"/></AML>",
+      "answer": { "count": 1, "items": [{ "code": "en", "name": "English" }] },
+      "shows": "dev has one language; the engine's GetLanguagesFromInnovator (LP-115) yields [\"en\"] here, so a `*` list becomes [] (LP-111, LP-112) and any other code fails the installed-language check (LP-114)"
+    },
+    {
+      "id": "ml-lookup-Property",
+      "request": "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name>Property</name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"name\"><data_type>ml_string</data_type></Item></Relationships></Item></AML>",
+      "answer": { "count": 1, "relationships": ["default_value", "help_tooltip", "label"] },
+      "shows": "the engine's LP-120 lookup, as it sends it: the ItemType with only the matching Property rows"
+    },
+    {
+      "id": "ml-lookup-ItemType",
+      "request": "the same request for ItemType",
+      "answer": { "count": 1, "relationships": ["help_url", "label", "label_plural"] }
+    },
+    {
+      "id": "ml-lookup-Value",
+      "request": "the same request for Value",
+      "answer": { "count": 1, "relationships": ["label"] }
+    },
+    {
+      "id": "ml-lookup-List",
+      "request": "the same request for List",
+      "answer": { "count": 0 },
+      "shows": "a type without ml_string properties answers no items: the lookup is a join over the Property rows, so the engine's 'no items' branch (LP-120, fault code 0 by IOM's convention, inferred) gives an empty name list"
+    },
+    {
+      "id": "ml-lookup-Form",
+      "request": "the same request for Form",
+      "answer": { "count": 0 }
+    },
+    {
+      "id": "ml-lookup-all-types",
+      "request": "<AML><Item type=\"ItemType\" action=\"get\" select=\"name,label\"><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><data_type>ml_string</data_type></Item></Relationships></Item></AML>",
+      "answer": { "count": 63 },
+      "shows": "63 ItemTypes have at least one ml_string property"
+    },
+    {
+      "id": "select-unknown-name-Property",
+      "request": "<AML><Item type=\"Property\" action=\"get\" select=\"label,label_de,name,*[is_not_null()]\"><name>label</name><source_id><Item type=\"ItemType\" action=\"get\"><name>Property</name></Item></source_id></Item></AML>",
+      "answer": { "count": 1, "note": "no fault; the item has no label_de field" },
+      "shows": "a suffixed name for a language the database lacks is dropped without a fault (LP-127); the `*[is_not_null()]` entry is accepted"
+    },
+    {
+      "id": "select-unknown-name-ItemType",
+      "request": "<AML><Item type=\"ItemType\" action=\"get\" select=\"label,label_de,name,is_versionable\"><name>List</name></Item></AML>",
+      "answer": { "count": 1, "properties": { "label": "List", "name": "List", "is_versionable": "0" }, "note": "no fault; no label_de field" }
+    }
+  ],
+  "notShown": [
+    "how the server writes a translated value into an answer (dev has one language, so no i18n element can be returned)",
+    "whether xml:lang=\"en\" is written on the default value",
+    "which suffix the server uses for a language whose suffix differs from its code (the engine reads `code`, LP-115)",
+    "the fault code of an empty ml lookup (the client does not show it)"
+  ]
+}

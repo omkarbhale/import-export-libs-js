@@ -947,7 +947,7 @@ This is probe `AX17`. Its outputs are shown after the namespace handling of `EXP
 - a flagged Property that is not one of the 32 names is an ordinary Property of the ItemType and is not selected (`AXF6`);
 - the three dated names (`effective_date`, `release_date`, `superseded_date`) keep their extra condition (the ItemType is versionable) in front of the alternatives, so the flag alone does not select them in a non-versionable ItemType. *From the template; not probed.*
 
-Only the language-resource export sets the attribute: `MarkPropertiesWithTranslationsIfNeeded` adds `export_has_translations="1"` to a Property that has a non-`en` translation, and it does so only when the engine action is `ExportLanguageResourcesOnly` (language-export rules, ticket 54). With the plain export the alternative is never true, so the stylesheet behaves as in 14.0.7.
+Only the language-resource export sets the attribute: `MarkPropertiesWithTranslationsIfNeeded` adds `export_has_translations="1"` to a Property that has a non-`en` translation, and it does so only when the engine action is `ExportLanguageResourcesOnly` (LP-141). With the plain export the alternative is never true, so the stylesheet behaves as in 14.0.7.
 
 ## Reproduced bugs, part 2
 

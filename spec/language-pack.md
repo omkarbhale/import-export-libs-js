@@ -1,6 +1,6 @@
 # Language-pack import
 
-Language-pack import (`lpimport`) turns a folder of translations that Aras exported into an ordinary import. `LanguagePackPreprocessor` reads the pack's configuration and its per-ItemType files, asks the server which languages it has, and writes a temporary package whose files are `edit` items that set the translated values. The host then imports that package like any other. This document specifies the preprocessor, the temporary package it makes, and the call sequence of the host that drives it. The rules are `LP-001` to `LP-099`. 14.35's changes to the preprocessor and to the import of its output are `[14.35]` variants of the rules below and the rules `LP-040` to `LP-044`. The language-resource export of 14.35 is `LP-100` onwards (wayfinder ticket 54).
+Language-pack import (`lpimport`) turns a folder of translations that Aras exported into an ordinary import. `LanguagePackPreprocessor` reads the pack's configuration and its per-ItemType files, asks the server which languages it has, and writes a temporary package whose files are `edit` items that set the translated values. The host then imports that package like any other. This document specifies the preprocessor, the temporary package it makes, and the call sequence of the host that drives it. The rules are `LP-001` to `LP-099`. 14.35's changes to the preprocessor and to the import of its output are `[14.35]` variants of the rules below and the rules `LP-040` to `LP-044`. The language-resource export of 14.35 is `LP-100` onwards, in `language-export.md`.
 
 Sources:
 

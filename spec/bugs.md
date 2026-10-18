@@ -707,4 +707,58 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the `UPDATE innovator.PROPERTY` statement of the lpimport branch puts the translated text between `N'` and `'` without doubling an apostrophe, and the column name, suffix and property id unquoted or unescaped. A translation with an apostrophe makes invalid SQL.
 - **Why it is a bug:** a correct engine would double the apostrophes or use parameters.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::SetLocalizedValueViaApplySqlRequest`.
+## LP-151: an item that writes no file is logged as exported
+
+- **Behaviour:** in `ExportLanguageResourcesOnly`, an item whose answer has no language element makes `CExportItems.Export` return before it creates the type folder or the file. The caller sees a normal return, so the log gets the line `Item id :{id}  keyed_name : {name}   type : {type} successfully exported` and the status message `Item i of n`, for an item that has no file.
+- **Why it is a bug:** the log says the item was exported, and the run's output has nothing for it. A correct engine would log that the item had nothing to export, or would not count it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export`, `Aras.Tools.SolutionUpgrade.CExportItems::RemoveNotLocalizedProperties`.
+- **Versions:** 14.35.
+
+## LP-180: the installed-language check is case-sensitive while the server's codes are lower-cased
+
+- **Behaviour:** `GetLanguagesFromInnovator` lower-cases each Language `code`, and `ThrowIfNoSelectedLanguagesInDatabase` compares the selected codes with them ordinally. A selected `DE`, `De` or ` de` is reported as "not installed" although the server has `de`. The engine's removal of `en` is exact too, so `EN` is neither removed nor found.
+- **Why it is a bug:** a language the database has is refused because of how its code was written. A correct engine would compare the codes the same way on both sides.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ThrowIfNoSelectedLanguagesInDatabase`, `Aras.Tools.SolutionUpgrade.CItemHelper::GetLanguagesFromInnovator`, `Aras.Tools.SolutionUpgrade.ImportExportManager::.ctor`.
+- **Versions:** 14.35.
+
+## LP-181: a Language item without a code throws an unwrapped NullReferenceException
+
+- **Behaviour:** a Language item of the server's answer that has no `code` makes `getProperty("code").ToLowerInvariant()` throw `System.NullReferenceException` while the list is enumerated, from the manager's constructor (the `*` expansion, or the installed-language check). It is not a `CItemException`.
+- **Why it is a bug:** the host reports a null reference instead of a message about the server's data. A correct engine would skip the item or say what is wrong.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetLanguagesFromInnovator`.
+- **Versions:** 14.35.
+
+## LP-182: a failed ml lookup throws "Not a single item" and is remembered for the run
+
+- **Behaviour:** when the lookup for a type's ml_string properties answers a fault other than "no items", or an ItemType without `Relationships`, the engine reads the `name` of an empty set and IOM throws `System.Exception` with the message `Not a single item`. The exception comes out of the per-type template factory, which keeps it: every later item of that type in the call gets the same exception without sending a request, and `Export` does not wrap it.
+- **Why it is a bug:** a transient server error on one lookup loses the type for the whole run, under a message that names neither the lookup nor the type. A correct engine would report the server's fault, and would ask again.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::GetMultilangualPropertyNamesForItemType`.
+- **Versions:** 14.35.
+
+## LP-183: the i18n elements of one property come out in reverse order
+
+- **Behaviour:** `OrderPropertiesWithTranslations` moves each prefixed sibling directly after the same default-language element, so several translations of one property end in the reverse of the order they had: `en, de, fr` becomes `en, fr, de`. Both language modes do it.
+- **Why it is a bug:** the step exists to put each translation behind its default-language element, and it reverses the translations among themselves, so the file's order depends on how many there are.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::OrderPropertiesWithTranslations`.
+- **Versions:** 14.35.
+
+## LP-184: the ml lookups are repeated for every visit of the tree
+
+- **Behaviour:** the ml_string lookup of a type is not cached. A relationship type is asked once as a row and again as the root of its own subtree, a row that is replaced by a subtree has its select computed and discarded, and every element of the ItemType body is asked (31 lookups before the main fetch). A depth-3 tree sends 18 lookups before the main fetch.
+- **Why it is a bug:** the same question is put to the server many times in one run. A correct engine would ask each type once.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::GetMultilangualPropertyNamesForItemType`, `Aras.Tools.SolutionUpgrade.CExportItems::GetRelationshipsRequestByLevel`, `Aras.Tools.SolutionUpgrade.CExportItems::GetRelationshipRequestByExistingDocument`.
+- **Versions:** 14.35.
+
+## LP-185: the host accepts `EN` in the language list, the engine does not
+
+- **Behaviour:** `ConsoleUpgrade` requires `en` in `langs` and compares it ignoring case. The engine removes only the exact `en` and then checks the rest against the server's lower-cased codes (LP-180). `langs=EN,de` passes the host and fails in the manager's constructor with `EN` reported as not installed.
+- **Why it is a bug:** the two checks disagree about what `en` is. A correct pair would use one comparison.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::.ctor` (and the host's `ConsoleUpgrade::ParseArguments`).
+- **Versions:** 14.35.
+
+## LP-186: a kept language element loses its child elements but keeps their text
+
+- **Behaviour:** `RemoveNotLocalizedProperties` removes every element outside the kept set, and the children of a kept language element are such elements, but their text nodes are not removed. `<label xml:lang="de"><b>x</b>t</label>` is written as `<label xml:lang="de">t</label>`.
+- **Why it is a bug:** a translation that holds markup is cut apart. A correct engine would keep the whole element or none of it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::RemoveNotLocalizedProperties`.
 - **Versions:** 14.35.
