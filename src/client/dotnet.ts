@@ -51,6 +51,17 @@ export function isNullOrWhiteSpace(text: string | null | undefined): boolean {
   return text === null || text === undefined || WHITE_SPACE.test(text);
 }
 
+const WHITE_SPACE_CHARACTER = /[\t-\r \u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/;
+
+/** `string.Trim()`: removes .NET's white space from both ends (JavaScript's `trim` also removes U+FEFF and leaves U+0085). */
+export function trimWhiteSpace(text: string): string {
+  let start = 0;
+  let end = text.length;
+  while (start < end && WHITE_SPACE_CHARACTER.test(text.charAt(start))) start += 1;
+  while (end > start && WHITE_SPACE_CHARACTER.test(text.charAt(end - 1))) end -= 1;
+  return text.slice(start, end);
+}
+
 const INT32_FORMAT = /^[\t\n\v\f\r ]*([+-]?)([0-9]+)[\t\n\v\f\r ]*$/;
 
 /** `int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out value)`; undefined when it fails. */

@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { appendChild, createElement, createXmlDocument, documentElementOf, isEmpty, removeAll, removeChild, setInnerText } from "./dom.js";
+import { appendChild, createElement, createXmlDocument, documentElementOf, importNode, isEmpty, removeAll, removeChild, setInnerText } from "./dom.js";
 import type { XmlElement, XmlNode } from "./dom.js";
 import { setInnerXml } from "./dom-ops.js";
 import { ArgumentException, NotSupportedException, XPathException, XmlException } from "./errors.js";
@@ -91,6 +91,20 @@ describe("the DOM helpers keep .NET's IsEmpty rules (EXP-427)", () => {
     expect(written(doc)).toBe("<AML>\r\n <a></a>\r\n <b></b>\r\n</AML>");
   });
 
+  it("imports a deep copy owned by the document, with the IsEmpty flags and unresolved entity references of the original", () => {
+    const source = load("<S><a/><b></b><c/></S>");
+    setInnerXml(selectSingleNode("/S/c", source) as XmlElement, "x &nbsp; y");
+    const target = load("<T/>");
+    const copy = importNode(target, documentElementOf(source) as XmlElement);
+    appendChild(documentElementOf(target) as XmlElement, copy);
+    expect(copy.ownerDocument).toBe(target);
+    expect(written(target)).toBe("<T>\r\n <S>\r\n  <a />\r\n  <b></b>\r\n  <c>x &nbsp; y</c>\r\n </S>\r\n</T>");
+    expect(outerXml(copy)).toBe(outerXml(documentElementOf(source) as XmlElement));
+    // the copy is its own: editing it leaves the original alone
+    setInnerText(copy.firstChild as XmlElement, "changed");
+    expect(outerXml(documentElementOf(source) as XmlElement)).toBe("<S><a /><b></b><c>x &nbsp; y</c></S>");
+  });
+
   it("reads InnerXml as .NET does: white space kept, unknown entities kept as references, an empty string changes nothing", () => {
     const doc = load("<AML><p/></AML>", false);
     const p = selectSingleNode("/AML/p", doc) as XmlElement;
@@ -129,6 +143,16 @@ describe("XPath", () => {
     expect(selectNodes("root/item", doc).length).toBe(0);
     expect(selectNodes("Root/item[@name='b']", doc).length).toBe(1);
     expect(selectNodes("Root/item[@NAME='b']", doc).length).toBe(0);
+  });
+
+  it("reads and and or as operators when a parenthesis follows (the engine's envelope path)", () => {
+    const doc = load('<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/"><Body><Result><Item/></Result></Body></Envelope>');
+    const path = (ns: string) => `*[local-name()='Envelope' and (namespace-uri()='${ns}' or namespace-uri()='')]/*[local-name()='Body']`;
+    expect(selectNodes(path("http://schemas.xmlsoap.org/soap/envelope/"), doc).length).toBe(1);
+    expect(selectNodes(path("other"), doc).length).toBe(0);
+    const plain = load("<r><a/><b/></r>");
+    expect(selectNodes("r/*[self::a or (self::b)]", plain).length).toBe(2);
+    expect(selectNodes("r/*[self::a and (self::b)]", plain).length).toBe(0);
   });
 
   it("keeps the document order of a union after the document changes", () => {

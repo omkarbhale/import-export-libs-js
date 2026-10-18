@@ -1,5 +1,6 @@
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
+import { RECURSION_LIMIT, StackOverflowException } from "../recursion-limit.js";
 import { ExportItem } from "../export/export-item.js";
 import { formatMessage, isNullOrWhiteSpace } from "../io/dotnet-text.js";
 import type { PathEnvironment } from "../io/host-path.js";
@@ -31,20 +32,9 @@ const MISSING_DEPENDENCY =
   "One of imported packages depends on the package '{0}' that neither imported in this session nor exists in the database";
 
 /** `MoveToOrderedList` recurses without bound on some cycles; the port stops at this nesting depth instead (MAN-025). */
-export const MOVE_TO_ORDERED_LIST_MAX_DEPTH = 100_000;
+export const MOVE_TO_ORDERED_LIST_MAX_DEPTH = RECURSION_LIMIT;
 
-/**
- * The engine dies of a stack overflow where `MoveToOrderedList` never ends. The port raises this instead, with the
- * engine's own text, so that the process survives.
- * @spec MAN-025
- */
-export class StackOverflowException extends Error {
-  override name = "StackOverflowException";
-
-  constructor() {
-    super("Process is terminated due to StackOverflowException.");
-  }
-}
+export { StackOverflowException };
 
 function requireName(name: string | null): void {
   if (isNullOrWhiteSpace(name)) {

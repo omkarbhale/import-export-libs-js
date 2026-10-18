@@ -6,6 +6,7 @@ import { CItemException, ResponseDocument, getProperty, loadXml, stackText } fro
 import type { Innovator } from "./innovator.js";
 import { type XmlElement, attributeOf, descendantElements } from "./mini-xml.js";
 import { element, textElement } from "./request-text.js";
+import { RECURSION_LIMIT, StackOverflowException } from "../recursion-limit.js";
 import type { ArasVersion } from "./version.js";
 
 /** What the lookups need of the helper that owns them. */
@@ -285,12 +286,14 @@ export class ItemLookups {
 
   /**
    * `getDepencyLevel`: how many `source_id` steps lie above a relationship type, asked one step at a time and
-   * stopping at the first fault or the first answer without a `source_id`. There is no cycle guard.
+   * stopping at the first fault or the first answer without a `source_id`. The engine recurses without a guard and dies of a
+   * stack overflow on a cycle; the port stops with that error at the recursion limit instead (EXP-109).
    *
-   * @spec EXP-003 EXP-043
+   * @spec EXP-003 EXP-043 EXP-109
    */
   async getDepencyLevel(typeId: string, level: number): Promise<number> {
     for (;;) {
+      if (level + 1 >= RECURSION_LIMIT) throw new StackOverflowException();
       const request = element(
         "Item",
         [
