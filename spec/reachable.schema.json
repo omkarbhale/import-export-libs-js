@@ -38,6 +38,12 @@
         }
       }
     },
+    "entries": {
+      "description": "Library entry points, Type::Method, that seeded the walk besides the hosts. A scoped library API no host calls, not a host reference.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[^:]+::[^:]+$" }
+    },
     "methods": {
       "type": "array",
       "items": {

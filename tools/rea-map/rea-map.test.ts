@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { entryRoots, type InventoryMethod } from "./inventory.js";
 import { BlobReader } from "./metadata.js";
 import { sequencePointSpan } from "./pdb.js";
 import { type Graph, type GraphMethod, reachable } from "./reachability.js";
@@ -196,6 +197,50 @@ describe("reachability", () => {
   it("seeds instantiation and virtual calls a host makes", () => {
     const seen = reachable(graph, [{ instantiates: "B" }, { virtualCall: { name: "Do", shape: "System.Void()" } }]);
     expect([...seen].sort()).toEqual(["b1"]);
+  });
+});
+
+describe("library entry roots", () => {
+  const entry = (token: string, declaringType: string, name: string): InventoryMethod =>
+    ({ token, declaringType, name, fullName: `${declaringType}::${name}` }) as InventoryMethod;
+  const inventory = {
+    methods: [
+      entry("i", "Ns.IManager", "Apply"),
+      entry("m", "Ns.Manager", "Apply"),
+      entry("o1", "Ns.Manager", "Over"),
+      entry("o2", "Ns.Manager", "Over"),
+      entry("n", "Ns.Manager/Inner", "Apply"),
+      entry("o", "Ns.Other", "Apply"),
+    ],
+  };
+
+  it("roots every overload of the named method, by short or full type name", () => {
+    expect(entryRoots(inventory, ["IManager::Apply"])).toEqual([{ token: "i" }]);
+    expect(entryRoots(inventory, ["Ns.IManager::Apply"])).toEqual([{ token: "i" }]);
+    expect(entryRoots(inventory, ["Manager::Over"])).toEqual([{ token: "o1" }, { token: "o2" }]);
+    expect(entryRoots(inventory, ["Inner::Apply"])).toEqual([{ token: "n" }]);
+    expect(entryRoots(inventory, ["IManager::Apply", "Other::Apply"])).toEqual([{ token: "i" }, { token: "o" }]);
+  });
+
+  it("rejects an entry that is malformed, absent or ambiguous", () => {
+    expect(() => entryRoots(inventory, ["Apply"])).toThrow("not Type::Method");
+    expect(() => entryRoots(inventory, ["IManager::Apply::Extra"])).toThrow("not Type::Method");
+    expect(() => entryRoots(inventory, ["IManager::Missing"])).toThrow("no such method");
+    expect(() => entryRoots(inventory, ["Missing::Apply"])).toThrow("no such method");
+    expect(() => entryRoots(inventory, ["Apply::Apply"])).toThrow("no such method");
+  });
+
+  it("resolves an interface entry to the implementation of a type the walk instantiates", () => {
+    const shape = "System.Void()";
+    const methods: GraphMethod[] = [
+      { token: "i", fullName: "Ns.IManager::Apply", name: "Apply", type: "Ns.IManager", shape, virtual: true, newSlot: true },
+      { token: "m", fullName: "Ns.Manager::Apply", name: "Apply", type: "Ns.Manager", shape, virtual: true, newSlot: true },
+      { token: "c", fullName: "Ns.Manager::Check", name: "Check", type: "Ns.Manager", shape, virtual: false, newSlot: false },
+      { token: "u", fullName: "Ns.Unused::Check", name: "Check", type: "Ns.Unused", shape, virtual: false, newSlot: false },
+    ];
+    const graph: Graph = { methods, calls: new Map([["m", [{ opcode: "call", target: { token: "c" } }]]]), fieldTypes: new Map() };
+    expect([...reachable(graph, [{ instantiates: "Ns.Manager" }, ...entryRoots(inventory, ["IManager::Apply"])])].sort()).toEqual(["c", "i", "m"]);
+    expect([...reachable(graph, entryRoots(inventory, ["IManager::Apply"]))].sort()).toEqual(["i"]);
   });
 });
 
