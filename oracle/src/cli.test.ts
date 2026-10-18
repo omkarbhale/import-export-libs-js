@@ -8,6 +8,15 @@ vi.mock("./record.js", async (importOriginal) => ({
   record: vi.fn(async () => recorded.result!),
 }));
 
+const xslCalls = vi.hoisted(() => ({ requests: [] as unknown[] }));
+vi.mock("./xsl.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./xsl.js")>()),
+  recordXsl: vi.fn(async (req: { out: string }) => {
+    xslCalls.requests.push(req);
+    return { out: req.out, hostExit: 0, cases: 1, remainingSecrets: [] };
+  }),
+}));
+
 const { main } = await import("./cli.js");
 
 const LIST = { type: "List", id: "D82CDE4CAF7E43CF99BF5542C3197357" };
@@ -63,5 +72,43 @@ describe("oracle import exit status", () => {
     expect(await run(result(0, clean))).toBe(0);
     expect(await run(result(2, clean))).toBe(2);
     expect(stderr).not.toContain("re-check");
+  });
+});
+
+describe("oracle xsl", () => {
+  let stdout: string;
+  let stderr: string;
+
+  beforeEach(() => {
+    stdout = "";
+    stderr = "";
+    xslCalls.requests.length = 0;
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => ((stdout += String(chunk)), true));
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => ((stderr += String(chunk)), true));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const input = new URL("../xsl-cases/export/two-items.xml", import.meta.url).pathname;
+
+  it("needs a stylesheet, inputs, and a transcript with its call numbers", async () => {
+    expect(await main(["xsl", input])).toBe(64);
+    expect(stderr).toContain("xsl needs --xsl export.xsl|build.xsl");
+    expect(await main(["xsl", "--xsl", "nosuch.xsl", input])).toBe(64);
+    expect(await main(["xsl", "--xsl", "export.xsl"])).toBe(64);
+    expect(await main(["xsl", "--xsl", "export.xsl", "--seq", "3", input])).toBe(64);
+    expect(await main(["xsl", "--xsl", "export.xsl", "--transcript", "/tmp/nosuch", input])).toBe(64);
+    expect(xslCalls.requests).toEqual([]);
+  });
+
+  it("needs no password and hands the engine's options to the recorder", async () => {
+    vi.stubEnv("ARAS_PASSWORD", "");
+    const code = await main(["--engine", "14.35", "xsl", "--xsl", "build.xsl", "--culture", "sv-SE", "--out", "/tmp/oracle-xsl-test", input]);
+    vi.unstubAllEnvs();
+    expect(code).toBe(0);
+    expect(xslCalls.requests).toMatchObject([{ engine: "14.35", xsl: "build.xsl", culture: "sv-SE", out: "/tmp/oracle-xsl-test" }]);
+    expect((xslCalls.requests[0] as { inputs: { name: string }[] }).inputs.map((i) => i.name)).toEqual(["two-items"]);
   });
 });

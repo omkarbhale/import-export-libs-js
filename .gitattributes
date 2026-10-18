@@ -4,3 +4,4 @@
 fixtures/** -text
 oracle/native/** binary
 oracle/native/manifest.json -text diff
+oracle/xsl-cases/** -text

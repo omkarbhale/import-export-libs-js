@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Method" id="M1"><name>m</name><method_code></method_code><comments>a&#13;b&#10;c</comments><label a="1&#13;2&#10;3&#9;4"/></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

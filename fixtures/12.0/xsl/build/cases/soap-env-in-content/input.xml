@@ -1,0 +1,1 @@
+<AML><AML><Item type='Method' action='add' id='m' tempKeyName='k1' tempFullName='f1'><method_code><![CDATA[a xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" b]]></method_code><comments>xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"</comments></Item></AML></AML>

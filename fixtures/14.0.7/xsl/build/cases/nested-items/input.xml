@@ -1,0 +1,1 @@
+<AML><AML><Item type='ItemType' action='add' id='A' tempKeyName='k1' tempFullName='f1'><Relationships><Item type='ItemType' action='add' id='nestedA'/><Item type='ItemType' action='edit' id='nestedE'/><Item type='Property' action='add' id='np'/></Relationships></Item><Item type='ItemType' action='edit' id='E' tempKeyName='k2' tempFullName='f2'/></AML></AML>
