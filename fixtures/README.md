@@ -14,3 +14,5 @@ Rules for this folder:
 - **Credentials are scrubbed.** No password, auth or access token, or password hash is ever committed. `oracle/src/fixtures-scrubbed.test.ts` fails `npm test` if any file here holds credential-shaped text.
 - **14.35 logs compare as a set.** 14.35 exports in parallel, so its log line order is not deterministic.
 - Fixtures are recorded only on the dev instance. Imports use `LIBSJS-SCRATCH-*` packages and items, cleaned up after each run.
+
+`export-write/` is evidence for `spec/export-write.md`, not an engine run: the output of `oracle/export-write-probe/` (offline calls of the 14.0.7 post-XSL, file-layout and file-system code) and the NTFS case-collision table it measured.
