@@ -313,6 +313,7 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the dependency names of a package are cached in a `static readonly` table that no constructor clears, unlike the three other caches of the same code. A second export in the same process reuses the dependency list read by the first.
 - **Why it is a bug:** the dependencies can change between runs, or the second run can talk to another database; a correct engine would start each run with empty caches.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames`.
+- **Versions:** 14.0.7.
 
 ## IMP-211: a relationship owner addressed by where is queued with the text System.Xml.XmlAttribute
 
