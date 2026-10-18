@@ -2,6 +2,7 @@ import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { HttpConnectorExtension, HttpServerConnection } from "./connection.js";
 import { CItemException, type ResponseDocument } from "./fault.js";
 import { Innovator, type ServerConnection } from "./innovator.js";
+import { ItemLookups } from "./item-lookups.js";
 import { probeServerVersion } from "./probe.js";
 import { type ArasVersion, VersionRefusal, engineAcceptsServer, enginesAcceptingServer } from "./version.js";
 
@@ -46,6 +47,8 @@ export class CItemHelper {
   innovatorVersion: ArasVersion | undefined;
   /** The gate's decision, set by `login`. */
   versionGate: VersionGate | undefined;
+  /** The export-side lookups and their cache, one per helper (EXP-030). */
+  readonly lookups: ItemLookups = new ItemLookups(this);
 
   private readonly skipVersionCheck: boolean;
 

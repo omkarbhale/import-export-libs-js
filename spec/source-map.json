@@ -3979,9 +3979,12 @@
             "bodySha256": "840fb3acafeabc67e6a4a785020bb2809bc468b48b629e630dc89dc6b8c597c3",
             "textSha256": "ad10d3af781c817063420cc72a576cceb0a2598a9588b6eea1ef9b5dfeb4db90"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-001"
+          ],
+          "symbols": [
+            "src/export/cexport-items.ts#CExportItems"
           ]
         },
         {
@@ -3994,9 +3997,12 @@
             "bodySha256": "be9a21296772c28e2dca761fbfe0a0eb51efc5def73e4a949b60aeea9cbd6150",
             "textSha256": "0d645864668fbef81c86e0c8031433c31756d4bce3600db6b2b2de0a56f343f9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-024"
+          ],
+          "symbols": [
+            "src/export/request-bodies.ts#itemTypeBody"
           ]
         },
         {
@@ -4009,9 +4015,12 @@
             "bodySha256": "fde9b837972d8d2f78cc0ffb36151f1d92c70f28ce50b3343f502bfbb1dbbb37",
             "textSha256": "db7c921733506435e7d2b0451002776ddfe71154626aa7b61ec9f6d4a878827e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-025"
+          ],
+          "symbols": [
+            "src/export/request-bodies.ts#cmfBody"
           ]
         },
         {
@@ -4068,9 +4077,12 @@
             "bodySha256": "92830a4bec7131621162e7fda7e0027a2e28233fdb7f1a32e1b17e9ed7ad697e",
             "textSha256": "01bae4662a0188ad43c975ec93940dbfd55191f95c79aa9385fd300f57083b35"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-023"
+          ],
+          "symbols": [
+            "src/export/main-fetch.ts#defaultSelect"
           ]
         },
         {
@@ -4774,12 +4786,15 @@
             "bodySha256": "5a3539e5c95b13051a3e526b4517324309bec0cb9d9354e64f54499570437185",
             "textSha256": "3e5aec066511d7c75830099f4e2ec97d62b85b407b23fccc0edd602dd702f173"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-042",
             "EXP-114",
             "IMP-429",
             "IMP-448"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getConfigId"
           ]
         },
         {
@@ -4792,11 +4807,14 @@
             "bodySha256": "8644dd1d00a7159b30056abb485d7fad51cad8e0f514fc839fc3c8780178121c",
             "textSha256": "d162eefcdc132f79cf1f3440b55174b7db8b11738f264cb1866bb7bb87be556a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-041",
             "EXP-114",
             "IMP-321"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCurrentIdByUniqueKey"
           ]
         },
         {
@@ -4809,12 +4827,15 @@
             "bodySha256": "448743a69cf13ff455a8d431f49960f0f1b8da0d7a302b8f827b59ee20e33a43",
             "textSha256": "0c0743d95e4602af83856ccac1c03ee1c2424bad5e5bd02e87f5c6702499bdf2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-011",
             "EXP-055",
             "IMP-151",
             "IMP-320"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCurrentIdOfVersion"
           ]
         },
         {
@@ -4846,12 +4867,15 @@
             "bodySha256": "df06ad3e5f322dc35d7155d14c9c1170ff0f072ef04241121a078aee178cbf52",
             "textSha256": "33324676d9fccccc1957a2e55896d8cbda0dad728482fae3434cbeb2c35b7495"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-044",
             "EXP-055",
             "EXP-116"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCustomFloatPropertiesOfTypeItem"
           ]
         },
         {
@@ -4903,10 +4927,13 @@
             "bodySha256": "c6416261ced4e0d9714e72abdcf3303f1a6f13697f4dd237c36a58c4105063b0",
             "textSha256": "c2ae9ec7d3c24b10a968ddb1e555c78ac783dfc395425d23de54787fc566c912"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-045"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getItemTypeWithDefaultPermission"
           ]
         },
         {
@@ -5049,12 +5076,15 @@
             "bodySha256": "58a4e845a73182ca541b58fca66b1dd867915c9571ee8bfe1457c1a9089e7a5f",
             "textSha256": "32d6a6125b58e740425d08dd4a16dec3ccdf488d0619f0ea45daa4d3b36e2629"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-046",
             "EXP-047",
             "EXP-408",
             "EXP-409"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getPolytypeNames"
           ]
         },
         {
@@ -5135,12 +5165,15 @@
             "bodySha256": "2a393566099a2bef56f2c14bf1593309922dc547eac24e85ed20a6551b6d7b12",
             "textSha256": "d51091158ddf24928e1386cde8f7e9c1abd031794ba78b5144223b5b9cf4506b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-041",
             "EXP-114",
             "IMP-321"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getUniqueProperties"
           ]
         },
         {
@@ -5185,13 +5218,16 @@
             "bodySha256": "a0273840e77cd313b6f0fdd7d5a2e8e05145020ce3c6470c7775fda05f0f05a3",
             "textSha256": "cffe79f862af4e11e3eb5af88d377daf82d676819f7240bf9bd2669a54ea32dc"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-010",
             "IMP-170",
             "IMP-302",
             "IMP-311",
             "IMP-429"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.isVersionable"
           ]
         },
         {
@@ -5512,10 +5548,13 @@
             "bodySha256": "4481cb6f929a3666e4c0350601835a3d62243e18c483dd4e3b214b30f18c105c",
             "textSha256": "08216c92f4a7d4277203578bc502a6bd07e8682671ae692c072df6c5f4c87315"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-043",
             "EXP-109"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getDepencyLevel"
           ]
         },
         {
@@ -5967,10 +6006,13 @@
             "bodySha256": "ce6f04b006f40e64efbb0c3e74b076939002c23f6aa90994823f993bccd0f311",
             "textSha256": "f27f14153aa4fd59efaf06a26d06231fe46bb903640dd143c897a5c3f95a80ef"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-002",
             "EXP-500"
+          ],
+          "symbols": [
+            "src/export/export-item.ts#ExportItem"
           ]
         },
         {
@@ -5983,10 +6025,13 @@
             "bodySha256": "0661e376d301025b1b7ffa969b47f2484238d07a5a6ea5ac46795d1b6d408cf5",
             "textSha256": "d5a23a18eed6e5308bafb64ebf9ddda8c0aa44ea6d65943aecc1eca45d01419f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-002",
             "EXP-500"
+          ],
+          "symbols": [
+            "src/export/export-item.ts#ExportItem.toString"
           ]
         },
         {
@@ -7557,12 +7602,15 @@
             "bodySha256": "737177f15412ff5af7b229d2317e2d8cfcc5fe5d5a82eb4ac6f477b0fbbcd3d9",
             "textSha256": "cd80069ffa2b44dbfe36c882c4456055019be523ececdeb07d5195c5be263ac7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-053",
             "EXP-055",
             "EXP-510",
             "EXP-542"
+          ],
+          "symbols": [
+            "src/export/package-definition-manager.ts#PackageDefinitionManager.findReferencedElements"
           ]
         },
         {

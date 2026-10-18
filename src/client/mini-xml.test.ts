@@ -59,6 +59,10 @@ describe("mini-xml reports what .NET's XmlException reports", () => {
     ["<a>x</a>trailing", "Data at the root level is invalid. Line 1, position 9."],
     ['<a b="<"/>', "'<', hexadecimal value 0x3C, is an invalid attribute character. Line 1, position 7."],
     ["<1a/>", "Name cannot begin with the '1' character, hexadecimal value 0x31. Line 1, position 2."],
+    [
+      "<Item type='ItemType' select='is_versionable' action='get'><name>Part<Co</name></Item>",
+      "The '<' character, hexadecimal value 0x3C, cannot be included in a name. Line 1, position 73.",
+    ],
   ])("%j", (xml, message) => {
     expect(() => parseXml(xml)).toThrow(XmlParseError);
     expect(() => parseXml(xml)).toThrow(message);
