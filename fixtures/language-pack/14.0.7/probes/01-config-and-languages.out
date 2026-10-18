@@ -1,0 +1,163 @@
+## languages-list-de-fr
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-none-means-all
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-uppercase-and-spaces
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-space-only-list
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-unknown-only
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-empty-items-in-list
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-element-twice
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-nested-not-read
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-uppercase-attr-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## root-other-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-code-uppercase
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## server-code-uppercase-all
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-order-fr-de
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-no-en
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## server-en-uppercase
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-suffix-missing
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-code-missing
+ctor => System.ArgumentNullException: "Key cannot be null.\r\nParameter name: key"
+temp dirs created => 1
+## server-code-missing-with-list
+ctor => System.ArgumentNullException: "Key cannot be null.\r\nParameter name: key"
+temp dirs created => 1
+## server-code-duplicate
+ctor => System.ArgumentException: "An item with the same key has already been added."
+temp dirs created => 1
+## server-code-duplicate-not-requested
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-one-language-only
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## server-no-items-fault0
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## server-other-fault
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## server-empty-result
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## server-garbage-response
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## code-with-xml-special
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## code-with-hyphen
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"d-e\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### trim set and case mapping of the languages list
+## languages-list-nbsp-and-ideographic-space
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-list-zero-width-space-not-trimmed
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:Label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">LF</i18n:Label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## languages-list-non-ascii-uppercase
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"\u00E9x\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0

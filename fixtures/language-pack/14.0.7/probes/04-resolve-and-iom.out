@@ -1,0 +1,67 @@
+## plain name
+names in the saved manifest => "LIBSJS-SCRATCH-LP"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\LIBSJS-SCRATCH-LP\\Import"
+package folder exists => True
+subfolders the import would read => "Fixes"
+Fixes\Foo.xml found by the import => True
+## name with a dot
+names in the saved manifest => "My.Pkg"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\Pkg\\Import"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## name with two dots
+names in the saved manifest => "com.example.lang"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\lang\\Import"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## core package name
+names in the saved manifest => "com.aras.innovator.core"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\.\\\\com\\aras\\innovator\\core"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## default package name
+names in the saved manifest => "com.aras.defaults.Lang"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\.\\\\com\\aras\\defaults\\Lang"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## solution package name
+names in the saved manifest => "com.aras.innovator.solution.PLM"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\PLM\\Import"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## trailing dot
+names in the saved manifest => "a.b."
+GetSolutionPath => "\\Import"
+package folder exists => False
+subfolders the import would read => 
+Fixes\Foo.xml found by the import => False
+## name with a space
+names in the saved manifest => "a b"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\a b\\Import"
+package folder exists => True
+subfolders the import would read => "Fixes"
+Fixes\Foo.xml found by the import => True
+## name with a slash
+names in the saved manifest => "a/b"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\a/b\\Import"
+package folder exists => True
+subfolders the import would read => "Fixes"
+Fixes\Foo.xml found by the import => True
+## rooted name without dots
+names in the saved manifest => "%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\rooted-resolve\\Lp"
+GetSolutionPath => "%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\rooted-resolve\\Lp\\Import"
+package folder exists => True
+subfolders the import would read => "Fixes"
+Fixes\Foo.xml found by the import => True
+#### IOM item counts for the Language responses
+two items => isError=False getItemCount=3
+no items fault 0 => isError=True getItemCount=0
+other fault => isError=True getItemCount=-1
+empty Result => isError=False getItemCount=-1
+not a SOAP envelope => isError=False getItemCount=-1
+Result holding an Item without children => isError=False getItemCount=1

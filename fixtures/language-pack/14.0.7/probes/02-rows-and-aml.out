@@ -1,0 +1,398 @@
+#### itemtype selection
+## itemtype-none-with-file
+ctor => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+temp dirs created => 1
+## itemtype-none-without-files
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-other-only
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Bar.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Bar\" action=\"edit\" doGetItem=\"0\" where=\"[Bar].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-name-case
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-duplicate-last-wins
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-duplicate-last-all
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-no-name
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## itemtype-nested-not-read
+ctor => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+temp dirs created => 1
+## itemtype-name-with-spaces
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Sub Type.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Sub Type\" action=\"edit\" doGetItem=\"0\" where=\"[Sub_Type].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### property list
+## props-list-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-uppercase-in-config
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">l</i18n:label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-space-after-comma
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-space-around
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-empty
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">l</i18n:label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-spaces-only
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">l</i18n:label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-list-none-match
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## props-element-twice
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-no-list-attr
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">N</i18n:name><i18n:Label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">L</i18n:Label><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">l</i18n:label></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## props-trailing-comma-no-name-attr
+ctor => System.ArgumentException: "The local name for elements or attributes cannot be null or an empty string."
+temp dirs created => 1
+## prop-no-name-attr-all-props
+ctor => System.ArgumentException: "The local name for elements or attributes cannot be null or an empty string."
+temp dirs created => 1
+#### properties and translations
+## prop-duplicate-both-translated
+ctor => System.ArgumentException: "An item with the same key has already been added."
+temp dirs created => 1
+## prop-duplicate-first-untranslated
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">B</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## prop-duplicate-excluded-by-list
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-empty-string
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">F</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-all-empty-item-skipped
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-whitespace
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\"> </i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-en-only
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-language-not-on-server
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## item-without-translations-then-with
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A2'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D2</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## no-item-translated-no-file
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## item-with-no-properties
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## two-items-order
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='B'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">2</i18n:name></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">1</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## property-order-in-file
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:z xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">1</i18n:z><i18n:a xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">2</i18n:a></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### which nodes are read
+## root-not-export
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## items-nested-not-selected
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## property-nested-not-selected
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## export-element-twice
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## item-in-namespace
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## property-element-name-case
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## translation-attr-case
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## name-attr-uppercase-in-file
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+#### the where clause
+## where-attributes-in-order
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].zeta='1' AND [Foo].id='A1' AND [Foo].alpha='2' AND [Foo].Type='T' AND [Foo].KEYED_NAME='k'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## where-no-attributes
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## where-no-attributes-at-all
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## where-value-quote-and-markup
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='a'b' AND [Foo].other='x&amp;y &lt;z&gt; &quot;q&quot;' AND [Foo].empty=''\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## where-prefixed-attributes
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].a:id='1' AND [Foo].xml:lang='en' AND [Foo].id='2'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## where-type-name-spaces
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Sub  Type X.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Sub  Type X\" action=\"edit\" doGetItem=\"0\" where=\"[Sub__Type_X].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### values
+## value-markup-and-controls
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">a &amp; b &lt; c &gt; d \"e\" 'f' \ttab \nlf \rcr \r\ncrlf</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## value-non-ascii
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Gr\u00FC\u00DFe \uD83D\uDE00 \u4E2D</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## value-lone-surrogate-reference
+ctor => System.ArgumentException: "The surrogate pair (0xD800, 0x62) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF)."
+temp dirs created => 1
+## value-looks-like-xml
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">&lt;b&gt;x&lt;/b&gt;</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### file names
+## file-xmlbak-extension
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foobak.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foobak\" action=\"edit\" doGetItem=\"0\" where=\"[Foobak].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-xmlbak-config-foo
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## file-uppercase-extension
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.XML.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo.XML\" action=\"edit\" doGetItem=\"0\" where=\"[Foo.XML].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-double-extension
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-dot-inside
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\A.B.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"A.B\" action=\"edit\" doGetItem=\"0\" where=\"[A.B].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-dot-xml-inside
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\A.B.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"A.B\" action=\"edit\" doGetItem=\"0\" where=\"[A.B].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-hidden-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" doGetItem=\"0\" where=\"[].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## file-not-xml
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+## xml-folder-subfolder-ignored
+ctor => ok
+temp dirs created => 1
+Dispose => ok
+temp dirs after Dispose => 0
+#### several files, failure in the middle
+## second-file-fails-first-stays
+ctor => System.ArgumentException: "An item with the same key has already been added."
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\A.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"A\" action=\"edit\" doGetItem=\"0\" where=\"[A].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+## malformed-xml-file
+ctor => System.Xml.XmlException: "Unexpected end of file while parsing Name has occurred. Line 1, position 14."
+temp dirs created => 1
+## empty-xml-file
+ctor => System.Xml.XmlException: "Root element is missing."
+temp dirs created => 1
+## xml-file-with-declaration-and-bom
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### two files that give the same name
+## file-name-collision
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='SECOND'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">2</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+#### property names that are not XML names
+## property-name-1 a b
+ctor => System.Xml.XmlException: "The ' ' character, hexadecimal value 0x20, cannot be included in a name."
+temp dirs created => 1
+## property-name-2 1a
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:1a xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:1a></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## property-name-3 a_b
+ctor => System.Xml.XmlException: "The ':' character, hexadecimal value 0x3A, cannot be included in a name."
+temp dirs created => 1
+## property-name-4 a.b
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:a.b xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:a.b></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## property-name-5 a-b
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:a-b xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:a-b></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## property-name-6 _u00E9
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A'\"><i18n:\u00E9 xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">D</i18n:\u00E9></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## property-name-7 a_b
+ctor => System.Xml.XmlException: "The '<' character, hexadecimal value 0x3C, cannot be included in a name."
+temp dirs created => 1
+## property-name-8 xml_lang
+ctor => System.Xml.XmlException: "The ':' character, hexadecimal value 0x3A, cannot be included in a name."
+temp dirs created => 1
+## property-name-9 a_b
+ctor => System.Xml.XmlException: "The '/' character, hexadecimal value 0x2F, cannot be included in a name."
+temp dirs created => 1
+## property-name-10 a_b_c
+ctor => System.Xml.XmlException: "The ':' character, hexadecimal value 0x3A, cannot be included in a name."
+temp dirs created => 1
+## property-name-11 _b
+ctor => System.Xml.XmlException: "The ':' character, hexadecimal value 0x3A, cannot be included in a name."
+temp dirs created => 1
