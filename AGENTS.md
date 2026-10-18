@@ -14,7 +14,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Test | `npm test` (vitest, includes the spec coverage test) |
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
 | Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
-| Oracle | `npm run oracle -- --engine <v> <export, import or lpimport> ...` records a scrubbed fixture from the real DLLs on dev (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
+| Oracle | `npm run oracle -- --engine <v> <export, import, lpimport or dbpatch> ...` records a scrubbed fixture from the real DLLs on dev (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
