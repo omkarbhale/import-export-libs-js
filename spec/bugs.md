@@ -389,4 +389,59 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** when the root of an import is versionable and one of its relationships has a `related_id` that holds an `Item` with no `id` attribute (for example one addressed by `where`), the relationship pass throws `NullReferenceException`. The import of the item fails with `Object reference not set to an instance of an object. Can't merge item {id or where} {type}`, after some earlier relationships have been rewritten in the document.
 - **Why it is a bug:** the pass reads the `Value` of `related_id/Item/@id` without testing that the attribute exists. A correct engine would fall back to the `where`, or to the text of `related_id`.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem`.
+
+## IMP-409: a cancelled import is recorded as a success
+
+- **Behaviour:** `Cancel()` makes `ImportProc` return normally at the next item, so `ImportPackage` writes the success status (`upgrade_status` 1, `is_latest` 1) for the cancelled package. The state is not reset between packages, so every later package of the list also creates its audit row, its package definition and its dependencies, stops at its first item and is recorded as a success. The run ends with `completed` and the return value `0`.
+- **Why it is a bug:** a package that was only partly imported, or not at all, is recorded as imported, and the other rows of the package are cleared as superseded. A correct engine would record a cancelled package as such and would not start the packages after it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc` and `ImportPackage`.
+- **Versions:** 14.0.7.
+
+## IMP-410: a failing package-definition query crashes on the log file during an import
+
+- **Behaviour:** when the package-definition query fails with a fault other than 0, `GetSolutions2Xml` tries to log the fault through a second writer on the log file while the import holds its own writer. The second open fails with `IOException` (`The process cannot access the file … because it is being used by another process.`), the fault text is never logged, and the run returns `1` with two `error` messages (the fault, then the `IOException`).
+- **Why it is a bug:** the reason the run stopped is lost from the log, and the reported error is a file-sharing error. A correct engine would write the fault text through the open writer.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutions2Xml` (the same defect as EXP-541, caught by `ImportSolutions`).
+- **Versions:** 14.0.7.
+
+## IMP-411: a failure while writing the failed status replaces the original error
+
+- **Behaviour:** when an item fails, `ImportPackage` writes the failed status in its `catch` block before it throws. If that write fails too, its exception leaves the `catch` block, the wrapped original error is never built, and the run reports the status-write failure instead. The same happens when the very first status write (the in-progress row) fails.
+- **Why it is a bug:** the error that stopped the package is lost, and the package's row stays in progress.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportPackage`.
+- **Versions:** 14.0.7.
+
+## IMP-426: a skipped SQL item is deleted and never added back
+
+- **Behaviour:** in non-merge mode an SQL item that already exists is skipped. When a later SQL item of the same package is not skipped, the engine deletes every SQL item of the package (`DeleteSqlItems` over all items), including the skipped one, and imports only the items that are not skipped. The skipped item is gone from the database after the run.
+- **Why it is a bug:** an import that skips an item because it exists must not delete it. A correct engine would delete only the SQL items it is about to add again.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`.
+- **Versions:** 14.0.7.
+
+## IMP-430: an add made by where is registered in the package with an empty id
+
+- **Behaviour:** an add that names its item by `where` has no `id` attribute. The engine still registers it in the package definition, with an empty id: it looks up the global `PackageElement` with an empty `element_id`, adds one for the first such item, and finds that same element for the next ones (or fails with `Duplicate package element` when the type or group differs).
+- **Why it is a bug:** the element does not name the imported item, and all such items share one element. A correct engine would register the id of the item the server found or created.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`, with `PackageDefinitionManager::AddElement2Group`.
+- **Versions:** 14.0.7.
+
+## IMP-444: a referenced element is looked up by the id of the item it refers to
+
+- **Behaviour:** before adding a `PackageReferencedElement`, the engine asks for one whose own `id` equals the id of the referenced item. A row of that type has its own id and holds the item's id in `element_id`, so the query is not expected to find an existing row and the add follows on every import. (Inferred from the request: the dev database holds no such rows.)
+- **Why it is a bug:** importing a package again adds its referenced elements again. A correct engine would look up `element_id` and `source_id`.
+- **C# location:** `Aras.Tools.SolutionUpgrade.PackageDefinitionManager::AddReferencedElements`.
+- **Versions:** 14.0.7.
+
+## IMP-453: the failure text for the audit row is looked up under a key that does not exist
+
+- **Behaviour:** when adding the `DatabaseUpgrade` row fails, the engine appends the catalogue text `CannotAddInstanceOfDatabaseUpgradeItemType` to the fault detail. The text is stored under the key with a leading space, so the lookup returns the empty string and the fault detail is unchanged.
+- **Why it is a bug:** the explanation `Can't add instance of databaseUpgrade ItemType.` is never shown. A correct engine would store the key without the space.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::WriteReleaseData` (the key is in `ResourceManager`).
+- **Versions:** 14.0.7.
+
+## IMP-461: an SQL item whose id is a child element is deleted with an empty id
+
+- **Behaviour:** `DeleteSqlItems` accepts an SQL item that has its id only as an `<id>` child, but always sends the `id` attribute, which is empty: `<Item type='sql' id='' action='delete' />`. The item is not deleted by this request (what the server answers to it was not probed), and it is still imported afterwards.
+- **Why it is a bug:** the check passes for an item the delete cannot name. A correct engine would send the child's text.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::DeleteSqlItems`.
 - **Versions:** 14.0.7.
