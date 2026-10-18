@@ -1,0 +1,3 @@
+<AML><Item type="Method" id="M1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><name>m</name><method_code /><comments>a
+b
+c</comments><label a="1&#xD;2&#xA;3&#x9;4" /></Item></AML>

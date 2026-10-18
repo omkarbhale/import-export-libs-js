@@ -1,0 +1,110 @@
+{
+  "engine": "12.0",
+  "command": "xsl",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "xsl": "build.xsl",
+  "stylesheet": {
+    "resource": "build.xsl",
+    "bytes": 6652,
+    "sha256": "e99e9f4e824892f7fc753e595aa3d1a6c0fcfd57a431426665ff58e1d2c2a6c1"
+  },
+  "preserveWhitespace": false,
+  "culture": "en-IN",
+  "clr": "4.0.30319.42000",
+  "startedAt": "2026-10-18T19:38:53.755Z",
+  "finishedAt": "2026-10-18T19:38:55.220Z",
+  "cases": [
+    {
+      "name": "cdata-and-empty",
+      "inputSha256": "af76bc114b96a47a23b15e93efdc8f135bd835041615cd7310dfcea7807d3bba",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "cdata-and-empty.xml"
+    },
+    {
+      "name": "empty-aml",
+      "inputSha256": "68ec9a6dbc7cad09001888e354b3e3d928f4f18ab119f1ee3a18130bcb29851c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "empty-aml.xml"
+    },
+    {
+      "name": "invalid-char-ref",
+      "inputSha256": "1771e872e1fa7264a1e377f8547050ab6bbbe28d9c1633f43e9390324db1073f",
+      "transformError": {
+        "type": "System.ArgumentException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+      },
+      "appliedError": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.",
+        "cause": {
+          "type": "System.ArgumentException",
+          "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+        }
+      },
+      "source": "invalid-char-ref.xml"
+    },
+    {
+      "name": "namespaces",
+      "inputSha256": "2628b1ab60be9a97169ce20440b900edfd6cdda50dadf879898a9dcaed25bcd7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "namespaces.xml"
+    },
+    {
+      "name": "nested-items",
+      "inputSha256": "d9155f391de91f963c0cc3e029cb94c5b2cc388ae8a0268d154e159aec13fad7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "nested-items.xml"
+    },
+    {
+      "name": "numeric-sort",
+      "inputSha256": "89af4b185ae7f6067a77361dbc1e3ce61065bdba1daec22b7787f22726cedfed",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "numeric-sort.xml"
+    },
+    {
+      "name": "one-empty-file",
+      "inputSha256": "68ec9a6dbc7cad09001888e354b3e3d928f4f18ab119f1ee3a18130bcb29851c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "one-empty-file.xml"
+    },
+    {
+      "name": "order-basic",
+      "inputSha256": "5f9ccf13a4e9afc969647e9ffc3e7af9691b63db09b0e340a92f2e136f91476b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "order-basic.xml"
+    },
+    {
+      "name": "soap-env-in-content",
+      "inputSha256": "a4a7386a213e646e2f08ee02816fb9817f0ad2ef4f8433297a1ef7df9b0ee813",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "soap-env-in-content.xml"
+    },
+    {
+      "name": "sort-type-names",
+      "inputSha256": "9311f3142eb8ca390af59ceec09f5c3d784abec39696937ad394245e964888b7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "sort-type-names.xml"
+    }
+  ],
+  "scrubbed": {}
+}

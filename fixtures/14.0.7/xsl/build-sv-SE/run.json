@@ -1,0 +1,37 @@
+{
+  "engine": "14.0.7",
+  "command": "xsl",
+  "toolset": {
+    "digest": "19573a97899a",
+    "source": "Desktop\\ImportExport\\23\\Import",
+    "libs": {
+      "version": "14.0.7.35492",
+      "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+    },
+    "iom": {
+      "version": "14.0.7.35492",
+      "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+    }
+  },
+  "xsl": "build.xsl",
+  "stylesheet": {
+    "resource": "build.xsl",
+    "bytes": 6901,
+    "sha256": "df5c0bc266b94394f1110a3d261c7c2a2c2c5713f27438dcb347824848474c2a"
+  },
+  "preserveWhitespace": false,
+  "culture": "sv-SE",
+  "clr": "4.0.30319.42000",
+  "startedAt": "2026-10-18T19:39:05.792Z",
+  "finishedAt": "2026-10-18T19:39:06.450Z",
+  "cases": [
+    {
+      "name": "sort-type-names",
+      "inputSha256": "9311f3142eb8ca390af59ceec09f5c3d784abec39696937ad394245e964888b7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "sort-type-names.xml"
+    }
+  ],
+  "scrubbed": {}
+}

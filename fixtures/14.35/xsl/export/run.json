@@ -1,0 +1,164 @@
+{
+  "engine": "14.35",
+  "command": "xsl",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "xsl": "export.xsl",
+  "stylesheet": {
+    "resource": "export.xsl",
+    "bytes": 34776,
+    "sha256": "44ef31e294440ff886b26cec69e5c793dfc20d137c8b93895a4dce221bb4f62d"
+  },
+  "preserveWhitespace": true,
+  "culture": "en-IN",
+  "clr": "4.0.30319.42000",
+  "startedAt": "2026-10-18T19:38:19.813Z",
+  "finishedAt": "2026-10-18T19:38:21.687Z",
+  "cases": [
+    {
+      "name": "cdata-elements",
+      "inputSha256": "1d54b776cb0c0c40561000e64fc5542bc118fdb8e744600cea7b4ce88f1e67d8",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "cdata-elements.xml"
+    },
+    {
+      "name": "empty-result",
+      "inputSha256": "998777b67aae1d4be3f56d07239fa9ff5aab04d5b9ddf48556bc10598349d6b7",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "empty-result.xml"
+    },
+    {
+      "name": "extra-namespace",
+      "inputSha256": "f7ad8c12f9ee0395cc41f5447955108b4b76e41cfaebcd0d8d86c6b2e92e7842",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "extra-namespace.xml"
+    },
+    {
+      "name": "file-selector-cdata-end",
+      "inputSha256": "9eddc466398bfda19387e3563b1365c7971495c6ec45e260bd4e97837c72aaef",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "']]>' is not allowed in character data. Line 1, position 289."
+      },
+      "source": "file-selector-cdata-end.xml"
+    },
+    {
+      "name": "file-selector-reference",
+      "inputSha256": "c2a32660be10818967cbf8a95bdd2a356784b7cebe17fe80348d31e1cb31ee4a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "file-selector-reference.xml"
+    },
+    {
+      "name": "invalid-char-ref",
+      "inputSha256": "e84cd5b6cf77a6e05d6806a4df8ac67d9e182ef5f9144865a2db824b718576d0",
+      "transformError": {
+        "type": "System.ArgumentException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+      },
+      "appliedError": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.",
+        "cause": {
+          "type": "System.ArgumentException",
+          "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+        }
+      },
+      "source": "invalid-char-ref.xml"
+    },
+    {
+      "name": "list-empty-elements",
+      "inputSha256": "016578c9b0c2a7f9d5b7696986774aaee3341958309cddbb83e1bff9dd93c99f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "list-empty-elements.xml"
+    },
+    {
+      "name": "method-cdata-split",
+      "inputSha256": "380c98e25959f0b53b2576b46d7e6996223f1de8a23b2685bdcf35286a8d3aa8",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "method-cdata-split.xml"
+    },
+    {
+      "name": "no-items",
+      "inputSha256": "21b22d59693c9a116aad6502d81e7048ae733fe70e32963fddf9aef5b79ac112",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "no-items.xml"
+    },
+    {
+      "name": "no-prefix-envelope",
+      "inputSha256": "02e6350d4033062c95d3fcd75bc9ad525968352e08582a3b609598480ce1c494",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "no-prefix-envelope.xml"
+    },
+    {
+      "name": "property-is-keyed",
+      "inputSha256": "027399bb4548c0a890835171030a968d93e30aa3ad1d38030b47a3006a00df0b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "property-is-keyed.xml"
+    },
+    {
+      "name": "report-is-null-method",
+      "inputSha256": "3fe289bfe13a761a14d25aa42f073c68674232d8210c174be2112e1b68d11d6c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "report-is-null-method.xml"
+    },
+    {
+      "name": "soap-env-in-content",
+      "inputSha256": "84c2cc8322dfe42a88acbed9ece6249a436f9dc7740911f978c7ecb3f46d6696",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "soap-env-in-content.xml"
+    },
+    {
+      "name": "two-items",
+      "inputSha256": "7171cce756371ae3509164331328d8e9baa52cce9cc79c73634541ca327f75f8",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 76."
+      },
+      "source": "two-items.xml"
+    },
+    {
+      "name": "unicode-and-specials",
+      "inputSha256": "43ac966a587a834ed5feace22976b0cbf242c5037ab98f4d16f57366b527ea74",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "unicode-and-specials.xml"
+    },
+    {
+      "name": "whitespace-response",
+      "inputSha256": "d22e7539f8b3d4457ebaca9b562b31093ad2e839fe6c72d91b57cf46d1d9d74c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "whitespace-response.xml"
+    }
+  ],
+  "scrubbed": {}
+}
