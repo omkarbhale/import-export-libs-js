@@ -118,6 +118,47 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** a package or dependency name with an apostrophe makes the manifest or dependency XPath malformed, and the run ends with the XPath error as a warning (`'imports/package[@name='X'Y']' has an invalid token.`). A name that closes the literal and adds a predicate selects other nodes.
 - **Why it is a bug:** a legal package name cannot be exported, and a crafted one changes which nodes the engine reads.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddDependsOn`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddReferencedElement`.
+
+## IMP-006: a leading backslash is trimmed from every path, so UNC package folders fail
+
+- **Behaviour:** `IOWrapper.NormalizeLongPath` strips every leading `\` and `?` from a path before using it, so `\\server\share\pkg` becomes the relative path `server\share\pkg` and the import fails with `DirectoryNotFoundException` against the current directory.
+- **Why it is a bug:** the code means to remove the `\\?\` long-path prefix, but `TrimStart` takes a character set. A correct engine would remove the prefix only.
+- **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::NormalizeLongPath`.
+- **Versions:** 14.0.7.
+
+## IMP-012: the transform failure message names export.xsl when build.xsl ran
+
+- **Behaviour:** an error while applying any stylesheet, including `build.xsl`, is reported with the text ` Error of  applying export.xsl.` (two spaces after `of`).
+- **Why it is a bug:** the message names the wrong stylesheet and is misspelled.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl`.
+- **Versions:** 14.0.7.
+
+## IMP-013: the SOAP-ENV namespace replace also deletes the text from element content
+
+- **Behaviour:** `ApplyXsl` removes the string `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` from the whole serialized output, including element text and CDATA, so item content that contains it is changed on import.
+- **Why it is a bug:** only namespace declarations should be removed. A script or comment holding that text is altered silently.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl`.
+- **Versions:** 14.0.7.
+
+## IMP-022: a type counts as listed when `|type|` is a substring of the list
+
+- **Behaviour:** `build.xsl` tests a type against its lists with `contains`, so `List|Sequence` is taken for a listed type and dropped, where an unlisted type of that spelling would be imported.
+- **Why it is a bug:** a type name should be compared with each name of the list, not searched for in the joined text.
+- **C# location:** the embedded stylesheet `build.xsl`, applied by `Aras.Tools.SolutionUpgrade.ImportExportManager::LoadPackageDom` through `CItemHelper::ApplyXsl`.
+- **Versions:** 14.0.7.
+
+## IMP-026: an ItemType edit or delete is copied once for every earlier ItemType or RelationshipType add
+
+- **Behaviour:** after each `ItemType` or `RelationshipType` add, the stylesheet copies every later `ItemType` sibling that has an action other than `add`. A later `edit` or `delete` therefore appears once per earlier add, and the engine imports each copy. The same happens to nested items inside `Relationships`.
+- **Why it is a bug:** the sibling should be written once. Repeated `edit` items waste requests, and a repeated `delete` after the first has run can fail.
+- **C# location:** the embedded stylesheet `build.xsl`, applied by `LoadPackageDom` through `ApplyXsl`.
+- **Versions:** 14.0.7.
+
+## IMP-029: build.xsl silently drops items whose type is listed but whose action is not selected
+
+- **Behaviour:** an item of a listed type whose action no group takes, such as a `delete` or `merge` of a `List` or `Method`, an `ItemType` with no action, or an `ItemType` `delete` with no earlier add, is not written to the ordered output. Nothing is logged and the import reports success.
+- **Why it is a bug:** package content is lost without a message. A correct engine would import the item or refuse the package.
+- **C# location:** the embedded stylesheet `build.xsl`, applied by `LoadPackageDom` through `ApplyXsl`.
 - **Versions:** 14.0.7.
 
 ## EXP-032: the "Unable to get definition" text names `System.Xml.XmlAttribute`

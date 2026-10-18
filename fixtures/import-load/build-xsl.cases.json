@@ -1,0 +1,271 @@
+[
+ {
+  "name": "order-basic",
+  "parts": [
+   "<AML><Item type='Method' action='add' id='m1'/><Item type='List' action='add' id='l1'/><Item type='ItemType' action='add' id='it-poly'><implementation_type>polymorphic</implementation_type></Item><Item type='ItemType' action='add' id='it-plain'><implementation_type>table</implementation_type></Item><Item type='ItemType' action='add' id='it-none'/><Item type='RelationshipType' action='add' id='r2' dependencyLevel='2'/><Item type='RelationshipType' action='add' id='r1' dependencyLevel='1'/><Item type='RelationshipType' action='add' id='r-none'/><Item type='RelationshipType' action='add' id='r-x' dependencyLevel='x'/><Item type='RelationshipType' action='add' id='r10' dependencyLevel='10'/><Item type='RelationshipType' action='add' id='r-neg' dependencyLevel='-1'/><Item type='RelationshipType' action='add' id='r1b' dependencyLevel='1'/><Item type='Property' action='edit' id='p1'/><Item type='SQL' action='delete' id='s1'/><Item type='Form' action='delete' id='fd'/><Item type='Form' action='add' id='fa'/><Item type='Zeta' action='add' id='z'/><Item type='alpha' action='get' id='al'/><Item type='Beta' action='edit' id='be'/><Item type='List' action='edit' id='le'/><Item type='Identity' action='add' id='i1'/><Item type='Field' action='add' id='f1'/><Item type='View' action='merge' id='v1'/></AML>"
+  ]
+ },
+ {
+  "name": "following-dup",
+  "parts": [
+   "<AML><Item type='ItemType' action='add' id='A'/><Item type='ItemType' action='add' id='B'/><Item type='ItemType' action='edit' id='E'/><Item type='ItemType' action='delete' id='D'/><Item type='ItemType' id='N'/><Item type='RelationshipType' action='add' id='R'/><Item type='ItemType' action='edit' id='E2'/></AML>"
+  ]
+ },
+ {
+  "name": "edit-without-preceding-add",
+  "parts": [
+   "<AML><Item type='ItemType' action='edit' id='E0'/><Item type='ItemType' action='delete' id='D0'/><Item type='ItemType' action='add' id='A'/></AML>",
+   "<AML><Item type='ItemType' action='edit' id='E-file2'/></AML>",
+   "<AML><Item type='RelationshipType' action='add' id='RA'/><Item type='ItemType' action='edit' id='E-after-rt'/></AML>"
+  ]
+ },
+ {
+  "name": "drops",
+  "parts": [
+   "<AML><Item type='List' action='delete' id='ld'/><Item type='List' action='merge' id='lm'/><Item type='ItemType' action='delete' id='itd'/><Item type='Method' action='purge' id='mp'/><Item type='Field' id='f-noact'/><Item type='Property' action='delete' id='pd'/><Item type='mp_MacPolicy' action='mp_PromoteItem' id='prom'/><Item type='Form' action='edit' id='fe'/><Item type='Form' action='merge' id='fm'/><Item type='Identity' id='i-noact'/><Item type='Method' action='ADD' id='m-upper'/><Item type='list' action='add' id='l-lower'/><Item type='sql' action='add' id='sql-lower'/><Item type='SQL' action='add' id='SQL-up'/><Item type='RelationshipType' action='delete' id='rtd'/><Item type='Morphae' action='edit' id='mo-e'/><Item type='Morphae' action='delete' id='mo-d'/><Item type='Unlisted' action='delete' id='ul-d'/><Item type='Unlisted' id='ul-none'/></AML>"
+  ]
+ },
+ {
+  "name": "sort-types",
+  "parts": [
+   "<AML><Item type='b' id='1'/><Item type='B' id='2'/><Item type='a' id='3'/><Item type='A' id='4'/><Item type='ab' id='5'/><Item type='a-b' id='6'/><Item type='ab-' id='7'/><Item type='a_b' id='8'/><Item type='-ab' id='9'/><Item type='Zebra' id='10'/><Item type='apple' id='11'/><Item type='Apple' id='12'/><Item type='_x' id='13'/><Item type='1x' id='14'/><Item type='a b' id='15'/><Item type='a' id='16'/><Item type='é' id='17'/><Item type='e' id='18'/><Item type='f' id='19'/><Item type='a.b' id='20'/><Item type='Z' id='21'/><Item type='z' id='22'/></AML>"
+  ]
+ },
+ {
+  "name": "typeless-and-bars",
+  "parts": [
+   "<AML><Item action='add' id='nt'/><Item type='' action='add' id='et'/><Item type='List|Sequence' action='add' id='bar1'/><Item type='Sequence|Revision' action='add' id='bar2'/><Item type='Sequence|Foo' action='add' id='bar3'/><Item type='Foo' action='add' id='foo'/><Item type='|' action='add' id='barbar'/><Item type='List' action='add' id='l'/></AML>"
+  ]
+ },
+ {
+  "name": "multi-items-and-skips",
+  "parts": [
+   "<AML><Item type='List' action='add' id='f1a'/><Item type='List' action='add' id='f1b'/></AML>",
+   "<Other><Item type='List' action='add' id='f2'/></Other>",
+   "<AML><Foo/></AML>",
+   "<AML><Foo><Item type='List' action='add' id='nested-foo'/></Foo><Item type='Method' action='add' id='f4m'/><!-- c --></AML>",
+   "<AML><!-- c --><Item type='List' action='add' id='f5'/></AML>"
+  ]
+ },
+ {
+  "name": "raw-namespace-comments-cdata",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:i18n='http://www.aras.com/I18N' xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'><Item type='Method' action='add' id='m1' xmlns:foo='urn:foo'><!-- gone --><?pi gone?><method_code><![CDATA[a<b && c]]]]><![CDATA[>d]]></method_code><name i18n:x='1'>n</name><empty></empty><ws>  </ws><txt>  x  </txt></Item><Item type='List' action='add' id='l1'/></AML>"
+  ]
+ },
+ {
+  "name": "raw-nested-itemtype",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='ItemType' action='add' id='A'><Relationships><Item type='ItemType' action='add' id='nestedA'/><Item type='ItemType' action='edit' id='nestedE'/></Relationships></Item><Item type='ItemType' action='edit' id='E'/></AML>"
+  ]
+ },
+ {
+  "name": "raw-empty",
+  "raw": true,
+  "parts": []
+ },
+ {
+  "name": "polymorphic-detail",
+  "parts": [
+   "<AML><Item type='ItemType' action='add' id='p1'><implementation_type>Polymorphic</implementation_type></Item><Item type='ItemType' action='add' id='p2'><implementation_type>polymorphic </implementation_type></Item><Item type='ItemType' action='add' id='p3'><Relationships><x><implementation_type>polymorphic</implementation_type></x></Relationships></Item><Item type='ItemType' action='add' id='p4'><implementation_type>polymorphic</implementation_type></Item><Item type='ItemType' action='add' id='p5'><implementation_type></implementation_type><implementation_type>polymorphic</implementation_type></Item><Item type='ItemType' action='add' id='p6'><implementation_type>polymorphic</implementation_type><implementation_type>table</implementation_type></Item></AML>"
+  ]
+ },
+ {
+  "name": "cross-file-document-order",
+  "parts": [
+   "<AML><Item type='Method' action='add' id='f1-m'/><Item type='List' action='add' id='f1-l'/></AML>",
+   "<AML><Item type='List' action='add' id='f2-l'/><Item type='Method' action='add' id='f2-m'/></AML>"
+  ]
+ },
+ {
+  "name": "decl",
+  "raw": true,
+  "parts": [
+   "<?xml version='1.0' encoding='utf-8'?><AML><Item type='List' action='add' id='d'/></AML>"
+  ]
+ },
+ {
+  "name": "doctype",
+  "raw": true,
+  "parts": [
+   "<!DOCTYPE AML><AML><Item type='List' action='add' id='d'/></AML>"
+  ]
+ },
+ {
+  "name": "comment-pi-before-and-after-root",
+  "raw": true,
+  "parts": [
+   "<!-- c1 --><?pi x?><AML><Item type='List' action='add' id='d'/></AML><!-- c2 -->"
+  ]
+ },
+ {
+  "name": "existing-tempKeyName",
+  "raw": true,
+  "parts": [
+   "<AML><Item tempKeyName='old' type='List' tempFullName='oldf' action='add' id='d'/></AML>"
+  ]
+ },
+ {
+  "name": "default-ns-item",
+  "raw": true,
+  "parts": [
+   "<AML><Item xmlns='urn:x' type='List' action='add' id='dn'/></AML>",
+   "<AML xmlns='urn:x'><Item type='List' action='add' id='dn2'/></AML>",
+   "<AML><x:Item xmlns:x='urn:x' type='List' action='add' id='px'/></AML>",
+   "<x:AML xmlns:x='urn:x'><Item type='List' action='add' id='px2'/></x:AML>"
+  ]
+ },
+ {
+  "name": "crlf-tab-attr-text",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='Method' action='add' id='m' desc='l1&#10;l2&#13;&#9;t'><name>a&#13;&#10;b</name><method_code><![CDATA[x\r\ny\rz\n]]></method_code></Item></AML>"
+  ]
+ },
+ {
+  "name": "specials",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='A&amp;B' action='add' id='q&quot;'><name>&lt;&amp;&gt;&quot;'</name></Item></AML>"
+  ]
+ },
+ {
+  "name": "undeclared-entity",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='List' action='add'>&foo;</Item></AML>"
+  ]
+ },
+ {
+  "name": "non-xml",
+  "raw": true,
+  "parts": [
+   "not xml"
+  ]
+ },
+ {
+  "name": "stylesheet-cdata-names",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='Method' action='add' id='m'><html_code><![CDATA[<b>]]></html_code><stylesheet>s</stylesheet><query>q</query><class_structure/><report_query>r</report_query><xsl_stylesheet> </xsl_stylesheet><sqlserver_body>b</sqlserver_body><deep><method_code>c</method_code></deep></Item></AML>"
+  ]
+ },
+ {
+  "name": "soap-env-in-content",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='Method' action='add' id='m'><method_code><![CDATA[a xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" b]]></method_code><comments>xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"</comments></Item></AML>"
+  ]
+ },
+ {
+  "name": "mixed-depth-nonitem-root-children",
+  "raw": true,
+  "parts": [
+   "<AML>text<Item type='List' action='add' id='a'/>more<Other/></AML>"
+  ]
+ },
+ {
+  "name": "numsort",
+  "parts": [
+   "<AML><Item type='RelationshipType' action='add' id='v0' dependencyLevel=' 5 '/><Item type='RelationshipType' action='add' id='v1' dependencyLevel='+5'/><Item type='RelationshipType' action='add' id='v2' dependencyLevel='1e3'/><Item type='RelationshipType' action='add' id='v3' dependencyLevel='.5'/><Item type='RelationshipType' action='add' id='v4' dependencyLevel='5.'/><Item type='RelationshipType' action='add' id='v5' dependencyLevel='-0'/><Item type='RelationshipType' action='add' id='v6' dependencyLevel='0'/><Item type='RelationshipType' action='add' id='v7' dependencyLevel='1.0'/><Item type='RelationshipType' action='add' id='v8' dependencyLevel='1,5'/><Item type='RelationshipType' action='add' id='v9' dependencyLevel='Infinity'/><Item type='RelationshipType' action='add' id='v10' dependencyLevel='NaN'/><Item type='RelationshipType' action='add' id='v11' dependencyLevel='0x10'/><Item type='RelationshipType' action='add' id='v12' dependencyLevel='٣'/><Item type='RelationshipType' action='add' id='v13' dependencyLevel='１'/><Item type='RelationshipType' action='add' id='v14' dependencyLevel='10'/><Item type='RelationshipType' action='add' id='v15' dependencyLevel='9'/><Item type='RelationshipType' action='add' id='v16' dependencyLevel='-1'/><Item type='RelationshipType' action='add' id='v17' dependencyLevel='-.5'/><Item type='RelationshipType' action='add' id='v18' dependencyLevel='1 2'/><Item type='RelationshipType' action='add' id='v19' dependencyLevel='\\t3\\n'/><Item type='RelationshipType' action='add' id='v20' dependencyLevel='2'/><Item type='RelationshipType' action='add' id='v21' dependencyLevel='  '/><Item type='RelationshipType' action='add' id='v22' dependencyLevel='-'/><Item type='RelationshipType' action='add' id='v23' dependencyLevel='1.5'/><Item type='RelationshipType' action='add' id='v24' dependencyLevel='100'/><Item type='RelationshipType' action='add' id='v25' dependencyLevel='-Infinity'/><Item type='RelationshipType' action='add' id='v26' dependencyLevel='00012'/><Item type='RelationshipType' action='add' id='v27' dependencyLevel='1_0'/><Item type='RelationshipType' action='add' id='v28' dependencyLevel='5e0'/></AML>"
+  ],
+  "vals": [
+   " 5 ",
+   "+5",
+   "1e3",
+   ".5",
+   "5.",
+   "-0",
+   "0",
+   "1.0",
+   "1,5",
+   "Infinity",
+   "NaN",
+   "0x10",
+   "٣",
+   "１",
+   "10",
+   "9",
+   "-1",
+   "-.5",
+   "1 2",
+   "\t3\n",
+   "2",
+   "  ",
+   "-",
+   "1.5",
+   "100",
+   "-Infinity",
+   "00012",
+   "1_0",
+   "5e0"
+  ]
+ },
+ {
+  "name": "numsort",
+  "parts": [
+   "<AML><Item type='RelationshipType' action='add' id='v0' dependencyLevel='-1'/><Item type='RelationshipType' action='add' id='v1' dependencyLevel='1'/><Item type='RelationshipType' action='add' id='v2' dependencyLevel='3 '/><Item type='RelationshipType' action='add' id='v3' dependencyLevel='\t3'/><Item type='RelationshipType' action='add' id='v4' dependencyLevel='3\t'/><Item type='RelationshipType' action='add' id='v5' dependencyLevel='\n3'/><Item type='RelationshipType' action='add' id='v6' dependencyLevel='3\n'/><Item type='RelationshipType' action='add' id='v7' dependencyLevel='\r3'/><Item type='RelationshipType' action='add' id='v8' dependencyLevel='3\r'/><Item type='RelationshipType' action='add' id='v9' dependencyLevel=' 3'/><Item type='RelationshipType' action='add' id='v10' dependencyLevel='3 '/><Item type='RelationshipType' action='add' id='v11' dependencyLevel='　3'/><Item type='RelationshipType' action='add' id='v12' dependencyLevel=' 3'/><Item type='RelationshipType' action='add' id='v13' dependencyLevel='﻿3'/><Item type='RelationshipType' action='add' id='v14' dependencyLevel='- 3'/><Item type='RelationshipType' action='add' id='v15' dependencyLevel='-\t3'/><Item type='RelationshipType' action='add' id='v16' dependencyLevel='--3'/><Item type='RelationshipType' action='add' id='v17' dependencyLevel='3-'/><Item type='RelationshipType' action='add' id='v18' dependencyLevel='1.2.3'/><Item type='RelationshipType' action='add' id='v19' dependencyLevel='− 3'/><Item type='RelationshipType' action='add' id='v20' dependencyLevel='5'/><Item type='RelationshipType' action='add' id='v21' dependencyLevel='  7'/><Item type='RelationshipType' action='add' id='v22' dependencyLevel='7  '/></AML>"
+  ]
+ },
+ {
+  "name": "ns-order",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:a='urn:a' xmlns:b='urn:b'><Item type='List' action='add' id='1'/><Item type='List' action='add' id='2' xmlns:c='urn:c' a:x='1'/><Item type='List' action='add' id='3' xmlns:a='urn:a2'/><Item type='List' action='add' id='4' xmlns:d='urn:b'/><Item type='List' action='add' id='5' xmlns=''/></AML>"
+  ]
+ },
+ {
+  "name": "ns-nested",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:a='urn:a'><Item type='List' action='add' id='1'><x xmlns:p='urn:p'><y/></x><z xmlns:a='urn:a3'/><a:w/></Item></AML>"
+  ]
+ },
+ {
+  "name": "ns-soap-env-position",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'><Item type='List' action='add' id='1'/></AML>",
+   "<AML xmlns:z='urn:z' xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/' xmlns:y='urn:y'><Item type='List' action='add' id='1'/></AML>",
+   "<AML><Item type='List' action='add' id='1' xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/' xmlns:q='urn:q'><n xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'/></Item></AML>"
+  ]
+ },
+ {
+  "name": "ns-different-soap-uri",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:SOAP-ENV='urn:other'><Item type='List' action='add' id='1'/></AML>"
+  ]
+ },
+ {
+  "name": "ns-two-files-same-prefix",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:i18n='http://www.aras.com/I18N'><Item type='List' action='add' id='1'><name i18n:lang='de'>x</name></Item></AML>",
+   "<AML><Item type='List' action='add' id='2'><name xmlns:i18n='http://www.aras.com/I18N' i18n:lang='de'>x</name></Item></AML>"
+  ]
+ },
+ {
+  "name": "ns-first-item-of-wrapper",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:i18n='http://www.aras.com/I18N'><Item type='ItemType' action='add' id='1'><Relationships><Item type='ItemType' action='add' id='n'/></Relationships></Item></AML>"
+  ]
+ },
+ {
+  "name": "ns-redeclare-same",
+  "raw": true,
+  "parts": [
+   "<AML xmlns:a='urn:a' xmlns:b='urn:b'><Item type='List' action='add' id='1' xmlns:a='urn:a'/><Item type='List' action='add' id='2' xmlns:z='urn:z' xmlns:b='urn:b2'/><Item type='List' action='add' id='3'><n xmlns:b='urn:b'/></Item></AML>"
+  ]
+ },
+ {
+  "name": "ns-nested-ordering",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='List' action='add' id='1' xmlns:q='urn:q'><n xmlns:y='urn:y' xmlns:x='urn:x' a='1' xmlns:q='urn:q'/></Item></AML>"
+  ]
+ }
+]

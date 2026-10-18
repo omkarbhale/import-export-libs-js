@@ -1,0 +1,570 @@
+[
+ {
+  "name": "order",
+  "solutionPath": "pkg",
+  "files": [
+   {
+    "path": "pkg/b/one.xml",
+    "text": "<AML><Item type='List' action='add' id='b'/></AML>"
+   },
+   {
+    "path": "pkg/A/one.xml",
+    "text": "<AML><Item type='List' action='add' id='A'/></AML>"
+   },
+   {
+    "path": "pkg/ä/one.xml",
+    "text": "<AML><Item type='List' action='add' id='ä'/></AML>"
+   },
+   {
+    "path": "pkg/10/one.xml",
+    "text": "<AML><Item type='List' action='add' id='10'/></AML>"
+   },
+   {
+    "path": "pkg/9/one.xml",
+    "text": "<AML><Item type='List' action='add' id='9'/></AML>"
+   },
+   {
+    "path": "pkg/Z/one.xml",
+    "text": "<AML><Item type='List' action='add' id='Z'/></AML>"
+   },
+   {
+    "path": "pkg/a b/one.xml",
+    "text": "<AML><Item type='List' action='add' id='a b'/></AML>"
+   },
+   {
+    "path": "pkg/a-b/one.xml",
+    "text": "<AML><Item type='List' action='add' id='a-b'/></AML>"
+   },
+   {
+    "path": "pkg/_x/one.xml",
+    "text": "<AML><Item type='List' action='add' id='_x'/></AML>"
+   },
+   {
+    "path": "pkg/é/one.xml",
+    "text": "<AML><Item type='List' action='add' id='é'/></AML>"
+   },
+   {
+    "path": "pkg/b/Z.xml",
+    "text": "<AML><Item type='Method' action='add' id='Z.xml'/></AML>"
+   },
+   {
+    "path": "pkg/b/a.xml",
+    "text": "<AML><Item type='Method' action='add' id='a.xml'/></AML>"
+   },
+   {
+    "path": "pkg/b/B.xml",
+    "text": "<AML><Item type='Method' action='add' id='B.xml'/></AML>"
+   },
+   {
+    "path": "pkg/b/a.xmlbak",
+    "text": "<AML><Item type='Method' action='add' id='a.xmlbak'/></AML>"
+   },
+   {
+    "path": "pkg/b/t.xml.bak",
+    "text": "<AML><Item type='Method' action='add' id='t.xml.bak'/></AML>"
+   },
+   {
+    "path": "pkg/b/x.XML",
+    "text": "<AML><Item type='Method' action='add' id='x.XML'/></AML>"
+   },
+   {
+    "path": "pkg/b/s.xml.xml",
+    "text": "<AML><Item type='Method' action='add' id='s.xml.xml'/></AML>"
+   },
+   {
+    "path": "pkg/b/.xml",
+    "text": "<AML><Item type='Method' action='add' id='.xml'/></AML>"
+   },
+   {
+    "path": "pkg/b/m.xmlx",
+    "text": "<AML><Item type='Method' action='add' id='m.xmlx'/></AML>"
+   },
+   {
+    "path": "pkg/b/n.xm",
+    "text": "<AML><Item type='Method' action='add' id='n.xm'/></AML>"
+   },
+   {
+    "path": "pkg/b/o.txt",
+    "text": "<AML><Item type='Method' action='add' id='o.txt'/></AML>"
+   },
+   {
+    "path": "pkg/b/p.xml~",
+    "text": "<AML><Item type='Method' action='add' id='p.xml~'/></AML>"
+   },
+   {
+    "path": "pkg/b/q.Xml",
+    "text": "<AML><Item type='Method' action='add' id='q.Xml'/></AML>"
+   },
+   {
+    "path": "pkg/loose.xml",
+    "text": "<AML><Item type='List' action='add' id='loose'/></AML>"
+   },
+   {
+    "path": "pkg/b/deep/deeper.xml",
+    "text": "<AML><Item type='List' action='add' id='deeper'/></AML>"
+   }
+  ],
+  "dirs": [
+   "pkg/empty",
+   "pkg/dirnamedxml.xml"
+  ]
+ },
+ {
+  "name": "missing-dir",
+  "solutionPath": "nope",
+  "files": [],
+  "dirs": []
+ },
+ {
+  "name": "path-is-file",
+  "solutionPath": "afile.xml",
+  "files": [
+   {
+    "path": "afile.xml",
+    "text": "x"
+   }
+  ],
+  "dirs": []
+ },
+ {
+  "name": "empty-package",
+  "solutionPath": "pkg",
+  "files": [],
+  "dirs": [
+   "pkg"
+  ]
+ },
+ {
+  "name": "skips",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a-noitem.xml",
+    "text": "<AML><Foo/></AML>"
+   },
+   {
+    "path": "pkg/d/b-otherroot.xml",
+    "text": "<Other><Item type='List' action='add' id='x'/></Other>"
+   },
+   {
+    "path": "pkg/d/c-defaultns.xml",
+    "text": "<AML xmlns='urn:x'><Item type='List' action='add' id='x'/></AML>"
+   },
+   {
+    "path": "pkg/d/d-nested.xml",
+    "text": "<AML><Foo><Item type='List' action='add' id='n'/></Foo></AML>"
+   },
+   {
+    "path": "pkg/d/e-lowercase.xml",
+    "text": "<aml><Item type='List' action='add' id='x'/></aml>"
+   },
+   {
+    "path": "pkg/d/f-ok.xml",
+    "text": "<AML><Item type='List' action='add' id='ok'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "malformed",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a-ok.xml",
+    "text": "<AML><Item type='List' action='add' id='ok'/></AML>"
+   },
+   {
+    "path": "pkg/d/b-bad.xml",
+    "text": "<AML><Item type='List'></AML>"
+   }
+  ]
+ },
+ {
+  "name": "empty-file",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": ""
+   }
+  ]
+ },
+ {
+  "name": "whitespace-file",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "  \r\n "
+   }
+  ]
+ },
+ {
+  "name": "decl-first",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<AML><Item type='List' action='add' id='a'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "decl-second",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='a'/></AML>"
+   },
+   {
+    "path": "pkg/d/b.xml",
+    "text": "<?xml version=\"1.0\"?><AML><Item type='List' action='add' id='b'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "decl-bom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "77u/PD94bWwgdmVyc2lvbj0nMS4wJz8+PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2EnLz48L0FNTD4="
+   }
+  ]
+ },
+ {
+  "name": "doctype",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<!DOCTYPE AML><AML><Item type='List' action='add' id='a'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "comment-before-root",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<!-- hi --><?pi x?><AML><Item type='List' action='add' id='a'/></AML><!-- tail -->"
+   }
+  ]
+ },
+ {
+  "name": "encodings",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a-utf8bom.xml",
+    "b64": "77u/PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J3U4Ym9tJy8+PC9BTUw+"
+   },
+   {
+    "path": "pkg/d/b-utf16le.xml",
+    "b64": "//48AEEATQBMAD4APABJAHQAZQBtACAAdAB5AHAAZQA9ACcATABpAHMAdAAnACAAYQBjAHQAaQBvAG4APQAnAGEAZABkACcAIABpAGQAPQAnAHUAMQA2AGwAZQAnAC8APgA8AC8AQQBNAEwAPgA="
+   },
+   {
+    "path": "pkg/d/c-utf16be.xml",
+    "b64": "/v8APABBAE0ATAA+ADwASQB0AGUAbQAgAHQAeQBwAGUAPQAnAEwAaQBzAHQAJwAgAGEAYwB0AGkAbwBuAD0AJwBhAGQAZAAnACAAaQBkAD0AJwB1ADEANgBiAGUAJwAvAD4APAAvAEEATQBMAD4="
+   },
+   {
+    "path": "pkg/d/d-latin1.xml",
+    "b64": "PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2wxJz48bmFtZT5jYWbpPC9uYW1lPjwvSXRlbT48L0FNTD4="
+   },
+   {
+    "path": "pkg/d/e-cp1252decl.xml",
+    "b64": "PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2NwJz48bmFtZT5jYWbpPC9uYW1lPjwvSXRlbT48L0FNTD4="
+   },
+   {
+    "path": "pkg/d/f-utf8.xml",
+    "text": "<AML><Item type='List' action='add' id='u8'><name>café 中 😀</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "utf16-nobom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PABBAE0ATAA+ADwASQB0AGUAbQAgAHQAeQBwAGUAPQAnAEwAaQBzAHQAJwAgAGEAYwB0AGkAbwBuAD0AJwBhAGQAZAAnACAAaQBkAD0AJwBhACcALwA+ADwALwBBAE0ATAA+AA=="
+   }
+  ]
+ },
+ {
+  "name": "stamps",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.b.xml",
+    "text": "<AML><Item type='List' action='add' id='one'/><Item type='List' action='add' id='two'/></AML>"
+   },
+   {
+    "path": "pkg/d/c.xmlbak",
+    "text": "<AML><Item tempKeyName='old' type='List' tempFullName='oldf' action='add' id='three'/></AML>"
+   },
+   {
+    "path": "pkg/d/.xml",
+    "text": "<AML><Item type='List' action='add' id='dotxml'/></AML>"
+   },
+   {
+    "path": "pkg/d/é ü.xml",
+    "text": "<AML><Item type='List' action='add' id='uni'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "relative-and-trailing",
+  "solutionPath": "pkg",
+  "relative": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='a'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "relative-dot",
+  "relative": ".",
+  "dirs": [],
+  "files": [
+   {
+    "path": "d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='a'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "trailing-slash",
+  "solutionPath": "pkg",
+  "trailingSlash": true,
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='a'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "crlf-attrs",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML>\r\n <Item type='Method' action='add' id='m' d='l1\r\nl2\tl3'>\r\n  <method_code><![CDATA[x\r\ny]]></method_code>\r\n  <name>  sp  </name>\r\n  <empty></empty>\r\n </Item>\r\n</AML>"
+   }
+  ]
+ },
+ {
+  "name": "locked",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'/></AML>"
+   },
+   {
+    "path": "pkg/d/b.xml",
+    "text": "<AML><Item type='List' action='add' id='x'/></AML>"
+   }
+  ],
+  "lock": [
+   "pkg/d/b.xml"
+  ]
+ },
+ {
+  "name": "unc",
+  "solutionPath": "pkg",
+  "unc": true,
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "longpath",
+  "solutionPath": "pkg",
+  "longCreate": true,
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'/></AML>"
+   },
+   {
+    "path": "pkg/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3/d/nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.xml",
+    "text": "<AML><Foo/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "longpath",
+  "solutionPath": "pkg/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3",
+  "longCreate": true,
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'/></AML>"
+   },
+   {
+    "path": "pkg/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2/ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3/d/nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.xml",
+    "text": "<AML><Foo/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "charref-1-text",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>a&#1;b</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "charref-1-attr",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x' q='a&#1;b'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "charref-FFFE",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>a&#xFFFE;b</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "charref-D800",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>a&#xD800;b</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "charref-cdata-no",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><method_code><![CDATA[a]]]]><![CDATA[>b]]></method_code></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "entity-nbsp",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>&#160;&amp;nbsp;&#x20;</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "xml-space",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><a xml:space='preserve'>  <b/>  </a><c>  <b/>  </c></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "gt-in-text",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>a&gt;b ]]&gt; &quot;q&apos;</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "xmlns-default-child",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name xmlns='urn:x'>n</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "nonbmp-name",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='x'><name>😀</name></Item></AML>"
+   }
+  ]
+ },
+ {
+  "name": "hidden",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "hidden": [
+   "pkg/hd",
+   "pkg/vis/h.xml"
+  ],
+  "files": [
+   {
+    "path": "pkg/hd/a.xml",
+    "text": "<AML><Item type='List' action='add' id='hd'/></AML>"
+   },
+   {
+    "path": "pkg/vis/h.xml",
+    "text": "<AML><Item type='List' action='add' id='hf'/></AML>"
+   },
+   {
+    "path": "pkg/vis/v.xml",
+    "text": "<AML><Item type='List' action='add' id='vf'/></AML>"
+   }
+  ]
+ }
+]
