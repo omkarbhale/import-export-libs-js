@@ -10,6 +10,8 @@ Fixture tickets add one folder per engine version and fixture family. `wire/` ho
 
 `14.0.7/export/` holds the 14.0.7 export cases from ticket 05's catalogue, one folder per case (see its `README.md`). Each case folder has the oracle's run record, `transcript.jsonl`, `messages.jsonl`, `engine.log`, `host.log` and `output/`, plus `case.json` (the input, with the `Hashtable` insertion order, and the result) and a `README.md`. A transcript response of 64 KB or more is stored once under `14.0.7/export/_blobs/<sha256>.xml` and named by `responseBlob` in its line, because every export begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` reads a transcript with the blobs put back.
 
+`14.0.7/import/` holds the 14.0.7 import cases (ticket 25), one folder per case with a `step-<n>/` folder per oracle run (see its `README.md`). A step folder has the run record (with the cleanup report), `transcript.jsonl`, `messages.jsonl`, `engine.log`, `host.log` and `input/`, the package folder the engine read. Each case README lists the `LIBSJS-SCRATCH-*` ids created and deleted. Large transcript responses are in `14.0.7/import/_blobs/`.
+
 Rules for this folder:
 
 - **Bytes are exact.** Files keep the engine's BOM, CRLF line endings and indentation. `.gitattributes` turns off line-ending conversion here, so never re-save these files with an editor.

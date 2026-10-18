@@ -1,0 +1,22 @@
+﻿<AML>
+ <Item type="List" id="02FC1773E9FCF8E024A3FE0C37D824D2" action="add">
+  <description>Scratch list</description>
+  <name>LIBSJS-SCRATCH-List_1</name>
+  <Relationships>
+   <Item type="Value" id="4B9310FD636F0F459119501E5CD7DB64" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">First</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-List_1" type="List">02FC1773E9FCF8E024A3FE0C37D824D2</source_id>
+    <value>first</value>
+   </Item>
+   <Item type="Value" id="413A0B202A289E50F7B489B7A9A22014" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">Second</label>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-List_1" type="List">02FC1773E9FCF8E024A3FE0C37D824D2</source_id>
+    <value>second</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

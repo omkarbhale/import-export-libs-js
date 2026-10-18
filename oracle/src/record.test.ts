@@ -1,8 +1,9 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { exportItem, hostParams } from "./cli.js";
+import { exportItem, hostParams, priorCreated } from "./cli.js";
 import {
   assertDevUrl,
   assertScratchPackages,
@@ -31,6 +32,18 @@ describe("launcher", () => {
       "\ufeff$ErrorActionPreference = 'Stop'\r\n$p = @{\r\n    Command = 'export'\r\n    Merge = $true\r\n}\r\n& 'C:\\h\\engine-14.0.7.ps1' @p\r\nexit $LASTEXITCODE\r\n",
     );
     expect([...Buffer.from(script, "utf8").subarray(0, 3)]).toEqual([0xef, 0xbb, 0xbf]);
+  });
+});
+
+describe("host scripts", () => {
+  // The Windows side cannot run here; this checks that every engine's host exposes the same step options.
+  const scripts = ["12.0", "14.0.7", "14.35"].map((v) => [v, readFileSync(join(fileURLToPath(new URL("../host", import.meta.url)), `engine-${v}.ps1`), "utf8")] as const);
+
+  it.each(scripts)("engine %s accepts the cleanup command and the import step options", (_version, text) => {
+    expect(text).toMatch(/ValidateSet\('export','import',(?:'lpimport',)?'cleanup'\)/);
+    for (const param of ["[int] $CancelAfterStatus", "[switch] $KeepCreated", "[string[]] $PriorCreated", "[switch] $LockUpgradeRows", "[string[]] $VersionBefore"]) {
+      expect(text).toContain(param);
+    }
   });
 });
 
@@ -73,6 +86,31 @@ describe("CLI mapping", () => {
     expect(
       hostParams({ level: "2", merge: true, languages: "en, de", timeout: "1000", fast: false }),
     ).toEqual({ Level: "2", Merge: true, Languages: ["en", "de"], Timeout: 1000 });
+  });
+
+  it("maps the import step options: cancel, keep, lock, version", () => {
+    expect(
+      hostParams({ "cancel-after-status": "4", "keep-created": true, "lock-upgrade-rows": true, "version-before": "Method:ABC, Life Cycle State:DEF" }),
+    ).toEqual({
+      CancelAfterStatus: 4,
+      KeepCreated: true,
+      LockUpgradeRows: true,
+      VersionBefore: ["Method\tABC", "Life Cycle State\tDEF"],
+    });
+    expect(() => hostParams({ "version-before": "nocolon" })).toThrow(/<type>:<id>/);
+  });
+
+  it("reads what an earlier run created for the cleanup command", () => {
+    const folder = mkdtempSync(join(tmpdir(), "oracle-prior-"));
+    const file = join(folder, "run.json");
+    writeFileSync(
+      file,
+      JSON.stringify({ cleanup: { created: [{ type: "List", id: "AA" }, { type: "Value", id: "BB", unconfirmed: true }] } }),
+    );
+    expect(priorCreated(file)).toEqual(["List\tAA\t0", "Value\tBB\t1"]);
+    writeFileSync(file, JSON.stringify({ cleanup: null }));
+    expect(priorCreated(file)).toEqual([]);
+    rmSync(folder, { recursive: true, force: true });
   });
 
   it("parses export items, keeping colons in the keyed name", () => {

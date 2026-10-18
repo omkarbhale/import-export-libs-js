@@ -1,0 +1,101 @@
+{
+  "id": "s9-batch-server-failure",
+  "engine": "14.0.7",
+  "catalogue": [
+    "S9"
+  ],
+  "title": "The fourth of seven items fails on the server",
+  "exercises": "A uniqueness error from the server ends the package at that item.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHSRV"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 34,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "EB58E9AF550549FD90E8A3877EDE9ACF"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "4ADC36A80CEF49CEA70B1C3B88D833EE"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B6701BE51250442EBADFEF9CB6BEE8EA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E1DE5E7AAD3548F3A14F5D0496152EF6"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "032A492698124C4AB0C785DF6B95C564"
+          },
+          {
+            "type": "Variable",
+            "id": "E85E5A09574812188E8060248C111FE0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F15AEE4504AE40DAA69EFBC5C2FB8DA7"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "F15AEE4504AE40DAA69EFBC5C2FB8DA7"
+    },
+    {
+      "type": "Variable",
+      "id": "E85E5A09574812188E8060248C111FE0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "032A492698124C4AB0C785DF6B95C564"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E1DE5E7AAD3548F3A14F5D0496152EF6"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B6701BE51250442EBADFEF9CB6BEE8EA"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "4ADC36A80CEF49CEA70B1C3B88D833EE"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "EB58E9AF550549FD90E8A3877EDE9ACF"
+    }
+  ]
+}

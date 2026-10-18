@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":13,"ticks":752778067202,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":13,"ticks":752778538507,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-REF","answer":null}
+{"event":21,"seq":3,"thread":13,"ticks":752780289409,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-REF-Var_1","answer":null}
+{"event":31,"seq":4,"thread":13,"ticks":752803640837,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":32,"seq":5,"thread":13,"ticks":752803650451,"channel":"status","text":"completed","answer":null}
+{"event":37,"seq":6,"thread":13,"ticks":752804933005,"channel":"status","text":"completed","answer":null}

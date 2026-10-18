@@ -1,0 +1,33 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202315-14.0.7-import-140446\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202315-14.0.7-import-140446\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202315-14.0.7-import-140446\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:53:18
+Updating 'LIBSJS-SCRATCH-SQL' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-SQL****
+Processing (add)   id : D9E85E9C05E70116CB38C132B3F44A7A    keyed_name : LIBSJS-SCRATCH-V1    type : SQL  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202315-14.0.7-import-140446\input\LIBSJS-SCRATCH-SQL\Import\SQL\LIBSJS-SCRATCH-V1.xml'
+##### Delete SQL Items of the package 'LIBSJS-SCRATCH-SQL' from the database #####
+##### Done deleting SQL Items of the package 'LIBSJS-SCRATCH-SQL' from the database #####
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>SQL</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : D9E85E9C05E70116CB38C132B3F44A7A    keyed_name : LIBSJS-SCRATCH-V1    type : SQL  
+Adding item into PackageDefinition with id = D9E85E9C05E70116CB38C132B3F44A7A and type = SQL
+Item successfully added in packdefinition  id  D9E85E9C05E70116CB38C132B3F44A7A type SQL
+completed
+Updating 'LIBSJS-SCRATCH-SQL' package to success release status
+end of execution : 10/19/2026 01:53:18

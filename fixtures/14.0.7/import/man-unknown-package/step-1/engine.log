@@ -1,0 +1,29 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202356-14.0.7-import-1a7d28\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202356-14.0.7-import-1a7d28\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202356-14.0.7-import-1a7d28\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:53:59
+Updating 'LIBSJS-SCRATCH-NOTLISTED' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-NOTLISTED****
+Updating 'LIBSJS-SCRATCH-NOTLISTED' package to failed release status
+end of execution : 10/19/2026 01:53:59
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-NOTLISTED' failed with message:
+
+Node for package 'LIBSJS-SCRATCH-NOTLISTED' doesn't exist in the manifest file Enable to detemine path to LIBSJS-SCRATCH-NOTLISTED.
+Updating LIBSJS-SCRATCH-NOTLISTED to failed release status
+
+		********************

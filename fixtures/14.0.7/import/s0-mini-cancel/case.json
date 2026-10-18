@@ -1,0 +1,88 @@
+{
+  "id": "s0-mini-cancel",
+  "engine": "14.0.7",
+  "catalogue": [
+    "S0",
+    "cancel"
+  ],
+  "title": "Cancel pressed after the fourth status message",
+  "exercises": "ImportExportManager.Cancel() during a package: the loop checks the flag before each item, writes the cancelled message and returns normally, so the package is recorded as success and the run returns 0. The host presses Cancel from inside the status message, which is where the GUI's button would act.",
+  "steps": [
+    {
+      "name": "import, cancelled",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "cancelAfterStatus": 4
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 29,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "D79EBAA7475149C8B9485AC2EB2B371D"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "C4C18782926E4D3DB9D7843ECAB9EAB6"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B91D7A8A138B4A94B4467EEBE4E71BCE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F811BCB108C7400788B3D021E5129285"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E75A65E63F9C41FD94FE01C939CA844A"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "E75A65E63F9C41FD94FE01C939CA844A"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F811BCB108C7400788B3D021E5129285"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B91D7A8A138B4A94B4467EEBE4E71BCE"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "C4C18782926E4D3DB9D7843ECAB9EAB6"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "D79EBAA7475149C8B9485AC2EB2B371D"
+    }
+  ]
+}

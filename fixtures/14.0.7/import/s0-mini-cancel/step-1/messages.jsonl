@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":750967506618,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":750968583265,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-MINI","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":750968962021,"channel":"status","text":"Item 1 of 6: List - LIBSJS-SCRATCH-MINI-List_1","answer":null}
+{"event":25,"seq":4,"thread":16,"ticks":750971520229,"channel":"status","text":"Item 2 of 6: List - LIBSJS-SCRATCH-MINI-List_2","answer":null}
+{"event":30,"seq":5,"thread":16,"ticks":750972184736,"channel":"status","text":"Import was canceled by user","answer":null}
+{"event":35,"seq":6,"thread":16,"ticks":750972869771,"channel":"status","text":"completed","answer":null}

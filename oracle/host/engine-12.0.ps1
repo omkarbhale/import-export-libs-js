@@ -8,7 +8,7 @@ passes ARAS_PASSWORD through WSLENV.
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidateSet('export','import')][string] $Command,
+    [Parameter(Mandatory)][ValidateSet('export','import','cleanup')][string] $Command,
     [Parameter(Mandatory)][string] $ToolsetDir,
     [Parameter(Mandatory)][string] $OutDir,
     [Parameter(Mandatory)][string] $WorkDir,
@@ -29,6 +29,16 @@ param(
     # import: the manifest's full path; Packages defaults to every package in it.
     [string] $ImportManifest,
     [string[]] $Packages,
+    # import: press Cancel after this many status messages (0: never).
+    [int] $CancelAfterStatus,
+    # import: skip the cleanup, so a later run (with PriorCreated, or the cleanup command) deletes what this one created.
+    [switch] $KeepCreated,
+    # import, cleanup: "type<TAB>id<TAB>0|1" per item an earlier kept run created.
+    [string[]] $PriorCreated,
+    # import: lock the packages' scratch DatabaseUpgrade rows before the run.
+    [switch] $LockUpgradeRows,
+    # import: "type<TAB>id" per scratch item to give a new generation before the run.
+    [string[]] $VersionBefore,
 
     # ---- Engine options ----
     [switch] $ContextVerbose,

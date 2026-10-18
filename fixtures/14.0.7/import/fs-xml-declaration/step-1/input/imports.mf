@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-FSDECL" path="LIBSJS-SCRATCH-FSDECL\Import" />
+</imports>

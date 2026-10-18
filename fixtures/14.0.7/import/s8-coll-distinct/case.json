@@ -1,0 +1,110 @@
+{
+  "id": "s8-coll-distinct",
+  "engine": "14.0.7",
+  "catalogue": [
+    "S8"
+  ],
+  "title": "Two packages whose names end in the same segment",
+  "exercises": "Two packages with different items import side by side; each has its own PackageDefinition and element. Ticket 67 exports them to pin the shared last-segment folder.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-A.Coll",
+        "LIBSJS-SCRATCH-B.Coll"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "EDA99BBF68B94E80BE30E4817F7621C7"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "9DCCD3AD886B4140BDE9B440A8671BF5"
+          },
+          {
+            "type": "Variable",
+            "id": "B884DA4086B47D93861052CA33041D07"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "0706361C03554902992A404178A3C02D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "37E2D5BD51764A57AF3AF534CB2901D0"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "1CCDCE90EF334BB6995741140A4D06FC"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "7453DD6425ED49EBB9697FD22E4C9D9C"
+          },
+          {
+            "type": "Variable",
+            "id": "EB4A3D180B43F8CE6B393C6484D3F650"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "9393F2302725416FB29C76258065A588"
+          },
+          {
+            "type": "PackageElement",
+            "id": "26906454ECBE4E3790A76CC077D21382"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "26906454ECBE4E3790A76CC077D21382"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "9393F2302725416FB29C76258065A588"
+    },
+    {
+      "type": "Variable",
+      "id": "EB4A3D180B43F8CE6B393C6484D3F650"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "7453DD6425ED49EBB9697FD22E4C9D9C"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "1CCDCE90EF334BB6995741140A4D06FC"
+    },
+    {
+      "type": "PackageElement",
+      "id": "37E2D5BD51764A57AF3AF534CB2901D0"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "0706361C03554902992A404178A3C02D"
+    },
+    {
+      "type": "Variable",
+      "id": "B884DA4086B47D93861052CA33041D07"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "9DCCD3AD886B4140BDE9B440A8671BF5"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "EDA99BBF68B94E80BE30E4817F7621C7"
+    }
+  ]
+}

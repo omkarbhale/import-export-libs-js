@@ -1,0 +1,11 @@
+{"event":10,"seq":1,"thread":16,"ticks":752726929827,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":752727632071,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-REFDEP","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":752727997867,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-REFDEP-List_1","answer":null}
+{"event":25,"seq":4,"thread":16,"ticks":752730159388,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":26,"seq":5,"thread":16,"ticks":752730169826,"channel":"status","text":"completed","answer":null}
+{"event":33,"seq":6,"thread":16,"ticks":752731265499,"channel":"status","text":"Building  solution","answer":null}
+{"event":34,"seq":7,"thread":16,"ticks":752731276292,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-REF","answer":null}
+{"event":46,"seq":8,"thread":16,"ticks":752733096533,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-REF-Var_1","answer":null}
+{"event":56,"seq":9,"thread":16,"ticks":752734631167,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":57,"seq":10,"thread":16,"ticks":752734631703,"channel":"status","text":"completed","answer":null}
+{"event":62,"seq":11,"thread":16,"ticks":752735338494,"channel":"status","text":"completed","answer":null}

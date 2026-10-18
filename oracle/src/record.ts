@@ -15,7 +15,7 @@ export type HostValue = string | number | boolean | readonly string[];
 
 export interface RecordRequest {
   engine: Engine;
-  command: "export" | "import" | "lpimport";
+  command: "export" | "import" | "lpimport" | "cleanup";
   url: string;
   database: string;
   user: string;
@@ -44,6 +44,8 @@ export interface ItemRef {
 /** What an import's cleanup did (host.json `cleanup`): every item the run created, and which it deleted or kept. */
 export interface CleanupReport {
   created: ItemRef[];
+  /** The run kept what it created (host `KeepCreated`); a later run deletes it. */
+  deferred?: true;
   deleted: ItemRef[];
   kept: (ItemRef & { reason: string })[];
   /** Unconfirmed items not found at cleanup: the server may still commit them, so they need a re-check later. */
@@ -137,7 +139,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   const log = req.log ?? ((t: string) => process.stderr.write(t));
   assertDevUrl(req.url);
   if (existsSync(req.out) && readdirSync(req.out).length > 0) throw new Error(`${req.out} already exists and is not empty`);
-  if (req.command !== "export") {
+  if (req.command === "import" || req.command === "lpimport") {
     if (req.inputDir === undefined) throw new Error(`${req.command} needs a package folder`);
     assertScratchPackages(importedPackageNames(req));
   }
@@ -171,6 +173,8 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   if (req.command === "export") {
     mkdirSync(join(wslRun, "output"));
     params.WorkDir = winJoin(winRun, "output");
+  } else if (req.command === "cleanup") {
+    params.WorkDir = winRun;
   } else {
     cpSync(req.inputDir!, join(wslRun, "input"), { recursive: true });
     params.WorkDir = winJoin(winRun, "input");

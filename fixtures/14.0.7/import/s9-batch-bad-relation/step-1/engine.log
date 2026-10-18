@@ -1,0 +1,63 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:53:36
+Updating 'LIBSJS-SCRATCH-BATCH' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCH****
+Processing (add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input\LIBSJS-SCRATCH-BATCH\Import\Variable\LIBSJS-SCRATCH-Batch_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+Adding item into PackageDefinition with id = 58760E04551E59833BC3B0DD0A8C48DC and type = Variable
+Item successfully added in packdefinition  id  58760E04551E59833BC3B0DD0A8C48DC type Variable
+Processing (add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input\LIBSJS-SCRATCH-BATCH\Import\Variable\LIBSJS-SCRATCH-Batch_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+Adding item into PackageDefinition with id = 3172ED4C9B7DC0304F67A4238F7739FA and type = Variable
+Item successfully added in packdefinition  id  3172ED4C9B7DC0304F67A4238F7739FA type Variable
+Processing (add)   id : E85E5A09574812188E8060248C111FE0    keyed_name : LIBSJS-SCRATCH-Batch_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input\LIBSJS-SCRATCH-BATCH\Import\Variable\LIBSJS-SCRATCH-Batch_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E85E5A09574812188E8060248C111FE0    keyed_name : LIBSJS-SCRATCH-Batch_3    type : Variable  
+Adding item into PackageDefinition with id = E85E5A09574812188E8060248C111FE0 and type = Variable
+Item successfully added in packdefinition  id  E85E5A09574812188E8060248C111FE0 type Variable
+Processing (add)   id : 1028AD2AE5A230B328A502D762179971    keyed_name : LIBSJS-SCRATCH-Batch_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202334-14.0.7-import-a3b787\input\LIBSJS-SCRATCH-BATCH\Import\Variable\LIBSJS-SCRATCH-Batch_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+Updating 'LIBSJS-SCRATCH-BATCH' package to failed release status
+end of execution : 10/19/2026 01:53:36
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-BATCH' failed with message:
+
+Bad Relation type Property for Variable Recurse check has failed.
+Updating LIBSJS-SCRATCH-BATCH to failed release status
+
+		********************

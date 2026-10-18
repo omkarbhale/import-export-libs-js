@@ -21,6 +21,7 @@ Commands:
   lpimport <package folder>            --lp-dir <folder> [--lp-config ImportConfig.xml] --lp-package <name>
   xsl <input.xml|folder>...            --xsl export.xsl|build.xsl (required); no server, no password
                                        [--transcript <fixture folder> --seq <n>,<n>...] [--culture <name>]
+  cleanup --from-runs <run.json>,...   delete what earlier --keep-created runs created (their run.json files)
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
@@ -41,6 +42,9 @@ Engine options (passed to the engine's host; an option the engine lacks is an er
   --verbose, --manifest-file <path>, --level <n>, --export-referenced-items,
   --ref-to-unknown-packs RemoveSilently|RemoveWithWarning|DoNotRemove, --use-import,
   --merge, --fast, --release <r>, --description <d>, --vault, --lp-debug,
+  import: --version-before <type>:<id>,... (give those scratch items a new generation first),
+         --cancel-after-status <n> (press Cancel after n status messages), --lock-upgrade-rows (lock the
+         packages' scratch DatabaseUpgrade rows first), --keep-created (skip the cleanup, for a later cleanup run),
   14.35: --languages a,b, --engine-action <Export|ExportLanguageResourcesOnly|ExportMetadataWithLanguageResources>,
          --aml-batch-mode, --aml-batch-max-size <n>, --collect-import-errors, --collect-import-errors-max-count <n>
 Host: --timeout <ms> (600000), --error-question-answer yes|no|none (no)
@@ -61,6 +65,7 @@ const NUMBER_OPTIONS: Record<string, string> = {
   timeout: "Timeout",
   "aml-batch-max-size": "AmlBatchMaxSize",
   "collect-import-errors-max-count": "CollectImportErrorsMaxCount",
+  "cancel-after-status": "CancelAfterStatus",
 };
 const SWITCH_OPTIONS: Record<string, string> = {
   verbose: "ContextVerbose",
@@ -72,6 +77,8 @@ const SWITCH_OPTIONS: Record<string, string> = {
   "lp-debug": "LPDebug",
   "aml-batch-mode": "AmlBatchMode",
   "collect-import-errors": "CollectImportErrors",
+  "lock-upgrade-rows": "LockUpgradeRows",
+  "keep-created": "KeepCreated",
 };
 const LIST_OPTIONS: Record<string, string> = { languages: "Languages", packages: "Packages" };
 
@@ -90,6 +97,8 @@ const OPTIONS = {
   transcript: { type: "string" },
   seq: { type: "string" },
   culture: { type: "string" },
+  "from-runs": { type: "string" },
+  "version-before": { type: "string" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -121,7 +130,20 @@ export function hostParams(values: Values): Record<string, HostValue> {
     const v = values[flag];
     if (typeof v === "string") params[name] = v.split(",").map((s) => s.trim()).filter((s) => s !== "");
   }
+  if (typeof values["version-before"] === "string") {
+    params.VersionBefore = values["version-before"].split(",").map((spec) => {
+      const at = spec.lastIndexOf(":");
+      if (at <= 0) throw new UsageError("--version-before needs <type>:<id>,...");
+      return `${spec.slice(0, at).trim()}\t${spec.slice(at + 1).trim()}`;
+    });
+  }
   return params;
+}
+
+/** The host's `PriorCreated` lines for what a `--keep-created` run's `run.json` says it created. */
+export function priorCreated(runJsonFile: string): string[] {
+  const run = JSON.parse(readFileSync(runJsonFile, "utf8")) as { cleanup?: { created?: { type: string; id: string; unconfirmed?: true }[] } };
+  return (run.cleanup?.created ?? []).map((c) => [c.type, c.id, c.unconfirmed === true ? "1" : "0"].join("\t"));
 }
 
 /** `<type>:<id>:<keyed name>` → the host's tab-separated item spec. The keyed name may contain colons. */
@@ -216,14 +238,20 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       case "export":
       case "import":
-      case "lpimport": {
+      case "lpimport":
+      case "cleanup": {
         const params = hostParams(values);
+        if (command === "cleanup") {
+          if (typeof values["from-runs"] !== "string") throw new UsageError("cleanup needs --from-runs <run.json>,...");
+          params.PriorCreated = values["from-runs"].split(",").flatMap((file) => priorCreated(file.trim()));
+          if ((params.PriorCreated as string[]).length === 0) throw new UsageError("those runs created nothing to clean up");
+        }
         if (command === "export") {
           const pkg = values.package;
           if (typeof pkg !== "string") throw new UsageError("export needs --package <name>");
           if (rest.length === 0) throw new UsageError("export needs at least one <type>:<id>:<keyed name>");
           params.Items = rest.map((spec) => exportItem(pkg, spec));
-        } else if (rest.length !== 1) {
+        } else if (command !== "cleanup" && rest.length !== 1) {
           throw new UsageError(`${command} needs one package folder`);
         }
         const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
@@ -237,7 +265,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           password: readPassword(),
           out,
           params,
-          ...(command === "export" ? {} : { inputDir: resolve(rest[0]!) }),
+          ...(command === "export" || command === "cleanup" ? {} : { inputDir: resolve(rest[0]!) }),
           ...(typeof values.manifest === "string" ? { manifestName: values.manifest } : {}),
           ...(typeof values["lp-dir"] === "string" ? { lpDir: resolve(values["lp-dir"]) } : {}),
           ...(typeof values["lp-config"] === "string" ? { lpConfig: values["lp-config"] } : {}),
@@ -248,7 +276,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         let leftBehind = false;
         if (command !== "export") {
           const { cleanup } = result;
-          if (cleanup === null) {
+          if (cleanup?.deferred === true) {
+            process.stdout.write(`kept ${cleanup.created.length} created items for a later cleanup run\n`);
+          } else if (cleanup === null) {
             process.stderr.write("the host reported no cleanup; anything this import created is still on the server\n");
             leftBehind = true;
           } else {

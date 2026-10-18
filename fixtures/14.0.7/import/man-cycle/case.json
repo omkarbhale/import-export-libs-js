@@ -1,0 +1,126 @@
+{
+  "id": "man-cycle",
+  "engine": "14.0.7",
+  "catalogue": [
+    "manifest"
+  ],
+  "title": "Two packages that depend on each other",
+  "exercises": "GetPackageNamesInImportOrder: a dependency cycle through the starting package gives the circular-dependency warning, and both packages are still imported.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-CYC1",
+        "LIBSJS-SCRATCH-CYC2"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 42,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "D20BC748D1FD407CA290D4561A6BD506"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "F62E23E58EBA4EB395B0B5CEA41CD9BE"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "26B2D5939183481780CC496A8DC43AB6"
+          },
+          {
+            "type": "Variable",
+            "id": "54B3935B1919800C6EA7B49DDBBABC3E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "520D8F11366742BF884F198120F824E7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "20071B79BB9F46BBA9CFCCD10EA7AB0A"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "537E8BE2CA0C4F3D9B5B57BA791EF906"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "ECCB5B2A49F34EDCBE1DBEC953468910"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "C8DE251ABCE74C27A93B37CE787D69FE"
+          },
+          {
+            "type": "Variable",
+            "id": "D72B4CA103EA4FFB0DD7E8F4EC95995C"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "0A108089D8B3491C870913EFD9374919"
+          },
+          {
+            "type": "PackageElement",
+            "id": "118C780B57F5400B88D5332694CDC05E"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "118C780B57F5400B88D5332694CDC05E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "0A108089D8B3491C870913EFD9374919"
+    },
+    {
+      "type": "Variable",
+      "id": "D72B4CA103EA4FFB0DD7E8F4EC95995C"
+    },
+    {
+      "type": "PackageDependsOn",
+      "id": "C8DE251ABCE74C27A93B37CE787D69FE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "ECCB5B2A49F34EDCBE1DBEC953468910"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "537E8BE2CA0C4F3D9B5B57BA791EF906"
+    },
+    {
+      "type": "PackageElement",
+      "id": "20071B79BB9F46BBA9CFCCD10EA7AB0A"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "520D8F11366742BF884F198120F824E7"
+    },
+    {
+      "type": "Variable",
+      "id": "54B3935B1919800C6EA7B49DDBBABC3E"
+    },
+    {
+      "type": "PackageDependsOn",
+      "id": "26B2D5939183481780CC496A8DC43AB6"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "F62E23E58EBA4EB395B0B5CEA41CD9BE"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "D20BC748D1FD407CA290D4561A6BD506"
+    }
+  ]
+}

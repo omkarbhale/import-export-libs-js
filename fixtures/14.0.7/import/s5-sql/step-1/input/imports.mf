@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-SQL" path="LIBSJS-SCRATCH-SQL\Import" />
+</imports>

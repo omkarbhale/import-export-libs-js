@@ -1,0 +1,6 @@
+﻿<AML>
+ <Item type="Variable" id="06BEEB705D5CA58842964C6FBF517A72" action="add">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-Fs_TooDeep</name>
+ </Item>
+</AML>

@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-BATCHREL" path="LIBSJS-SCRATCH-BATCHREL\Import" />
+</imports>

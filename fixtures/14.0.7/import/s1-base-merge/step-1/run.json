@@ -1,0 +1,499 @@
+{
+  "engine": "14.0.7",
+  "command": "import",
+  "toolset": {
+    "digest": "19573a97899a",
+    "source": "Desktop\\ImportExport\\23\\Import",
+    "libs": {
+      "version": "14.0.7.35492",
+      "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+    },
+    "iom": {
+      "version": "14.0.7.35492",
+      "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Merge": true
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T20:25:44.371Z",
+  "finishedAt": "2026-10-18T20:26:12.041Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 246,
+    "messages": 37,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "DBC327407D344E6D96071D99EA8C073D"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "365C6652A91644DEA150483C04B88BB2"
+      },
+      {
+        "type": "List",
+        "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F05FDF4745914C349746502E49E8266D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "B836EA694A1C4577B811F01230CEDB67"
+      },
+      {
+        "type": "Sequence",
+        "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "69EFDE322004412FA64E9A3573A8A5ED"
+      },
+      {
+        "type": "PackageElement",
+        "id": "429E3640CD9C44A1BD60A353AB8D3977"
+      },
+      {
+        "type": "Variable",
+        "id": "9DFD42E0D1D332A37468535A17E9E071"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "1157C044FCA4484D8803CFE8A7F33F6F"
+      },
+      {
+        "type": "PackageElement",
+        "id": "2C760F718BBB4D198DCEF60FAAFCA0DF"
+      },
+      {
+        "type": "Identity",
+        "id": "8D1FA15B385BD9268D12CDB127520F9C"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "E8F1CDE8B56A4EF79B069C5D338FEFA0"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EED4FD079AEA4C36B3A5E2A7A04951E2"
+      },
+      {
+        "type": "Member",
+        "id": "0FD85985D9C574513CB9B6D231B177B4"
+      },
+      {
+        "type": "Permission",
+        "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "EDCA033355CA42E5BE39F701A411C434"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EE52D40AFA0F41B3A88A6D1BB4BDF214"
+      },
+      {
+        "type": "Method",
+        "id": "5E0832E42849900FA499343A85F8A1D0"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "585B904E146C4A439E592C1013CFD845"
+      },
+      {
+        "type": "PackageElement",
+        "id": "027F5F23BA7E4D2F942D224E76D0FC8E"
+      },
+      {
+        "type": "Action",
+        "id": "6E1629D001235406CBAF1C1BC71F19E1"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D47222DEEF2E44569F9379C3EB84F9E5"
+      },
+      {
+        "type": "PackageElement",
+        "id": "711319F4AC3749448AB324BEE8AE1269"
+      },
+      {
+        "type": "Report",
+        "id": "13E641DA215894EBC9281A99B5BA656B"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "2BFC3E02F82C4FF2A5B77D00688CF74C"
+      },
+      {
+        "type": "PackageElement",
+        "id": "BCDCB7061032483DA87BF7AFA2F44352"
+      },
+      {
+        "type": "Form",
+        "id": "80C1916ED13FB91AABE8B59712B5B25D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "3F02E0F52EE04CFFB6B97B93E280278C"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EB93ED6EAFAF4F9EBFA7E2760DBF7199"
+      },
+      {
+        "type": "Workflow Map",
+        "id": "97036156528C7C8959E5E0D9E2B89E1D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "6691B94F42D04607A5CCE4AC72121926"
+      },
+      {
+        "type": "PackageElement",
+        "id": "4601A861431447C8B62BAB7A1EDEA56B"
+      },
+      {
+        "type": "Life Cycle Map",
+        "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F957E38E8F9041F9BF1C7A0C45D138EF"
+      },
+      {
+        "type": "PackageElement",
+        "id": "9B09E107176B489787A4555A95E47A50"
+      },
+      {
+        "type": "Grid",
+        "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D15B220C8E714D84B973111172BBDEA8"
+      },
+      {
+        "type": "PackageElement",
+        "id": "87AEEE7BD0BA417F97B53BC1D0636F62"
+      },
+      {
+        "type": "ItemType",
+        "id": "E0FAE5389340631DC4962AE25970C7BB"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "FE21F26A458F446D9AFD4EB4C816A80E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "497B6798D9A44B838F72F38A233B719D"
+      },
+      {
+        "type": "ItemType",
+        "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+      },
+      {
+        "type": "PackageElement",
+        "id": "41AA1CA5B1B24D0198670C7F7C954D04"
+      },
+      {
+        "type": "ItemType",
+        "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+      },
+      {
+        "type": "PackageElement",
+        "id": "423214B4300D4F3E84B6AA434CD0110F"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2E86BE71406A024A7610EBE387CA19FA"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F275AF7B65F9489F845BB694546BF688"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E8A8BCD59DD04373AC518CA7C9DD3111"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2CAA9483C5AF745CE43A9975AB133C39"
+      },
+      {
+        "type": "PackageElement",
+        "id": "CF3D7FD28AA14BBE9F25CCC24C1C112A"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "B1728187A78D330129D6FC48530DD38F"
+      },
+      {
+        "type": "PackageElement",
+        "id": "1EC77A33B1274C3CA0DD658A5E317DEE"
+      },
+      {
+        "type": "UserMessage",
+        "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "E3B777F04D2B4F1F970A846613D0A478"
+      },
+      {
+        "type": "PackageElement",
+        "id": "1955FC60B9EB447A89E2E87CC1849BB0"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "1955FC60B9EB447A89E2E87CC1849BB0"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "E3B777F04D2B4F1F970A846613D0A478"
+      },
+      {
+        "type": "UserMessage",
+        "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "1EC77A33B1274C3CA0DD658A5E317DEE"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "B1728187A78D330129D6FC48530DD38F"
+      },
+      {
+        "type": "PackageElement",
+        "id": "CF3D7FD28AA14BBE9F25CCC24C1C112A"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2CAA9483C5AF745CE43A9975AB133C39"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E8A8BCD59DD04373AC518CA7C9DD3111"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F275AF7B65F9489F845BB694546BF688"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2E86BE71406A024A7610EBE387CA19FA"
+      },
+      {
+        "type": "PackageElement",
+        "id": "423214B4300D4F3E84B6AA434CD0110F"
+      },
+      {
+        "type": "ItemType",
+        "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+      },
+      {
+        "type": "PackageElement",
+        "id": "41AA1CA5B1B24D0198670C7F7C954D04"
+      },
+      {
+        "type": "ItemType",
+        "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+      },
+      {
+        "type": "PackageElement",
+        "id": "497B6798D9A44B838F72F38A233B719D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "FE21F26A458F446D9AFD4EB4C816A80E"
+      },
+      {
+        "type": "ItemType",
+        "id": "E0FAE5389340631DC4962AE25970C7BB"
+      },
+      {
+        "type": "PackageElement",
+        "id": "87AEEE7BD0BA417F97B53BC1D0636F62"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D15B220C8E714D84B973111172BBDEA8"
+      },
+      {
+        "type": "Grid",
+        "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+      },
+      {
+        "type": "PackageElement",
+        "id": "9B09E107176B489787A4555A95E47A50"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F957E38E8F9041F9BF1C7A0C45D138EF"
+      },
+      {
+        "type": "Life Cycle Map",
+        "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+      },
+      {
+        "type": "PackageElement",
+        "id": "4601A861431447C8B62BAB7A1EDEA56B"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "6691B94F42D04607A5CCE4AC72121926"
+      },
+      {
+        "type": "Workflow Map",
+        "id": "97036156528C7C8959E5E0D9E2B89E1D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EB93ED6EAFAF4F9EBFA7E2760DBF7199"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "3F02E0F52EE04CFFB6B97B93E280278C"
+      },
+      {
+        "type": "Form",
+        "id": "80C1916ED13FB91AABE8B59712B5B25D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "BCDCB7061032483DA87BF7AFA2F44352"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "2BFC3E02F82C4FF2A5B77D00688CF74C"
+      },
+      {
+        "type": "Report",
+        "id": "13E641DA215894EBC9281A99B5BA656B"
+      },
+      {
+        "type": "PackageElement",
+        "id": "711319F4AC3749448AB324BEE8AE1269"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D47222DEEF2E44569F9379C3EB84F9E5"
+      },
+      {
+        "type": "Action",
+        "id": "6E1629D001235406CBAF1C1BC71F19E1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "027F5F23BA7E4D2F942D224E76D0FC8E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "585B904E146C4A439E592C1013CFD845"
+      },
+      {
+        "type": "Method",
+        "id": "5E0832E42849900FA499343A85F8A1D0"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EE52D40AFA0F41B3A88A6D1BB4BDF214"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "EDCA033355CA42E5BE39F701A411C434"
+      },
+      {
+        "type": "Permission",
+        "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+      },
+      {
+        "type": "Member",
+        "id": "0FD85985D9C574513CB9B6D231B177B4"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EED4FD079AEA4C36B3A5E2A7A04951E2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "E8F1CDE8B56A4EF79B069C5D338FEFA0"
+      },
+      {
+        "type": "Identity",
+        "id": "8D1FA15B385BD9268D12CDB127520F9C"
+      },
+      {
+        "type": "PackageElement",
+        "id": "2C760F718BBB4D198DCEF60FAAFCA0DF"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "1157C044FCA4484D8803CFE8A7F33F6F"
+      },
+      {
+        "type": "Variable",
+        "id": "9DFD42E0D1D332A37468535A17E9E071"
+      },
+      {
+        "type": "PackageElement",
+        "id": "429E3640CD9C44A1BD60A353AB8D3977"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "69EFDE322004412FA64E9A3573A8A5ED"
+      },
+      {
+        "type": "Sequence",
+        "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "B836EA694A1C4577B811F01230CEDB67"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F05FDF4745914C349746502E49E8266D"
+      },
+      {
+        "type": "List",
+        "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "365C6652A91644DEA150483C04B88BB2"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "DBC327407D344E6D96071D99EA8C073D"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

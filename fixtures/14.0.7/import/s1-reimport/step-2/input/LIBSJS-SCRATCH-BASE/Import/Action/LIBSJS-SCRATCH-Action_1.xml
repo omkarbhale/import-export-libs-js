@@ -1,0 +1,13 @@
+﻿<AML>
+ <Item type="Action" id="6E1629D001235406CBAF1C1BC71F19E1" action="add">
+  <item_query>&lt;Item type="{@type}" id="{@id}" action="get" /&gt;</item_query>
+  <label xml:lang="en">Scratch Action</label>
+  <location>server</location>
+  <method keyed_name="LIBSJS-SCRATCH-Method_1" type="Method">
+   <Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Method_1</name></Item>
+  </method>
+  <target>none</target>
+  <type>item</type>
+  <name>LIBSJS-SCRATCH-Action_1</name>
+ </Item>
+</AML>
