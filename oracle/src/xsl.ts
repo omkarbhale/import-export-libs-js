@@ -103,7 +103,6 @@ export interface XslRequest {
   xsl: XslName;
   inputs: readonly XslInput[];
   out: string;
-  preserveWhitespace?: boolean;
   /** CurrentCulture for the transform (xsl:sort uses it); the host's own when absent. */
   culture?: string;
   log?: (text: string) => void;
@@ -133,8 +132,8 @@ export async function recordXsl(req: XslRequest): Promise<XslResult> {
   const seen = new Set<string>();
   for (const input of req.inputs) {
     assertCaseName(input.name);
-    if (seen.has(input.name)) throw new Error(`two inputs are named '${input.name}'`);
-    seen.add(input.name);
+    if (seen.has(input.name.toLowerCase())) throw new Error(`two inputs are named '${input.name}' (case-insensitively)`);
+    seen.add(input.name.toLowerCase());
   }
 
   // The hash check: the vendored folder, then the staged copy, before anything is loaded.
@@ -155,7 +154,7 @@ export async function recordXsl(req: XslRequest): Promise<XslResult> {
     writeFileSync(join(wslRun, "input", `${input.name}.xml`), scrubbed);
   }
 
-  const preserveWhitespace = req.preserveWhitespace ?? defaultPreserveWhitespace(req.xsl);
+  const preserveWhitespace = defaultPreserveWhitespace(req.xsl);
   const params: Record<string, HostValue> = {
     Engine: req.engine,
     ToolsetDir: toolset.windows,
@@ -186,44 +185,53 @@ export async function recordXsl(req: XslRequest): Promise<XslResult> {
   info.cases = [...info.cases].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
   // Collect: the case folders, each with its input beside the results.
-  mkdirSync(req.out, { recursive: true });
-  for (const c of info.cases) {
-    const bytes = inputBytes.get(c.name);
-    if (bytes === undefined) throw new Error(`the host returned an unknown case '${c.name}'`);
-    if (sha256(bytes) !== c.inputSha256) throw new Error(`case '${c.name}': the host read different input bytes than were staged`);
-    const dir = join(req.out, "cases", c.name);
-    cpSync(join(wslRun, "result", "cases", c.name), dir, { recursive: true });
-    writeFileSync(join(dir, "input.xml"), bytes);
-  }
-  const scrubbed: Record<string, Record<string, number>> = {};
-  for (const path of listFiles(req.out)) {
-    const counts = scrubFile(join(req.out, path), []);
-    if (Object.keys(counts).length > 0) scrubbed[path] = counts;
-  }
-
-  const run = {
-    engine: req.engine,
-    command: "xsl",
-    toolset: { digest: toolsetDigest(entry), source: entry.source, libs: entry.libs, iom: entry.iom },
-    xsl: req.xsl,
-    stylesheet: info.stylesheet,
-    preserveWhitespace,
-    culture: info.culture,
-    clr: info.clr,
-    startedAt,
-    finishedAt,
-    cases: info.cases.map((c) => ({ ...c, source: req.inputs.find((i) => i.name === c.name)!.source })),
-    scrubbed,
-  };
-  writeFileSync(join(req.out, "run.json"), `${JSON.stringify(run, null, 2)}\n`);
-
   const remainingSecrets: string[] = [];
-  for (const path of listFiles(req.out)) {
-    for (const hit of findSecrets(readFileSync(join(req.out, path)).toString("latin1"))) {
-      remainingSecrets.push(`${path}@${hit.index}: ${hit.pattern}`);
+  try {
+    if (info.cases.length !== req.inputs.length) {
+      throw new Error(`the host returned ${info.cases.length} cases for ${req.inputs.length} inputs`);
     }
+    mkdirSync(req.out, { recursive: true });
+    for (const c of info.cases) {
+      const bytes = inputBytes.get(c.name);
+      if (bytes === undefined) throw new Error(`the host returned an unknown case '${c.name}'`);
+      if (sha256(bytes) !== c.inputSha256) throw new Error(`case '${c.name}': the host read different input bytes than were staged`);
+      const dir = join(req.out, "cases", c.name);
+      cpSync(join(wslRun, "result", "cases", c.name), dir, { recursive: true });
+      writeFileSync(join(dir, "input.xml"), bytes);
+    }
+    const scrubbed: Record<string, Record<string, number>> = {};
+    for (const path of listFiles(req.out)) {
+      const counts = scrubFile(join(req.out, path), []);
+      if (Object.keys(counts).length > 0) scrubbed[path] = counts;
+    }
+
+    const run = {
+      engine: req.engine,
+      command: "xsl",
+      toolset: { digest: toolsetDigest(entry), source: entry.source, libs: entry.libs, iom: entry.iom },
+      xsl: req.xsl,
+      stylesheet: info.stylesheet,
+      preserveWhitespace,
+      culture: info.culture,
+      clr: info.clr,
+      startedAt,
+      finishedAt,
+      cases: info.cases.map((c) => ({ ...c, source: req.inputs.find((i) => i.name === c.name)!.source })),
+      scrubbed,
+    };
+    writeFileSync(join(req.out, "run.json"), `${JSON.stringify(run, null, 2)}\n`);
+
+    for (const path of listFiles(req.out)) {
+      for (const hit of findSecrets(readFileSync(join(req.out, path)).toString("latin1"))) {
+        remainingSecrets.push(`${path}@${hit.index}: ${hit.pattern}`);
+      }
+    }
+  } catch (err) {
+    rmSync(req.out, { recursive: true, force: true });
+    throw err;
+  } finally {
+    rmSync(wslRun, { recursive: true, force: true });
   }
-  rmSync(wslRun, { recursive: true, force: true });
   log(`recorded ${relative(process.cwd(), req.out) || basename(req.out)} (${info.cases.length} cases)\n`);
   return { out: req.out, hostExit: result.code, cases: info.cases.length, remainingSecrets };
 }

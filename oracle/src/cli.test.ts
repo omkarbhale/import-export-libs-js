@@ -100,16 +100,15 @@ describe("oracle xsl", () => {
     expect(await main(["xsl", "--xsl", "export.xsl"])).toBe(64);
     expect(await main(["xsl", "--xsl", "export.xsl", "--seq", "3", input])).toBe(64);
     expect(await main(["xsl", "--xsl", "export.xsl", "--transcript", "/tmp/nosuch", input])).toBe(64);
-    expect(await main(["xsl", "--xsl", "export.xsl", "--preserve-whitespace", "--no-preserve-whitespace", input])).toBe(64);
     expect(xslCalls.requests).toEqual([]);
   });
 
   it("needs no password and hands the engine's options to the recorder", async () => {
     vi.stubEnv("ARAS_PASSWORD", "");
-    const code = await main(["--engine", "14.35", "xsl", "--xsl", "build.xsl", "--culture", "sv-SE", "--no-preserve-whitespace", "--out", "/tmp/oracle-xsl-test", input]);
+    const code = await main(["--engine", "14.35", "xsl", "--xsl", "build.xsl", "--culture", "sv-SE", "--out", "/tmp/oracle-xsl-test", input]);
     vi.unstubAllEnvs();
     expect(code).toBe(0);
-    expect(xslCalls.requests).toMatchObject([{ engine: "14.35", xsl: "build.xsl", culture: "sv-SE", preserveWhitespace: false, out: "/tmp/oracle-xsl-test" }]);
+    expect(xslCalls.requests).toMatchObject([{ engine: "14.35", xsl: "build.xsl", culture: "sv-SE", out: "/tmp/oracle-xsl-test" }]);
     expect((xslCalls.requests[0] as { inputs: { name: string }[] }).inputs.map((i) => i.name)).toEqual(["two-items"]);
   });
 });

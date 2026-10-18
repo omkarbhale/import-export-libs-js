@@ -21,7 +21,6 @@ Commands:
   lpimport <package folder>            --lp-dir <folder> [--lp-config ImportConfig.xml] --lp-package <name>
   xsl <input.xml|folder>...            --xsl export.xsl|build.xsl (required); no server, no password
                                        [--transcript <fixture folder> --seq <n>,<n>...] [--culture <name>]
-                                       [--preserve-whitespace | --no-preserve-whitespace]
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
@@ -91,8 +90,6 @@ const OPTIONS = {
   transcript: { type: "string" },
   seq: { type: "string" },
   culture: { type: "string" },
-  "preserve-whitespace": { type: "boolean" },
-  "no-preserve-whitespace": { type: "boolean" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -189,9 +186,6 @@ export async function main(argv: readonly string[]): Promise<number> {
       case "xsl": {
         const xsl = values.xsl;
         if (typeof xsl !== "string" || !isXslName(xsl)) throw new UsageError(`xsl needs --xsl ${XSL_NAMES.join("|")}`);
-        if (values["preserve-whitespace"] === true && values["no-preserve-whitespace"] === true) {
-          throw new UsageError("--preserve-whitespace and --no-preserve-whitespace exclude each other");
-        }
         const inputs: XslInput[] = rest.flatMap((path) => inputsFromPath(resolve(path)));
         if (typeof values.transcript === "string") {
           if (typeof values.seq !== "string") throw new UsageError("--transcript needs --seq <n>,<n>...");
@@ -211,8 +205,6 @@ export async function main(argv: readonly string[]): Promise<number> {
           xsl,
           inputs,
           out,
-          ...(values["preserve-whitespace"] === true ? { preserveWhitespace: true } : {}),
-          ...(values["no-preserve-whitespace"] === true ? { preserveWhitespace: false } : {}),
           ...(typeof values.culture === "string" ? { culture: values.culture } : {}),
         });
         process.stdout.write(`${out}\n${result.cases} cases\n`);
