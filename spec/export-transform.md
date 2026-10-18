@@ -1,13 +1,13 @@
-# The export transform, part 1: root, Items and references
+# The export transform: root, Items, references, fix items and drops
 
-Every exported item goes through one XSLT 1.0 stylesheet before it is written: `export.xsl`, an embedded resource of `Libs.dll`. This document re-expresses it as rules, in the order a reader needs them: the model first (loading, template selection, defaults, empty text, namespaces), then the root wrapper, then each family of templates. The TypeScript port implements these rules as code, not as XSLT (round 1, Q2; wayfinder ticket 31).
+Every exported item goes through one XSLT 1.0 stylesheet before it is written: `export.xsl`, an embedded resource of `Libs.dll`. This document re-expresses it as rules, in the order a reader needs them: the model first (loading, template selection, defaults, empty text, namespaces), then the root wrapper, then each family of templates. The TypeScript port implements these rules as code, not as XSLT (round 1, Q2; wayfinder tickets 31 and 32).
 
-**Part 2** (`EXP-300` to `EXP-399`, a later ticket) continues the same stylesheet with the `mode="fix"` passes (the ItemType edit that carries keyed and modified system properties, the View/Form delete items, the Field fixes, Members and Morphae re-emitted at the end), the system-element drop list, the Variable and User drops and the `xsl:output` CDATA element list. Where a part 1 rule hands over to one of those, it says so. The SOAP-ENV string strip and the reload of the result belong to the post-processing document (`EXP-400` to `EXP-499`, ticket 15).
+The document has two halves. **Part 1** (`EXP-200` to `EXP-272`) covers the root wrapper, Items, Identities, Methods, the dropped Items and the reference rewrites. **Part 2** (`EXP-300` to `EXP-399`, from "Part 2: the model" on) covers the rest of the stylesheet: the system-element and Property drops, the Variable and User drops, the `mode="fix"` follow-up items that the root template appends (the ItemType edit that carries keyed and modified system properties, the View/Form delete items, the Field fixes, Members and Morphae re-emitted at the end) and the `xsl:output` CDATA element list. Where a part 1 rule hands over to part 2, it says so. The SOAP-ENV string strip and the reload of the result belong to the post-processing document (`EXP-400` to `EXP-499`, ticket 15).
 
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `CItemHelper::ApplyXsl`, `GetXslTransform` and `GetManifestResourceStream`, and the stylesheet resource `Aras.Tools.SolutionUpgrade.export.xsl` that ILSpy extracts next to the project. Rules cite the stylesheet by template, not by quoting it, and give its line numbers as `export.xsl:N`.
-- probes of that stylesheet, run under `XslCompiledTransform` on Windows PowerShell 5.1 with the same loading and invocation as `ApplyXsl` (EXP-200, EXP-201), on hand-written response documents. The worked examples below are reduced from those runs and show the transform's raw output. Wayfinder ticket 68 turns such probes into recorded fixtures, and tickets 31 and 32 replay them.
+- probes of that stylesheet, run under `XslCompiledTransform` on Windows PowerShell 5.1 with the same loading and invocation as `ApplyXsl` (EXP-200, EXP-201), on hand-written response documents. The worked examples below are reduced from those runs and show the transform's raw output. Part 2 rests on over a thousand such cases, among them a sweep of every cell of the system-property comparison table (EXP-323: each of the 11 compared fields of each of the 32 system properties, changed and removed). Wayfinder ticket 68 turns such probes into recorded fixtures, and tickets 31 and 32 replay them.
 - `data/libsjs-06/report.md` (rules X1 to X7 for `XslCompiledTransform`) and `data/libsjs-08/report.md` (finding F6, the empty-text correction to X6).
 
 ## Conventions
@@ -70,6 +70,7 @@ What writes a text node, even when its value is empty:
 
 - `value-of` always does. So each of these gives `<x></x>` when its value is empty: the `name` of a Method reference, the `keyed_name`, `source_id` and `name` of a foreign-property or Grid Event reference, the Identity content of an Identity-valued property, the id that replaces a nested ItemType under `related_id`, and the id kept inside `propertytype_id`.
 - A nested Identity Item that is not a system identity writes its id as text (EXP-230). When that id is empty, its container still receives a text node.
+- Copying a zero-length text node. The source tree keeps a CDATA section with no characters as a text node of length 0, and the built-in text rule copies it: `<d><![CDATA[]]></d>` gives `<d></d>`, two such sections in a row too. The same holds in an element of the `cdata-section-elements` list (EXP-360), which then holds an empty CDATA section.
 
 What writes none: copying an element whose source element is empty (`<x/>` and `<x></x>` both give `<x />`), copying attributes, and any element whose children were all dropped or produced no text.
 
@@ -340,9 +341,9 @@ A mode never falls back to another mode's templates: the default-mode templates 
 
 [14.0.7] A Method-valued property (EXP-236) without a `keyed_name` attribute, including a null one such as `<method is_null="1"/>`, is exported as a `get` of a Method with an empty `name`. That reference cannot be resolved at import. It is reproduced. See `bugs.md`; ticket 06 (X3) found that 14.35's `is_null` drop removes these elements instead, and the 14.35 variant records it.
 
-## Template index
+## Template index, part 1
 
-Every part 1 template of `export.xsl`, in stylesheet order, with the rule that specifies it. Part 2 owns the templates not listed.
+Every part 1 template of `export.xsl`, in stylesheet order, with the rule that specifies it. The templates not listed are indexed at the end of the document ("Template index, part 2").
 
 | `export.xsl` | Template | Rule |
 |---|---|---|
@@ -362,3 +363,442 @@ Every part 1 template of `export.xsl`, in stylesheet order, with the rule that s
 | 194–201 | plain `Item` | EXP-220 |
 | 258–287 | foreign `data_source`, `foreign_property` | EXP-250, EXP-251 |
 | 455–460 | catch-all `*` | EXP-221 |
+
+## Part 2: the model
+
+### EXP-300: Two kinds of template, and one that never runs
+
+[14.0.7] The rest of `export.xsl` is of two kinds.
+
+- **Drop templates** in default mode (`export.xsl:102` to `103`, `224` to `256`, `289` to `325` and `328`). They match an element or Item and write nothing, so the node and its content disappear from the main pass. They are the system-element and Property drops (EXP-310 to EXP-316).
+- **`mode="fix"` templates** (`export.xsl:331` to `453`). The root template (EXP-214) applies them to nodes it selects itself, after the root Item copy: the Property items of the ItemType edit (EXP-320 to EXP-324), the Field fixes (EXP-340), the Member fixes (EXP-350) and the Morphae fixes (EXP-351). A node is handled in `fix` mode only because the root template asked for it. The ItemType fix template selects its Property items itself and visits nothing else, and the Field fix template visits no children: both build their output from `value-of`, attribute copies and literal elements. The Property, Member and Morphae fix templates copy the element and then handle its children in **default mode**, so the drop templates and the part 1 rewrites (EXP-230 to EXP-254) apply inside a fix item as they do in the main pass.
+
+The `fix` template for `Item[@type='Field']/propertytype_id` (`export.xsl:352` to `357`, the copy of the embedded Item) is never reached: the only template that could apply it, the Field fix, does not visit its children. It has no effect on any output and the port omits it.
+
+Part 2 examples omit the `xmlns:SOAP-ENV` declaration that EXP-205 puts on copied elements, except where a rule is about namespaces (EXP-362).
+
+### EXP-301: The system property names and how they are tested
+
+[14.0.7] The stylesheet holds the system property names in one string, `|behavior|classification|…|team_id|` (`export.xsl:4`), 32 names in all: `behavior`, `classification`, `config_id`, `created_by_id`, `created_on`, `css`, `current_state`, `generation`, `history_id`, `id`, `is_current`, `is_released`, `keyed_name`, `release_date`, `effective_date`, `locked_by_id`, `major_rev`, `managed_by_id`, `minor_rev`, `modified_by_id`, `modified_on`, `new_version`, `not_lockable`, `owned_by_id`, `permission_id`, `related_id`, `sort_order`, `source_id`, `state`, `itemtype`, `superseded_date`, `team_id`. It is the list of EXP-252.
+
+Two kinds of test use it, and they behave differently when an element occurs more than once:
+
+- **Substring test**: `contains(list, '|' + NAME + '|')`. The fix passes and the Field selection use it (EXP-321, EXP-322, EXP-324, EXP-340). NAME is the string-value of the **first** `name` child (for the Field selection, the first `keyed_name` attribute of the Field's `propertytype_id` children), and a NAME that contains `|` can match a run of several entries (EXP-271, EXP-393). EXP-230, EXP-252 and EXP-253 of part 1 use the same kind of test.
+- **Equality test**: `name = 'id'`. The drop templates (EXP-310) and the per-property rows of the comparison (EXP-322) use it. It is true when **any** `name` child of the Property has exactly that string-value.
+
+For a Property with a single `name` child, the two agree on every name except those containing `|`.
+
+## Dropped Properties and elements
+
+### EXP-310: Properties dropped from ItemType definitions
+
+[14.0.7] A nested Item of type `Property` writes nothing in three cases:
+
+1. it has an `is_keyed` child whose value is exactly `1`;
+2. it has a `name` child equal to one of the 29 names `behavior`, `classification`, `config_id`, `created_by_id`, `created_on`, `css`, `current_state`, `generation`, `history_id`, `id`, `is_current`, `is_released`, `keyed_name`, `locked_by_id`, `major_rev`, `managed_by_id`, `minor_rev`, `modified_by_id`, `modified_on`, `new_version`, `not_lockable`, `owned_by_id`, `permission_id`, `related_id`, `sort_order`, `source_id`, `state`, `itemtype`, `team_id`;
+3. it has a `name` child equal to `effective_date`, `release_date` or `superseded_date`, and the Item two levels up (the ItemType whose `Relationships` holds the Property) has an `is_versionable` child equal to `1`. In an ItemType that is not versionable these three properties are ordinary Properties and stay in the AML.
+
+Comparisons are exact: no trimming, case-sensitive (`Id`, ` id ` and `ID` stay). The rule applies to a nested Property wherever it sits (under a Form, inside another property), not to a root Property (EXP-213), but it does apply to Properties nested in a root Property's relationships.
+
+The dropped Properties are not lost. The fix pass re-emits the keyed ones and the modified system ones as edits of the ItemType (EXP-320). A Property dropped anywhere else is lost: a keyed Property under a Form, or under a root that is neither an ItemType nor the RelationshipType whose embedded ItemType is fixed (EXP-325), exports nothing.
+
+```xml
+<!-- source: ItemType IT1, not versionable, with Properties named id (P0), custom (P1), Id (P2), effective_date (P3) and a keyed k (P4) -->
+<!-- output -->  <AML><Item type="ItemType" id="IT1" action="add"><name>Foo</name><Relationships><Item type="Property" id="P1" action="add"><name>custom</name></Item><Item type="Property" id="P2" action="add"><name>Id</name></Item><Item type="Property" id="P3" action="add"><name>effective_date</name></Item></Relationships></Item><Item type="ItemType" id="IT1" action="edit"><Relationships><Item type="Property" id="P4" action="add"><name>k</name><is_keyed>1</is_keyed></Item><Item type="Property" action="edit" where="source_id='' and name='id'"><name>id</name></Item></Relationships></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Foo'" /></AML>
+```
+
+P4 and P0 come back in the ItemType edit (EXP-320). P0 is there only because it has no stock columns (EXP-322).
+
+### EXP-311: System elements dropped everywhere
+
+[14.0.7] An element with one of these 25 names writes nothing, with its content, wherever it sits in the tree. It need not be a child of an Item; a child of a plain container element, or of a `Relationships`, is dropped too:
+
+`cache_query`, `config_id`, `core`, `created_by_id`, `created_on`, `current_state`, `generation`, `history_id`, `id`, `is_cached`, `is_current`, `is_released`, `keyed_name`, `locked_by_id`, `major_rev`, `minor_rev`, `modified_by_id`, `modified_on`, `new_version`, `not_lockable`, `state`, `itemtype`, `release_date`, `effective_date`, `superseded_date`.
+
+The match is on the unprefixed name in no namespace, case-sensitive (`ID` stays, `x:id` in a namespace stays). Attributes are not affected. A container whose only content was dropped is written `<x />` (EXP-244). The system columns that are not on this list are copied like any element: `classification`, `managed_by_id`, `owned_by_id`, `permission_id`, `team_id`, `sort_order`, `source_id` and `related_id`.
+
+This rule drops the element `id`, not the attribute, so part 1's lookup of a sibling Property by its `id` child (EXP-250) reads the source tree, where the element still exists.
+
+```xml
+<!-- source -->  <Item type="Foo" id="1"><id>i</id><config_id>c</config_id><x><state>s</state></x><sort_order>128</sort_order><keyed_name type="x"><Item type="Foo" id="9"/></keyed_name></Item>
+<!-- output -->  <AML><Item type="Foo" id="1" action="add"><x /><sort_order>128</sort_order></Item></AML>
+```
+
+### EXP-312: Elements dropped only for some parents
+
+[14.0.7] Three more element names are dropped by conditions on their parent. In each, the parent must be an `Item` that has a `type` attribute: an Item with no `type` attribute, or a parent that is not an Item, never satisfies a `!=` test, so the element is kept.
+
+- **`behavior`**: dropped when the parent's `type` is anything but `RelationshipType`. A RelationshipType keeps its `behavior`, whether root or nested.
+- **`css`**: dropped when the parent's `type` is neither `Field` nor `Body`. Fields and Bodies keep their `css`.
+- **`item_behavior`**: dropped when the parent is a `Property` that has a `data_type` child whose value differs from `item`. With several `data_type` children one differing value is enough. A Property with no `data_type` child keeps it; an empty or null `data_type` differs and drops it; `Item` in capitals differs and drops it. A non-Property parent keeps it.
+
+Type names are compared exactly. The rule also applies to the children of a root Item (EXP-213).
+
+```xml
+<!-- source -->  <Item type="ItemType" id="1"><name>T</name><Relationships><Item type="Property" id="P1"><name>a</name><data_type>list</data_type><item_behavior>b</item_behavior></Item><Item type="Property" id="P2"><name>b</name><data_type>item</data_type><item_behavior>b</item_behavior></Item></Relationships></Item>
+<!-- output -->  <AML><Item type="ItemType" id="1" action="add"><name>T</name><Relationships><Item type="Property" id="P1" action="add"><name>a</name><data_type>list</data_type></Item><Item type="Property" id="P2" action="add"><name>b</name><data_type>item</data_type><item_behavior>b</item_behavior></Item></Relationships></Item><Item type="View" action="delete" where="source_id='1'" /><Item type="Form" action="delete" where="name='T'" /></AML>
+```
+
+### EXP-313: Autogenerated columns dropped
+
+[14.0.7] Two columns that the server fills in are dropped:
+
+- `generated_type` of an Item of type `cmf_ElementType` or `cmf_PropertyType`;
+- `execution_count` of an Item of type `SQL`.
+
+The same name under another type (`cmf_Other`, a lower-case `sql`) is kept.
+
+### EXP-314: Variable value and default_value
+
+[14.0.7] Two templates trim an Item of type `Variable` (root or nested), each applied to every `value` or `default_value` child separately:
+
+- a `value` child is dropped when its string-value is empty (no content, only comments or processing instructions, an empty CDATA section, `is_null="1"` with no text), **or** when one of its own text nodes equals one of the text nodes of one of the Variable's `default_value` children;
+- a `default_value` child is dropped when its string-value is empty.
+
+A "text node" is what XPath sees: a maximal run of adjacent text, whitespace and CDATA nodes, which is how the .NET `XPathNavigator` merges them. A comment or processing instruction ends a run, so `a<!--c-->b` holds the two text nodes `a` and `b`, and `a<![CDATA[b]]>` holds one text node `ab`. Only a child's own text counts, not text inside a child element, so `<value>a<b>c</b></value>` against `<default_value>c</default_value>` is not equal. Strings compare exactly: no trimming, case-sensitive, and `1` is not `1.0`.
+
+The test reads the source, so it does not depend on the default being kept. The usual result is a Variable with only its `default_value`.
+
+| `value` | `default_value` | exported |
+|---|---|---|
+| `x` | `x` | `default_value` only |
+| `x` | `y` | both |
+| empty | `y` | `default_value` only |
+| `x` | empty | `value` only |
+| empty | empty | neither |
+| ` ` | none | `value` (a blank is not empty) |
+| `a<!--c-->b` | `ab` | both (two text nodes) |
+| `a<![CDATA[b]]>` | `ab` | `default_value` only |
+
+A `value` or `default_value` of anything but a Variable is not touched, and neither is one under a Variable's nested Items.
+
+### EXP-315: User pwd_is_set_on
+
+[14.0.7] The `pwd_is_set_on` child of an Item of type `User` writes nothing. The same element under another type, or deeper under the User (inside a plain container element), is kept.
+
+### EXP-316: Empty Relationships containers
+
+[14.0.7] A `Relationships` element (no namespace, exact case) with no element children writes nothing. Text, whitespace, comments and processing instructions do not count as children, so `<Relationships>\n</Relationships>` is dropped. A `Relationships` whose children are all Items that other templates drop is not empty in the source and stays as `<Relationships />` (EXP-244). The rule applies in every position: the root's, a nested Item's, a Property's, and inside fix items.
+
+```xml
+<!-- source -->  <Item type="Foo" id="1"><Relationships/><a><Relationships>text</Relationships></a><f><Relationships><Item type="Member" id="M"/></Relationships></f></Item>
+<!-- output -->  <AML><Item type="Foo" id="1" action="add"><a /><f><Relationships /></f></Item></AML>
+```
+
+## The ItemType edit item
+
+### EXP-320: When the ItemType edit is written, and its shape
+
+[14.0.7] For each ItemType the root template fixes (EXP-325), the transform writes one extra Item, **the ItemType edit**, if at least one of two sets is not empty: the keyed Properties K (EXP-321) or the modified system Properties M (EXP-322). Otherwise it writes nothing, and the ItemType's own `Relationships` stay as the main pass wrote them.
+
+The edit is a copy of the ItemType element (so it carries namespace declarations, EXP-362) with exactly these attributes, in this order: `type`, `id` if the source has one, `action="edit"`. Nothing else is copied: no `name`, no `dependencyLevel`, no other attribute or child. It holds one literal `Relationships` element, which holds the Property items of K in document order and then those of M in document order (EXP-324). A Property is in at most one of the two sets.
+
+The edit follows the `add` of the same ItemType in the AML, and is how a keyed Property and a modified system Property reach the type although the main pass dropped them (EXP-310).
+
+```xml
+<!-- source -->  <Item type="ItemType" id="IT1"><name>Foo</name><Relationships><Item type="Property" id="P1"><name>behavior</name><label is_null="1"/><data_type>list</data_type><stored_length>64</stored_length><column_alignment>left</column_alignment><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><column_width></column_width><readonly>1</readonly><is_keyed>0</is_keyed><order_by></order_by></Item><Item type="Property" id="P2"><name>mykey</name><is_keyed>1</is_keyed></Item></Relationships></Item>
+<!-- output -->  <AML><Item type="ItemType" id="IT1" action="add"><name>Foo</name><Relationships /></Item><Item type="ItemType" id="IT1" action="edit"><Relationships><Item type="Property" id="P2" action="add"><name>mykey</name><is_keyed>1</is_keyed></Item><Item type="Property" action="edit" where="source_id='' and name='behavior'"><name>behavior</name><label is_null="1" /><data_type>list</data_type><stored_length>64</stored_length><column_alignment>left</column_alignment><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><column_width /><readonly>1</readonly><is_keyed>0</is_keyed><order_by /></Item></Relationships></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Foo'" /></AML>
+```
+
+The keyed Property comes first although it is second in the source. The `where` has an empty `source_id` here only because the example Property has no `source_id` child (EXP-324).
+
+### EXP-321: The keyed Properties
+
+[14.0.7] For an ItemType I, K is the Property Items that are children of any `Relationships` child of I (an ItemType can have several), in document order, that have an `is_keyed` child equal to `1` (any one of several) and whose first `name` child is not a system property name by the substring test (EXP-301). A keyed system Property is not in K, it can be in M (EXP-322, because `is_keyed` is compared there). A Property whose `is_keyed` is ` 1 ` is not keyed.
+
+### EXP-322: The modified system Properties
+
+[14.0.7] For an ItemType I, let PROPS be the Property Items that are children of any `Relationships` child of I. M is the union of two selections, each Property once and in document order:
+
+- **(a) By name and stock values.** A Property in PROPS that has a `name` child equal to one of the 32 system names N (equality test, EXP-301), and that deviates from the stock row of N in the table of EXP-323. The three dated names (`effective_date`, `release_date`, `superseded_date`) are looked at only when I has an `is_versionable` child equal to `1`.
+- **(b) By content.** A Property in PROPS whose first `name` child is a system name (substring test) and that has a `Relationships` child with at least one child node of any kind: an Item, but also whitespace text, text, a comment or a processing instruction. A system Property that is stock in every other way is still exported when it carries a `Relationships` holding only `\n`.
+
+A Property "deviates from the stock row" when any of these is true. The row holds the values the stylesheet treats as unmodified.
+
+- **label**, for a row whose label is `null`: some `label` child exists whose `is_null` attribute is not exactly `1`. A row with a label text: the string-value of the first `label` child differs from that text; without a `label` child the string-value is empty and so differs.
+- **data_type**, **stored_length**, **column_alignment**, **is_hidden**, **is_hidden2**, **column_width**, **readonly**, **is_keyed**, **order_by**: the string-value of the first child of that name differs from the stock value. An absent child has the string-value empty, so it deviates exactly where the stock value is not empty (a Property without `is_hidden` is modified, one without `column_width` is not). Values are compared exactly: no trimming, and attributes such as `is_null` on these children are ignored.
+- **default_value**: some `default_value` child exists whose `is_null` attribute is not exactly `1`. An empty `<default_value/>` counts. The stock default is null.
+
+Nothing else is compared: not `help_text`, `default_pattern`, `pattern`, `is_required`, `track_history`, `sort_order` or any other column. Extra children of a Property are carried through (EXP-324) but never select it.
+
+Selection (b) is separate: a Property chosen by (b) and by (a) is written once. In a non-versionable ItemType the three dated Properties are not selected by (a) and, being kept in the main pass (EXP-310), are written twice when (b) selects them: once in the ItemType and once as an edit.
+
+Several `name` children are possible only in a hand-made document, but they decide the result: (a) uses any `name` child, the Property item of EXP-324 and (b) use the first. A Property named `custom` then `id` is selected by (a) for `id`, and is written with no `id`, `action` or `where` at all (EXP-324, last case).
+
+```xml
+<!-- source: an id Property with its stock values (EXP-323) and <Relationships>\n</Relationships> -->
+<!-- output -->  <AML><Item type="ItemType" id="IT1" action="add"><name>Foo</name><Relationships /></Item><Item type="ItemType" id="IT1" action="edit"><Relationships><Item type="Property" action="edit" where="source_id='' and name='id'"><name>id</name><label is_null="1" /><data_type>item</data_type><stored_length /><column_alignment>left</column_alignment><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><column_width /><readonly>1</readonly><is_keyed>0</is_keyed><order_by /></Item></Relationships></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Foo'" /></AML>
+```
+
+### EXP-323: The stock values
+
+[14.0.7] The comparison of EXP-322 (a), per system property. The columns `column_alignment` (stock `left`), `is_hidden` and `is_hidden2` (stock `1` and `1`), `column_width` (empty), `is_keyed` (`0`) and `order_by` (empty) are the same for every row except where the last column says otherwise. `null` in the label column means a null label (EXP-322).
+
+| Property | label | data_type | stored_length | readonly | Differences from the common values |
+|---|---|---|---|---|---|
+| `behavior` | null | `list` | `64` | `0` | |
+| `classification` | `Classification` | `string` | `512` | `0` | |
+| `config_id` | null | `item` | empty | `1` | |
+| `created_by_id` | null | `item` | empty | `1` | |
+| `created_on` | null | `date` | empty | `1` | |
+| `css` | null | `text` | empty | `0` | |
+| `current_state` | null | `item` | empty | `1` | |
+| `generation` | null | `integer` | empty | `1` | |
+| `history_id` | `History Id` | `item` | empty | `0` | |
+| `id` | null | `item` | empty | `1` | |
+| `is_current` | null | `boolean` | empty | `1` | `order_by` is not compared (EXP-391) |
+| `is_released` | `Released` | `boolean` | empty | `1` | |
+| `keyed_name` | null | `string` | `128` | `0` | |
+| `locked_by_id` | null | `item` | empty | `1` | |
+| `major_rev` | null | `string` | `8` | `0` | |
+| `managed_by_id` | null | `item` | empty | `0` | |
+| `minor_rev` | null | `string` | `8` | `0` | |
+| `modified_by_id` | null | `item` | empty | `1` | |
+| `modified_on` | null | `date` | empty | `1` | |
+| `new_version` | null | `boolean` | empty | `1` | |
+| `not_lockable` | `Not Lockable` | `boolean` | empty | `1` | |
+| `owned_by_id` | null | `item` | empty | `0` | |
+| `permission_id` | null | `item` | empty | `1` | |
+| `related_id` | null | `item` | empty | `0` | `is_hidden` is `0` |
+| `sort_order` | null | `integer` | empty | `0` | |
+| `source_id` | null | `item` | empty | `0` | |
+| `state` | null | `string` | `32` | `1` | |
+| `effective_date` | `Effective Date` | `date` | empty | `0` | versionable ItemTypes only |
+| `release_date` | `Release Date` | `date` | empty | `1` | versionable ItemTypes only |
+| `superseded_date` | `Superseded Date` | `date` | empty | `1` | `is_hidden` and `is_hidden2` are `0`; versionable ItemTypes only |
+| `itemtype` | `ItemType` | `list` | empty | `0` | |
+| `team_id` | `Team` | `item` | empty | `0` | |
+
+The port holds this table as data. Probes changed each of the 11 compared fields of every row to another value and removed it, and the selection matched the table in all 772 cases.
+
+### EXP-324: A Property item inside the ItemType edit
+
+[14.0.7] Each Property of K and M is written as a copy of the Property element with the attribute `type` first, then the attributes of the **first** of these cases that applies (NAME is the string-value of its first `name` child):
+
+1. NAME is `related_id`, `sort_order` or `source_id` (substring test against `|related_id|sort_order|source_id|`) and **some** `source_id` child has a `keyed_name` attribute equal to `Change Controlled Relationship`: `id` (if present), then `action="add"`. So these three are added with their ids, not edited, when they belong to the Change Controlled Relationship ItemType. (The stylesheet's own comment on the keyed additions says only that, for a relationship such as the Field Event one, `source_id`, `related_id` and a further property share one general index and must be imported together.)
+2. NAME is a system property name (substring test): `action="edit"`, then `where="source_id='S' and name='N'"`, where S is the string-value of the first `source_id` child (the owning ItemType's id; empty when absent) and N is NAME. No `id`.
+3. Some `is_keyed` child equals `1`: `id` (if present), then `action="add"`.
+4. None of these: no further attribute. It is reachable only for a Property with several `name` children (EXP-322).
+
+The children are then handled in **default mode**: every drop rule applies (a Property's own `id` and `keyed_name` children go, EXP-311), `source_id` stays, a nested `Relationships` is trimmed (EXP-316), and the part 1 rewrites apply, so a keyed foreign Property gets its `data_source` and `foreign_property` references (EXP-250, EXP-251) and a Grid Event inside a system Property gets its rewritten `source_id` (EXP-253). A Property keeps children the engine never compares (EXP-322).
+
+`S` and `N` are inserted into the `where` text unescaped, apart from the XML escaping of the attribute, so an apostrophe in either breaks the clause (EXP-390).
+
+```xml
+<!-- source: two keyed system Properties, sort_order (P2) with source_id keyed_name Other, and related_id (P3) whose first source_id is a Change Controlled Relationship -->
+<!-- output: the ItemType edit's Relationships -->  <Item type="Property" action="edit" where="source_id='X' and name='sort_order'"><name>sort_order</name><is_keyed>1</is_keyed><source_id keyed_name="Other" type="ItemType">X</source_id></Item><Item type="Property" id="P3" action="add"><name>related_id</name><is_keyed>1</is_keyed><source_id type="ItemType" keyed_name="Change Controlled Relationship">X</source_id><source_id keyed_name="Z">Y</source_id></Item>
+```
+
+### EXP-325: Which ItemTypes get the edit
+
+[14.0.7] The root template (EXP-214) fixes:
+
+- the root Item when its `type` is `ItemType`;
+- when its `type` is `RelationshipType`, every Item of type `ItemType` that is a child of its `relationship_id` children, in document order, one edit each. The RelationshipType's own `Relationships` are not fixed, and its Properties are dropped (EXP-310).
+
+No other Item is fixed: an ItemType nested anywhere else (under `source_id`, in `Relationships` of another Item) exports its keyed and modified system Properties nowhere. A `relationship_id` Item of another type gives no edit. The View/Form delete items (EXP-330) are decided separately.
+
+## Follow-up items after the root Item
+
+### EXP-330: View and Form delete items
+
+[14.0.7] An ItemType exported with no View of its own gets a pair of delete items that remove the View and Form the server generates for a new ItemType (the stylesheet's comment calls them the autogenerated ones). Two tests decide, both on the root Item and independent of one another. Each writes a pair: first `<Item type="View" action="delete" where="source_id='ID'"/>`, then `<Item type="Form" action="delete" where="name='NAME'"/>`. Both are literal elements with no namespace declaration.
+
+- **T1.** The root's `type` is `ItemType` and none of its `Relationships` children has an Item child of type `View`. ID is the root's `id` attribute (empty when absent); NAME is the string-value of its first `name` child.
+- **T2.** The root has a `relationship_id` child with an Item child, **of any type and any root type**, and none of the Items in `relationship_id` has a `Relationships` child holding an Item of type `View`. ID is the `id` attribute of the first such Item in document order, NAME the string-value of the first `name` child of those Items in document order.
+
+Both tests fire for an ItemType root that has a `relationship_id` Item. T1 pairs come first. A `Relationships` holding only whitespace, only a View nested a level deeper, or only an Item of type `view` does not count as having a View. A `relationship_id` that holds only text (an id) does not satisfy T2.
+
+ID and NAME are interpolated into the attribute text as they are. The attribute writer escapes `&` as `&amp;`, `<` as `&lt;`, `>` as `&gt;`, `"` as `&quot;`, line feed as `&#xA;`, carriage return as `&#xD;` and tab as `&#x9;`, and writes `'` as it is, so a name with an apostrophe produces a clause that ends early (EXP-390).
+
+```xml
+<!-- source -->  <Item type="ItemType" id="I&amp;D"><name>O'Neil "x"</name></Item>
+<!-- output -->  <AML><Item type="ItemType" id="I&amp;D" action="add"><name>O'Neil "x"</name></Item><Item type="View" action="delete" where="source_id='I&amp;D'" /><Item type="Form" action="delete" where="name='O'Neil &quot;x&quot;'" /></AML>
+```
+
+### EXP-340: Field fix items
+
+[14.0.7] A Field whose data source is a system property loses its `propertytype_id` in the main pass (EXP-252), and an import would not know the source. The root template therefore adds, for each Field, an edit that sets the property back by name.
+
+**Selection.** Every Item of type `Field` anywhere in the source document (the root, a nested one, one inside a property element), in document order, whose `propertytype_id` child has a `keyed_name` attribute that is a system property name by the substring test (EXP-301). With several `propertytype_id` children the first `keyed_name` attribute found decides. This looks at the **attribute**, where EXP-252 looks at the embedded Property's `name`; they can disagree, in which case a Field gets the fix but keeps its `propertytype_id`, or loses its `propertytype_id` and gets no fix.
+
+**Output.** A copy of the Field element with attributes `type`, `id` (if present) and `action="edit"`, then nothing but:
+
+1. a comment with the text ` Please note: this AML depends on the "KN" ItemType. Please make sure it exists before running this. ` (a space after `<!--` and before `-->`);
+2. `<propertytype_id><Item type="Property" action="get" select="id"><name>NAME</name><source_id type="T" keyed_name="KN">SRC</source_id></Item></propertytype_id>`.
+
+In what follows, the embedded Items are the `Item` children, of any type, of the Field's `propertytype_id` children, in document order. NAME is the string-value of the first `name` child of the embedded Items. SRC is the string-value of the first `source_id` child of the embedded Items (all text below it, so an expanded `source_id` gives the nested name). `T` and `KN` are the **first** `type` and `keyed_name` attributes found among the `source_id` children of the embedded Items, in document order, which can belong to a later `source_id` than SRC. The comment repeats KN. Everything is empty when the Field has no embedded Item, and the elements are still written, with empty attributes and, because `value-of` writes text, `<name></name>` and `<source_id …></source_id>` (EXP-363). No other child or attribute of the Field is copied, and the Field's children are not visited.
+
+The comment text is written as the writer does (EXP-361): `--` in KN becomes `- -`, line breaks become `\r\n`.
+
+```xml
+<!-- source -->  <Item type="Form" id="FO1"><Relationships><Item type="Field" id="FL2"><name>fm</name><propertytype_id keyed_name="id" type="Property"><Item type="Property" id="PR2"><name>id</name><source_id keyed_name="Part" type="ItemType">IT1</source_id></Item></propertytype_id></Item></Relationships></Item>
+<!-- output -->  <AML><Item type="Form" id="FO1" action="add"><Relationships><Item type="Field" id="FL2" action="add"><name>fm</name></Item></Relationships></Item><Item type="Field" id="FL2" action="edit"><!-- Please note: this AML depends on the "Part" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name>id</name><source_id type="ItemType" keyed_name="Part">IT1</source_id></Item></propertytype_id></Item></AML>
+```
+
+### EXP-350: Member fix items
+
+[14.0.7] Each Item of type `Member` that is a child of a `Relationships` child of the **root** Item, in document order, is written again after the Field fixes: a copy of the Member with attributes `type`, `id` (if present), `action="add"`, whose children are handled in default mode (so a `related_id` Identity becomes the Identity rule's result, EXP-230, and the drop rules apply). It is a top-level Item of the AML, not inside the root. The main pass dropped the Member from its place (EXP-240), so that Identities exist before the Members refer to them.
+
+```xml
+<!-- source -->  <Item type="Identity" id="ID1"><name>I</name><Relationships><Item type="Member" id="M1"><source_id keyed_name="I" type="Identity">ID1</source_id><related_id keyed_name="World" type="Identity"><Item type="Identity" id="W"><keyed_name>World</keyed_name></Item></related_id></Item></Relationships></Item>
+<!-- output -->  <AML><Item type="Identity" id="ID1" action="add"><name>I</name><Relationships /></Item><Item type="Member" id="M1" action="add"><source_id keyed_name="I" type="Identity">ID1</source_id><related_id keyed_name="World" type="Identity"><Item type="Identity" action="get" select="id"><name>World</name></Item></related_id></Item></AML>
+```
+
+A Member anywhere else is dropped for good (EXP-394).
+
+### EXP-351: Morphae fix items
+
+[14.0.7] Each Item of type `Morphae` that is a child of a `Relationships` child of the root Item, in document order, is written after the Members, each in its own wrapper: the literal `<Item type="ItemType" id="ROOTID" action="edit"><Relationships>` and then the Morphae copy (attributes `type`, `id` if present, `action="add"`; children in default mode, so a `related_id` ItemType collapses to its id, EXP-243). ROOTID is the root's `id` attribute, and the attribute is written empty when the root has none. The wrapper's `type` is always `ItemType`, whatever the root is. The wrapper is a literal element and carries no namespace declaration; the Morphae copy does (EXP-362). The wrapper is written once per Morphae, so two Morphae give two wrappers. The main pass dropped them in place (EXP-240), so the ItemTypes they refer to exist first.
+
+```xml
+<!-- source -->  <Item type="ItemType" id="IT1"><name>Foo</name><Relationships><Item type="Morphae" id="MO1"><related_id keyed_name="Bar" type="ItemType"><Item type="ItemType" id="IT2" keyed_name="Bar"><name>Bar</name></Item></related_id></Item><Item type="Morphae" id="MO2"/></Relationships></Item>
+<!-- output -->  <AML><Item type="ItemType" id="IT1" action="add"><name>Foo</name><Relationships /></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Foo'" /><Item type="ItemType" id="IT1" action="edit"><Relationships><Item type="Morphae" id="MO1" action="add"><related_id keyed_name="Bar" type="ItemType">IT2</related_id></Item></Relationships></Item><Item type="ItemType" id="IT1" action="edit"><Relationships><Item type="Morphae" id="MO2" action="add" /></Relationships></Item></AML>
+```
+
+### EXP-352: The order of everything in an AML
+
+[14.0.7] Within the `<AML>` of one root Item the transform writes, in this order:
+
+1. the root Item copy (EXP-212);
+2. the ItemType edits, one per fixed ItemType (EXP-320, EXP-325);
+3. the T1 View and Form deletes, then the T2 pair (EXP-330);
+4. the Field fixes, in document order (EXP-340);
+5. all Member fixes, in document order (EXP-350);
+6. all Morphae fixes, in document order (EXP-351).
+
+Members before Morphae even when the source interleaves them. Each of these is one top-level child of `<AML>`; the copies carry their own namespace declarations (EXP-362).
+
+```xml
+<!-- source: Relationships holds Morphae MO1, Member M1, Morphae MO2, Member M2 -->
+<!-- output -->  <AML><Item type="Foo" id="F1" action="add"><Relationships /></Item><Item type="Member" id="M1" action="add" /><Item type="Member" id="M2" action="add" /><Item type="ItemType" id="F1" action="edit"><Relationships><Item type="Morphae" id="MO1" action="add" /></Relationships></Item><Item type="ItemType" id="F1" action="edit"><Relationships><Item type="Morphae" id="MO2" action="add" /></Relationships></Item></AML>
+```
+
+## What the output writer does to part 2's items
+
+### EXP-360: The cdata-section-elements list
+
+[14.0.7] The stylesheet's `xsl:output` (`export.xsl:3`) declares twelve `cdata-section-elements`, in this order: `html_code`, `method_code`, `sqlserver_body`, `stylesheet`, `query`, `class_structure`, `report_query`, `xsl_stylesheet`, `implementation_query`, `filter_xml`, `condition_xml`, `event_data`. Its method is `xml` with no declaration (EXP-201).
+
+An **output** element with one of these names writes its text children as CDATA. The match is on the element's name in no namespace, exact case, wherever the element is written: in the main pass, in a fix item, below any parent. `Method_code`, `method_code2`, `m:method_code` and a `method_code` with a default namespace are plain elements, and so is an element merely carrying an attribute of that name. The element sits in the output; the rule does not look at the source element's type or position. Ticket 06 (X4) sets how the text is written:
+
+- Every text run is one CDATA section holding the text unescaped: `<`, `>` and `&` stay raw.
+- `]]>` in the text ends the section and starts another: `a]]>b` is `<![CDATA[a]]]]><![CDATA[>b]]>`, once for each occurrence.
+- Text that is only whitespace is still a CDATA section: ` ` is `<![CDATA[ ]]>`.
+- Line breaks inside it are written `\r\n` (EXP-361).
+- Comments and processing instructions below the element write nothing, so the text around them joins into one section: `a<!--c-->b` is `<![CDATA[ab]]>`. Text and a CDATA section in the source are the same text, and adjacent ones join.
+- Child elements split the text: `t<k>u</k>v` is `<![CDATA[t]]><k>u</k><![CDATA[v]]>`. A child that is itself listed nests its own CDATA.
+- An element that received no text node is `<x />`, not an empty section: `<method_code/>` and `<method_code><!--c--></method_code>` give `<method_code />`. One that received a zero-length text node (an empty CDATA section in the source, EXP-204) is written `<method_code><![CDATA[]]></method_code>`.
+
+An invalid character in the text fails the transform (EXP-361). What the reload and the item writer do with the CDATA sections belongs to `EXP-400` to `EXP-499`.
+
+```xml
+<!-- source -->  <Item type="Foo" id="1"><method_code>a]]&gt;b &lt;x&gt; &amp;
+line2</method_code><event_data/><query>   </query><condition>a&lt;b</condition></Item>
+<!-- output -->  <AML><Item type="Foo" id="1" action="add"><method_code><![CDATA[a]]]]><![CDATA[>b <x> &
+line2]]></method_code><event_data /><query><![CDATA[   ]]></query><condition>a&lt;b</condition></Item></AML>
+```
+
+### EXP-361: Line breaks, attribute values, comments and invalid characters
+
+[14.0.7] Part 2 writes values that part 1 does not: text inside CDATA, interpolated attribute values, and a comment. Ticket 06 (X6) has the general writer rules. What part 2 adds:
+
+- **Line breaks.** In element text, CDATA and comments, a line feed, a carriage return and a carriage return plus line feed are each written `\r\n`. So `l1\r\nl2\nl3\rl4` is four lines joined by `\r\n`, and a lone `\r` at the end of the text gives a trailing `\r\n`. Tabs are written as they are.
+- **Attribute values** (the `where` of EXP-324 and EXP-330, the `type` and `keyed_name` of EXP-340): `&` is `&amp;`, `<` is `&lt;`, `>` is `&gt;`, `"` is `&quot;`, line feed `&#xA;`, carriage return `&#xD;`, tab `&#x9;`. `'` is written as it is. A carriage return plus line feed gives both references.
+- **Comments.** The comment of EXP-340 writes its text as it is (`&`, `<`, `"` raw) with line breaks as above, except that a hyphen followed by a hyphen gets a space after the first: `a--b` is `a- -b`, `a---b` is `a- - -b`, `a----c` is `a- - - -c`. The comment always ends with a space, so a trailing hyphen needs no extra rule.
+- **Invalid characters.** Text, an attribute value, a comment or a CDATA section that contains a character outside the XML 1.0 character set (U+0000 to U+0008, U+000B, U+000C, U+000E to U+001F, U+FFFE, U+FFFF) makes the transform throw `System.ArgumentException` with the message `'<the character>', hexadecimal value 0x01, is an invalid character.`, naming the character's own value (`0x0B`, `0xFFFE`). An unpaired surrogate throws the same exception type with the message `The surrogate pair (0xD800, 0x79) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).`, naming the surrogate and the code unit after it. `ApplyXsl` wraps either like any transform failure (EXP-201). Such a character can only reach the source as a numeric reference (`&#1;`), which the parser accepts. This holds for the whole stylesheet, part 1 output included. U+007F, U+0085, U+009F, U+00A0, U+2028, U+FDD0 and characters beyond the Basic Multilingual Plane are valid and written as they are.
+
+```xml
+<!-- source: a Field fix whose source_id has keyed_name="a--b" -->
+<!-- output (the Field fix) -->  <Item type="Field" id="FL1" action="edit"><!-- Please note: this AML depends on the "a- -b" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name>id</name><source_id type="ItemType" keyed_name="a--b">I1</source_id></Item></propertytype_id></Item>
+```
+
+### EXP-362: Namespace declarations on part 2 items
+
+[14.0.7] EXP-205 applies to every part 2 item that is a copy (`xsl:copy`) of a source element. Each carries a declaration for every namespace in scope for its source element that its nearest written ancestors have not declared, outermost declaration first: the Envelope's `xmlns:SOAP-ENV`, then those of the ancestors from the root down, then its own.
+
+- **ItemType edit** (EXP-320): the copy carries them, including `xmlns:SOAP-ENV` and the declarations the root ItemType carries. Its Property items sit inside it, so they add only a declaration of their own (`xmlns:p` on the Property, `xmlns:z` on a child) that no ancestor has written.
+- **Field fix** (EXP-340): in scope are the Envelope's, the Form's, the `Relationships`' and the Field's own, written in that order: `xmlns:SOAP-ENV="…" xmlns:i18n="…" xmlns:r="…" xmlns:own="…"`. The comment, `propertytype_id` and the `get` Item below are literal and carry none.
+- **Member fix** (EXP-350): the same, after its attributes.
+- **Morphae fix** (EXP-351): the wrapper is a literal element and declares nothing, so the Morphae copy carries every namespace in scope, `xmlns:SOAP-ENV` first.
+- **View and Form deletes** (EXP-330) are literal elements and carry none.
+
+`ApplyXsl` removes the exact text of the SOAP-ENV declaration everywhere; what becomes of the other declarations is in EXP-205 and `EXP-400` to `EXP-499`.
+
+```xml
+<!-- source: Form F1 declares i18n; its Relationships declares r; the Field declares own -->
+<!-- output (the Field fix) -->  <Item type="Field" id="FL1" action="edit" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="urn:i18n" xmlns:r="urn:r" xmlns:own="urn:own"><!-- Please note: this AML depends on the "" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name></name><source_id type="" keyed_name=""></source_id></Item></propertytype_id></Item>
+```
+
+### EXP-363: Where part 2 writes empty text
+
+[14.0.7] Only the Field fix builds elements from `value-of` (EXP-340), so only there does empty content give the `<x></x>` form of EXP-204: `<name></name>` and `<source_id type="" keyed_name=""></source_id>`. Everything else in part 2 copies or drops: a copied empty element stays `<x />` (the `<column_width />` and `<order_by />` of a fixed Property come from `<column_width></column_width>` in the source), the View and Form deletes carry their values in attributes, and the ItemType edit and the Morphae wrapper are literal. A zero-length CDATA section in the source is the one copied node that gives `<x></x>` (EXP-204).
+
+## Where the engine's conflict rules decide, part 2
+
+### EXP-370: Priority in part 2
+
+[14.0.7] Part 2 adds many templates for `Item[@type='Property']` and bare element names, and the engine's conflict resolution (EXP-202, ticket 06 X3) decides which applies when several match one node.
+
+- **Priority beats order.** The drop templates with a predicate or a path (`Item[@type='Property'][name='id']`, the conditional element drops, `Item[@type='Variable']/…`, `Relationships[count(*)=0]`, `Item[@type='User']/pwd_is_set_on`; priority 0.5) beat the catch-all `*` (-0.5). The bare names of EXP-311 (priority 0) beat `*` and cannot meet the plain `Item` template, because they match different elements.
+- **Equal priority never changes a result.** The only nodes that match several templates of equal priority are Property Items matched by more than one drop template (a keyed Property named `id` is matched by the keyed template and by the `id` template). All of them write nothing, so which one "wins" is not observable. No two templates of equal priority with different results match one node in 14.0.7: the Identity, Method, Member/Morphae, Item Action, RelationshipType and ItemType-under-`related_id` templates differ by `type`, and each property template is fixed by its parent type and element name.
+- **Modes are separate.** A node is handled in `fix` mode only where the root template applies it (EXP-300), and a default-mode template never applies to it there. The two `Item[@type='Field']/propertytype_id` templates have the same pattern and priority and live in different modes.
+
+The port can therefore evaluate part 2's templates in any order. A later engine adds a template that does outrank one of these: 14.35's `is_null` drop beats the Method-valued templates of part 1 (ticket 06, X3), and its variant records it.
+
+## Reproduced bugs, part 2
+
+### EXP-390: Interpolated where clauses are not escaped
+
+[14.0.7] The `where` attributes of the View and Form deletes (EXP-330) and of the Property edits (EXP-324) put the id and the name between apostrophes without escaping them. A name that contains `'` ends the string early: `O'Neil` gives `where="name='O'Neil'"`, which the server then rejects or reads as another condition. Only the XML escaping of the attribute is applied. It is reproduced as the engine does it, byte for byte (`AGENTS.md`, rule 7). See `bugs.md`.
+
+### EXP-391: is_current is compared without order_by
+
+[14.0.7] The row of `is_current` in the stock comparison (EXP-323) has no `order_by` test, where every other row has one. A modified `order_by` of `is_current` alone is never exported, while the same change to `id` is. It is reproduced. See `bugs.md`.
+
+### EXP-392: Content in a Relationships selects a stock system Property
+
+[14.0.7] A system Property is also exported when it has a `Relationships` child with any child node (EXP-322 (b)). The test counts whitespace, text, comments and processing instructions, though the `Relationships` is dropped as empty (EXP-316) and so carries nothing. A stock `id` Property whose `Relationships` holds `\n` is written as an edit that changes nothing. It is reproduced. See `bugs.md`.
+
+### EXP-393: System-name tests in part 2 are substring tests
+
+[14.0.7] The tests of EXP-301 that are substring tests find a name that contains `|` as a run of entries. Their effects in part 2:
+
+- a custom Property named `state|itemtype` is not a keyed Property (EXP-321), is selected by (b) when it has any `Relationships` content and then exported as an `edit` of that name (`where=… name='state|itemtype'`); when it is also keyed, it is dropped from the main pass and is in neither K nor M, so **it is lost**;
+- a Property named `related_id|sort_order` with a Change Controlled Relationship `source_id` and any `Relationships` content is treated as one of the three Change Controlled Relationship names: it is written with its `id` and `action="add"` (EXP-324), and also stays in the main pass;
+- a Field whose `propertytype_id` has the `keyed_name` `state|itemtype` gets a Field fix with empty names (EXP-340).
+
+It is reproduced. See `bugs.md` and EXP-271.
+
+### EXP-394: Members and Morphae below the root's own relationships are lost
+
+[14.0.7] The drop template removes every nested Member and Morphae (EXP-240), but the fix pass re-emits only those that are children of the root Item's own `Relationships` (EXP-350, EXP-351). A Member or Morphae anywhere else, such as in the `Relationships` of the ItemType embedded in a RelationshipType's `relationship_id`, or in a nested Item, is written nowhere. It is reproduced. See `bugs.md`.
+
+## Template index, part 2
+
+Every template of `export.xsl` that part 1 does not index, in stylesheet order, with the rule that specifies it.
+
+| `export.xsl` | Template | Rule |
+|---|---|---|
+| 3 | `xsl:output` and its `cdata-section-elements` list | EXP-360 |
+| 4 | the `systemProperties` string | EXP-301 |
+| 26–47 | follow-up items of the root Item (`mode="first"`) | EXP-214, EXP-352 |
+| 27–32 | ItemType and RelationshipType fix selection | EXP-325 |
+| 33–41 | View and Form delete items | EXP-330 |
+| 42–43 | Field fix selection | EXP-340 |
+| 44–47 | Member and Morphae selection | EXP-350, EXP-351 |
+| 102–103 | `User/pwd_is_set_on` | EXP-315 |
+| 224–256 | Property drops (keyed, system names, dated names) | EXP-310 |
+| 289–291 | Variable `value`, `default_value` | EXP-314 |
+| 293 | `behavior` | EXP-312 |
+| 294–298, 300–319 | bare system elements | EXP-311 |
+| 299 | `css` | EXP-312 |
+| 320 | `item_behavior` | EXP-312 |
+| 322–325 | `generated_type`, `execution_count` | EXP-313 |
+| 328 | empty `Relationships` | EXP-316 |
+| 331–350 | Field fix (`mode="fix"`) | EXP-340 |
+| 352–357 | Field `propertytype_id` fix (never applied) | EXP-300 |
+| 359–405 | ItemType edit (`mode="fix"`) | EXP-320 to EXP-323 |
+| 408–431 | Property fix (`mode="fix"`) | EXP-324 |
+| 433–440 | Member fix (`mode="fix"`) | EXP-350 |
+| 442–453 | Morphae fix (`mode="fix"`) | EXP-351 |
