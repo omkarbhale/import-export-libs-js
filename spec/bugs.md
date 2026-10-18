@@ -369,3 +369,24 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the drop exists so the Members and Morphae come after the Identities and ItemTypes they refer to, not to lose them.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
 - **Versions:** 14.0.7.
+
+## IMP-303: the edit test of the id-or-where check reads a child element, so an edit with no id or where passes
+
+- **Behaviour:** an item with `action="edit"` and neither `id` nor `where` is not refused by the check that "items must have 'id' or 'where' set". It is sent, and the server decides. The same check refuses an `add` in that state, and refuses an item that merely holds an `<action>edit</action>` child element.
+- **Why it is a bug:** the selection writes `action='edit'` where it means `@action='edit'`, which tests for a child element named `action`. A correct engine would test the attribute.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::Import`.
+- **Versions:** 14.0.7.
+
+## IMP-316: removing a Change Controlled Relationship property twice throws a null reference
+
+- **Behaviour:** in merge mode, when two items of the package carry the same id and that id exists, the first one that is a system property of Change Controlled Relationship (`related_id`, `sort_order` or `source_id`) is removed, and the second pass over the same item throws `NullReferenceException`. The import of that item fails with `Object reference not set to an instance of an object. Can't merge item {id or where} {type}`.
+- **Why it is a bug:** the removal runs once per id in the list, and takes the same detached item again, whose parent is null. A correct engine would remove the item once.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::RemoveSystemPropertyForPolyType`, called from `CImportItems::Import`.
+- **Versions:** 14.0.7.
+
+## IMP-333: a related_id whose Item has no id throws a null reference
+
+- **Behaviour:** when the root of an import is versionable and one of its relationships has a `related_id` that holds an `Item` with no `id` attribute (for example one addressed by `where`), the relationship pass throws `NullReferenceException`. The import of the item fails with `Object reference not set to an instance of an object. Can't merge item {id or where} {type}`, after some earlier relationships have been rewritten in the document.
+- **Why it is a bug:** the pass reads the `Value` of `related_id/Item/@id` without testing that the attribute exists. A correct engine would fall back to the `where`, or to the text of `related_id`.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem`.
+- **Versions:** 14.0.7.
