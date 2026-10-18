@@ -26,3 +26,5 @@ Rules for this folder:
 `import-run/` is evidence for `spec/import-run.md`, not an engine run against a server: probes of the 14.0.7 import orchestration, package registration, audit row and SQL handling against a stub connection. Its own README lists the files.
 
 `language-pack/` is evidence for `spec/language-pack.md`, not an engine run: probes of the 14.0.7 `LanguagePackPreprocessor` against a fake IOM connection, the host's argument parser, and the invariant lower-casing table. Its own README lists the files.
+
+`export-requests/` is evidence for `spec/export-requests.md`, not an engine run: `14.0.7-probe/` and `14.35-probe/` hold the requests the engine's own export classes build against a stub connection (`oracle/request-probe/`), and `14.35-probe/server-reactions.json` holds read-only dev gets that compare 14.0.7's and 14.35's request shapes. Each folder's README says how it was recorded.
