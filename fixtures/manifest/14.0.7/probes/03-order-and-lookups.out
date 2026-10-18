@@ -1,0 +1,105 @@
+## 8 ordering
+spec=[A;B;C] import=[B,A,C] db=[] => result=[B,A,C] type=ArrayList warnings=
+spec=[A>B;B] import=[A,B] db=[] => result=[B,A] type=ArrayList warnings=
+spec=[A>B;B] import=[B,A] db=[] => result=[B,A] type=ArrayList warnings=
+spec=[A>B;B>C;C] import=[A,B,C] db=[] => result=[C,B,A] type=ArrayList warnings=
+spec=[A>B;B>C;C] import=[C,B,A] db=[] => result=[C,B,A] type=ArrayList warnings=
+spec=[A>B;B>C;C] import=[B,A,C] db=[] => result=[C,B,A] type=ArrayList warnings=
+spec=[A>B;B>C;C] import=[A,C] db=[] => result=[C,A] type=ArrayList warnings="One of imported packages depends on the package 'B' that neither imported in this session nor exists in the database"
+spec=[A>B,C;B>C;C] import=[A,B,C] db=[] => result=[C,B,A] type=ArrayList warnings=
+spec=[A>B,C;B>C;C] import=[A,C] db=[] => result=[C,A] type=ArrayList warnings="One of imported packages depends on the package 'B' that neither imported in this session nor exists in the database"
+spec=[A>B;B>A] import=[A,B] db=[] => result=[B,A] type=ArrayList warnings="There is a circular dependency on package 'A'"
+spec=[A>B;B>A] import=[B,A] db=[] => result=[A,B] type=ArrayList warnings="There is a circular dependency on package 'B'"
+spec=[A>A] import=[A] db=[] => result=[A] type=ArrayList warnings="There is a circular dependency on package 'A'"
+spec=[A>X] import=[A] db=[] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>X] import=[A] db=[X] => result=[A] type=ArrayList warnings=
+spec=[A>X] import=[A] db=[Y,X] => result=[A] type=ArrayList warnings=
+spec=[A>X] import=[A] => System.Management.Automation.MethodException: "Cannot convert argument \"databasePackages\", with value: \"\", for \"GetPackageNamesInImportOrder\" to type \"System.Xml.XmlDocument\": \"Cannot convert value \"\" to type \"System.Xml.XmlDocument\". Error: \"Value cannot be null.\r\nParameter name: s\"\"" warnings=
+spec=[A>X;B>X] import=[A,B] db=[] => result=[A,B] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database" | "One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>X;B>X] import=[B,A] db=[] => result=[B,A] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database" | "One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>B;B>X] import=[A,B] db=[X] => result=[B,A] type=ArrayList warnings=
+spec=[A>B;B>X] import=[A,B] db=[] => result=[B,A] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A] import=[Z] db=[] => result=[Z] type=ArrayList warnings=
+spec=[A] import=[Z,A] db=[] => result=[Z,A] type=ArrayList warnings=
+spec=[A] import=[A,A] => System.ArgumentException: "Item has already been added. Key in dictionary: 'A'  Key being added: 'A'" warnings=
+spec=[A;a] import=[a,A] db=[] => result=[a,A] type=ArrayList warnings=
+spec=[A>b;b] import=[A] db=[] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'b' that neither imported in this session nor exists in the database"
+spec=[A>B;B] import=[B] db=[] => result=[B] type=ArrayList warnings=
+spec=[A>B;B] import=[] db=[] => result=[] type=ArrayList warnings=
+spec=[A>B,B;B] import=[A,B] db=[] => result=[B,A] type=ArrayList warnings=
+spec=[A>B;A>C;B;C] import=[A,B,C] db=[] => result=[B,C,A] type=ArrayList warnings=
+spec=[A>B;A>C;B;C] import=[A,C,B] db=[] => result=[C,B,A] type=ArrayList warnings=
+spec=[A>C,B;B;C] import=[A,B,C] db=[] => result=[B,C,A] type=ArrayList warnings=
+spec=[A>B;A;B] import=[A,B] db=[] => result=[B,A] type=ArrayList warnings=
+spec=[A>B;C>B;B>D;D] import=[A,C,B,D] db=[] => result=[D,B,A,C] type=ArrayList warnings=
+spec=[A>B;C>B;B>D;D] import=[D,A,C,B] db=[] => result=[D,B,A,C] type=ArrayList warnings=
+spec=[A>B;B>C;C>D;D] import=[A,B,C,D] db=[] => result=[D,C,B,A] type=ArrayList warnings=
+spec=[A>B;B>C;C>D;D>A] import=[A,B,C,D] db=[] => result=[D,C,B,A] type=ArrayList warnings="There is a circular dependency on package 'A'"
+spec=[A>B;B>C;C>D;D>A] import=[B,A,C,D] db=[] => result=[A,D,C,B] type=ArrayList warnings="There is a circular dependency on package 'B'"
+spec=[A>B;B>C;C>D;D>A] import=[D,C,B,A] db=[] => result=[C,B,A,D] type=ArrayList warnings="There is a circular dependency on package 'D'"
+spec=[A>B,C;B>A;C>A] import=[A,B,C] db=[] => result=[B,C,A] type=ArrayList warnings="There is a circular dependency on package 'A'" | "There is a circular dependency on package 'A'"
+spec=[A>] import=[A] db=[] => result=[A] type=ArrayList warnings="One of imported packages depends on the package '' that neither imported in this session nor exists in the database"
+spec=[A>B;B] import=[A,B,A] => System.ArgumentException: "Item has already been added. Key in dictionary: 'A'  Key being added: 'A'" warnings=
+spec=[A>B;B] import=[A] db=[] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'B' that neither imported in this session nor exists in the database"
+spec=[A>B;B] import=[,A] => System.InvalidCastException: "Unable to cast object of type 'System.Management.Automation.Language.NullString' to type 'System.String'." warnings=
+spec=[A>B;B] import=[] db=[] => result=[] type=ArrayList warnings=
+spec=[A>B;B] import=[A,B] db=[B] => result=[B,A] type=ArrayList warnings=
+spec=[A>B] import=[A] db=[B] => result=[A] type=ArrayList warnings=
+spec=[A>B] import=[A] db=[Bx] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'B' that neither imported in this session nor exists in the database"
+spec=[A>X] import=[A] db=[X] => result=[A] type=ArrayList warnings=
+spec=[A>X;B>Q] import=[A,B] db=[ X ,Q] => result=[A,B] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>X] import=[A] db=[X] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>X] import=[A] db=[] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'X' that neither imported in this session nor exists in the database"
+spec=[A>X'Y] import=[A] => System.Xml.XPath.XPathException: "'//Item[@type='PackageDefinition' and name='X'Y']' has an invalid token." warnings=
+spec=[A] import=[A'B] => System.Xml.XPath.XPathException: "'imports/package[@name='A'B']' has an invalid token." warnings=
+spec=[A>X;B] import=[B,A] db=[X] => result=[B,A] type=ArrayList warnings=
+New-Object : Exception calling ".ctor" with "1" argument(s): "'Y' is an unexpected token. Expecting white space. Line 
+1, position 57."
+At C:%PROBE%\probe3.ps1:11 char:3
++   New-Object Aras.Tools.SolutionUpgrade.ManifestFile($p)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [New-Object], MethodInvocationException
+    + FullyQualifiedErrorId : ConstructorInvokedThrowException,Microsoft.PowerShell.Commands.NewObjectCommand
+ 
+spec=[A>X"Y] import=[A] => System.Management.Automation.RuntimeException: "You cannot call a method on a null-valued expression." warnings=
+spec=[A>q] import=[A] db=[X] => result=[A] type=ArrayList warnings="One of imported packages depends on the package 'q' that neither imported in this session nor exists in the database"
+spec=[A>q' or name='X] import=[A] db=[X] => result=[A] type=ArrayList warnings=
+dependson no name => System.NullReferenceException: "Object reference not set to an instance of an object."
+dependson empty name => A warnings="One of imported packages depends on the package '' that neither imported in this session nor exists in the database"
+package no name GetAllPackageNames => System.NullReferenceException: "Object reference not set to an instance of an object."
+imported=null => System.Management.Automation.MethodException: "Cannot find an overload for \"GetPackageNamesInImportOrder\" and the argument count: \"3\"."
+warnings=null => System.Management.Automation.MethodException: "Cannot find an overload for \"GetPackageNamesInImportOrder\" and the argument count: \"3\"."
+warnings=null (warn path) => System.Management.Automation.MethodException: "Cannot find an overload for \"GetPackageNamesInImportOrder\" and the argument count: \"3\"."
+imported has int => System.InvalidCastException: "Unable to cast object of type 'System.Int32' to type 'System.String'."
+return type => System.Collections.ArrayList
+## 9 GetDependsOnInfo / lookups
+deps(c) => Keys=[c] enum=[c] valueType=ArrayList count=1
+deps(com.aras.innovator.core,com.aras.innovator.admin) => Keys=[com.aras.innovator.admin,com.aras.innovator.core] enum=[com.aras.innovator.admin,com.aras.innovator.core] valueType=ArrayList count=2
+deps(com.aras.innovator.core,com.aras.innovator.admin,com.aras.innovator.solution.PLM,com.aras.defaults.base) => Keys=[com.aras.innovator.core,com.aras.innovator.admin,com.aras.innovator.solution.PLM,com.aras.defaults.base] enum=[com.aras.innovator.core,com.aras.innovator.admin,com.aras.innovator.solution.PLM,com.aras.defaults.base] valueType=ArrayList count=4
+deps(a,b,c,d,e,f,g,h) => Keys=[b,c,a,f,g,d,e,h] enum=[b,c,a,f,g,d,e,h] valueType=ArrayList count=8
+deps(h,g,f,e,d,c,b,a) => Keys=[b,c,a,f,g,d,e,h] enum=[b,c,a,f,g,d,e,h] valueType=ArrayList count=8
+deps(com.aras.innovator.a,com.aras.innovator.b,com.aras.innovator.c,com.aras.innovator.d,com.aras.innovator.e,com.aras.innovator.f,com.aras.innovator.g,com.aras.innovator.h,com.aras.innovator.i,com.aras.innovator.j,com.aras.innovator.k,com.aras.innovator.l) => Keys=[com.aras.innovator.d,com.aras.innovator.l,com.aras.innovator.g,com.aras.innovator.j,com.aras.innovator.e,com.aras.innovator.a,com.aras.innovator.k,com.aras.innovator.f,com.aras.innovator.h,com.aras.innovator.c,com.aras.innovator.i,com.aras.innovator.b] enum=[com.aras.innovator.d,com.aras.innovator.l,com.aras.innovator.g,com.aras.innovator.j,com.aras.innovator.e,com.aras.innovator.a,com.aras.innovator.k,com.aras.innovator.f,com.aras.innovator.h,com.aras.innovator.c,com.aras.innovator.i,com.aras.innovator.b] valueType=ArrayList count=12
+GetDependsOnInfo duplicate dependson => System.ArgumentException: "Item has already been added. Key in dictionary: 'd'  Key being added: 'd'"
+refs => ("x","1","T") ("","2","") ("","","Q") ("y","1","T2")
+GetDependsOnInfo(missing pkg).Count => 0
+GetDependsOnInfo(null).Count => 0
+GetDependsOnInfo(quote) => System.Xml.XPath.XPathException: "'imports/package[@name='a'b']' has an invalid token."
+GetDependsOn d => "<dependson name=\"d\"><referenced_element id=\"1\" type=\"T\" descr=\"x\" /><referenced_element id=\"2\" /><referenced_element type=\"Q\" /><referenced_element id=\"1\" type=\"T2\" descr=\"y\" /></dependson>"
+GetDependsOn missing => null
+GetDependsOn blank => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+GetDependsOn null node => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: packageNode"
+GetAllDependsOnNames null => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: packageNode"
+GetReferencedElements null => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: dependsOnNode"
+GetPackageDependencies P => d
+GetPackageDependencies nope len => 0
+GetPackageNode blank => null
+GetPackageNode null => null
+GetPackageNode wrong case => null
+GetPackageNode padded => null
+dup package first wins => "<package name=\"P\" path=\"a\" />"
+GetAllPackageNames dup => P,P,Q
+nested package not found => null
+GetAllPackageNames type => System.Collections.ArrayList
+default ns: GetAllPackageNames => 
+wrong case root: names => 
+case tags => System.NullReferenceException: "Object reference not set to an instance of an object."

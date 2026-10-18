@@ -1,0 +1,61 @@
+## 12 which characters make GetPackagePath throw (path attr / folder)
+path attr throws for => 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 22 3C 3E 7C
+folder throws for => 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 22 3C 3E 7C
+rooted path throws for => 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 22 3C 3E 7C
+## 13 Combine / IsPathRooted shapes
+folder="C:\\m" path="x" => "C:\\m\\x"
+folder="C:\\m\\" path="x" => "C:\\m\\x"
+folder="C:\\m/" path="x" => "C:\\m/x"
+folder="C:" path="x" => "C:x"
+folder="C:\\m:" path="x" => "C:\\m:x"
+folder="" path="x" => "x"
+folder="C:\\m" path="\\x" => "\\x"
+folder="C:\\m" path="/x" => "/x"
+folder="C:\\m" path="C:x" => "C:x"
+folder="C:\\m" path="D:\\x" => "D:\\x"
+folder="C:\\m" path="\\\\h\\s" => "\\\\h\\s"
+folder="C:\\m" path="//h/s" => "//h/s"
+folder="C:\\m" path=".\\x" => "C:\\m\\.\\x"
+folder="C:\\m" path="..\\x" => "C:\\m\\..\\x"
+folder="rel" path="x" => "rel\\x"
+folder="rel\\" path="x" => "rel\\x"
+folder="\\\\h\\s\\m" path="x" => "\\\\h\\s\\m\\x"
+folder="C:\\m " path="x" => "C:\\m \\x"
+folder="C:\\m" path=" x" => "C:\\m\\ x"
+folder="C:\\m" path="x " => "C:\\m\\x "
+folder="C:\\m" path=":x" => "C:\\m\\:x"
+folder="C:\\m" path="a:b" => "a:b"
+folder="C:\\m" path="1:\\x" => "1:\\x"
+folder="C:\\m" path="ab:\\x" => "C:\\m\\ab:\\x"
+folder="C:\\m" path="\\\\?\\C:\\x" => "\\\\?\\C:\\x"
+folder="C:\\m" path="\\??\\C:\\x" => "\\??\\C:\\x"
+## 14 GetDependsOnInfo edge
+GetDependsOnInfo dependson name="" => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+GetDependsOnInfo dependson name=" " => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+GetDependsOnInfo dependson no name => System.NullReferenceException: "Object reference not set to an instance of an object."
+GetDependsOnInfo dependson name x quote y => System.Xml.XPath.XPathException: "'dependson[@name='x'y']' has an invalid token."
+injection keys => b | a' or @name='a | a
+padded and case keys => "A" | " a "
+only direct referenced_element => top
+only direct dependson => top
+GetPackageDependencies nested => top
+GetPackageDependencies empty-name dep => "",""
+## 15 NormalizeLongPath-visible
+Save ".\\n1.mf" => ok
+Save "..\\tmp\\n2.mf" => ok
+Save "\\\\\\%PROBE%\\tmp\\n3.mf" => ok
+Save "?%PROBE%\\tmp\\n4.mf" => ok
+Save "" => System.ArgumentException: "Empty path name is not legal."
+Load "" => System.ArgumentException: "Empty path name is not legal."
+Save "   " => System.ArgumentException: "The path is not of a legal form."
+Load "   " => System.ArgumentException: "The path is not of a legal form."
+Save "a|b" => System.ArgumentException: "Illegal characters in path."
+Load "a|b" => System.ArgumentException: "Illegal characters in path."
+Save "a<b" => System.ArgumentException: "Illegal characters in path."
+Load "a<b" => System.ArgumentException: "Illegal characters in path."
+Save "a\tb" => System.ArgumentException: "Illegal characters in path."
+Load "a\tb" => System.ArgumentException: "Illegal characters in path."
+Save "a?b" => System.ArgumentException: "Illegal characters in path."
+Load "a?b" => System.ArgumentException: "Illegal characters in path."
+Save "C:\\x:y" => System.NotSupportedException: "The given path's format is not supported."
+Load "C:\\x:y" => System.NotSupportedException: "The given path's format is not supported."

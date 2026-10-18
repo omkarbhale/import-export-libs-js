@@ -1,0 +1,7 @@
+imported=null => System.NullReferenceException: "Object reference not set to an instance of an object."
+imported=[null] => System.ArgumentNullException: "Key cannot be null.\r\nParameter name: key"
+warnings=null, warn path => System.NullReferenceException: "Object reference not set to an instance of an object."
+db=null, db path => System.NullReferenceException: "Object reference not set to an instance of an object."
+db=null warnings=null no-warn path => A
+## cycle (C>A, A>B, B>A, import C,A,B): powershell.exe exit code 253, stderr "Process is terminated due to StackOverflowException.", no stdout
+## self (A>B, B>B, import A,B): exit code 253, stderr "Process is terminated due to StackOverflowException.", no stdout

@@ -1,0 +1,35 @@
+Save relative => ok
+rel exists in cwd => True
+Load relative => ok names=P
+Save abs => ok
+Save fwd slashes => ok
+Save prefix \\?\ => ok
+Load prefix \\?\ => ok names=P
+pre exists => True
+unc path => \\localhost\C$%PROBE%\tmp5\unc.mf
+unc reachable by .NET => True
+Save unc => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%PROBE%\\tmp5\\localhost\\C$%PROBE%\\tmp5\\unc.mf'."
+Load unc => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%PROBE%\\tmp5\\localhost\\C$%PROBE%\\tmp5\\unc.mf'."
+unc exists (via abs) => False
+Save question marks => ok
+qq exists => True
+Save len=240 => ok
+len=240 exists => True
+Load len=240 => ok names=P
+Save len=250 => ok
+len=250 exists => True
+Load len=250 => ok names=P
+Save len=253 => ok
+len=253 exists => True
+Load len=253 => ok names=P
+Save len=254 => ok
+len=254 exists => True
+Load len=254 => ok names=P
+Save len=255 => ok
+len=255 exists => True
+Load len=255 => ok names=P
+Save len=256 => ok
+len=256 exists => True
+Load len=256 => ok names=P
+len 259 => could not build, got 258
+target framework / long path quirk => 
