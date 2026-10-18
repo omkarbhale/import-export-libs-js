@@ -119,3 +119,24 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** a legal package name cannot be exported, and a crafted one changes which nodes the engine reads.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddDependsOn`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddReferencedElement`.
 - **Versions:** 14.0.7.
+
+## EXP-032: the "Unable to get definition" text names `System.Xml.XmlAttribute`
+
+- **Behaviour:** when a metadata lookup (the is_versionable lookup of an ItemType, and the related-item metadata lookups) fails with faultcode 0, the engine rewrites the fault's detail to `Unable to get definition of System.Xml.XmlAttribute: {name}`.
+- **Why it is a bug:** the text is meant to name the type that was asked for. The engine formats the `type` attribute node with `ToString()`, which is the .NET type name, not the attribute's value.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetTypeAmlInner`.
+- **Versions:** 14.0.7.
+
+## EXP-047: a failed poly-type lookup is remembered as "no poly-types"
+
+- **Behaviour:** the list of polymorphic ItemType names is created before its request is sent. When the request fails with a faultcode other than 0, the first caller gets the error, but every later call of that `CItemHelper` finds the empty list, returns it, and sends nothing. Items exported after the failed one keep their `data_source` references to polymorphic types unrewritten, with no error.
+- **Why it is a bug:** a failed lookup should not be taken for an answer. A correct engine would leave the list unset, so the next call asks again.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`.
+- **Versions:** 14.0.7.
+
+## EXP-055: stack text in `faultstring` is not reproduced (deviation)
+
+- **Behaviour:** where the engine builds a `CItemException` from a caught exception, it puts the exception's stack trace in `faultstring`. The trace is a list of .NET frames, framework internals included, so it differs between .NET Framework builds and is not stable even across the engine's own runs on different machines. The library writes the exception's type name, a colon, a space and its message there instead, with no frames.
+- **Why it is a bug:** this is a deviation, not an engine bug. The frames cannot be reproduced, so a log or message that quotes such a `faultstring` differs from the engine's on that one field, and parity checks compare it masked.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export`, `CItemHelper::GetCurrentIdOfVersion`, `CItemHelper::GetCustomFloatPropertiesOfTypeItem`, `PackageDefinitionManager::InitSolution` and `PackageDefinitionManager::FindReferencedElements`.
+- **Versions:** 12.0, 14.0.7, 14.35.
