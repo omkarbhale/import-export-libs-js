@@ -84,3 +84,17 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the reference cannot be resolved on import, and a null property should stay null or be left out.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
 - **Versions:** 14.0.7 (14.35's `is_null` drop template changes this).
+
+## EXP-615: removing references while walking the node list skips and revisits nodes
+
+- **Behaviour:** the unknown-package removal visits `SelectNodes` results with `foreach` and removes nodes from the document as it goes. .NET Framework builds that list lazily, one element ahead, from iterators over the live tree, so the loop still visits nodes inside a subtree it has just detached, records references from them, and never visits matches that come after a detached subtree. Those references stay in the exported file. Example: removing `a` from `a(a1, a2), b, c(c1)` visits `a, a1, a2, b, c` and not `c1`.
+- **Why it is a bug:** a correct engine would take the matches first, or skip detached nodes. The result depends on where in the document the removals fall.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::RemoveReferencesToAnotherPackages`.
+- **Versions:** 14.0.7.
+
+## EXP-619: the dependency cache of the unknown-package removal is never reset
+
+- **Behaviour:** the dependency names of a package are cached in a `static readonly` table that no constructor clears, unlike the three other caches of the same code. A second export in the same process reuses the dependency list read by the first.
+- **Why it is a bug:** the dependencies can change between runs, or the second run can talk to another database; a correct engine would start each run with empty caches.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames`.
+- **Versions:** 14.0.7.
