@@ -1,0 +1,23 @@
+﻿<AML>
+ <Item type="cmf_ContentType" id="F3CA127F4A444F45CA7154BE94D4C168" action="add">
+  <linked_item_type keyed_name="LIBSJS_SCRATCH_CMFIT" type="ItemType" name="LIBSJS_SCRATCH_CMFIT">DF1A99C67C94E5A77568B841ACFE24D1</linked_item_type>
+  <name>LIBSJS_SCRATCH_CmfContent</name>
+  <Relationships>
+   <Item type="cmf_ElementType" id="FCC8B0C6CDCC06EB34D0256A186FE0B8" action="add">
+    <default_permission keyed_name="CMF Element Default Access" type="Permission">FAC64B6CE47348458D6DEB1C68DC4724</default_permission>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_CmfContent" type="cmf_ContentType">F3CA127F4A444F45CA7154BE94D4C168</source_id>
+    <name>LIBSJS_SCRATCH_CmfElement</name>
+    <Relationships>
+     <Item type="cmf_PropertyType" id="1DD4569F2ECCD555C841744ACA5BC7D6" action="add">
+      <data_length>64</data_length>
+      <data_type>string</data_type>
+      <sort_order>128</sort_order>
+      <source_id keyed_name="LIBSJS_SCRATCH_CmfElement" type="cmf_ElementType">FCC8B0C6CDCC06EB34D0256A186FE0B8</source_id>
+      <name>LIBSJS_SCRATCH_CmfProp</name>
+     </Item>
+    </Relationships>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

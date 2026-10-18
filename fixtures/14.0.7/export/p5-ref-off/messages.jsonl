@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":790692071299,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-REF","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":790692099135,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-REF-Var_1","answer":null}
+{"event":17,"seq":3,"thread":16,"ticks":790693553192,"channel":"status","text":"completed","answer":null}
+{"event":18,"seq":4,"thread":16,"ticks":790693553416,"channel":"currentPackage","text":"","answer":null}

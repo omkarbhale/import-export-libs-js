@@ -1,0 +1,32 @@
+﻿<AML>
+ <Item type="dac_DomainDefinition" id="FCEC8D70CA84F92ED21FD3F682F09B7E" action="add">
+  <description>Scratch domain definition.</description>
+  <dr_relationshipfamily_id keyed_name="LIBSJS-SCRATCH-DrFamily" type="dr_RelationshipFamily">62210B831C5192B63D8391421B5EFA39</dr_relationshipfamily_id>
+  <permission_id keyed_name="dac_DomainDefinitionPreliminary" type="Permission">51AD07302B5241E08A20ED56A724410A</permission_id>
+  <name>LIBSJS_SCRATCH_DacDomain</name>
+  <Relationships>
+   <Item type="dac_SubdomainPolicy" id="4D8129AF71DD6D11D04179EE31653C2B" action="add">
+    <dr_relationship_id keyed_name="LIBSJS-SCRATCH-DrFamily-LIBSJS-SCRATCH-DrRel" type="dr_Relationship">6AC6EB272A59D380F729F2F94C7EFB9F</dr_relationship_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_DacDomain" type="dac_DomainDefinition">FCEC8D70CA84F92ED21FD3F682F09B7E</source_id>
+    <Relationships>
+     <Item type="dac_SubdomainPermission" id="44CC40E570CEC8F59CE299B7C0B35D5C" action="add">
+      <condition_xml><![CDATA[<condition>
+ <method_call>
+  <method_name>MacPolicy.CurrentItem.HasUserVisibilityPolicyAccess</method_name>
+  <params>
+   <param>
+    <constant>café au lait</constant>
+   </param>
+  </params>
+ </method_call>
+</condition>]]></condition_xml>
+      <sort_order>128</sort_order>
+      <source_id keyed_name="4D8129AF71DD6D11D04179EE31653C2B" type="dac_SubdomainPolicy">4D8129AF71DD6D11D04179EE31653C2B</source_id>
+      <subdomain_permission_id keyed_name="LIBSJS-SCRATCH-DacPerm" type="Permission">63F701C424AE914C5C687C6640CE7A5B</subdomain_permission_id>
+     </Item>
+    </Relationships>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

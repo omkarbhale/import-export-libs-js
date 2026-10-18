@@ -1,0 +1,15 @@
+﻿<AML>
+ <Item type="mp_MacPolicy" id="01C454B820C6CF5A776842AC7136C210" action="add">
+  <description>scratch</description>
+  <name>LIBSJS-SCRATCH-SPECIAL-MacPolicy_1</name>
+  <Relationships>
+   <Item type="mp_MacCondition" action="add">
+    <condition_xml><![CDATA[<Item type="qry_QueryDefinition"><Relationships><Item type="qry_QueryItem"><item_type>45E899CD2859442982EB22BB2DF683E5</item_type><alias>Q0</alias><ref_id>F87A995F1C052BFD281D9CC296B7BE12</ref_id><filter_xml><![CDATA[<condition><eq><property name="keyed_name" /><constant>LIBSJS-SCRATCH-one</constant></eq></condition>]]]]><![CDATA[></filter_xml></Item><Item type="qry_QueryItem"><item_type>E582AB17663F4EF28460015B2BE9E094</item_type><alias>Q1</alias><ref_id>2B2229CDDAB88F48D2B271EEBA08F9B0</ref_id><filter_xml><![CDATA[<condition><eq><property name="keyed_name" /><constant>LIBSJS-SCRATCH-two</constant></eq></condition>]]]]><![CDATA[></filter_xml></Item><Item type="qry_QueryReference"><child_ref_id>F87A995F1C052BFD281D9CC296B7BE12</child_ref_id></Item><Item type="qry_QueryReference"><child_ref_id>2B2229CDDAB88F48D2B271EEBA08F9B0</child_ref_id><parent_ref_id>F87A995F1C052BFD281D9CC296B7BE12</parent_ref_id><ref_id>F8AAD245FEECE5CADAC7B53CD9D31F85</ref_id></Item></Relationships></Item>]]></condition_xml>
+    <name>LIBSJS-SCRATCH-SPECIAL-MacPolicy_1 Rule</name>
+    <ref_id>09BA19A4CFA3BF07B9E8FCC47A8FBA0C</ref_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-SPECIAL-MacPolicy_1" type="mp_MacPolicy">01C454B820C6CF5A776842AC7136C210</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

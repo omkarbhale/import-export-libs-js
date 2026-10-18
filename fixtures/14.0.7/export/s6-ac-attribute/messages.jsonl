@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":793173931198,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-ACCESS","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":793173938928,"channel":"status","text":"Item 1 of 1: ac_PolicyAccessItemAttribute - LIBSJS_SCRATCH_AcAttribute","answer":null}
+{"event":22,"seq":3,"thread":16,"ticks":793177046084,"channel":"status","text":"completed","answer":null}
+{"event":23,"seq":4,"thread":16,"ticks":793177046374,"channel":"currentPackage","text":"","answer":null}

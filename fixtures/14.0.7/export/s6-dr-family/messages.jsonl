@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":15,"ticks":793137479849,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-SPECIAL","answer":null}
+{"event":10,"seq":2,"thread":15,"ticks":793137487866,"channel":"status","text":"Item 1 of 1: dr_RelationshipFamily - LIBSJS-SCRATCH-DrFamily","answer":null}
+{"event":30,"seq":3,"thread":15,"ticks":793142769258,"channel":"status","text":"completed","answer":null}
+{"event":31,"seq":4,"thread":15,"ticks":793142769832,"channel":"currentPackage","text":"","answer":null}

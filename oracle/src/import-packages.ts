@@ -117,7 +117,7 @@ export function item(type: string, id: string | null, action: string, body: stri
   return ind([head, ...body.map((l) => ind(l)), "</Item>"].join("\n"));
 }
 
-const src = (type: string, name: string, id: string): string =>
+export const src = (type: string, name: string, id: string): string =>
   `<source_id keyed_name="${esc(name)}" type="${esc(type)}">${id}</source_id>`;
 
 // ---------------------------------------------------------------------------
@@ -181,7 +181,7 @@ export const BASE = {
 const b = (name: string) => sid(`BASE:${name}`);
 
 /** An ItemType add in export shape, followed by the View and Form deletes the export writes after it. */
-function itemTypeFile(
+export function itemTypeFile(
   name: string,
   opts: { implementation?: string; relationship?: boolean; versionable?: boolean; body?: string[]; label?: string } = {},
 ): PackageFile {
@@ -208,7 +208,7 @@ function itemTypeFile(
   return aml("ItemType", `${name.replace("LIBSJS_SCRATCH_", "LIBSJS-SCRATCH-")}.xml`, add, item("View", null, "delete", [], `where="source_id='${id}'"`), item("Form", null, "delete", [], `where="name='${name}'"`));
 }
 
-function property(itName: string, name: string, order: number, extra: string[] = [], type = "string", keyed = false, idOf: (name: string) => string = b): string {
+export function property(itName: string, name: string, order: number, extra: string[] = [], type = "string", keyed = false, idOf: (name: string) => string = b): string {
   return item("Property", idOf(`${itName}.${name}`), "add", [
     "<column_alignment>left</column_alignment>",
     `<data_type>${type}</data_type>`,
@@ -230,17 +230,17 @@ function property(itName: string, name: string, order: number, extra: string[] =
   ]);
 }
 
-/** The default permission instances of a scratch ItemType need before any can be added: S1's Permission. */
-const defaultPermission = (itName: string): string =>
+/** The default permission instances of a scratch ItemType need before any can be added: S1's Permission, or `permission` (a name in the BASE id space). */
+export const defaultPermission = (itName: string, permission = "Perm_1"): string =>
   item("Allowed Permission", b(`${itName}.allowed1`), "add", [
     "<is_default>1</is_default>",
-    '<related_id keyed_name="LIBSJS-SCRATCH-Perm_1" type="Permission">' + b("Perm_1") + "</related_id>",
+    `<related_id keyed_name="LIBSJS-SCRATCH-${permission}" type="Permission">` + b(permission) + "</related_id>",
     "<sort_order>128</sort_order>",
     src("ItemType", itName, b(itName)),
   ]);
 
 /** The keyed `name` property the instance items of a scratch ItemType use, so their keyed_name is scratch-named. */
-const keyedName = (itName: string) => property(itName, "name", 64, [], "string", true);
+export const keyedName = (itName: string) => property(itName, "name", 64, [], "string", true);
 
 /** A RelationshipType add in export shape, with its relationship ItemType nested as `relationship_id`. */
 function relationshipTypeFile(name: string, sourceName: string, level: number, versionable = false, relatedName: string | null = null): PackageFile {
@@ -292,7 +292,7 @@ function relationshipTypeFile(name: string, sourceName: string, level: number, v
   return aml("RelationshipType", `${name.replace("LIBSJS_SCRATCH_", "LIBSJS-SCRATCH-")}.xml`, rt, item("View", null, "delete", [], `where="source_id='${b(name)}'"`), item("Form", null, "delete", [], `where="name='${name}'"`));
 }
 
-const worldAccess = (permName: string, permId: string, order: number, canChange: boolean): string =>
+export const worldAccess = (permName: string, permId: string, order: number, canChange: boolean): string =>
   item("Access", b(`${permName}.access${order}`), "add", [
     `<can_change_access>${canChange ? 1 : 0}</can_change_access>`,
     `<can_delete>${canChange ? 1 : 0}</can_delete>`,
@@ -645,7 +645,8 @@ export function instances(): ScratchPackage {
 /** A stock List ("Report Format Types"), the existing non-scratch referenced element. */
 export const STOCK_LIST = { id: "1854A8A75F5940A78369146966674FA6", descr: "Report Format Types" } as const;
 
-const r = (name: string) => sid(`REF:${name}`);
+export const refId = (name: string) => sid(`REF:${name}`);
+const r = refId;
 
 export function refDep(): ScratchPackage {
   const name = "LIBSJS-SCRATCH-REFDEP-List_1";
@@ -893,7 +894,8 @@ export function sqlChild(): ScratchPackage {
 // S8: two packages with the same last dot-segment.
 // ---------------------------------------------------------------------------
 
-const k = (name: string) => sid(`COLL:${name}`);
+export const collId = (name: string) => sid(`COLL:${name}`);
+const k = collId;
 
 const collVariable = (idKey: string, name: string): PackageFile =>
   aml("Variable", `${name}.xml`, item("Variable", k(idKey), "add", ["<default_value>coll</default_value>", `<name>${name}</name>`]));

@@ -1,0 +1,24 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T212502-14.0.7-export-0dd9db\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T212502-14.0.7-export-0dd9db\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: admin
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export LIBSJS-SCRATCH-A.Coll****
+start of execution : 10/19/2026 02:55:04
+Item id :B884DA4086B47D93861052CA33041D07  keyed_name : LIBSJS-SCRATCH-Coll_A   type : Variable successfully exported
+end of execution : 10/19/2026 02:55:04
+         ****Export LIBSJS-SCRATCH-B.Coll****
+start of execution : 10/19/2026 02:55:04
+Item id :EB4A3D180B43F8CE6B393C6484D3F650  keyed_name : LIBSJS-SCRATCH-Coll_B   type : Variable successfully exported
+end of execution : 10/19/2026 02:55:04

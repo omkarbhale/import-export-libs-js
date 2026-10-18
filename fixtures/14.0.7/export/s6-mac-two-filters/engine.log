@@ -1,0 +1,20 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T212849-14.0.7-export-383d9f\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T212849-14.0.7-export-383d9f\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: admin
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export LIBSJS-SCRATCH-SPECIAL****
+start of execution : 10/19/2026 02:58:51
+Item id :01C454B820C6CF5A776842AC7136C210  keyed_name : LIBSJS-SCRATCH-SPECIAL-MacPolicy_1   type : mp_MacPolicy successfully exported
+end of execution : 10/19/2026 02:58:51

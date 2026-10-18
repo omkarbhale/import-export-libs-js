@@ -48,7 +48,7 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 
 - Use the dev instance only. Never contact olm or prod.
 - Exports and reads are free.
-- Imports use only `LIBSJS-SCRATCH-*` packages and items (`LIBSJS_SCRATCH_*` for the ItemType and SQL item names, which Aras limits to word characters). Each run cleans up after itself and reports the ids it created and deleted.
+- Imports use only `LIBSJS-SCRATCH-*` packages and items (`LIBSJS_SCRATCH_*` for the ItemType, SQL and other item names that Aras limits to word characters, and `xp-LIBSJS_SCRATCH_*` for extended properties, whose names must start with `xp-`). Each run cleans up after itself and reports the ids it created and deleted.
 - The oracle's scratch guard only checks names, not which items the engine will change (it picks them by `id` or `where`). So feed it only this repo's own `LIBSJS-SCRATCH-*` fixture packages. Never feed it a foreign package or language pack whose items carry real ids, `edit`, `merge` or `delete` post-actions, or `--merge` against non-scratch items.
 - Clearly non-destructive DB patches are allowed on dev. Anything else goes to the captain first.
 - The password reaches tools only through the environment (`ARAS_PASSWORD`) or stdin, never through a flag or a file.

@@ -30,6 +30,7 @@
     "test:watch": "vitest",
     "oracle": "tsx oracle/src/cli.ts",
     "oracle:export-cases": "tsx oracle/src/record-export-cases.ts",
+    "oracle:export-scratch-cases": "tsx oracle/src/record-export-scratch-cases.ts",
     "oracle:import-cases": "tsx oracle/src/record-import-cases.ts",
     "oracle:dbpatch-cases": "tsx oracle/src/record-dbpatch-cases.ts",
     "prepare": "tsup",
