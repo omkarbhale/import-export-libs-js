@@ -5905,9 +5905,12 @@
             "ilSha256": "6cda184953fa397fe65e2c5994445303fd1ac89c3b99386ea440e8a062c14e39",
             "bodySha256": "0349d0b413316b6db41da218c2588c4c31ed15427ba6f95c5836f01a8a456f46"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-200"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager"
           ]
         },
         {
@@ -5920,11 +5923,14 @@
             "bodySha256": "0b90ca06390baf286eb7bcc594fdb2be37aadd01daa062209d78675c3f81ebb4",
             "textSha256": "32875b7a3fa0d6c57cfffaa79ef241b40d9bc6e6cd99f7b319a43c2d0788a303"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-200",
             "IMP-204",
             "IMP-240"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.executeDelayedResolution"
           ]
         },
         {
@@ -5937,7 +5943,7 @@
             "bodySha256": "18d4bbf051f83216f0ac05797366e6253918dca7919e2840341ddc496ea05f2d",
             "textSha256": "2b7efdc09678345a06bd5e214451d414b1b21e4cdf8dc69c976d64b40dbaaacc"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-200",
             "IMP-201",
@@ -5945,6 +5951,9 @@
             "IMP-203",
             "IMP-230",
             "IMP-250"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.processForDelayedResolution"
           ]
         },
         {
@@ -5957,13 +5966,16 @@
             "bodySha256": "33fc3825ad13fe47f5b7fdbb451b680e483a2a8f2d13767a20f0e8d6e9503f6c",
             "textSha256": "4bc9fbd880c397e973ea2d386cb0e7b7355720c1b97b445347943cacb4f0690f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-203",
             "IMP-204",
             "IMP-210",
             "IMP-211",
             "IMP-250"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.processRelatedItem"
           ]
         },
         {
@@ -5976,13 +5988,16 @@
             "bodySha256": "fbd6bff23bc4e183c91b0e1d297b30c14f2f4df25214bd546378f69e0bd9e21a",
             "textSha256": "a96941a7e078af6b046d44419d2a652e6f5fb1674b41ba463bbb078f452865c9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-203",
             "IMP-204",
             "IMP-212",
             "IMP-213",
             "IMP-250"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.processRelatedRelationshipItem"
           ]
         },
         {
@@ -5995,7 +6010,7 @@
             "bodySha256": "5d64dd607c023e590358487949f70bc795c31221c8bfe5b2180cf44c6e01bd55",
             "textSha256": "4c9d620b2cefe90d4b3f7364fd17304c34df5d73b036886f4d79923a37c2bf62"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-203",
             "IMP-204",
@@ -6003,6 +6018,9 @@
             "IMP-221",
             "IMP-222",
             "IMP-250"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.processUnresolvedNode"
           ]
         },
         {
@@ -6015,10 +6033,13 @@
             "bodySha256": "104f2b204aadf90b359bbaabf7cfb23c764de7652732476a6f353d0fb501f361",
             "textSha256": "7281b2787f79a8b30933adbf2c43392a62aed5229a4ead3e9eb9e3675dc88d53"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-241",
             "IMP-242"
+          ],
+          "symbols": [
+            "src/import/delayed-resolution.ts#DelayedResolutionManager.replaceRelatedIdOnLatestId"
           ]
         },
         {

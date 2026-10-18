@@ -255,7 +255,7 @@ The same value is what the data-source check ignores (`IMP-140` selects only `da
 
 [14.0.7] `ExecuteDelayedResolution(helper, log)` runs once for the package (`IMP-200`). For each queue entry, in queue order:
 
-1. computes the AML to send: if the entry contains the text `__find_latest_generation_` (a case-insensitive search of the whole entry, ordinal comparison; the entry's own tags, attributes and text values all count), the result of `ReplaceRelatedIdOnLatestId` (`IMP-241`) when it is not null, and otherwise the entry. Without the text it is the entry;
+1. computes the AML to send: if the entry contains the text `__find_latest_generation_` (a case-insensitive search of the whole entry, ordinal comparison; the entry's own tags, attributes and text values all count; the port folds ASCII letters only; whether .NET folds a non-ASCII letter such as U+0131 into one of them was not probed), the result of `ReplaceRelatedIdOnLatestId` (`IMP-241`) when it is not null, and otherwise the entry. Without the text it is the entry;
 2. writes the log line `DELAYEDRESOLUTIONAapplyingAML` with the AML in place of `{0}`, then the line terminator:
 
    ```text
@@ -278,7 +278,7 @@ An entry that is not well-formed fails in one of two places, with the same class
 
 1. loads `aml` into a new, empty DOM. The parser's `XmlException` for a malformed `aml` escapes unwrapped;
 2. selects the first node, in document order, matching `/AML/Item/Relationships/Item/related_id`. When there is none, or it has no `__find_latest_generation_` attribute, it returns null;
-3. otherwise (never reached, `IMP-242`) removes the attribute, reads the node's text as the id and its `type` attribute as the type (a missing `type` raises a `NullReferenceException`), sets the node's text to `helper.GetCurrentIdOfVersion(id, type)` and returns the document's outer XML.
+3. otherwise (not reached by a queued entry, `IMP-242`) removes the attribute, reads the node's text as the id and its `type` attribute as the type (a missing `type` raises a `NullReferenceException`), sets the node's text to `helper.GetCurrentIdOfVersion(id, type)` and returns the document's outer XML.
 
 The attribute is put on a `related_id` by the checks to mark a reference to a floating relationship whose target does not exist yet (`IMP-150`), so that the delayed run can replace the id by the target's current generation. Step 3 is that replacement. Probed by calling the method directly with an AML whose root is `AML`: the attribute is removed, the id replaced by the helper's answer, and `GetCurrentIdOfVersion` receives the id and the type.
 
@@ -295,7 +295,7 @@ The effects are:
 - the `related_id` of a floating relationship is queued with its unresolved id and the attribute `__find_latest_generation_="yes"` still on it (probed). The server receives an attribute it does not know, and the id that did not resolve in the document;
 - the only observable work of the method is the parse of `IMP-241` step 1: a malformed entry that holds the marker fails there, before its log line is written (`IMP-240`).
 
-This is a reproduced bug (registered in `bugs.md`). The port parses and returns null, as the engine does, and does not implement step 3. A correct engine would match `/Item/Relationships/Item/related_id`.
+This is a reproduced bug (registered in `bugs.md`). The port parses and returns null, as the engine does, for every entry the manager queues. It also implements step 3, so that a direct call on an AML rooted at `AML` does what the probe saw, but nothing in the import reaches it. A correct engine would match `/Item/Relationships/Item/related_id`.
 
 [12.0] Same bug: the path starts at `/AML` and every entry starts with `<Item`, so the replacement never runs. Registered in `bugs.md`.
 

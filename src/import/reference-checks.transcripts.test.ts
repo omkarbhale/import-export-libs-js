@@ -13,7 +13,8 @@ import { loadXml } from "../xml/parser.js";
 import { outerXml } from "../xml/writer-legacy.js";
 import { getItemsFromPackageDom } from "./items.js";
 import { loadPackage } from "./load-package-dom.js";
-import { ReferenceChecker, type DelayedResolution, type UnresolvedReference } from "./reference-checks.js";
+import { DelayedResolutionManager } from "./delayed-resolution.js";
+import { ReferenceChecker } from "./reference-checks.js";
 
 /**
  * Replays the reference checks of the recorded 14.0.7 import cases (ticket 25) against the port. Each case step is one
@@ -28,7 +29,7 @@ const BLOBS = join(CASES, "_blobs");
 
 const START = "********** Start of reference checking ************";
 const END = "************* End of reference checking ************";
-const WARNING = "WARNING: The following portion of the AML \n{0}\ncontains unresolved reference that will be tried to resolve at the end of the package import";
+const APPLYING = "DELAYED RESOLUTION: applying AML ";
 
 interface Step {
   name: string;
@@ -95,16 +96,6 @@ class Replay implements ServerConnection {
   }
 }
 
-/** The part of `DelayedResolutionManager` that writes the log (IMP-202); the edits are the manager's own ticket. */
-class WarningOnly implements DelayedResolution {
-  unresolved: UnresolvedReference[] = [];
-
-  processForDelayedResolution(unresolved: readonly UnresolvedReference[], log: { writeLine(text: string): void }): void {
-    this.unresolved.push(...unresolved);
-    for (const reference of unresolved) log.writeLine(WARNING.replace("{0}", outerXml(reference.problemNode)));
-  }
-}
-
 interface LogItem {
   action: string;
   descriptor: string;
@@ -114,7 +105,7 @@ interface LogItem {
 
 interface Run {
   /** The package the items belong to, in the order the engine imported them. */
-  packages: { name: string; items: LogItem[] }[];
+  packages: { name: string; items: LogItem[]; /** The AML the queue run of the package applied (IMP-240). */ delayed: string[] }[];
   /** The text the failed run reports, when it fails. */
   failure?: string;
 }
@@ -128,7 +119,11 @@ function readLog(text: string): Run {
     const line = lines[i] ?? "";
     const packageMatch = /^\s*\*{4}Import\s+(.*?)\*{4}\s*$/.exec(line);
     if (packageMatch) {
-      run.packages.push({ name: (packageMatch[1] ?? "").trim().split(/\s+/).pop() ?? "", items: [] });
+      run.packages.push({ name: (packageMatch[1] ?? "").trim().split(/\s+/).pop() ?? "", items: [], delayed: [] });
+      continue;
+    }
+    if (line.startsWith(APPLYING)) {
+      run.packages[run.packages.length - 1]?.delayed.push(line.slice(APPLYING.length));
       continue;
     }
     const processing = /^Processing \(([^)]*)\) (.*)$/.exec(line);
@@ -198,6 +193,8 @@ describe("the reference checks of the recorded 14.0.7 import runs (IMP-100 to IM
 
     let checked = 0;
     for (const pkg of run.packages) {
+      // one manager per package, as ImportProc makes it (IMP-200)
+      const manager = new DelayedResolutionManager();
       const loaded = loadPackage(packageFolder(step.dir, pkg.name), { writeLine: () => undefined });
       const prepared = getItemsFromPackageDom(loaded.document).map((doc) => ({ doc, ...prepare(doc) }));
       for (const [position, logged] of pkg.items.entries()) {
@@ -209,7 +206,12 @@ describe("the reference checks of the recorded 14.0.7 import runs (IMP-100 to IM
         for (const [pass, expected] of logged.blocks.entries()) {
           // a delete is checked only for its data sources, and fully when the retry of IMP-427 runs
           const full = action !== "delete" || pass > 0;
-          const before = { cursor: replay.cursor, cache: new Map(helper.lookups.requestedItems), item: outerXml(documentElementOf(current)!) };
+          const before = {
+            cursor: replay.cursor,
+            cache: new Map(helper.lookups.requestedItems),
+            item: outerXml(documentElementOf(current)!),
+            queued: manager.queue.length,
+          };
           let outcome: { written: string[]; failure?: Error; item: XmlDocument } | undefined;
           let firstOutcome: typeof outcome;
           for (let rank = 0; ; rank += 1) {
@@ -218,11 +220,12 @@ describe("the reference checks of the recorded 14.0.7 import runs (IMP-100 to IM
             replay.rank = rank;
             helper.lookups.requestedItems.clear();
             for (const [key, value] of before.cache) helper.lookups.requestedItems.set(key, value);
+            (manager.queue as string[]).length = before.queued;
             const attempt = loadXml(before.item, { preserveWhitespace: false });
             const written: string[] = [];
             let failure: Error | undefined;
             try {
-              await checker.doChecking(new WarningOnly(), attempt, { writeLine: (text) => written.push(text) }, full);
+              await checker.doChecking(manager, attempt, { writeLine: (text) => written.push(text) }, full);
             } catch (error) {
               failure = error as Error;
             }
@@ -245,6 +248,30 @@ describe("the reference checks of the recorded 14.0.7 import runs (IMP-100 to IM
           }
           current = outcome!.item;
           checked += 1;
+          // the item the engine then imported is the document the manager edited (IMP-210, IMP-212, IMP-222)
+          if (manager.queue.length > before.queued && expected[expected.length - 1] === END) {
+            const sent = documentOuterXml(parseXml(outerXml(documentElementOf(current)!)));
+            expect(
+              calls.some((call) => call.action === "ApplyItem" && call.request === sent),
+              `${step.name}: the engine imported the edited item of ${pkg.name} item ${position + 1}`,
+            ).toBe(true);
+          }
+        }
+      }
+      // the queue is applied once, after the last item, and only when the package did not fail (IMP-200, IMP-240)
+      if (run.failure === undefined) {
+        const applied: string[] = [];
+        const written: string[] = [];
+        await manager.executeDelayedResolution(
+          { applyAML: async (aml) => void applied.push(aml), lookups: helper.lookups },
+          { writeLine: (text) => written.push(text) },
+        );
+        expect(applied, `${step.name}: the AML the queue run of ${pkg.name} applies`).toEqual(pkg.delayed);
+        expect(written).toEqual(pkg.delayed.map((aml) => APPLYING + aml));
+        // and the server received exactly those requests
+        for (const aml of pkg.delayed) {
+          const wire = documentOuterXml(parseXml(aml));
+          expect(calls.some((call) => call.action === "ApplyItem" && call.request === wire), `${step.name}: the engine sent ${aml.slice(0, 80)}`).toBe(true);
         }
       }
     }

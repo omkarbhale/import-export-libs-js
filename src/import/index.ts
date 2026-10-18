@@ -1,6 +1,6 @@
 /**
  * Import: package loading and the `build.xsl` ordering (`IMP-001` to `IMP-099`), the plan `plan import` reports, and the
- * reference checks (`IMP-100` to `IMP-199`).
+ * reference checks (`IMP-100` to `IMP-199`) and the delayed resolution they queue (`IMP-200` to `IMP-299`).
  */
 export { groupAddedIdsByType } from "./add-order.js";
 export { applyBuildXsl, renderBuildOutput } from "./build-output.js";
@@ -16,5 +16,13 @@ export { directoryGetDirectories, directoryGetXmlFiles, newFileInfo } from "./pa
 export type { FileInfo } from "./package-files.js";
 export { describeLoadedPackage, planPackage } from "./plan.js";
 export type { ImportPlan, PlanCarrier, PlanDropped, PlanItem, PlanRepeat, PlanSequenceEntry, PlanSkippedFile, PlanSource } from "./plan.js";
+export {
+  DELAYED_RESOLUTION_ENGINES,
+  DelayedResolutionManager,
+  FAKED_DATA_SOURCE,
+  FIND_LATEST_GENERATION_ATTRIBUTE,
+  WrongFormatOfTheAmlException,
+} from "./delayed-resolution.js";
+export type { DelayedResolutionHelper } from "./delayed-resolution.js";
 export { ReferenceChecker } from "./reference-checks.js";
 export type { CheckHost, DelayedResolution, UnresolvedReference } from "./reference-checks.js";
