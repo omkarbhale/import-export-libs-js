@@ -334,4 +334,38 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** an AML that holds `__find_latest_generation_` is parsed, and then sent unchanged, with the marker attribute and the id that did not resolve still on the `related_id`. `GetCurrentIdOfVersion` is never called from the delayed run. A malformed entry that holds the marker fails in the parse.
 - **Why it is a bug:** the replacement selects `/AML/Item/Relationships/Item/related_id`, but every queued entry is rooted at `Item`, so the selection never matches and the method returns null. A correct engine would select from `/Item`.
 - **C# location:** `Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ReplaceRelatedIdOnLatestId`.
+
+## EXP-390: interpolated where clauses are not escaped
+
+- **Behaviour:** the View and Form delete items and the Property edit items write the ItemType id and name, and the Property's `source_id` and name, between apostrophes in a `where` attribute with only the attribute's XML escaping. A name that contains `'` ends the string early: `O'Neil` gives `where="name='O'Neil'"`.
+- **Why it is a bug:** a correct engine would double the apostrophe (or send the value as a parameter), so the delete or edit finds the item it was written for. As it is, the clause is malformed or matches another item.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
+- **Versions:** 14.0.7.
+
+## EXP-391: is_current is compared without order_by
+
+- **Behaviour:** the stock comparison that decides whether a system property is exported as modified tests `order_by` for every system property except `is_current`. A changed `order_by` on `is_current` alone is never exported, while the same change on `id` is.
+- **Why it is a bug:** the `is_current` test is the only one of 32 that lacks the `order_by` condition, which looks like an omission.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
+- **Versions:** 14.0.7.
+
+## EXP-392: content in a Relationships selects a stock system property
+
+- **Behaviour:** a system property is also exported as an edit when it has a `Relationships` child with any child node, counting whitespace, text, comments and processing instructions. A stock `id` property whose `Relationships` holds a line feed is written as an edit that changes nothing. The `Relationships` itself is dropped as empty.
+- **Why it is a bug:** the test is meant to find system properties that carry relationships (Grid Events and the like) and counts nodes that are not relationships.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
+- **Versions:** 14.0.7.
+
+## EXP-393: system-name tests in the fix passes are substring tests
+
+- **Behaviour:** the keyed, modified and Field fix selections, and the Change Controlled Relationship choice, look `|name|` up inside a `|`-delimited string. A custom property named `state|itemtype` is not seen as keyed, is exported as an edit of that name when it has `Relationships` content, and is lost when it is also keyed (the main pass drops it and no fix selects it). A Field whose `propertytype_id` is named `state|itemtype` gets a fix with empty names. A property named `related_id|sort_order` is treated as one of the three Change Controlled Relationship names.
+- **Why it is a bug:** a correct engine would compare against the entries one at a time (see EXP-271).
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
+- **Versions:** 14.0.7.
+
+## EXP-394: Members and Morphae below the root's own relationships are lost
+
+- **Behaviour:** every nested Member and Morphae is dropped in place, but only those in the root Item's own `Relationships` are written again at the end. One in the embedded ItemType of a RelationshipType's `relationship_id`, or in any nested Item, is written nowhere.
+- **Why it is a bug:** the drop exists so the Members and Morphae come after the Identities and ItemTypes they refer to, not to lose them.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
 - **Versions:** 14.0.7.
