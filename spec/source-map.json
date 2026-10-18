@@ -1752,7 +1752,11 @@
             "bodySha256": "a04c606133e0af50065d7398317b3c3836865564477ba4afbfb946540486f741",
             "textSha256": "1c9349468790d06dd6003f20a2b513d1aae22b7818b51806545eb1eb397b185a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-030",
+            "MAN-033"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsCorePackage",
@@ -1764,7 +1768,10 @@
             "bodySha256": "63813eb62d2a2321c23e325b64a0abd3e6f25dd539241d91794e94921a53d9ac",
             "textSha256": "34ca5c9384d1d00ba10a9f3eb0aec34a52d3e029878cb8cd23eefcb11d98b6b4"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-031"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsDefaultPackage",
@@ -1776,7 +1783,10 @@
             "bodySha256": "c88222235027229772923c8cabca9b72c65d2fcf7313ba14e7756643a67fff9c",
             "textSha256": "1c0c9546282c1411c0bd527e99285a692a09811ef7ae97fb7521b62133deae5a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-031"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsImportableType",
@@ -1800,7 +1810,10 @@
             "bodySha256": "f1ca3f606b9b0c7264c14fd2276e07ee0a7c95ce459ba9167c80fc14f72b76b6",
             "textSha256": "2c78d5c08ca245a32c076c4f61af0b3d4daf215e3c2c8171726e8fda9f8b45a2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-031"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportItem::.ctor",
@@ -2099,7 +2112,11 @@
             "bodySha256": "d5061462b254a3686fe72ab32b092ffc6ce83ee2570606131fdd503a6ea542a5",
             "textSha256": "54f074974083dc6378b93257c95134a24fcdafff96fabdf3991f5c9ae25d9127"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-004",
+            "MAN-005"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::PathCombine",
@@ -2159,7 +2176,11 @@
             "bodySha256": "e5ec592773301280068ca9b351c9b53f603845e2539843ae90bb837e67b68cbd",
             "textSha256": "f3429167f62bd03711688e0379ae9561339c3d1a4ef9d2f69762105a10e63012"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-003",
+            "MAN-004"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSave",
@@ -2171,7 +2192,11 @@
             "bodySha256": "f9577b9b40d05d74d0a1eab9f0140acd43fe4f81918f4144a97823d7a6711b2b",
             "textSha256": "4823217719d2e5747a989df2dc031340179c6888aff95f0362e86758fd9b51cd"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-004",
+            "MAN-006"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings",
@@ -2234,7 +2259,10 @@
             "bodySha256": "9ae7e597363f1d7e844ecdeae028eb08383622bebc3936cbaa032b98d119c2e4",
             "textSha256": "55a20969333d377bde696a01cc01dfbe26db9dd90ee0b871b1a6fc134ae8a036"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-032"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Aras.Tools.SolutionUpgrade.IImportExportManager.LoadPackageDom",
@@ -2354,7 +2382,10 @@
             "bodySha256": "926e29fa114d344d90907bf6dd7bf86e6d44d211e4d896f909d8b61d5486399b",
             "textSha256": "ef44fb6668fa5edb3cb3cfd500efb0a7bb5e3b2ddcd2610e56596a76d1a2f043"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-032"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutions2Xml",
@@ -2630,7 +2661,10 @@
             "bodySha256": "b529afc3b173fd8e9921b8b7835ed10f41fec252366c2ff9f14ac19878031082",
             "textSha256": "03bae31ce14707a90212a7db210f9d34c16fe4b4245d4d6b5794e03f0085d6c1"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-002"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::.ctor",
@@ -2642,7 +2676,10 @@
             "bodySha256": "6895d9b307fec8eae5ac2668e320caf1a48138d9d532ba6af448a3b280c8ef71",
             "textSha256": "648c5ea840f0034f3389c0ef6a78806f34ff97a0c790e4a73444ac1e054f1ce4"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-003"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddDependsOn",
@@ -2654,7 +2691,11 @@
             "bodySha256": "96f05ec3f9af1ffd5081ef6806a1485007ccc5009415fddca2cd5409ccb6e7a5",
             "textSha256": "5679ca087102f998d235f5be81b1f40868e13a17274b1bd7c62612301f183b8a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-012",
+            "MAN-014"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage",
@@ -2666,7 +2707,13 @@
             "bodySha256": "d1a33a2045e1529b0ff185b5de90602b91ecb58572696fc1834e313dd895b26a",
             "textSha256": "8992fb89e358de50bc8df2e5e816771bd98504b2e08f2890f2f4d5390582c29a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-001",
+            "MAN-010",
+            "MAN-011",
+            "MAN-014"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddReferencedElement",
@@ -2678,7 +2725,11 @@
             "bodySha256": "e7358d93729e4d1e3aab3fc82dd3145325fb35bf6a0a725e7072a6c5249c9bba",
             "textSha256": "644d8713043e8dfc608c915430e1042493d6459f9a07bcc4e1de0abdec18c1fd"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-013",
+            "MAN-014"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetAllDependsOnNames",
@@ -2690,7 +2741,10 @@
             "bodySha256": "e925aff3d86d4f35d40c02df5e7ef88de067216933fc10a18ce6033fa640de70",
             "textSha256": "9134a4d9e3830290ebfecd0acc71d87a01e7a8e7f74adb93f98d2bb12d3d7bad"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetAllPackageNames",
@@ -2702,7 +2756,10 @@
             "bodySha256": "35a054ad29eef2015c0d9b4fd999aa7786753bccff47ac16223377f2379df205",
             "textSha256": "d52bc4d85114646a7692e94ba4feeba7dda810a0dd02e8372443e9d9c8003253"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetDependsOn",
@@ -2714,7 +2771,10 @@
             "bodySha256": "2f32dbfd19cf5c77c26a8a1bf689955b78474a94b4b097e6b16e6c5952751e47",
             "textSha256": "bfd27480244fee3a4d1e2971b61f4561b177de4acdd8891884e5a3787e78f29e"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetDependsOnInfo",
@@ -2726,7 +2786,12 @@
             "bodySha256": "0bebc42afc0a498412322168c534c5cf6709022d0d08038ed42bca7711635820",
             "textSha256": "8d08d73472748155790febfcd54f2d8fd45d6913a26e4c51fe645db9a7597346"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-016",
+            "MAN-017",
+            "MAN-018"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageDependencies",
@@ -2738,7 +2803,10 @@
             "bodySha256": "991821246f09396d0ff389e235fe97b636db8578ba328c75d300430e850c154e",
             "textSha256": "9bc874e62b58048c3768fa2f6a117edf57e2aa7ccc07acb6747f09a48a7f8411"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageNamesInImportOrder",
@@ -2750,7 +2818,12 @@
             "bodySha256": "3b526e9d29d31246e16b39d75d4e45f8eba15956f17dca16121a85f9751a8399",
             "textSha256": "6e309edfe4288ee3dd4a29cdc8586892835781024c65dee74144d4cdc0535e1a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-020",
+            "MAN-021",
+            "MAN-024"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageNode",
@@ -2762,7 +2835,10 @@
             "bodySha256": "be9ca27bd38af6d6e9613eeb4e75fe329993cfdcae4b41f8946d021203d88359",
             "textSha256": "3dabe783395207cb59bbd42c3202f407502d285dab67dd18c8f572b0d7526ce0"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetReferencedElements",
@@ -2774,7 +2850,10 @@
             "bodySha256": "215b09a22b37e69db9b81a7f0681f0875397b5260b75f588337ccd61708c6a1b",
             "textSha256": "dd605a3ddf83d28afa9636df33fb9a93e1fbf419b40a91fc4ca14ad479fba810"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::MoveToOrderedList",
@@ -2786,7 +2865,12 @@
             "bodySha256": "8edde9a11b59b39f561e303605007a3a332077775a509f73e9bbdfb2db2e3a5b",
             "textSha256": "d027bd8a2edd9f1d845b9cedcea4b25af1dff1ee3ba4a771d5e149a708a12484"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-022",
+            "MAN-023",
+            "MAN-025"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::Save",
@@ -2798,7 +2882,10 @@
             "bodySha256": "cbcee564cfacec4d2bbd7657d4dacc69af954da847f775bfe762a63c8d2670ee",
             "textSha256": "9ccc46a1b259157e255613c35b1e9415a6497978f9a69c969b670a0fe027c7ac"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "MAN-006"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.Message::.ctor",

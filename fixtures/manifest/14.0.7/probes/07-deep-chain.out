@@ -1,0 +1,5 @@
+chain 500 survived: first=P499 last=P0 count=500
+chain 2000 survived: first=P1999 last=P0 count=2000
+chain 5000 survived: first=P4999 last=P0 count=5000
+chain 12000 survived: first=P11999 last=P0 count=12000
+## chain 30000: still running after 110 s (quadratic XPath lookups), no overflow seen

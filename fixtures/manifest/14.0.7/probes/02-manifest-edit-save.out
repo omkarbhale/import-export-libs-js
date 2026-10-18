@@ -1,0 +1,77 @@
+## 3 null/edge args to IsStandard
+IsStandardPackage(null) => System.NullReferenceException: "Object reference not set to an instance of an object."
+IsCorePackage(null) => System.NullReferenceException: "Object reference not set to an instance of an object."
+IsDefaultPackage(null) => System.NullReferenceException: "Object reference not set to an instance of an object."
+IsDefault "com.aras.defaults\u017F.x" => False
+IsDefault "com.aras.default\u017F.x" => False
+IsDefault "com.aras.innovator.x" => False
+IsDefault "com.aras.defaults.x" => True
+## 4 Trim whitespace set (Char.IsWhiteSpace vs String.Trim) over BMP
+IsWhiteSpace => 0009 000A 000B 000C 000D 0020 0085 00A0 1680 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 200A 2028 2029 202F 205F 3000
+Trim-empty => 0009 000A 000B 000C 000D 0020 0085 00A0 1680 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 200A 2028 2029 202F 205F 3000
+## 5 AddPackage / Save
+empty => "<imports />"
+AddPackage "com.aras.innovator.solution.PLM" => "<package name=\"com.aras.innovator.solution.PLM\" path=\"PLM\\Import\" />"
+AddPackage "com.aras.innovator.core" => "<package name=\"com.aras.innovator.core\" path=\".\\\" />"
+AddPackage "com.aras.defaults.X.Y" => "<package name=\"com.aras.defaults.X.Y\" path=\".\\\" />"
+AddPackage "My.Pkg" => "<package name=\"My.Pkg\" path=\"Pkg\\Import\" />"
+AddPackage "nodots" => "<package name=\"nodots\" path=\"nodots\\Import\" />"
+AddPackage "trailing." => "<package name=\"trailing.\" path=\"\\Import\" />"
+AddPackage "a.b." => "<package name=\"a.b.\" path=\"\\Import\" />"
+AddPackage ".lead" => "<package name=\".lead\" path=\"lead\\Import\" />"
+AddPackage "a..b" => "<package name=\"a..b\" path=\"b\\Import\" />"
+AddPackage "" => "<package name=\"\" path=\"\\Import\" />"
+AddPackage "x.y z" => "<package name=\"x.y z\" path=\"y z\\Import\" />"
+AddPackage "a.b\n" => "<package name=\"a.b&#xA;\" path=\"b&#xA;\\Import\" />"
+AddPackage "a.b\r\n" => "<package name=\"a.b&#xD;&#xA;\" path=\"b&#xD;&#xA;\\Import\" />"
+AddPackage "\u00C3\u0153n\u00C3\u00AF.\u00C3\u00A7ode" => "<package name=\"\u00C3\u0153n\u00C3\u00AF.\u00C3\u00A7ode\" path=\"\u00C3\u00A7ode\\Import\" />"
+AddPackage "COM.ARAS.DEFAULTS.q" => "<package name=\"COM.ARAS.DEFAULTS.q\" path=\".\\\" />"
+AddPackage(null) => System.NullReferenceException: "Object reference not set to an instance of an object."
+dup AddPackage same node => True
+case-different AddPackage new node => True
+dup saved => "<imports>\r\n  <package name=\"My.Pkg\" path=\"Pkg\\Import\" />\r\n  <package name=\"my.pkg\" path=\"pkg\\Import\" />\r\n</imports>"
+AddPackage2 "a'b" => System.Xml.XPath.XPathException: "'imports/package[@name='a'b']' has an invalid token."
+GetPackageNode "a'b" => System.Xml.XPath.XPathException: "'imports/package[@name='a'b']' has an invalid token."
+AddPackage2 "a\"b" => "<package name=\"a&quot;b\" path=\"a&quot;b\\Import\" />"
+GetPackageNode "a\"b" => "<package name=\"a&quot;b\" path=\"a&quot;b\\Import\" />"
+AddPackage2 "x' or '1'='1" => "<package name=\"My.Pkg\" path=\"Pkg\\Import\" />"
+GetPackageNode "x' or '1'='1" => "<package name=\"My.Pkg\" path=\"Pkg\\Import\" />"
+AddPackage2 "x' or @name='My.Pkg" => "<package name=\"My.Pkg\" path=\"Pkg\\Import\" />"
+GetPackageNode "x' or @name='My.Pkg" => "<package name=\"My.Pkg\" path=\"Pkg\\Import\" />"
+AddPackage2 "a]b" => "<package name=\"a]b\" path=\"a]b\\Import\" />"
+GetPackageNode "a]b" => "<package name=\"a]b\" path=\"a]b\\Import\" />"
+AddPackage2 "a&b<c>" => "<package name=\"a&amp;b&lt;c&gt;\" path=\"a&amp;b&lt;c&gt;\\Import\" />"
+GetPackageNode "a&b<c>" => "<package name=\"a&amp;b&lt;c&gt;\" path=\"a&amp;b&lt;c&gt;\\Import\" />"
+AddPackage2 "a\tb" => "<package name=\"a\tb\" path=\"a\tb\\Import\" />"
+GetPackageNode "a\tb" => "<package name=\"a\tb\" path=\"a\tb\\Import\" />"
+## 6 AddDependsOn / AddReferencedElement
+AddDependsOn "com.aras.innovator.core" => "<dependson name=\"com.aras.innovator.core\" />"
+AddDependsOn "" => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+AddDependsOn "   " => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+AddDependsOn "\t" => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+AddDependsOn "" => System.ArgumentException: "Name of 'dependson' package can't be 'null' or empty"
+AddDependsOn "dep\"x" => "<dependson name=\"dep&quot;x\" />"
+AddDependsOn "dep'x" => System.Xml.XPath.XPathException: "'dependson[@name='dep'x']' has an invalid token."
+AddDependsOn "com.aras.innovator.core" => "<dependson name=\"com.aras.innovator.core\" />"
+AddDependsOn "dep&amp;" => "<dependson name=\"dep&amp;amp;\" />"
+AddDependsOn(null node) => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: packageNode"
+AddReferencedElement id="ABC" => "<referenced_element id=\"ABC\" type=\"ItemType\" descr=\"Part &amp; &lt;&quot;Doc&quot;&gt; 'q' \u00C3\u00A9\" />"
+AddReferencedElement id="ID2" => "<referenced_element id=\"ID2\" type=\"\" descr=\"\" />"
+AddReferencedElement id="ID3" => "<referenced_element id=\"ID3\" type=\"\" descr=\"\" />"
+AddReferencedElement id="" => "<referenced_element id=\"\" type=\"T\" descr=\"x\" />"
+AddReferencedElement id="ABC" => "<referenced_element id=\"ABC\" type=\"ItemType\" descr=\"Part &amp; &lt;&quot;Doc&quot;&gt; 'q' \u00C3\u00A9\" />"
+AddReferencedElement id="I'D" => System.Xml.XPath.XPathException: "'referenced_element[@id='I'D']' has an invalid token."
+AddReferencedElement(null item) => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: referencedElement"
+AddReferencedElement(null node) => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: dependsOnNode"
+saved => "<imports>\r\n  <package name=\"My.Pkg\" path=\"Pkg\\Import\">\r\n    <dependson name=\"com.aras.innovator.core\">\r\n      <referenced_element id=\"ABC\" type=\"ItemType\" descr=\"Part &amp; &lt;&quot;Doc&quot;&gt; 'q' \u00C3\u00A9\" />\r\n      <referenced_element id=\"ID2\" type=\"\" descr=\"\" />\r\n      <referenced_element id=\"ID3\" type=\"\" descr=\"\" />\r\n      <referenced_element id=\"\" type=\"T\" descr=\"x\" />\r\n    </dependson>\r\n    <dependson name=\"dep&quot;x\" />\r\n    <dependson name=\"dep&amp;amp;\" />\r\n  </package>\r\n</imports>"
+## 7 Save round trip, declaration, error
+rt names => My.Pkg
+rt same bytes => True
+Save to missing dir => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%PROBE%\\tmp\\nodir\\x.mf'."
+Save to empty => System.ArgumentException: "Empty path name is not legal."
+Save to null => System.ArgumentNullException: "Path cannot be null.\r\nParameter name: path"
+ctor missing file => System.IO.FileNotFoundException: "Could not find file '%PROBE%\\tmp\\missing.mf'."
+ctor malformed => System.Xml.XmlException: "The 'package' start tag on line 1 position 11 does not match the end tag of 'imports'. Line 1, position 21."
+ctor empty file => System.Xml.XmlException: "Root element is missing."
+other-root names => 
+ctor null => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: path"

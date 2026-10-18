@@ -84,3 +84,45 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the reference cannot be resolved on import, and a null property should stay null or be left out.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
 - **Versions:** 14.0.7 (14.35's `is_null` drop template changes this).
+
+## MAN-005: a path that starts with a backslash loses it
+
+- **Behaviour:** `IOWrapper.NormalizeLongPath` removes every leading `\` and `?` from a path before using it. A UNC path `\\host\share\imports.mf` is then read or written as the relative path `host\share\imports.mf`, and `\Users\me\imports.mf` as `Users\me\imports.mf`. The same applies to the folder of a package whose manifest path is UNC or starts with `\`.
+- **Why it is a bug:** the code means to strip the `\\?\` long-path prefix, but it passes the prefix's characters as a set, so it also strips the root of any UNC or drive-less path.
+- **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::NormalizeLongPath`.
+- **Versions:** 14.0.7.
+
+## MAN-011: a package name ending in `.` or empty gets the path `\Import`
+
+- **Behaviour:** `ManifestFile.AddPackage` derives the path of a non-standard package from the text after the last `.`. For `trailing.`, `a.b.` or an empty name that text is empty, and the path is written as `\Import`.
+- **Why it is a bug:** import resolves `\Import` as a rooted path, so the package's folder is looked up away from the manifest. A correct engine would use the name or refuse it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`.
+- **Versions:** 14.0.7.
+
+## MAN-014: names are put into XPath unescaped
+
+- **Behaviour:** the manifest lookups and the database test of the ordering build their XPath from the name with `string.Format`. A name with `'` makes the expression invalid and throws `XPathException`; a name that is valid XPath (`x' or @name='My.Pkg`) matches other nodes, so `AddPackage` returns an existing package and adds nothing.
+- **Why it is a bug:** names are data, not expressions. A correct engine would compare the attribute value or escape the quote.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`, `AddDependsOn`, `AddReferencedElement`, `GetPackageNode`, `GetDependsOn`, `MoveToOrderedList`.
+- **Versions:** 14.0.7.
+
+## MAN-018: Hashtable order becomes random after 100 probe collisions
+
+- **Behaviour:** .NET Framework switches a `Hashtable` to a per-process randomized string hash when one insertion walks more than 100 occupied buckets, so the enumeration order differs from run to run. The port cannot follow a random order and throws an error naming the table and key at that point.
+- **Why it is a bug:** an engine's output order should not depend on the process. This is a deliberate deviation of the library, unreachable with real keys.
+- **C# location:** `System.Collections.Hashtable` (the .NET Framework), reached from `Aras.Tools.SolutionUpgrade.ManifestFile::GetDependsOnInfo` and every other table the engine builds.
+- **Versions:** 14.0.7.
+
+## MAN-024: a package named twice in the import list fails the whole import
+
+- **Behaviour:** `GetPackageNamesInImportOrder` copies the requested names into an `OrderedDictionary` with `Add`, so a name that occurs twice throws `System.ArgumentException` (`Item has already been added. Key in dictionary: 'A'  Key being added: 'A'`) and no package is imported.
+- **Why it is a bug:** importing a package once is the obvious meaning of a repeated name.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageNamesInImportOrder`.
+- **Versions:** 14.0.7.
+
+## MAN-025: a dependency cycle that avoids the starting package kills the process
+
+- **Behaviour:** `MoveToOrderedList` recurses without bound when a pending package is in a cycle that does not contain the package being placed (`A>B`, `B>A`, `C>A`, importing `C,A,B`; or `A>B`, `B>B`). The process ends with a stack overflow: `Process is terminated due to StackOverflowException.` The port stops with an error of that text at a nesting depth of 100,000, so it fails catchably where the engine dies.
+- **Why it is a bug:** a cyclic manifest should give the circular-dependency warning, not end the process. This is the one deviation that cannot be avoided (round 5, line 9).
+- **C# location:** `Aras.Tools.SolutionUpgrade.ManifestFile::MoveToOrderedList`.
+- **Versions:** 14.0.7.
