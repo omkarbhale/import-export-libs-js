@@ -1,11 +1,12 @@
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { readPassword } from "./cli.js";
 import { EXPORT_CASES, hostItems, hostOptions, type ExportCase } from "./export-cases.js";
-import { DEV_SERVER, record } from "./record.js";
+import { SCRATCH_EXPORT_CASES, type ResolvedCase, type SeedRecord } from "./export-scratch-cases.js";
+import { DEV_SERVER, record, type ItemRef } from "./record.js";
 import { externalizeLargeResponses } from "./transcript.js";
 
 const ENGINE = "14.0.7";
@@ -38,9 +39,11 @@ export interface CaseFile {
   note?: string;
   /** What the recording reported. */
   result: { hostExit: number; calls: number | null; error: string | null };
+  /** Cases that need scratch state on dev (ticket 67): the seed the case ran against, and what was deleted afterwards. */
+  seed?: SeedRecord;
 }
 
-export function caseFile(c: ExportCase, result: CaseFile["result"]): CaseFile {
+export function caseFile(c: ResolvedCase & Partial<Pick<ExportCase, "expectsError">>, result: CaseFile["result"], seed?: SeedRecord): CaseFile {
   return {
     id: c.id,
     engine: ENGINE,
@@ -52,11 +55,39 @@ export function caseFile(c: ExportCase, result: CaseFile["result"]): CaseFile {
     expectsError: c.expectsError === true,
     ...(c.note === undefined ? {} : { note: c.note }),
     result,
+    ...(seed === undefined ? {} : { seed }),
   };
 }
 
 /** A markdown table cell. */
 const cell = (text: string) => text.replace(/\|/g, "\\|").replace(/\t/g, " ");
+
+const idList = (items: readonly ItemRef[]): string[] =>
+  items.length === 0 ? ["None."] : ["| # | Type | Id |", "|---|---|---|", ...items.map((i, n) => `| ${n + 1} | ${cell(i.type)} | ${i.id}${i.unconfirmed === true ? " (unconfirmed)" : ""} |`)];
+
+/** The seed section of a scratch-seeded case: which packages were imported, and the ids created and deleted. */
+function seedSection(seed: SeedRecord): string[] {
+  return [
+    "## Seed",
+    "",
+    `The case exports items that did not exist on dev. The run (seed group \`${seed.group}\`, recipe in \`oracle/src/export-scratch-cases.ts\`) imported scratch packages with the oracle, exported (this case and any others of the group), then deleted everything it had created. The packages are built by \`oracle/src/seed-packages.ts\` and \`oracle/src/import-packages.ts\`, so the seed can be rebuilt byte for byte.`,
+    "",
+    ...seed.steps.flatMap((s, i) => [
+      `### Seed step ${i + 1}: ${s.name} (${s.packages.map((p) => `\`${p}\``).join(", ")}; ${Object.keys(s.options).length === 0 ? "default options" : cell(Object.entries(s.options).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(", "))})`,
+      "",
+      `Created ${s.created.length}, in the order the engine made them:`,
+      "",
+      ...idList(s.created),
+      "",
+    ]),
+    `### Deleted by the cleanup: ${seed.deleted.length}`,
+    "",
+    "Newest first; a nested item that went with its parent is not listed. Nothing was kept and nothing is left on the server.",
+    "",
+    ...idList(seed.deleted),
+    "",
+  ];
+}
 
 export function caseReadme(file: CaseFile): string {
   const options = Object.entries(file.options);
@@ -64,7 +95,9 @@ export function caseReadme(file: CaseFile): string {
   const lines = [
     `# ${file.id}`,
     "",
-    `${file.title}. Engine ${file.engine}, export, recorded on dev (read-only). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`,
+    file.seed === undefined
+      ? `${file.title}. Engine ${file.engine}, export, recorded on dev (read-only). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`
+      : `${file.title}. Engine ${file.engine}, export, recorded on dev against scratch state that the run seeded and deleted again (ticket 67). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`,
     "",
     "## Exercises",
     "",
@@ -90,6 +123,7 @@ export function caseReadme(file: CaseFile): string {
       : `The export completes: host exit ${file.result.hostExit}, ${file.result.calls ?? "?"} calls.`,
     ...(file.result.error === null ? [] : ["", "```", file.result.error.split("\n")[0]!, "```"]),
     "",
+    ...(file.seed === undefined ? [] : seedSection(file.seed)),
     "## Spec rules",
     "",
     "None yet. The spec or build ticket that pins this case adds its rule ids here (mapcheck F11).",
@@ -106,7 +140,9 @@ export function caseReadme(file: CaseFile): string {
     "| `host.log` | the host's console output |",
     "| `output/` | the export folder, byte for byte |",
     "",
-    "Re-record: `ARAS_PASSWORD=… npm run oracle:export-cases -- --only " + file.id + " --force`.",
+    file.seed === undefined
+      ? "Re-record: `ARAS_PASSWORD=… npm run oracle:export-cases -- --only " + file.id + " --force`."
+      : "Re-record: `ARAS_PASSWORD=… npm run oracle:export-scratch-cases -- --only " + file.id + " --force` (it seeds, exports and cleans up again).",
     "",
   ];
   return lines.join("\n");
@@ -120,7 +156,7 @@ export function indexReadme(cases: readonly CaseFile[]): string {
     "",
     "- Cases are small: one item, or one small package, per branch, plus multi-package cases for ordering (`p1-*`).",
     "- A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript; every case begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` puts them back.",
-    "- Cases that need scratch packages on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by ticket 67 after ticket 25.",
+    "- Cases that need scratch state on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by `npm run oracle:export-scratch-cases` (ticket 67). Each imports `LIBSJS-SCRATCH-*` packages, exports, and deletes what it created; its README lists the ids created and deleted.",
     "- The dev state a case ran against can change. `run.json` carries the time of the run.",
     "- Re-record with `ARAS_PASSWORD=… npm run oracle:export-cases` (see `npm run oracle:export-cases -- --help`).",
     "",
@@ -133,11 +169,27 @@ export function indexReadme(cases: readonly CaseFile[]): string {
   ].join("\n");
 }
 
-function recordedCases(): CaseFile[] {
-  return EXPORT_CASES.flatMap((c) => {
+export function recordedCases(): CaseFile[] {
+  return [...EXPORT_CASES, ...SCRATCH_EXPORT_CASES].flatMap((c) => {
     const file = join(CASES_DIR, c.id, "case.json");
     return existsSync(file) ? [JSON.parse(readFileSync(file, "utf8")) as CaseFile] : [];
   });
+}
+
+/** Deletes the blobs no recorded transcript names any more (a re-recorded case leaves its old ones behind). */
+export function pruneBlobs(cases: readonly CaseFile[]): string[] {
+  if (!existsSync(BLOBS_DIR)) return [];
+  const used = new Set<string>();
+  for (const c of cases) {
+    for (const line of readFileSync(join(CASES_DIR, c.id, "transcript.jsonl"), "utf8").split("\n")) {
+      if (line === "") continue;
+      const blob = (JSON.parse(line) as { responseBlob?: string }).responseBlob;
+      if (blob !== undefined) used.add(blob);
+    }
+  }
+  const removed = readdirSync(BLOBS_DIR).filter((f) => !used.has(f.replace(/\.xml$/, "")));
+  for (const f of removed) rmSync(join(BLOBS_DIR, f));
+  return removed;
 }
 
 function install(c: ExportCase, from: string, result: CaseFile["result"]): void {
@@ -227,6 +279,8 @@ async function main(argv: readonly string[]): Promise<number> {
     // Keep the folders of cases that did not install, for a look.
     if (failures.length === 0) rmSync(work, { recursive: true, force: true });
   }
+  const pruned = pruneBlobs(recordedCases());
+  if (pruned.length > 0) process.stdout.write(`removed ${pruned.length} unused blob${pruned.length === 1 ? "" : "s"}\n`);
   writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
   if (failures.length > 0) {
     process.stderr.write(`not as expected: ${failures.join(", ")}\n`);

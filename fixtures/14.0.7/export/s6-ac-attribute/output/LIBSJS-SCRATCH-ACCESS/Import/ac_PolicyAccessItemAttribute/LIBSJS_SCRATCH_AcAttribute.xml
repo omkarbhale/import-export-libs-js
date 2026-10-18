@@ -1,0 +1,54 @@
+﻿<AML>
+ <Item type="ac_PolicyAccessItemAttribute" id="5806F8B08494E753C5EFF0647C48002D" action="add">
+  <description>Scratch item attribute.</description>
+  <type>string</type>
+  <name>LIBSJS_SCRATCH_AcAttribute</name>
+  <Relationships>
+   <Item type="ac_PolicyAccessAttrDefinition" id="AD013FC4D58455B79501E58EEB7792E0" action="add">
+    <defined_on_itemtype_id keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</defined_on_itemtype_id>
+    <dr_relationship_id keyed_name="LIBSJS-SCRATCH-DrFamily-LIBSJS-SCRATCH-DrRel" type="dr_Relationship">
+     <Item type="dr_Relationship" id="6AC6EB272A59D380F729F2F94C7EFB9F" action="add">
+      <departure_itemtype_id keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</departure_itemtype_id>
+      <description>Scratch derived relationship.</description>
+      <destination_itemtype_id keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</destination_itemtype_id>
+      <implementation_query><![CDATA[<Item type="qry_QueryDefinition">
+  <Relationships>
+    <Item type="qry_QueryItem">
+      <item_type>45E899CD2859442982EB22BB2DF683E5</item_type>
+      <alias>User</alias>
+      <ref_id>01AFB817103E97097FD5B2CE7BCA1A13</ref_id>
+      <offset_fetch_xml is_null="1"></offset_fetch_xml>
+    </Item>
+    <Item type="qry_QueryItem">
+      <item_type>E582AB17663F4EF28460015B2BE9E094</item_type>
+      <alias>Identity</alias>
+      <ref_id>A5F35304D6F21AF59A6776557B0B8F5E</ref_id>
+      <offset_fetch_xml is_null="1"></offset_fetch_xml>
+    </Item>
+    <Item type="qry_QueryReference">
+      <child_ref_id>01AFB817103E97097FD5B2CE7BCA1A13</child_ref_id>
+    </Item>
+    <Item type="qry_QueryReference">
+      <child_ref_id>A5F35304D6F21AF59A6776557B0B8F5E</child_ref_id>
+      <filter_xml><![CDATA[<condition>
+  	<eq>
+  		<property name="id" query_items_xpath="parent::Item" />
+  		<property name="id" />
+  	</eq>
+  </condition>]]]]><![CDATA[></filter_xml>
+      <parent_ref_id>01AFB817103E97097FD5B2CE7BCA1A13</parent_ref_id>
+      <ref_id>26CB983558D2BA716EE6A6B1A6C983CA</ref_id>
+    </Item>
+  </Relationships>
+</Item>]]></implementation_query>
+      <name>LIBSJS-SCRATCH-DrRel</name>
+     </Item>
+    </dr_relationship_id>
+    <leaf_item keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</leaf_item>
+    <property_name>name</property_name>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_AcAttribute" type="ac_PolicyAccessItemAttribute">5806F8B08494E753C5EFF0647C48002D</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

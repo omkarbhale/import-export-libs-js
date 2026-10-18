@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EXPORT_CASES, hostItems, hostOptions } from "./export-cases.js";
-import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, indexReadme, type CaseFile } from "./record-export-cases.js";
+import { SCRATCH_EXPORT_CASES } from "./export-scratch-cases.js";
+import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, indexReadme, recordedCases, type CaseFile } from "./record-export-cases.js";
 import { BLOB_THRESHOLD, blobMatchesName, externalizeLargeResponses, readTranscript } from "./transcript.js";
 
 const readCase = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
@@ -67,12 +68,13 @@ describe("recorded 14.0.7 export fixtures", () => {
       .filter((d) => d.isDirectory() && d.name !== "_blobs")
       .map((d) => d.name)
       .sort();
-    expect(folders).toEqual(EXPORT_CASES.map((c) => c.id).sort());
+    // The scratch-seeded cases are recorded by oracle:export-scratch-cases and checked in export-scratch-cases.test.ts.
+    expect(folders).toEqual([...EXPORT_CASES, ...SCRATCH_EXPORT_CASES].map((c) => c.id).sort());
     expect(recorded.length).toBe(EXPORT_CASES.length);
   });
 
   it("has an index README that is current", () => {
-    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recorded.map((c) => readCase(c.id))));
+    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recordedCases()));
   });
 
   it.each(recorded.map((c) => [c.id, c] as const))("%s", (id, c) => {
@@ -102,7 +104,7 @@ describe("recorded 14.0.7 export fixtures", () => {
 
   it("names each blob by the sha256 of its content, and every blob is used", () => {
     const used = new Set<string>();
-    for (const c of recorded) {
+    for (const c of [...recorded, ...SCRATCH_EXPORT_CASES]) {
       for (const line of readFileSync(join(CASES_DIR, c.id, "transcript.jsonl"), "utf8").split("\n")) {
         if (line === "") continue;
         const call = JSON.parse(line) as { responseBlob?: string };

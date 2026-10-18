@@ -1,0 +1,163 @@
+{
+  "id": "p5-ref-both-on",
+  "engine": "14.0.7",
+  "catalogue": [
+    "P5",
+    "S2",
+    "referenced items on"
+  ],
+  "title": "The package and its dependency exported together, referenced items on",
+  "exercises": "A dependency exported in the same run as the package that refers to its elements (the Hashtable lists the dependency first), with referenced items on.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-REFDEP",
+      "items": [
+        {
+          "type": "List",
+          "keyedName": "LIBSJS-SCRATCH-REFDEP-List_1",
+          "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+        }
+      ]
+    },
+    {
+      "name": "LIBSJS-SCRATCH-REF",
+      "items": [
+        {
+          "type": "Variable",
+          "keyedName": "LIBSJS-SCRATCH-REF-Var_1",
+          "id": "6A880A1FAC02A374F97FFF2376246C91"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "exportReferencedItems": true
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 27,
+    "error": null
+  },
+  "seed": {
+    "group": "s2-ref",
+    "steps": [
+      {
+        "name": "import both",
+        "packages": [
+          "LIBSJS-SCRATCH-REF",
+          "LIBSJS-SCRATCH-REFDEP"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "25F7327888D4472398547C19BE4E6972"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "47A7228FA24349FA8E85CED596BEFE00"
+          },
+          {
+            "type": "List",
+            "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "DF0F9A2F2F674CDDAA7FD9EB5B017AF6"
+          },
+          {
+            "type": "PackageElement",
+            "id": "26F929F366A44A84AAE3D98DDAD1C93A"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "1DDA12A46F9F4AD285B61116E4A1733D"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "7C4599C680DD40E98EE666C483AD7AD3"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "21A79BBC083F45BA8C24E792B72B5627"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "5E779124A8FA4BF0A14D2364BEAB2CDC"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "1E7B053BFBA34BD39CE8C80BCA8E323D"
+          },
+          {
+            "type": "Variable",
+            "id": "6A880A1FAC02A374F97FFF2376246C91"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "2066D99F5B464A1E83090E5E233A95DB"
+          },
+          {
+            "type": "PackageElement",
+            "id": "1D9C8E9DC3D1436DAFD8978E22125B46"
+          }
+        ]
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "1D9C8E9DC3D1436DAFD8978E22125B46"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "2066D99F5B464A1E83090E5E233A95DB"
+      },
+      {
+        "type": "Variable",
+        "id": "6A880A1FAC02A374F97FFF2376246C91"
+      },
+      {
+        "type": "PackageReferencedElement",
+        "id": "1E7B053BFBA34BD39CE8C80BCA8E323D"
+      },
+      {
+        "type": "PackageReferencedElement",
+        "id": "5E779124A8FA4BF0A14D2364BEAB2CDC"
+      },
+      {
+        "type": "PackageDependsOn",
+        "id": "21A79BBC083F45BA8C24E792B72B5627"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "7C4599C680DD40E98EE666C483AD7AD3"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "1DDA12A46F9F4AD285B61116E4A1733D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "26F929F366A44A84AAE3D98DDAD1C93A"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "DF0F9A2F2F674CDDAA7FD9EB5B017AF6"
+      },
+      {
+        "type": "List",
+        "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "47A7228FA24349FA8E85CED596BEFE00"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "25F7327888D4472398547C19BE4E6972"
+      }
+    ]
+  }
+}

@@ -439,6 +439,8 @@ namespace LibsJsOracle
         public const string Prefix = "LIBSJS-SCRATCH-";
         /// <summary>ItemType names must match ^[a-zA-Z](\w*| +\w+)*$, so they cannot hold the dashes of Prefix.</summary>
         public const string ItemTypePrefix = "LIBSJS_SCRATCH_";
+        /// <summary>An xPropertyDefinition's name must match ^xp-\w+$ (the server's own pattern), so it starts with "xp-" before the scratch prefix. The server stores the name in lower case, so this prefix is compared without regard to case.</summary>
+        public const string XPropertyPrefix = "xp-LIBSJS_SCRATCH_";
 
         /// <summary>A package name or file name: it starts with Prefix.</summary>
         public static bool Is(string name)
@@ -446,10 +448,10 @@ namespace LibsJsOracle
             return name != null && name.StartsWith(Prefix, StringComparison.Ordinal);
         }
 
-        /// <summary>An item's name or keyed name: Prefix, or ItemTypePrefix for the names Aras restricts to word characters.</summary>
+        /// <summary>An item's name or keyed name: Prefix, or ItemTypePrefix for the names Aras restricts to word characters, or XPropertyPrefix for an extended property.</summary>
         public static bool IsItemName(string name)
         {
-            return Is(name) || (name != null && name.StartsWith(ItemTypePrefix, StringComparison.Ordinal));
+            return Is(name) || (name != null && (name.StartsWith(ItemTypePrefix, StringComparison.Ordinal) || name.StartsWith(XPropertyPrefix, StringComparison.OrdinalIgnoreCase)));
         }
 
         public static void AssertImport(ICollection packages, ImportExportManager manager, string lpPath)

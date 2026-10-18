@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":17,"ticks":793296822352,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-CMFVIEW","answer":null}
+{"event":10,"seq":2,"thread":17,"ticks":793296826685,"channel":"status","text":"Item 1 of 1: cmf_TabularView - LIBSJS_SCRATCH_CmfView","answer":null}
+{"event":22,"seq":3,"thread":17,"ticks":793299376867,"channel":"status","text":"completed","answer":null}
+{"event":23,"seq":4,"thread":17,"ticks":793299377079,"channel":"currentPackage","text":"","answer":null}

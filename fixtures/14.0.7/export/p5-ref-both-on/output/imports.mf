@@ -1,0 +1,9 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-REFDEP" path="LIBSJS-SCRATCH-REFDEP\Import" />
+  <package name="LIBSJS-SCRATCH-REF" path="LIBSJS-SCRATCH-REF\Import">
+    <dependson name="LIBSJS-SCRATCH-REFDEP">
+      <referenced_element id="ADFEE419D8DB444BF5EDED7C490E4BA2" type="List" descr="LIBSJS-SCRATCH-REFDEP-List_1" />
+      <referenced_element id="1854A8A75F5940A78369146966674FA6" type="List" descr="Report Format Types" />
+    </dependson>
+  </package>
+</imports>

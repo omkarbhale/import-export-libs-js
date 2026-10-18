@@ -4,7 +4,7 @@ Recorded from engine 14.0.7.35492 on the dev instance, read-only, from ticket 05
 
 - Cases are small: one item, or one small package, per branch, plus multi-package cases for ordering (`p1-*`).
 - A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript; every case begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` puts them back.
-- Cases that need scratch packages on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by ticket 67 after ticket 25.
+- Cases that need scratch state on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by `npm run oracle:export-scratch-cases` (ticket 67). Each imports `LIBSJS-SCRATCH-*` packages, exports, and deletes what it created; its README lists the ids created and deleted.
 - The dev state a case ran against can change. `run.json` carries the time of the run.
 - Re-record with `ARAS_PASSWORD=… npm run oracle:export-cases` (see `npm run oracle:export-cases -- --help`).
 
@@ -85,3 +85,17 @@ Recorded from engine 14.0.7.35492 on the dev instance, read-only, from ticket 05
 | [opt-timeout-minus-1](opt-timeout-minus-1/README.md) | Timeout | Option: Timeout -1 | 21 |
 | [opt-timeout-30000](opt-timeout-30000/README.md) | Timeout | Option: Timeout 30000 | 21 |
 | [opt-verbose](opt-verbose/README.md) | Verbose | Option: Verbose (SolutionUpgradeContext.Verbose) on | 21 |
+| [s6-mac-two-filters](s6-mac-two-filters/README.md) | E50, S6, R9 | mp_MacPolicy whose condition holds two filter_xml blocks | 16 |
+| [s6-dr-family](s6-dr-family/README.md) | E47, S6, R6 | dr_RelationshipFamily with a non-empty implementation_query and an event handler that has event_data | 27 |
+| [s6-ac-attribute](s6-ac-attribute/README.md) | E46, S6, R11 | ac_PolicyAccessItemAttribute with an attribute definition | 19 |
+| [s6-dac-domain](s6-dac-domain/README.md) | E45, S6, R4 | dac_DomainDefinition with a sub-domain permission whose condition holds non-ASCII text | 20 |
+| [s6-cmf-content-type](s6-cmf-content-type/README.md) | E41, S6 | cmf_ContentType with an element type and a property type | 21 |
+| [s6-cmf-itemtype](s6-cmf-itemtype/README.md) | E41, S6 | ItemType that has a cmf_ContentType linked to it | 31 |
+| [s6-cmf-tabular-view](s6-cmf-tabular-view/README.md) | E42, S6 | cmf_TabularView with a column | 19 |
+| [p5-ref-off](p5-ref-off/README.md) | P5, S2, referenced items off | A package that depends on another with three referenced elements, referenced items off | 14 |
+| [p5-ref-on](p5-ref-on/README.md) | P5, S2, referenced items on | The same package with referenced items on | 23 |
+| [p5-ref-both-on](p5-ref-both-on/README.md) | P5, S2, referenced items on | The package and its dependency exported together, referenced items on | 27 |
+| [s8-coll-ab](s8-coll-ab/README.md) | S8, P4 | Two packages whose names end in the same segment, A.Coll inserted first | 16 |
+| [s8-coll-ba](s8-coll-ba/README.md) | S8, P4 | The same two packages, B.Coll inserted first | 16 |
+| [s7-xp-values](s7-xp-values/README.md) | E44, S7, xp-* values | Classified instance of an ItemType with two extended properties (xp-* elements) | 18 |
+| [s7-xp-empty](s7-xp-empty/README.md) | E44, S7, xp-* values | Unclassified instance of an ItemType whose class has extended properties | 13 |
