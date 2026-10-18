@@ -6391,6 +6391,9 @@
           "status": "unmapped",
           "rules": [
             "IMP-007",
+            "IMP-016",
+            "IMP-017",
+            "IMP-018",
             "LP-010",
             "LP-022",
             "MAN-003",
