@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":18,"ticks":805402216540,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":18,"ticks":805402222796,"channel":"status","text":"Item 1 of 1: Form - Activity Template","answer":null}
+{"event":40,"seq":3,"thread":18,"ticks":805408026895,"channel":"status","text":"completed","answer":null}
+{"event":41,"seq":4,"thread":18,"ticks":805408027403,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,12 @@
+﻿<AML>
+ <Item type="SQL" action="add">
+  <id>56DC7626FE7EC57B58A46ACBFD0ADB40</id>
+  <execution_flag>immediate</execution_flag>
+  <old_name>LIBSJS_SCRATCH_V2</old_name>
+  <sqlserver_body><![CDATA[CREATE VIEW [LIBSJS_SCRATCH_V2] AS SELECT 1 AS [one]]]></sqlserver_body>
+  <stale>0</stale>
+  <transform_first>0</transform_first>
+  <type>view</type>
+  <name>LIBSJS_SCRATCH_V2</name>
+ </Item>
+</AML>

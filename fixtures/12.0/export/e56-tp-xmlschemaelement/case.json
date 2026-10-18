@@ -1,0 +1,28 @@
+{
+  "id": "e56-tp-xmlschemaelement",
+  "engine": "12.0",
+  "catalogue": [
+    "E56"
+  ],
+  "title": "tp_XmlSchemaElement: content_generator Method, element name = id",
+  "exercises": "The content_generator Method becomes a get by keyed_name.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.tdf",
+      "items": [
+        {
+          "type": "tp_XmlSchemaElement",
+          "id": "37BE25ACED9B46BEA12D66F69703C105",
+          "keyedName": "37BE25ACED9B46BEA12D66F69703C105"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 17,
+    "error": null
+  }
+}

@@ -1,0 +1,7 @@
+{"event":9,"seq":1,"thread":16,"ticks":812218370346,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":812218771909,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-BATCH","answer":null}
+{"event":13,"seq":3,"thread":16,"ticks":812219125749,"channel":"status","text":"Item 1 of 7: Variable - LIBSJS-SCRATCH-Batch_1","answer":null}
+{"event":23,"seq":4,"thread":16,"ticks":812220598218,"channel":"status","text":"Item 2 of 7: Variable - LIBSJS-SCRATCH-Batch_2","answer":null}
+{"event":28,"seq":5,"thread":16,"ticks":812221193275,"channel":"status","text":"Item 3 of 7: Variable - LIBSJS-SCRATCH-Batch_3","answer":null}
+{"event":33,"seq":6,"thread":16,"ticks":812221673071,"channel":"status","text":"Item 4 of 7: Variable - LIBSJS-SCRATCH-Batch_4","answer":null}
+{"event":40,"seq":7,"thread":16,"ticks":812222593067,"channel":"error","text":"\t\t****ErrorMessage****\n\nImport package LIBSJS-SCRATCH-BATCH failed with message:\n\nBad Relation type Property for Variable Recurse check has failed.\nUpdating LIBSJS-SCRATCH-BATCH to failed release status\n\t\t**********************","answer":null}

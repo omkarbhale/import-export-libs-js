@@ -1,0 +1,4 @@
+{"event":8,"seq":1,"thread":18,"ticks":808161565221,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-XPROPINST","answer":null}
+{"event":9,"seq":2,"thread":18,"ticks":808161568561,"channel":"status","text":"Item 1 of 1: LIBSJS_SCRATCH_XIT - LIBSJS-SCRATCH-XIT_Empty","answer":null}
+{"event":15,"seq":3,"thread":18,"ticks":808162847721,"channel":"status","text":"completed","answer":null}
+{"event":16,"seq":4,"thread":18,"ticks":808162847930,"channel":"currentPackage","text":"","answer":null}

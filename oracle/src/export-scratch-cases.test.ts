@@ -5,12 +5,11 @@ import { describe, expect, it } from "vitest";
 import { EXPORT_CASES, hostItems } from "./export-cases.js";
 import { SCRATCH_EXPORT_CASES, SEED_GROUPS, resolveCase, resolveItem } from "./export-scratch-cases.js";
 import { writePackages } from "./import-packages.js";
-import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, type CaseFile } from "./record-export-cases.js";
+import { CASE_ENGINES, blobsDir, casesDir, type CaseEngine } from "./case-engine.js";
+import { caseFile, caseReadme, type CaseFile } from "./record-export-cases.js";
 import { readTranscript } from "./transcript.js";
 
 const SCRATCH = /^(LIBSJS[-_]SCRATCH[-_]|xp-libsjs_scratch_)/i;
-
-const readCase = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
 
 describe("the scratch-seeded export case list", () => {
   it("has unique, folder-safe ids that do not clash with the stock cases", () => {
@@ -90,7 +89,11 @@ describe("the scratch-seeded export case list", () => {
   });
 });
 
-describe("recorded scratch-seeded export fixtures", () => {
+describe.each(CASE_ENGINES)("recorded %s scratch-seeded export fixtures", (engine: CaseEngine) => {
+  const CASES_DIR = casesDir(engine, "export");
+  const BLOBS_DIR = blobsDir(engine, "export");
+  const readCase = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
+
   it("records every case in the list", () => {
     for (const c of SCRATCH_EXPORT_CASES) expect(existsSync(join(CASES_DIR, c.id, "case.json")), c.id).toBe(true);
   });
@@ -105,7 +108,7 @@ describe("recorded scratch-seeded export fixtures", () => {
     const file = readCase(id);
     const group = SEED_GROUPS.find((g) => g.cases.includes(c))!;
     expect(file.seed?.group).toBe(group.id);
-    expect(file).toEqual(caseFile({ ...resolveCase(c, file.seed!.steps.flatMap((s) => s.created)) }, file.result, file.seed));
+    expect(file).toEqual(caseFile({ ...resolveCase(c, file.seed!.steps.flatMap((s) => s.created)) }, file.result, file.seed, engine));
     expect(readFileSync(join(dir, "README.md"), "utf8")).toBe(caseReadme(file));
 
     // The seed: one record per step, in order, and everything it created was deleted again.
@@ -117,7 +120,7 @@ describe("recorded scratch-seeded export fixtures", () => {
 
     // The Hashtable insertion order is recorded twice and must agree.
     const run = JSON.parse(readFileSync(join(dir, "run.json"), "utf8")) as { engine: string; params: { Items: string[] } };
-    expect(run.engine).toBe("14.0.7");
+    expect(run.engine).toBe(engine);
     expect(run.params.Items).toEqual(hostItems(file.packages));
     expect(file.result.error).toBeNull();
 

@@ -1,0 +1,125 @@
+{
+  "id": "s3-unres-delayed",
+  "engine": "12.0",
+  "catalogue": [
+    "S3"
+  ],
+  "title": "References that resolve once the package is imported",
+  "exercises": "Delayed resolution: a Property whose data_source ItemType is imported by a later file (code 10000) and a Member whose related Identity is imported later (code 10001). The nodes are rewritten before the import and queued; the queue runs at the end of the package.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-UNRES"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 46,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "E50D810F8559446E815FBEFC9AB2AD46"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "B5EA1921B87746B5AE1CABAA466A9841"
+          },
+          {
+            "type": "Identity",
+            "id": "178F5CDDAEDCBB34BD09F06470745602"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "80198C1496C24C4DB24E4EA65CA37A1A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5A4C83CD52714944A7C19C537F150CEE"
+          },
+          {
+            "type": "Identity",
+            "id": "3493A7900BEC83EA6396B8AC4120A691"
+          },
+          {
+            "type": "PackageElement",
+            "id": "678C6377A5BA42F19B5F9CF4060DEAFD"
+          },
+          {
+            "type": "ItemType",
+            "id": "6E7E6F3785C0EA0207C5648D1A072EA7"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "FBA194D804204D6EA04552AEE0353C3B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "0A4374223C584E7B86D47BE2D7853064"
+          },
+          {
+            "type": "ItemType",
+            "id": "D4F96DA7FCAACB328A32D7EADA3D9480"
+          },
+          {
+            "type": "PackageElement",
+            "id": "675FC682A6D140F7866DB608965BEC54"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "675FC682A6D140F7866DB608965BEC54"
+    },
+    {
+      "type": "PackageElement",
+      "id": "0A4374223C584E7B86D47BE2D7853064"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "FBA194D804204D6EA04552AEE0353C3B"
+    },
+    {
+      "type": "ItemType",
+      "id": "6E7E6F3785C0EA0207C5648D1A072EA7"
+    },
+    {
+      "type": "PackageElement",
+      "id": "678C6377A5BA42F19B5F9CF4060DEAFD"
+    },
+    {
+      "type": "PackageElement",
+      "id": "5A4C83CD52714944A7C19C537F150CEE"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "80198C1496C24C4DB24E4EA65CA37A1A"
+    },
+    {
+      "type": "Identity",
+      "id": "178F5CDDAEDCBB34BD09F06470745602"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "B5EA1921B87746B5AE1CABAA466A9841"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "E50D810F8559446E815FBEFC9AB2AD46"
+    },
+    {
+      "type": "ItemType",
+      "id": "D4F96DA7FCAACB328A32D7EADA3D9480"
+    },
+    {
+      "type": "Identity",
+      "id": "3493A7900BEC83EA6396B8AC4120A691"
+    }
+  ]
+}

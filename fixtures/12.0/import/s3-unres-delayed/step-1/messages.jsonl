@@ -1,0 +1,9 @@
+{"event":9,"seq":1,"thread":16,"ticks":811344738263,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":811345197672,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-UNRES","answer":null}
+{"event":13,"seq":3,"thread":16,"ticks":811345532046,"channel":"status","text":"Item 1 of 4: Identity - LIBSJS-SCRATCH-Identity_A","answer":null}
+{"event":25,"seq":4,"thread":16,"ticks":811347419928,"channel":"status","text":"Item 2 of 4: Identity - LIBSJS-SCRATCH-Identity_Z","answer":null}
+{"event":30,"seq":5,"thread":16,"ticks":811348110401,"channel":"status","text":"Item 3 of 4: ItemType - LIBSJS-SCRATCH-UNRES_X","answer":null}
+{"event":42,"seq":6,"thread":16,"ticks":811354538899,"channel":"status","text":"Item 4 of 4: ItemType - LIBSJS-SCRATCH-UNRES_Y","answer":null}
+{"event":47,"seq":7,"thread":16,"ticks":811359635516,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":50,"seq":8,"thread":16,"ticks":811363096491,"channel":"status","text":"completed","answer":null}
+{"event":55,"seq":9,"thread":16,"ticks":811363925302,"channel":"status","text":"completed","answer":null}

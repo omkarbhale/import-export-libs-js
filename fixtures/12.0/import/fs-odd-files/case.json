@@ -1,0 +1,101 @@
+{
+  "id": "fs-odd-files",
+  "engine": "12.0",
+  "catalogue": [
+    "file system"
+  ],
+  "title": "Files the loader treats specially",
+  "exercises": "LoadPackageDom: a `.xmlbak` file is read (the `*.xml` pattern matches it), a file with no AML/Item is logged as skipped, a UTF-16 file with a BOM is read, a `.txt` file and a file one directory too deep are ignored.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-FS"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 31,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "FA0D44EE1D3144E8B96DC59B14339E7E"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "5C5B4DEE316D487B9A5303A6B883CF10"
+          },
+          {
+            "type": "Variable",
+            "id": "44402126489F68289C53980576DE1D39"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "A35A99BE68EA4A81932A92CC5E36CD07"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6FDDCCCA4ADE4C45AD8AFE54FFC290AA"
+          },
+          {
+            "type": "Variable",
+            "id": "DC08FF9FF82BB32E36FCD3B99C380DC8"
+          },
+          {
+            "type": "PackageElement",
+            "id": "78088DC54DA048CE9132BD38019D0F18"
+          },
+          {
+            "type": "Variable",
+            "id": "EE37B579701D1BE8841859BE8ACECBA5"
+          },
+          {
+            "type": "PackageElement",
+            "id": "009957C30ABB4045A0B8A1E393E676D4"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "009957C30ABB4045A0B8A1E393E676D4"
+    },
+    {
+      "type": "Variable",
+      "id": "EE37B579701D1BE8841859BE8ACECBA5"
+    },
+    {
+      "type": "PackageElement",
+      "id": "78088DC54DA048CE9132BD38019D0F18"
+    },
+    {
+      "type": "Variable",
+      "id": "DC08FF9FF82BB32E36FCD3B99C380DC8"
+    },
+    {
+      "type": "PackageElement",
+      "id": "6FDDCCCA4ADE4C45AD8AFE54FFC290AA"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "A35A99BE68EA4A81932A92CC5E36CD07"
+    },
+    {
+      "type": "Variable",
+      "id": "44402126489F68289C53980576DE1D39"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "5C5B4DEE316D487B9A5303A6B883CF10"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "FA0D44EE1D3144E8B96DC59B14339E7E"
+    }
+  ]
+}

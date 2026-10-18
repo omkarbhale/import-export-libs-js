@@ -1,0 +1,28 @@
+{
+  "id": "p3-absent-package",
+  "engine": "12.0",
+  "catalogue": [
+    "P3"
+  ],
+  "title": "A Hashtable key naming a package absent from the DB",
+  "exercises": "InitSolution's CItemException escapes ExportSolutions, and the manifest is still saved in the finally block.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-ABSENT",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": true,
+  "result": {
+    "hostExit": 2,
+    "calls": 7,
+    "error": "Aras.Tools.SolutionUpgrade.CItemException: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type PackageDefinition found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type PackageDefinition found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'PackageDefinition' found using the criteria: \r\n<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>LIBSJS-SCRATCH-ABSENT</name><is_current>1</is_current></Item>\r\n]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.applyAML(String aml)\r\n   at Aras.Tools.SolutionUpgrade.PackageDefinitionManager.InitSolution(Boolean bCreate)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ExportSolutions(SUExportContext exportContext, Hashtable selItemsTable)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  }
+}

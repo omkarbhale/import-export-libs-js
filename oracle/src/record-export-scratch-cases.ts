@@ -3,22 +3,22 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+import { CASE_ENGINES, DEFAULT_CASE_ENGINE, blobsDir, casesDir, isCaseEngine, type CaseEngine } from "./case-engine.js";
 import { readPassword } from "./cli.js";
 import { hostItems, hostOptions } from "./export-cases.js";
 import { SCRATCH_EXPORT_CASES, SEED_GROUPS, resolveCase, type ResolvedCase, type SeedGroup, type SeedRecord } from "./export-scratch-cases.js";
 import { hostOptions as importHostOptions } from "./import-cases.js";
 import { writePackages } from "./import-packages.js";
-import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, indexReadme, pruneBlobs, recordedCases } from "./record-export-cases.js";
+import { caseFile, caseReadme, indexReadme, pruneBlobs, recordedCases } from "./record-export-cases.js";
 import { outcomeMatches, returnedValue } from "./record-import-cases.js";
 import { DEV_SERVER, record, type CleanupReport, type ItemRef } from "./record.js";
 import { externalizeLargeResponses } from "./transcript.js";
 
-const ENGINE = "14.0.7";
 
-const USAGE = `Usage: npm run oracle:export-scratch-cases -- [--only <case or group>,...] [--force] [--list] [--readme-only]
+const USAGE = `Usage: npm run oracle:export-scratch-cases -- [--engine 14.0.7|12.0] [--only <case or group>,...] [--force] [--list] [--readme-only]
 
-Records the 14.0.7 export cases that need scratch state on dev (ticket 67) into
-fixtures/${ENGINE}/export/<case>/. For each seed group: import its LIBSJS-SCRATCH-*
+Records the export cases that need scratch state on dev (tickets 67 and 48) into
+fixtures/<engine>/export/<case>/ (default engine 14.0.7). For each seed group: import its LIBSJS-SCRATCH-*
 packages, export each case (read-only), then delete everything the import
 created, even when a step failed. A case that is already recorded is skipped
 unless --force. The password comes from ARAS_PASSWORD or stdin. --readme-only
@@ -28,8 +28,8 @@ without running the engine.
 
 const priorLines = (created: readonly ItemRef[]): string[] => created.map((c) => [c.type, c.id, c.unconfirmed === true ? "1" : "0"].join("\t"));
 
-const common = (password: string) => ({
-  engine: ENGINE,
+const common = (engine: CaseEngine, password: string) => ({
+  engine,
   url: DEV_SERVER.url,
   database: DEV_SERVER.database,
   user: process.env.ARAS_USER ?? "root",
@@ -49,7 +49,7 @@ interface GroupRecorded {
 }
 
 /** Runs one group into `work`. Null when something did not go as expected; the created items are deleted either way. */
-async function runGroup(group: SeedGroup, chosen: ReadonlySet<string>, password: string, work: string): Promise<GroupRecorded | null> {
+async function runGroup(engine: CaseEngine, group: SeedGroup, chosen: ReadonlySet<string>, password: string, work: string): Promise<GroupRecorded | null> {
   const created: ItemRef[] = [];
   const steps: SeedRecord["steps"] = [];
   const cases: GroupRecorded["cases"] = [];
@@ -62,7 +62,7 @@ async function runGroup(group: SeedGroup, chosen: ReadonlySet<string>, password:
       writePackages(input, s.packages);
       const out = join(work, group.id, `seed-${i + 1}`);
       const result = await record({
-        ...common(password),
+        ...common(engine, password),
         command: "import",
         out,
         inputDir: input,
@@ -93,7 +93,7 @@ async function runGroup(group: SeedGroup, chosen: ReadonlySet<string>, password:
         const resolved = resolveCase(c, created);
         const out = join(work, group.id, c.id);
         const result = await record({
-          ...common(password),
+          ...common(engine, password),
           command: "export",
           out,
           params: { Items: hostItems(resolved.packages), ...hostOptions(resolved.options) },
@@ -116,7 +116,7 @@ async function runGroup(group: SeedGroup, chosen: ReadonlySet<string>, password:
     if (created.length > 0) {
       const out = join(work, `${group.id}-cleanup`);
       try {
-        const cleanup = await record({ ...common(password), command: "cleanup", out, params: { PriorCreated: priorLines(created) } });
+        const cleanup = await record({ ...common(engine, password), command: "cleanup", out, params: { PriorCreated: priorLines(created) } });
         const report: CleanupReport | null = cleanup.cleanup;
         const left = (report?.kept.length ?? 0) + (report?.unverified.length ?? 0);
         process.stdout.write(`${group.id}: cleanup deleted ${report?.deleted.length ?? 0}${left > 0 ? `, LEFT ${left} (see ${out})` : ""}\n`);
@@ -135,14 +135,15 @@ async function runGroup(group: SeedGroup, chosen: ReadonlySet<string>, password:
   return { seed: { group: group.id, steps, deleted }, cases };
 }
 
-function install(recorded: GroupRecorded): void {
-  mkdirSync(CASES_DIR, { recursive: true });
+function install(engine: CaseEngine, recorded: GroupRecorded): void {
+  const dir = casesDir(engine, "export");
+  mkdirSync(dir, { recursive: true });
   for (const c of recorded.cases) {
-    externalizeLargeResponses(join(c.dir, "transcript.jsonl"), BLOBS_DIR);
-    const file = caseFile(c.resolved, c.result, recorded.seed);
+    externalizeLargeResponses(join(c.dir, "transcript.jsonl"), blobsDir(engine, "export"));
+    const file = caseFile(c.resolved, c.result, recorded.seed, engine);
     writeFileSync(join(c.dir, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
     writeFileSync(join(c.dir, "README.md"), caseReadme(file));
-    const to = join(CASES_DIR, c.resolved.id);
+    const to = join(dir, c.resolved.id);
     rmSync(to, { recursive: true, force: true });
     cpSync(c.dir, to, { recursive: true });
   }
@@ -151,13 +152,19 @@ function install(recorded: GroupRecorded): void {
 async function main(argv: readonly string[]): Promise<number> {
   const { values } = parseArgs({
     args: [...argv],
-    options: { only: { type: "string" }, force: { type: "boolean" }, list: { type: "boolean" }, "readme-only": { type: "boolean" }, help: { type: "boolean", short: "h" } },
+    options: { engine: { type: "string" }, only: { type: "string" }, force: { type: "boolean" }, list: { type: "boolean" }, "readme-only": { type: "boolean" }, help: { type: "boolean", short: "h" } },
     strict: true,
   });
   if (values.help === true) {
     process.stdout.write(USAGE);
     return 0;
   }
+  const engine = values.engine ?? DEFAULT_CASE_ENGINE;
+  if (!isCaseEngine(engine)) {
+    process.stderr.write(`unknown engine: ${engine} (${CASE_ENGINES.join(", ")})\n`);
+    return 64;
+  }
+  const dir = casesDir(engine, "export");
   const only = values.only === undefined ? null : new Set(values.only.split(",").map((s) => s.trim()));
   if (only !== null) {
     const known = new Set([...SEED_GROUPS.map((g) => g.id), ...SCRATCH_EXPORT_CASES.map((c) => c.id)]);
@@ -168,7 +175,7 @@ async function main(argv: readonly string[]): Promise<number> {
     }
   }
   const selected = (groupId: string, caseId: string) => only === null || only.has(groupId) || only.has(caseId);
-  const recordedFile = (id: string) => join(CASES_DIR, id, "case.json");
+  const recordedFile = (id: string) => join(dir, id, "case.json");
 
   if (values.list === true) {
     for (const g of SEED_GROUPS) {
@@ -184,12 +191,12 @@ async function main(argv: readonly string[]): Promise<number> {
         const old = JSON.parse(readFileSync(recordedFile(c.id), "utf8")) as ReturnType<typeof caseFile>;
         // The resolved ids are what was recorded; the rest comes from the case list.
         const resolved: ResolvedCase = { ...resolveCase({ ...c, packages: [] }, []), packages: old.packages };
-        const file = caseFile(resolved, old.result, old.seed);
+        const file = caseFile(resolved, old.result, old.seed, engine);
         writeFileSync(recordedFile(c.id), `${JSON.stringify(file, null, 2)}\n`);
-        writeFileSync(join(CASES_DIR, c.id, "README.md"), caseReadme(file));
+        writeFileSync(join(dir, c.id, "README.md"), caseReadme(file));
       }
     }
-    writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
+    writeFileSync(join(dir, "README.md"), indexReadme(recordedCases(engine), engine));
     return 0;
   }
 
@@ -204,12 +211,12 @@ async function main(argv: readonly string[]): Promise<number> {
         continue;
       }
       process.stdout.write(`${g.id}: seeding ${g.steps.length} step${g.steps.length === 1 ? "" : "s"}, exporting ${todo.map((c) => c.id).join(", ")}\n`);
-      const recorded = await runGroup(g, new Set(todo.map((c) => c.id)), password, work);
+      const recorded = await runGroup(engine, g, new Set(todo.map((c) => c.id)), password, work);
       if (recorded === null) {
         failures.push(g.id);
         continue;
       }
-      install(recorded);
+      install(engine, recorded);
       process.stdout.write(`${g.id}: ${recorded.cases.map((c) => `${c.resolved.id} ${c.result.calls ?? "?"} calls`).join(", ")}; ${recorded.seed.deleted.length} deleted\n`);
     }
   } finally {
@@ -217,10 +224,10 @@ async function main(argv: readonly string[]): Promise<number> {
     if (failures.length === 0) rmSync(work, { recursive: true, force: true });
     else process.stderr.write(`work folder kept at ${resolve(work)}\n`);
   }
-  mkdirSync(CASES_DIR, { recursive: true });
-  const pruned = pruneBlobs(recordedCases());
+  mkdirSync(dir, { recursive: true });
+  const pruned = pruneBlobs(recordedCases(engine), engine);
   if (pruned.length > 0) process.stdout.write(`removed ${pruned.length} unused blob${pruned.length === 1 ? "" : "s"}\n`);
-  writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
+  writeFileSync(join(dir, "README.md"), indexReadme(recordedCases(engine), engine));
   if (failures.length > 0) {
     process.stderr.write(`not as expected: ${failures.join(", ")}\n`);
     return 1;

@@ -1,0 +1,14 @@
+﻿<AML>
+ <Item type="Identity" id="178F5CDDAEDCBB34BD09F06470745602" action="add">
+  <description />
+  <is_alias>0</is_alias>
+  <name>LIBSJS-SCRATCH-Identity_A</name>
+  <Relationships>
+   <Item type="Member" id="6E70809A6C36B2E5874649B8F06FAF61" action="add">
+    <related_id keyed_name="LIBSJS-SCRATCH-Identity_Z" type="Identity">3493A7900BEC83EA6396B8AC4120A691</related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-Identity_A" type="Identity">178F5CDDAEDCBB34BD09F06470745602</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

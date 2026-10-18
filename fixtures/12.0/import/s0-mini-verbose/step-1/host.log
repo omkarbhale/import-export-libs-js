@@ -1,0 +1,13 @@
+ENGINE 12.0: Libs 12.0.0.13341 (73656177-796f-4071-beb9-1ff7e94a9e63), IOM 12.0.0.13341 (fb3cb197-f92d-491a-86fc-4c564e852e74)
+
+       ****Import   LIBSJS-SCRATCH-MINI****
+Building  solution
+Importing LIBSJS-SCRATCH-MINI-List_1  type List   1  of  6
+Importing LIBSJS-SCRATCH-MINI-List_2  type List   2  of  6
+Importing LIBSJS-SCRATCH-MINI-Seq_1  type Sequence   3  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_1  type Variable   4  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_2  type Variable   5  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_3  type Variable   6  of  6
+Delayed resolution of unresolved references ...
+
+completedHOST_EXIT 0

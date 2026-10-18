@@ -1,0 +1,28 @@
+{
+  "id": "e43-xclassificationtree",
+  "engine": "12.0",
+  "catalogue": [
+    "E43"
+  ],
+  "title": "xClassificationTree: ES_ComponentClassification",
+  "exercises": "Levels 2; RemoveSystemRelationshipsFromXTree.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.es",
+      "items": [
+        {
+          "type": "xClassificationTree",
+          "id": "42E9E9A77CF1478BB70CCBD2F74704CA",
+          "keyedName": "ES_ComponentClassification"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 50,
+    "error": null
+  }
+}

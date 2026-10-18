@@ -1,0 +1,28 @@
+{
+  "id": "e52-float-item-property",
+  "engine": "12.0",
+  "catalogue": [
+    "E52"
+  ],
+  "title": "CommandBarButton: float item property to a re-generated Method (sg_powerplay_relationshipgrid)",
+  "exercises": "A float item property with a visible effect: on_click_handler points to Method sg_powerplay_relgrid_click, whose generation is above 1. GetCustomFloatPropertiesOfTypeItem and GetConfigId rewrite it to the config_id.",
+  "packages": [
+    {
+      "name": "com.steepgraph.powerplay",
+      "items": [
+        {
+          "type": "CommandBarButton",
+          "id": "4B51486994E740E383BA33D46250AAFA",
+          "keyedName": "sg_powerplay_relationshipgrid"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 14,
+    "error": null
+  }
+}

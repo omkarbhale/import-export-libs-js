@@ -1,0 +1,21 @@
+<imports>
+  <package name="com.aras.innovator.admin" path=".\" />
+  <package name="com.aras.innovator.cui" path=".\">
+    <dependson name="com.aras.innovator.core" />
+  </package>
+  <package name="com.aras.innovator.es" path=".\">
+    <dependson name="com.aras.innovator.core" />
+    <dependson name="com.aras.innovator.extendedclassification" />
+    <dependson name="com.aras.innovator.preferences" />
+    <dependson name="com.aras.innovator.cui_default" />
+  </package>
+  <package name="com.aras.innovator.core" path=".\">
+    <dependson name="com.aras.innovator.admin" />
+  </package>
+  <package name="com.aras.innovator.history" path=".\">
+    <dependson name="com.aras.innovator.core" />
+  </package>
+  <package name="com.aras.innovator.conversion" path=".\">
+    <dependson name="com.aras.innovator.exchange" />
+  </package>
+</imports>

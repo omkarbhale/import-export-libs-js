@@ -1,0 +1,6 @@
+﻿<AML>
+ <Item type="Variable" id="44C4B025909E4F83897BAA5084B7B03F" action="add">
+  <default_value>https://git.company.com/GitRepo/REPO</default_value>
+  <name>sg_powerplay_repo_url</name>
+ </Item>
+</AML>

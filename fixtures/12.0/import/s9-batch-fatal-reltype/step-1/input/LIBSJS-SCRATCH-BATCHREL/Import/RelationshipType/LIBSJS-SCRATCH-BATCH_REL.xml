@@ -1,0 +1,9 @@
+﻿<AML>
+ <Item type="RelationshipType" id="D70E8FEDA51E31A7EC94B73C002AEBC9" action="add">
+  <behavior>float</behavior>
+  <label xml:lang="en">LIBSJS_SCRATCH_BATCH_REL</label>
+  <sort_order>128</sort_order>
+  <source_id keyed_name="LIBSJS_SCRATCH_NOPE_source" type="ItemType">FBDF7110E44E84DE265C93E6F9B4CFA3</source_id>
+  <name>LIBSJS_SCRATCH_BATCH_REL</name>
+ </Item>
+</AML>

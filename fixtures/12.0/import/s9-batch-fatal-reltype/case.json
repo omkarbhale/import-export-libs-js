@@ -1,0 +1,85 @@
+{
+  "id": "s9-batch-fatal-reltype",
+  "engine": "12.0",
+  "catalogue": [
+    "S9"
+  ],
+  "title": "A RelationshipType whose source ItemType does not exist",
+  "exercises": "CheckRelationshipType treats a missing source_id as fatal (it is not queued for delayed resolution): the items before it are imported, the package fails.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHREL"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 31,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "6DC5F9AC508F4408B0976186C91AD403"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "AD33DAE83E1C4AC7B619FD318E59AC68"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "F3482523C1F84402BC14A09D1A5F4262"
+          },
+          {
+            "type": "PackageElement",
+            "id": "81D0E77694EF46F7919855091C094838"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "70E895454DF64579B85B69A0EB045169"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "70E895454DF64579B85B69A0EB045169"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "81D0E77694EF46F7919855091C094838"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "F3482523C1F84402BC14A09D1A5F4262"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "AD33DAE83E1C4AC7B619FD318E59AC68"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "6DC5F9AC508F4408B0976186C91AD403"
+    }
+  ]
+}

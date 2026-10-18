@@ -1,0 +1,14 @@
+Start of importing packages
+start of execution : 10/19/2026 03:29:40
+Updating LIBSJS-SCRATCH-DEL to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-DEL****
+Processing (delete)   id : 28BBB4301BFE2E4CB6EAD529D97A117F    keyed_name : LIBSJS-SCRATCH-Del_Field_1    type : Field  
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : 28BBB4301BFE2E4CB6EAD529D97A117F    keyed_name : LIBSJS-SCRATCH-Del_Field_1    type : Field  
+Processing (delete)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Del_Form_1    type : Form  
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Del_Form_1    type : Form  
+Processing (delete)   id : 413A0B202A289E50F7B489B7A9A22014    keyed_name : LIBSJS-SCRATCH-Del_Value_2    type : Value  
+********** Sta

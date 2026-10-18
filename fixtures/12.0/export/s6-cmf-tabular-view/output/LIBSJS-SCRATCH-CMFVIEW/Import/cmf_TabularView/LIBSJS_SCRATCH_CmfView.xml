@@ -1,0 +1,17 @@
+﻿<AML>
+ <Item type="cmf_TabularView" id="A7EA68DE5B387AD8587599484295B2DF" action="add">
+  <name>LIBSJS_SCRATCH_CmfView</name>
+  <Relationships>
+   <Item type="cmf_TabularViewColumn" id="E9CE0FE35234882FFB90BBE9F835B0A4" action="add">
+    <classification>Property Default</classification>
+    <col_order>1</col_order>
+    <editor_use_both>0</editor_use_both>
+    <header xml:lang="en">Scratch column</header>
+    <initial_width>120</initial_width>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_CmfView" type="cmf_TabularView">A7EA68DE5B387AD8587599484295B2DF</source_id>
+    <property keyed_name="LIBSJS_SCRATCH_CmfProp" type="cmf_PropertyType">1DD4569F2ECCD555C841744ACA5BC7D6</property>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

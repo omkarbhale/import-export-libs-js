@@ -1,0 +1,28 @@
+{
+  "id": "e48-qry-querydefinition",
+  "engine": "12.0",
+  "catalogue": [
+    "E48"
+  ],
+  "title": "qry_QueryDefinition: UserIdentities",
+  "exercises": "Levels 2.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.derivedrelationships_default",
+      "items": [
+        {
+          "type": "qry_QueryDefinition",
+          "id": "7F26808935574EF2A81876F9FD7658AC",
+          "keyedName": "UserIdentities"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 24,
+    "error": null
+  }
+}

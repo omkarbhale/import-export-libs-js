@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":805431172159,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":805431178684,"channel":"status","text":"Item 1 of 1: Workflow Map - ECN","answer":null}
+{"event":43,"seq":3,"thread":16,"ticks":805442568317,"channel":"status","text":"completed","answer":null}
+{"event":44,"seq":4,"thread":16,"ticks":805442568671,"channel":"currentPackage","text":"","answer":null}

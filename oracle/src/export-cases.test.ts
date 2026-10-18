@@ -4,10 +4,10 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EXPORT_CASES, hostItems, hostOptions } from "./export-cases.js";
 import { SCRATCH_EXPORT_CASES } from "./export-scratch-cases.js";
-import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, indexReadme, recordedCases, type CaseFile } from "./record-export-cases.js";
+import { CASE_ENGINES, blobsDir, casesDir, type CaseEngine } from "./case-engine.js";
+import { caseFile, caseReadme, indexReadme, recordedCases, type CaseFile } from "./record-export-cases.js";
 import { BLOB_THRESHOLD, blobMatchesName, externalizeLargeResponses, readTranscript } from "./transcript.js";
 
-const readCase = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
 
 describe("the 14.0.7 export case list", () => {
   it("has unique, folder-safe ids", () => {
@@ -60,7 +60,10 @@ describe("the 14.0.7 export case list", () => {
   });
 });
 
-describe("recorded 14.0.7 export fixtures", () => {
+describe.each(CASE_ENGINES)("recorded %s export fixtures", (engine: CaseEngine) => {
+  const CASES_DIR = casesDir(engine, "export");
+  const BLOBS_DIR = blobsDir(engine, "export");
+  const readCase = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
   const recorded = EXPORT_CASES.filter((c) => existsSync(join(CASES_DIR, c.id, "case.json")));
 
   it("records every case in the list and nothing else", () => {
@@ -74,7 +77,7 @@ describe("recorded 14.0.7 export fixtures", () => {
   });
 
   it("has an index README that is current", () => {
-    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recordedCases()));
+    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recordedCases(engine), engine));
   });
 
   it.each(recorded.map((c) => [c.id, c] as const))("%s", (id, c) => {
@@ -86,9 +89,9 @@ describe("recorded 14.0.7 export fixtures", () => {
 
     // The input and its Hashtable insertion order are recorded twice, and must agree with the list.
     const file = readCase(id);
-    expect(file).toEqual(caseFile(c, file.result));
+    expect(file).toEqual(caseFile(c, file.result, undefined, engine));
     const run = JSON.parse(readFileSync(join(dir, "run.json"), "utf8")) as { engine: string; params: { Items: string[] } };
-    expect(run.engine).toBe("14.0.7");
+    expect(run.engine).toBe(engine);
     expect(run.params.Items).toEqual(hostItems(c.packages));
     expect(readFileSync(join(dir, "README.md"), "utf8")).toBe(caseReadme(file));
 

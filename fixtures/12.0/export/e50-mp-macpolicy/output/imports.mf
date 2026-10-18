@@ -1,0 +1,8 @@
+<imports>
+  <package name="com.aras.innovator.access.uservisibilitypolicy" path=".\">
+    <dependson name="com.aras.innovator.access.mandatory" />
+    <dependson name="com.aras.innovator.derivedrelationships" />
+    <dependson name="com.aras.innovator.QueryBuilder" />
+    <dependson name="com.aras.innovator.derivedrelationships_default" />
+  </package>
+</imports>

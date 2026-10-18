@@ -1,0 +1,8 @@
+{"event":9,"seq":1,"thread":16,"ticks":807682685580,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-REF","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":807682688835,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-REF-Var_1","answer":null}
+{"event":16,"seq":3,"thread":16,"ticks":807684670779,"channel":"status","text":"completed","answer":null}
+{"event":17,"seq":4,"thread":16,"ticks":807684688372,"channel":"currentPackage","text":"Exporting referenced items from 'LIBSJS-SCRATCH-REFDEP'","answer":null}
+{"event":18,"seq":5,"thread":16,"ticks":807684689178,"channel":"status","text":"Item 1 of 2: List - Report Format Types","answer":null}
+{"event":24,"seq":6,"thread":16,"ticks":807685716358,"channel":"status","text":"Item 2 of 2: List - LIBSJS-SCRATCH-REFDEP-List_1","answer":null}
+{"event":27,"seq":7,"thread":16,"ticks":807686014595,"channel":"status","text":"completed","answer":null}
+{"event":28,"seq":8,"thread":16,"ticks":807686014801,"channel":"currentPackage","text":"","answer":null}

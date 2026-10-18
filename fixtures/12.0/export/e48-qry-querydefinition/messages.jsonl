@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":806124164140,"channel":"currentPackage","text":"Exporting package com.aras.innovator.derivedrelationships_default","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":806124167038,"channel":"status","text":"Item 1 of 1: qry_QueryDefinition - UserIdentities","answer":null}
+{"event":27,"seq":3,"thread":16,"ticks":806128118900,"channel":"status","text":"completed","answer":null}
+{"event":28,"seq":4,"thread":16,"ticks":806128119286,"channel":"currentPackage","text":"","answer":null}

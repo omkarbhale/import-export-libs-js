@@ -62,6 +62,8 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 
 `npm run oracle:export-cases` records ticket 05's 14.0.7 export catalogue (`src/export-cases.ts`) into `fixtures/14.0.7/export/<case>/`, one oracle export per case, read-only on dev. `--only <id>,…` picks cases, `--force` re-records, `--list` shows what is recorded, `--readme-only` rewrites the READMEs and index from the case list without running the engine. Each case lists its packages and items in the order the host inserts them into the engine's `Hashtable`; the multi-package ordering cases (`p1-*`) rely on that. The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
 
+`--engine 12.0` records the same catalogue from engine 12.0 into `fixtures/12.0/export/` (ticket 48); `fixtures/12.0/README.md` maps the 12.0 variant rules to cases. The same flag works for `oracle:export-scratch-cases` and `oracle:import-cases`.
+
 ## The DB patch command
 
 ```sh
@@ -84,7 +86,7 @@ ARAS_PASSWORD=… npm run oracle -- --engine 14.35 dbpatch oracle/dbpatch/manife
 
 `npm run oracle:export-scratch-cases` records the export cases whose items do not exist on dev (ticket 67, ticket 05's "24b" pass) into `fixtures/14.0.7/export/<case>/`, in the same layout as `oracle:export-cases` plus a `seed` record in `case.json` and a "Seed" section in the README. `--only <case or group>,…`, `--force`, `--list` and `--readme-only` work as there. It writes to dev, but only `LIBSJS-SCRATCH-*` packages and items, and deletes everything it created, even when a step fails.
 
-**The recipe** (the same for any engine; tickets 48 and 57 repeat it for 12.0 and 14.35 by changing the engine in `record-export-scratch-cases.ts` and its fixture folder, and the case list where an engine differs):
+**The recipe** (the same for any engine; ticket 48 ran it for 12.0 with `--engine 12.0`, and ticket 57 repeats it for 14.35 by adding 14.35 to `CASE_ENGINES` in `src/case-engine.ts`, and to the case list where an engine differs):
 
 1. **Import.** A seed group (`SEED_GROUPS` in `src/export-scratch-cases.ts`) lists import steps. Each is one oracle `import` of scratch packages built by `src/seed-packages.ts` (and `src/import-packages.ts` for S2 and S8), run with `--keep-created`, so the next step finds what it made. Every step must end as its `expect` says. A step that needs what an earlier one made, because the server looks it up when the item is added, is a step of its own.
 2. **Export.** Each case of the group is one read-only oracle `export` of the seeded items, named by type, id and keyed name. The id is the one the package file gives the item, except for a versionable item, which the server gives a new id on import: `{ created: n }` names the n-th created item of that type.
@@ -105,6 +107,8 @@ What the server taught the seeds (each is a failure the first import hit):
 - A derived relationship's `implementation_query` is computed when its family is activated and is dropped from an add, but an edit keeps it (after checking that the query's leaf is the relationship's destination ItemType), so `s6-special` sets it in a third step.
 - A dac_SubdomainPermission's `condition_xml` must pass the server's filter schema; a `method_call` with a `constant` parameter does, and a `property` condition is looked up against server state the seed does not build.
 - A cmf_ContentType makes the server generate an ItemType for each element and property type, named after them (`LIBSJS_SCRATCH_*`), and deleting the content type removes them.
+
+`--engine 12.0` records the same groups from engine 12.0 into `fixtures/12.0/export/` (ticket 48), seeding with the 12.0 oracle.
 
 ## The XSL probe
 
@@ -133,6 +137,7 @@ The folder it writes holds `run.json` (engine, toolset identity, stylesheet size
 - The packages are code (`src/import-packages.ts`): ids come from `sid(name)`, item files are written the way the export writes them, and each step's `input/` is exactly what the builder writes (a test checks it). Names follow `LIBSJS-SCRATCH-*`; ItemType and SQL names use `LIBSJS_SCRATCH_*`.
 - Each case README lists the ids created per step and the ids the cleanup deleted. `case.json` holds the same, machine-readable.
 - Every import begins with the list of all PackageDefinitions (about 2.7 MB), which differs from step to step because the earlier steps' scratch packages are in it. Large responses are stored once in `fixtures/14.0.7/import/_blobs/` (see `src/transcript.ts`).
+- `--engine 12.0` records the cases into `fixtures/12.0/import/` (ticket 48). A case lists the engines it runs on (`engines`; default all), and a step can name another expected outcome per engine (`expectOn`). Cases named `r*` exist only for 12.0, each pinning one of its variant rules. 12.0 has no language-pack import.
 - The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
 
 ## A recorded fixture folder

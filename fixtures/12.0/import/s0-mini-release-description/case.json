@@ -1,0 +1,169 @@
+{
+  "id": "s0-mini-release-description",
+  "engine": "12.0",
+  "catalogue": [
+    "S0",
+    "release/description both set"
+  ],
+  "title": "Release and Description both set",
+  "exercises": "The DatabaseUpgrade row carries target_release and description; the in-progress and success writes.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "release": "LIBSJS-SCRATCH-R1",
+        "description": "scratch import run"
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 54,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "ED8C6E9DDE1942CF87BAC62325C1D65F"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "905DFDFD8543439BAC074F1E3E9CDDA6"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "F8F03A5CE57F4137BC6123FA729FA364"
+          },
+          {
+            "type": "PackageElement",
+            "id": "DE33714234524F76B5F3CEAAEEF3C576"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "102E4D3F30644F99945B4BA503E64A8B"
+          },
+          {
+            "type": "Sequence",
+            "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "748E4975DE61485D8F016A616ABBB847"
+          },
+          {
+            "type": "PackageElement",
+            "id": "442AFE87C6C148F4BC8D5D0B42867DAE"
+          },
+          {
+            "type": "Variable",
+            "id": "C64257819194D0C9B4C3BDF82D642D78"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "EBABC7F90E7842318E74A00686DB8705"
+          },
+          {
+            "type": "PackageElement",
+            "id": "B4ABE245CC234FDEB699832E3B37B674"
+          },
+          {
+            "type": "Variable",
+            "id": "6E6B61827EA6F5DB6F735218645E60F3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "208369C71AF94C74B990D52A17DE50A0"
+          },
+          {
+            "type": "Variable",
+            "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E2B62604EA6F4A1AA2EE382021E2396F"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "E2B62604EA6F4A1AA2EE382021E2396F"
+    },
+    {
+      "type": "Variable",
+      "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "208369C71AF94C74B990D52A17DE50A0"
+    },
+    {
+      "type": "Variable",
+      "id": "6E6B61827EA6F5DB6F735218645E60F3"
+    },
+    {
+      "type": "PackageElement",
+      "id": "B4ABE245CC234FDEB699832E3B37B674"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "EBABC7F90E7842318E74A00686DB8705"
+    },
+    {
+      "type": "Variable",
+      "id": "C64257819194D0C9B4C3BDF82D642D78"
+    },
+    {
+      "type": "PackageElement",
+      "id": "442AFE87C6C148F4BC8D5D0B42867DAE"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "748E4975DE61485D8F016A616ABBB847"
+    },
+    {
+      "type": "Sequence",
+      "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "102E4D3F30644F99945B4BA503E64A8B"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "DE33714234524F76B5F3CEAAEEF3C576"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "F8F03A5CE57F4137BC6123FA729FA364"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "905DFDFD8543439BAC074F1E3E9CDDA6"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "ED8C6E9DDE1942CF87BAC62325C1D65F"
+    }
+  ]
+}

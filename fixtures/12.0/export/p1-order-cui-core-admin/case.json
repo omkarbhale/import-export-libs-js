@@ -1,0 +1,48 @@
+{
+  "id": "p1-order-cui-core-admin",
+  "engine": "12.0",
+  "catalogue": [
+    "P1"
+  ],
+  "title": "Three packages, inserted cui, core, admin",
+  "exercises": "The same packages as p1-order-admin-core-cui in the reverse insertion order.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cui",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "58AECE23031E496FB04FFDEA6EDEF8A0",
+          "keyedName": "PresentableItems"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Form",
+          "id": "F288A3345225407EACBC936191097BCD",
+          "keyedName": "Activity Template"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.admin",
+      "items": [
+        {
+          "type": "Item Report",
+          "id": "128C30A645F04E5380F8B4709A3BD1A1",
+          "keyedName": "128C30A645F04E5380F8B4709A3BD1A1"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 77,
+    "error": null
+  }
+}

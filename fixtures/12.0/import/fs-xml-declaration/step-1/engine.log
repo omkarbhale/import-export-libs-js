@@ -1,0 +1,9 @@
+Start of importing packages
+
+		****ErrorMessage****
+
+Import package LIBSJS-SCRATCH-FSDECL failed with message:
+
+Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.
+Updating LIBSJS-SCRATCH-FSDECL to failed release status
+		********************

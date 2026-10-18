@@ -1,0 +1,37 @@
+{
+  "id": "r15-latin1-file",
+  "engine": "12.0",
+  "catalogue": [
+    "R15"
+  ],
+  "title": "An item file in Latin-1 with no XML declaration",
+  "exercises": "XmlDocument.Load decodes the file itself: the invalid UTF-8 byte is an XmlException ('Invalid character in the given encoding'), where 14.0.7 would read U+FFFD and import the item.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-FSLATIN1"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 12,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "2B4B44C787A447A98A9EBBD93EC103FA"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "DatabaseUpgrade",
+      "id": "2B4B44C787A447A98A9EBBD93EC103FA"
+    }
+  ]
+}

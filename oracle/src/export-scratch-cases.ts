@@ -20,9 +20,9 @@ import type { ItemRef } from "./record.js";
  * 3. **Clean up**: one oracle `cleanup` run deletes everything the steps created,
  *    newest first, and the recorder insists that nothing is kept or unverified.
  *    Step 3 also runs when step 1 or 2 fails.
- * Engines 12.0 and 14.35 (tickets 48 and 57) repeat the same three steps with
- * their own `--engine`; the group definitions below are engine-neutral
- * except where a case says otherwise.
+ * Ticket 48 ran the same three steps for 12.0 (`--engine 12.0`); 14.35 (ticket
+ * 57) repeats them with its own `--engine`. The group definitions below are
+ * engine-neutral except where a case says otherwise.
  */
 
 /**

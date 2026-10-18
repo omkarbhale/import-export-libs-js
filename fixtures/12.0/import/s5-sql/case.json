@@ -1,0 +1,84 @@
+{
+  "id": "s5-sql",
+  "engine": "12.0",
+  "catalogue": [
+    "S5"
+  ],
+  "title": "A SQL item imported twice",
+  "exercises": "DeleteSqlItems runs before the first SQL item of a package is imported: it sends a delete for every SQL item in the package DOM (a first import deletes an id the server does not have), so a re-import deletes and re-adds the view. The cleanup drops the view with the item.",
+  "steps": [
+    {
+      "name": "fresh import",
+      "packages": [
+        "LIBSJS-SCRATCH-SQL"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 24,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "88F62ADC17064E039610CC14DFCCDEFA"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "90DD0A4F549240C9BF4456426AEB4D19"
+          },
+          {
+            "type": "SQL",
+            "id": "D9E85E9C05E70116CB38C132B3F44A7A"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "6BCBA5689AEF4795A1A8CF6FF7218F14"
+          },
+          {
+            "type": "PackageElement",
+            "id": "ED1A76AFB5F94659A357CF71C5063910"
+          }
+        ]
+      }
+    },
+    {
+      "name": "re-import",
+      "packages": [
+        "LIBSJS-SCRATCH-SQL"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 19,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "ED1A76AFB5F94659A357CF71C5063910"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "6BCBA5689AEF4795A1A8CF6FF7218F14"
+    },
+    {
+      "type": "SQL",
+      "id": "D9E85E9C05E70116CB38C132B3F44A7A"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "90DD0A4F549240C9BF4456426AEB4D19"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "88F62ADC17064E039610CC14DFCCDEFA"
+    }
+  ]
+}

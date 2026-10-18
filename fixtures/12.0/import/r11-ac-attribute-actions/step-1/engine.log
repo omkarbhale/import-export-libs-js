@@ -1,0 +1,25 @@
+Start of importing packages
+start of execution : 10/19/2026 03:31:12
+Updating LIBSJS-SCRATCH-ACACT to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-ACACT****
+Processing (add)   id : 4811409318570F0FC3A8096F18B1E8BD    keyed_name : LIBSJS-SCRATCH-AcAct_Var_1    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 4811409318570F0FC3A8096F18B1E8BD    keyed_name : LIBSJS-SCRATCH-AcAct_Var_1    type : Variable  
+Adding item into PackageDefinition with id = 4811409318570F0FC3A8096F18B1E8BD and type = Variable
+Item successfully added in packdefinition  id  4811409318570F0FC3A8096F18B1E8BD type Variable
+Processing (delete)   id : C7FCA00128956754C5F0A69AD0BF764E    keyed_name : LIBSJS-SCRATCH-AcAct_Attribute    type : ac_PolicyAccessItemAttribute  
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : C7FCA00128956754C5F0A69AD0BF764E    keyed_name : LIBSJS-SCRATCH-AcAct_Attribute    type : ac_PolicyAccessItemAttribute  
+Processing (purge)   id : 688ABF901F3B67F55DC8FDF4BCC22B6A     type : ac_PolicyAccessItemAttribute  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ac_PolicyAccessItemAttribute</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(purge)   id : 688ABF901F3B67F55DC8FDF4BCC22B6A     type : ac_PolicyAccessItemAttribute  
+completed
+Updating LIBSJS-SCRATCH-ACACT to success release status
+end of execution : 1

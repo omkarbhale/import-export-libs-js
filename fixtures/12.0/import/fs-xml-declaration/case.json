@@ -1,0 +1,37 @@
+{
+  "id": "fs-xml-declaration",
+  "engine": "12.0",
+  "catalogue": [
+    "file system"
+  ],
+  "title": "An item file that starts with an XML declaration",
+  "exercises": "The files are concatenated through OuterXml, so the declaration lands inside the document: 'Unable to apply build.xsl'.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-FSDECL"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 12,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "A1D217DAD488491FBF608C5C11A2CDFE"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "DatabaseUpgrade",
+      "id": "A1D217DAD488491FBF608C5C11A2CDFE"
+    }
+  ]
+}

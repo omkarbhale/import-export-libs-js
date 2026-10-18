@@ -1,0 +1,11 @@
+Start of importing packages
+One of imported packages depends on the package 'LIBSJS-SCRATCH-REFDEP' that neither imported in this session nor exists in the database
+start of execution : 10/19/2026 03:29:04
+Updating LIBSJS-SCRATCH-REF to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-REF****
+WARNING (importing 'LIBSJS-SCRATCH-REF' package): Item of type 'List' with id 'ADFEE419D8DB444BF5EDED7C490E4BA2' is not added as a referenced element for package 'LIBSJS-SCRATCH-REF' because the item was not found in the target database
+WARNING (importing 'LIBSJS-SCRATCH-REF' package): Item of type 'List' with id '17122DC1E922ACFFD59DB017AD0C4FFC' is not added as a referenced element for package 'LIBSJS-SCRATCH-REF' because the item was not found in the target database
+Processing (add)   id : 6A880A1FAC02A374F97FFF2376246C91    keyed_name : LIBSJS-SCRATCH-REF-Var_1    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained

@@ -1,0 +1,59 @@
+{
+  "id": "p4-folder-mapping",
+  "engine": "12.0",
+  "catalogue": [
+    "P4"
+  ],
+  "title": "Standard and non-standard package folder mapping",
+  "exercises": "CreateOutputDir rules: com.aras.innovator.core (com\\aras\\innovator\\core), com.aras.defaults.filerepresentations, com.aras.innovator.solution.PLM (PLM\\Import) and com.steepgraph.pagex (pagex\\Import). No last-segment collision exists on dev; the wipe-collision case needs scratch S8 (ticket 67).",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Form",
+          "id": "F288A3345225407EACBC936191097BCD",
+          "keyedName": "Activity Template"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.defaults.filerepresentations",
+      "items": [
+        {
+          "type": "fr_RepresentationType",
+          "id": "16039DDADB33459A9F6B344B9DD8C735",
+          "keyedName": "CATIA Assembly SCS Representation"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Variable",
+          "id": "968471EC23804034A3B7B2B5C78601E7",
+          "keyedName": "CAD Angular Units"
+        }
+      ]
+    },
+    {
+      "name": "com.steepgraph.pagex",
+      "items": [
+        {
+          "type": "CommandBarButton",
+          "id": "0DD3CB20F7224E3FB3D5CA87E100A04A",
+          "keyedName": "com.steepgraph.pagex.builder.button"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "note": "The last-segment folder collision needs scratch package S8; ticket 67.",
+  "result": {
+    "hostExit": 0,
+    "calls": 62,
+    "error": null
+  }
+}

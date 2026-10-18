@@ -1,0 +1,31 @@
+{
+  "id": "man-duplicate-requested",
+  "engine": "12.0",
+  "catalogue": [
+    "manifest"
+  ],
+  "title": "The same package requested twice",
+  "exercises": "The ordered dictionary in GetPackageNamesInImportOrder throws on a duplicate key; ImportSolutions logs it and returns 1 before any import.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "only": [
+        "LIBSJS-SCRATCH-MINI",
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 6,
+        "returned": 1,
+        "error": null,
+        "created": []
+      }
+    }
+  ],
+  "deleted": []
+}

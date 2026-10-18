@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":805466730722,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":805466736386,"channel":"status","text":"Item 1 of 1: Workflow Map - PE_Deviation","answer":null}
+{"event":36,"seq":3,"thread":16,"ticks":805472199597,"channel":"status","text":"completed","answer":null}
+{"event":37,"seq":4,"thread":16,"ticks":805472199937,"channel":"currentPackage","text":"","answer":null}

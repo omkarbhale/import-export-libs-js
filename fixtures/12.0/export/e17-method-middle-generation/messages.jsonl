@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":18,"ticks":805347779516,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":18,"ticks":805347787076,"channel":"status","text":"Item 1 of 1: Method - onChange Action","answer":null}
+{"event":19,"seq":3,"thread":18,"ticks":805349539276,"channel":"status","text":"completed","answer":null}
+{"event":20,"seq":4,"thread":18,"ticks":805349539615,"channel":"currentPackage","text":"","answer":null}

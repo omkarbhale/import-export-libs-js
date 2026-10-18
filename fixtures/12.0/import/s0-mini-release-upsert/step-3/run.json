@@ -1,0 +1,148 @@
+{
+  "engine": "12.0",
+  "command": "import",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Merge": true,
+    "Release": "LIBSJS-SCRATCH-R2",
+    "Description": "third",
+    "PriorCreated": [
+      "DatabaseUpgrade\tB963ED65D3E248CD8492B84CDCF1DA4B\t0",
+      "PackageDefinition\t398587F5D6D84A9884A9502A1F7FDB72\t0",
+      "List\tC6018EE6DD2187000216C39E55D07AAE\t0",
+      "PackageGroup\t09BB2C5BBEA84BFD9CC690539591EF23\t0",
+      "PackageElement\t08844F13C68E482E91D4667493DF6B56\t0",
+      "List\tE182B4D73FB907759D5E1BA11441412D\t0",
+      "PackageElement\tE15EC6FCE5F64A45BD79327DE890DF4E\t0",
+      "Sequence\t39AADEEB61E0B66B7E4EFAC25E18229E\t0",
+      "PackageGroup\t9E790935832745B8BA747CC93A3F641E\t0",
+      "PackageElement\tCCF0FF7D5B254CF1AC4C4C8438765461\t0",
+      "Variable\tC64257819194D0C9B4C3BDF82D642D78\t0",
+      "PackageGroup\t74B0D56E60F145CAA7844B7727F62BD6\t0",
+      "PackageElement\tE804436383A2421C971F5605D9BF49E1\t0",
+      "Variable\t6E6B61827EA6F5DB6F735218645E60F3\t0",
+      "PackageElement\t62ADB82979304CE6B666AC61EA92AF80\t0",
+      "Variable\tDFF8CFAAEDCFDEAAB1DDB1DAB96BC23D\t0",
+      "PackageElement\t9BFA2BAA1F2841D5BCA7281D5D717371\t0"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:55:20.336Z",
+  "finishedAt": "2026-10-18T21:55:24.701Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 47,
+    "messages": 11,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "4ADD68E92A3446E8B27F2B1C0FBA4CE9"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "4ADD68E92A3446E8B27F2B1C0FBA4CE9"
+      },
+      {
+        "type": "PackageElement",
+        "id": "9BFA2BAA1F2841D5BCA7281D5D717371"
+      },
+      {
+        "type": "Variable",
+        "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "62ADB82979304CE6B666AC61EA92AF80"
+      },
+      {
+        "type": "Variable",
+        "id": "6E6B61827EA6F5DB6F735218645E60F3"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E804436383A2421C971F5605D9BF49E1"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "74B0D56E60F145CAA7844B7727F62BD6"
+      },
+      {
+        "type": "Variable",
+        "id": "C64257819194D0C9B4C3BDF82D642D78"
+      },
+      {
+        "type": "PackageElement",
+        "id": "CCF0FF7D5B254CF1AC4C4C8438765461"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "9E790935832745B8BA747CC93A3F641E"
+      },
+      {
+        "type": "Sequence",
+        "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E15EC6FCE5F64A45BD79327DE890DF4E"
+      },
+      {
+        "type": "List",
+        "id": "E182B4D73FB907759D5E1BA11441412D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "08844F13C68E482E91D4667493DF6B56"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "09BB2C5BBEA84BFD9CC690539591EF23"
+      },
+      {
+        "type": "List",
+        "id": "C6018EE6DD2187000216C39E55D07AAE"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "398587F5D6D84A9884A9502A1F7FDB72"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "B963ED65D3E248CD8492B84CDCF1DA4B"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

@@ -13,7 +13,10 @@ import {
   delPackage,
   delPromote,
   delRefused,
+  acActions,
+  fsLatin1,
   fsOdd,
+  fsUtf16NoBom,
   fsXmlDeclaration,
   instanceId,
   baseId,
@@ -28,6 +31,7 @@ import {
   unresRelType,
   type ScratchPackage,
 } from "./import-packages.js";
+import { CASE_ENGINES, type CaseEngine } from "./case-engine.js";
 import type { HostValue } from "./record.js";
 
 /**
@@ -74,7 +78,12 @@ export interface ImportStep {
   only?: string[];
   options?: ImportOptions;
   expect: StepOutcome;
+  /** Engines on which the step ends otherwise than `expect` says (a variant rule changes the outcome). */
+  expectOn?: Partial<Record<CaseEngine, StepOutcome>>;
 }
+
+/** What a step must end with on an engine. */
+export const expectedOutcome = (step: Pick<ImportStep, "expect" | "expectOn">, engine: CaseEngine): StepOutcome => step.expectOn?.[engine] ?? step.expect;
 
 export interface ImportCase {
   /** The folder under fixtures/14.0.7/import/. */
@@ -87,7 +96,12 @@ export interface ImportCase {
   steps: ImportStep[];
   /** What the case does not cover, or what it needs from dev. */
   note?: string;
+  /** The engines the case is recorded on (default: every one); a case that pins a variant rule of one engine lists only that engine. */
+  engines?: readonly CaseEngine[];
 }
+
+/** The cases an engine records, in list order. */
+export const casesFor = (engine: CaseEngine): ImportCase[] => IMPORT_CASES.filter((c) => (c.engines ?? CASE_ENGINES).includes(engine));
 
 /** Host parameters for a step's options; anything unset keeps the engine's default. */
 export function hostOptions(options: ImportOptions | undefined, only?: readonly string[]): Record<string, HostValue> {
@@ -328,8 +342,9 @@ export const IMPORT_CASES: ImportCase[] = [
     id: "s4-mp-promote",
     catalogue: ["S4", "R12"],
     title: "An mp_PromoteItem action on an mp_MacPolicy",
-    exercises: "build.xsl selects mp_* items with any action in 14.x (12.0 drops this one), so the engine sends it; the policy does not exist, so the server's answer ends the package.",
-    steps: [step("import", one(delPromote()), "engine-failure")],
+    exercises:
+      "build.xsl selects mp_* items with any action in 14.x, so the engine sends it; the policy does not exist, so the server's answer ends the package. 12.0 drops mp_PromoteItem (R12): nothing is sent and the package succeeds.",
+    steps: [{ ...step("import", one(delPromote()), "engine-failure"), expectOn: { "12.0": "success" } }],
     note: "No mp_MacPolicy is created: the item names an id that exists nowhere.",
   },
 
@@ -434,5 +449,32 @@ export const IMPORT_CASES: ImportCase[] = [
     title: "An item file that starts with an XML declaration",
     exercises: "The files are concatenated through OuterXml, so the declaration lands inside the document: 'Unable to apply build.xsl'.",
     steps: [step("import", one(fsXmlDeclaration()), "engine-failure")],
+  },
+
+  // ---- 12.0 variant rules (ticket 48): cases that exist only for 12.0 ----
+  {
+    id: "r11-ac-attribute-actions",
+    catalogue: ["R11"],
+    engines: ["12.0"],
+    title: "Delete and purge of an ac_PolicyAccessItemAttribute",
+    exercises:
+      "build.xsl for ac_PolicyAccessItemAttribute: 12.0 lists it in neither the edit list nor the unlisted-types list, so every action of it goes to the last bucket, after the Variable add. 14.0.7 would drop the delete and the purge. The ids exist nowhere.",
+    steps: [step("import", one(acActions()), "success")],
+  },
+  {
+    id: "r15-latin1-file",
+    catalogue: ["R15"],
+    engines: ["12.0"],
+    title: "An item file in Latin-1 with no XML declaration",
+    exercises: "XmlDocument.Load decodes the file itself: the invalid UTF-8 byte is an XmlException ('Invalid character in the given encoding'), where 14.0.7 would read U+FFFD and import the item.",
+    steps: [step("import", one(fsLatin1()), "engine-failure")],
+  },
+  {
+    id: "r15-utf16-no-bom",
+    catalogue: ["R15"],
+    engines: ["12.0"],
+    title: "A UTF-16LE item file with no byte-order mark",
+    exercises: "XmlDocument.Load recognises UTF-16 without a mark when the file starts with '<', so the item is imported; 14.0.7 fails the load.",
+    steps: [step("import", one(fsUtf16NoBom()), "success")],
   },
 ];

@@ -1,0 +1,35 @@
+﻿<AML>
+ <Item type="Form" id="80C1916ED13FB91AABE8B59712B5B25D" action="add">
+  <category_form>0</category_form>
+  <height>200</height>
+  <stylesheet><![CDATA[../styles/default.css]]></stylesheet>
+  <width>400</width>
+  <name>LIBSJS-SCRATCH-Form_1</name>
+  <Relationships>
+   <Item type="Body" id="B44156C9C34A0DF7E3B8696DD1C10E7B" action="add">
+    <bg_color>#ffffff</bg_color>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-Form_1" type="Form">80C1916ED13FB91AABE8B59712B5B25D</source_id>
+    <Relationships>
+     <Item type="Field" id="28BBB4301BFE2E4CB6EAD529D97A117F" action="add">
+      <border_width>0</border_width>
+      <display_length>114</display_length>
+      <display_length_unit>px</display_length_unit>
+      <field_type>text</field_type>
+      <is_disabled>0</is_disabled>
+      <is_visible>1</is_visible>
+      <label xml:lang="en">Title</label>
+      <label_position>top</label_position>
+      <list_no_blank>0</list_no_blank>
+      <sort_order>128</sort_order>
+      <source_id keyed_name="B44156C9C34A0DF7E3B8696DD1C10E7B" type="Body">B44156C9C34A0DF7E3B8696DD1C10E7B</source_id>
+      <tab_stop>0</tab_stop>
+      <x>0</x>
+      <y>0</y>
+      <name>title</name>
+     </Item>
+    </Relationships>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

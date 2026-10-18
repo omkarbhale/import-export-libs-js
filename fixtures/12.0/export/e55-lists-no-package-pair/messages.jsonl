@@ -1,0 +1,5 @@
+{"event":9,"seq":1,"thread":18,"ticks":806467267996,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":18,"ticks":806467274602,"channel":"status","text":"Item 1 of 2: List - Yes/No","answer":null}
+{"event":17,"seq":3,"thread":18,"ticks":806468963051,"channel":"status","text":"Item 2 of 2: List - True/False","answer":null}
+{"event":20,"seq":4,"thread":18,"ticks":806469298569,"channel":"status","text":"completed","answer":null}
+{"event":21,"seq":5,"thread":18,"ticks":806469298965,"channel":"currentPackage","text":"","answer":null}

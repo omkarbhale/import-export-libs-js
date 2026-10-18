@@ -1,0 +1,8 @@
+{"event":9,"seq":1,"thread":18,"ticks":812516671226,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":18,"ticks":812517188167,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-ACACT","answer":null}
+{"event":13,"seq":3,"thread":18,"ticks":812517555787,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-AcAct_Var_1","answer":null}
+{"event":23,"seq":4,"thread":18,"ticks":812519338838,"channel":"status","text":"Post actions","answer":null}
+{"event":26,"seq":5,"thread":18,"ticks":812519604349,"channel":"status","text":"Post actions","answer":null}
+{"event":29,"seq":6,"thread":18,"ticks":812519909246,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":30,"seq":7,"thread":18,"ticks":812519914670,"channel":"status","text":"completed","answer":null}
+{"event":35,"seq":8,"thread":18,"ticks":812520651895,"channel":"status","text":"completed","answer":null}

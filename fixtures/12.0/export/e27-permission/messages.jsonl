@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":805626016009,"channel":"currentPackage","text":"Exporting package com.aras.innovator.tgv.configuration","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":805626022554,"channel":"status","text":"Item 1 of 1: Permission - rb_TreeGridView","answer":null}
+{"event":17,"seq":3,"thread":16,"ticks":805627527825,"channel":"status","text":"completed","answer":null}
+{"event":18,"seq":4,"thread":16,"ticks":805627528076,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,28 @@
+{
+  "id": "e28-action",
+  "engine": "12.0",
+  "catalogue": [
+    "E28"
+  ],
+  "title": "Action: method and on_complete (PE_AddToChange)",
+  "exercises": "Levels 1. Both method and on_complete are set, so both become gets by keyed_name.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Action",
+          "id": "83FB72FC3E4D42B8B51BCD7F4194E527",
+          "keyedName": "PE_AddToChange"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 16,
+    "error": null
+  }
+}

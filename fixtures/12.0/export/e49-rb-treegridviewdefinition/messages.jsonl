@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":806152793515,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":806152799932,"channel":"status","text":"Item 1 of 1: rb_TreeGridViewDefinition - PE_BomStructure","answer":null}
+{"event":60,"seq":3,"thread":16,"ticks":806163995432,"channel":"status","text":"completed","answer":null}
+{"event":61,"seq":4,"thread":16,"ticks":806163995797,"channel":"currentPackage","text":"","answer":null}

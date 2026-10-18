@@ -1,0 +1,4 @@
+{"event":8,"seq":1,"thread":16,"ticks":805760065944,"channel":"currentPackage","text":"Exporting package com.aras.innovator.admin","answer":null}
+{"event":9,"seq":2,"thread":16,"ticks":805760071485,"channel":"status","text":"Item 1 of 1: Item Report - 128C30A645F04E5380F8B4709A3BD1A1","answer":null}
+{"event":15,"seq":3,"thread":16,"ticks":805761529459,"channel":"status","text":"completed","answer":null}
+{"event":16,"seq":4,"thread":16,"ticks":805761530113,"channel":"currentPackage","text":"","answer":null}

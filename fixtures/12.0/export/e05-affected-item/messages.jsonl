@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":804798003686,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":804798007795,"channel":"status","text":"Item 1 of 1: ItemType - Affected Item","answer":null}
+{"event":63,"seq":3,"thread":16,"ticks":804809829046,"channel":"status","text":"completed","answer":null}
+{"event":64,"seq":4,"thread":16,"ticks":804809829427,"channel":"currentPackage","text":"","answer":null}

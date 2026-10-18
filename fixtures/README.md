@@ -14,6 +14,8 @@ Fixture tickets add one folder per engine version and fixture family. `wire/` ho
 
 `14.35/dbpatch/` holds the 14.35 DB patch cases (ticket 72), one folder per case with a `step-<n>/` folder per oracle `dbpatch` run (see its `README.md`): the `admin` login that the engine refuses, and the committed no-op patch applied as `root` and again. A step folder has the run record (with the cleanup report), `transcript.jsonl`, `messages.jsonl`, `engine.log`, `host.log` and `input/`, the manifest and patch file the engine read. Each case README lists the ids created and deleted.
 
+`12.0/export/` and `12.0/import/` (ticket 48) hold the same cases recorded from engine 12.0.0.13341 (`npm run oracle:export-cases -- --engine 12.0`, `oracle:export-scratch-cases` and `oracle:import-cases` likewise), in the same layout. The export catalogue and the scratch-seeded export cases are those of 14.0.7, so the two engines can be compared case by case; the import side adds three cases that exist only for 12.0 (`r11-ac-attribute-actions`, `r15-latin1-file`, `r15-utf16-no-bom`), and some shared cases end differently (a case README's "Expected" column shows it). `12.0/README.md` maps each 12.0 variant rule to its cases. 12.0 has no language-pack import, so there is no `12.0/language-pack/`.
+
 Rules for this folder:
 
 - **Bytes are exact.** Files keep the engine's BOM, CRLF line endings and indentation. `.gitattributes` turns off line-ending conversion here, so never re-save these files with an editor.
