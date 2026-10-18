@@ -67,6 +67,13 @@ describe("oracle import exit status", () => {
     expect(stderr).toContain("the host reported no cleanup");
   });
 
+  it("exits 0 for a run that keeps what it created for a later cleanup", async () => {
+    const code = await run(result(0, { created: [LIST], deferred: true, deleted: [], kept: [], unverified: [] }));
+    expect(code).toBe(0);
+    expect(stdout).toContain("kept 1 created items for a later cleanup run");
+    expect(stderr).toBe("");
+  });
+
   it("passes the host's status through once everything created is deleted", async () => {
     const clean: CleanupReport = { created: [LIST], deleted: [LIST], kept: [], unverified: [] };
     expect(await run(result(0, clean))).toBe(0);

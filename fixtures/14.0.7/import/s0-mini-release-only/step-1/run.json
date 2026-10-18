@@ -1,0 +1,187 @@
+{
+  "engine": "14.0.7",
+  "command": "import",
+  "toolset": {
+    "digest": "19573a97899a",
+    "source": "Desktop\\ImportExport\\23\\Import",
+    "libs": {
+      "version": "14.0.7.35492",
+      "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+    },
+    "iom": {
+      "version": "14.0.7.35492",
+      "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Release": "LIBSJS-SCRATCH-R1"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T20:18:12.758Z",
+  "finishedAt": "2026-10-18T20:18:16.723Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 55,
+    "messages": 11,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "712734155B944943B9FD1A1F0EEC0681"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "890E88B7E5284341B16BCD6C35FE584B"
+      },
+      {
+        "type": "List",
+        "id": "C6018EE6DD2187000216C39E55D07AAE"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "B25DD82F21F1404382AB535F8A2BEFDC"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E917F32D16C140B58639C7E90B785BDE"
+      },
+      {
+        "type": "List",
+        "id": "E182B4D73FB907759D5E1BA11441412D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A1209BE34D554E658764D909371BB131"
+      },
+      {
+        "type": "Sequence",
+        "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C09A8BBA4ED646F69D2776B497C7283A"
+      },
+      {
+        "type": "PackageElement",
+        "id": "141E328A12FA4FDD91E189287E4559B4"
+      },
+      {
+        "type": "Variable",
+        "id": "C64257819194D0C9B4C3BDF82D642D78"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "6131E003C5FE468DAF4FEC428FF35CDD"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E32EBD1209FD48F2B4D172FF74927A8D"
+      },
+      {
+        "type": "Variable",
+        "id": "6E6B61827EA6F5DB6F735218645E60F3"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A00D83411D664DB4B44AC6C236BF2D9B"
+      },
+      {
+        "type": "Variable",
+        "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "152323FF61D14EC0A2168CBCC74878F3"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "152323FF61D14EC0A2168CBCC74878F3"
+      },
+      {
+        "type": "Variable",
+        "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A00D83411D664DB4B44AC6C236BF2D9B"
+      },
+      {
+        "type": "Variable",
+        "id": "6E6B61827EA6F5DB6F735218645E60F3"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E32EBD1209FD48F2B4D172FF74927A8D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "6131E003C5FE468DAF4FEC428FF35CDD"
+      },
+      {
+        "type": "Variable",
+        "id": "C64257819194D0C9B4C3BDF82D642D78"
+      },
+      {
+        "type": "PackageElement",
+        "id": "141E328A12FA4FDD91E189287E4559B4"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C09A8BBA4ED646F69D2776B497C7283A"
+      },
+      {
+        "type": "Sequence",
+        "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A1209BE34D554E658764D909371BB131"
+      },
+      {
+        "type": "List",
+        "id": "E182B4D73FB907759D5E1BA11441412D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "E917F32D16C140B58639C7E90B785BDE"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "B25DD82F21F1404382AB535F8A2BEFDC"
+      },
+      {
+        "type": "List",
+        "id": "C6018EE6DD2187000216C39E55D07AAE"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "890E88B7E5284341B16BCD6C35FE584B"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "712734155B944943B9FD1A1F0EEC0681"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

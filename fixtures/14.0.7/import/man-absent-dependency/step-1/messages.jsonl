@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":754103561843,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":754104540030,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-ABSENTDEP","answer":null}
+{"event":16,"seq":3,"thread":16,"ticks":754105245089,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-AbsentDep_Var_1","answer":null}
+{"event":26,"seq":4,"thread":16,"ticks":754106799026,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":27,"seq":5,"thread":16,"ticks":754106800139,"channel":"status","text":"completed","answer":null}
+{"event":32,"seq":6,"thread":16,"ticks":754107620062,"channel":"status","text":"completed","answer":null}

@@ -1,0 +1,37 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: True
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:57:40
+Updating 'LIBSJS-SCRATCH-DEL' package to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-DEL****
+Processing (delete)   id : 28BBB4301BFE2E4CB6EAD529D97A117F    keyed_name : LIBSJS-SCRATCH-Del_Field_1    type : Field  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\input\LIBSJS-SCRATCH-DEL\Import\Field\LIBSJS-SCRATCH-Del_Field_1.xml'
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : 28BBB4301BFE2E4CB6EAD529D97A117F    keyed_name : LIBSJS-SCRATCH-Del_Field_1    type : Field  
+Processing (delete)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Del_Form_1    type : Form  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\input\LIBSJS-SCRATCH-DEL\Import\Form\LIBSJS-SCRATCH-Del_Form_1.xml'
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Del_Form_1    type : Form  
+Processing (delete)   id : 413A0B202A289E50F7B489B7A9A22014    keyed_name : LIBSJS-SCRATCH-Del_Value_2    type : Value  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202737-14.0.7-import-75dd88\input\LIBSJS-SCRATCH-DEL\Import\Value\LIBSJS-SCRATCH-Del_Value_2.xml'
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : 413A0B202A289E50F7B489B7A9A22014    keyed_name : LIBSJS-SCRATCH-Del_Value_2    type : Value  
+completed
+Updating 'LIBSJS-SCRATCH-DEL' package to success release status
+end of execution : 10/19/2026 01:57:41

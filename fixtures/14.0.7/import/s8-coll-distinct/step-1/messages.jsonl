@@ -1,0 +1,11 @@
+{"event":10,"seq":1,"thread":17,"ticks":753875438451,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":17,"ticks":753876074752,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-A.Coll","answer":null}
+{"event":14,"seq":3,"thread":17,"ticks":753876491462,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_A","answer":null}
+{"event":24,"seq":4,"thread":17,"ticks":753878670697,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":25,"seq":5,"thread":17,"ticks":753878681393,"channel":"status","text":"completed","answer":null}
+{"event":32,"seq":6,"thread":17,"ticks":753879879380,"channel":"status","text":"Building  solution","answer":null}
+{"event":33,"seq":7,"thread":17,"ticks":753879889043,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-B.Coll","answer":null}
+{"event":36,"seq":8,"thread":17,"ticks":753880224202,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_B","answer":null}
+{"event":43,"seq":9,"thread":17,"ticks":753881284766,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":44,"seq":10,"thread":17,"ticks":753881285371,"channel":"status","text":"completed","answer":null}
+{"event":49,"seq":11,"thread":17,"ticks":753882177942,"channel":"status","text":"completed","answer":null}

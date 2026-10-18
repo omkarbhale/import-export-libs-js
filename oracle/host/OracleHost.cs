@@ -81,6 +81,12 @@ namespace LibsJsOracle
         /// <summary>Every item a recorded call created or may have created, in completion order.</summary>
         public static IList<CreatedItem> Created { get { lock (Gate) { return _created.ToArray(); } } }
 
+        /// <summary>An item made outside the recorded calls (a pre-run step) that the cleanup must delete.</summary>
+        public static void AddCreated(CreatedItem item)
+        {
+            lock (Gate) { _created.Add(item); }
+        }
+
         public static void Open(string callsPath, string messagesPath)
         {
             var utf8 = new UTF8Encoding(false);
@@ -287,20 +293,41 @@ namespace LibsJsOracle
         }
     }
 
+    /// <summary>
+    /// Stands in for the user pressing Cancel: after the Nth status message is
+    /// delivered it calls ImportExportManager.Cancel(), which the import loop
+    /// reads before its next item. 0 never cancels.
+    /// </summary>
+    public class CancelTrigger
+    {
+        public int After;
+        public ImportExportManager Manager;
+        private int _seen;
+
+        public void Status()
+        {
+            if (After <= 0 || Manager == null) return;
+            if (++_seen == After) Manager.Cancel();
+        }
+    }
+
     public class RecordedMessage : Message
     {
         private readonly string _channel;
         private readonly bool? _answer;
+        private readonly CancelTrigger _cancel;
 
-        public RecordedMessage(string channel, bool? answer)
+        public RecordedMessage(string channel, bool? answer, CancelTrigger cancel)
         {
             _channel = channel;
             _answer = answer;
+            _cancel = cancel;
         }
 
         public override bool? Execute()
         {
             Rec.Message(_channel, Text, _answer);
+            if (_channel == "status" && _cancel != null) _cancel.Status();
             return _answer;
         }
     }
@@ -313,14 +340,19 @@ namespace LibsJsOracle
     public class RecordedMessages : IMessagesFactory
     {
         private readonly bool? _questionAnswer;
+        private readonly CancelTrigger _cancel;
 
-        public RecordedMessages(bool? questionAnswer) { _questionAnswer = questionAnswer; }
+        public RecordedMessages(bool? questionAnswer, CancelTrigger cancel)
+        {
+            _questionAnswer = questionAnswer;
+            _cancel = cancel;
+        }
 
-        public Message GetErrorMessage() { return new RecordedMessage("error", null); }
-        public Message GetErrorMessageQuestion() { return new RecordedMessage("errorQuestion", _questionAnswer); }
-        public Message GetWarningMessage() { return new RecordedMessage("warning", null); }
-        public Message GetStatusMessage() { return new RecordedMessage("status", null); }
-        public Message GetCurrentPackageMessage() { return new RecordedMessage("currentPackage", null); }
+        public Message GetErrorMessage() { return new RecordedMessage("error", null, _cancel); }
+        public Message GetErrorMessageQuestion() { return new RecordedMessage("errorQuestion", _questionAnswer, _cancel); }
+        public Message GetWarningMessage() { return new RecordedMessage("warning", null, _cancel); }
+        public Message GetStatusMessage() { return new RecordedMessage("status", null, _cancel); }
+        public Message GetCurrentPackageMessage() { return new RecordedMessage("currentPackage", null, _cancel); }
     }
 
     public class HostRequest
@@ -337,6 +369,11 @@ namespace LibsJsOracle
         public string ManifestFile;     // import: the manifest's full path
         public string[] Items;          // export: "package\ttype\tid\tkeyed name"
         public string[] Packages;       // import: null means every package in the manifest
+        public int CancelAfterStatus;   // import: press Cancel after this many status messages (0: never)
+        public bool KeepCreated;        // import: skip the cleanup; a later run deletes what this one created
+        public string[] PriorCreated;   // import, cleanup: "type<TAB>id<TAB>0|1" per item an earlier kept run created
+        public bool LockUpgradeRows;    // import: lock the packages' scratch DatabaseUpgrade rows first
+        public string[] VersionBefore;  // import: "type<TAB>id" per scratch item to give a new generation first
         public Hashtable Context;       // SolutionUpgradeContext property -> string value
         public Hashtable Export;        // SUExportContext property -> string value
         public Hashtable Import;        // SUImportContext property -> string value
@@ -352,10 +389,19 @@ namespace LibsJsOracle
     public static class Scratch
     {
         public const string Prefix = "LIBSJS-SCRATCH-";
+        /// <summary>ItemType names must match ^[a-zA-Z](\w*| +\w+)*$, so they cannot hold the dashes of Prefix.</summary>
+        public const string ItemTypePrefix = "LIBSJS_SCRATCH_";
 
+        /// <summary>A package name or file name: it starts with Prefix.</summary>
         public static bool Is(string name)
         {
             return name != null && name.StartsWith(Prefix, StringComparison.Ordinal);
+        }
+
+        /// <summary>An item's name or keyed name: Prefix, or ItemTypePrefix for the names Aras restricts to word characters.</summary>
+        public static bool IsItemName(string name)
+        {
+            return Is(name) || (name != null && name.StartsWith(ItemTypePrefix, StringComparison.Ordinal));
         }
 
         public static void AssertImport(ICollection packages, ImportExportManager manager, string lpPath)
@@ -396,7 +442,7 @@ namespace LibsJsOracle
                     if (!Is(Path.GetFileNameWithoutExtension(file))) bad.Add("item file '" + file + "'");
                     foreach (XmlNode name in doc.SelectNodes("AML/Item/name"))
                     {
-                        if (!Is(name.InnerText)) bad.Add("item '" + name.InnerText + "' in " + file);
+                        if (!IsItemName(name.InnerText)) bad.Add("item '" + name.InnerText + "' in " + file);
                     }
                 }
             }
@@ -445,58 +491,79 @@ namespace LibsJsOracle
     /// </summary>
     public static class Cleanup
     {
-        public static string Run(Innovator inn, IList<CreatedItem> created)
+        /// <summary>
+        /// Deletes every item in `created`, newest first. The first `prior` of
+        /// them were created by earlier runs that kept theirs, so the report's
+        /// `created` lists only the rest.
+        /// </summary>
+        public static string Run(Innovator inn, IList<CreatedItem> created, int prior)
         {
             var all = new List<string>();
             var deleted = new List<string>();
             var kept = new List<string>();
             var unverified = new List<string>();
-            foreach (CreatedItem c in created) all.Add(Entry(c, null));
-            for (int i = created.Count - 1; i >= 0; i--)
+            for (int n = prior; n < created.Count; n++) all.Add(Entry(created[n], null));
+            // Newest first. A delete the server refuses (another scratch item still refers to it) is
+            // tried again after the others, for as long as a pass deletes something.
+            var pending = new List<CreatedItem>();
+            for (int i = created.Count - 1; i >= 0; i--) pending.Add(created[i]);
+            while (true)
             {
-                CreatedItem c = created[i];
-                string type = c.Type;
-                string id = c.Id;
-                string reason = null;
-                try
+                var again = new List<CreatedItem>();
+                var reasons = new Dictionary<CreatedItem, string>();
+                int progress = 0;
+                foreach (CreatedItem c in pending)
                 {
-                    if (id.Length == 0)
-                    {
-                        reason = c.Unconfirmed
-                            ? "its call failed in transport and the request names no id, so whether it was created is unknown"
-                            : "the server returned no id";
-                    }
-                    else
-                    {
-                        string owner = Owner(inn, type, id, 0);
-                        if (owner == null)
-                        {
-                            // Confirmed: already gone, with its source. Unconfirmed: the server may still commit it.
-                            if (c.Unconfirmed) unverified.Add(Entry(c, null));
-                            continue;
-                        }
-                        if (!Scratch.Is(owner))
-                        {
-                            reason = "belongs to '" + owner + "', not " + Scratch.Prefix + "*";
-                        }
-                        else
-                        {
-                            Item delete = inn.newItem(type, "delete");
-                            delete.setID(id);
-                            Item result = delete.apply();
-                            if (result.isError()) reason = "delete failed: " + result.getErrorString();
-                        }
-                    }
+                    string reason = DeleteOne(inn, c, unverified);
+                    if (reason == Gone) progress++;
+                    else if (reason == null) { deleted.Add(Entry(c, null)); progress++; }
+                    else if (reason.StartsWith("delete failed", StringComparison.Ordinal)) { again.Add(c); reasons[c] = reason; }
+                    else kept.Add(Entry(c, reason));
                 }
-                catch (Exception e)
+                if (again.Count == 0) break;
+                if (progress == 0)
                 {
-                    reason = "cleanup failed: " + e.Message;
+                    foreach (CreatedItem c in again) kept.Add(Entry(c, reasons[c]));
+                    break;
                 }
-                if (reason == null) deleted.Add(Entry(c, null));
-                else kept.Add(Entry(c, reason));
+                pending = again;
             }
             return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[" + string.Join(",", deleted.ToArray()) +
                    "],\"kept\":[" + string.Join(",", kept.ToArray()) + "],\"unverified\":[" + string.Join(",", unverified.ToArray()) + "]}";
+        }
+
+        /// <summary>DeleteOne's answer for an item that no longer exists (an unconfirmed one also goes to `unverified`).</summary>
+        private const string Gone = "\u0001gone";
+
+        /// <summary>Null when the item is deleted, Gone when it was not there, else why it is kept.</summary>
+        private static string DeleteOne(Innovator inn, CreatedItem c, List<string> unverified)
+        {
+            try
+            {
+                if (c.Id.Length == 0)
+                {
+                    return c.Unconfirmed
+                        ? "its call failed in transport and the request names no id, so whether it was created is unknown"
+                        : "the server returned no id";
+                }
+                string owner = Owner(inn, c.Type, c.Id, 0);
+                if (owner == null)
+                {
+                    // Confirmed: already gone, with its source. Unconfirmed: the server may still commit it.
+                    if (c.Unconfirmed) unverified.Add(Entry(c, null));
+                    return Gone;
+                }
+                if (!Scratch.IsItemName(owner))
+                    return "belongs to '" + owner + "', not " + Scratch.Prefix + "* or " + Scratch.ItemTypePrefix + "*";
+                Item delete = inn.newItem(c.Type, "delete");
+                delete.setID(c.Id);
+                Item result = delete.apply();
+                return result.isError() ? "delete failed: " + result.getErrorString() : null;
+            }
+            catch (Exception e)
+            {
+                return "cleanup failed: " + e.Message;
+            }
         }
 
         /// <summary>
@@ -527,6 +594,27 @@ namespace LibsJsOracle
             return source;
         }
 
+        /// <summary>The report of a run that keeps what it created: nothing deleted, the cleanup left to a later run.</summary>
+        public static string Deferred(IList<CreatedItem> created)
+        {
+            var all = new List<string>();
+            foreach (CreatedItem c in created) all.Add(Entry(c, null));
+            return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[],\"kept\":[],\"unverified\":[],\"deferred\":true}";
+        }
+
+        /// <summary>"type&lt;TAB&gt;id&lt;TAB&gt;0|1" per item, as the earlier run reported it.</summary>
+        public static List<CreatedItem> Parse(string[] lines)
+        {
+            var items = new List<CreatedItem>();
+            foreach (string line in lines ?? new string[0])
+            {
+                string[] p = line.Split('\t');
+                if (p.Length != 3) throw new ArgumentException("bad prior item: " + line);
+                items.Add(new CreatedItem { Type = p[0], Id = p[1], Unconfirmed = p[2] == "1" });
+            }
+            return items;
+        }
+
         private static string Entry(CreatedItem c, string reason)
         {
             string entry = "{\"type\":" + Json.Str(c.Type) + ",\"id\":" + Json.Str(c.Id);
@@ -549,6 +637,10 @@ namespace LibsJsOracle
             string result = null;
             int timeoutAfter = 0;
             string cleanup = null;
+            var cancel = new CancelTrigger();
+            cancel.After = r.CancelAfterStatus;
+            List<CreatedItem> prior = Cleanup.Parse(r.PriorCreated);
+            if (r.LockUpgradeRows || r.VersionBefore != null) PreRun(r);
             Rec.Open(Path.Combine(r.OutDir, "transcript.jsonl"), Path.Combine(r.OutDir, "messages.jsonl"));
             RecordingHttpServerConnection conn = null;
             CItemHelper ci = null;
@@ -574,9 +666,13 @@ namespace LibsJsOracle
                 context.LogFilePath = Path.Combine(r.OutDir, "engine.log");
                 context.WorkingDirectory = r.WorkDir;
                 Apply(context, r.Context, "Context");
-                var messages = new RecordedMessages(r.ErrorQuestionAnswer);
+                var messages = new RecordedMessages(r.ErrorQuestionAnswer, cancel);
 
-                if (r.Command == "export")
+                if (r.Command == "cleanup")
+                {
+                    result = "cleanup only";
+                }
+                else if (r.Command == "export")
                 {
                     if (!Has(r.Context, "Action")) context.Action = ImportExport.Export;
                     var exportContext = new SUExportContext();
@@ -616,6 +712,7 @@ namespace LibsJsOracle
                             context.ManifestFile = r.ManifestFile;
                         }
                         var manager = new ImportExportManager(context, messages, ci);
+                        cancel.Manager = manager;
                         ICollection packages = r.Packages == null
                             ? manager.ManifestFile.GetAllPackageNames()
                             : (ICollection)new ArrayList(r.Packages);
@@ -649,7 +746,14 @@ namespace LibsJsOracle
                 Rec.Stop();
                 if (conn != null && r.Command != "export")
                 {
-                    try { cleanup = Cleanup.Run(IomFactory.CreateInnovator(conn), Rec.Created); }
+                    try
+                    {
+                        var everything = new List<CreatedItem>(prior);
+                        everything.AddRange(Rec.Created);
+                        cleanup = r.KeepCreated
+                            ? Cleanup.Deferred(Rec.Created)
+                            : Cleanup.Run(IomFactory.CreateInnovator(conn), everything, prior.Count);
+                    }
                     catch (Exception e) { if (error == null) error = "cleanup: " + e; }
                 }
                 info.Append(",\"calls\":").Append(Json.Num(Rec.Calls));
@@ -664,6 +768,72 @@ namespace LibsJsOracle
             info.Append('}');
             File.WriteAllText(Path.Combine(r.OutDir, "host.json"), info.ToString(), new UTF8Encoding(false));
             return code;
+        }
+
+        /// <summary>
+        /// Work done before the recorded run, through a connection of its own
+        /// so none of it reaches the transcript: lock the scratch
+        /// DatabaseUpgrade rows of the packages about to be imported (the
+        /// engine's unlock path, WriteReleaseData finding the row locked), and
+        /// give scratch items a new generation (the merge's
+        /// SetItemIdToLastGeneration path). Both refuse anything not named
+        /// LIBSJS-SCRATCH-*.
+        /// </summary>
+        private static void PreRun(HostRequest r)
+        {
+            var conn = new RecordingHttpServerConnection(r.Url, r.Database, r.User, r.Password);
+            Item login = conn.Login();
+            if (login.isError()) throw new InvalidOperationException("pre-run login failed: " + login.getErrorString());
+            try
+            {
+                Innovator inn = IomFactory.CreateInnovator(conn);
+                if (r.LockUpgradeRows)
+                {
+                    var names = new List<string>();
+                    if (r.Packages != null) names.AddRange(r.Packages);
+                    else foreach (string n in new ManifestFile(r.ManifestFile).GetAllPackageNames()) names.Add(n);
+                    foreach (string name in names)
+                    {
+                        if (!Scratch.Is(name)) throw new InvalidOperationException("refusing to lock a non-scratch row: " + name);
+                        Item rows = inn.newItem("DatabaseUpgrade", "get");
+                        rows.setProperty("name", name);
+                        rows.setProperty("type", "1");
+                        rows.setAttribute("select", "id");
+                        rows = rows.apply();
+                        if (rows.isError()) { if (rows.getErrorCode() == "0") continue; throw new InvalidOperationException(rows.getErrorString()); }
+                        for (int i = 0; i < rows.getItemCount(); i++)
+                        {
+                            Item lockItem = inn.newItem("DatabaseUpgrade", "lock");
+                            lockItem.setID(rows.getItemByIndex(i).getID());
+                            Item locked = lockItem.apply();
+                            if (locked.isError()) throw new InvalidOperationException("lock failed: " + locked.getErrorString());
+                        }
+                    }
+                }
+                foreach (string spec in r.VersionBefore ?? new string[0])
+                {
+                    string[] p = spec.Split('\t');
+                    if (p.Length != 2) throw new ArgumentException("bad version spec: " + spec);
+                    Item found = inn.newItem(p[0], "get");
+                    found.setID(p[1]);
+                    found.setAttribute("select", "name,keyed_name");
+                    found = found.apply();
+                    if (found.isError()) throw new InvalidOperationException("version: " + found.getErrorString());
+                    string owner = found.getProperty("name", "");
+                    if (owner.Length == 0) owner = found.getProperty("keyed_name", "");
+                    if (!Scratch.IsItemName(owner)) throw new InvalidOperationException("refusing to version a non-scratch item: " + p[0] + " " + p[1] + " '" + owner + "'");
+                    Item version = inn.newItem(p[0], "version");
+                    version.setID(p[1]);
+                    Item made = version.apply();
+                    if (made.isError()) throw new InvalidOperationException("version failed: " + made.getErrorString());
+                    // The new generation is a created item too: the cleanup deletes it with the rest.
+                    Rec.AddCreated(new CreatedItem { Type = p[0], Id = made.getID(), Unconfirmed = false });
+                }
+            }
+            finally
+            {
+                conn.Logout();
+            }
         }
 
         /// <summary>"Major=12 Minor=0 ServicePack=9 ..." from the public properties ArasVersion has on this engine.</summary>

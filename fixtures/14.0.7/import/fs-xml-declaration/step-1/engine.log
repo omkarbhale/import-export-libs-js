@@ -1,0 +1,29 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202404-14.0.7-import-5fbed7\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202404-14.0.7-import-5fbed7\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202404-14.0.7-import-5fbed7\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:54:06
+Updating 'LIBSJS-SCRATCH-FSDECL' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-FSDECL****
+Updating 'LIBSJS-SCRATCH-FSDECL' package to failed release status
+end of execution : 10/19/2026 01:54:06
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-FSDECL' failed with message:
+
+Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.
+Updating LIBSJS-SCRATCH-FSDECL to failed release status
+
+		********************

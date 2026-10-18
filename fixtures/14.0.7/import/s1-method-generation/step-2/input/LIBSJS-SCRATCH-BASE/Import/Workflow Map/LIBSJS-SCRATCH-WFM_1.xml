@@ -1,0 +1,70 @@
+﻿<AML>
+ <Item type="Workflow Map" id="97036156528C7C8959E5E0D9E2B89E1D" action="add">
+  <description>Scratch workflow</description>
+  <name>LIBSJS-SCRATCH-WFM_1</name>
+  <Relationships>
+   <Item type="Workflow Map Activity" id="AE5FE610C11887D7DD5A271C71AF0A36" action="add">
+    <related_id keyed_name="Begin" type="Activity Template">
+     <Item type="Activity Template" id="10A1B8559D4E0A84F5F87D88263C98A2" action="add">
+      <can_delegate>0</can_delegate>
+      <can_refuse>0</can_refuse>
+      <consolidate_ondelegate>0</consolidate_ondelegate>
+      <expected_duration>0</expected_duration>
+      <is_auto>1</is_auto>
+      <is_end>0</is_end>
+      <is_start>1</is_start>
+      <message xml:lang="en">Begin</message>
+      <priority>1</priority>
+      <reminder_count>0</reminder_count>
+      <reminder_interval>0</reminder_interval>
+      <timeout_duration>0</timeout_duration>
+      <wait_for_all_inputs>0</wait_for_all_inputs>
+      <wait_for_all_votes>0</wait_for_all_votes>
+      <x>29</x>
+      <y>76</y>
+      <name>Begin</name>
+      <Relationships>
+       <Item type="Workflow Map Path" id="E96815F7D9D1A8734CF4F885593C5132" action="add">
+        <authentication>none</authentication>
+        <is_default>1</is_default>
+        <is_override>0</is_override>
+        <name>Go</name>
+        <related_id>E2ADDE13FE72AD19CFCF613D925362D7</related_id>
+        <segments />
+        <sort_order>128</sort_order>
+        <source_id keyed_name="Begin" type="Activity Template">10A1B8559D4E0A84F5F87D88263C98A2</source_id>
+       </Item>
+      </Relationships>
+     </Item>
+    </related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-WFM_1" type="Workflow Map">97036156528C7C8959E5E0D9E2B89E1D</source_id>
+   </Item>
+   <Item type="Workflow Map Activity" id="93AAB2185E46BE45BE9F536B9CFBC60D" action="add">
+    <related_id keyed_name="Finish" type="Activity Template">
+     <Item type="Activity Template" id="E2ADDE13FE72AD19CFCF613D925362D7" action="add">
+      <can_delegate>0</can_delegate>
+      <can_refuse>0</can_refuse>
+      <consolidate_ondelegate>0</consolidate_ondelegate>
+      <expected_duration>0</expected_duration>
+      <is_auto>1</is_auto>
+      <is_end>1</is_end>
+      <is_start>0</is_start>
+      <message xml:lang="en">Finish</message>
+      <priority>1</priority>
+      <reminder_count>0</reminder_count>
+      <reminder_interval>0</reminder_interval>
+      <timeout_duration>0</timeout_duration>
+      <wait_for_all_inputs>0</wait_for_all_inputs>
+      <wait_for_all_votes>0</wait_for_all_votes>
+      <x>300</x>
+      <y>76</y>
+      <name>Finish</name>
+     </Item>
+    </related_id>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-WFM_1" type="Workflow Map">97036156528C7C8959E5E0D9E2B89E1D</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

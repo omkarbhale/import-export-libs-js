@@ -1,0 +1,7 @@
+{"event":10,"seq":1,"thread":16,"ticks":754688128513,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":754688796213,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-INST","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":754689166147,"channel":"status","text":"Item 1 of 2: LIBSJS_SCRATCH_IT_A - LIBSJS-SCRATCH-Inst_A1","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":754691100071,"channel":"status","text":"Item 2 of 2: LIBSJS_SCRATCH_IT_V - LIBSJS-SCRATCH-Inst_V1","answer":null}
+{"event":40,"seq":5,"thread":16,"ticks":754694630808,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":41,"seq":6,"thread":16,"ticks":754694634045,"channel":"status","text":"completed","answer":null}
+{"event":46,"seq":7,"thread":16,"ticks":754695310573,"channel":"status","text":"completed","answer":null}

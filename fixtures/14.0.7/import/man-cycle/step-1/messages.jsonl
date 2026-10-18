@@ -1,0 +1,11 @@
+{"event":10,"seq":1,"thread":15,"ticks":754066815382,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":15,"ticks":754067266569,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-CYC2","answer":null}
+{"event":16,"seq":3,"thread":15,"ticks":754067799875,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Cyc_2","answer":null}
+{"event":26,"seq":4,"thread":15,"ticks":754069094119,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":27,"seq":5,"thread":15,"ticks":754069102152,"channel":"status","text":"completed","answer":null}
+{"event":34,"seq":6,"thread":15,"ticks":754070166137,"channel":"status","text":"Building  solution","answer":null}
+{"event":35,"seq":7,"thread":15,"ticks":754070170911,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-CYC1","answer":null}
+{"event":40,"seq":8,"thread":15,"ticks":754070782634,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Cyc_1","answer":null}
+{"event":47,"seq":9,"thread":15,"ticks":754071601669,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":48,"seq":10,"thread":15,"ticks":754071602087,"channel":"status","text":"completed","answer":null}
+{"event":53,"seq":11,"thread":15,"ticks":754072235911,"channel":"status","text":"completed","answer":null}

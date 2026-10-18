@@ -1,0 +1,31 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202322-14.0.7-import-e5a22f\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202322-14.0.7-import-e5a22f\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202322-14.0.7-import-e5a22f\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:53:25
+Updating 'LIBSJS-SCRATCH-SQLCHILD' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-SQLCHILD****
+Processing (add)    keyed_name : LIBSJS-SCRATCH-V2    type : SQL  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202322-14.0.7-import-e5a22f\input\LIBSJS-SCRATCH-SQLCHILD\Import\SQL\LIBSJS-SCRATCH-V2.xml'
+Updating 'LIBSJS-SCRATCH-SQLCHILD' package to failed release status
+end of execution : 10/19/2026 01:53:25
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-SQLCHILD' failed with message:
+
+Error - empty 'id' or 'type'
+Updating LIBSJS-SCRATCH-SQLCHILD to failed release status
+
+		********************

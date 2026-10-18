@@ -1,0 +1,11 @@
+﻿<AML>
+ <Item type="Report" id="13E641DA215894EBC9281A99B5BA656B" action="add">
+  <description />
+  <location>client</location>
+  <report_query />
+  <target>one window</target>
+  <type>item</type>
+  <xsl_stylesheet><![CDATA[<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"><xsl:template match="/"><html /></xsl:template></xsl:stylesheet>]]></xsl_stylesheet>
+  <name>LIBSJS-SCRATCH-Report_1</name>
+ </Item>
+</AML>

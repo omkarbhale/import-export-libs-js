@@ -129,6 +129,11 @@ function Invoke-OracleHost {
     # Each item is "package<TAB>type<TAB>id<TAB>keyed name".
     if ($Bound.ContainsKey('Items')) { $request.Items = [string[]]$Bound['Items'] }
     if ($Bound.ContainsKey('Packages')) { $request.Packages = [string[]]$Bound['Packages'] }
+    if ($Bound.ContainsKey('CancelAfterStatus')) { $request.CancelAfterStatus = [int]$Bound['CancelAfterStatus'] }
+    if ($Bound.ContainsKey('KeepCreated')) { $request.KeepCreated = $Bound['KeepCreated'].IsPresent }
+    if ($Bound.ContainsKey('PriorCreated')) { $request.PriorCreated = [string[]]$Bound['PriorCreated'] }
+    if ($Bound.ContainsKey('VersionBefore')) { $request.VersionBefore = [string[]]$Bound['VersionBefore'] }
+    if ($Bound.ContainsKey('LockUpgradeRows')) { $request.LockUpgradeRows = $Bound['LockUpgradeRows'].IsPresent }
     $request.Context = @{}
     $request.Export = @{}
     $request.Import = @{}

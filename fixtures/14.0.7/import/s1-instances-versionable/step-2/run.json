@@ -1,0 +1,141 @@
+{
+  "engine": "14.0.7",
+  "command": "import",
+  "toolset": {
+    "digest": "19573a97899a",
+    "source": "Desktop\\ImportExport\\23\\Import",
+    "libs": {
+      "version": "14.0.7.35492",
+      "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+    },
+    "iom": {
+      "version": "14.0.7.35492",
+      "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "KeepCreated": true,
+    "PriorCreated": [
+      "DatabaseUpgrade\t94CE465FAF7B427BA6D91DD92B46C211\t0",
+      "PackageDefinition\tECE6B6DBCE2140C297D77E523BEAF8C8\t0",
+      "List\t02FC1773E9FCF8E024A3FE0C37D824D2\t0",
+      "PackageGroup\t08324A0C66A74F00A61DA6D523B937C6\t0",
+      "PackageElement\t0FD28D4DBAC74F3A8FD61C3274D52F84\t0",
+      "Sequence\t67CBD9B47C02D5104BC5C97C25A2483E\t0",
+      "PackageGroup\t9B5E6EE8400E488296D3D3DFAE722CC9\t0",
+      "PackageElement\t6880CFF612A147588E74212630AB2F2A\t0",
+      "Variable\t9DFD42E0D1D332A37468535A17E9E071\t0",
+      "PackageGroup\tF06FD5209AA84058A80BF2C5EEDF46F6\t0",
+      "PackageElement\t514FFB4BA3404F0B83039DB39FFE6123\t0",
+      "Identity\t8D1FA15B385BD9268D12CDB127520F9C\t0",
+      "PackageGroup\t4D2415B27FB84FDD95EC57B6FC751A6F\t0",
+      "PackageElement\tC629A17E4B2F46BB9A6EE65D84AA4E47\t0",
+      "Member\t0FD85985D9C574513CB9B6D231B177B4\t0",
+      "Permission\t51F2FDF85AB07DF3C25F71CA50B4FF4C\t0",
+      "PackageGroup\tB713644A0B43403DA8C6A8A87C41024D\t0",
+      "PackageElement\t72B0FC95876C405E96B6923DF75B8ECF\t0",
+      "Method\t5E0832E42849900FA499343A85F8A1D0\t0",
+      "PackageGroup\tD1713E376268458E82BEEA3B63D7B79C\t0",
+      "PackageElement\t20386E6810A5459CB7ACC875FFC5DA56\t0",
+      "Action\t6E1629D001235406CBAF1C1BC71F19E1\t0",
+      "PackageGroup\t88D8AF0AC1184DB9834F1A67E52A5313\t0",
+      "PackageElement\t4834B5943E9C485FBA1152FF33D11BD8\t0",
+      "Report\t13E641DA215894EBC9281A99B5BA656B\t0",
+      "PackageGroup\t8F27D49A8E8941E9A2302425193B57B3\t0",
+      "PackageElement\tE4B2779EAB814D5AAF7F4AAD7C54C677\t0",
+      "Form\t80C1916ED13FB91AABE8B59712B5B25D\t0",
+      "PackageGroup\tF517BEC0C0174196B822D16F1123BFDF\t0",
+      "PackageElement\t9D85BC53C14849B0830083643910F8D2\t0",
+      "Workflow Map\t97036156528C7C8959E5E0D9E2B89E1D\t0",
+      "PackageGroup\t94D81F66A57A470D88186E2F349C1D21\t0",
+      "PackageElement\t1E60B88D11FA4A8FA42D25E12613ACD3\t0",
+      "Life Cycle Map\t8B5690F5CDA03F7F570CFF04DF20BA30\t0",
+      "PackageGroup\t4985D945280A4E708D912FB640752E3F\t0",
+      "PackageElement\t7EBF1CEF83A84C1DB7D46F02C8CE279D\t0",
+      "Grid\tDBEA5052DEBB3FE9304F72623D0E0489\t0",
+      "PackageGroup\t8F44A7EACB094137A2AA424261F2B2F9\t0",
+      "PackageElement\tA2E4121BCDB44DD1A8164ADC86AD6B7F\t0",
+      "ItemType\tE0FAE5389340631DC4962AE25970C7BB\t0",
+      "PackageGroup\t1F02C4D60B6C4D2AB391C0872E6A597D\t0",
+      "PackageElement\tCA056B3205D74567877D7CBE5E14C97D\t0",
+      "ItemType\t0B033B1E3B6425C1276A61E3F5E5F283\t0",
+      "PackageElement\t50B286B347A04F01B0B1F63B4D07B1CC\t0",
+      "ItemType\tE2855368158C72AE7E4BF3B6E8D1D337\t0",
+      "PackageElement\tFF54BAD6EE1F4D2F8158D106AB2592A7\t0",
+      "RelationshipType\t2E86BE71406A024A7610EBE387CA19FA\t0",
+      "PackageGroup\t4F082611D09D400BA9651462688E7A12\t0",
+      "PackageElement\t83A8C4BCBA504FBBB78603F3E59FF023\t0",
+      "RelationshipType\t2CAA9483C5AF745CE43A9975AB133C39\t0",
+      "PackageElement\tA0F3CC40821E4F1FA89EA46F3AE9445D\t0",
+      "RelationshipType\tB1728187A78D330129D6FC48530DD38F\t0",
+      "PackageElement\t6FD93424DFF64D28BD72D7C820D58862\t0",
+      "UserMessage\t48CC1F963C2BD3526D145E6EF7622AE1\t0",
+      "PackageGroup\t8BFCF1BBC41F4F19A7ADC954EF2C7D85\t0",
+      "PackageElement\t5C77B254801B42CDAF9FB6D443DCF2B4\t0"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T20:24:47.260Z",
+  "finishedAt": "2026-10-18T20:24:50.234Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 39,
+    "messages": 7,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "1C2616B2FC28444F846E1BC9E190C5BE"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "0F0589A9A8EA4E62A31302274AC3F052"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_IT_A",
+        "id": "4747CF811D4EFD42FA073ACA3A1BF1BE"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "CD52A771694C417FA1994374B86FA81B"
+      },
+      {
+        "type": "PackageElement",
+        "id": "AA8BA1D72FD849CFA5A7DC731BFC385A"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_IT_V",
+        "id": "CFC67070B8926819B48BC0B108536FF2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "454B3DD1BD2F4F2C92DFBDF687C1A90B"
+      },
+      {
+        "type": "PackageElement",
+        "id": "58DBEFF06CD342B7A84886A8E36D506F"
+      }
+    ],
+    "deleted": [],
+    "kept": [],
+    "unverified": [],
+    "deferred": true
+  },
+  "scrubbed": {}
+}

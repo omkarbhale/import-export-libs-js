@@ -1,0 +1,94 @@
+{
+  "id": "s8-coll-duplicate",
+  "engine": "14.0.7",
+  "catalogue": [
+    "S8"
+  ],
+  "title": "The same item in two packages",
+  "exercises": "PackageElement is looked up globally by element id: the second package finds the first one's element in another group and fails with the duplicate-element error (-2).",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-A.Coll",
+        "LIBSJS-SCRATCH-B.Coll"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 36,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "A46AE79C9E95491C9FCC179D14938884"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "35E2BB7DE7854D5EA19FDD70D5A614F9"
+          },
+          {
+            "type": "Variable",
+            "id": "416141614D62782894BB63F6E612448D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "E318288C0AD24B358BC41202DEDCD10B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "3CF464213076479A9107EFB8FDDB44B9"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "0FBAFC329F4F4A6CA5D0D82F5021FE37"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "95B834349F6444118013E4687027EF11"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "E07A97D802F245B4933052A4434CD4B7"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageGroup",
+      "id": "E07A97D802F245B4933052A4434CD4B7"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "95B834349F6444118013E4687027EF11"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "0FBAFC329F4F4A6CA5D0D82F5021FE37"
+    },
+    {
+      "type": "PackageElement",
+      "id": "3CF464213076479A9107EFB8FDDB44B9"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "E318288C0AD24B358BC41202DEDCD10B"
+    },
+    {
+      "type": "Variable",
+      "id": "416141614D62782894BB63F6E612448D"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "35E2BB7DE7854D5EA19FDD70D5A614F9"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "A46AE79C9E95491C9FCC179D14938884"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+﻿<AML>
+ <Item type="Action" id="5418FC7EB1F82B9657477A47F0EDF88B" action="add">
+  <item_query>&lt;Item type="{@type}" id="{@id}" action="get" /&gt;</item_query>
+  <label xml:lang="en">Unresolved</label>
+  <location>server</location>
+  <method keyed_name="LIBSJS-SCRATCH-Missing_Method" type="Method">
+   <Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Missing_Method</name></Item>
+  </method>
+  <target>none</target>
+  <type>item</type>
+  <name>LIBSJS-SCRATCH-UNRES-Action_1</name>
+ </Item>
+</AML>

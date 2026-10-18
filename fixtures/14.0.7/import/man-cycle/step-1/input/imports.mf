@@ -1,0 +1,8 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-CYC1" path="LIBSJS-SCRATCH-CYC1\Import">
+    <dependson name="LIBSJS-SCRATCH-CYC2" />
+  </package>
+  <package name="LIBSJS-SCRATCH-CYC2" path="LIBSJS-SCRATCH-CYC2\Import">
+    <dependson name="LIBSJS-SCRATCH-CYC1" />
+  </package>
+</imports>

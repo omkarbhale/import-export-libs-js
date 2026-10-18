@@ -1,0 +1,27 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202240-14.0.7-import-168278\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202240-14.0.7-import-168278\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202240-14.0.7-import-168278\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:52:42
+Updating 'LIBSJS-SCRATCH-DELMISSING' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-DELMISSING****
+Processing (delete)   id : BF37E3DC26E9FF976E86D18605FAD0BA    keyed_name : LIBSJS-SCRATCH-DelMissing_Value    type : Value  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T202240-14.0.7-import-168278\input\LIBSJS-SCRATCH-DELMISSING\Import\Value\LIBSJS-SCRATCH-DelMissing_Value.xml'
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)   id : BF37E3DC26E9FF976E86D18605FAD0BA    keyed_name : LIBSJS-SCRATCH-DelMissing_Value    type : Value  
+completed
+Updating 'LIBSJS-SCRATCH-DELMISSING' package to success release status
+end of execution : 10/19/2026 01:52:42
