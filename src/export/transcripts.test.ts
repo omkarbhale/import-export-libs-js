@@ -27,7 +27,7 @@ const LOGIN_CALLS = 6;
 interface Case {
   id: string;
   packages: Array<{ name: string; items: Array<{ type: string; id: string; keyedName: string }> }>;
-  options: { level?: string };
+  options: { level?: string; exportReferencedItems?: boolean };
   expectsError: boolean;
 }
 
@@ -160,6 +160,7 @@ async function replayCase(name: string): Promise<Replay> {
   // the package definitions and their dependencies' referenced elements, in the order the host asks (export-run.md)
   let aborted = false;
   const managers = new Map<string, PackageDefinitionManager>();
+  const referenced: ExportItem[] = [];
   for (const [index, call] of calls.entries()) {
     if (index < LOGIN_CALLS || connection.consumed[index]) continue;
     const family = familyOf(call.request);
@@ -176,13 +177,15 @@ async function replayCase(name: string): Promise<Replay> {
       const [, dependency = "", sourceId = ""] = /<name>([\s\S]*)<\/name><source_id>([\s\S]*)<\/source_id>/.exec(call.request) ?? [];
       const manager = managers.get(sourceId);
       expect(manager, `the package definition whose id the dependency request carries (${sourceId})`).toBeDefined();
-      await manager?.findReferencedElements(decode(dependency));
+      referenced.push(...((await manager?.findReferencedElements(decode(dependency))) ?? []));
     }
   }
 
   // the items of the case, from its own input, and what follows from their answers
-  for (const pkg of aborted ? [] : input.packages) {
-    for (const item of pkg.items) {
+  // and, with exportReferencedItems, the referenced elements of the second pass (EXP-519)
+  const passes = aborted ? [] : [...input.packages.map((pkg) => pkg.items), input.options.exportReferencedItems ? referenced.map((element) => ({ keyedName: element.keyedName ?? "", id: element.idName ?? "", type: element.typeName ?? "" })) : []];
+  for (const items of passes) {
+    for (const item of items) {
       let fetched;
       try {
         fetched = await exporter.fetch(new ExportItem(item.keyedName, item.id, item.type), input.options.level);
