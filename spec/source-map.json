@@ -8589,7 +8589,11 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils/<>c__DisplayClass2_0::<IsCertificateRequired>b__0",
@@ -8601,7 +8605,11 @@
             "bodySha256": "c679822c9a985b8c4b09204981a84af9bc52adee8a3a8f24c8327c8b65ff5560",
             "textSha256": "5dd0a3b6d1875a4e93ea8a940288d63637c94d32e8ba3b0177ae7d5269335f42"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils/<IsCertificateRequired>d__2::MoveNext",
@@ -8613,7 +8621,11 @@
             "bodySha256": "d9fb8462d2c5d9268b5f056a53979d73559ce72ef59e7f49ecb3a4ba9936e15d",
             "textSha256": "a55a73de302e95ff6149cb98c3e8b6463fab113183182c15056136099f9baa2a"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils/<IsCertificateRequired>d__2::SetStateMachine",
@@ -8624,7 +8636,11 @@
             "ilSha256": "c00da80c5522bccba36b2b12d9b6b691379978479563e2d328049fbc87b21d15",
             "bodySha256": "414f446ce808a7059e8b09b509a9d230e5c983a4c602f743afc5b8386f619ccc"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils::FindCertificate",
@@ -8636,7 +8652,11 @@
             "bodySha256": "cf26f93a80844122c200bef4e9c6f3ba19c75f705f93620bb0ec9f138ec6a4ae",
             "textSha256": "3008a15e67ff63aa6a93ea238d5e9caed2543de40b1da8f6c8d7f772a7f0186f"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils::GetClientCertificates",
@@ -8648,7 +8668,11 @@
             "bodySha256": "bad6c745868a8f4fdb0051e57659d753d10f39227238ddeafae35b0e327007cb",
             "textSha256": "cecc0ddd0570a0153014b7c2184f28481779910b5c3ea4b8504315b5f5cb295e"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.CertificateUtils::IsCertificateRequired",
@@ -8659,7 +8683,11 @@
             "ilSha256": "57f2000f7931f69ca5e1c8c500df78ebfa2df0376b326279a42ed99f47c2a935",
             "bodySha256": "aca51dc2cb870946015f8da4cb3ee5c58f8138a1a87a6a0badb1114312c29f0c"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::.ctor",
@@ -8671,7 +8699,10 @@
             "bodySha256": "5da93f60fafe67c94ed8eca681fb3fee86085f4a1fec70f98ffbfeef278c66ce",
             "textSha256": "af9657e31670cab79c0d1ea03a20aca406631918afc714c09e7bfe39ba3373e3"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_Build",
@@ -8683,7 +8714,10 @@
             "bodySha256": "76258acf0a152f59ff5a88f52d5109b308e276e992130224501c8266ef007dc5",
             "textSha256": "4954638f36158c87785773a7644afdb0554ee33aac5b71d5befbed68c38cfe5b"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_InnovatorVersionFullString",
@@ -8695,7 +8729,10 @@
             "bodySha256": "f302668473934c244a0bd883326539f774b82a3ddfdb69e0211af6e1ebe60429",
             "textSha256": "28df9ba445e755045e9528da4bfc3fd97b6d342d46c0f438797f145aa97d9d80"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-022"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_Major",
@@ -8707,7 +8744,10 @@
             "bodySha256": "de39a6b205675e89cc8881e0ede5c39c44db12aa738bbc948a4af172cc0e5768",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_Minor",
@@ -8719,7 +8759,10 @@
             "bodySha256": "c0486425d9a1ebb043db4d21ec8e4daf0ce954bfaca7851ccf3c16f05f09a267",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_ServicePack",
@@ -8731,7 +8774,10 @@
             "bodySha256": "c0df7107163846f450afcee94d563c3e775e03fc0420856ebe2d88c0d837d4f6",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_ServiceUpdate",
@@ -8743,7 +8789,10 @@
             "bodySha256": "74612d65255ddac9626f5265135223d4ce06bb29bffbe01b74ea12cc7d0e0a39",
             "textSha256": "7e37b95ee68742c535a7a9523c80ed480c82fb92c3f5c9fec0380d4ab2575265"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_Major",
@@ -8755,7 +8804,10 @@
             "bodySha256": "8cdd352990ccf26801c2a6b0ff5a2bbc5ee4551d71a3f5955a76b7147c663ae7",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_Minor",
@@ -8767,7 +8819,10 @@
             "bodySha256": "52590e673038405ba2c66f4a0bac55a5f3a67f0713639054ff73d7329fc714a5",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_ServicePack",
@@ -8779,7 +8834,10 @@
             "bodySha256": "5ae9eda1ca085ef13d9e780a2f041d8169c1fce811bc2647c4dc05d5bb33daf9",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems/<>c::.cctor",
@@ -10287,7 +10345,8 @@
           "status": "unmapped",
           "rules": [
             "EXP-030",
-            "EXP-046"
+            "EXP-046",
+            "WIRE-001"
           ]
         },
         {
@@ -10567,7 +10626,8 @@
             "bodySha256": "28bfbc1cb6c19dec85de3044a563a85a4cb967b1778622da1a565942b75ebcdf",
             "textSha256": "6ca0782f146f357733213505a23cd36b763b48269b27c985bb8b1b9e6af69ed4"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "reason": "Host-only: ConsoleUpgrade logs IOM's assembly version with it. The library has no IOM, so there is no IOM version to report."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetConfigId",
@@ -10625,7 +10685,11 @@
             "bodySha256": "9b4b8715ec6ce80f556fe424b0fb4d49ed091b2803fddc665e8a3a44f8714059",
             "textSha256": "cabff74dfb578c3211269be0317ee8ad353e1c0ca76888c0d39a16450d557786"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-022",
+            "WIRE-023"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCustomFloatPropertiesOfTypeItem",
@@ -10667,7 +10731,14 @@
             "bodySha256": "3f6ca34ed9abd37848c464dcadd156486c2c00c632d26b977bf494a4ac038701",
             "textSha256": "daeda2423373098365da6cca7dfe11d3743abd9c915e33d3277c934eb6f4f214"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-004",
+            "WIRE-007",
+            "WIRE-020",
+            "WIRE-021",
+            "WIRE-054"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetItemType",
@@ -10919,7 +10990,11 @@
             "bodySha256": "0f7fccd1eb0f21e0e462cbad55bc62fe80f188fc5f40b06a8f0e236462c57557",
             "textSha256": "525c66473831ce85780b1fc865fabf36627470395934d5080d5fc3a7f63c119a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-017",
+            "WIRE-056"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::IsValueId",
@@ -10982,7 +11057,22 @@
             "bodySha256": "e02096d206970b60c02c2ef96fd018abc7716c778576a03cf482b764e7dfd7dc",
             "textSha256": "98b6c1087555ccd1efb38de024202df9277c88a7549ff5d47f9a12002a0e3050"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-003",
+            "WIRE-010",
+            "WIRE-011",
+            "WIRE-012",
+            "WIRE-013",
+            "WIRE-014",
+            "WIRE-015",
+            "WIRE-016",
+            "WIRE-017",
+            "WIRE-023",
+            "WIRE-024",
+            "WIRE-055",
+            "WIRE-056"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::PackageItem",
@@ -11144,7 +11234,17 @@
             "bodySha256": "bf9b22bc7eab1df4797e6021741294e4dfa4760b99d7414393ff6088f0a943bb",
             "textSha256": "edc543b3875c62297237911f025fa44d0c0e7638a7d24b1381a982c8a8d95fb2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-004",
+            "WIRE-005",
+            "WIRE-006",
+            "WIRE-007",
+            "WIRE-018",
+            "WIRE-030",
+            "WIRE-050",
+            "WIRE-053"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::applySQL",
@@ -11156,7 +11256,10 @@
             "bodySha256": "d657b173ff5a9f137b708cc92f6094dfb4d6d23d16621539f99260519e330689",
             "textSha256": "6ba75f7bdf96766270b7875ba603adea8655de42afb6ec0368f4b4197bb3d476"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-004"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::createAttr",
@@ -11277,7 +11380,10 @@
             "bodySha256": "2381fec05791f59d99c137b9ee21ff80162ab0acc35d1b6d847726b710562777",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::get_InnovatorVersion",
@@ -11289,7 +11395,11 @@
             "bodySha256": "9531fde22c94ed134f6b905120b63df3dbc307d282f74e9f5099f42df1a30182",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001",
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::get_IsConnected",
@@ -11301,7 +11411,11 @@
             "bodySha256": "027bee5c420e344640a0dd85dbf1d6a5e85ad8ae81be01f7c86e80deedeb7626",
             "textSha256": "d307df2799b4a8230c0bf2af3711318f585b3d6983ca09435c611db29064bb5d"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001",
+            "WIRE-040"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::isInNonCorePackages",
@@ -11325,7 +11439,11 @@
             "bodySha256": "98db1edf2eed309a69bdcb53bd79e4e6d615ee5c42a93c403e10a9b60a7682be",
             "textSha256": "5aca45fa6a4c0f1596c6379f5720fd12366dd7f658828be613a43e5f1b6e4956"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-002",
+            "WIRE-040"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::processIndependentRelatedItems",
@@ -11349,7 +11467,10 @@
             "bodySha256": "433e1bd31c719f999d1afadc9708f5a0e2b7658fce4cd28b7c84bb07acaf179a",
             "textSha256": "ea53a626b4f78990a998624dac667cc39a863cc65bf1182a207022e0fb9a7a13"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Folder",
@@ -11377,7 +11498,10 @@
             "bodySha256": "db736199a444dbf537aac23cb483c1edfde6d199130e5968e9c5ec266adbb0f5",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_InnovatorVersion",
@@ -11389,7 +11513,11 @@
             "bodySha256": "0a70ee186e2dca828e1d682fbea26b71ebfe33c48270d13975d708cfae011f6a",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-001",
+            "WIRE-021"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.DBPatches.DBUpdateConfig::get_DBPatchesFolderPath",
@@ -11840,7 +11968,9 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-506"
+            "EXP-506",
+            "WIRE-022",
+            "WIRE-024"
           ]
         },
         {
@@ -11853,7 +11983,11 @@
             "bodySha256": "cd1230167f02d3bd034f57dea89633a021a3b03fbd1ff94ed7449863f2dd43d7",
             "textSha256": "4e9e0b1029fffec140282423716286e90de26e16ec8d58f3731b7cd5460d4011"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "IOM 15's token-provider constructor: no host in scope calls it, and the library's client takes a user name and password (WIRE-001, WIRE-090)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::.ctor",
@@ -11865,7 +11999,12 @@
             "bodySha256": "bf760157284d800f9e74cccd60bd4dbcbf32b43bb91a5608ae067741719344c9",
             "textSha256": "5e08ef415d9ed6f785fef2f018236574b8978187ebce50b2aa16eeb9e719c885"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-002",
+            "WIRE-005",
+            "WIRE-090"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::Login",
@@ -11877,7 +12016,18 @@
             "bodySha256": "40dea0ad2339cba626b8d740450aede061ca8b1415b6769202dd43811cfe505d",
             "textSha256": "d34955279196f6d5d68ee172990739490234c7cd19b8e28b6ccfe0cbc26767d9"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "WIRE-010",
+            "WIRE-011",
+            "WIRE-012",
+            "WIRE-013",
+            "WIRE-014",
+            "WIRE-015",
+            "WIRE-016",
+            "WIRE-040",
+            "WIRE-090"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::get_CertificateFindType",
@@ -11889,7 +12039,11 @@
             "bodySha256": "aff95c29c1e7337999cf27360fac443b7d461aaafe9d38badd2d0063ca37db30",
             "textSha256": "ecc6b906e5864317599d2440b7746fd62ea3e03651e78429e0959967169bc38b"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::get_CertificateFindValue",
@@ -11901,7 +12055,11 @@
             "bodySha256": "82dc8e680104de9600ecccfb7e398153b205df015c495396722533fb76176530",
             "textSha256": "993b82bb3d72d811087bd3b239649c58360df3f9f287b10c770ea25b5e032ec9"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::get_CertificateStoreLocation",
@@ -11913,7 +12071,11 @@
             "bodySha256": "92e5ea7520855049c3fa6e02694fa97461ad9089bb4c3fe0dc5ac5ee24a54cf6",
             "textSha256": "d70ba3529453f4804e4fe70d540805abb644e152e382c7e6678ee3da56a7195c"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::get_CertificateStoreName",
@@ -11925,7 +12087,11 @@
             "bodySha256": "2872a404f9b1d7f149b1ad2bc0cc84fd98dea09cfb6847db05b2af9fcb165139",
             "textSha256": "d92bfaa807b24f48d5d9d548ae6b7ce5813fb248060be6f642922c129e9524cc"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::get_CertificateValidOnly",
@@ -11937,7 +12103,11 @@
             "bodySha256": "9e035fde9b5030b29f5549c12a53375e13be40028874d9742e9b1869c6f9afb1",
             "textSha256": "5fb599d37b92d87a8451ca3f1e0f91c7c9c2cd7b304f91d6bbbba792593860f3"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::.ctor",
@@ -12368,7 +12538,8 @@
             "EXP-570",
             "EXP-571",
             "EXP-572",
-            "EXP-573"
+            "EXP-573",
+            "WIRE-060"
           ]
         },
         {
@@ -12398,7 +12569,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-502"
+            "EXP-502",
+            "WIRE-031"
           ]
         },
         {
@@ -12503,7 +12675,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "DBP-012"
+            "DBP-012",
+            "WIRE-004"
           ]
         },
         {
@@ -12623,7 +12796,8 @@
             "EXP-570",
             "EXP-571",
             "EXP-572",
-            "EXP-573"
+            "EXP-573",
+            "WIRE-060"
           ]
         },
         {
@@ -14693,7 +14867,11 @@
             "bodySha256": "5821f1f48d1e17a06b34a883f8b688fc053557d9aa1be44eee0b955ab2300a2a",
             "textSha256": "a9ae1fc365ab2ffbb4ecd1b63c1cc0c24aeb3df19194c1eabe36c9d59c10062e"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_CertificateFindValue",
@@ -14705,7 +14883,11 @@
             "bodySha256": "692c60efa62af5831d203290d16e40fe216fb4fed5b35332da25f61acc72026a",
             "textSha256": "b3f71496ed2c2fbba8de14aba7247705767452f2b885d90bbd7a9492ab8cb163"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_CertificateStoreLocation",
@@ -14717,7 +14899,11 @@
             "bodySha256": "7cd0385e17485321ad183037b661e5355d3dabb8d9123d1695302682571caf74",
             "textSha256": "b00384b3899484d4c1ed9691113063445f5cd358d66dc025f5cc127cfe4fdfb2"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_CertificateStoreName",
@@ -14729,7 +14915,11 @@
             "bodySha256": "ccf952eb1433da8297f2d1f45777b7f0d15a63aaa8fade1944ee5eedcfb9b169",
             "textSha256": "c856c084ee593a69b6038f3926867e38daa32bd5f6b500329e4eca5d85163be3"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_CertificateValidOnly",
@@ -14741,7 +14931,11 @@
             "bodySha256": "0531d03564c4f10ebcf2cbf874acabf32c2f96e6b1626dfb2d312e12b26e1fd0",
             "textSha256": "f6379b12f9f3c21e173f6e2c69d8325f1e44a731f03dfe271377530245845ccd"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_DataBase",
@@ -14875,7 +15069,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-501"
+            "EXP-501",
+            "WIRE-031"
           ]
         },
         {
@@ -14963,7 +15158,11 @@
             "bodySha256": "6f74acf6210c6050f04d94060277e63c948bbfc823f96f4d3569b90ca6562b4c",
             "textSha256": "a9ae1fc365ab2ffbb4ecd1b63c1cc0c24aeb3df19194c1eabe36c9d59c10062e"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_CertificateFindValue",
@@ -14975,7 +15174,11 @@
             "bodySha256": "0947baff3bec5c5576d93409251786f7734376d599cdfbd272f434526fd531ae",
             "textSha256": "b3f71496ed2c2fbba8de14aba7247705767452f2b885d90bbd7a9492ab8cb163"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_CertificateStoreLocation",
@@ -14987,7 +15190,11 @@
             "bodySha256": "f6d1b8fdee9682c8415c6b6115af2ea3cc93c5a41970b0e691a5be63c56537a1",
             "textSha256": "b00384b3899484d4c1ed9691113063445f5cd358d66dc025f5cc127cfe4fdfb2"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_CertificateStoreName",
@@ -14999,7 +15206,11 @@
             "bodySha256": "b0ce965c57b3e36f29a86eb002c4341e5d8c1bffb95dbf40022b5d5167bcc9de",
             "textSha256": "c856c084ee593a69b6038f3926867e38daa32bd5f6b500329e4eca5d85163be3"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_CertificateValidOnly",
@@ -15011,7 +15222,11 @@
             "bodySha256": "25806a9a94f54aa717e07acdc2bc943366e86db5873290290b4a2ffe90674367",
             "textSha256": "f6379b12f9f3c21e173f6e2c69d8325f1e44a731f03dfe271377530245845ccd"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-090"
+          ],
+          "reason": "Client-certificate login is held (roadmap/hold/certificate-login.md); the library never selects a certificate. The password path is IOM's login, specified as WIRE-010 to WIRE-018."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_DataBase",
@@ -15145,7 +15360,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "EXP-501"
+            "EXP-501",
+            "WIRE-031"
           ]
         },
         {

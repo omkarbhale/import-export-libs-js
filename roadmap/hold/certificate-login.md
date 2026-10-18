@@ -1,7 +1,9 @@
 # Hold: client-certificate login from the Windows certificate store
 
-**What it is.** `CertificateUtils` and `HttpConnectorExtension` let a host log in with an X.509 client certificate picked from the Windows certificate store (`CurrentUser\My`, found by subject name by default). `CertificateUtils` can also probe whether the server requires a certificate over a raw TLS socket. 14.35 changes how the certificate is selected.
+**What it is.** `CertificateUtils` and `HttpConnectorExtension` let a host log in with an X.509 client certificate picked from the Windows certificate store (`CurrentUser\My`, found by subject name by default). `CertificateUtils` can also probe whether the server requires a certificate over a raw TLS socket. 14.35 changes how the certificate is selected, and adds a third `HttpConnectorExtension` constructor that takes an IOM token provider and a protocol type.
 
 **Why it is held.** Only a host that sets the certificate context properties uses it. The import and export hosts in use today log in with a password. The Windows certificate store has no cross-platform equivalent, and the library carries its own OAuth password-grant client (round 1, Q3).
 
 **What would bring it in.** A captain decision that client-certificate login is needed, for example for a server that requires mutual TLS. It would come in as a cross-platform option (a PEM or PFX file passed to the HTTPS agent), with `WIRE-` rules for each engine's certificate selection, and it would need a server to test against.
+
+**What 14.35 selects.** `CertificateUtils.GetClientCertificates` takes the certificates of the current user's `My` store that are valid now and have a private key, and keeps those whose key usage includes non-repudiation or whose enhanced key usage includes client authentication (OID 1.3.6.1.5.5.7.3.2). 14.0.7 took the certificates whose key usage was non-repudiation and that were valid. `FindCertificate` (by store, find type and value, one match required) and `IsCertificateRequired` (a raw TLS probe) keep their behaviour. The reachable members of both builds are marked `not-ported` in `spec/source-map.json` under `WIRE-090` (`spec/wire.md`).

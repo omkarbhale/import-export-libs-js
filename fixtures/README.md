@@ -2,7 +2,7 @@
 
 Recorded oracle runs that the unit tests replay on any OS, with no server and no .NET.
 
-Fixture tickets add one folder per engine version and fixture family. `wire/` holds the proxy captures of each engine's reference host (see `wire/14.0.7-reference-host/README.md` and `wire/12.0-reference-host/README.md`). `unknown-refs/enumeration/` holds replays of .NET's `SelectNodes`-while-removing behaviour on the real framework (spec rule EXP-615; no server involved). Each other fixture holds:
+Fixture tickets add one folder per engine version and fixture family. `wire/` holds the proxy captures of each engine's reference host (see `wire/14.0.7-reference-host/README.md`, `wire/12.0-reference-host/README.md` and `wire/14.35-reference-host/README.md`) and 14.35's stub-connection probe of login, the version gate and exception texts (`wire/14.35-probe/README.md`). `unknown-refs/enumeration/` holds replays of .NET's `SelectNodes`-while-removing behaviour on the real framework (spec rule EXP-615; no server involved). Each other fixture holds:
 
 - the AML transcript: every request the engine sent and every response it got, in order;
 - the export output folder (item files and `imports.mf`), or the import input package;
