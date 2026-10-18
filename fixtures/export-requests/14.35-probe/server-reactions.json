@@ -1,0 +1,339 @@
+{
+  "engine": "14.35",
+  "recorded": "2026-10-19",
+  "server": "dev profile, http://localhost/12sp9 (WSL: 172.19.0.1), database 12sp9, read-only gets",
+  "client": "the dev MCP client (Aras IOM) with its result JSON, which drops null properties",
+  "cases": [
+    {
+      "name": "List.level1",
+      "what": "List (levels 1, two relationship types) as 14.0.7 asks and as 14.35 asks",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=1",
+          "aml": "<Item type=\"List\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+          "resultSha256": "2a2a9ac5dd4087535003aeff074614fa4e2189a8de435f33f5c66111ab0e12c0",
+          "resultBytes": 2370,
+          "shape": {
+            "List": 1,
+            "/Value": 1
+          }
+        },
+        {
+          "label": "14.35 tree, leading comma",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Value\" action=\"get\"/><Item isNew=\"1\" isTemp=\"1\" type=\"Filter Value\" action=\"get\"/></Relationships><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+          "resultSha256": "2a2a9ac5dd4087535003aeff074614fa4e2189a8de435f33f5c66111ab0e12c0",
+          "resultBytes": 2370,
+          "shape": {
+            "List": 1,
+            "/Value": 1
+          }
+        },
+        {
+          "label": "14.35 tree, no leading comma",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Value\" action=\"get\"/><Item isNew=\"1\" isTemp=\"1\" type=\"Filter Value\" action=\"get\"/></Relationships><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+          "resultSha256": "2a2a9ac5dd4087535003aeff074614fa4e2189a8de435f33f5c66111ab0e12c0",
+          "resultBytes": 2370,
+          "shape": {
+            "List": 1,
+            "/Value": 1
+          }
+        },
+        {
+          "label": "14.35 tree, no select",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Value\" action=\"get\"/><Item isNew=\"1\" isTemp=\"1\" type=\"Filter Value\" action=\"get\"/></Relationships><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+          "resultSha256": "2a2a9ac5dd4087535003aeff074614fa4e2189a8de435f33f5c66111ab0e12c0",
+          "resultBytes": 2370,
+          "shape": {
+            "List": 1,
+            "/Value": 1
+          }
+        }
+      ],
+      "note": "The leading comma is tolerated; the explicit tree returns what levels=1 returned."
+    },
+    {
+      "name": "Permission.level1",
+      "what": "Permission (Access relationship whose related item is an Identity)",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=1",
+          "aml": "<Item type=\"Permission\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>D8D71D09802C475884D1AFE156AF92F3</id></Item>",
+          "resultSha256": "ef29a7a293b4f674b20faafc8a625812cb46a4d503d19dcdc4b4c6de195357cc",
+          "resultBytes": 8641,
+          "shape": {
+            "Permission": 1,
+            "/Access": 3,
+            "/~Identity": 3
+          }
+        },
+        {
+          "label": "14.35 tree with the nested related_id request",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Permission\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Access\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"/></related_id></Item></Relationships><id>D8D71D09802C475884D1AFE156AF92F3</id></Item>",
+          "resultSha256": "ef29a7a293b4f674b20faafc8a625812cb46a4d503d19dcdc4b4c6de195357cc",
+          "resultBytes": 8641,
+          "shape": {
+            "Permission": 1,
+            "/Access": 3,
+            "/~Identity": 3
+          }
+        },
+        {
+          "label": "14.35 tree without it",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Permission\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Access\" action=\"get\"/></Relationships><id>D8D71D09802C475884D1AFE156AF92F3</id></Item>",
+          "resultSha256": "ef29a7a293b4f674b20faafc8a625812cb46a4d503d19dcdc4b4c6de195357cc",
+          "resultBytes": 8641,
+          "shape": {
+            "Permission": 1,
+            "/Access": 3,
+            "/~Identity": 3
+          }
+        }
+      ],
+      "note": "The related items are expanded whether or not the tree asks for related_id."
+    },
+    {
+      "name": "Grid.level2",
+      "what": "Grid (levels 2)",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=2",
+          "aml": "<Item type=\"Grid\" action=\"get\" levels=\"2\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>4B9FF34674E34677B877FC8F71B5CDBE</id></Item>",
+          "resultSha256": "ea7fa2bde5e8d3371ea802a35278189af06f7c053f85160ee6be01059f2b5a7a",
+          "resultBytes": 5701,
+          "shape": {
+            "Grid": 1,
+            "/Grid Column": 3
+          }
+        },
+        {
+          "label": "14.35 tree for level 2",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Grid\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Configurable Grid Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\"/></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Grid Column\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Column Event\" action=\"get\"/></Relationships></Item></Relationships><id>4B9FF34674E34677B877FC8F71B5CDBE</id></Item>",
+          "resultSha256": "ea7fa2bde5e8d3371ea802a35278189af06f7c053f85160ee6be01059f2b5a7a",
+          "resultBytes": 5701,
+          "shape": {
+            "Grid": 1,
+            "/Grid Column": 3
+          }
+        }
+      ],
+      "note": "Grid has three Grid Column rows and no deeper rows on dev, so the second level is not exercised by data."
+    },
+    {
+      "name": "LifeCycleMap.Part.level3",
+      "what": "The Part life cycle map (levels 3: 7 states, 12 transitions)",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=3",
+          "aml": "<Item type=\"Life Cycle Map\" action=\"get\" levels=\"3\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>E337EBF706FA4172B2CD1A6487E00875</id></Item>",
+          "resultSha256": "3c24be086d60eb0a5a640fd2a0d4bd6009ba1928dfaa9c2241b92f3c7fbae254",
+          "resultBytes": 31019,
+          "shape": {
+            "Life Cycle Map": 1,
+            "/Life Cycle State": 7,
+            "/Life Cycle Transition": 12
+          }
+        },
+        {
+          "label": "14.35 tree for level 3",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Map\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle State\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"State EMail\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"EMail Message\" action=\"get\"/></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"State Distribution\" action=\"get\"/></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"State Notification\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\"/></Relationships></Item></related_id></Item></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Transition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Transition EMail\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"EMail Message\" action=\"get\"/></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Transition Distribution\" action=\"get\"/></Relationships></Item></Relationships></Item></Relationships><id>E337EBF706FA4172B2CD1A6487E00875</id></Item>",
+          "resultSha256": "3c24be086d60eb0a5a640fd2a0d4bd6009ba1928dfaa9c2241b92f3c7fbae254",
+          "resultBytes": 31019,
+          "shape": {
+            "Life Cycle Map": 1,
+            "/Life Cycle State": 7,
+            "/Life Cycle Transition": 12
+          }
+        }
+      ],
+      "note": "No state or transition on dev carries e-mail or notification rows, so the third level is not exercised by data."
+    },
+    {
+      "name": "Form.Activity.level3",
+      "what": "The Activity form (levels 3: a body of 20 fields)",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=3",
+          "aml": "<Item type=\"Form\" action=\"get\" levels=\"3\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>EDD911F8D8154C02BF522B2A3B1C9C91</id></Item>",
+          "resultSha256": "e09033f6cfe810c6d5b65bec71bd583bc1a279a63cf7b1daf96249b787258541",
+          "resultBytes": 47703,
+          "shape": {
+            "Form": 1,
+            "/Body": 1,
+            "//Field": 20
+          }
+        },
+        {
+          "label": "14.35 tree for level 3",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Form\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Body\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Field\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Field Event\" action=\"get\"/></Relationships></Item></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Form Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\"/></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Frameset\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Frame\" action=\"get\"/></Relationships></Item></Relationships><id>EDD911F8D8154C02BF522B2A3B1C9C91</id></Item>",
+          "resultSha256": "e09033f6cfe810c6d5b65bec71bd583bc1a279a63cf7b1daf96249b787258541",
+          "resultBytes": 47703,
+          "shape": {
+            "Form": 1,
+            "/Body": 1,
+            "//Field": 20
+          }
+        }
+      ],
+      "note": "The Field rows are the third level and arrive in both."
+    },
+    {
+      "name": "ItemType.Part.body",
+      "what": "The ItemType body request for the Part ItemType (a 1699-character Relationships body)",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7: no isNew/isTemp, <id> first",
+          "aml": "<Item type=\"ItemType\" action=\"get\"><id>4F1AC04A2B484F3ABA4E20DB63808A88</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>",
+          "resultSha256": "1e3038c85c78d439d014709b7dfceeb31fcb35d39b7a766987663e36d46a8447",
+          "resultBytes": 251669,
+          "shape": {
+            "ItemType": 1,
+            "/DiscussionTemplate": 1,
+            "//FeedTemplate": 4,
+            "//DiscussionTemplateView": 1,
+            "//~SSVCPresentationConfiguration": 1,
+            "/ITPresentationConfiguration": 1,
+            "/Property": 40,
+            "//Grid Event": 1,
+            "//~Method": 1,
+            "/RelationshipType": 8,
+            "/~ItemType": 5,
+            "/View": 2,
+            "/~Form": 2,
+            "/~/Body": 2,
+            "/Server Event": 7,
+            "/~Method": 7,
+            "/Item Action": 6,
+            "/~Action": 6,
+            "/ItemType Life Cycle": 1,
+            "/~Life Cycle Map": 1,
+            "/TOC Access": 1,
+            "/~Identity": 2,
+            "/Can Add": 1,
+            "/~/Member": 2,
+            "/~/~Identity": 7,
+            "/Allowed Permission": 1,
+            "/~Permission": 1,
+            "/~/Access": 5,
+            "/Item Report": 4,
+            "/~Report": 4
+          }
+        },
+        {
+          "label": "14.35: isNew/isTemp on the root, <id> after the body",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships><id>4F1AC04A2B484F3ABA4E20DB63808A88</id></Item>",
+          "resultSha256": "1e3038c85c78d439d014709b7dfceeb31fcb35d39b7a766987663e36d46a8447",
+          "resultBytes": 251669,
+          "shape": {
+            "ItemType": 1,
+            "/DiscussionTemplate": 1,
+            "//FeedTemplate": 4,
+            "//DiscussionTemplateView": 1,
+            "//~SSVCPresentationConfiguration": 1,
+            "/ITPresentationConfiguration": 1,
+            "/Property": 40,
+            "//Grid Event": 1,
+            "//~Method": 1,
+            "/RelationshipType": 8,
+            "/~ItemType": 5,
+            "/View": 2,
+            "/~Form": 2,
+            "/~/Body": 2,
+            "/Server Event": 7,
+            "/~Method": 7,
+            "/Item Action": 6,
+            "/~Action": 6,
+            "/ItemType Life Cycle": 1,
+            "/~Life Cycle Map": 1,
+            "/TOC Access": 1,
+            "/~Identity": 2,
+            "/Can Add": 1,
+            "/~/Member": 2,
+            "/~/~Identity": 7,
+            "/Allowed Permission": 1,
+            "/~Permission": 1,
+            "/~/Access": 5,
+            "/Item Report": 4,
+            "/~Report": 4
+          }
+        }
+      ],
+      "note": "The ItemType body is the same resource in both; only the root attributes and the id position move."
+    },
+    {
+      "name": "ItemReport",
+      "what": "An Item Report row with and without levels=\"0\"",
+      "identicalResults": true,
+      "requests": [
+        {
+          "label": "14.0.7 levels=0 related_expand=0",
+          "aml": "<Item type=\"Item Report\" action=\"get\" levels=\"0\" related_expand=\"0\"><id>087D351BA0134470ABDEBBAFBE5C79D4</id></Item>",
+          "resultSha256": "786dd2a62d1f6c61efea6ddf0c943bcab54acc3bfbacd33d6ae65ccdc1087e09",
+          "resultBytes": 1386,
+          "shape": {
+            "Item Report": 1
+          }
+        },
+        {
+          "label": "14.35 related_expand=0 only",
+          "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" related_expand=\"0\"><id>087D351BA0134470ABDEBBAFBE5C79D4</id></Item>",
+          "resultSha256": "786dd2a62d1f6c61efea6ddf0c943bcab54acc3bfbacd33d6ae65ccdc1087e09",
+          "resultBytes": 1386,
+          "shape": {
+            "Item Report": 1
+          }
+        }
+      ],
+      "note": "This Item Report has no relationship rows, so the check shows levels is not needed to get none; it does not show a case where levels=0 would have mattered."
+    }
+  ],
+  "lookups": [
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name>List</name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"data_source\"><name>related_id</name></Item></Relationships></Item>",
+      "answer": "no items: List is not a relationship type, so the parent is not returned when no related_id row matches"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name>Value</name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"data_source\"><name>related_id</name></Item></Relationships></Item>",
+      "answer": "one related_id Property, data_source empty"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name>Part BOM</name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"data_source\"><name>related_id</name></Item></Relationships></Item>",
+      "answer": "one related_id Property, data_source = the Part ItemType (keyed_name Part)"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name>Allowed Permission</name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"data_source\"><name>related_id</name></Item></Relationships></Item>",
+      "answer": "one related_id Property, data_source = the Permission ItemType"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" select=\"name\"><source_id><Item type=\"ItemType\" action=\"get\"><name>List</name></Item></source_id></Item>",
+      "answer": "two rows: Filter Value, Value"
+    },
+    {
+      "aml": "<Item type=\"RelationshipType\" action=\"get\" select=\"name\"><source_id><Item type=\"ItemType\" action=\"get\"><name>Grid</name></Item></source_id></Item>",
+      "answer": "two rows: Configurable Grid Event, Grid Column"
+    }
+  ],
+  "selectProbes": [
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\",name\"><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+      "answer": "id and name only (the leading comma is ignored)"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\"name\"><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+      "answer": "id and name only"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\"name,\"><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+      "answer": "id and name only (a trailing comma is ignored too)"
+    },
+    {
+      "aml": "<Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>1854A8A75F5940A78369146966674FA6</id></Item>",
+      "answer": "the full non-null property set (21 properties), no fault"
+    }
+  ]
+}

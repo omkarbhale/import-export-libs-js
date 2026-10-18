@@ -167,14 +167,14 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** when a metadata lookup (the is_versionable lookup of an ItemType, and the related-item metadata lookups) fails with faultcode 0, the engine rewrites the fault's detail to `Unable to get definition of System.Xml.XmlAttribute: {name}`.
 - **Why it is a bug:** the text is meant to name the type that was asked for. The engine formats the `type` attribute node with `ToString()`, which is the .NET type name, not the attribute's value.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetTypeAmlInner`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-047: a failed poly-type lookup is remembered as "no poly-types"
 
 - **Behaviour:** the list of polymorphic ItemType names is created before its request is sent. When the request fails with a faultcode other than 0, the first caller gets the error, but every later call of that `CItemHelper` finds the empty list, returns it, and sends nothing. Items exported after the failed one keep their `data_source` references to polymorphic types unrewritten, with no error.
 - **Why it is a bug:** a failed lookup should not be taken for an answer. A correct engine would leave the list unset, so the next call asks again.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-055: stack text in `faultstring` is not reproduced (deviation)
 
@@ -182,6 +182,27 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** this is a deviation, not an engine bug. The frames cannot be reproduced, so a log or message that quotes such a `faultstring` differs from the engine's on that one field, and parity checks compare it masked.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export`, `CItemHelper::GetCurrentIdOfVersion`, `CItemHelper::GetCustomFloatPropertiesOfTypeItem`, `PackageDefinitionManager::InitSolution` and `PackageDefinitionManager::FindReferencedElements`.
 - **Versions:** 12.0, 14.0.7, 14.35.
+
+## EXP-062: a template that failed is remembered for the whole run
+
+- **Behaviour:** the per-type request templates are `Lazy` values, and a `Lazy` keeps the exception its factory threw. When the first item of a default-row type passes a level text that `int.Parse` refuses (`abc`, `1.5`), every later item of that type in the same `ExportSolutions` call fails with the same `FormatException` (or `OverflowException`) and sends no request, even when it passes a good level. A helper with no server version does the same with a `NullReferenceException`.
+- **Why it is a bug:** a good level on a later item could have built the template, and a failure in one item should not decide the outcome of the others.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export` (the template factory, `CExportItems/<>c__DisplayClass3_1::<Export>b__1`).
+- **Versions:** 14.35.
+
+## EXP-064: a failed lookup is remembered for the life of the helper
+
+- **Behaviour:** the keyed-properties lookup, the float-properties lookup and the default-permission lookup keep a fault in the helper's `_requestedItems` as a `Lazy` value: the first two keep the exception (and faultcode 0 as null or "no rows"), and the default-permission lookup keeps a null. Later calls for the same text return it and send no request.
+- **Why it is a bug:** a transient server error (a timeout, a deadlock) on one of these lookups costs every later item that needs it, for the rest of the run. 14.0.7 asked again.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetUniqueProperties`, `::GetCustomFloatPropertiesOfTypeItem` and `::GetItemType` (the one-argument overload).
+- **Versions:** 14.35.
+
+## EXP-065: the default select starts with a comma
+
+- **Behaviour:** the default select is joined onto the select the template already has, which is null, with `string.Join(",", …)`. Every template of a type with no row of its own carries `select=",xp-*($value, @explicit, @permission_id), *[is_not_null()]"`. The server ignores the comma.
+- **Why it is a bug:** the comma is a separator for a value that is not there; the select should be the default alone.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export` (the template factory, `CExportItems/<>c__DisplayClass3_1::<Export>b__1`).
+- **Versions:** 14.35.
 
 ## EXP-402: the SOAP-ENV namespace strip deletes that text from element content
 
