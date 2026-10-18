@@ -1,5 +1,6 @@
 import { writeFileBytes } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
+import { writeVolumeFile } from "../io/windows-fs.js";
 import type { XmlDocument } from "./dom.js";
 import { ArgumentException } from "./errors.js";
 import { ITEM_FILE_SETTINGS, writeDocument } from "./writer-xmlwriter.js";
@@ -18,8 +19,8 @@ export function encodeItemFile(doc: XmlDocument): Buffer {
 }
 
 /**
- * `IOWrapper.XmlDocumentSaveWithSettings(doc, path)`: the path goes through the engine's path rules (EXP-421, MAN-033),
- * and the file is created or truncated and the item file written. A document that cannot be written leaves the
+ * `IOWrapper.XmlDocumentSaveWithSettings(doc, path)`: the path goes through the engine's path rules (EXP-421) and is read as
+ * a path on a Windows volume (EXP-420), and the file is created or truncated and the item file written. A document that cannot be written leaves the
  * byte-order mark and the text before the failing node in the file, and the exception goes on to the caller.
  * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427 EXP-428
  */
@@ -29,11 +30,11 @@ export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string | nul
     bytes = encodeItemFile(doc);
   } catch (error) {
     if (error instanceof ArgumentException && error.partialOutput !== undefined) {
-      writeFileBytes(path, Buffer.concat([BOM, Buffer.from(error.partialOutput, "utf8")]), environment);
+      writeVolumeFile(path, Buffer.concat([BOM, Buffer.from(error.partialOutput, "utf8")]), environment);
     }
     throw error;
   }
-  writeFileBytes(path, bytes, environment);
+  writeVolumeFile(path, bytes, environment);
 }
 
 /**

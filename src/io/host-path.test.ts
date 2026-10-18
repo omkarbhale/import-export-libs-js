@@ -48,8 +48,9 @@ describe("MAN-004: NormalizeLongPath", () => {
   });
 
   it("counts the full path: dots resolve, trailing dots and spaces go, separators fold", () => {
-    const deep = `${"d\\".repeat(130)}x.mf`;
-    expect(normalizeLongPath(`${"d\\..\\".repeat(130)}x.mf`, windows)).toBe(`${"d\\..\\".repeat(130)}x.mf`);
+    // GetFullPath refuses a relative input of 258 characters or more, however short its full path (EXP-421)
+    const deep = `${"d\\".repeat(120)}x.mf`;
+    expect(normalizeLongPath(`${"d\\..\\".repeat(50)}x.mf`, windows)).toBe(`${"d\\..\\".repeat(50)}x.mf`);
     expect(normalizeLongPath(deep, windows)).toBe(`\\\\?\\C:\\work\\tmp5\\${deep}`);
     const padded = `${"e".repeat(255 - "C:\\work\\tmp5\\".length)}. .`;
     expect(normalizeLongPath(padded, windows)).toBe(`\\\\?\\C:\\work\\tmp5\\${"e".repeat(255 - "C:\\work\\tmp5\\".length)}`);

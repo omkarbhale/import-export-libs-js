@@ -8,6 +8,7 @@ import {
   FileNotFoundException,
   NotSupportedException,
   PathNotUsableError,
+  PathTooLongException,
   UnauthorizedAccessException,
 } from "./errors.js";
 
@@ -27,18 +28,24 @@ export interface PathEnvironment {
 /** The full path at which `NormalizeLongPath` switches to the `\\?\` form. */
 const LONG_PATH_LIMIT = 255;
 
+/** `Path.GetFullPath` of .NET Framework 4.8 refuses an absolute input of 259 characters and a relative one of 258 (EXP-421). */
+const ABSOLUTE_INPUT_LIMIT = 259;
+const RELATIVE_INPUT_LIMIT = 258;
+
 /**
  * `IOWrapper.NormalizeLongPath`. A null or empty path is returned as it is. Otherwise every leading `\` and `?` is
  * removed (bug MAN-005: a UNC or drive-less path becomes relative), the full path of the rest is computed, which throws
  * as `Path.GetFullPath` does, and the result is `\\?\` followed by the full path when that is 255 characters or longer,
  * and the trimmed path otherwise.
- * @spec MAN-004 MAN-005
+ * @spec MAN-004 MAN-005 EXP-421 EXP-422
  */
 export function normalizeLongPath(path: string | null, environment: PathEnvironment = {}): string | null {
   if (path === null || path.length === 0) return path;
   let start = 0;
   while (start < path.length && (path.charAt(start) === "\\" || path.charAt(start) === "?")) start += 1;
   const trimmed = path.slice(start);
+  const absolute = /^[A-Za-z]:|^[\\/]/.test(trimmed);
+  if (trimmed.length >= (absolute ? ABSOLUTE_INPUT_LIMIT : RELATIVE_INPUT_LIMIT)) throw new PathTooLongException();
   const full = getFullPath(trimmed, environment.cwd ?? process.cwd());
   return full.length >= LONG_PATH_LIMIT ? `\\\\?\\${full}` : trimmed;
 }
@@ -49,7 +56,7 @@ export function normalizeLongPath(path: string | null, environment: PathEnvironm
  * the second character after a drive letter. Separators are folded to `\`, `.` and `..` segments are resolved, and
  * trailing dots (and trailing spaces of the whole path) are dropped.
  */
-function getFullPath(path: string, cwd: string): string {
+export function getFullPath(path: string, cwd: string): string {
   let blank = true;
   for (let i = 0; i < path.length && blank; i += 1) blank = isWhiteSpace(path.charCodeAt(i));
   if (blank) throw new ArgumentException("The path is not of a legal form.");

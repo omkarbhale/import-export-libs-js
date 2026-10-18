@@ -4033,10 +4033,13 @@
             "bodySha256": "c1333c2ee09b4222be020900459b3479ab9a9f60b6f881f34102e0d8f8344e74",
             "textSha256": "0f93a7bb705ae03bc6aa04a8414e022d56aa41820d65b1a3b2e7eae7372ec379"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-405",
             "EXP-406"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#cdataFilterXml"
           ]
         },
         {
@@ -4049,7 +4052,7 @@
             "bodySha256": "7fe5be843d5e70578de04f400162790f4e250bd21e2fe977ec41435bd3d7a3d2",
             "textSha256": "4c40a8a9ebce7e0344dcf6b7e2f666d0334e8ba8f1cd59558bb018c61fb84d3e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-001",
             "EXP-002",
@@ -4065,6 +4068,14 @@
             "EXP-418",
             "EXP-419",
             "EXP-423"
+          ],
+          "symbols": [
+            "src/export/cexport-items.ts#CExportItems.export",
+            "src/export/cexport-items.ts#CExportItems.fetch",
+            "src/export/cexport-items.ts#CExportItems.rewrite",
+            "src/export/export-item.ts#exportFileName",
+            "src/export/export-errors.ts#guardExport",
+            "src/export/output-folder.ts#writeItemFile"
           ]
         },
         {
@@ -4231,10 +4242,13 @@
             "bodySha256": "0ca1bcdaeffb58b81f244d9d08e5ecba5ed0bb719f216fe480f49da850f53f82",
             "textSha256": "f9470f10fe0171989578b4d3a733a3aa337d8d049ddc0e5959cac5daa821183b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-403",
             "EXP-404"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removePermissionIdWhenItMatchesToDefaultPermission"
           ]
         },
         {
@@ -4562,7 +4576,7 @@
             "bodySha256": "60f14b972677be0cbfb1bd8ed3afad708af5e4afa0d6d6b47cb8340ded721b21",
             "textSha256": "1593ef17bd78bc74bc8c8a6cc3f5cf0f71df95fae61dab4ae11bf97a5c779467"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-200",
             "EXP-201",
@@ -4630,6 +4644,14 @@
             "IMP-012",
             "IMP-013",
             "IMP-014"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#applyXsl",
+            "src/export/transform.ts#applyExportTransform",
+            "src/export/transform.ts#transformExport",
+            "src/export/output.ts#OutputWriter",
+            "src/import/build-output.ts#applyBuildXsl",
+            "src/import/build-output.ts#renderBuildOutput"
           ]
         },
         {
@@ -5433,9 +5455,12 @@
             "bodySha256": "381216548e314be166e4ff334ca76d4a9f83366a22e9b5f52c6746a071a20d59",
             "textSha256": "32c57ffdd3987cdf131bf0163d0efcaaeb5a682971530c50fa799d77018cb0c9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-412"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removeEmptyRelationships"
           ]
         },
         {
@@ -5448,10 +5473,13 @@
             "bodySha256": "69d5786bf330576a4b548e1869a64b1c691dccf9389b1307a6888be14c5f6b47",
             "textSha256": "8953a12d1de588a0ad6bd61cbbd595d74b68333e3dffebacedf03cb039afe848"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-410",
             "EXP-411"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removeNamespaceNodes"
           ]
         },
         {
@@ -5503,9 +5531,12 @@
             "bodySha256": "eaf7ab5c85ffeffcc92fc9d856eaf656525de5fd4264b83670ff1402d2be8872",
             "textSha256": "126930b2d1a98fad04d8949400543b0d078e7df87908db08750043c177df9fb1"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-407"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#replaceReferencesToPolyLists"
           ]
         },
         {
@@ -5597,10 +5628,14 @@
             "bodySha256": "f6f09f8a53a362d7ee85924340d96684e0e431f07457fe57eeb45fdce65bb10d",
             "textSha256": "42923d2300a518105ba88541d72bcf744ae7f8c9254fedd826d15dbae63a4fb8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-003",
             "EXP-407"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#createAttr",
+            "src/client/request-text.ts#element"
           ]
         },
         {
@@ -6280,12 +6315,15 @@
             "bodySha256": "68dc74621a5b289b930a421bbb39fe057d5ca9f5aa69d4f52849888979c575fe",
             "textSha256": "2bea8b75d3d56938e58a3af724346b0c09b1b9cf31289de27fa63cd659757472"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-420",
             "EXP-421",
             "LP-030",
             "LP-031"
+          ],
+          "symbols": [
+            "src/io/windows-fs.ts#directoryCreateDirectory"
           ]
         },
         {
@@ -6298,10 +6336,13 @@
             "bodySha256": "353a980a62ddc3685e11a165be08959c57e5fb086d60d7f02a32833ac4761f78",
             "textSha256": "490baca4329bc120c69882bed29597aa4bc4dde97b52d8810e47def873885bf8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-415",
             "LP-034"
+          ],
+          "symbols": [
+            "src/io/windows-fs.ts#directoryDelete"
           ]
         },
         {
@@ -6314,12 +6355,15 @@
             "bodySha256": "d29ec0b7028a222ae6859cdcdc51b21e22971798dbed376bca49ed06e70595c9",
             "textSha256": "c4c5e24d7ce2d15859109b6224c192f21fe8eed9daa53d19f5d51ed8524bc1a7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-420",
             "EXP-421",
             "LP-030",
             "LP-034"
+          ],
+          "symbols": [
+            "src/io/windows-fs.ts#directoryExists"
           ]
         },
         {
@@ -6708,11 +6752,15 @@
             "bodySha256": "874e112777b95b69922b4c1f3faae924091cc44041a0653cf1f7d0f3e4f2b778",
             "textSha256": "ea1e8f3f744687199c840a790c10974e4e2119056f50ccf9b11adab6270ae154"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-414",
             "EXP-415",
             "EXP-416"
+          ],
+          "symbols": [
+            "src/export/output-folder.ts#createOutputDir",
+            "src/export/output-folder.ts#outputFolderName"
           ]
         },
         {

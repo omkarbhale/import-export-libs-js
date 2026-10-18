@@ -46,6 +46,8 @@ export class CItemHelper {
   readonly inn: Innovator;
   /** The server version `login` read. */
   innovatorVersion: ArasVersion | undefined;
+  /** The folder of the package being exported, which the item files go into (`Folder`, set by the export run: EXP-513). */
+  folder: string | null = null;
   /** The gate's decision, set by `login`. */
   versionGate: VersionGate | undefined;
   /** The export-side lookups and their cache, one per helper (EXP-030). */

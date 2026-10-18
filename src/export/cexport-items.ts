@@ -3,9 +3,19 @@ import type { XmlDocument } from "../xml/dom.js";
 import type { CItemHelper } from "../client/item-helper.js";
 import { responseDom } from "../client/answer.js";
 import { element } from "../client/request-text.js";
+import type { PathEnvironment } from "../io/host-path.js";
 import { guardExport } from "./export-errors.js";
 import { type ExportItem, exportFileName } from "./export-item.js";
 import { mainFetchRequest, serverMajorOf } from "./main-fetch.js";
+import { writeItemFile } from "./output-folder.js";
+import {
+  applyXsl,
+  cdataFilterXml,
+  removeEmptyRelationships,
+  removeNamespaceNodes,
+  removePermissionIdWhenItMatchesToDefaultPermission,
+  replaceReferencesToPolyLists,
+} from "./post-xsl.js";
 import { itemTypeBody } from "./request-bodies.js";
 import { ExportRewrites } from "./rewrites.js";
 
@@ -24,6 +34,12 @@ export interface ItemFetch {
 }
 
 /**
+ * Step 5 of EXP-400, the removal of references to unknown packages, which the export run supplies when the host chose a removal
+ * mode (`export-unknown-refs.md`). It works on the transformed document, after the poly-list step and before the clean-up.
+ */
+export type UnknownReferenceRemoval = (doc: XmlDocument) => Promise<void>;
+
+/**
  * The requests of the engine's `CExportItems.Export`, in the order EXP-001 lists them. This class sends the fetches
  * of one item and builds the follow-up requests whose parameters the rewrites read out of the answers; the
  * lookups they trigger are the helper's (`helper.lookups`).
@@ -34,8 +50,39 @@ export class CExportItems {
   /** Steps 5 to 12 of EXP-100, which {@link CExportItems.rewrite} runs. */
   readonly rewrites: ExportRewrites;
 
-  constructor(private readonly helper: CItemHelper) {
+  /** `environment` is the host the item files are written on: its current directory and platform (EXP-420). */
+  constructor(
+    private readonly helper: CItemHelper,
+    private readonly environment: PathEnvironment = {},
+  ) {
     this.rewrites = new ExportRewrites(helper, this);
+  }
+
+  /**
+   * `Export` for one item, from the first request to the file: the fetches and rewrites of `export-prexsl.md`, then the seven steps
+   * of EXP-400 (the transform, the permission, filter, poly-list, unknown-package, namespace and relationship steps, and the
+   * write). Steps 1 to 6 run inside the one `try` of EXP-054, so an `XmlException`, a `NullReferenceException` or an
+   * `XPathException` leaves as a `CItemException` and no file is written; whatever the write throws is not mapped. The file goes
+   * into `helper.folder`. Returns the path it was written to.
+   *
+   * @spec EXP-400 EXP-417 EXP-418 EXP-419 EXP-423
+   */
+  async export(item: ExportItem, level: string | null | undefined, removeUnknownReferences?: UnknownReferenceRemoval): Promise<string> {
+    const fetched = await this.fetch(item, level);
+    const rewritten = await this.rewrite(item, fetched);
+    const doc = await guardExport(async () => {
+      const lookups = this.helper.lookups;
+      const transformed = applyXsl(rewritten, this.helper.engine);
+      await removePermissionIdWhenItMatchesToDefaultPermission(transformed, lookups);
+      if (item.typeName === "mp_MacPolicy") cdataFilterXml(transformed, "condition_xml");
+      if (item.typeName === "dr_RelationshipFamily") cdataFilterXml(transformed, "implementation_query");
+      await replaceReferencesToPolyLists(transformed, lookups);
+      if (removeUnknownReferences) await removeUnknownReferences(transformed);
+      removeNamespaceNodes(transformed);
+      removeEmptyRelationships(transformed);
+      return transformed;
+    });
+    return writeItemFile(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
   }
 
   /**
