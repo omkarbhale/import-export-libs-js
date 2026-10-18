@@ -1,0 +1,11 @@
+{
+  "note": "Read back from dev with a get whose criterion is the i18n element, after the run (for lp04, after the lp02 re-run, which writes `de` only and leaves `fr` as lp04 set it). count is the number of Forum items that matched.",
+  "checks": [
+    {
+      "lang": "fr",
+      "forum": "11B5C0DE00000000000000000000D001",
+      "label": "Forum de test LIBSJS (lp04)",
+      "matches": 1
+    }
+  ]
+}

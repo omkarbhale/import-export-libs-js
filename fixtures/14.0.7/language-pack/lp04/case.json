@@ -1,0 +1,18 @@
+{
+  "case": "lp04",
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "",
+    "propertiesList": "label"
+  },
+  "lpDebug": true,
+  "calls": 20,
+  "expect": "Same import as lp01 with `LPDebug`. `temp-package/` is the retained `LanguagePack_<random>` folder (imports.mf and the Fixes file), copied off the Windows temp folder and then deleted there.",
+  "rules": "LP-030 to LP-032, LP-034"
+}

@@ -1,0 +1,11 @@
+<!-- Dev state the lpimport fixtures ran against (profile dev, database 12sp9). Send each item once, in this order. -->
+<!-- Delete both Languages after the recording (action delete, by id). Adding one makes the server add a LABEL_<code> column to every table with a multilingual property, so each add took longer than 30 s. -->
+<AML>
+  <Item type="Language" action="add"><code>de</code><suffix>_de</suffix><name>German</name></Item>
+  <Item type="Language" action="add"><code>fr</code><suffix>_fr</suffix><name>French</name></Item>
+</AML>
+<!-- The two scratch items the packs translate. Forum is non-versionable. Each add also makes a Team named by the Forum's id (team_id), so teardown.aml deletes the Teams too. -->
+<AML>
+  <Item type="Forum" action="add" id="11B5C0DE00000000000000000000D001"><name>LIBSJS-SCRATCH-LP-Forum</name><label xml:lang="en">LIBSJS scratch forum</label></Item>
+  <Item type="Forum" action="add" id="11B5C0DE00000000000000000000D002"><name>LIBSJS-SCRATCH-LP-Forum2</name><label xml:lang="en">LIBSJS scratch forum two</label></Item>
+</AML>

@@ -1,0 +1,9 @@
+<!-- Removes the scratch Forums and their Teams. Look the Teams up first (get Team where name is the Forum id) and delete them by id. -->
+<AML>
+  <Item type="Forum" action="purge" id="11B5C0DE00000000000000000000D001" />
+  <Item type="Forum" action="purge" id="11B5C0DE00000000000000000000D002" />
+</AML>
+<AML>
+  <Item type="Team" action="delete" id="<id of the Team named 11B5C0DE00000000000000000000D001>" />
+  <Item type="Team" action="delete" id="<id of the Team named 11B5C0DE00000000000000000000D002>" />
+</AML>

@@ -1,0 +1,18 @@
+{
+  "case": "lp02",
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de",
+    "propertiesList": "label"
+  },
+  "lpDebug": false,
+  "calls": 20,
+  "expect": "Only `de` elements are generated. The `fr` values in the pack are not applied.",
+  "rules": "LP-011, LP-014, LP-023"
+}

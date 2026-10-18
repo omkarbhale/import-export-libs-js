@@ -1,0 +1,22 @@
+Tool version: 14.0.7.35492
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\Temp\LanguagePack_<random>\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T201715-14.0.7-lpimport-9218ec\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T201715-14.0.7-lpimport-9218ec\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T201715-14.0.7-lpimport-9218ec\lp\ImportConfig.xml
+Language pack name: LIBSJS-SCRATCH-LP
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 01:47:17
+Updating 'LIBSJS-SCRATCH-LP' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LP****
+completed
+Updating 'LIBSJS-SCRATCH-LP' package to success release status
+end of execution : 10/19/2026 01:47:17
