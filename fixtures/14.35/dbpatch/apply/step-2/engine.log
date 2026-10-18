@@ -1,0 +1,160 @@
+Tool version: 14.35.0.43890
+Action: ImportDPPatch
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T210809-14.35-dbpatch-a3b82d\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T210809-14.35-dbpatch-a3b82d\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+DB updated nanifest file path: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T210809-14.35-dbpatch-a3b82d\input\manifest.xml
+DB pathes folder path: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T210809-14.35-dbpatch-a3b82d\input
+Tool name: Libs
+
+Start of importing DB packages.
+Start time: 10/19/2026 02:38:10
+Loaded [C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T210809-14.35-dbpatch-a3b82d\input\manifest.xml] for upgrade to release [99.99].
+There are 1 updates.
+Request (formatted):
+<Item isNew="1" isTemp="1" type="ItemType" action="get" select="id">
+  <name>DatabaseUpgrade</name>
+</Item>
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <Result>
+      <Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="4DAD707F62B54823AE2E4730BB00C649">
+        <id keyed_name="DatabaseUpgrade" type="ItemType">4DAD707F62B54823AE2E4730BB00C649</id>
+      </Item>
+    </Result>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Request (formatted):
+<Item isNew="1" isTemp="1" type="DatabaseUpgrade" action="get" select="id,locked_by_id">
+  <name>Applied Updates</name>
+  <target_release>99.99</target_release>
+  <type>0</type>
+</Item>
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <Result>
+      <Item type="DatabaseUpgrade" typeId="4DAD707F62B54823AE2E4730BB00C649" id="86667168B1724130BA501C7AC81906B3">
+        <id keyed_name="86667168B1724130BA501C7AC81906B3" type="DatabaseUpgrade">86667168B1724130BA501C7AC81906B3</id>
+        <locked_by_id is_null="1" />
+      </Item>
+    </Result>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Request (formatted):
+<Item isNew="1" isTemp="1" type="DatabaseUpgrade" action="edit" select="id" id="86667168B1724130BA501C7AC81906B3">
+  <os_user>SG\omkarb</os_user>
+  <upgrade_status>0</upgrade_status>
+  <applied_on>__now()</applied_on>
+</Item>
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <Result>
+      <Item type="DatabaseUpgrade" typeId="4DAD707F62B54823AE2E4730BB00C649" id="86667168B1724130BA501C7AC81906B3">
+        <applied_on>2026-10-19T02:38:10</applied_on>
+        <config_id keyed_name="86667168B1724130BA501C7AC81906B3" type="DatabaseUpgrade">86667168B1724130BA501C7AC81906B3</config_id>
+        <created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id>
+        <created_on>2026-10-19T02:38:08</created_on>
+        <current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state>
+        <description>Libs</description>
+        <generation>1</generation>
+        <id keyed_name="86667168B1724130BA501C7AC81906B3" type="DatabaseUpgrade">86667168B1724130BA501C7AC81906B3</id>
+        <is_current>1</is_current>
+        <is_latest>1</is_latest>
+        <is_released>1</is_released>
+        <keyed_name>86667168B1724130BA501C7AC81906B3</keyed_name>
+        <major_rev>A</major_rev>
+        <modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id>
+        <modified_on>2026-10-19T02:38:10</modified_on>
+        <name>Applied Updates</name>
+        <new_version>1</new_version>
+        <not_lockable>0</not_lockable>
+        <os_user>SG\omkarb</os_user>
+        <permission_id keyed_name="Administrators" type="Permission">5BE54C871FB14F6EBC11596D1A010D26</permission_id>
+        <state>Released</state>
+        <target_release>99.99</target_release>
+        <type>0</type>
+        <upgrade_status>0</upgrade_status>
+      </Item>
+    </Result>
+    <Message>
+      <event name="ids_modified" value="86667168B1724130BA501C7AC81906B3|853309EE674D41C7A98201CE1B86CBE8" />
+    </Message>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Start of importing 'LIBSJS-SCRATCH-noop' DB patch.
+Start time: 10/19/2026 02:38:10
+Request (formatted):
+<Item>
+  <Number>LIBSJS-SCRATCH-001</Number>
+  <Name>LIBSJS-SCRATCH-noop</Name>
+  <Generation>1</Generation>
+  <Update>
+    <Type>C#</Type>
+    <Body><![CDATA[return this;]]></Body>
+    <Data />
+  </Update>
+</Item>
+Error of import DB patch
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server</faultcode>
+      <faultstring><![CDATA[The update with update number LIBSJS-SCRATCH-001 has already been applied to this database.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[The update with update number LIBSJS-SCRATCH-001 has already been applied to this database.]]></af:legacy_detail>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+End time: 10/19/2026 02:38:10
+Request (formatted):
+<Item isNew="1" isTemp="1" type="DatabaseUpgrade" action="edit" id="86667168B1724130BA501C7AC81906B3">
+  <upgrade_status>2</upgrade_status>
+</Item>
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <Result>
+      <Item type="DatabaseUpgrade" typeId="4DAD707F62B54823AE2E4730BB00C649" id="86667168B1724130BA501C7AC81906B3">
+        <applied_on>2026-10-19T02:38:10</applied_on>
+        <config_id keyed_name="86667168B1724130BA501C7AC81906B3" type="DatabaseUpgrade">86667168B1724130BA501C7AC81906B3</config_id>
+        <created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id>
+        <created_on>2026-10-19T02:38:08</created_on>
+        <current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state>
+        <description>Libs</description>
+        <generation>1</generation>
+        <id keyed_name="86667168B1724130BA501C7AC81906B3" type="DatabaseUpgrade">86667168B1724130BA501C7AC81906B3</id>
+        <is_current>1</is_current>
+        <is_latest>1</is_latest>
+        <is_released>1</is_released>
+        <keyed_name>86667168B1724130BA501C7AC81906B3</keyed_name>
+        <major_rev>A</major_rev>
+        <modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id>
+        <modified_on>2026-10-19T02:38:10</modified_on>
+        <name>Applied Updates</name>
+        <new_version>1</new_version>
+        <not_lockable>0</not_lockable>
+        <os_user>SG\omkarb</os_user>
+        <permission_id keyed_name="Administrators" type="Permission">5BE54C871FB14F6EBC11596D1A010D26</permission_id>
+        <state>Released</state>
+        <target_release>99.99</target_release>
+        <type>0</type>
+        <upgrade_status>2</upgrade_status>
+      </Item>
+    </Result>
+    <Message>
+      <event name="ids_modified" value="86667168B1724130BA501C7AC81906B3|853309EE674D41C7A98201CE1B86CBE8" />
+    </Message>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+End of importing DB packages.
+End time: 10/19/2026 02:38:10

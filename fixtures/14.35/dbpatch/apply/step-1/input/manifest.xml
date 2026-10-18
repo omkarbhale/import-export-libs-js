@@ -1,0 +1,11 @@
+<updates_manifest>
+  <software_version>9999</software_version>
+  <updates>
+    <update>
+      <up_number>LIBSJS-SCRATCH-001</up_number>
+      <name>LIBSJS-SCRATCH-noop</name>
+      <order>1</order>
+      <generation>1</generation>
+    </update>
+  </updates>
+</updates_manifest>

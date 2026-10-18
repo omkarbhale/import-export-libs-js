@@ -1,0 +1,5 @@
+{"event":7,"seq":1,"thread":19,"ticks":780659414221,"channel":"status","text":"Start of importing DB packages.","answer":null}
+{"event":8,"seq":2,"thread":19,"ticks":780659417666,"channel":"status","text":"Start time: 10/19/2026 02:38:06","answer":null}
+{"event":9,"seq":3,"thread":19,"ticks":780659419064,"channel":"error","text":"Login name is not root. It is 'admin'. Check your config file.","answer":null}
+{"event":10,"seq":4,"thread":19,"ticks":780659419508,"channel":"status","text":"End of importing DB packages.","answer":null}
+{"event":11,"seq":5,"thread":19,"ticks":780659419644,"channel":"status","text":"End time: 10/19/2026 02:38:06","answer":null}

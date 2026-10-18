@@ -82,6 +82,54 @@ describe("oracle import exit status", () => {
   });
 });
 
+describe("oracle dbpatch", () => {
+  let stdout: string;
+  let stderr: string;
+
+  beforeEach(() => {
+    stdout = "";
+    stderr = "";
+    vi.stubEnv("ARAS_PASSWORD", "test-only");
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => ((stdout += String(chunk)), true));
+    vi.spyOn(process.stderr, "write").mockImplementation((chunk) => ((stderr += String(chunk)), true));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  const clean: CleanupReport = { created: [LIST], deleted: [LIST], kept: [], unverified: [] };
+  const manifest = new URL("../dbpatch/manifest.xml", import.meta.url).pathname;
+
+  it("hands the manifest, the patches folder and the tool name to the recorder, connecting as root unless told otherwise", async () => {
+    const { record } = await import("./record.js");
+    recorded.result = result(0, clean);
+    expect(await main(["--engine", "14.35", "dbpatch", manifest, "--out", "/tmp/oracle-cli-test"])).toBe(0);
+    expect(vi.mocked(record).mock.lastCall![0]).toMatchObject({
+      engine: "14.35",
+      command: "dbpatch",
+      user: "root",
+      dbpatch: { manifest, folder: manifest.replace(/\/manifest\.xml$/, ""), toolName: "Libs" },
+    });
+    expect(await main(["--engine", "14.35", "dbpatch", manifest, "--user", "admin", "--patches-folder", "/tmp/p", "--tool-name", "X", "--out", "/tmp/o"])).toBe(0);
+    expect(vi.mocked(record).mock.lastCall![0]).toMatchObject({ user: "admin", dbpatch: { folder: "/tmp/p", toolName: "X" } });
+    expect(stdout).toContain("cleanup: created 1, deleted 1, kept 0, unverified 0");
+  });
+
+  it("needs exactly one manifest", async () => {
+    expect(await main(["--engine", "14.35", "dbpatch"])).toBe(64);
+    expect(stderr).toContain("dbpatch needs one manifest file");
+  });
+
+  it("exits 1 when anything is left behind, and passes an engine exception (2) through", async () => {
+    recorded.result = result(0, { created: [LIST], deleted: [], kept: [{ ...LIST, reason: "still present after the cleanup" }], unverified: [] });
+    expect(await main(["--engine", "14.35", "dbpatch", manifest, "--out", "/tmp/o"])).toBe(1);
+    recorded.result = result(2, clean);
+    expect(await main(["--engine", "14.35", "dbpatch", manifest, "--out", "/tmp/o"])).toBe(2);
+  });
+});
+
 describe("oracle xsl", () => {
   let stdout: string;
   let stderr: string;

@@ -1,0 +1,30 @@
+{
+  "id": "non-root",
+  "engine": "14.35",
+  "title": "The login is not root",
+  "exercises": "The `admin` login (a different user from the profile's `root`, with the same password) is refused by the engine's own name check before any DB request: the log header, the start lines, the `error` message and the end lines, and no `ValidateUser`, `GetItem`, `ApplyItem` or `ApplyUpdate` call after the engine's own login. Nothing is created.",
+  "rules": [
+    "DBP-003",
+    "DBP-005",
+    "DBP-010",
+    "DBP-050"
+  ],
+  "steps": [
+    {
+      "name": "admin login",
+      "user": "admin",
+      "expect": {
+        "kind": "refused",
+        "message": "Login name is not root. It is 'admin'. Check your config file."
+      },
+      "result": {
+        "hostExit": 2,
+        "calls": 6,
+        "error": "System.ArgumentException: Login name is not root. It is 'admin'. Check your config file.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ApplyDBUpdateManifest(DBUpdateConfig config)\r\n   at LibsJsOracle.Host.Run(HostRequest r)",
+        "errorMessages": 1,
+        "created": []
+      }
+    }
+  ],
+  "deleted": []
+}

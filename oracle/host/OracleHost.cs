@@ -70,13 +70,22 @@ namespace LibsJsOracle
         private static long _callSeq;
         private static long _callStart;
         private static long _messageSeq;
+        private static long _errorMessages;
         private static volatile bool _recording;
+        private static volatile bool _suspended;
         private static readonly List<CreatedItem> _created = new List<CreatedItem>();
         [ThreadStatic] private static int _depth;
 
         public static long Calls { get { lock (Gate) { return _callSeq; } } }
         public static long Messages { get { lock (Gate) { return _messageSeq; } } }
-        public static bool Recording { get { return _recording; } }
+        /// <summary>How many texts the engine sent on the `error` channel (a DB patch failure is one, not an exception).</summary>
+        public static long ErrorMessages { get { lock (Gate) { return _errorMessages; } } }
+        public static bool Recording { get { return _recording && !_suspended; } }
+
+        /// <summary>Lets reads that are not part of the run (the dbpatch preconditions) pass through unrecorded.</summary>
+        public static void Suspend() { _suspended = true; }
+
+        public static void Resume() { _suspended = false; }
 
         /// <summary>Every item a recorded call created or may have created, in completion order.</summary>
         public static IList<CreatedItem> Created { get { lock (Gate) { return _created.ToArray(); } } }
@@ -128,7 +137,7 @@ namespace LibsJsOracle
         public static void EndCall(long start, int depth, string action, string request, string response,
                                    string error, long startTicks, long endTicks)
         {
-            List<CreatedItem> created = CreatedItems.From(request, response, error != null);
+            List<CreatedItem> created = CreatedItems.From(action, request, response, error != null);
             lock (Gate)
             {
                 _callSeq++;
@@ -157,6 +166,7 @@ namespace LibsJsOracle
             lock (Gate)
             {
                 _messageSeq++;
+                if (channel == "error") _errorMessages++;
                 _event++;
                 var line = new StringBuilder();
                 line.Append("{\"event\":").Append(Json.Num(_event));
@@ -195,10 +205,11 @@ namespace LibsJsOracle
     {
         private const string Body = "/*[local-name()='Envelope']/*[local-name()='Body']";
 
-        public static List<CreatedItem> From(string request, string response, bool threw)
+        public static List<CreatedItem> From(string callAction, string request, string response, bool threw)
         {
             var created = new List<CreatedItem>();
             if (request == null || (response == null && !threw)) return created;
+            if (callAction == "ApplyUpdate") return AppliedUpdate(response, threw);
             var req = new XmlDocument();
             var res = new XmlDocument();
             var adds = new List<XmlElement>();
@@ -249,6 +260,37 @@ namespace LibsJsOracle
                     }
                 }
                 created.Add(new CreatedItem { Type = type, Id = id, Unconfirmed = unconfirmed });
+            }
+            return created;
+        }
+
+        /// <summary>
+        /// The "Applied Updates" item the server's ApplyUpdate action adds (DBP-061): the Item of a
+        /// non-fault answer. A call that failed in transport may still have been committed, with no id to name.
+        /// </summary>
+        private static List<CreatedItem> AppliedUpdate(string response, bool threw)
+        {
+            var created = new List<CreatedItem>();
+            if (threw || response == null)
+            {
+                created.Add(new CreatedItem { Type = "Applied Updates", Id = "", Unconfirmed = true });
+                return created;
+            }
+            var res = new XmlDocument();
+            try { res.LoadXml(response); }
+            catch (XmlException) { return created; }
+            XmlNode fault = res.SelectSingleNode(Body + "/*[local-name()='Fault']");
+            if (fault != null)
+            {
+                XmlNode actor = fault.SelectSingleNode("*[local-name()='faultactor']");
+                if (actor != null && actor.InnerText == "HttpServerConnection")
+                    created.Add(new CreatedItem { Type = "Applied Updates", Id = "", Unconfirmed = true });
+                return created;
+            }
+            foreach (XmlElement item in res.SelectNodes(Body + "/*[local-name()='Result']/Item"))
+            {
+                string type = item.GetAttribute("type");
+                created.Add(new CreatedItem { Type = type.Length == 0 ? "Applied Updates" : type, Id = item.GetAttribute("id"), Unconfirmed = false });
             }
             return created;
         }
@@ -374,6 +416,12 @@ namespace LibsJsOracle
         public string[] PriorCreated;   // import, cleanup: "type<TAB>id<TAB>0|1" per item an earlier kept run created
         public bool LockUpgradeRows;    // import: lock the packages' scratch DatabaseUpgrade rows first
         public string[] VersionBefore;  // import: "type<TAB>id" per scratch item to give a new generation first
+        public string DbManifest;       // dbpatch: the manifest's full path
+        public string DbPatchesFolder;  // dbpatch: the folder holding the patch files
+        public string DbToolName;       // dbpatch: DBUpdateConfig.ToolName
+        public string ExpectedDbManifestSha256;  // dbpatch: the committed test patch's digests (the host re-checks them)
+        public string ExpectedDbPatchSha256;
+        public bool DbPatchCleanup;     // cleanup: delete DB patch items (the dbpatch command always does)
         public Hashtable Context;       // SolutionUpgradeContext property -> string value
         public Hashtable Export;        // SUExportContext property -> string value
         public Hashtable Import;        // SUImportContext property -> string value
@@ -615,12 +663,202 @@ namespace LibsJsOracle
             return items;
         }
 
-        private static string Entry(CreatedItem c, string reason)
+        internal static string Entry(CreatedItem c, string reason)
         {
             string entry = "{\"type\":" + Json.Str(c.Type) + ",\"id\":" + Json.Str(c.Id);
             if (c.Unconfirmed) entry += ",\"unconfirmed\":true";
             if (reason != null) entry += ",\"reason\":" + Json.Str(reason);
             return entry + "}";
+        }
+    }
+
+    /// <summary>
+    /// The oracle's one DB patch (DBP-070): a no-op "Update" whose run adds a
+    /// DatabaseUpgrade row for release 99.99, an "Applied Updates" item numbered
+    /// LIBSJS-SCRATCH-001 and the DatabaseUpgradePatch that links them. The
+    /// host refuses any other manifest or patch (DBP-071), needs none of those
+    /// items to exist before the run, and deletes only items that match them.
+    /// </summary>
+    public static class DbPatch
+    {
+        public const string Number = "LIBSJS-SCRATCH-001";
+        public const string PatchName = "LIBSJS-SCRATCH-noop";
+        public const string Release = "99.99";
+        public const string RowName = "Applied Updates";
+        public const string AppliedType = "Applied Updates";
+        public const string ToolName = "Libs";
+
+        /// <summary>The staged manifest and patch file must be the committed ones; the tool name must be Libs.</summary>
+        public static void AssertGuard(HostRequest r)
+        {
+            Check("manifest", r.DbManifest, r.ExpectedDbManifestSha256);
+            Check("patch", Path.Combine(r.DbPatchesFolder ?? "", PatchName + ".xml"), r.ExpectedDbPatchSha256);
+            if (r.DbToolName != ToolName)
+                throw new InvalidOperationException("refusing a DB patch run with tool name '" + r.DbToolName + "'");
+        }
+
+        private static void Check(string what, string path, string expected)
+        {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(expected) || !File.Exists(path))
+                throw new InvalidOperationException("refusing a DB patch run: " + what + " file is missing");
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] hash = sha.ComputeHash(File.ReadAllBytes(path));
+                var hex = new StringBuilder();
+                foreach (byte b in hash) hex.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+                if (hex.ToString() != expected)
+                    throw new InvalidOperationException("refusing a DB patch run: the " + what + " is not the committed test patch file");
+            }
+        }
+
+        private static Item Get(Innovator inn, string type, string select, params string[] pairs)
+        {
+            Item get = inn.newItem(type, "get");
+            get.setAttribute("select", select);
+            for (int i = 0; i < pairs.Length; i += 2) get.setProperty(pairs[i], pairs[i + 1]);
+            return get.apply();
+        }
+
+        /// <summary>Read-only: neither the release row nor the numbered update may exist, so the run only adds (DBP-071).</summary>
+        public static void Preconditions(Innovator inn)
+        {
+            Item row = Get(inn, "DatabaseUpgrade", "id", "name", RowName, "target_release", Release, "type", "0");
+            if (!row.isError()) throw new InvalidOperationException("a DatabaseUpgrade 'Applied Updates' for release " + Release + " already exists (" + row.getID() + "); stopping");
+            if (row.getErrorCode() != "0") throw new InvalidOperationException("precondition read failed: " + row.getErrorString());
+            Item applied = Get(inn, AppliedType, "id", "up_number", Number);
+            if (!applied.isError()) throw new InvalidOperationException("an 'Applied Updates' item " + Number + " already exists (" + applied.getID() + "); stopping");
+            if (applied.getErrorCode() != "0") throw new InvalidOperationException("precondition read failed: " + applied.getErrorString());
+        }
+    }
+
+    /// <summary>
+    /// Deletes what a DB patch run created (DBP-071), newest first: the
+    /// DatabaseUpgradePatch links, the "Applied Updates" item, then the
+    /// DatabaseUpgrade row. An item goes only when it matches the test patch
+    /// (the row: name, release and type; the update: its up_number; a link:
+    /// its related update's up_number), and a read-back then finds nothing of
+    /// the release or the number. Same report shape as Cleanup.
+    /// </summary>
+    public static class DbPatchCleanup
+    {
+        public static string Run(Innovator inn, IList<CreatedItem> created, int prior)
+        {
+            var all = new List<string>();
+            // A second run answers with the "Applied Updates" item the first one made (DBP-042): not created again.
+            var earlier = new HashSet<string>();
+            for (int n = 0; n < prior; n++) earlier.Add(created[n].Type + "\t" + created[n].Id);
+            for (int n = prior; n < created.Count; n++)
+                if (!earlier.Contains(created[n].Type + "\t" + created[n].Id)) all.Add(Cleanup.Entry(created[n], null));
+            var deleted = new List<string>();
+            var kept = new List<string>();
+            var unverified = new List<string>();
+            var seen = new HashSet<string>();
+            var handled = new HashSet<string>();
+            for (int i = created.Count - 1; i >= 0; i--)
+            {
+                CreatedItem c = created[i];
+                if (c.Id.Length == 0)
+                {
+                    kept.Add(Cleanup.Entry(c, "its call failed in transport and names no id, so whether it was created is unknown"));
+                    continue;
+                }
+                if (!seen.Add(c.Type + "\t" + c.Id)) continue;
+                string reason = DeleteOne(inn, c);
+                if (reason == null) { deleted.Add(Cleanup.Entry(c, null)); handled.Add(c.Id); }
+                else if (reason == Gone) { handled.Add(c.Id); if (c.Unconfirmed) unverified.Add(Cleanup.Entry(c, null)); }
+                else kept.Add(Cleanup.Entry(c, reason));
+            }
+            // Read back: nothing of the release or the number may remain.
+            ReadBack(inn, DbPatch.AppliedType, "up_number", DbPatch.Number, handled, kept);
+            Item rows = inn.newItem("DatabaseUpgrade", "get");
+            rows.setAttribute("select", "id");
+            rows.setProperty("name", DbPatch.RowName);
+            rows.setProperty("target_release", DbPatch.Release);
+            rows.setProperty("type", "0");
+            Report(rows.apply(), "DatabaseUpgrade", handled, kept);
+            return "{\"created\":[" + string.Join(",", all.ToArray()) + "],\"deleted\":[" + string.Join(",", deleted.ToArray()) +
+                   "],\"kept\":[" + string.Join(",", kept.ToArray()) + "],\"unverified\":[" + string.Join(",", unverified.ToArray()) + "]}";
+        }
+
+        private const string Gone = "\u0001gone";
+
+        private static void ReadBack(Innovator inn, string type, string property, string value, HashSet<string> handled, List<string> kept)
+        {
+            Item get = inn.newItem(type, "get");
+            get.setAttribute("select", "id");
+            get.setProperty(property, value);
+            Report(get.apply(), type, handled, kept);
+        }
+
+        private static void Report(Item found, string type, HashSet<string> handled, List<string> kept)
+        {
+            if (found.isError())
+            {
+                if (found.getErrorCode() == "0") return;
+                kept.Add(Cleanup.Entry(new CreatedItem { Type = type, Id = "" }, "read-back failed: " + found.getErrorString()));
+                return;
+            }
+            for (int i = 0; i < found.getItemCount(); i++)
+            {
+                string id = found.getItemByIndex(i).getID();
+                kept.Add(Cleanup.Entry(new CreatedItem { Type = type, Id = id }, "still present after the cleanup"));
+            }
+        }
+
+        /// <summary>Null when deleted, Gone when it was not there, else why it is kept.</summary>
+        private static string DeleteOne(Innovator inn, CreatedItem c)
+        {
+            try
+            {
+                string mismatch = Match(inn, c);
+                if (mismatch == Gone) return Gone;
+                if (mismatch != null) return mismatch;
+                Item delete = inn.newItem(c.Type, "delete");
+                delete.setID(c.Id);
+                Item result = delete.apply();
+                return result.isError() ? "delete failed: " + result.getErrorString() : null;
+            }
+            catch (Exception e)
+            {
+                return "cleanup failed: " + e.Message;
+            }
+        }
+
+        private static Item GetById(Innovator inn, string type, string id, string select)
+        {
+            Item get = inn.newItem(type, "get");
+            get.setID(id);
+            get.setAttribute("select", select);
+            return get.apply();
+        }
+
+        /// <summary>Null when the item is one the test patch makes, Gone when it no longer exists, else why it is not.</summary>
+        private static string Match(Innovator inn, CreatedItem c)
+        {
+            if (c.Type == "DatabaseUpgrade")
+            {
+                Item row = GetById(inn, c.Type, c.Id, "name,target_release,type");
+                if (row.isError()) return row.getErrorCode() == "0" ? Gone : row.getErrorString();
+                if (row.getProperty("name", "") == DbPatch.RowName && row.getProperty("target_release", "") == DbPatch.Release && row.getProperty("type", "") == "0") return null;
+                return "is not the test patch's DatabaseUpgrade row (name, release 99.99, type 0)";
+            }
+            if (c.Type == DbPatch.AppliedType)
+            {
+                Item applied = GetById(inn, c.Type, c.Id, "up_number,name");
+                if (applied.isError()) return applied.getErrorCode() == "0" ? Gone : applied.getErrorString();
+                if (applied.getProperty("up_number", "") == DbPatch.Number) return null;
+                return "is not the test patch's update (up_number " + DbPatch.Number + ")";
+            }
+            if (c.Type == "DatabaseUpgradePatch")
+            {
+                Item link = GetById(inn, c.Type, c.Id, "source_id,related_id");
+                if (link.isError()) return link.getErrorCode() == "0" ? Gone : link.getErrorString();
+                Item related = GetById(inn, DbPatch.AppliedType, link.getProperty("related_id", ""), "up_number");
+                if (related.isError()) return related.getErrorCode() == "0" ? "its update is gone but the link is not" : related.getErrorString();
+                if (related.getProperty("up_number", "") == DbPatch.Number) return null;
+                return "does not link the test patch's update";
+            }
+            return "is not an item a DB patch run creates";
         }
     }
 
@@ -682,6 +920,29 @@ namespace LibsJsOracle
                     var manager = new ImportExportManager(context, messages, ci);
                     manager.ExportSolutions(exportContext, Selection(r.Items));
                     result = "exported";
+                }
+                else if (r.Command == "dbpatch")
+                {
+#if ENGINE_DBPATCH
+                    DbPatch.AssertGuard(r);
+                    if (prior.Count == 0)
+                    {
+                        // Read-only, unrecorded: the run must only add, never edit or reuse an existing row (DBP-071).
+                        Rec.Suspend();
+                        try { DbPatch.Preconditions(IomFactory.CreateInnovator(conn)); }
+                        finally { Rec.Resume(); }
+                    }
+                    if (!Has(r.Context, "Action")) context.Action = ImportExport.ImportDPPatch;
+                    var manager = new ImportExportManager(context, messages, ci);
+                    var config = new Aras.Tools.SolutionUpgrade.DBPatches.DBUpdateConfig();
+                    config.DBUpdatedManifestFilePath = r.DbManifest;
+                    config.DBPatchesFolderPath = r.DbPatchesFolder;
+                    config.ToolName = r.DbToolName;
+                    manager.ApplyDBUpdateManifest(config);
+                    result = "ApplyDBUpdateManifest returned";
+#else
+                    throw new NotSupportedException("this engine has no ApplyDBUpdateManifest");
+#endif
                 }
                 else if (r.Command == "import" || r.Command == "lpimport")
                 {
@@ -752,12 +1013,20 @@ namespace LibsJsOracle
                         everything.AddRange(Rec.Created);
                         cleanup = r.KeepCreated
                             ? Cleanup.Deferred(Rec.Created)
-                            : Cleanup.Run(IomFactory.CreateInnovator(conn), everything, prior.Count);
+                            : (r.Command == "dbpatch" || r.DbPatchCleanup)
+                                ? DbPatchCleanup.Run(IomFactory.CreateInnovator(conn), everything, prior.Count)
+                                : Cleanup.Run(IomFactory.CreateInnovator(conn), everything, prior.Count);
                     }
                     catch (Exception e) { if (error == null) error = "cleanup: " + e; }
                 }
                 info.Append(",\"calls\":").Append(Json.Num(Rec.Calls));
                 info.Append(",\"messages\":").Append(Json.Num(Rec.Messages));
+                if (r.Command == "dbpatch")
+                {
+                    info.Append(",\"errorMessages\":").Append(Json.Num(Rec.ErrorMessages));
+                    // A failed patch is an `error` message, not an exception (DBP-050); the host reports it as a failure.
+                    if (code == 0 && Rec.ErrorMessages > 0) code = 1;
+                }
                 Rec.Close();
             }
             info.Append(",\"innovatorVersion\":").Append(Json.Str(innovatorVersion));

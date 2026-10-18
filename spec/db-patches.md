@@ -9,7 +9,7 @@ Sources:
 - the server side of the `ApplyUpdate` action, read from the 12 SP9 server install on the dev machine (`Aras.Server.Core.dll`, decompiled locally, never committed). It is background for what a patch is (DBP-060 to DBP-062), not engine behaviour;
 - Aras's own host of this operation, `Aras Update` (DBP-002).
 
-Nothing here was run against a server yet. Ticket 72 wires the oracle and records the fixture, so rules marked *Inferred from the code* are checked there.
+Ticket 72 wired the oracle (`npm run oracle -- --engine 14.35 dbpatch`, `oracle/README.md`) and recorded `fixtures/14.35/dbpatch/` on the dev instance (12 SP9): the case `non-root` (the `admin` login) and the case `apply` (the committed no-op patch as `root`, and the same patch again). A rule marked *Observed* is shown by that fixture; one marked *Inferred from the code* is not, because the oracle applies no other patch (DBP-071). Where the fixture disagreed with the first reading of the code, the rule was corrected (DBP-011, DBP-042, DBP-060 and DBP-061).
 
 ## Entry and inputs
 
@@ -67,7 +67,7 @@ Any exception in steps 3 to 7 is caught by one handler: it sends `error` with th
 
 The port keeps all of this order. Refusing a non-`root` user before sending anything (ticket 63) is therefore not a deviation: the engine sends nothing either, after the login the host did.
 
-*Inferred from the code.*
+*Observed* for the refused run (fixture `non-root`): the log holds the header, `Start of importing DB packages.`, `Start time: …`, the refusal text, `End of importing DB packages.` and `End time: …`; the messages are `status`, `status`, `error`, `status`, `status` in that order; the only calls are the host's login (six: `ValidateUser`, the user's `ApplyItem`, four `ApplyAML` for the version). The rest of this order is *inferred from the code*.
 
 ### DBP-004: Messages and the log use one helper, and a fixed set of texts
 
@@ -124,7 +124,7 @@ Tool name: {ToolName}
 
 The words `nanifest` and `pathes` are misspelt in the engine and reproduced. The block ends with an empty line, as EXP-506's does. `Innovator version` is read from the helper's `InnovatorVersion`, set only by `Login()` (WIRE-021), so a helper that never logged in makes this step throw `NullReferenceException` with `Object reference not set to an instance of an object.`, caught by the handler of DBP-003 (the `error` message and log line are sent, the exception escapes). The library's client always logs in first.
 
-*Inferred from the code.*
+*Observed* (fixture `non-root`, `engine.log`): the block is as above, with `Action: ImportDPPatch`, empty `Manifest file`, `Language pack` and `Language pack name`, the host's `Working directory`, and `Innovator version: 12.0 SP9 Build 24090` on dev. A `Log file`, `Working directory` and the two paths are the recording machine's. The `NullReferenceException` case is *inferred from the code*.
 
 ## The root user
 
@@ -134,7 +134,7 @@ The words `nanifest` and `pathes` are misspelt in the engine and reproduced. The
 
 This is a name check on what the host configured, not on what the server reports; DBP-011 then checks what the server says.
 
-*Inferred from the code.*
+*Observed:* the `admin` login (same password as `root` on dev) is refused with `Login name is not root. It is 'admin'. Check your config file.` (fixture `non-root`): an `error` message, the `ArgumentException` out of the call, and no `ValidateUser`, `GetItem`, `ApplyItem` or `ApplyUpdate` call after the host's login. The case sensitivity is *inferred from the code*.
 
 ### DBP-011: ValidateRootUser asks the server four questions
 
@@ -145,9 +145,9 @@ This is a name check on what the host configured, not on what the server reports
 3. `GetItem` with `<Item type='Identity'><name>Super User</name></Item>`. A fault throws with its `faultstring` (a missing identity is the server's faultcode `0` fault, `No items of type Identity found.`). The first `//Result/Item/@id` must be `6B14D33C4A7D41C188CCF2BC15BD01A3`, else `Did not get expected id result for Super User identity. Possible IR-005481 customer support issue`. A response with no `Item` is a `NullReferenceException`.
 4. The same with `<name>Innovator Admin</name>`, expecting `DBA5D86402BF43D5976854B8B48FCDD1`, else the message with `Innovator Admin`.
 
-The three request literals are sent as written, with their single quotes. Their SOAP actions are the bare action names `ValidateUser` and `GetItem`.
+The request literals have single quotes in the engine's source, but `CallAction` loads each into an `XmlDocument` (DBP-012) and IOM serialises that document, so what the server gets, and what the recorder sees, is `<Item type="USER" id="{id}" select="id" config_path="Alias" levels="1" />` and `<Item type="Identity"><name>Super User</name></Item>` with double quotes. Their SOAP actions are the bare action names `ValidateUser` and `GetItem`.
 
-*Observed* on the dev server (read-only queries, not through the engine): the user `root` has an Alias to the identity `Super User` `6B14D33C4A7D41C188CCF2BC15BD01A3`, and the identities `Super User` and `Innovator Admin` have the ids the engine expects. The raw `ValidateUser`/`GetItem` responses are recorded by ticket 72.
+*Observed* on the dev server through the engine (fixture `apply`, step 1, calls 7 to 10): as `root`, `ValidateUser` answers `user_type` `admin` and the user's id, the `GetItem` of the user returns its Alias relationship to the identity `Super User` `6B14D33C4A7D41C188CCF2BC15BD01A3`, and the identities `Super User` and `Innovator Admin` have the ids the engine expects. The failure texts are *inferred from the code*.
 
 ### DBP-012: CallAction is a raw SOAP call that returns the whole response as an item
 
@@ -159,7 +159,7 @@ The three request literals are sent as written, with their single quotes. Their 
 
 `isError()` on the result is true when the document has `Envelope/Body/Fault` (WIRE-053). The caller reads results with the XPaths of DBP-011, which start with `//Result`, so they work on the unwrapped envelope.
 
-*Inferred from the code.*
+*Observed:* the transcript of `apply` shows the four calls with the actions `ValidateUser` (request `<Empty />`), `GetItem`, `GetItem`, `GetItem` and `ApplyUpdate`, each answered with the whole envelope. The empty-response and `LoadXml` failure steps are *inferred from the code*.
 
 ## The manifest
 
@@ -167,7 +167,7 @@ The three request literals are sent as written, with their single quotes. Their 
 
 [14.35] `DBUpdatedManifestFilePath` is read by `IOWrapper.XmlDocumentLoad(path)`: the path through the normalisation of MAN-004, `File.ReadAllText`, and `LoadXml` on a new `XmlDocument` that does not preserve whitespace. The reading and parsing rules are those of MAN-003 and IMP-007. A missing file throws `FileNotFoundException` (`Could not find file '<full path>'.`), a malformed one `XmlException`; both reach DBP-003's handler. This is the first step after `ValidateRootUser`, so a bad manifest is found only after the four requests of DBP-011 were sent.
 
-*Inferred from the code.*
+*Observed* for a good manifest (fixture `apply`: the `Loaded […]` status follows the four requests). The failures are *inferred from the code*.
 
 ### DBP-021: The target release comes from the first `software_version` element
 
@@ -177,7 +177,7 @@ A text shorter than two characters (an empty element, or a single character) mak
 
 The release names the "Applied Updates" `DatabaseUpgrade` row of DBP-030.
 
-*Inferred from the code.*
+*Observed:* `software_version` `9999` gives `Loaded [<manifest path as given>] for upgrade to release [99.99].` The short-text failure is *inferred from the code*.
 
 ### DBP-022: Each `updates/update` element becomes one entry, and entries run in `order`
 
@@ -189,7 +189,7 @@ The release names the "Applied Updates" `DatabaseUpgrade` row of DBP-030.
 
 An empty list is valid. The row of DBP-030 is still created, and DBP-044 sets its status to `1`.
 
-*Inferred from the code.*
+*Observed* for one entry: `There are 1 updates.` precedes the first request of DBP-030. The other cases (order, errors, an empty list) are *inferred from the code*.
 
 ## The DatabaseUpgrade row
 
@@ -203,11 +203,13 @@ An empty list is valid. The row of DBP-030 is still created, and DBP-044 sets it
    - **A row**: its response goes out as `status`. Its id is read with `getID()` (more than one row throws `Exception` `Not a single item`). When the row is locked (`locked_by_id` not empty) an `unlock` is applied first, and its result is ignored. An `edit` follows, with `select="id"`, the id, `os_user` as above, `upgrade_status` `0` and `applied_on` `__now()`. The `description` and `is_latest` of an existing row stay.
 3. The built item is sent as `Request`, applied, and the result is the row's id. An error answer is sent as `warning` and the function returns null.
 
+The recorded requests (fixture `apply`) show what the item carries besides the properties: every request is `<Item isNew="1" isTemp="1" type="…" action="…" …>`, the `add` has an `id` attribute (the engine gives the new row an id of its own, not the server) and `select="id"` after it, and the `edit` of an existing row has `select="id"` before its `id`. A first request, `ItemType` `get` with `select="id"` and `<name>DatabaseUpgrade</name>`, precedes the row lookup. A lookup that finds nothing is a fault with faultcode `0` (`No items of type DatabaseUpgrade found.`), sent as `warning`.
+
 `os_user` is the host's domain and user name, so it differs by machine. The port builds it from the environment (`USERDOMAIN`, else the host name, then the user name) and fixtures scrub it.
 
 On dev this creates one row per `(release, "Applied Updates", type 0)`, which is what the existing rows for releases `8.0` to `9.4`, `1.00`, `1.10` and `1.20` are. Re-running a release edits the row in place.
 
-*Inferred from the code.*
+*Observed:* the `add` path (`apply`, step 1: lookup fault, `add`) and the `edit` path (step 2: the row found with `locked_by_id` null, so no `unlock`, then `edit` with `os_user`, `upgrade_status` `0` and `applied_on` `__now()`). The `unlock` and the `Not a single item` cases are *inferred from the code*.
 
 ### DBP-031: When the row cannot be created, patches are still applied but not recorded
 
@@ -228,7 +230,7 @@ Neither case sends an `End time` line for the entry.
 
 The `propertyValue` that DBP-044 writes starts as `1` and is set to `2` by any failure and never reset; it is one value for the whole run.
 
-*Inferred from the code.*
+*Observed* for a patch that exists: `Start of importing 'LIBSJS-SCRATCH-noop' DB patch.` and `Start time: …` precede the `ApplyUpdate` request. The missing and unreadable file cases are *inferred from the code*.
 
 ### DBP-041: The ApplyUpdate request interpolates the entry and the whole patch file
 
@@ -242,7 +244,7 @@ A null `up_number`, `name` or `generation` formats as empty. `{patch document In
 
 The text is sent as `status` `Request (formatted):…`, then `CallAction("ApplyUpdate", text)` runs (DBP-012), which loads it with `LoadXml`: text that is not well-formed throws `XmlException` out of the loop. The exception is not caught per patch, so it ends the run (DBP-050); the run's status row stays at `0`.
 
-*Inferred from the code.*
+*Observed:* for the test patch the request is `<Item><Number>LIBSJS-SCRATCH-001</Number><Name>LIBSJS-SCRATCH-noop</Name><Generation>1</Generation><Update><Type>C#</Type><Body><![CDATA[return this;]]></Body><Data /></Update></Item>`. `InnerXml` wrote the patch's `<Data/>` as `<Data />`, and the CDATA section as it was. The malformed case is *inferred from the code*.
 
 ### DBP-042: An ApplyUpdate fault is logged and marks the run failed
 
@@ -250,9 +252,9 @@ The text is sent as `status` `Request (formatted):…`, then `CallAction("ApplyU
 
 Otherwise (the answer is not a fault) `status` `Response (formatted):…` is sent with the response, and the item's `getID()` is read as the id of the applied update. The server answers with the "Applied Updates" item it created (DBP-061), so the id is that item's id. An answer without exactly one item makes `getID()` throw `Exception` `Not a single item`, which ends the run (DBP-050). The branch for `isEmpty()` that follows the fault test can never be taken (DBP-090).
 
-When the update was **already applied** (an "Applied Updates" item with that `up_number` exists), the server skips the work and answers with the existing item (DBP-061), and the engine carries on as for a new one: it writes another `DatabaseUpgradePatch` for the same item.
+When the update was **already applied** (an "Applied Updates" item with that `up_number` exists), the 12 SP9 server does not answer with the existing item. It answers with a fault, faultcode `SOAP-ENV:Server` and faultstring `The update with update number {Number} has already been applied to this database.` (DBP-061). So a second run of the same patch takes the fault path above: an `error` message, `End time`, status `2`, no `DatabaseUpgradePatch`.
 
-*Inferred from the code.*
+*Observed* for both answers (fixture `apply`, step 1 the item, step 2 the already-applied fault). The `Not a single item` case is *inferred from the code*.
 
 ### DBP-043: Each applied patch is linked to the row by a DatabaseUpgradePatch item
 
@@ -262,7 +264,7 @@ Then (also when the id was empty) `status` `DB patch imported successfully.` and
 
 `DatabaseUpgradePatch` is a relationship type from `DatabaseUpgrade` to "Applied Updates" (on dev, `source_id` is a `DatabaseUpgrade` and `related_id` an `Applied Updates` item).
 
-*Inferred from the code; the ItemType seen on dev.*
+*Observed* for a link that succeeds: `<Item isNew="1" isTemp="1" type="DatabaseUpgradePatch" action="add" id="{new id}"><source_id>{row id}</source_id><related_id>{update id}</related_id></Item>`, then `DB patch imported successfully.` and `End time: …` (fixture `apply`, step 1). The link fault and the missing-row case are *inferred from the code*.
 
 ### DBP-044: The row ends with status 1 or 2
 
@@ -270,7 +272,7 @@ Then (also when the id was empty) `status` `DB patch imported successfully.` and
 
 The row therefore holds `0` between DBP-030 and here, and stays `0` when an exception ended the run before this step (DBP-050). `applied_on` is set at DBP-030, to the start of the run.
 
-*Inferred from the code.*
+*Observed:* `<Item isNew="1" isTemp="1" type="DatabaseUpgrade" action="edit" id="{row id}"><upgrade_status>1</upgrade_status></Item>` after a good run, and `2` after the already-applied fault of the second run (fixture `apply`). The run does not throw in the second case: the host sees one `error` message.
 
 ### DBP-050: What escapes, and what a host sees
 
@@ -315,21 +317,21 @@ The .NET messages are reproduced in English.
 - `Body` is the code of a server method, compiled by the server with warnings treated as errors and run as the Super User. `Type` is `C#` (also `CS`, `CSHARP`) or a Visual Basic spelling. **A missing `Type`, or `VB`, is refused** with `Update syntax not support in Innovator 7.2 and above`, because the server's default type is `VB`.
 - `Data` is copied into the method's input item: the method runs on `<Item><name>{Name}</name>{Data}</Item>`.
 - An optional `Iterations` child of the `Item` (a range or a comma list) runs the update once per value with the number `{Number}_{value}`; the engine's request has no such element unless the patch file's root carries it, which it does not.
-- The attribute `failIfAlreadyApplied="true"` on the `Item` is read, but the engine's request has none, so it is always `false`.
+- The attribute `failIfAlreadyApplied="true"` on the `Item` is read by the handler, but the engine's request has none. What the server does with an already-applied number is DBP-061: on dev it answered with a fault.
 
-*Observed:* read from the 12 SP9 server's `ApplyUpdate` handler on the dev machine; the engine's request has not been run yet.
+*Observed:* read from the 12 SP9 server's `ApplyUpdate` handler on the dev machine, and confirmed by the engine's own request: the server accepted the test patch (`Type` `C#`, `Body` `return this;`, empty `Data`) and answered with the new "Applied Updates" item (fixture `apply`, step 1, call 14). The refusal of a missing or `VB` `Type` is from the handler's code, not run.
 
 ### DBP-061: The server records each applied patch as an "Applied Updates" item
 
-[14.35] The server's `ApplyUpdate` first looks for an "Applied Updates" item whose `up_number` is `Number`. If one exists and `failIfAlreadyApplied` is not true, it skips the update and answers with that item (see the end of DBP-042). Otherwise it runs the method (DBP-060); when that works it adds an item of type "Applied Updates" with `up_number` {Number}, `name` {Name}, `update_generation` {Generation} and `date_applied` `__now()`, and answers with it. Any fault from the method or the add is the answer, and nothing is recorded when the method fails.
+[14.35] The server's `ApplyUpdate` first looks for an "Applied Updates" item whose `up_number` is `Number`. If one exists, the run is refused with the fault of DBP-042, `The update with update number {Number} has already been applied to this database.` (observed on dev with a request that has no `failIfAlreadyApplied`; the first reading of the handler had it skipping the update and answering with the existing item). Otherwise it runs the method (DBP-060); when that works it adds an item of type "Applied Updates" with `up_number` {Number}, `name` {Name}, `update_generation` {Generation} and `date_applied` `__now()`, and answers with it. Any fault from the method or the add is the answer, and nothing is recorded when the method fails.
 
 The "Applied Updates" ItemType, on dev, holds items such as `IR-072068` (`up_number` `IR-072068`, `name` `IR-072068 Core-IoC Use IoC container in InternalMethodsFactory`, `update_generation` 1), each linked by a `DatabaseUpgradePatch` to a `DatabaseUpgrade` row. The server's other side effects are its own log lines for the update and a compiled method assembly in its temp folder.
 
-*Observed:* from the server's code and the existing items on dev.
+*Observed:* from the server's code and the existing items on dev, and the engine's run (fixture `apply`: the answer of call 14 is the new item, `type="Applied Updates"`, `generation` 1, `date_applied` set; the already-applied fault is call 14 of step 2).
 
 ### DBP-062: Where patches come from
 
-[14.35] No patch manifest or patch file was found on the dev machine (the install holds the `ApplyUpdate` handler, the Nash page that can send the action by hand, and Aras Update, which sends manifests it is given). Aras distributes patch sets with its releases and hotfixes; their layout is not in these sources. Everything above about the manifest (`software_version`, `updates/update`, the four child elements) and the patch files (`<name>.xml` with an `Update` root) comes from the engine's code and the server's handler, not from a sample. The test patch of DBP-070 is therefore written to that format and confirmed by its first run.
+[14.35] No patch manifest or patch file was found on the dev machine (the install holds the `ApplyUpdate` handler, the Nash page that can send the action by hand, and Aras Update, which sends manifests it is given). Aras distributes patch sets with its releases and hotfixes; their layout is not in these sources. Everything above about the manifest (`software_version`, `updates/update`, the four child elements) and the patch files (`<name>.xml` with an `Update` root) comes from the engine's code and the server's handler, not from a sample. The test patch of DBP-070 is therefore written to that format, and its first run (ticket 72) confirmed it.
 
 ## The test patch
 
@@ -361,21 +363,21 @@ The "Applied Updates" ItemType, on dev, holds items such as `IR-072068` (`up_num
 
 - **What it does.** The method returns its own input and reads or writes nothing. The run adds exactly three items: a `DatabaseUpgrade` row (name `Applied Updates`, `target_release` `99.99`, type 0, description `Libs`), an "Applied Updates" item (`up_number` `LIBSJS-SCRATCH-001`) and the `DatabaseUpgradePatch` that links them. No existing item is edited or deleted, because no release `99.99` or number `LIBSJS-SCRATCH-001` exists (DBP-071 checks), so DBP-030 takes its `add` path. Release `99.99` is chosen because it matches none of the existing rows (`8.0` to `9.4`, `1.00` to `1.20`) and so the engine never edits one. The server adds its log lines and a compiled assembly in its temp folder, and that is all it keeps.
 - **Why it is clearly non-destructive.** It changes no configuration, no data of any other item, no schema and no permission, and its three items are new, named `LIBSJS-SCRATCH-*` or the fixed release, and removable by id (DBP-071). If the server rejects the body (a compile fault), the run still adds only the `DatabaseUpgrade` row, which cleanup removes. Any other patch is not covered by this design and goes to the captain first.
-- **The login.** DBP-010 and DBP-011 allow only the user `root`. The `admin` user of the dev profile is refused at DBP-010, which is the non-root refusal case of the fixture. A success run needs `root`'s credential, through `ARAS_PASSWORD` only. That choice, and whether the oracle may use `root` on dev, is for ticket 72 to raise with the captain.
+- **The login.** DBP-010 and DBP-011 allow only the user `root`. The dev profile's own user is `root`, which is the oracle's default `--user` and the login of every earlier fixture, so the success run adds no credential: the password reaches the host through `ARAS_PASSWORD` only. The user `admin`, with the same password on dev, is refused at DBP-010, which is the non-root refusal case of the fixture.
 
-*Design; confirmed by ticket 72's first run.*
+*Design; confirmed by ticket 72's runs (fixture `apply`): the server compiled and ran the body, the run added exactly the three items, and the cleanup removed them.*
 
 ### DBP-071: Guard, preconditions and cleanup
 
 [14.35] The oracle's `dbpatch` command (ticket 72):
 
 1. **Guard.** It runs only when the manifest and the patch file are byte-identical to the committed ones (a digest check, like the vendored DLLs'), and `--tool-name` is `Libs`. Any other input is refused before a connection is made.
-2. **Preconditions** (read-only, before the run): no `DatabaseUpgrade` of type `0` with `target_release` `99.99`; no "Applied Updates" item with `up_number` `LIBSJS-SCRATCH-001`. If either exists, it stops and reports. This keeps DBP-030 on its `add` path and DBP-042 off the "already applied" path.
+2. **Preconditions** (read-only, before the run, not recorded): no `DatabaseUpgrade` of type `0` with `target_release` `99.99`; no "Applied Updates" item with `up_number` `LIBSJS-SCRATCH-001`. If either exists, it stops and reports. This keeps DBP-030 on its `add` path and DBP-042 off the "already applied" path. A step that continues a run that kept its items (`--keep-created`, for the second run of `apply`) skips them, because the items are expected.
 3. **Run.** The recording connection captures every `CallAction` and `ApplyItem`, including the raw `ValidateUser`/`GetItem`/`ApplyUpdate` calls (ticket 03), and the engine's log.
-4. **Cleanup**, from the ids in the recorded `Response` texts: delete the `DatabaseUpgradePatch` by id, then the "Applied Updates" item by id, then the `DatabaseUpgrade` row by id; then read back that no item with those ids, `up_number` or release remains. It reports the ids it created and deleted. A run that fails midway still runs cleanup.
-5. **Cases.** The success run; the non-`root` refusal (the `admin` login, DBP-010: no request after login); and optionally a second run of the same patch to show the "already applied" path, before the cleanup.
+4. **Cleanup**, from the ids in the recorded calls (the `add` of the row and of the link, and the item `ApplyUpdate` answered with): delete the `DatabaseUpgradePatch` by id, then the "Applied Updates" item, then the `DatabaseUpgrade` row, newest first. An item goes only if it still matches the test patch (the row: name `Applied Updates`, release `99.99`, type `0`; the update: `up_number` `LIBSJS-SCRATCH-001`; a link: its update's `up_number`). A read-back then finds no "Applied Updates" item with the number and no row of the release; anything found is reported as kept and the run exits 1. It reports the ids it created and deleted. A run that fails midway still runs cleanup.
+5. **Cases.** `non-root`: the `admin` login (DBP-010, no request after login). `apply`: the success run, and a second run of the same patch before the cleanup (the existing-row path of DBP-030 and the already-applied fault of DBP-042). A run whose patch is refused by the server is a failed run: the host exits 1 because a text went to the `error` channel, though no exception escaped (DBP-050).
 
-*Design; ticket 72 builds it.*
+*Design; built by ticket 72 (`oracle/src/dbpatch.ts`, the `dbpatch` command, `oracle/dbpatch/`).*
 
 ## Reproduced bugs
 
@@ -389,7 +391,7 @@ The "Applied Updates" ItemType, on dev, holds items such as `IR-072068` (`up_num
 
 ### DBP-092: A patch file with an XML declaration breaks the request (bug)
 
-[14.35] The request embeds `XmlDocument.InnerXml` of the patch (DBP-041), and `InnerXml` of a document includes its XML declaration. Embedded in the middle of `<Item>`, the declaration makes `LoadXml` throw `XmlException` (`Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position {n}.`) in `CallAction`, before the request is sent. The exception ends the run (DBP-050), after the `DatabaseUpgrade` row was created and before it is set to `1` or `2`, so it stays `0`. The test patch has no declaration for this reason. A correct engine would embed the root element only. A DOCTYPE fails the same way. Registered in `bugs.md`. *Inferred from the code; ticket 72 can show it with a copy of the test patch that adds a declaration, which sends no `ApplyUpdate`.*
+[14.35] The request embeds `XmlDocument.InnerXml` of the patch (DBP-041), and `InnerXml` of a document includes its XML declaration. Embedded in the middle of `<Item>`, the declaration makes `LoadXml` throw `XmlException` (`Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position {n}.`) in `CallAction`, before the request is sent. The exception ends the run (DBP-050), after the `DatabaseUpgrade` row was created and before it is set to `1` or `2`, so it stays `0`. The test patch has no declaration for this reason. A correct engine would embed the root element only. A DOCTYPE fails the same way. Registered in `bugs.md`. *Inferred from the code. Ticket 72's guard refuses a copy of the test patch that adds a declaration (DBP-071), so the oracle does not show it.*
 
 ### DBP-093: Entry values and patch XML are interpolated unescaped (bug)
 

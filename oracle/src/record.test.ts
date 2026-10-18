@@ -40,10 +40,23 @@ describe("host scripts", () => {
   const scripts = ["12.0", "14.0.7", "14.35"].map((v) => [v, readFileSync(join(fileURLToPath(new URL("../host", import.meta.url)), `engine-${v}.ps1`), "utf8")] as const);
 
   it.each(scripts)("engine %s accepts the cleanup command and the import step options", (_version, text) => {
-    expect(text).toMatch(/ValidateSet\('export','import',(?:'lpimport',)?'cleanup'\)/);
+    expect(text).toMatch(/ValidateSet\('export','import',(?:'lpimport',)?'cleanup'(?:,'dbpatch')?\)/);
     for (const param of ["[int] $CancelAfterStatus", "[switch] $KeepCreated", "[string[]] $PriorCreated", "[switch] $LockUpgradeRows", "[string[]] $VersionBefore"]) {
       expect(text).toContain(param);
     }
+  });
+});
+
+describe("the dbpatch host", () => {
+  const read = (name: string) => readFileSync(join(fileURLToPath(new URL("../host", import.meta.url)), name), "utf8");
+
+  it("exists in 14.35 only: its host takes the command and the DBUpdateConfig parameters, and compiles ApplyDBUpdateManifest only there", () => {
+    const text = read("engine-14.35.ps1");
+    expect(text).toContain("'dbpatch'");
+    for (const param of ["$DbManifest", "$DbPatchesFolder", "$DbToolName", "$ExpectedDbManifestSha256", "$ExpectedDbPatchSha256", "$DbPatchCleanup"]) expect(text).toContain(param);
+    for (const v of ["12.0", "14.0.7"]) expect(read(`engine-${v}.ps1`)).not.toContain("dbpatch");
+    expect(read("common.ps1")).toMatch(/Engine -eq '14\.35'\) \{ \$source = "#define ENGINE_DBPATCH/);
+    expect(read("OracleHost.cs")).toContain("#if ENGINE_DBPATCH");
   });
 });
 

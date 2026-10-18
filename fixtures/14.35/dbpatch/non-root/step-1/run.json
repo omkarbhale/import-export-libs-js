@@ -1,0 +1,50 @@
+{
+  "engine": "14.35",
+  "command": "dbpatch",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "admin"
+  },
+  "params": {
+    "Command": "dbpatch",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "admin",
+    "DbToolName": "Libs"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:08:05.269Z",
+  "finishedAt": "2026-10-18T21:08:06.671Z",
+  "hostExit": 2,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 6,
+    "messages": 5,
+    "errorMessages": 1,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 0,
+    "result": null,
+    "error": "System.ArgumentException: Login name is not root. It is 'admin'. Check your config file.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ApplyDBUpdateManifest(DBUpdateConfig config)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  },
+  "cleanup": {
+    "created": [],
+    "deleted": [],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

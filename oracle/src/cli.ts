@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { DEFAULT_ENGINE, ENGINES, isEngine, type Engine } from "../../src/engines.js";
+import { TOOL_NAME } from "./dbpatch.js";
 import { NATIVE_DIR, ORACLE_DIR, readManifest, verifyToolset } from "./manifest.js";
 import { DEV_SERVER, record, type HostValue } from "./record.js";
 import { TOOLSET_SOURCES, vendorToolset } from "./vendor.js";
@@ -21,7 +22,11 @@ Commands:
   lpimport <package folder>            --lp-dir <folder> [--lp-config ImportConfig.xml] --lp-package <name>
   xsl <input.xml|folder>...            --xsl export.xsl|build.xsl (required); no server, no password
                                        [--transcript <fixture folder> --seq <n>,<n>...] [--culture <name>]
+  dbpatch <manifest.xml>               14.35 only: ApplyDBUpdateManifest on the committed no-op test patch (oracle/dbpatch/)
+                                       [--patches-folder <dir> (the manifest's folder)] [--tool-name Libs] [--keep-created];
+                                       any other manifest or patch is refused; connects as --user, which must be root to apply
   cleanup --from-runs <run.json>,...   delete what earlier --keep-created runs created (their run.json files)
+                                       [--db-patch: they are dbpatch runs]
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
@@ -78,6 +83,7 @@ const SWITCH_OPTIONS: Record<string, string> = {
   "aml-batch-mode": "AmlBatchMode",
   "collect-import-errors": "CollectImportErrors",
   "lock-upgrade-rows": "LockUpgradeRows",
+  "db-patch": "DbPatchCleanup",
   "keep-created": "KeepCreated",
 };
 const LIST_OPTIONS: Record<string, string> = { languages: "Languages", packages: "Packages" };
@@ -99,6 +105,8 @@ const OPTIONS = {
   culture: { type: "string" },
   "from-runs": { type: "string" },
   "version-before": { type: "string" },
+  "patches-folder": { type: "string" },
+  "tool-name": { type: "string" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -239,6 +247,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       case "export":
       case "import":
       case "lpimport":
+      case "dbpatch":
       case "cleanup": {
         const params = hostParams(values);
         if (command === "cleanup") {
@@ -251,6 +260,8 @@ export async function main(argv: readonly string[]): Promise<number> {
           if (typeof pkg !== "string") throw new UsageError("export needs --package <name>");
           if (rest.length === 0) throw new UsageError("export needs at least one <type>:<id>:<keyed name>");
           params.Items = rest.map((spec) => exportItem(pkg, spec));
+        } else if (command === "dbpatch") {
+          if (rest.length !== 1) throw new UsageError("dbpatch needs one manifest file");
         } else if (command !== "cleanup" && rest.length !== 1) {
           throw new UsageError(`${command} needs one package folder`);
         }
@@ -265,7 +276,16 @@ export async function main(argv: readonly string[]): Promise<number> {
           password: readPassword(),
           out,
           params,
-          ...(command === "export" || command === "cleanup" ? {} : { inputDir: resolve(rest[0]!) }),
+          ...(command === "export" || command === "cleanup" || command === "dbpatch" ? {} : { inputDir: resolve(rest[0]!) }),
+          ...(command === "dbpatch"
+            ? {
+                dbpatch: {
+                  manifest: resolve(rest[0]!),
+                  folder: resolve((values["patches-folder"] as string | undefined) ?? dirname(resolve(rest[0]!))),
+                  toolName: (values["tool-name"] as string | undefined) ?? TOOL_NAME,
+                },
+              }
+            : {}),
           ...(typeof values.manifest === "string" ? { manifestName: values.manifest } : {}),
           ...(typeof values["lp-dir"] === "string" ? { lpDir: resolve(values["lp-dir"]) } : {}),
           ...(typeof values["lp-config"] === "string" ? { lpConfig: values["lp-config"] } : {}),

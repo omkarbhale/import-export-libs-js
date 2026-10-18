@@ -2,7 +2,7 @@
 Shared body of the per-engine oracle hosts (engine-<version>.ps1). Windows
 PowerShell 5.1 only: it loads one engine's IOM.dll and Libs.dll from a staged,
 hash-checked toolset folder, compiles OracleHost.cs against them, and runs one
-export, import or language-pack import through the recording connection.
+export, import, language-pack import or DB patch run (14.35) through the recording connection.
 
 The password comes only from $env:ARAS_PASSWORD (passed through WSLENV) and is
 never written or printed.
@@ -102,6 +102,8 @@ function Invoke-OracleHost {
 
     $source = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'OracleHost.cs')
     if ($Engine -eq '12.0') { $source = "#define ENGINE_12`n" + $source }
+    # Only 14.35 has ApplyDBUpdateManifest and DBUpdateConfig (spec/db-patches.md, DBP-001).
+    if ($Engine -eq '14.35') { $source = "#define ENGINE_DBPATCH`n" + $source }
     $refs = @($iomPath, $libsPath, 'System.Xml')
     $netstandard = Join-Path ([Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()) 'Facades\netstandard.dll'
     if ($Engine -eq '14.35' -and (Test-Path -LiteralPath $netstandard)) { $refs += $netstandard }
@@ -134,6 +136,12 @@ function Invoke-OracleHost {
     if ($Bound.ContainsKey('PriorCreated')) { $request.PriorCreated = [string[]]$Bound['PriorCreated'] }
     if ($Bound.ContainsKey('VersionBefore')) { $request.VersionBefore = [string[]]$Bound['VersionBefore'] }
     if ($Bound.ContainsKey('LockUpgradeRows')) { $request.LockUpgradeRows = $Bound['LockUpgradeRows'].IsPresent }
+    if ($Bound.ContainsKey('DbManifest')) { $request.DbManifest = $Bound['DbManifest'] }
+    if ($Bound.ContainsKey('DbPatchesFolder')) { $request.DbPatchesFolder = $Bound['DbPatchesFolder'] }
+    if ($Bound.ContainsKey('DbToolName')) { $request.DbToolName = $Bound['DbToolName'] }
+    if ($Bound.ContainsKey('ExpectedDbManifestSha256')) { $request.ExpectedDbManifestSha256 = $Bound['ExpectedDbManifestSha256'] }
+    if ($Bound.ContainsKey('ExpectedDbPatchSha256')) { $request.ExpectedDbPatchSha256 = $Bound['ExpectedDbPatchSha256'] }
+    if ($Bound.ContainsKey('DbPatchCleanup')) { $request.DbPatchCleanup = $Bound['DbPatchCleanup'].IsPresent }
     $request.Context = @{}
     $request.Export = @{}
     $request.Import = @{}
