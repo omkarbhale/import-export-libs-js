@@ -305,7 +305,7 @@ Any answer is true. A `CItemException` with faultcode `0` is false. Any other `C
 
 [12.0] Same: the document is sent as it stands, a fault is thrown unwrapped, faultcode `0` included. The `Message` of the fault is the response document alone (WIRE-051 [12.0]).
 
-[14.35] Same as 14.0.7 when `amlBatchMode` is false, the default: the document is sent with `applyAML` as the rules above left it, and its answer is ignored. In the AML batch mode the send is skipped and the batch sends it (`IMP-5xx`).
+[14.35] Same as 14.0.7 when `amlBatchMode` is false, the default: the document is sent with `applyAML` as the rules above left it, and its answer is ignored. In the AML batch mode the send is skipped and the flush of the batch sends it (`IMP-512`, `IMP-513`).
 
 ## The skip path when merge mode is off
 

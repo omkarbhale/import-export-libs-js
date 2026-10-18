@@ -205,11 +205,13 @@ function Run-Import($c) {
     $ctx.Verbose = [bool]$c.verbose
     $imp = New-Object Aras.Tools.SolutionUpgrade.SUImportContext
     $imp.bMerge = [bool]$c.merge; $imp.Release = $c.release; $imp.Description = $c.description
+    if ($c.batch) { $imp.AmlBatchMode = $true; if ($null -ne $c.batchMax) { $imp.AmlBatchMaxSize = [int]$c.batchMax } }
+    if ($c.collect) { $imp.CollectImportErrors = $true; if ($null -ne $c.collectMax) { $imp.CollectImportErrorsMaxCount = [int]$c.collectMax } }
     $fac = New-Object Probe.RecFactory
     $oldOut = [Console]::Out
     $con = New-Object System.IO.StringWriter
     [Console]::SetOut($con)
-    $result = $null; $thrown = $null; $ctorThrown = $null; $mgr = $null
+    $result = $null; $thrown = $null; $ctorThrown = $null; $mgr = $null; $result2 = $null; $thrown2 = $null
     try {
         try { $mgr = New-Object Aras.Tools.SolutionUpgrade.ImportExportManager($ctx, $fac, $helper); $mgrRef.m = $mgr } catch { $ctorThrown = DescEx $_.Exception $root }
         if ($mgr) {
@@ -217,19 +219,22 @@ function Run-Import($c) {
             foreach ($n in $c.list) { [void]$list.Add($n) }
             if ($c.preCancel) { $mgr.Cancel() }
             try { $result = $mgr.ImportSolutions($list, $imp) } catch { $thrown = DescEx $_.Exception $root }
+            if ($c.again) { try { $result2 = $mgr.ImportSolutions($list, $imp) } catch { $thrown2 = DescEx $_.Exception $root } }
         }
     } finally { [Console]::SetOut($oldOut) }
     W ('=== ' + $c.name)
     if ($c.note) { W ('NOTE: ' + $c.note) }
     if ($ctorThrown) { W ('CTOR-EXC: ' + $ctorThrown) } else { W ('RESULT: ' + $result) }
     if ($thrown) { W ('EXC: ' + $thrown) }
+    if ($c.again) { W ('RESULT-2: ' + $result2); if ($thrown2) { W ('EXC-2: ' + $thrown2) } }
     W 'REQUESTS:'
-    if ($c.quiet) { W ('  (' + $conn.Requests.Count + ' requests, not listed)') } else { $i = 0; foreach ($r in $conn.Requests) { $i++; W ('  ' + $i + ' ' + (Scrub (Esc $r) $root)) } }
+    if ($c.quiet) { W ('  (' + $conn.Requests.Count + ' requests, not listed)') } else { $i = 0; foreach ($r in $conn.Requests) { $i++; $act = $conn.Actions[$i - 1]; $pre = ''; if ($act -ne 'ApplyItem') { $pre = '[' + $act + '] ' }; W ('  ' + $i + ' ' + $pre + (Scrub (Esc $r) $root)) } }
     W 'MESSAGES:'
     foreach ($m in $fac.Sink) { W ('  ' + (Scrub (Esc $m) $root)) }
     W ('CONSOLE: ' + (Scrub (Esc $con.ToString()) $root))
     $logText = ''; if (Test-Path $logPath) { $logText = [System.IO.File]::ReadAllText($logPath, $utf8) }
     $logText = [regex]::Replace($logText, '\d\d/\d\d/\d{4} \d\d:\d\d:\d\d', '<DATETIME>')
+    $logText = [regex]::Replace($logText, '\d\d:\d\d:\d\d\.\d{7}', '<TIME>')
     if ($c.quiet) { W ('LOG: (' + $logText.Length + ' characters, not shown)') } else { W ('LOG: ' + (Scrub (Esc $logText) $root)) }
     W ''
 }
@@ -686,5 +691,217 @@ Def 's64-discussion-template' {
     $forum = F 'Forum' 'Forum1' ('<Item type="Discussion Forum" id="DF1" action="add"><Relationships><Item type="DiscussionTemplate" id="9D257D4D16AC480493571BBF816D13BE" action="add"><Relationships><Item type="FeedTemplate" id="FT1" action="add" /><Item type="Other" id="O1" action="add" /><Item type="FeedTemplate" id="FT2" action="edit" /></Relationships></Item><Item type="DiscussionTemplate" id="T2" action="add"><Relationships><Item type="FeedTemplate" id="FT3" action="add" /></Relationships></Item></Relationships></Item>')
     Run-Import @{ name = 's64-discussion-template'; note = 'two DiscussionTemplate relationships that exist, each with nested adds; the first has the built-in template id (the nested adds are rewritten, queued and sent at the end of the package)'; packages = [ordered]@{ $A = @{ files = @($forum) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w }
 }
-foreach ($k in $scenarios.Keys) { if ($Only -eq '' -or $k -like $Only) { & $scenarios[$k] } }
+
+# ---------------------------------------------------------------------------------------------
+# Ticket 55: AML batch mode (b) and collected errors (c). 14.35 only: SUImportContext has no such settings before.
+# ---------------------------------------------------------------------------------------------
+$l2 = F 'List' 'Colors2' (Item-Xml 'List' 'L0000000000000000000000000000002' 'add' 'LIBSJS-SCRATCH-Colors2')
+$m2 = F 'Method' 'DoIt2' (Item-Xml 'Method' 'M0000000000000000000000000000002' 'add' 'LIBSJS-SCRATCH-DoIt2')
+$e1 = F 'Method' 'Edit1' (Item-Xml 'Method' 'M0000000000000000000000000000003' 'edit' 'LIBSJS-SCRATCH-Edit1')
+Def 'b01-batch-size' {
+    foreach ($max in 3, 2) {
+        $w = New-World; $w.packages = @(@{ name = $A })
+        Run-Import @{ name = ('b01-batch-size-' + $max); note = ('AML batch mode, AmlBatchMaxSize = ' + $max + '; three plain adds (List, Method, List)'); packages = [ordered]@{ $A = @{ files = @($l1, $m1, $l2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = $max }
+    }
+}
+Def 'b02-batch-size-zero' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'b02-batch-size-unset'; note = 'AML batch mode on, AmlBatchMaxSize never set (0): every item is flushed alone'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'b02b-batch-size-one'; note = 'AmlBatchMaxSize = 1: the same'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 1 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'b02c-batch-size-negative'; note = 'AmlBatchMaxSize = -5'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = -5 }
+}
+Def 'b03-batch-no-items' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $none = F 'Empty' 'None' '<NoItem/>'
+    Run-Import @{ name = 'b03-batch-no-items'; note = 'AML batch mode, a package whose only file holds no Item: the end-of-package flush still sends an AML'; packages = [ordered]@{ $A = @{ files = @($none) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+$mBoom = '<Item type="Method" id="M0000000000000000000000000000001" action="add"*'
+$lBoom2 = '<Item type="List" id="L0000000000000000000000000000002" action="add"*'
+Def 'b04-batch-fails-fallback' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    Run-Import @{ name = 'b04-batch-fails-fallback'; note = 'the ApplyAML of the batch is refused once: the items are checked and sent one by one'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+Def 'b05-fallback-item-fails' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    $w.rules += (Fault-On $lBoom2 6 'second list refused')
+    Run-Import @{ name = 'b05-fallback-item-fails'; note = 'the batch is refused, then the second item fails when sent alone; the third item (Method) follows it in the batch'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+Def 'b06-check-fails' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="ItemType" action="get" select="id"><name>Method</name>*' 5 'check refused' 1)
+    Run-Import @{ name = 'b06-check-fails-once'; note = 'the reference check of the third item (the Method: its type definition request) fails once; two items are waiting in the batch'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="ItemType" action="get" select="id"><name>Method</name>*' 5 'check refused')
+    Run-Import @{ name = 'b06b-check-fails-always'; note = 'the same check fails every time'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+Def 'b07-skip-existing' {
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.existing['L0000000000000000000000000000001'] = $true
+    Run-Import @{ name = 'b07-skip-existing'; note = 'not merge; the first List exists and is skipped. Compare s03 (no batch mode), where the skipped item is registered'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+Def 'b08-merge' {
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.existing['L0000000000000000000000000000001'] = $true
+    Run-Import @{ name = 'b08-merge'; note = 'merge on; the first List exists. The merge preparation of doImport runs at the flush'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+$part = { param($id, $n, $rels) F 'Part' ('pt' + $n) ('<Item type="Part" id="' + $id + '" action="add"><name>' + $n + '</name>' + $rels + '</Item>') }
+$bom = '<Relationships><Item type="Part BOM" id="B0000000000000000000000000000001" action="add"><related_id keyed_name="k" type="Part">R0000000000000000000000000000001</related_id></Item></Relationships>'
+Def 'b09-relationships-item' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w; $w.existing['R0000000000000000000000000000001'] = $true
+    $p1 = & $part 'P0000000000000000000000000000001' 'one' $bom
+    $p2 = & $part 'P0000000000000000000000000000002' 'two' ''
+    Run-Import @{ name = 'b09-relationships-item'; note = 'items: List, Method, Part with Relationships, Part without; the Part with Relationships cannot be batched'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $p1, $p2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w; $w.existing['R0000000000000000000000000000001'] = $true
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    Run-Import @{ name = 'b09b-relationships-item-batch-fails'; note = 'the same, and the flush that the Part with Relationships forces is refused'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $p1, $p2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+}
+$prop = F 'Property' 'pr1' '<Item type="Property" id="Y0000000000000000000000000000001" action="edit"><name>p1</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item>'
+$prop2 = F 'Property' 'pr2' '<Item type="Property" id="Y0000000000000000000000000000002" action="edit"><name>p2</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item>'
+Def 'b10-delayed' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.rules += (Fault-On '<Item action="get" type="list" select="id"><id>LID1</id></Item>' 0 'No items of type list found.')
+    Run-Import @{ name = 'b10-delayed-plain-item'; note = 'a Property edit with no Relationships and a missing list: the delayed resolution needs the Relationships around the Property, so the check fails in either mode; the batch mode then flushes, restores and checks again'; packages = [ordered]@{ $A = @{ files = @($prop) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+    $p1 = & $part 'P0000000000000000000000000000001' 'one' ('<Relationships><Item type="Part BOM" id="B0000000000000000000000000000001" action="add"><related_id keyed_name="k" type="Part">MISSING-PART</related_id></Item></Relationships>')
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    Run-Import @{ name = 'b10b-delayed-unbatched-item-ok'; note = 'a Part with Relationships and a missing related_id comes first, then two plain items; the batch succeeds: the delayed entry reaches the package queue and runs at the end'; packages = [ordered]@{ $A = @{ files = @($p1, $l1, $m1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w; $w.existing['R0000000000000000000000000000001'] = $true
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    Run-Import @{ name = 'b10c-delayed-unbatched-item'; note = 'two batched items, then a Part with Relationships and a missing related_id; the flush it forces is refused: its delayed entry went to the batch manager'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $p1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+}
+Def 'b11-cancel' {
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B })
+    Run-Import @{ name = 'b11-cancel-with-queue'; note = 'Cancel() while the check of the third item runs (two items are waiting); the fourth item finds the state cancelled; B is also listed'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1, $m2) }; $B = @{ files = @($l1) } }; list = @($A, $B); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10
+        cancelOn = { param($req, $n) $req -eq '<Item type="Method" action="get" select="id"><id>M0000000000000000000000000000001</id></Item>' } }
+}
+$del = F 'View' 'Gone' '<Item type="View" id="V0000000000000000000000000000009" action="delete"/>'
+Def 'b12-actions' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'b12-edit-delete'; note = 'a List add, a Method edit and a View delete in one batch'; packages = [ordered]@{ $A = @{ files = @($l1, $e1, $del) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    $w.rules += (Fault-On '<Item type="View" id="V0000000000000000000000000000009" action="delete"*' 5 'delete refused' 1)
+    Run-Import @{ name = 'b12b-delete-retry-in-fallback'; note = 'the batch is refused; the delete is refused once when sent alone'; packages = [ordered]@{ $A = @{ files = @($l1, $del) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+}
+Def 'b13-stale-item-node' {
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.versionable['Part'] = $true
+    $w.existing['P0000000000000000000000000000001'] = $true
+    $seq = @{ n = 0 }
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    $w.rules += { param($req, $n) if ($req -like '*select="config_id, is_current"*') { return (Res '<Item type="Part" id="P0000000000000000000000000000001"><config_id>CFGP1</config_id><is_current>0</is_current></Item>') }
+        if ($req -like '*<config_id>CFGP1</config_id>*') { $seq.n++; return (Res ('<Item type="Part" id="PCUR' + $seq.n + '"><id>PCUR' + $seq.n + '</id></Item>')) }; return $null }.GetNewClosure()
+    $p1 = & $part 'P0000000000000000000000000000001' 'one' ''
+    Run-Import @{ name = 'b13-stale-item-node'; note = 'merge on; a versionable Part whose current generation id changes between lookups (PCUR1, PCUR2); the batch is refused once, so the item is restored and sent alone'; packages = [ordered]@{ $A = @{ files = @($p1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+
+Def 'b14-post-fails-after-apply' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="PackageElement" action="add"*' 7 'element refused' 1)
+    Run-Import @{ name = 'b14-post-fails-after-apply'; note = 'the batch is applied, then the registration of its first item in the package definition fails once: the whole batch is sent again one by one'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+
+Def 'b15-check-fails-empty-queue' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="ItemType" action="get" select="id"><name>List</name>*' 5 'check refused' 1)
+    Run-Import @{ name = 'b15-check-fails-empty-queue'; note = 'the check of the very first item fails once, so the queue is empty when the recovery flushes it'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
+}
+
+# ---- collected errors
+Def 'c01-collect-basic' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    Run-Import @{ name = 'c01-collect-basic'; note = 'CollectImportErrors on, MaxCount 5: the Method add fails; the items around it import'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c02-collect-max-zero' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    Run-Import @{ name = 'c02-collect-max-unset'; note = 'CollectImportErrors on, MaxCount never set (0): the first error stops the run'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    Run-Import @{ name = 'c02b-collect-max-one'; note = 'MaxCount 1: the same'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 1 }
+}
+Def 'c03-collect-two-errors' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="Method"*action="add"*' 5 'method refused')
+    Run-Import @{ name = 'c03-collect-two-errors-max3'; note = 'two Methods fail, MaxCount 3: both are collected, the run ends normally and the package is recorded as failed'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 3 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="Method"*action="add"*' 5 'method refused')
+    Run-Import @{ name = 'c03b-collect-two-errors-max2'; note = 'the same with MaxCount 2: the second error trips the limit'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 2 }
+}
+Def 'c04-collect-two-packages' {
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B }, @{ name = $C })
+    $w.rules += (Fault-On $mBoom 5 'method refused' 1)
+    Run-Import @{ name = 'c04-collect-two-packages'; note = 'A fails once (MaxCount 5): B and C still run. The Method of A is the only one refused'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) }; $B = @{ files = @($l1) }; $C = @{ files = @($l1) } }; list = @($A, $B, $C); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B }, @{ name = $C })
+    $w.rules += (Fault-On '<Item type="Method"*action="add"*' 5 'method refused')
+    Run-Import @{ name = 'c04b-collect-three-packages-fail'; note = 'A, B and C each hold a failing Method, MaxCount 2: the second package trips the limit'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) }; $B = @{ files = @($m1) }; $C = @{ files = @($m1) } }; list = @($A, $B, $C); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 2 }
+}
+Def 'c05-collect-no-errors' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'c05-collect-no-errors'; note = 'collection on and nothing fails'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c06-collect-check-fails' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="ItemType" action="get" select="id"><name>Method</name>*' 5 'check refused' 1)
+    Run-Import @{ name = 'c06-collect-check-fails'; note = 'the check of the Method fails once; MaxCount 5. Does the item still go to the server?'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c07-collect-post-fails' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += { param($req, $n) if ($req -like '<Item type="PackageElement" action="add"*' -and $req -like '*M0000000000000000000000000000001*') { return (Fault 7 'element refused') }; return $null }
+    Run-Import @{ name = 'c07-collect-post-fails'; note = 'the registration of the Method in the package definition fails; MaxCount 5'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c08-collect-delayed-fails' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w; $w.existing['R0000000000000000000000000000001'] = $true
+    $w.rules += (Fault-On '<Item type="Part" id="P0000000000000000000000000000001" action="edit"*' 5 'delayed refused')
+    $p1 = & $part 'P0000000000000000000000000000001' 'one' ('<Relationships><Item type="Part BOM" id="B0000000000000000000000000000001" action="add"><related_id keyed_name="k" type="Part">MISSING-PART</related_id></Item></Relationships>')
+    Run-Import @{ name = 'c08-collect-delayed-fails'; note = 'the delayed AML of the package is refused; MaxCount 5'; packages = [ordered]@{ $A = @{ files = @($l1, $p1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c09-collect-cancel' {
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B })
+    Run-Import @{ name = 'c09-collect-cancel-no-error'; note = 'collection on, MaxCount 5; Cancel() while the first item of A is sent; no error happened before'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) }; $B = @{ files = @($l1) } }; list = @($A, $B); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5
+        cancelOn = { param($req, $n) $req -like '<Item type="List" id="L0000000000000000000000000000001" action="add"*' } }
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    Run-Import @{ name = 'c09b-collect-cancel-after-error'; note = 'the Method of A fails (collected), then Cancel() while the Method add of the next item runs'; packages = [ordered]@{ $A = @{ files = @($l1, $m1, $m2) }; $B = @{ files = @($l1) } }; list = @($A, $B); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5
+        cancelOn = { param($req, $n) $req -like '<Item type="Method" id="M0000000000000000000000000000002" action="add"*' } }
+}
+Def 'c10-collect-outside-items' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '*<Item type="DatabaseUpgrade" action="add"*' 7 'cannot add' 1)
+    Run-Import @{ name = 'c10-collect-row-write-fails'; note = 'collection on: the in-progress DatabaseUpgrade write of the package fails once (before the items); the failed-status write goes through'; packages = [ordered]@{ $A = @{ files = @($l1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    $w.rules += { param($req, $n) if ($req -like '*upgrade_status>2*') { return (Fault 9 'release write refused') }; return $null }
+    Run-Import @{ name = 'c10b-collect-failed-row-write-fails'; note = 'the Method fails (collected) and the status-2 write of the row also fails'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    Run-Import @{ name = 'c10c-collect-unknown-package'; note = 'collection on: the requested package is not in the manifest (a plain Exception outside the item loop)'; packages = [ordered]@{ $A = @{ files = @($l1) } }; list = @('LIBSJS-SCRATCH-Nope'); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += { param($req, $n) if ($req -like '*upgrade_status>1*') { return (Fault 9 'success write refused') }; return $null }
+    Run-Import @{ name = 'c10d-collect-success-write-fails'; note = 'nothing fails in the items, the status-1 write of the row fails'; packages = [ordered]@{ $A = @{ files = @($l1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5 }
+}
+Def 'c10e-collect-row-write-fails-second-package' {
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B })
+    $w.rules += (Fault-On $mBoom 5 'method refused' 1)
+    $w.rules += (Fault-On '*<Item type="DatabaseUpgrade" action="add"*LIBSJS-SCRATCH-B*' 7 'cannot add' 1)
+    Run-Import @{ name = 'c10e-collect-row-write-fails-second-package'; note = 'MaxCount 9: A has one collected error; the in-progress write of B fails once. B finds the list of A''s errors still on the manager'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) }; $B = @{ files = @($l1) } }; list = @($A, $B); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 9 }
+}
+Def 'c11-collect-twice' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On $mBoom 5 'method refused')
+    Run-Import @{ name = 'c11-collect-twice'; note = 'ImportSolutions is called twice on one manager; the first run collects one error'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; collect = $true; collectMax = 5; again = $true }
+}
+Def 'c12-collect-and-batch' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused' 1)
+    $w.rules += (Fault-On $lBoom2 6 'second list refused')
+    Run-Import @{ name = 'c12-collect-fallback-item-fails'; note = 'batch and collection on, MaxCount 5: the batch is refused, the second item fails when sent alone; what happens to the third?'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<Item type="ItemType" action="get" select="id"><name>Method</name>*' 5 'check refused')
+    Run-Import @{ name = 'c12b-collect-batch-check-always-fails'; note = 'batch and collection on: the check of the Method fails every time'; packages = [ordered]@{ $A = @{ files = @($l1, $l2, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5; collect = $true; collectMax = 5 }
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $w.rules += (Fault-On '<AML>*' 5 'batch refused')
+    Run-Import @{ name = 'c12c-collect-batch-always-refused'; note = 'batch and collection on: every ApplyAML is refused, including the empty one at the end'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5; collect = $true; collectMax = 9 }
+}
+foreach ($k in $scenarios.Keys) { if ($k -match '^[bc]\d\d' -and $Engine -ne '14.35') { continue }; if ($Only -eq '' -or $k -like $Only) { & $scenarios[$k] } }
 [System.IO.File]::WriteAllText($Out, $sb.ToString(), $utf8)

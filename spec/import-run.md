@@ -32,7 +32,7 @@ Then the run goes in this order: the progress state is set to *in progress* (`IM
 
 [12.0] Same inputs, same null checks and same order: the progress state is set to *in progress*, the status message object is created, the log is opened (IMP-403) and the guarded block does the rest. A null context throws `ArgumentNullException` first; a null list fails inside the guarded block with the `NullReferenceException` text of IMP-407 [12.0] and the return `1`. Observed in `fixtures/import-run/probe-12.0.txt`: `s32-null-context`.
 
-[14.35] Same as 14.0.7 for the default settings, which are no AML batch mode and no collected errors. Those two modes change how items are sent and how failures are gathered (`IMP-5xx`); with them off, the run is as in 14.0.7 apart from the rules below.
+[14.35] Same as 14.0.7 for the default settings, which are no AML batch mode and no collected errors. Those two modes change how items are sent and how failures are gathered (`IMP-500` to `IMP-551`, `spec/import-batch-errors.md`); with them off, the run is as in 14.0.7 apart from the rules below.
 
 ### IMP-401: SUImportContext holds the import settings
 
@@ -54,7 +54,7 @@ A null `Release` or `Description` is concatenated as the empty string (`IMP-451`
 
 [12.0] `SUImportContext` is the same class with the same five properties (observed `s31-bfast`: `bFast` set to `true` reads back `False`). The engine reads from `SolutionUpgradeContext` (EXP-501 [12.0]) only `Action` (must be `Import`, IMP-402), `ManifestFile`, `LogFilePath`, `Verbose` and `Timeout`. `WorkingDirectory` is not used for an import (the constructor replaces it by the manifest folder) and is not logged. 12.0 writes no header (IMP-403), so `Url`, `DataBase` and `UserName` are not logged, and `LPPath` and `LPPackage` do not exist. `Release` and `Description` are read as in 14.0.7 (IMP-451).
 
-[14.35] The five properties of 14.0.7, unchanged (`bFast` still discards its value and reads `false`). `SUImportContext` has four more plain properties, all off by default: `AmlBatchMode` (bool), `AmlBatchMaxSize` (int), `CollectImportErrors` (bool) and `CollectImportErrorsMaxCount` (int); `IMP-5xx` specifies them. With them at their defaults nothing below differs from 14.0.7. The shared `SolutionUpgradeContext` has one more setting, `Languages` (a string array, null by default), which the constructor reads (`IMP-600`, `IMP-620`, `IMP-621`).
+[14.35] The five properties of 14.0.7, unchanged (`bFast` still discards its value and reads `false`). `SUImportContext` has four more plain properties, all off by default: `AmlBatchMode` (bool), `AmlBatchMaxSize` (int), `CollectImportErrors` (bool) and `CollectImportErrorsMaxCount` (int); `IMP-500` specifies them. With them at their defaults nothing below differs from 14.0.7. The shared `SolutionUpgradeContext` has one more setting, `Languages` (a string array, null by default), which the constructor reads (`IMP-600`, `IMP-620`, `IMP-621`).
 
 ### IMP-402: The manager for an import checks its manifest and takes the manifest's folder
 
@@ -207,7 +207,7 @@ The return codes are therefore `0` (all packages ended, even cancelled) and `1` 
 
 [12.0] Same: `completed` is sent as a `status` message, the state is set to *idle*, the return is `0`. The log writer is disposed (flushed) when `ImportSolutions` returns.
 
-[14.35] A run in which every package ended without an exception sends the `status` message `completed`, resets the state to idle and returns `0`, as before. A cancelled run is not one of them: it fails and returns `1` (`IMP-409`). The return codes are therefore `0` (every package imported) and `1` (an empty list, a failure or a cancel).
+[14.35] A run in which every package ended without an exception sends the `status` message `completed`, resets the state to idle and returns `0`, as before. A cancelled run is not one of them: it fails and returns `1` (`IMP-409`). The return codes are therefore `0` (every package imported) and `1` (an empty list, a failure or a cancel). With collected errors on, a failure that was collected returns the number of collected errors instead (`IMP-546`), which can be `0` (`IMP-547`).
 
 ### IMP-409: A cancel is recorded as a success (bug)
 
@@ -224,7 +224,7 @@ The state is read and written without synchronisation across threads (a host cal
 
 [12.0] Same bug, with the same effects: a cancel is a normal return of `ImportProc`, the package is recorded as a success, the state stays *cancelled* for the packages after it, and `ImportSolutions` ends with `completed` and `0`. The `status` text is `Import was canceled by user`, and the same text is written to the package log. Observed `s09-cancel-first-item`, `s09b-cancel-last-item`, `s10-cancel-before-start` with the same message sequence and result as 14.0.7. Registered in `bugs.md`.
 
-[14.35] A cancel is recorded as a failure. `Cancel()` sets the same *cancelled* state, `ImportSolutions` still sets *in progress* when it starts (a `Cancel()` made before the call is lost), and `ImportProc` still tests the state before each item and, on *cancelled*, sends the `status` message `Import was canceled by user`, writes the same text to the package log and returns. What changed is `ImportPackage`: when `ImportProc` returns, it reads the state again, and if it is *cancelled* it throws an `OperationCanceledException` with the message `Import was canceled by user` (with collected errors on, `IMP-5xx` gathers it instead). That exception is a failure of steps 2 to 4 of `IMP-406` and takes the path of `IMP-407`:
+[14.35] A cancel is recorded as a failure. `Cancel()` sets the same *cancelled* state, `ImportSolutions` still sets *in progress* when it starts (a `Cancel()` made before the call is lost), and `ImportProc` still tests the state before each item and, on *cancelled*, sends the `status` message `Import was canceled by user`, writes the same text to the package log and returns. What changed is `ImportPackage`: when `ImportProc` returns, it reads the state again, and if it is *cancelled* it throws an `OperationCanceledException` with the message `Import was canceled by user` (with collected errors on, `IMP-545` gathers it instead). That exception is a failure of steps 2 to 4 of `IMP-406` and takes the path of `IMP-407`:
 
 1. `Updating '{name}' package to failed release status` is written and the row is written with status 2 (`is_latest` 1, the other rows of the package cleared);
 2. the `InvalidOperationException` has the message `Import package '{name}' failed with message:\n\nImport was canceled by user\nUpdating {name} to failed release status`, framed by CRLF as in `IMP-407`;
@@ -333,7 +333,7 @@ The request order of a package whose two items (a List and a Method, both adds, 
 
 `{keyedName}` and the dot rules are as in 14.0.7 (the dot is written before the skip test; nothing is written on failure or cancel). Observed `s01-basic`: the console of an unmerged run with two adds is `\n       ****Import   LIBSJS-SCRATCH-A****\r\n..\nDelayed resolution of unresolved references ...\r\n\ncompleted`, where 14.0.7 gives `       ****Import   LIBSJS-SCRATCH-A****\r\n\r\n..Delayed resolution of unresolved references ...\r\ncompleted\r\n`. Also `s02-merge-verbose` and `s28-dots`. The port emits the same characters and does not normalise the framing.
 
-[14.35] Same as 14.0.7: the same console writes in the same order (probes `s01`, `s02`, `s04`, `s28`). With collected errors on, the console colour changes after the first collected error (`IMP-5xx`).
+[14.35] Same as 14.0.7: the same console writes in the same order (probes `s01`, `s02`, `s04`, `s28`). With collected errors on, the console colour changes after the first collected error (`IMP-550`).
 
 ### IMP-422: Each item is read, described in the log and checked for cancel
 
@@ -351,7 +351,7 @@ The request order of a package whose two items (a List and a Method, both adds, 
 
 [12.0] The same loop with these differences: it reads `action`, `id`, `type` and `tempKeyName` (not `tempFullName`), removes only `tempKeyName`, and writes **one** line to the package log, `Processing ({action}) {text6}`. There is no `File full name '…'` line. The descriptor `text6` is built as in 14.0.7. An item that carries its own `tempFullName` attribute keeps it (IMP-009) and it goes into the request (the decompile removes only `tempKeyName`; not probed). Observed `s01-basic`, `s33-add-with-where`: the `Processing` lines are those of 14.0.7.
 
-[14.35] The same steps and texts, carried out by an `ImportWorkItem` and a logging step. The work item takes over steps 2 to 4: it sets `doGetItem` to `0`, reads `action`, `id`, `type`, `tempKeyName` and `tempFullName` in that order, removes the last two, and builds the descriptor from the id, the keyed name and the type exactly as in 14.0.7. It also computes `ThoroughCheck`, which is `!bFast && action != "delete"` with an ordinal comparison (the `flag2` of `IMP-427`), and keeps the item's `OuterXml` as it stands after the removal, which only the AML batch mode uses (`IMP-5xx`). The logging step writes step 5 and does the counting and the console and `status` output of `IMP-423` and `IMP-421`. The cancel test comes first, before the work item is made, as before. Probes `s01` to `s04`, `s33` and `s35` give the same requests, messages and log as 14.0.7.
+[14.35] The same steps and texts, carried out by an `ImportWorkItem` and a logging step. The work item takes over steps 2 to 4: it sets `doGetItem` to `0`, reads `action`, `id`, `type`, `tempKeyName` and `tempFullName` in that order, removes the last two, and builds the descriptor from the id, the keyed name and the type exactly as in 14.0.7. It also computes `ThoroughCheck`, which is `!bFast && action != "delete"` with an ordinal comparison (the `flag2` of `IMP-427`), and keeps the item's `OuterXml` as it stands after the removal, which only the AML batch mode uses (`IMP-510`). The logging step writes step 5 and does the counting and the console and `status` output of `IMP-423` and `IMP-421`. The cancel test comes first, before the work item is made, as before. Probes `s01` to `s04`, `s33` and `s35` give the same requests, messages and log as 14.0.7.
 
 ### IMP-423: Importable adds are counted and shown as progress
 
@@ -437,7 +437,7 @@ Only the types that `build.xsl` keeps with a `delete` action can reach this path
 
 14.0.7 sends nothing in step 2 for a final failure and a `warning` with `WarningTryToResolve` for the retry only. 12.0 has no such text: a host sees one extra `error` message per failing item, and a retried delete that then succeeds still produced an `error`. The condition on the exception type, the types that can reach the retry and the unguarded second attempt are as in 14.0.7. Observed `s05-delete-retry-ok` (one `error` message, result `0`), `s06-delete-retry-fails` (one for the failure and one for the run, result `1`) and `s07-fail-second-package` (the same for a final failure); the requests are those of 14.0.7.
 
-[14.35] Same as 14.0.7: `ThoroughCheck` (`IMP-422`) plays the part of `flag2`, the checks run through `DoChecking`, the send through `doImport(item, bMerge)`, and a failed delete is retried once with the warning message (probes `s05`, `s06`; the `Message` it carries is the 14.35 text of `WIRE-051`). In the AML batch mode the retry and the send differ (`IMP-5xx`).
+[14.35] Same as 14.0.7: `ThoroughCheck` (`IMP-422`) plays the part of `flag2`, the checks run through `DoChecking`, the send through `doImport(item, bMerge)`, and a failed delete is retried once with the warning message (probes `s05`, `s06`; the `Message` it carries is the 14.35 text of `WIRE-051`). In the AML batch mode the retry and the send differ (`IMP-516`, `IMP-526`).
 
 ### IMP-428: The id is read again and the success is logged
 
@@ -789,7 +789,7 @@ Every other template of the table is the same text: `Building  solution`, `Addin
 | `ErrorMessageMessageEnd` | `\r\n\t\t****ErrorMessage****\r\n{0}\r\n\t\t********************` (a CRLF first) |
 | `ServerErrorRequestResponse` | the 14.35 text of `WIRE-051` |
 
-The batch and collected-errors modes add keys of their own (`IMP-5xx`); the language check writes its text as a literal and not through a resource key (`IMP-621`), and the DB-patch keys belong to the `DBP-` rules.
+The batch mode adds keys of its own (`IMP-514`) and the collected-errors mode adds none (`IMP-550`); the language check writes its text as a literal and not through a resource key (`IMP-621`), and the DB-patch keys belong to the `DBP-` rules.
 
 ### IMP-471: What the import sends to the host
 
@@ -823,7 +823,7 @@ The batch and collected-errors modes add keys of their own (`IMP-5xx`); the lang
 
 There is no `warning` for the retry of a delete. A failing item therefore produces two `error` messages (its own, then the run's); a retried delete that works produces one. Observed `s05`, `s06`, `s07`, `s13`, `s14`.
 
-[14.35] The same channels, in the same order and under the same conditions, with these differences: the status text of the package definition is `Adding PackageDefinition for {package}`; the `error` texts are the new `ErrorMessageMessage` of `IMP-470`; and a cancel sends, after the `status` message `Import was canceled by user`, an `error` message with the failure text of `IMP-409`, and no `completed` status. The messages that batch mode and collected errors add are `IMP-5xx`.
+[14.35] The same channels, in the same order and under the same conditions, with these differences: the status text of the package definition is `Adding PackageDefinition for {package}`; the `error` texts are the new `ErrorMessageMessage` of `IMP-470`; and a cancel sends, after the `status` message `Import was canceled by user`, an `error` message with the failure text of `IMP-409`, and no `completed` status. The messages that batch mode and collected errors add are `IMP-514` and `IMP-550`.
 
 ## The host
 
@@ -841,4 +841,4 @@ The engine chooses nothing the host leaves open: the log path is required (`IMP-
 
 [12.0] The host of 12.0 (`ConsoleUpgrade.exe`, `import.exe`) performs the same steps. Two points differ: the import does not need the login for the log (IMP-403), so a host that built a plain `HttpServerConnection` and skipped `CItemHelper.Login()` (which WIRE-017 [12.0] makes a no-op for any type but `HttpConnectorExtension`) imports normally (observed `s37-not-logged-in`); and the host's `fastmode` option sets the `bFast` that the engine ignores (IMP-401). The library's client logs in and logs out as in 14.0.7 (WIRE-002).
 
-[14.35] The same sequence. A 14.35 host may also set `Languages` on the context (`IMP-600`) and the batch and collection options on the import context (`IMP-5xx`); a host that sets none of them gets the behaviour of this document. The result is `0` only when every package was imported (`IMP-408`, `IMP-409`).
+[14.35] The same sequence. A 14.35 host may also set `Languages` on the context (`IMP-600`) and the batch and collection options on the import context (`IMP-500`); a host that sets none of them gets the behaviour of this document. The result is `0` only when every package was imported (`IMP-408`, `IMP-409`).

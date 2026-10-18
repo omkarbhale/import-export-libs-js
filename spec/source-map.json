@@ -9791,6 +9791,7 @@
             "IMP-314",
             "IMP-317",
             "IMP-340",
+            "IMP-512",
             "LP-042",
             "LP-043"
           ]
@@ -11965,6 +11966,7 @@
           },
           "status": "unmapped",
           "rules": [
+            "IMP-512",
             "LP-042"
           ]
         },
@@ -12430,7 +12432,8 @@
           "rules": [
             "IMP-200",
             "IMP-250",
-            "IMP-251"
+            "IMP-251",
+            "IMP-520"
           ]
         },
         {
@@ -12443,7 +12446,10 @@
             "bodySha256": "c9478cf4c008b449a2e02f0df806cff79c1596fa9c62dc93b0b67494a95ab4f7",
             "textSha256": "d4e5768a208126f50b76625011480781c0e1aa82e0532fdf17ab77b758e73954"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-520"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ExecuteDelayedResolution",
@@ -12472,7 +12478,10 @@
             "bodySha256": "693c4b1413a50fc7122f14de825b194284aaf89590dfbd222b1dba6757a54e3c",
             "textSha256": "33032fb3839559b089d1cf5aedec7fb8df4c5c78482bc1a1f9b45635c70a99e7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-520"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessForDelayedResolution",
@@ -13411,6 +13420,7 @@
           "rules": [
             "EXP-502",
             "IMP-402",
+            "IMP-540",
             "IMP-600",
             "IMP-610",
             "IMP-620",
@@ -13576,6 +13586,7 @@
             "IMP-425",
             "IMP-426",
             "IMP-427",
+            "IMP-518",
             "IMP-631",
             "IMP-632",
             "IMP-633",
@@ -13593,7 +13604,11 @@
             "bodySha256": "5c483f06a557e3bbb819ef1abed958909ca8306522403d16ac7d6826e7f9e7c4",
             "textSha256": "4b8e34f17e6c019cfc061228aefd168c97878d69cc92e811dd573478d06fa050"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-541",
+            "IMP-550"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::CreateOrGetDatabaseUpgradeItemId",
@@ -13639,7 +13654,10 @@
             "bodySha256": "53905b0606cd35a6993255c95523bee0895cf58f2d3661ee308291ff926b4be1",
             "textSha256": "7ee80517f42b8e0faac9cf891077e3eed8be54ba072cb8b661dbe4dc066abc14"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-511"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc",
@@ -13845,6 +13863,9 @@
             "IMP-411",
             "IMP-450",
             "IMP-470",
+            "IMP-545",
+            "IMP-547",
+            "IMP-548",
             "IMP-630",
             "IMP-635"
           ]
@@ -13878,7 +13899,19 @@
             "IMP-431",
             "IMP-441",
             "IMP-470",
-            "IMP-471"
+            "IMP-471",
+            "IMP-511",
+            "IMP-514",
+            "IMP-518",
+            "IMP-519",
+            "IMP-520",
+            "IMP-521",
+            "IMP-522",
+            "IMP-524",
+            "IMP-542",
+            "IMP-543",
+            "IMP-544",
+            "IMP-551"
           ]
         },
         {
@@ -13894,7 +13927,11 @@
           "status": "unmapped",
           "rules": [
             "IMP-427",
-            "IMP-428"
+            "IMP-428",
+            "IMP-516",
+            "IMP-519",
+            "IMP-525",
+            "IMP-526"
           ]
         },
         {
@@ -13918,6 +13955,11 @@
             "IMP-409",
             "IMP-410",
             "IMP-471",
+            "IMP-540",
+            "IMP-546",
+            "IMP-547",
+            "IMP-549",
+            "IMP-550",
             "LP-004"
           ]
         },
@@ -13931,7 +13973,11 @@
             "bodySha256": "7b843b60ed7f8c4d8a98e0ae5e0ac5c12c50b95558f98aa1100a00512ed99f26",
             "textSha256": "0176fee7dd02bd48944317acb001ab3f884bc645429298c8fb8a4bc38b16bc90"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-541",
+            "IMP-545"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::LoadPackageDom",
@@ -13988,7 +14034,9 @@
           "status": "unmapped",
           "rules": [
             "IMP-407",
-            "IMP-470"
+            "IMP-470",
+            "IMP-541",
+            "IMP-546"
           ]
         },
         {
@@ -14037,7 +14085,8 @@
           "rules": [
             "IMP-421",
             "IMP-422",
-            "IMP-423"
+            "IMP-423",
+            "IMP-550"
           ]
         },
         {
@@ -14054,7 +14103,10 @@
           "rules": [
             "IMP-429",
             "IMP-430",
-            "IMP-431"
+            "IMP-431",
+            "IMP-513",
+            "IMP-522",
+            "IMP-544"
           ]
         },
         {
@@ -14087,6 +14139,18 @@
           },
           "status": "unmapped",
           "rules": [
+            "IMP-511",
+            "IMP-512",
+            "IMP-513",
+            "IMP-514",
+            "IMP-515",
+            "IMP-516",
+            "IMP-517",
+            "IMP-520",
+            "IMP-521",
+            "IMP-523",
+            "IMP-525",
+            "IMP-551",
             "IMP-632"
           ]
         },
@@ -14208,7 +14272,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-510"
           ]
         },
         {
@@ -14223,7 +14288,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-510"
           ]
         },
         {
@@ -14236,7 +14302,13 @@
             "bodySha256": "de9d9197e82435b9c6df003768f5665fc17c017111926f3590907e2e8a961e5b",
             "textSha256": "ab8caa3b8e42d5522dd0e2062808fcbbdcadda8b6e072b32e90cd3dc6528494a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-510",
+            "IMP-511",
+            "IMP-519",
+            "IMP-525"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportWorkItem::RestoreOriginalXml",
@@ -14248,7 +14320,12 @@
             "bodySha256": "efabf7bf67f714358081bf4829110e9193d973a1a5a4ecc23f094bc0805106a2",
             "textSha256": "34f1f97bd3513f223bd9703fc6bdd8d3284c24a336bd241b62939b307e130128"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-510",
+            "IMP-516",
+            "IMP-525"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportWorkItem::get_Action",
@@ -14280,7 +14357,9 @@
           "rules": [
             "IMP-422",
             "IMP-428",
-            "IMP-429"
+            "IMP-429",
+            "IMP-513",
+            "IMP-525"
           ]
         },
         {
@@ -14310,7 +14389,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-525"
           ]
         },
         {
@@ -14371,7 +14451,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-510"
           ]
         },
         {
@@ -14436,7 +14517,9 @@
           "rules": [
             "IMP-422",
             "IMP-428",
-            "IMP-429"
+            "IMP-429",
+            "IMP-513",
+            "IMP-525"
           ]
         },
         {
@@ -14466,7 +14549,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-525"
           ]
         },
         {
@@ -14527,7 +14611,8 @@
           },
           "status": "unmapped",
           "rules": [
-            "IMP-422"
+            "IMP-422",
+            "IMP-510"
           ]
         },
         {
@@ -15678,7 +15763,8 @@
           "status": "unmapped",
           "rules": [
             "EXP-504",
-            "IMP-470"
+            "IMP-470",
+            "IMP-514"
           ]
         },
         {
@@ -15695,6 +15781,7 @@
           "rules": [
             "EXP-504",
             "IMP-470",
+            "IMP-514",
             "LP-010"
           ]
         },
@@ -15712,6 +15799,7 @@
           "rules": [
             "EXP-504",
             "IMP-470",
+            "IMP-514",
             "LP-010"
           ]
         },
@@ -15889,7 +15977,11 @@
             "bodySha256": "447c44b82190693c6aa2a8a25a100e306fa2ccb342e054c03ce49283bcfe890f",
             "textSha256": "9e20811708690db06d6b63215cbfccf1e8f2966f1191c82ce4815c4242b3e444"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-511"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_AmlBatchMode",
@@ -15901,7 +15993,11 @@
             "bodySha256": "f8b8106548b83525f648a1e2a2783be0eba24ab6ef6bdef6e88bbd96f523d5fe",
             "textSha256": "a4c216ad26aaee8ac7e978a03e276cbb7abbc279eabcdf3735b4a02382eb22e7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-511"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_CollectImportErrors",
@@ -15913,7 +16009,11 @@
             "bodySha256": "21c141b45a80f04b1d3d5fc149ac12a5f50a65d54a294d558bb5cfce0dcec4a8",
             "textSha256": "5f11d9a6433daea283cbd44be537525b6f4911e82bdaf19de907b3846da298ae"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-542"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_CollectImportErrorsMaxCount",
@@ -15925,7 +16025,11 @@
             "bodySha256": "69c8878817e295bf9bcabbb8d70c6a319336b8886c2a37ec6d04304d1676f69a",
             "textSha256": "a886dcb238554aab8a416ff6a5e692095d012420b444a494cdeaa06a7779d917"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-541"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_Description",
@@ -16002,7 +16106,11 @@
             "bodySha256": "2c4c4f31b826bf0d9fa918a85336fb1943aa53fc2ebfa3673754697540c6dedf",
             "textSha256": "9e20811708690db06d6b63215cbfccf1e8f2966f1191c82ce4815c4242b3e444"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-511"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_AmlBatchMode",
@@ -16014,7 +16122,11 @@
             "bodySha256": "a75a89e9094c39c8dd40b769759c281d1eb0cb458306de81c8344be4e9274814",
             "textSha256": "a4c216ad26aaee8ac7e978a03e276cbb7abbc279eabcdf3735b4a02382eb22e7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-511"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_CollectImportErrors",
@@ -16026,7 +16138,11 @@
             "bodySha256": "936692193ee1704b3974e6f96bcda6279ec16075ead50ee8872ca8f2a42d9998",
             "textSha256": "5f11d9a6433daea283cbd44be537525b6f4911e82bdaf19de907b3846da298ae"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-542"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_CollectImportErrorsMaxCount",
@@ -16038,7 +16154,11 @@
             "bodySha256": "6bf0d2d8887af7c657ec9f68049a77d9833d1b444fcad0c1e30509f7fc14eca9",
             "textSha256": "a886dcb238554aab8a416ff6a5e692095d012420b444a494cdeaa06a7779d917"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-500",
+            "IMP-541"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_Description",
