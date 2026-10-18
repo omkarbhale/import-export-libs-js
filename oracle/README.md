@@ -22,6 +22,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 - **`host/`**: the Windows side. `engine-<version>.ps1` is one host per engine. Each exposes that engine's `SolutionUpgradeContext`, `SUExportContext` and `SUImportContext` options as parameters, so an option a build lacks cannot be passed. They share `common.ps1` and `OracleHost.cs`, the recorder, which `Add-Type` compiles against the staged DLLs.
 - **`src/`**: the WSL side (`npm run oracle`): manifest checks, staging, the launcher, collection and scrubbing.
 - **`wire-capture/`**: a one-off recording of an engine's reference host below the AML, for the wire fixtures in `fixtures/wire/`. `ReferenceHost.cs` connects as ConsoleUpgrade does, `proxy.mjs` records every HTTP exchange, and `fixture.ts` scrubs the recording. How to re-record is in each fixture's README.
+- **`request-probe/`**: drives engine 14.0.7's `CExportItems` and `CItemHelper` against a stub connection that never touches a network, to pin the requests they build and how their lookups react to scripted answers. It needs no server or password. The recording is `fixtures/export-requests/14.0.7-probe/`, and its README says how to re-record.
 
 ## How a run works
 

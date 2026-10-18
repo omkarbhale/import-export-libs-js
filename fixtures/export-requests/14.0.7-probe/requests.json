@@ -1,0 +1,1757 @@
+{
+  "engine": "14.0.7",
+  "assemblyVersion": "14.0.7.35492",
+  "scenarios": {
+    "A.typeTable": [
+      {
+        "type": "Item Report",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Item Report</name></Item>",
+          "<Item type=\"Item Report\" action=\"get\" levels=\"0\" related_expand=\"0\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Action",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Action</name></Item>",
+          "<Item type=\"Action\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Identity",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Identity</name></Item>",
+          "<Item type=\"Identity\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "List",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>List</name></Item>",
+          "<Item type=\"List\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Method",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Method</name></Item>",
+          "<Item type=\"Method\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Permission",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Permission</name></Item>",
+          "<Item type=\"Permission\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "RelationshipType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>RelationshipType</name></Item>",
+          "<Item type=\"RelationshipType\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Sequence",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Sequence</name></Item>",
+          "<Item type=\"Sequence\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "UserMessage",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>UserMessage</name></Item>",
+          "<Item type=\"UserMessage\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Workflow Promotion",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Promotion</name></Item>",
+          "<Item type=\"Workflow Promotion\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Grid",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Grid</name></Item>",
+          "<Item type=\"Grid\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "User",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>User</name></Item>",
+          "<Item type=\"User\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Preference",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Preference</name></Item>",
+          "<Item type=\"Preference\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Form",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Form</name></Item>",
+          "<Item type=\"Form\" action=\"get\" levels=\"3\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Life Cycle Map",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Life Cycle Map</name></Item>",
+          "<Item type=\"Life Cycle Map\" action=\"get\" levels=\"3\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Workflow Map",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Map</name></Item>",
+          "<Item type=\"Workflow Map\" action=\"get\" levels=\"3\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "cmf_ContentType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>cmf_ContentType</name></Item>",
+          "<Item type=\"cmf_ContentType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"cmf_ContentTypeView\" action=\"get\" /><Item type=\"cmf_ElementType\" action=\"get\"><Relationships><Item type=\"cmf_ElementAllowedPermission\" action=\"get\" /><Item type=\"cmf_ElementBinding\" action=\"get\"><Relationships><Item type=\"cmf_PropertyBinding\" action=\"get\" /></Relationships></Item><Item type=\"cmf_PropertyType\" action=\"get\"><Relationships><Item type=\"cmf_ComputedProperty\" action=\"get\" /><Item type=\"cmf_PropertyAllowedPermission\" action=\"get\" /></Relationships></Item></Relationships></Item><Item type=\"cmf_ContentTypeExportRel\" action=\"get\" /><Item type=\"cmf_DocumentLifeCycleState\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "cmf_TabularView",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>cmf_TabularView</name></Item>",
+          "<Item type=\"cmf_TabularView\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"cmf_TabularViewColumn\" action=\"get\"><Relationships><Item type=\"cmf_AdditionalPropertyType\" action=\"get\" /></Relationships></Item><Item type=\"cmf_TabularViewHeaderRows\" action=\"get\"><related_id><Item type=\"cmf_TabularViewHeaderRow\" action=\"get\"><Relationships><Item type=\"cmf_TabularViewColumnGroups\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"cmf_TabularViewTree\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "qry_QueryDefinition",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>qry_QueryDefinition</name></Item>",
+          "<Item type=\"qry_QueryDefinition\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "rb_TreeGridViewDefinition",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>rb_TreeGridViewDefinition</name></Item>",
+          "<Item type=\"rb_TreeGridViewDefinition\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "xClassificationTree",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>xClassificationTree</name></Item>",
+          "<Item type=\"xClassificationTree\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "dac_DomainDefinition",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>dac_DomainDefinition</name></Item>",
+          "<Item type=\"dac_DomainDefinition\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ac_PolicyAccessItemAttribute",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ac_PolicyAccessItemAttribute</name></Item>",
+          "<Item type=\"ac_PolicyAccessItemAttribute\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "dr_RelationshipFamily",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>dr_RelationshipFamily</name></Item>",
+          "<Item type=\"dr_RelationshipFamily\" action=\"get\" levels=\"2\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "item report",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>item report</name></Item>",
+          "<Item type=\"item report\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ITEM REPORT",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ITEM REPORT</name></Item>",
+          "<Item type=\"ITEM REPORT\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Pa\"rt",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Pa\"rt</name></Item>",
+          "<Item type=\"Pa&quot;rt\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "O'Brien",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>O'Brien</name></Item>",
+          "<Item type=\"O'Brien\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part & Co",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [],
+        "actions": [],
+        "stoppedByStub": false,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "An error occurred while parsing EntityName. Line 1, position 72. Can't export item.",
+          "message": "An error occurred while parsing EntityName. Line 1, position 72. Can't export item."
+        }
+      },
+      {
+        "type": "Part<Co",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [],
+        "actions": [],
+        "stoppedByStub": false,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "The '<' character, hexadecimal value 0x3C, cannot be included in a name. Line 1, position 73. Can't export item.",
+          "message": "The '<' character, hexadecimal value 0x3C, cannot be included in a name. Line 1, position 73. Can't export item."
+        }
+      }
+    ],
+    "B.levels": [
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": " ",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "1",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "2",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"2\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": " 3 ",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\" 3 \" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "0",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"0\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "abc",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"abc\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "<&\"",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"&lt;&amp;&quot;\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "a\tb",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"a\tb\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "a\r\nb",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"a&#xD;&#xA;b\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "a\nb",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"a&#xA;b\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "café €",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"café €\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Form",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Form</name></Item>",
+          "<Item type=\"Form\" action=\"get\" levels=\"3\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Form",
+        "level": "2",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Form</name></Item>",
+          "<Item type=\"Form\" action=\"get\" levels=\"3\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": null,
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      }
+    ],
+    "C.serverVersion": [
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 12,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 11,
+        "serverServicePack": 12,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 11,
+        "serverServicePack": 11,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 11,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 10,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 9,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 12,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 11,
+        "serverServicePack": 12,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 11,
+        "serverServicePack": 11,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 10,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "ItemType",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 9,
+        "serverServicePack": 0,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+          "<Item type=\"ItemType\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id><Relationships><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /></Relationships></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      }
+    ],
+    "D.versionable": [
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": true,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "A1B2C3D4E5F60718293A4B5C6D7E8F90",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      },
+      {
+        "type": "Part",
+        "level": "",
+        "versionable": false,
+        "serverMajor": 14,
+        "serverServicePack": 9,
+        "id": "idwith&amp;<x>\"",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>idwith&amp;amp;&lt;x&gt;\"</id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ],
+        "stoppedByStub": true,
+        "thrown": null
+      }
+    ],
+    "E.isVersionableCache": {
+      "results": [
+        true,
+        true,
+        true
+      ],
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Document</name></Item>"
+      ]
+    },
+    "E.isVersionableUnknownType": {
+      "errors": [
+        {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultdetail": "Unable to get definition of System.Xml.XmlAttribute: Nope",
+          "message": "Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Nope</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode"
+        },
+        {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultdetail": "Unable to get definition of System.Xml.XmlAttribute: Nope",
+          "message": "Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Nope</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode"
+        }
+      ],
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Nope</name></Item>",
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Nope</name></Item>"
+      ]
+    },
+    "E.isVersionableServerError": {
+      "errors": [
+        {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "boom",
+          "message": "Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Nope</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultco"
+        },
+        {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "boom",
+          "message": "Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Nope</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultco"
+        }
+      ],
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Nope</name></Item>",
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Nope</name></Item>"
+      ]
+    },
+    "E.isVersionableValues": {
+      "[1]": true,
+      "[0]": false,
+      "[]": false,
+      "[true]": false,
+      "[ 1]": false,
+      "absent": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "faultcode": -1,
+        "faultdetail": "Can't determine whether item versionable or not",
+        "message": "Can't determine whether item versionable or not"
+      },
+      "twoItems": true
+    },
+    "E.cachePerHelper": {
+      "requestCount": 2
+    },
+    "F.getCurrentIdOfVersion": {
+      "current": {
+        "result": "OLD",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>"
+        ]
+      },
+      "old": {
+        "result": "NEW",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ]
+      },
+      "missing": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Server error\r\n\r\nRequest: <Item type='Part' select='id' action='get'><config_id>OLD</config_id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><fault",
+          "message": "Server error\r\n\r\nRequest: <Item type='Part' select='id' action='get'><config_id>OLD</config_id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><fault"
+        },
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>OLD</config_id></Item>"
+        ]
+      },
+      "error": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "boom",
+          "message": "Server error\r\n\r\nRequest: <Item type='Part' select='config_id, is_current' action='get'><id>OLD</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultcode"
+        },
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>"
+        ]
+      },
+      "nocfg": {
+        "result": null,
+        "thrown": {
+          "type": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object."
+        },
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>"
+        ]
+      },
+      "noflag": {
+        "result": "NEW",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ]
+      },
+      "spaced": {
+        "result": "NEW",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>OLD</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ]
+      }
+    },
+    "G.getItemTypeCache": {
+      "results": [
+        "doc",
+        "doc",
+        "null",
+        "null",
+        "null",
+        "null"
+      ],
+      "requests": [
+        "<Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name>Part</name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default>1</is_default></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name>Nope</name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default>1</is_default></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name>Nope</name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default>1</is_default></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name>Boom</name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default>1</is_default></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name>Boom</name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default>1</is_default></Item></Relationships></Item>"
+      ]
+    },
+    "H.getDepencyLevel": {
+      "level": 2,
+      "requests": [
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>T1</relationship_id></Item>",
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>T2</relationship_id></Item>",
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>T3</relationship_id></Item>"
+      ]
+    },
+    "H.getDepencyLevelError": {
+      "level": 5,
+      "requests": [
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>T1</relationship_id></Item>"
+      ]
+    },
+    "I.getCurrentIdByUniqueKey": {
+      "results": [
+        "CUR",
+        "CUR"
+      ],
+      "requests": [
+        "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+        "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number><major_rev>A</major_rev></Item>",
+        "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number><major_rev>A</major_rev></Item>"
+      ]
+    },
+    "I.floatPropertiesFault0NotCached": {
+      "requestCount": 4,
+      "typeNames": [
+        "List",
+        "Value",
+        "Value",
+        "Value"
+      ]
+    },
+    "I.polytypeNamesLatch": {
+      "first": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "faultcode": 999,
+        "faultdetail": "boom",
+        "message": "Server error\r\n\r\nRequest: <Item type='ItemType' action='get' select='name'><implementation_type>polymorphic</implementation_type></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFau"
+      },
+      "second": null,
+      "requestsAfterTwoCalls": 1,
+      "thirdOnNewHelper": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "faultcode": 999,
+        "faultdetail": "boom",
+        "message": "Server error\r\n\r\nRequest: <Item type='ItemType' action='get' select='name'><implementation_type>polymorphic</implementation_type></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFau"
+      },
+      "requestsAfterThree": 2
+    },
+    "O.mainFetchFault": {
+      "faultcode0": {
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>ID1</id></Item>"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultdetail": "No items of type Part found.",
+          "message": "Server error\r\n\r\nRequest: <Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>ID1</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.ara"
+        }
+      },
+      "faultcode999": {
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>ID1</id></Item>"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "No items of type Part found.",
+          "message": "Server error\r\n\r\nRequest: <Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>ID1</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.ara"
+        }
+      }
+    },
+    "P.packageDefinitionManager": {
+      "initOk": {
+        "package": "pkg",
+        "dependency": "",
+        "thrown": null,
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>"
+        ]
+      },
+      "initNotFound": {
+        "package": "pkg",
+        "dependency": "",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultdetail": "No items of type PackageDefinition found. Fails to init solution to PackageDefinition: pkg",
+          "message": "Server error\r\n\r\nRequest: <Item type='PackageDefinition' select='id,name,generation' action='get'><name>pkg</name><is_current>1</is_current></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/I"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>"
+        ]
+      },
+      "initServerError": {
+        "package": "pkg",
+        "dependency": "",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "boom Fails to init solution to PackageDefinition: pkg",
+          "message": "Server error\r\n\r\nRequest: <Item type='PackageDefinition' select='id,name,generation' action='get'><name>pkg</name><is_current>1</is_current></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/I"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>"
+        ]
+      },
+      "initNoId": {
+        "package": "pkg",
+        "dependency": "",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Object reference not set to an instance of an object. Fails to init solution to PackageDefinition: pkg",
+          "message": "Object reference not set to an instance of an object. Fails to init solution to PackageDefinition: pkg"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>"
+        ]
+      },
+      "refsOk": {
+        "package": "pkg",
+        "dependency": "dep.one",
+        "thrown": null,
+        "found": [
+          {
+            "keyedName": "  desc one ",
+            "idName": "EID1",
+            "typeName": "Method"
+          },
+          {
+            "keyedName": "",
+            "idName": "EID2",
+            "typeName": "ItemType"
+          }
+        ],
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>",
+          "<Item type=\"PackageDependsOn\" levels=\"1\" configPath=\".|PackageReferencedElement\" select=\"id|element_id,element_type,element_description\" action=\"get\"><name>dep.one</name><source_id>PD1</source_id></Item>"
+        ]
+      },
+      "refsNone": {
+        "package": "pkg",
+        "dependency": "dep.one",
+        "thrown": null,
+        "found": [],
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>",
+          "<Item type=\"PackageDependsOn\" levels=\"1\" configPath=\".|PackageReferencedElement\" select=\"id|element_id,element_type,element_description\" action=\"get\"><name>dep.one</name><source_id>PD1</source_id></Item>"
+        ]
+      },
+      "refsServerError": {
+        "package": "pkg",
+        "dependency": "dep.one",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "boom Failed to find referenced elements for package 'pkg'",
+          "message": "Server error\r\n\r\nRequest: <Item type='PackageDependsOn' levels='1' configPath='.|PackageReferencedElement' select='id|element_id,element_type,element_description' action='get'><name>dep.one</name><source_id>PD1</source_id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap."
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>",
+          "<Item type=\"PackageDependsOn\" levels=\"1\" configPath=\".|PackageReferencedElement\" select=\"id|element_id,element_type,element_description\" action=\"get\"><name>dep.one</name><source_id>PD1</source_id></Item>"
+        ]
+      },
+      "refsNoElementId": {
+        "package": "pkg",
+        "dependency": "dep.one",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Referenced element doesn't have 'element_id' set Failed to find referenced elements for package 'pkg'",
+          "message": "Referenced element doesn't have 'element_id' set"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>",
+          "<Item type=\"PackageDependsOn\" levels=\"1\" configPath=\".|PackageReferencedElement\" select=\"id|element_id,element_type,element_description\" action=\"get\"><name>dep.one</name><source_id>PD1</source_id></Item>"
+        ]
+      },
+      "refsNoElementType": {
+        "package": "pkg",
+        "dependency": "dep.one",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Referenced element doesn't have 'element_type' set Failed to find referenced elements for package 'pkg'",
+          "message": "Referenced element doesn't have 'element_type' set"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>",
+          "<Item type=\"PackageDependsOn\" levels=\"1\" configPath=\".|PackageReferencedElement\" select=\"id|element_id,element_type,element_description\" action=\"get\"><name>dep.one</name><source_id>PD1</source_id></Item>"
+        ]
+      },
+      "refsBadName": {
+        "package": "pkg",
+        "dependency": "dep&one",
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "An error occurred while parsing EntityName. Line 1, position 161.; Failed to find referenced elements for package 'pkg'",
+          "message": "An error occurred while parsing EntityName. Line 1, position 161.; Failed to find referenced elements for package 'pkg'"
+        },
+        "found": null,
+        "stoppedByStub": false,
+        "requests": [
+          "<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>pkg</name><is_current>1</is_current></Item>"
+        ]
+      }
+    },
+    "Q.configIdAndUniqueKey": {
+      "getConfigId.ok": {
+        "result": "CFG9",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id\" action=\"get\"><id>ID7</id></Item>"
+        ]
+      },
+      "getConfigId.noProperty": {
+        "result": null,
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id\" action=\"get\"><id>ID7</id></Item>"
+        ]
+      },
+      "getConfigId.emptyProperty": {
+        "result": "",
+        "thrown": null,
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id\" action=\"get\"><id>ID7</id></Item>"
+        ]
+      },
+      "getConfigId.fault0": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -99,
+          "faultdetail": "Failed to get config_id for item (type=Part; id=ID7)",
+          "message": "Failed to get config_id for item (type=Part; id=ID7)"
+        },
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id\" action=\"get\"><id>ID7</id></Item>"
+        ]
+      },
+      "getConfigId.fault999": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -99,
+          "faultdetail": "Failed to get config_id for item (type=Part; id=ID7)",
+          "message": "Failed to get config_id for item (type=Part; id=ID7)"
+        },
+        "requests": [
+          "<Item type=\"Part\" select=\"config_id\" action=\"get\"><id>ID7</id></Item>"
+        ]
+      },
+      "uniqueKey.noKeyedProperties": {
+        "result": null,
+        "thrown": null,
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ]
+      },
+      "uniqueKey.propertiesError": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultdetail": "Failed to get unique properties for the ItemType 'Part. Error: boom'",
+          "message": "Failed to get unique properties for the ItemType 'Part. Error: boom'"
+        },
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ]
+      },
+      "uniqueKey.noPropertyRows": {
+        "result": null,
+        "thrown": null,
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ]
+      },
+      "uniqueKey.keyLookupFault": {
+        "result": null,
+        "thrown": null,
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ]
+      },
+      "uniqueKey.keyLookupNoId": {
+        "result": null,
+        "thrown": {
+          "type": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object."
+        },
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ]
+      },
+      "uniqueKey.propertyWithoutName": {
+        "result": null,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Error when trying to build unique key for type Part: required Property doesn't have a name",
+          "message": "Error when trying to build unique key for type Part: required Property doesn't have a name"
+        },
+        "requests": [
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ]
+      },
+      "uniqueKey.noTypeAttribute": {
+        "thrown": {
+          "type": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object."
+        }
+      },
+      "uniqueKey.blankTypeAttribute": {
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Item node doesn't have type attribute",
+          "message": "Item node doesn't have type attribute"
+        }
+      }
+    },
+    "R.floatProperties": {
+      "floatPropertiesServerError": {
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultdetail": "Server error\r\n\r\nRequest: <Item type='ItemType' action='get' levels='1' select='id'><name>List</name><Relationships><Item type='Property' select='name, data_type, data_source' action='get'><data_type>item</data_type><item_behavior>float</item_behavior><name condition='not like'>config_id</name><name ",
+          "message": "Server error\r\n\r\nRequest: <Item type='ItemType' action='get' levels='1' select='id'><name>List</name><Relationships><Item type='Property' select='name, data_type, data_source' action='get'><data_type>item</data_type><item_behavior>float</item_behavior><name condition='not like'>config_id</name><name "
+        },
+        "requestCount": 1
+      },
+      "floatPropertiesSuccessCached": {
+        "requestCount": 2,
+        "typeNames": [
+          "List",
+          "Value"
+        ]
+      }
+    },
+    "N.itemType": {
+      "type": "ItemType",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ItemType</name></Item>",
+        "<Item type=\"ItemType\" action=\"get\"><id>ID1</id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>",
+        "<AML>\t<Item type=\"cmf_ContentType\" action=\"get\" select=\"id\">\t\t<linked_item_type>ID1</linked_item_type>\t\t<Relationships>\t\t\t<Item type=\"cmf_ElementType\" select=\"generated_type\">\t\t\t\t<Relationships>\t\t\t\t\t<Item type=\"cmf_PropertyType\" select=\"generated_type\" />\t\t\t\t</Relationships>\t\t\t</Item>\t\t</Relationships>\t</Item></AML>"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyAML"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    },
+    "N.relationshipType": {
+      "type": "RelationshipType",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>RelationshipType</name></Item>",
+        "<Item type=\"RelationshipType\" action=\"get\" levels=\"1\"><id>ID1</id></Item>",
+        "<Item type=\"ItemType\" action=\"get\" id=\"REL1\"><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>",
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>SRC1</relationship_id></Item>",
+        "<Item type=\"RelationshipType\" select=\"source_id,relationship_id\" page=\"1\" pagesize=\"1\" action=\"get\"><relationship_id>SRC2</relationship_id></Item>"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    },
+    "N.form": {
+      "type": "Form",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Form</name></Item>",
+        "<Item type=\"Form\" action=\"get\" levels=\"3\"><id>ID1</id></Item>",
+        "<Item type=\"Property\" action=\"get\" id=\"PT1\" select=\"name,source_id\" page=\"1\" pagesize=\"1\" />"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    },
+    "N.drRelationshipFamily": {
+      "type": "dr_RelationshipFamily",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>dr_RelationshipFamily</name></Item>",
+        "<Item type=\"dr_RelationshipFamily\" action=\"get\" levels=\"2\"><id>ID1</id></Item>",
+        "<Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name>dr_RelationshipFamily</name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type>item</data_type><item_behavior>float</item_behavior><name condition=\"not like\">config_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">source_id</name><name condition=\"not like\">related_id</name><name condition=\"not like\">locked_by_id</name><name condition=\"not like\">modified_by_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">permission_id</name><name condition=\"not like\">managed_by_id</name><name condition=\"not like\">owned_by_id</name><name condition=\"not like\">history_id</name><name condition=\"not like\">id</name><name condition=\"not like\">current_state</name><name condition=\"not like\">team_id</name></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name>dr_RelationshipFamily_Relationship</name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type>item</data_type><item_behavior>float</item_behavior><name condition=\"not like\">config_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">source_id</name><name condition=\"not like\">related_id</name><name condition=\"not like\">locked_by_id</name><name condition=\"not like\">modified_by_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">permission_id</name><name condition=\"not like\">managed_by_id</name><name condition=\"not like\">owned_by_id</name><name condition=\"not like\">history_id</name><name condition=\"not like\">id</name><name condition=\"not like\">current_state</name><name condition=\"not like\">team_id</name></Item></Relationships></Item>",
+        "<Item type=\"dr_Relationship\" action=\"get\" id=\"DRID1\" />",
+        "<Item type=\"ItemType\" action=\"get\" select=\"name\"><implementation_type>polymorphic</implementation_type></Item>"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    },
+    "N.acPolicyAccessItemAttribute": {
+      "type": "ac_PolicyAccessItemAttribute",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>ac_PolicyAccessItemAttribute</name></Item>",
+        "<Item type=\"ac_PolicyAccessItemAttribute\" action=\"get\" levels=\"2\"><id>ID1</id></Item>",
+        "<Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name>ac_PolicyAccessItemAttribute</name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type>item</data_type><item_behavior>float</item_behavior><name condition=\"not like\">config_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">source_id</name><name condition=\"not like\">related_id</name><name condition=\"not like\">locked_by_id</name><name condition=\"not like\">modified_by_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">permission_id</name><name condition=\"not like\">managed_by_id</name><name condition=\"not like\">owned_by_id</name><name condition=\"not like\">history_id</name><name condition=\"not like\">id</name><name condition=\"not like\">current_state</name><name condition=\"not like\">team_id</name></Item></Relationships></Item>",
+        "<Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name>X</name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type>item</data_type><item_behavior>float</item_behavior><name condition=\"not like\">config_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">source_id</name><name condition=\"not like\">related_id</name><name condition=\"not like\">locked_by_id</name><name condition=\"not like\">modified_by_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">permission_id</name><name condition=\"not like\">managed_by_id</name><name condition=\"not like\">owned_by_id</name><name condition=\"not like\">history_id</name><name condition=\"not like\">id</name><name condition=\"not like\">current_state</name><name condition=\"not like\">team_id</name></Item></Relationships></Item>",
+        "<Item type=\"dr_Relationship\" action=\"get\" id=\"DRID1\" />",
+        "<Item type=\"ItemType\" action=\"get\" select=\"name\"><implementation_type>polymorphic</implementation_type></Item>"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    },
+    "N.versionablePart": {
+      "type": "Part",
+      "requests": [
+        "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+        "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>ID1</id></Item>",
+        "<Item type=\"Part\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id>ID1</id></Item>",
+        "<Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type>item</data_type><item_behavior>float</item_behavior><name condition=\"not like\">config_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">source_id</name><name condition=\"not like\">related_id</name><name condition=\"not like\">locked_by_id</name><name condition=\"not like\">modified_by_id</name><name condition=\"not like\">created_by_id</name><name condition=\"not like\">permission_id</name><name condition=\"not like\">managed_by_id</name><name condition=\"not like\">owned_by_id</name><name condition=\"not like\">history_id</name><name condition=\"not like\">id</name><name condition=\"not like\">current_state</name><name condition=\"not like\">team_id</name></Item></Relationships></Item>"
+      ],
+      "actions": [
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem",
+        "ApplyItem"
+      ],
+      "stoppedByStub": true,
+      "thrown": null
+    }
+  }
+}
