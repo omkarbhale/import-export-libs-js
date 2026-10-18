@@ -9,11 +9,15 @@ Sources:
 
 IOM 14.0.7 targets .NET Framework 4.7.2. Its SOAP calls go through `HttpWebRequest` and its OAuth calls through `HttpClient`, so some wire details (header order, `Expect: 100-continue`) come from the framework rather than from IOM's code. The capture pins them.
 
+The `[12.0]` variants rest on the 12.0 decompile of `Libs.dll` (`.decomp/12.0/`) and of `IOM.dll` 12.0.0.13341, which is a different code base from IOM 14 in its OAuth part (a separate discovery provider, token client and authenticator classes), on Aras's `ConsoleUpgrade.exe` 12.0, and on the proxy capture of that host against dev, `fixtures/wire/12.0-reference-host/` (WIRE-002). IOM 12 targets .NET Framework 4.x; its SOAP calls go through `HttpWebRequest` and its OAuth calls through `HttpClient`, as IOM 14's do, so the transport headers are the same.
+
 ## Hosts
 
 ### WIRE-001: The engine is driven by a host that owns the connection
 
 [14.0.7] The engine never builds its own connection on the import, export or language-pack paths. A host constructs an IOM `HttpServerConnection` (or a subclass), hands it to `CItemHelper`, which wraps it in an `Innovator` (`IomFactory.CreateInnovator`), and calls `CItemHelper.Login()` before any import or export. `CItemHelper` exposes the `Innovator` it made (`Inn`) and the server version that `Login` read (`InnovatorVersion`, WIRE-020). Its `Cookie` property is set to null at construction and never read. The library's client plays the host's role: it takes the server URL, database, user name and password, logs in (WIRE-010 to WIRE-016), and runs the probe and gate (WIRE-020 to WIRE-024) before the operation.
+
+[12.0] Same as 14.0.7, except for what `CItemHelper.Login` does (WIRE-017). `CItemHelper` has a second constructor, `CItemHelper(url, password, database, userName, folder)`, which builds the `HttpConnectorExtension` itself. Only the GUI hosts `import.exe` and `export.exe` use it. It is not ported: the library's client plays the host's role (WIRE-002).
 
 ### WIRE-002: The 14.0.7 reference host is Aras's ConsoleUpgrade.exe
 
@@ -26,11 +30,24 @@ IOM 14.0.7 targets .NET Framework 4.7.2. Its SOAP calls go through `HttpWebReque
 
 The oracle hosts (`oracle/README.md`) differ on purpose: their recording connection is not exactly an `HttpConnectorExtension`, so their final `logout()` sends nothing. The capture in `fixtures/wire/14.0.7-reference-host/` was recorded with `oracle/wire-capture/`, which reproduces steps 1 to 4 with the vendored 14.0.7 DLLs behind a recording proxy, for a one-item export.
 
+[12.0] The 12.0 reference host is Aras's `ConsoleUpgrade.exe` 12.0 (`Desktop\ImportExport\12\ConsoleUpgrade`). It differs from the 14.0.7 host in four points:
+
+1. it builds the `HttpConnectorExtension` through its four-argument constructor, `(url, database, user name, plain password)`. The constructor passes locale `en-US` and no time zone to IOM's `HttpServerConnection`, so `TIMEZONE_NAME` starts as the machine's own Windows time zone id (WIRE-005). 12.0 has no certificate arguments and no certificate path;
+2. `CreateCItemHelper` constructs `CItemHelper(connection)` and calls `Login()`, which logs in because the connection's type is exactly `HttpConnectorExtension` (WIRE-017);
+3. it constructs the `ImportExportManager` (WIRE-031) and runs the export or import;
+4. it calls `CItemHelper.logout()` in a `finally`, after success or failure, which sends the logoff (WIRE-040). When `CreateCItemHelper` throws, no logoff is sent.
+
+The oracle's 12.0 host differs on purpose: its recording connection is not exactly an `HttpConnectorExtension`, so it logs in itself before the engine runs, and its final `logout()` sends nothing (`oracle/README.md`).
+
+The capture in `fixtures/wire/12.0-reference-host/` was recorded with `oracle/wire-capture/ReferenceHost-12.0.cs` and `capture-12.0.ps1` (the vendored 12.0 `Libs.dll` and `IOM.dll` behind the recording proxy, the same one-item export of the `List` `Report Format Types` as the 14.0.7 capture). It has 32 exchanges: 1 and 2 the discovery and the OpenID configuration, 3 the password grant, 4 `ValidateUser`, 5 `GetCurrentUserID`, 6 the user record, 7 and 8 the version probe, 9 to 31 the export's 23 requests, 32 `Logoff`. The 14.0.7 capture has 35: one request more at login (the key set), two more in the probe, and one more in the export (the float-property lookup of `Value`, EXP-116).
+
 ## Request framing
 
 ### WIRE-003: The server URL is normalised to `Server/InnovatorServer.aspx`
 
 [14.0.7] If the given URL does not end with `InnovatorServer.aspx` (compared case-insensitively), the base URL is the given URL, plus `/` unless it already ends with one, plus `Server/`. Otherwise the base is the URL with that suffix removed. The suffix removal is a case-insensitive regular expression in which the `.` matches any character. SOAP requests go to the base plus `InnovatorServer.aspx`. The discovery URL (WIRE-010) is the base plus `OAuthServerDiscovery.aspx`. No other de-duplication happens: `http://h/Innovator/Server` becomes `http://h/Innovator/Server/Server/InnovatorServer.aspx`, and a query string or trailing slash after `InnovatorServer.aspx` defeats the suffix check.
+
+[12.0] The suffix test and the discovery URL differ. IOM 12 tests the given URL for the suffix `Server/InnovatorServer.aspx` (case-insensitively), not for `InnovatorServer.aspx`. When it ends with that suffix, the file name is removed (the same case-insensitive regular expression in which the `.` matches any character) and the rest is the base. Every other URL gets `/` (unless it ends with one) and `Server/` appended. So `http://h/Innovator/Server/InnovatorServer.aspx` and `http://h/Innovator` give the same base, but `http://h/Innovator/InnovatorServer.aspx`, which 14.0.7 takes as it stands, becomes `http://h/Innovator/InnovatorServer.aspx/Server/InnovatorServer.aspx`. The discovery URL is the base plus `OAuthServerDiscovery.aspx`, built with the same test.
 
 ### WIRE-004: Every SOAP call is a POST of the bare XML root, not an envelope
 
@@ -41,6 +58,8 @@ The oracle hosts (`oracle/README.md`) differ on purpose: their recording connect
 - `ValidateUser` sends `<Item />` (WIRE-015) and `Logoff` sends `<logoff skip_unlock="1" />` (WIRE-040).
 
 The root is re-serialised by .NET's DOM, which is observable: attribute values are written in double quotes, an empty element is written `<X />` with a space, and anything before the root element, such as the leading `\r\n\t\t\t` of the probe's AML literals, is dropped. Whitespace inside the root is kept byte for byte, including CRLF and tab characters (WIRE-007). Values interpolated by the engine are not escaped (AGENTS.md rule 7), so the request is whatever the DOM makes of the engine's string.
+
+[12.0] Same framing and bytes (capture: the bodies of `ApplyItem`, `ApplyAML`, `ValidateUser` and `Logoff` are those of 14.0.7). One more bare body exists: `GetCurrentUserID` sends `<?xml version='1.0' encoding='utf-8' ?><Empty />` (WIRE-015).
 
 ### WIRE-005: SOAP request headers
 
@@ -66,13 +85,23 @@ Expect: 100-continue
 - No `User-Agent`, `Accept`, `Accept-Encoding`, `Cache-Control` or `Content-Encoding` is sent. Compression is off. The first request on a new TCP connection may also carry `Connection: Keep-Alive`; that header belongs to the transport and is not part of the contract.
 - Port note: `Host`, `Content-Length` and `Expect` are what .NET writes. A Node client need not match the transport headers (`Host`, `Connection`, `Content-Length`, `Expect`) byte for byte, but sends the others with these names, values and order.
 
+[12.0] Same header block, values and order for SOAP requests (capture exchanges 4 to 32, which have the same header names, in the same order, as the 14.0.7 capture). The differences:
+
+- `LOCALE` starts as `en-US` and `TIMEZONE_NAME` as the machine's Windows time zone id, from the four-argument constructor (WIRE-002); both are replaced after `ValidateUser` as in 14.0.7.
+- The discovery request carries a header the SOAP requests do not: `Aras-Set-HttpSessionState-Behavior: switch_to_initial` (WIRE-010). A SOAP request of IOM 12 would carry `Aras-Set-HttpSessionState-Behavior: required` only on a connection used through `UsingParameters` with `ForceWritableSession`, which neither the engine nor the reference host does.
+- IOM 12 keeps its cookies in a container that is empty unless the process is a web application (`HttpContext.Current`), which a console host is not. The cookie set by `ValidateUser` is replayed as in 14.0.7.
+
 ### WIRE-006: `CItemHelper.applyAML` sends ApplyItem and throws on any fault
 
 [14.0.7] `CItemHelper.applyAML(aml)` loads the AML string into a new IOM item (`Innovator.newItem().loadAML(aml)`) and applies it, which is one `ApplyItem` call (WIRE-004). Because `Item.apply` requires a single `<Item>` root, a string with a different root is refused by IOM before anything is sent. When the response is a fault it throws a `CItemException` built from the request AML and the response (WIRE-051), whatever the faultcode, including `0` ("no items"). Callers that treat faultcode `0` as an empty result catch that exception and test its `faultcode` (WIRE-052). Otherwise it returns the whole response document, envelope included.
 
+[12.0] Same, except for the exception it throws. `applyAML` throws `CItemException(item)` (WIRE-051), built from the response alone: the exception's `faultstring` and message are the response document's whole outer XML, with no `Server error`, `Request:` and `Responce:` parts. The request AML is not in the message. Observed (a `List` that does not exist): the logged `faultstring` starts `<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault …>` and the `faultdetail` is the server's detail text, as in 14.0.7.
+
 ### WIRE-007: The AML string literals are part of the request bytes
 
 [14.0.7] Every AML literal the engine sends is reproduced with its exact whitespace. Where a literal contains CR LF and tab characters inside the root element, they reach the wire unchanged, as the version probe's requests show (WIRE-020). Whitespace before the root is dropped (WIRE-004). Each area document that defines a request literal gives it with its whitespace; this rule is the framing that all of them rely on.
+
+[12.0] Same as 14.0.7.
 
 ## Login
 
@@ -86,11 +115,27 @@ Expect: 100-continue
 
 The capture records the three requests; against dev the discovery answer is `{"locations":[{"uri":"http://localhost/12sp9/OAuthServer/"}]}`. The server builds that uri from the request's host without its port.
 
+[12.0] Discovery is two requests, not three, and IOM 12 asks less of the documents:
+
+1. `GET <base>OAuthServerDiscovery.aspx` with the extra header `Aras-Set-HttpSessionState-Behavior: switch_to_initial` (it comes before `Host`; there is no other custom header). The JSON body's `locations[*].uri` values are the OAuth server URLs, reordered so that those whose host equals the discovery URL's host (ignoring case) come first, keeping their order otherwise. A missing `locations` gives an empty list; an empty body means "no discovery endpoint" (WIRE-011).
+2. For each location in turn, `GET <uri>.well-known/openid-configuration` (a `/` is added to the uri when missing). The first location whose answer is received and parses wins. The document is read for two things only: `protocol_info.protocol_type` (`Standard` or `Custom`, case-sensitive) and `protocol_version`, which counts as `0.0` when it is absent or does not parse. `issuer`, `jwks_uri`, the endpoints and the other `protocol_info` fields are neither required nor read. A location that does not answer, or whose document is not JSON or has a missing or unknown `protocol_type`, is skipped and the next is tried. IOM also remembers the last location that worked, process-wide, and tries it first on a later login in the same process, as in 14.0.7.
+3. There is no key-set request. IOM 12 never fetches `jwks_uri`.
+
+The token endpoint is `<uri>connect/token` of the location that won, built by IOM; the `token_endpoint` field is not read (against dev the two are the same). The capture records exchanges 1 and 2; the discovery answer is `{"locations":[{"uri":"http://localhost/12sp9/OAuthServer/"}]}` and the OpenID configuration has the fields above and more.
+
 ### WIRE-011: Protocol version 1.0 or later selects the OAuth password grant
 
 [14.0.7] When the discovery document's `protocol_version` is 1.0 or more, IOM authenticates with a bearer token from the password grant (WIRE-012), sent in the header WIRE-005 names. When it is below 1.0 or missing, IOM uses the legacy headers (WIRE-016).
 
 Only a discovery that "is not there" falls back to the legacy headers: a 404 from `OAuthServerDiscovery.aspx`, or an empty body. Every other discovery failure fails login with a fault (WIRE-015): another HTTP error status, a connection failure, a body that is not JSON, an empty `locations` list, every OpenID configuration request failing, a missing required field, or a failed key set request. A failed discovery is not remembered, so the next call on the connection tries discovery again.
+
+[12.0] Same threshold: a `protocol_version` of 1.0 or more selects the OAuth password grant (WIRE-012), anything below selects the legacy headers (WIRE-016). Only "no discovery endpoint" falls back to the legacy headers: a 404 from `OAuthServerDiscovery.aspx`, or an empty body. The other discovery failures are IOM 12's own and are not caught by the authenticator choice, so they become the general IOM fault (WIRE-050), faultcode `999` and faultstring `<exception type>: <message>`:
+
+- another HTTP error status or a connection failure on the discovery request: `System.Net.WebException: <message>`;
+- a discovery body that is not JSON: `Newtonsoft.Json.JsonReaderException: <message>`;
+- no location answered with a usable document, or the `locations` list was empty: `System.AggregateException: Cannot require OAuth server discovery information.` followed, when there are locations, by the inner messages in parentheses (`Cannot require OAuth server discovery information based on '<uri>' url.` for each, on .NET Framework 4.7.2 and later).
+
+These faults come out of the first SOAP request (`ValidateUser`), because IOM 12 chooses its authenticator when the first request is prepared; no `ValidateUser` is sent. The texts of the exception types are .NET's and IOM's; they are from the decompile and not observed on dev, which serves OAuth.
 
 ### WIRE-012: The password grant request
 
@@ -113,9 +158,22 @@ grant_type=password&client_id=IOMApp&scope=Innovator&database=<db>&username=<use
 - A 200 or 400 response is read as JSON. A body with a non-blank `error` is an OAuth error whose code is `error` and whose message is `error_description` (looked up case-insensitively), or `error` when there is no description. Any other status is an OAuth error with code `server_error` and message `(<status name>) <reason phrase>`, for example `(InternalServerError) Internal Server Error`. A body that is not JSON is an OAuth error whose code and message are both the JSON parser's message.
 - Otherwise the token is `access_token`. `expires_in` is ignored: the token is kept for the life of the connection, with no expiry tracking and no refresh.
 
+[12.0] The token is fetched lazily, when the first SOAP call (`ValidateUser`) is about to be sent, with the same request line and headers as 14.0.7 (`Accept: application/json`, `Content-Type: application/x-www-form-urlencoded`, `Host`, `Content-Length`, `Expect: 100-continue`). The body differs in field order and in what is optional:
+
+```text
+client_id=IOMApp&grant_type=password&scope=Innovator&username=<user>&database=<db>&password=<digest>
+```
+
+- The fields are form-encoded in that order (the capture: `client_id=IOMApp&grant_type=password&scope=Innovator&username=admin&database=12sp9&password=SCRUBBED`). `username` is left out when the user name is empty. `<digest>` is as in 14.0.7 (WIRE-014).
+- An empty database fails with `System.ArgumentException: Database`, and a missing password with `…: Password`, after the two discovery requests and before any token request. An empty user name is not an error: the request is sent without `username`.
+- A 200 or 400 response is read as JSON; any other status is an OAuth error with code `server_error` and message `(<status name>) <reason phrase>`. A body with a non-blank `error` is an OAuth error whose code is `error` and whose message is `error_description` (looked up case-insensitively) or `error`. A body that is not JSON does not become an OAuth error: the client throws `InvalidOperationException("Invalid JSON response")` inside the task, and the general IOM fault is `System.AggregateException: One or more errors occurred.` followed by ` (Invalid JSON response)` on .NET Framework 4.7.2 and later. A transport failure is the same shape with the inner exception's message.
+- Otherwise the token is `access_token`. `expires_in` is ignored, as in 14.0.7: the token is kept for the life of the connection.
+
 ### WIRE-013: The SHA-256 retry on `incompatible_hash_use_sha256`
 
 [14.0.7] When the token request fails with the OAuth error code `incompatible_hash_use_sha256` exactly, IOM switches the digest to SHA-256 (WIRE-014) and sends the same request once more. No other code is retried; `incompatible_hash_use_md5` is not. When the password was given already as a 32-character hex string (taken as an MD5 hash), the switch is impossible and the original error stands.
+
+[12.0] Same as 14.0.7.
 
 ### WIRE-014: Password digests
 
@@ -126,6 +184,8 @@ grant_type=password&client_id=IOMApp&scope=Innovator&database=<db>&username=<use
 - ASCII encoding turns every non-ASCII character into `?` (0x3F) before hashing, so two passwords that differ only in non-ASCII characters have the same digest. This is reproduced (WIRE-055).
 
 The same digest is used in the token request (WIRE-012) and in the legacy `AUTHPASSWORD` header (WIRE-016). The reference host passes the password plain; the library takes it from `ARAS_PASSWORD` or stdin (AGENTS.md) and never puts it on a command line.
+
+[12.0] Same as 14.0.7.
 
 ### WIRE-015: ValidateUser, the user record, and login faults
 
@@ -144,17 +204,30 @@ When that request returns a fault, a second `ApplyItem` follows with the same it
 - `ValidateUser` returns a fault, which is returned as received, or a response without `Result/id`, which returns IOM's "Unknown error" item (WIRE-050);
 - the user record request fails twice: the second fault is returned.
 
+[12.0] `Login()` sends `ValidateUser` with the body `<Item />` as in 14.0.7 and needs `Result/id` in the answer (capture exchange 4), but it does not take the user id from it. It then reads the user's record with two requests, not one, in `getUserInfo`:
+
+1. `GetCurrentUserID`, a SOAP call with `SOAPAction: GetCurrentUserID` and the body `<?xml version='1.0' encoding='utf-8' ?><Empty />` (exchange 5). The answer's `Result` text is the user id, as `<GetCurrentUserIDResponse><Result>…</Result></GetCurrentUserIDResponse>`. A response without a `Result` element throws `System.Exception` with the message `Cannot obtain user id`, which is not a fault item: it leaves `Login()` and `CItemHelper.Login()` as it is.
+2. The user record, `ApplyItem`, with the same item as 14.0.7 (exchange 6), and the same second attempt without `<Relationships>` when the first answer is a fault.
+
+`getUserInfo` caches its result; `Login()` calls it once. `Login()` returns a fault item, and never throws, in the cases of 14.0.7 with these differences: discovery faults are WIRE-011's and OAuth faults WIRE-012's; the item returned for a login answer that has neither a fault nor an id has the `faultstring` `Failed to login` (faultcode `1`, empty faultactor) instead of `Unknown error`; and a failing second request of step 1 or 2 returns that fault. The user's database and login name are not kept.
+
 ### WIRE-016: Legacy header login
 
 [14.0.7] Under the legacy authenticator (WIRE-011) there is no token request. Every SOAP request, `ValidateUser` included, carries `AUTHUSER: <user>`, `AUTHPASSWORD: <digest>` (WIRE-014, MD5 first) and `DATABASE: <db>` in place of the authorization header. When a fault's `detail/supported_authentication_schema/schema` names a hashing mode other than the current one, IOM switches to that mode and resends the call; a mode other than exactly `MD5` or `SHA256` becomes a `999` fault. Dev serves OAuth, so this path is specified from the decompile only.
+
+[12.0] Same as 14.0.7. IOM 12's legacy authenticator sends the same `AUTHUSER`, `AUTHPASSWORD` and `DATABASE` headers and switches hashing mode on the same `supported_authentication_schema` answer. Dev serves OAuth, so this is specified from the decompile only.
 
 ### WIRE-017: CItemHelper.Login turns a login fault into faultcode -100
 
 [14.0.7] `CItemHelper.Login()` calls `Login()` on the connection only when it is an IOM `HttpServerConnection` (any subclass). When the result is a fault it throws a `CItemException` with faultcode `-100`, and with faultstring and message both `Failed login to Innovator; original error: {0}`, where `{0}` is the whole fault document's outer XML (envelope included). A connection that is not an `HttpServerConnection` is assumed to be logged in already, and only the probe and gate run.
 
+[12.0] `CItemHelper.Login()` calls `Login()` on the connection only when the connection's type is **exactly** `HttpConnectorExtension`. A plain IOM `HttpServerConnection`, such as the one `IomFactory.CreateHttpServerConnection` makes, and any subclass of `HttpConnectorExtension` are never sent `ValidateUser` and nothing reads the user record; the probe and the gate (WIRE-020 to WIRE-023) run straight away over IOM's per-request authentication, so the first probe request starts discovery and the token request. The failure case is the same as in 14.0.7: a fault from `Login()` throws `CItemException` with faultcode `-100`, and with faultstring and message both `Failed login to Innovator; original error: {0}`, `{0}` the whole fault document's outer XML. The library's client always logs in, as the reference host does (WIRE-002). The oracle's 12.0 host logs in itself for the same reason.
+
 ### WIRE-018: One token renewal on an unauthorized status
 
 [14.0.7] Under OAuth, when a SOAP request is answered with the discovery document's `unauthorized_status_code` (401 for `Standard`, 498 for `Custom`), IOM fetches a new token with a fresh password grant (WIRE-012) and resends the request once. A second refusal becomes an IOM `999` fault (WIRE-050). The legacy login never retries. IOM's re-login on session-timeout faults is off by default and neither the engine nor the reference host turns it on, so it does not happen.
+
+[12.0] Same as 14.0.7.
 
 ## Version probe and gate
 
@@ -174,6 +247,8 @@ The next three each get one Variable, `VersionServicePack`, `VersionBuild` and `
 
 (`\r\n` and `\t` stand for CR LF and tab.) The engine's literals use single-quoted attributes and start with `\r\n\t\t\t`; WIRE-004 explains the double quotes and the dropped leading whitespace.
 
+[12.0] The version probe is two `ApplyAML` requests: the first, with `VersionMajor` and `VersionMinor`, and the second, with `VersionServicePack`, each with the literal and whitespace of 14.0.7 (capture exchanges 7 and 8, whose bodies are the first two probe bodies of the 14.0.7 capture). There are no `VersionBuild` and `VersionServiceUpdate` requests.
+
 ### WIRE-021: Reading the probe results
 
 [14.0.7] The probe reads its results as follows. Every other fault throws a `CItemException` built from the response alone (WIRE-051), not a login error.
@@ -184,9 +259,13 @@ The next three each get one Variable, `VersionServicePack`, `VersionBuild` and `
 
 The result is the server version (major, minor, service pack, build, service update), kept as `CItemHelper.InnovatorVersion` for the rest of the run.
 
+[12.0] Major, minor and service pack are read exactly as in 14.0.7 (a fault on the first request throws, a single Variable crashes the probe, WIRE-054; service pack: faultcode exactly `0` gives 0, `SP` is removed before parsing, a value that does not parse gives 0). Build and service update do not exist: the version is `(major, minor, servicePack)`, kept as `CItemHelper.InnovatorVersion`, and `ArasVersion` has no `Build`, `ServiceUpdate` or full-string members.
+
 ### WIRE-022: Version text
 
 [14.0.7] The server version is written as text in two ways. `InnovatorVersionFullString` is `{major}.{minor} SP{servicePack} Build {build}` when the major version is below 14, and `{major}.{minor}.{serviceUpdate}.{build}` otherwise (dev: `12.0 SP9 Build <build>`). The engine's log of its input parameters writes it as `Innovator version: {0}`. The engine's own version for the gate (WIRE-023) is its assembly's major and minor version with the other parts 0: `14.0` for 14.0.7.35492. The version type has no text form of its own, which WIRE-024 reproduces.
+
+[12.0] There is no `InnovatorVersionFullString`, and nothing logs the server version (EXP-506). The engine's own version for the gate (WIRE-023) is its assembly's major and minor version with service pack 0: `12.0` for 12.0.0.13341. The version type has no text form (WIRE-024).
 
 ### WIRE-023: The version gate accepts servers 12 to 14
 
@@ -202,6 +281,14 @@ A refusal throws a `CItemException` with faultcode `0` (WIRE-024), faultstring `
 
 The library adds `--skip-version-check`, which skips this comparison (the probe still runs) and is recorded in the log and the JSON summary. A refusal from the library also names the engines whose window fits the server (round 3, Q3). Both are additions; the engine has neither.
 
+[12.0] The same comparison with the engine's major version 12:
+
+- a server major above 12 is refused;
+- a server major more than 2 below 12 (below 10) is refused;
+- a server major of 10, 11 or 12 is accepted, whatever its minor version or service pack.
+
+The engine's 9.x branch needs its own major version to be 11, so it can never apply. A refusal is the same `CItemException` with faultcode `0` and no detail (WIRE-024). Unlike 14.0.7, the window includes servers 10 and 11, so the older ItemType body (EXP-024) and the omitted default `select` (EXP-023) are reachable. Dev is Aras 12.0 SP9, inside the window; 10 and 11 servers are not available to test, so those two branches are specified from the decompile. `--skip-version-check` and the engines named in a refusal are the library's additions, as in 14.0.7.
+
 ### WIRE-024: The version refusal has faultcode 0 and names no versions (bug)
 
 [14.0.7] Two defects of the refusal are reproduced:
@@ -211,15 +298,21 @@ The library adds `--skip-version-check`, which skips this comparison (the probe 
 
 Registered in `bugs.md`.
 
+[12.0] Same two defects: faultcode `0`, and a text that names the type of `ArasVersion`, which has no `ToString` in 12.0 either (`You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.`). Registered in `bugs.md`.
+
 ## Timeout
 
 ### WIRE-030: IOM's timeout defaults
 
 [14.0.7] A new connection has timeout 0, which means "not applied": SOAP requests use .NET's defaults of 100 seconds to get a response and 300 seconds to read its body. A timeout set on the connection, in milliseconds, applies to getting the response; `-1` means no limit; any other negative value is refused. The read timeout is never changed. The OAuth requests (WIRE-010, WIRE-012) ignore the connection timeout and have a 100-second limit. A request that times out becomes the IOM fault `System.Net.WebException: The operation has timed out` with faultcode `999` (WIRE-050).
 
+[12.0] Same as 14.0.7.
+
 ### WIRE-031: The context timeout is applied after login
 
 [14.0.7] The `ImportExportManager` constructor copies `SolutionUpgradeContext.Timeout` to the connection when it is above 0 or exactly `-1`, and when the connection is an IOM `HttpServerConnection`. Any other value (0, or a negative other than `-1`) leaves IOM's default. The manager is constructed after `CItemHelper.Login()` (WIRE-002), so login and the version probe always run with the default timeout. The reference host's `timeout=` option defaults to 0; a value that does not parse as an integer prints `\nfailed to parse  TIMEOUT <value>\n` (two spaces) and also gives 0.
+
+[12.0] Same as 14.0.7.
 
 ## Logoff
 
@@ -234,6 +327,8 @@ SOAPAction: Logoff
 ```
 
 with the usual headers (WIRE-005). The response is ignored, and a transport failure is swallowed. No token is revoked and no end-session request is made. Under OAuth, an expired token is renewed once (WIRE-018) before the logoff is resent. The library always sends this logoff at the end of a run whose `CItemHelper.Login()` completed (WIRE-002), like the reference host. It sends none when any step of `CItemHelper.Login()` failed: a login fault (WIRE-017), a probe error (WIRE-021, WIRE-054) or a version refusal (WIRE-023), even though IOM's password login and `ValidateUser` may already have succeeded.
+
+[12.0] `CItemHelper.logout()` sends `Logoff` when the connection's type is exactly `HttpConnectorExtension`, through the connection's `Logout()`, for any other type it sends nothing. The reference host's connection is one (WIRE-002), so its run ends with the same request as in 14.0.7: `SOAPAction: Logoff`, body `<?xml version='1.0' encoding='utf-8' ?><logoff skip_unlock="1" />` and the usual headers (capture exchange 32; the answer is `<LogOffResponse><Result>ok</Result></LogOffResponse>`). The rest is as in 14.0.7: the response is ignored, a transport failure is swallowed, no token is revoked, and the library sends the logoff at the end of every run whose `CItemHelper.Login()` completed.
 
 ## Faults
 
@@ -251,6 +346,8 @@ with the usual headers (WIRE-005). The response is ignored, and a transport fail
 
 The server itself returns faults with HTTP 200 (the capture's "No items" faults), so they reach the engine as received.
 
+[12.0] Same as 14.0.7 for the faults IOM writes itself (the same envelope, faultcode `999`, faultactor `HttpServerConnection`, faultstring `<exception type full name>: <message>`, and the OAuth errors with faultactor `OAuthServer`). The exceptions behind them differ from 14.0.7's where WIRE-011 and WIRE-012 say so, and the item returned by `Login()` for a missing id is `Failed to login` (WIRE-015).
+
 ### WIRE-051: CItemException carries the fault
 
 [14.0.7] An engine error is a `CItemException` with a `faultcode` (an integer), `faultstring` and `faultdetail`. Built from a fault response:
@@ -262,24 +359,36 @@ The server itself returns faults with HTTP 200 (the capture's "No items" faults)
 
 The engine's own errors use the four-part constructor: an explicit faultcode, faultstring, detail and inner exception, with the detail as the message.
 
+[12.0] `CItemException` has the constructors of 14.0.7 except the one that takes a request and a response. Built from a fault response (`CItemException(item)`): `faultcode` is the response's `faultcode` text parsed as an integer, or `1` when it does not parse; `faultdetail` is the concatenated text of the whole `detail` element, or empty; `faultstring` and the message are the whole response document's outer XML. `applyAML` uses this form (WIRE-006), so every engine error that comes from a failed request carries the response only. The four-part constructor is as in 14.0.7.
+
 ### WIRE-052: Faultcode 0 means "no items"
 
 [14.0.7] Throughout the engine a fault whose `faultcode` is `0` means "no items matched". The server answers a `get` that finds nothing with faultcode `0` and faultstring `No items of type {type} found.`, as the capture shows. Each request's own rule says whether faultcode `0` is an empty result or an error; the probe's rule is WIRE-021. The version refusal reuses the code (WIRE-024).
+
+[12.0] Same as 14.0.7.
 
 ### WIRE-053: Error-item accessors
 
 [14.0.7] A response is a fault when it has `Envelope/Body/Fault`, matched by local name in the SOAP envelope namespace or in no namespace. The fault's code, string, detail and actor are the inner text of its `faultcode`, `faultstring`, `detail` and `faultactor` children, or empty when absent. The text of a fault item is the response document's whole outer XML, envelope included, with its whitespace.
 
+[12.0] Same as 14.0.7.
+
 ### WIRE-054: The probe crashes when only one of VersionMajor and VersionMinor exists (bug)
 
 [14.0.7] When the first probe request (WIRE-020) returns exactly one Variable, IOM narrows the result to that item, and the engine's lookups, written from the envelope down, then find nothing for either Variable. Reading the first match throws `System.IndexOutOfRangeException` with the message `IndexOutOfRangeException`, even for the Variable that exists. It is not a `CItemException`, so it escapes login as an unexpected error. A correct engine would read the Variable that exists and report the missing one. Registered in `bugs.md`.
 
+[12.0] Same crash with the same text: the first probe request and its lookups are written the same way (`System.IndexOutOfRangeException`, message `IndexOutOfRangeException`). Registered in `bugs.md`.
+
 ### WIRE-055: Non-ASCII password characters hash as `?` (bug)
 
 [14.0.7] IOM hashes the password's ASCII bytes (WIRE-014), so every non-ASCII character becomes `?` first. A password with non-ASCII characters is sent as the digest of a different password, and passwords that differ only in those characters are interchangeable. A correct client would hash the UTF-8 bytes. Registered in `bugs.md`.
+
+[12.0] Same: IOM 12 hashes the ASCII bytes of the password with the same code (`Md5`, `Sha256` and `ParoleHash` are identical in both IOMs). Registered in `bugs.md`.
 
 ## Not ported
 
 ### WIRE-090: Client-certificate login is held
 
 [14.0.7] `HttpConnectorExtension.Login()` picks a client certificate from the Windows certificate store and installs it for every later request, but only when the host set a certificate find value; otherwise it is IOM's password login (WIRE-010 to WIRE-016). `CertificateUtils` (finding the certificate, and probing over TLS whether the server requires one) and the certificate accessors of `HttpConnectorExtension` and `SolutionUpgradeContext` serve only that path, and are not ported. The constructor and `Login()` themselves are in scope (to be ported) for their password path (WIRE-002, WIRE-005, WIRE-010 to WIRE-016, WIRE-040); only their certificate branch is held: see `roadmap/hold/certificate-login.md`. The library never selects a certificate, which is what the reference host does with its defaults.
+
+[12.0] There is no certificate code in 12.0, so nothing is held. `HttpConnectorExtension` has only the four-argument constructor and no `Login` override, `SolutionUpgradeContext` has no certificate settings, and there is no `CertificateUtils`. The constructor is in scope (WIRE-002, WIRE-005); the library never selects a certificate (`roadmap/hold/certificate-login.md`).

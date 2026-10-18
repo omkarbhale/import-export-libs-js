@@ -1,0 +1,3413 @@
+{
+  "$schema": "../reachable.schema.json",
+  "engine": "12.0",
+  "assemblyVersion": "12.0.0.13341",
+  "sha256": "af4e99e83eba544eccbca1707e9b95c03c0ba06bb777f9dec093541cf91f9f1f",
+  "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63",
+  "generator": {
+    "rea": "6.4.0",
+    "ilspycmd": "8.2.0.7535"
+  },
+  "hosts": [
+    {
+      "file": "import.exe",
+      "sha256": "65fd894e0fb5c6d4ad06de64c36cc3554912a48b7a2ba58302415a8f489e7c2f"
+    },
+    {
+      "file": "export.exe",
+      "sha256": "5e3022e8f11f328b4212e2006133e79c2dd01295b7de162daf318a9a3bd09d47"
+    },
+    {
+      "file": "ConsoleUpgrade.exe",
+      "sha256": "b00085df94ee5719cef1c12388c60fc69e60c9f2278d7373373192ae810d70d7"
+    }
+  ],
+  "methods": [
+    {
+      "fullName": "<PrivateImplementationDetails>::ComputeStringHash",
+      "signature": "System.UInt32 ComputeStringHash(System.String)",
+      "lock": {
+        "token": "0x06000130",
+        "signatureSha256": "c5afaa5198a8f9479b385d39a65e684c135797e6ef70a51282df8254b0bb22a7",
+        "ilSha256": "0a05b7556341fcd08c19866e41e75974a7ed52c92600aa181bb8b82b400bc2aa",
+        "bodySha256": "29685550404094a3c8f418467937e9c85c01eb40a890734afa058a724631dd44"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.CommonMethods::SaveToFile",
+      "signature": "System.Void SaveToFile(System.String, System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000002",
+        "signatureSha256": "80884733c9e50032196b7c66fc46bd9a19a4705248e8cae66536c164e193d5aa",
+        "ilSha256": "d76f7b674d59095631f3e06218de11e6314dce71515ecfca80b8366998a64cf5",
+        "bodySha256": "3ac147e917ba706d825ee13765e65e6da9249327e499f821f7045428d3e268a9",
+        "textSha256": "9b4006ec639e11e9947da986ceabec23a7d3b9afdd51ea5a545079ae19926c23"
+      },
+      "decomp": {
+        "path": "Aras.Tools/CommonMethods.cs",
+        "startLine": 15,
+        "endLine": 39
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::.ctor",
+      "signature": "System.Void .ctor(System.Int32, System.Int32, System.Int32)",
+      "lock": {
+        "token": "0x06000009",
+        "signatureSha256": "45066fc062a11fb0c12948f88b0d7e4c631a52b1cf0006dcde4c60bd22ae9964",
+        "ilSha256": "081f8ba58630f3324d35d6fab2633cf1b18f11a497692204a018706e2a304639",
+        "bodySha256": "1e90f2cbcc2ac1f11bb2be007329b304db74a1a65c9d957cff60f531882e2204",
+        "textSha256": "f465fba589fc1c6b0f59045e788c83484f48135fc49336f64a97de9ea7709017"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 11,
+        "endLine": 16
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_Major",
+      "signature": "System.Int32 get_Major()",
+      "lock": {
+        "token": "0x06000003",
+        "signatureSha256": "19e1bd1daf2ae492b895802f55c905ef2d25aea509c6010868e218adb408c010",
+        "ilSha256": "37b87db1c64ab53145a64bf40c60c5ad6fc28b817699035bbd27ec1f312b5fb7",
+        "bodySha256": "a9db3a5012c2988b2d719908f534235d7e3b62fa3bc219cb625b904ac394ef04",
+        "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_Minor",
+      "signature": "System.Int32 get_Minor()",
+      "lock": {
+        "token": "0x06000005",
+        "signatureSha256": "19e1bd1daf2ae492b895802f55c905ef2d25aea509c6010868e218adb408c010",
+        "ilSha256": "8325e6cf6c58a5567e9d1b3d9883cb9eb7e435cde7d72507e22af246f9a96b58",
+        "bodySha256": "fc7570822398716ae2142c23eb4ebc75ef675998fc0f4672e81fd647dabe9b4d",
+        "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 7,
+        "endLine": 7
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::get_ServicePack",
+      "signature": "System.Int32 get_ServicePack()",
+      "lock": {
+        "token": "0x06000007",
+        "signatureSha256": "19e1bd1daf2ae492b895802f55c905ef2d25aea509c6010868e218adb408c010",
+        "ilSha256": "abf4169fb26de60f4f8128c5d608cb22a759a1b5afbc3a7688cc42b571e25182",
+        "bodySha256": "28eaa8d5e99b445f5fb223e2ae24136fb819cf88ae0b5e95cef710a147e9116f",
+        "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 9,
+        "endLine": 9
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_Major",
+      "signature": "System.Void set_Major(System.Int32)",
+      "lock": {
+        "token": "0x06000004",
+        "signatureSha256": "c889396c66b535112cb33472b6ecf61ad5f09860a1ea642fb8c31a4ed004296a",
+        "ilSha256": "078c98834a5f5a84780d43ca2d9b9eb5945715fd2a972ba6dae392874b6d14d7",
+        "bodySha256": "67c105e7f6e09bb34b82d4fc5dbda2bbc1133e2471f0a4ac6913a75a773be786",
+        "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_Minor",
+      "signature": "System.Void set_Minor(System.Int32)",
+      "lock": {
+        "token": "0x06000006",
+        "signatureSha256": "c889396c66b535112cb33472b6ecf61ad5f09860a1ea642fb8c31a4ed004296a",
+        "ilSha256": "74ac7e36088b2be938e79b5389f9590273e09316b12a8b6f5124646bd06a891a",
+        "bodySha256": "57bb851cbff7efcc33e4ffb600f897577848c5da25d5c58c8bf79e1ed6301c34",
+        "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 7,
+        "endLine": 7
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ArasVersion::set_ServicePack",
+      "signature": "System.Void set_ServicePack(System.Int32)",
+      "lock": {
+        "token": "0x06000008",
+        "signatureSha256": "c889396c66b535112cb33472b6ecf61ad5f09860a1ea642fb8c31a4ed004296a",
+        "ilSha256": "bf1d19ba729b31e2d2280fe39bd097ae073afa5817b16a13cf9382ad2fe51397",
+        "bodySha256": "1a48b540581f2c5fa8f51ce2ca04c378ed0b485205c6753f8db290d112e5d719",
+        "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ArasVersion.cs",
+        "startLine": 9,
+        "endLine": 9
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::.ctor",
+      "signature": "System.Void .ctor(Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x0600003f",
+        "signatureSha256": "0436d86ba7086cd05041bdabacef89688a03f64eb157301369dc48578f9ee9ed",
+        "ilSha256": "1e657453149dab198f6fe01c288e581603f7461408912d816c10b7318086cd5f",
+        "bodySha256": "59a674f405b174811985160d66665041329b1d638daa87a3184204f3f6469ae7",
+        "textSha256": "3b2940e9b5ca42541c3fa509f515bb2da0e65fd3f9a1a1c537b76f1c57386f8b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 21,
+        "endLine": 25
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::AddBaseBodyToItemTypeRequest",
+      "signature": "System.Void AddBaseBodyToItemTypeRequest(System.Xml.XmlNode, Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x06000049",
+        "signatureSha256": "fe15ec32c5462a1d0cd7b03ae4b75679906a949f62ecd1551a841915e523bcf1",
+        "ilSha256": "48e4c33664fbff4140df44a2c2f171e86d3dac5c7fc1799420663072f9196b63",
+        "bodySha256": "7f385526a9064c06f1401343baf3a55d10c76d9daec13bde8603aeee2dc582d6",
+        "textSha256": "0d645864668fbef81c86e0c8031433c31756d4bce3600db6b2b2de0a56f343f9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 451,
+        "endLine": 463
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::AddCmfContentToItemRequest",
+      "signature": "System.Void AddCmfContentToItemRequest(System.Xml.XmlNode, System.Boolean)",
+      "lock": {
+        "token": "0x0600004a",
+        "signatureSha256": "8097b5989f9c1465d2ec64a3e54cfec95f621308501b5e8fe2c83b52423758f5",
+        "ilSha256": "650b3569e7aff795edbfef282fec4ad1962b336581ca3054c9e6cc824cd2c075",
+        "bodySha256": "b190e480748b4789315a09a60c948044bba8b269a5b218cc030d4084f1a530ee",
+        "textSha256": "db7c921733506435e7d2b0451002776ddfe71154626aa7b61ec9f6d4a878827e"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 465,
+        "endLine": 473
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::CdataFilterXmlInMacCondition",
+      "signature": "System.Void CdataFilterXmlInMacCondition(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x06000047",
+        "signatureSha256": "1c872876d8d3e19ef2cedbf82cd3f31c98cc409c679fe20d0787f4994b3493b1",
+        "ilSha256": "33f1fbb3267bba8263fff2723a066bdf784eac2926a8c320e327ae9ffef68754",
+        "bodySha256": "ed71094a77eb89c8ad45d80fe355b1826fd966154ef885e887b6f649715af67b",
+        "textSha256": "b215ac82313920b37257ab0d92e5f2a631a932e0b3010deae5f608bfb665b65d"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 378,
+        "endLine": 404
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::Export",
+      "signature": "System.Void Export(Aras.Tools.SolutionUpgrade.ExportItem, System.String, System.String, System.Collections.Hashtable)",
+      "lock": {
+        "token": "0x06000040",
+        "signatureSha256": "7ea4afa74b20692f7b7e590f5e36221fdd1f6f5540cfab9e1008469bbff7f83f",
+        "ilSha256": "ca84b5ec6e9434e047dbd79c273bce7eb857c46149aa47300e03169f79031a97",
+        "bodySha256": "9dc6b01a19b31f19bbab07b05743002983e03043af5e0295b37a616770176938",
+        "textSha256": "1a0840f6dfbdd8dcd414739736372c93b17ca86fef5b47f28d01fa08cd83b979"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 27,
+        "endLine": 211
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::GetDefaultSelectAttribute",
+      "signature": "System.String GetDefaultSelectAttribute(Aras.Tools.SolutionUpgrade.ArasVersion)",
+      "lock": {
+        "token": "0x06000041",
+        "signatureSha256": "503ef0e45f345d90300a74e3a385e102e64d29ae918751dd52c1e3df1c7c09b0",
+        "ilSha256": "9f8f51961df87504e12874fb347546b8d1c775652d708af0b8e3b3644afe8136",
+        "bodySha256": "28a712767fa49ad398cfb0043f564baef3d93dc01ae4d3dbae7a3701722fbf1c",
+        "textSha256": "01bae4662a0188ad43c975ec93940dbfd55191f95c79aa9385fd300f57083b35"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 213,
+        "endLine": 220
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::IndentConditionXmlInDAC",
+      "signature": "System.Void IndentConditionXmlInDAC(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x06000046",
+        "signatureSha256": "1c872876d8d3e19ef2cedbf82cd3f31c98cc409c679fe20d0787f4994b3493b1",
+        "ilSha256": "dda20cc7fa2ea3a4c43cdbaa9265cccdd7dbe756a485b70ab75300b60197e538",
+        "bodySha256": "ca0453d1b551993208f114ba2a49ddce451c5086f67ca13adf853e36122d37df",
+        "textSha256": "4464339902902a93a2b876e4f9b70db7bc737e55e1d1c169f7cf3f3018f7bfd0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 334,
+        "endLine": 376
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::ProcessDerivedRelationshipFamily",
+      "signature": "System.Void ProcessDerivedRelationshipFamily(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000042",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "f117278be31a8de60c64ebf66794146abbae0f5150c48c6b3b2e6a02e67a6508",
+        "bodySha256": "062bf7d39a6d673a7d281917ad7446b70a5ca9c1d8571cc343d10d52d842ce9b",
+        "textSha256": "5c6f2828a4c3bb328d50201f02bbace1ba220e803080d1b2338c5660d143dd45"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 222,
+        "endLine": 247
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::ProcessForm",
+      "signature": "System.Void ProcessForm(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000045",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "840830a2f79ac69ddbf2a6d2f9ddad924bd27b03e64b1cadd40a7bf35ec24e1b",
+        "bodySha256": "19518ea10c58c486c4b4f8b8ed00b0822c162cf365257c3e377f4a8ee7647da3",
+        "textSha256": "99e71fdb53b2ce86b0f76beb1b0aba32c71fd250883d8a8a94d5e0f9ff63ca4f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 293,
+        "endLine": 332
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::ProcessRelationshipType",
+      "signature": "System.Void ProcessRelationshipType(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000043",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "d48a649dad00e0b91f0532958e9344d180cec78574a070466320b0c9031f36ca",
+        "bodySha256": "5f98f896329623e9a886d5153b5660aa50bea31cef348914cca1c77416d1d72f",
+        "textSha256": "dc93035b727b06056c49ec5d5a0e92efa45fdd85f4f6e7465ae0da5a76e51553"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 249,
+        "endLine": 278
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::ProcessSequence",
+      "signature": "System.Void ProcessSequence(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000044",
+        "signatureSha256": "bff0580df5f5fec0783d4170baacac23285db24bc6359eb0c7ce5abf5007e8cc",
+        "ilSha256": "a6841a501b37da9019fcf4825f5d206e34a796ff6a2d84f2ca1f1b1071ffba22",
+        "bodySha256": "3e451245bfb75c8a310805c6c4249abb9fde3b489aced7667845ef66c85b89b7",
+        "textSha256": "afd6653af99069dd103b35919bc5cf0a7fa3052f5f13d1e7a961b154d4ff500a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 280,
+        "endLine": 291
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::ProcessXProperties",
+      "signature": "System.Void ProcessXProperties(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000050",
+        "signatureSha256": "bff0580df5f5fec0783d4170baacac23285db24bc6359eb0c7ce5abf5007e8cc",
+        "ilSha256": "c3fd0665e8cfa434e1da4a39b42ea7a11c6b47ac2dfeb01237fc1046ce233528",
+        "bodySha256": "ba15481126c324f1b3317f26ec2612834d5b618a78fdcfc5d8a84e82c99e54f1",
+        "textSha256": "f8d315af0dfd01a2dbe7ff8e3fbe02cf4051954842d346d58fd69caf6dcf1a2f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 552,
+        "endLine": 592
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveAutoGeneratedRelationships",
+      "signature": "System.Void RemoveAutoGeneratedRelationships(System.Xml.XmlDocument, Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x0600004d",
+        "signatureSha256": "f9fd2d1820da0a659ec4dd1fb644f128dbc68535e60c0adbb0cc88ee31bca405",
+        "ilSha256": "d080e871b3d98280e6b706b9c7763a38ffcd48f57dd26822c349b7a46bf1bd5f",
+        "bodySha256": "660069953b7881e2abe6561af0e8486d266e815abe6e6d775eb11a60947ffa77",
+        "textSha256": "0532aba5f4424a70174ca20dc34126788edee5163468f010ac8aa9c0c504a6fa"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 504,
+        "endLine": 533
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemovePermissionIdWhenItMatchesToDefaultPermission",
+      "signature": "System.Void RemovePermissionIdWhenItMatchesToDefaultPermission(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x06000048",
+        "signatureSha256": "a3e0728a0b7afde47df24f4a611c31bc624d9bab79e91b93b710a34e607c26d3",
+        "ilSha256": "5631feca75be6fe9d1b39e591a5a5b160a5d5e69c4a3d96928f09e0e20d02efd",
+        "bodySha256": "eef907aa4dd718ffcc65c5d009d92e7b280c7379c5392d20f2bbdc6f1e453422",
+        "textSha256": "f9470f10fe0171989578b4d3a733a3aa337d8d049ddc0e5959cac5daa821183b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 406,
+        "endLine": 449
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveRelationshipHelper",
+      "signature": "System.Void RemoveRelationshipHelper(Aras.IOM.Item, Aras.IOM.Item)",
+      "lock": {
+        "token": "0x0600004f",
+        "signatureSha256": "47d16563260dc50f5dd6b6bebf1ba64a131982add95cc110ef388caf13c2e34c",
+        "ilSha256": "ebefbd35b3c94bc363d6705c5c32bd52f0518e3255189dadf0d9b7fc23cd9d74",
+        "bodySha256": "e72cb828b7235980bb439f4c55678b332b5e63e23c8787d02a19d4552c33888a",
+        "textSha256": "0b897896d209ed0c98f82e007f9e2135c54ccbd16610e43d06af05df277107d3"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 545,
+        "endLine": 550
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveRelationshipsByType",
+      "signature": "System.Void RemoveRelationshipsByType(System.String, Aras.IOM.Item)",
+      "lock": {
+        "token": "0x0600004e",
+        "signatureSha256": "7955bfa9373e684717a51668096d214d167e39f786ca5cb35e846fdcbc41460b",
+        "ilSha256": "767228adbd81c7b5c1cc1d2d420329cdd5e3f95b10a137f9480dd0c6951ee736",
+        "bodySha256": "78397711744dc4fa463eb1e5e2faf50e276ddb391babbc8ca0c504994a82bcae",
+        "textSha256": "39f72227234031f231d953f3a9492ae487bab99574e01e3b10e62f0008324330"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 535,
+        "endLine": 543
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveSpecialRelationshipsIfNeed",
+      "signature": "System.Void RemoveSpecialRelationshipsIfNeed(System.String, System.Xml.XmlDocument, Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x0600004b",
+        "signatureSha256": "5e6cb0f5fcd5d422f885c703c5101b873b280ae5f9ed3d4da4568be2dae65828",
+        "ilSha256": "ce9d5240065831ca515a9d7c5f08dbb428c03fb366215633adfb7c36f94c9caa",
+        "bodySha256": "d291916f867110aeaef447dba4a617911e536f4315504c6c71bb9ee7d543a425",
+        "textSha256": "92f0a6fd906267740ef810d45a7b71723bfec8f1bbdcc09e003be2e194c4ead3"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 475,
+        "endLine": 488
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveSystemRelationshipsFromXTree",
+      "signature": "System.Void RemoveSystemRelationshipsFromXTree(System.Xml.XmlDocument, Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x0600004c",
+        "signatureSha256": "f9fd2d1820da0a659ec4dd1fb644f128dbc68535e60c0adbb0cc88ee31bca405",
+        "ilSha256": "95db8d4472848d0c092fe7d5da4fa5524e2a06be2365a9d2c592f4cbc08bd895",
+        "bodySha256": "a175e0248c53137344d467d3f08563cd37b9128e614f4a8524f823416f55d4b5",
+        "textSha256": "c09e20720b200ca9f4cfce035f7106fce03e361eeb02e35f58c2bb718c2c6ece"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CExportItems.cs",
+        "startLine": 490,
+        "endLine": 502
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CImportItems::.ctor",
+      "signature": "System.Void .ctor(Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x06000051",
+        "signatureSha256": "0436d86ba7086cd05041bdabacef89688a03f64eb157301369dc48578f9ee9ed",
+        "ilSha256": "4f1873fdefa6fac93f9d66544609a20fa6cb6089a165b42a96a8ee983070c65b",
+        "bodySha256": "990281d4e3e1895ca76b6e21e69a02bc742aa63776f4d1068d9165a7eeec9aae",
+        "textSha256": "9968e9d44f00aa20ab0a30050809deb5fc9d75c6f2959ed5a3073792244afeb0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CImportItems.cs",
+        "startLine": 14,
+        "endLine": 17
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CImportItems::GetItem",
+      "signature": "System.Xml.XmlDocument GetItem(System.String, System.Collections.Generic.List`1<System.String>)",
+      "lock": {
+        "token": "0x06000054",
+        "signatureSha256": "8ae36d2fbc6ffe3104e81c3a5ce860bcc545891b59b1feb7fd922b1f965a559c",
+        "ilSha256": "828c21f4bf0735d38101bb9d176f4a550090db8e51d430f34619a568c11deda7",
+        "bodySha256": "e54760d79cccb5235e8a5c410ecf3f5c86137140dec0eeed8302b62b6eaad853",
+        "textSha256": "2c945d297a2e293dbcb14af9b67a6a7a1c733888e00d7c5efb9dfc280ab05a0a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CImportItems.cs",
+        "startLine": 177,
+        "endLine": 193
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CImportItems::Import",
+      "signature": "System.Void Import(System.Xml.XmlDocument, System.Boolean)",
+      "lock": {
+        "token": "0x06000052",
+        "signatureSha256": "614f3e905e23720a86043590762ca8a8e577b3a9d729919ccf30194f6fc553b4",
+        "ilSha256": "509f9a3ea755e54e97effc1573a7a7543b8e626e76519cef9b64bd0ad498bb4d",
+        "bodySha256": "ffe8f4413ca21fcc780b60e3d9b09c3a8997359f45c25d7e8902eef0e0a25a7c",
+        "textSha256": "e0757927a94ce245582c455d36b41418a5ef5b9a665544a304b27e3fd9fded4b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CImportItems.cs",
+        "startLine": 19,
+        "endLine": 120
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem",
+      "signature": "System.Void ProcessVersionableItem(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x06000053",
+        "signatureSha256": "d64ef7331af26339cf4a21717ee07b5efdb9a0e303fb04a95a212d2abe61c7fa",
+        "ilSha256": "eb52b9ff0eaa123a1bcce5fee21e0756fd61dad1909503515a2c74bf6de2f0e3",
+        "bodySha256": "b903db3749052b21172ba4f0402a8948978f8f22e343bc61eb2d1ea62914116d",
+        "textSha256": "6863c1ea7dd4b22b42e6e94b7c60becaa4529114176c4c5b7d6c6d11cab5f89e"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CImportItems.cs",
+        "startLine": 122,
+        "endLine": 175
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemException::.ctor",
+      "signature": "System.Void .ctor(Aras.IOM.Item)",
+      "lock": {
+        "token": "0x06000118",
+        "signatureSha256": "a8c9cfc8a70933e71e21627bd6f1cf020bf5184e610d934a52fbc3ea1175d602",
+        "ilSha256": "ec43304fdcd9f38739bcf0594f074517a9b25e27499aa21a2603c5a417cd4647",
+        "bodySha256": "d7a25645edb61a02cdd279cf6c7aaf2d3bd69b3dae9028b95cac304802c55620",
+        "textSha256": "e3a8c7af6e4ac86f8b57112e35100d78813f8bc77eb08bc88557695342583eb5"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemException.cs",
+        "startLine": 47,
+        "endLine": 57
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemException::.ctor",
+      "signature": "System.Void .ctor(System.Int32, System.String, System.String, System.Exception)",
+      "lock": {
+        "token": "0x06000117",
+        "signatureSha256": "11f1cd7612964ad260b224d7e5a8135219371daf7d5b95b2029da990fbb8e9ab",
+        "ilSha256": "ec941d0760077d4c48b0e0591446a2b13530b1efb9237b956f15156e9d8c5267",
+        "bodySha256": "b4931c5bcfe3459dadad2a410e4910af59329bd90d3bb4aca7a5289fa54a9498",
+        "textSha256": "8c656366fd43da28ce1db4e5daf3ca97d128ef477aa0805376af73d7aae965bb"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemException.cs",
+        "startLine": 35,
+        "endLine": 45
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c::.cctor",
+      "signature": "System.Void .cctor()",
+      "lock": {
+        "token": "0x06000132",
+        "signatureSha256": "cf7605ed1bc735f6c825554154627467e1cac9df54cee8699218ed434603c568",
+        "ilSha256": "c83eadc49ffd753be60a2e0030e61113df9fa05e32a62d1a2debe98cea7ba7db",
+        "bodySha256": "0cc5d6028db2188ec6a17c3f2092f37092366922bf58748dfb327226b58d0764"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x06000133",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
+        "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c::<GetSolutionNames>b__70_0",
+      "signature": "System.String <GetSolutionNames>b__70_0(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x06000134",
+        "signatureSha256": "e24d6ae5b3dc0621c225b081d241b591c6903ded27edb8a13f820069ac4fc2bc",
+        "ilSha256": "b07996ff56d73afd8a21f864c36d524d2ee527469c23bb78de5c32b852cb6629",
+        "bodySha256": "0d0ff0c59063623593af94baa947a891ffdd2559e026a8d6190ee4e697f4fa79",
+        "textSha256": "0bdd141a7d04e58f08d9035b8ba63a0635e9465db950b05efe8a3ea3f5afc504"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1408,
+        "endLine": 1408
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::.cctor",
+      "signature": "System.Void .cctor()",
+      "lock": {
+        "token": "0x0600009f",
+        "signatureSha256": "cf7605ed1bc735f6c825554154627467e1cac9df54cee8699218ed434603c568",
+        "ilSha256": "d1e26f4793f8021ddeb0fefadfff460ba80071f35128a6401a19c0877f8a0613",
+        "bodySha256": "e9304d400346fe019c8fa0be54e4de53a3cbaf6b258c97e8e44c44af64b6947b"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::.ctor",
+      "signature": "System.Void .ctor(Aras.IOM.IServerConnection)",
+      "lock": {
+        "token": "0x0600005e",
+        "signatureSha256": "779dc88544e1ed4ef7dca04f67b52c913a49e8c9f27172d728387acebaee5234",
+        "ilSha256": "e306efdc761c45322d96292f806c3676e7eeea9b8ade4ab0d5a99ada6fe52844",
+        "bodySha256": "f8c98ff5807352eee68d16fdbc598d4d562022503c19489fc1fb72f2cbcf1ddb",
+        "textSha256": "88e2c96594233781c7b36c22e0bec4d499e26d1e05907a65e9e58d28baeaa066"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 87,
+        "endLine": 95
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::.ctor",
+      "signature": "System.Void .ctor(System.String, System.String, System.String, System.String, System.String)",
+      "lock": {
+        "token": "0x0600005d",
+        "signatureSha256": "46c7e2eb8e964c78f0ce38acf1d65665538a17610e2f65e04b023ec5a57c8276",
+        "ilSha256": "a870c17db95e8cf044e412090b14e61184e3bda6f24be8161cbf2126c85fde78",
+        "bodySha256": "543f431a6122348453bd7582ad23fa9a901c310af7668bd2f1a69ec0de7ad5b9",
+        "textSha256": "5af5bbba03f1ff5b07a414fccf3dd19836a5fb5f21cf5bb8bc94c4dc9438a51d"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 74,
+        "endLine": 85
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl",
+      "signature": "System.Void ApplyXsl(System.Xml.XmlDocument, System.String)",
+      "lock": {
+        "token": "0x06000084",
+        "signatureSha256": "298d3e2ae0f89d6c160edb783fe13ebfa47d44348c3257336d38eb0498c596ae",
+        "ilSha256": "fe1165059cf339dfefde0293ccc1af6bbdcde99c7f66b215719c9051feedb960",
+        "bodySha256": "d3cac186371013809d35c913816bc5185a74e80e41ca34706f37319fdc71fdc1",
+        "textSha256": "40a9d99e2bf547aa75dee7f91ff4e36fc88ddee40bc0d080188e1e8d1dcf8239"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1335,
+        "endLine": 1358
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckDataSourceReferences",
+      "signature": "System.Void CheckDataSourceReferences(System.Xml.XmlDocument, System.IO.StreamWriter, System.Collections.IList)",
+      "lock": {
+        "token": "0x06000075",
+        "signatureSha256": "3642c48d163b74219f5fee2517e93c95b6b998aec66854b51b78c60379c5056a",
+        "ilSha256": "04447bcfc3b081a49ae2526cf0ab1aedd199cb64ac7efb63870d26855963b953",
+        "bodySha256": "36f5f7748a02e794df9163c30729cbc92d0cf599570b7517c4d560bd6ea96740",
+        "textSha256": "890ba5b0837021291a3afcfbfc63335e02449414b439e94a1282d142bc6f08bc"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 770,
+        "endLine": 833
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckGetItems",
+      "signature": "System.Void CheckGetItems(System.Xml.XmlDocument, System.IO.TextWriter, System.Collections.IList)",
+      "lock": {
+        "token": "0x0600006e",
+        "signatureSha256": "a3bf3f66dd5da73d11bab2bed54dbf5386a6995bf1bbffb573f62429fca24910",
+        "ilSha256": "e0208022c4fe2cc09d7bf9e0348c819ca450ecf1e0a834e43a1780b0e4aaf45d",
+        "bodySha256": "bf9536248cf51d86fc0037a75cb6f1154bd5f281eb7b0cb8d70a7bb52a1d1679",
+        "textSha256": "6dbb3bff03fc55a6e2b84f5527981fc81399c9608cb5ec5572ba3c0e0855c6cf"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 506,
+        "endLine": 581
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckPropertiesAndRelationshipTypes",
+      "signature": "System.Void CheckPropertiesAndRelationshipTypes(System.Xml.XmlDocument, System.IO.TextWriter)",
+      "lock": {
+        "token": "0x06000074",
+        "signatureSha256": "a683631ed53485c0710090c520a1c55d280be7b3880aae1fd14a340bb2dfac46",
+        "ilSha256": "c9888d0db21b2307a0e84fec4f9681f76ee4e6a3f2d0677343033a6bcf6db8fc",
+        "bodySha256": "42f6287da2aab5ba1f1bfce42eadfa135868510ac533b14b9d002681495f22fd",
+        "textSha256": "55216ad7dc640f21e58af420445c507aa6deee65971d438dfe33f43a698d0b61"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 705,
+        "endLine": 768
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckRelatedItems",
+      "signature": "System.Void CheckRelatedItems(System.Xml.XmlDocument, System.IO.StreamWriter, System.Collections.IList)",
+      "lock": {
+        "token": "0x06000076",
+        "signatureSha256": "3642c48d163b74219f5fee2517e93c95b6b998aec66854b51b78c60379c5056a",
+        "ilSha256": "8ed53ad8b30bfdc18a1f0085369611743493ab6748ed5da109229671a104195c",
+        "bodySha256": "ff22b25b546c3fec67cb158d31a41deb28cac0e93b3d873cba2d47f54c7f0ff2",
+        "textSha256": "dd84e91fc04c307065f8edfa38c8af4735e2c668d70db82291110618813aa5b0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 835,
+        "endLine": 899
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckRelationshipItems",
+      "signature": "System.Void CheckRelationshipItems(System.Xml.XmlDocument, System.IO.TextWriter, System.Collections.IList)",
+      "lock": {
+        "token": "0x0600006f",
+        "signatureSha256": "a3bf3f66dd5da73d11bab2bed54dbf5386a6995bf1bbffb573f62429fca24910",
+        "ilSha256": "3db2b58951d895a1a4603554d5177ff150ca803681c400b2e97596f2a9f22ca3",
+        "bodySha256": "c1970fdeaba213878ca882a67398d86cf7d6df6b310a2b0f4b46e3ada6724cb6",
+        "textSha256": "fd518a0aac2f4a9265efb018d0aa3fc537e09fca078a368e63d1fed9bf2ca6af"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 583,
+        "endLine": 642
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CreateNewXmlDocument",
+      "signature": "System.Xml.XmlDocument CreateNewXmlDocument()",
+      "lock": {
+        "token": "0x0600009e",
+        "signatureSha256": "ce2b59d69af3d64906b9e1ada41af4cb5f27ffccb1b88d5c8603042d024d739d",
+        "ilSha256": "fb51c9f277ef3210033dd1624df08cd1d4b1932b511eae58486a6554ca009e03",
+        "bodySha256": "29ab32233fc12b2e92bf32a2106231bc59b320e5335605227240bbf041ea6922",
+        "textSha256": "c4cb03a417c9f93badf67f0c1b61697d21d27658588215fdf0ed6e95c9e5b762"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 2101,
+        "endLine": 2107
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::DeleteSqlItems",
+      "signature": "System.Void DeleteSqlItems(System.Xml.XmlNodeList)",
+      "lock": {
+        "token": "0x06000089",
+        "signatureSha256": "44b4ba5924ad648b84d95e3414c93831912d7a16f42e37132bd03299c0477f69",
+        "ilSha256": "af713fde4178ef03cd7196d1514946362b0c3052689412fc08d34dd7b6b06efd",
+        "bodySha256": "5789eea6307e3a324b57e5461e4af19b19a2a4d51ad1397836341e44e9cc3b7f",
+        "textSha256": "21cfb64efb7de0dc0eae541032b04124e01b5bdf4a92a12de62e07893dc2d361"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1411,
+        "endLine": 1442
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::DoChecking",
+      "signature": "System.Void DoChecking(Aras.Tools.SolutionUpgrade.DelayedResolutionManager, System.Xml.XmlDocument, System.IO.StreamWriter, System.Boolean)",
+      "lock": {
+        "token": "0x0600006d",
+        "signatureSha256": "3298afb00346cb4eadb453e79119b9152bd2d71d2ef8d893b19a1d0e78ecd1c6",
+        "ilSha256": "e0cb71d95c70d94b80cde2b1f32b654d22c913ad568291d1e8647dd6f2ef5596",
+        "bodySha256": "a2545b31b8a67f1010de8ee6f219014b66de7185a641409cc18ddc1a4d79bd32",
+        "textSha256": "a3f0d885de52e749fe78b1a7f58363699467a19accb418b957d6848ceecfb67c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 485,
+        "endLine": 504
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::DoesItemAlreadyExist",
+      "signature": "System.Boolean DoesItemAlreadyExist(System.Xml.XmlNode, Aras.Tools.SolutionUpgrade.CItemHelper/IdTypePair)",
+      "lock": {
+        "token": "0x0600007c",
+        "signatureSha256": "09b19b535d04e4fbf16868bfe72700741cd380dec9b792aa52e61b8b84400f4e",
+        "ilSha256": "314f0ed266f6440bdfb997d4977017b6550f3df616dda5e72f2ca826e454cb92",
+        "bodySha256": "308f5c2cb030b7d6fdca717ca93e5f8a9651155cd4bdf65dcd02982c8accd810",
+        "textSha256": "573bc1a4de0522ba4534b5d150f471177b5da4af5d8b78443cf7862c5d98043f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1136,
+        "endLine": 1204
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ExistRelItemInCurVer",
+      "signature": "System.Boolean ExistRelItemInCurVer(System.String, System.String, System.String)",
+      "lock": {
+        "token": "0x0600007e",
+        "signatureSha256": "1394ae767eb5c96e1646653ee88abb92f554c4d2152fab751cda9c7e9519dfce",
+        "ilSha256": "3bee1435b4117e7402386d8a89c806c400424c67412db075a0b21ec9ac51b9da",
+        "bodySha256": "cd84c0c8b2756c0618f903312fbede7a5b1859ad5b36eec4eb110e6610fca94a",
+        "textSha256": "cdec4cf9679f6b1e503cd6aa12a826c5093a208fb375464369f9cefc4888decf"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1212,
+        "endLine": 1228
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::FillDatabaseList",
+      "signature": "System.Collections.Generic.IEnumerable`1<System.String> FillDatabaseList(System.String)",
+      "lock": {
+        "token": "0x06000078",
+        "signatureSha256": "decaa0d56bfd4f8253ea1cb88ca20156e3539ee7f81f5180b94fa49d096db413",
+        "ilSha256": "e2c65084a5f6df909a2cb9a6ed20050acab6e0f41db924e775fc3b132885920a",
+        "bodySha256": "b159197d171f1b5f93247236546480b5b089afd5f883c4e7b2eed7c2b8c5849d",
+        "textSha256": "61e4d367545ab50274ba68211a0f15fb9da5505e6d06eb96141d4f34890cf7d8"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1006,
+        "endLine": 1015
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetAssemblyInfo",
+      "signature": "System.String GetAssemblyInfo()",
+      "lock": {
+        "token": "0x06000061",
+        "signatureSha256": "7654e92fcd606089e218382991601eea77b70226c9ee308320f38cd03c6297eb",
+        "ilSha256": "0f905d90c73b9fcc855b937243a20212aa12b8b6ac0fe96e0b194e1fdd642ac3",
+        "bodySha256": "13ea7ea89fa055200d2ea13715004826e3a2be72a88ee1b9de67e047d3b06882",
+        "textSha256": "ab47d42749f161fddf28f9d890e2c9e508ddaccc369a4c72075ed41eac3969c9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 144,
+        "endLine": 155
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetConfigId",
+      "signature": "System.String GetConfigId(System.String, System.String)",
+      "lock": {
+        "token": "0x06000060",
+        "signatureSha256": "daebeaf17341d3068aef1b1fdae8f1a044519f828efe57b256a1f892fa6b3c08",
+        "ilSha256": "4b3c70814eb8e089e13cdf2595fae50b9f1b8f2683b209e7043990db8ba61383",
+        "bodySha256": "ac247beebe7dc917004bdd654746172d28a07b6cd33063da59f38349e780370d",
+        "textSha256": "0e28c69a3180b240911af8a1beb6c663e2c4a0b70cdbbc6a0d7c4ab6ae2daf0c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 130,
+        "endLine": 142
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCurrentIdByUniqueKey",
+      "signature": "System.String GetCurrentIdByUniqueKey(System.Xml.XmlNode, System.Boolean)",
+      "lock": {
+        "token": "0x06000063",
+        "signatureSha256": "5098511f340974d95d81f3c74c4d1777040fc704cd4ce7680f7ab5733f38af5e",
+        "ilSha256": "40afcc7314e177d4a66e40d9a7d3b6348c6b543434f532935db10c4757e0194b",
+        "bodySha256": "27a39ec26ad64f61e1aa81889c2ee592aadac93fcf6485de0c581f14afbf8327",
+        "textSha256": "3e25f1fa4cd3bca1d479327ad6218c2d3aec0d8049b525674044109729d492e2"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 184,
+        "endLine": 247
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCurrentIdOfVersion",
+      "signature": "System.String GetCurrentIdOfVersion(System.String, System.String)",
+      "lock": {
+        "token": "0x06000064",
+        "signatureSha256": "daebeaf17341d3068aef1b1fdae8f1a044519f828efe57b256a1f892fa6b3c08",
+        "ilSha256": "6bb74e9f1851e126aabf13e02e79196b65741de3a4697de0c496ecdf3366fd4b",
+        "bodySha256": "b10cd1606e21c79ce0b8220488b19710ec8533604ca70b229f0753a6f94f0f4d",
+        "textSha256": "177d1016c7a665026b99d64053489fc4f9dea33bb0bd1714d6d127d8c03f355a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 249,
+        "endLine": 297
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCurrentUtilityVersion",
+      "signature": "Aras.Tools.SolutionUpgrade.ArasVersion GetCurrentUtilityVersion()",
+      "lock": {
+        "token": "0x06000067",
+        "signatureSha256": "92bdab8c5118c428f3cdf83556e26e9caadaeacd098ae651cdb00f778d0578e6",
+        "ilSha256": "91f668e1a6a2cccee5c39ef837f5cb2108515f2d875ef3fd6a10a75a454cdc72",
+        "bodySha256": "d6a976c63e98bdad46a28cfa938066a0a0874b59e13a4bb85f772c493a2c6023",
+        "textSha256": "0e486eb6e1bbbfbd2efeaddc3e4ca0eba68603bf333057278d0b926efde2ee2f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 342,
+        "endLine": 346
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCustomFloatPropertiesOfTypeItem",
+      "signature": "System.Xml.XmlNodeList GetCustomFloatPropertiesOfTypeItem(System.String)",
+      "lock": {
+        "token": "0x06000098",
+        "signatureSha256": "8cbffc7d0cedc34ebad7a1fa3c4135d7a95468e567f985c2209d6780ee526fcc",
+        "ilSha256": "a9d27fdba4f36e66f25be850f1089f5fa4008366a7e08c151bd26a91efab0399",
+        "bodySha256": "cda9034be9771326e3690037dac8b7eb37808f68975a8989943f9579937e57d9",
+        "textSha256": "cf84ebf3a8ec4ddc910662347f95a653d137614c85f9df83dae4246bf5325d07"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1909,
+        "endLine": 1930
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames",
+      "signature": "System.Collections.ICollection GetDependsOnPackageNames(System.String)",
+      "lock": {
+        "token": "0x0600008e",
+        "signatureSha256": "440089e9ad672bcfe8a2762e930147dbaca66f96badfd489cfa7e5070c65b6f8",
+        "ilSha256": "bc12a3e0f400e072d1f852e6446be904c9b42b4474230acb0799eaedd28ec88d",
+        "bodySha256": "2b94c7c4c1c9b98b3e674ed44aedf2a4119360922ec63964668a8bdc8908db17",
+        "textSha256": "cc57de28f3876401e16bda84fde03c736f291f6ee12cb56388c4c6ac154bf389"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1630,
+        "endLine": 1668
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetInnovatorServerVersion",
+      "signature": "Aras.Tools.SolutionUpgrade.ArasVersion GetInnovatorServerVersion(Aras.IOM.IServerConnection)",
+      "lock": {
+        "token": "0x06000068",
+        "signatureSha256": "954b98b7df2af154a94811c69823efdfdad6b81cb4f4bb3860a898115c18e299",
+        "ilSha256": "97d3f0c53bd6874961f577b83fdcea42af71d0eb9d623ac7208d288667f7ce8c",
+        "bodySha256": "42b487882d5f71958c56fbcbc07bd168a91088c31526f743a5dcb66d00bba79c",
+        "textSha256": "4289b91f7e6146706da78d96dc057ea4ac33d60ec3fe73993c91b77701aef455"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 348,
+        "endLine": 378
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetItemType",
+      "signature": "System.Xml.XmlDocument GetItemType(System.String)",
+      "lock": {
+        "token": "0x0600009d",
+        "signatureSha256": "c573946844a64ac73d37db247e6cfb3673f079a94da43e2d7fff4cdd6edde2bb",
+        "ilSha256": "e10510cddcc6e50717933541009aa414249dadb35e17448d7eddb4b2f46fdd03",
+        "bodySha256": "e1ee90318d637ea07d7061404cd2c146491ecbf5fb5caa4c6a8c3dc2b3c8c873",
+        "textSha256": "c2ae9ec7d3c24b10a968ddb1e555c78ac783dfc395425d23de54787fc566c912"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 2083,
+        "endLine": 2099
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetItemType",
+      "signature": "System.Xml.XmlDocument GetItemType(System.String, System.String, System.IO.TextWriter)",
+      "lock": {
+        "token": "0x06000070",
+        "signatureSha256": "59efd6588a74d2e3586188cb7b06c70a22348adb3ea33f2a7d0c2128da5e52a1",
+        "ilSha256": "9fcb9ff0278a587f7e39b8e388cdc8befb57bc54cc400bdd088784af093614e2",
+        "bodySha256": "4f6563bd5bb8c9245ff97921f4b5133a685104928b5c23790b905f9e4cf55570",
+        "textSha256": "d452996987053d2b923694ce2dbb4b3d979b5c228ed67822bc1db5d2f630f7da"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 644,
+        "endLine": 647
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetLabelOfItemType",
+      "signature": "System.String GetLabelOfItemType(System.String)",
+      "lock": {
+        "token": "0x0600006a",
+        "signatureSha256": "b7ee7a27e884ef3ae7f033968aae76cb7144c7dafeada0616bffe7343d941264",
+        "ilSha256": "1361f73af4568c71899b7188ed8ef7de213db686a4553249f7fcac40c8d9b595",
+        "bodySha256": "39c80e0d4e74298f54952a585f32e9666578b1c7a445f4b2531739b6ed003a51",
+        "textSha256": "118a2a9ece73b6c3544576c41caddac9f3cd015b9446986b52a65cea5539d4a9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 389,
+        "endLine": 430
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetManifestResourceStream",
+      "signature": "System.IO.Stream GetManifestResourceStream(System.String)",
+      "lock": {
+        "token": "0x0600005f",
+        "signatureSha256": "9653d0f87052d3aa3a2f3238ad8285798237d458b89bcddefb2322fbda738495",
+        "ilSha256": "ae52533b193e97638c1221dc62a4bdf9964b6df639ab2c866ebf75a62299e842",
+        "bodySha256": "bf272ae8b72a9ec529a48d10c831c6866191d267ac176ac1dc1b5be07c700416",
+        "textSha256": "f49916d8647cdb86eec943e32a01b821d0cf69e371c97d1cba64b7481aa8737a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 97,
+        "endLine": 128
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetMetaDataInfo",
+      "signature": "System.Xml.XmlDocument GetMetaDataInfo(System.String, System.String, System.String, System.IO.TextWriter, System.String)",
+      "lock": {
+        "token": "0x06000072",
+        "signatureSha256": "ff74bae52071b90aa1a7f22a3c0c8812c5a7d9aaf855d8f6994931d1bbfcde12",
+        "ilSha256": "5c9cb85450f5bbf7c179c2b6fda4ad430c3c735c337dd0894f662bdcd81833e0",
+        "bodySha256": "1107669e5f97a94d51d15beffbf39abf9a292b7da42da0b48dad34b38c4c5405",
+        "textSha256": "284c55eda8ccc14176c020228f203468d26f2bd8b2627489028bdd72316cbbd6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 654,
+        "endLine": 668
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetNonCorePackageNames",
+      "signature": "System.Collections.ICollection GetNonCorePackageNames()",
+      "lock": {
+        "token": "0x0600008f",
+        "signatureSha256": "50929f5e68cbccb43bcac419812fa6f3213e7779bb03e49b640e7bc6973b5bb8",
+        "ilSha256": "d708e61dff436acccab4659868c16249a7094c234007b9cfa2014e6b8c19f87a",
+        "bodySha256": "4dc68dd66957bbbec489450a6bd7dee60c662382626e1690562b5fad67c442b8",
+        "textSha256": "721334f36721a62b2e60e03d510e2bd754457b81c17e220b6b62596df3f3389a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1670,
+        "endLine": 1691
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageElementIDs",
+      "signature": "System.Collections.Hashtable GetPackageElementIDs(System.String)",
+      "lock": {
+        "token": "0x06000092",
+        "signatureSha256": "7f2e744c3f6f840de384e90375b9697d9d3fbd7d12c8918da65033ebfd259bf2",
+        "ilSha256": "c6f0e381f716b3ac2de873e130ec13f6ee600bf0235458d64547746b8e772ebe",
+        "bodySha256": "99b0e5b78b6d817ef5d15f65d07b4cc3b14572a94840e641c0466b237ab08374",
+        "textSha256": "73e6811081a39347c2d77d8519ab28d34a27d683954010d250cca83d058769ca"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1723,
+        "endLine": 1732
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageGroupIdOrCreateIfNotExists",
+      "signature": "System.String GetPackageGroupIdOrCreateIfNotExists(System.String, System.String)",
+      "lock": {
+        "token": "0x0600006b",
+        "signatureSha256": "daebeaf17341d3068aef1b1fdae8f1a044519f828efe57b256a1f892fa6b3c08",
+        "ilSha256": "6fa2fa4fc372043c3546ada25cfb42bd46b3f86441b62591634a2573d16bd7a5",
+        "bodySha256": "c29a609cc02fe6d6650465c819390c5b9843a508c7851d081f96dc7fedad3514",
+        "textSha256": "69908ee43bc04da57d224784504ef089e5575110a94275ae28fc856c30f1779c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 432,
+        "endLine": 469
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageIDsFromServer",
+      "signature": "System.Collections.Hashtable GetPackageIDsFromServer(System.String)",
+      "lock": {
+        "token": "0x06000093",
+        "signatureSha256": "7f2e744c3f6f840de384e90375b9697d9d3fbd7d12c8918da65033ebfd259bf2",
+        "ilSha256": "bb96ac41dce6df120be96c1cd795b5e9664867a4aab7abf7dd9837dea247f8ad",
+        "bodySha256": "e653251fcd54bd6278c2b1b124df0bf4be0e43dca8954df53e249add6acb778d",
+        "textSha256": "35172e5b71726bfaa26073914f4c712ffe79cd75418f485fe9b0e6115c4496b5"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1734,
+        "endLine": 1752
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames",
+      "signature": "System.Collections.ICollection GetPolytypeNames()",
+      "lock": {
+        "token": "0x06000095",
+        "signatureSha256": "50929f5e68cbccb43bcac419812fa6f3213e7779bb03e49b640e7bc6973b5bb8",
+        "ilSha256": "95cc292fe3d01438002eaca696542e77cd6f27d057ab6d120a1376c16a7361ac",
+        "bodySha256": "ac80e8180599464f2116a8da4341d72425125800da4ad679578a3591f968855f",
+        "textSha256": "32d6a6125b58e740425d08dd4a16dec3ccdf488d0619f0ea45daa4d3b36e2629"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1797,
+        "endLine": 1826
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetRelatedItemConfigId",
+      "signature": "System.String GetRelatedItemConfigId(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x0600008b",
+        "signatureSha256": "e24d6ae5b3dc0621c225b081d241b591c6903ded27edb8a13f820069ac4fc2bc",
+        "ilSha256": "cd0951d90e8f3caf7c827138d87543c8aa3458f0a5a678ed48d64e507363c54e",
+        "bodySha256": "de25ba81c8b341e790cc67a7cb92223dd96ea2745b61c6d70f45489fb6e4dcf4",
+        "textSha256": "32b235fbd8d971e614dc18c7f6133e12511a0dd6644a52e022ab7028c2c57436"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1546,
+        "endLine": 1579
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetRelationshipType",
+      "signature": "System.Xml.XmlDocument GetRelationshipType(System.String, System.String, System.IO.TextWriter)",
+      "lock": {
+        "token": "0x06000071",
+        "signatureSha256": "59efd6588a74d2e3586188cb7b06c70a22348adb3ea33f2a7d0c2128da5e52a1",
+        "ilSha256": "4b0e1d1401457f10905fed5af74a35ed898b1bd5d24d264c71b03ba589bbf60f",
+        "bodySha256": "c5835f59082027f0e061781e1ac77168500951fec1bcf580b8c08c482482106b",
+        "textSha256": "32ba87e474d78ffc5f9e8e0ed4602814a8f26f5a8a78cd8720011cf855db99dd"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 649,
+        "endLine": 652
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetSolutionNames",
+      "signature": "System.Collections.Generic.IEnumerable`1<System.String> GetSolutionNames()",
+      "lock": {
+        "token": "0x06000088",
+        "signatureSha256": "130e8dc839aafc3834ef794392cfbbebe1ea045ba68821b27bac3a077c9a5adf",
+        "ilSha256": "0b0fb3d74e0eaa1a48069b8815187a12e4b8c23e04b975de2eb88d746e216267",
+        "bodySha256": "a36fda87e03089e7aa1ccd6a6be8eafa0eff5633f1ee6572cf9d8253929322d6",
+        "textSha256": "c3bde52399701ed1ed58fff646ed283a621f1e147909784c9a2910785d32036b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1395,
+        "endLine": 1409
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetTypeAmlInner",
+      "signature": "System.Xml.XmlDocument GetTypeAmlInner(System.String, System.IO.TextWriter, System.Boolean)",
+      "lock": {
+        "token": "0x06000073",
+        "signatureSha256": "1be33a8f4b0fc57de690f0ddd5a40f4057aedc896155d539d007f4a0311b86e2",
+        "ilSha256": "ddf938435dfa06155cd02b4573b203211a7d45c8cc70ad369b78c6c1a47a5bd2",
+        "bodySha256": "34aacf40abe59c629f24b741702d11efbc45fefa5cbc714e26e170065a2d3e70",
+        "textSha256": "8ff2cb369e2c0668c2d4c2960948a725afaa642784461a4a8107381991d70a21"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 670,
+        "endLine": 703
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetUniqueProperties",
+      "signature": "System.Xml.XmlNodeList GetUniqueProperties(System.String)",
+      "lock": {
+        "token": "0x06000062",
+        "signatureSha256": "8cbffc7d0cedc34ebad7a1fa3c4135d7a95468e567f985c2209d6780ee526fcc",
+        "ilSha256": "a4e66b2ed27bb2cea9a835703144b26491cfc5936e0f74bc5f1c63ab505db37d",
+        "bodySha256": "c75e7e06f793a7b3d2a6f59e0fb89a3968cca860eabc6cb3c2a0c90be337a587",
+        "textSha256": "e1f4ec4a37fb0127e32601bc9550c65b406b819940fa0b52deb49c912325e15c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 157,
+        "endLine": 182
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetXslTransform",
+      "signature": "System.Xml.Xsl.XslCompiledTransform GetXslTransform(System.String)",
+      "lock": {
+        "token": "0x06000083",
+        "signatureSha256": "a165b966b05cf0ced4e83bd82c7ae1bf4159ef64cc6e6ace2905f8d296ccf1b1",
+        "ilSha256": "99f638810e4d6e3f0ae3a2d860819fb374cb52f0faa36fd7d64c9a811d924211",
+        "bodySha256": "1b228939e08602ddaa66be6cf7520064ab708042df0f656d2e3fa37e0b31b5f6",
+        "textSha256": "211664665c10aa1c2473b52f5f5ab64b5fb1cda28fedbc6d34bf3cda197f5510"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1319,
+        "endLine": 1333
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::IsValueId",
+      "signature": "System.Boolean IsValueId(System.String)",
+      "lock": {
+        "token": "0x06000099",
+        "signatureSha256": "c6804a6b6167553b78bfc424ea29f72681c1c3a2b46bb746dbb1bbe467c68bb5",
+        "ilSha256": "c89740b4383f1360436af1d8c8332c848741d965c076050ea83f54f7f62a88eb",
+        "bodySha256": "80875a88b1be3312f35701b3ecf21eefc7bb9661d0749ee378f86d9c4ae537a6",
+        "textSha256": "19db5bbe12a74ad746c3679f44ae558d4e017bb97db51ae78981f389f7c2a5d5"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1932,
+        "endLine": 1939
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::IsVersionable",
+      "signature": "System.Boolean IsVersionable(System.String)",
+      "lock": {
+        "token": "0x06000065",
+        "signatureSha256": "61bbd491345d80bcde08286d395defead9e181d82e76ce39bf961ebefbf660be",
+        "ilSha256": "a057804323087e9b2bf624ec8d60b6e7aec2f114ee04a6e71388477c595ed66f",
+        "bodySha256": "409a119c73019fa3045dd990b04c0ae18739bbc6d44c2ba76153b8521278b2ba",
+        "textSha256": "50615985c43c60cb275233ce369bbdf87e84ed95dbf954d9d32f1c8f1c2c1d96"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 299,
+        "endLine": 308
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::Islocked",
+      "signature": "System.Boolean Islocked(System.String, System.String)",
+      "lock": {
+        "token": "0x06000080",
+        "signatureSha256": "169fca057184304b943d195a157a248bf3c2e03b5ae5f467fbe94d349249486e",
+        "ilSha256": "914f760589a4ed5ba5e4f14f8541f9ba3ac021eea089be818f57b7c39ca402b4",
+        "bodySha256": "4b8d3666c12012d220117890db9f7deba770495b9c3645147a778e44c6a0e283",
+        "textSha256": "62c376129d0065cc377d6ae18de881598fbda849945745488c621e09af2667ec"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1236,
+        "endLine": 1262
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ItemExistById",
+      "signature": "System.Boolean ItemExistById(System.String, System.String)",
+      "lock": {
+        "token": "0x0600006c",
+        "signatureSha256": "169fca057184304b943d195a157a248bf3c2e03b5ae5f467fbe94d349249486e",
+        "ilSha256": "b7768dae7046f2da7a459a0cb8622b4d35215f1cbca8e0af59e162c699e319c7",
+        "bodySha256": "dd766443aaf0938b5ad1fd883e50fa214792f79c8a7da96522c0d70e575ec982",
+        "textSha256": "6cfe4bfab9f4b596146449731250d207090d774338c4e1202d826516f78b73a2"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 471,
+        "endLine": 483
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::Login",
+      "signature": "System.Void Login()",
+      "lock": {
+        "token": "0x06000066",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "0883a12419d507f6261fc330a1657d59261682356403bb3e5160d22c29dfe9cd",
+        "bodySha256": "4714e3a015852b333622045434a62d0d8c5918db9489ba0b89cf4d1aa54c48c5",
+        "textSha256": "f79cd4005d7e42ca32cf24e42ee2b8bbab44dcf97bac64051b5e6bee114300ab"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 310,
+        "endLine": 340
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::PackageItem",
+      "signature": "System.Void PackageItem(Aras.Tools.SolutionUpgrade.ExportItem, System.String, System.String, System.Collections.Hashtable)",
+      "lock": {
+        "token": "0x06000082",
+        "signatureSha256": "7ea4afa74b20692f7b7e590f5e36221fdd1f6f5540cfab9e1008469bbff7f83f",
+        "ilSha256": "8c7c28d392cebe27eb388739744f43b251e929854f24d9ab392cfc979e67cc47",
+        "bodySha256": "21548fe3213953061b6bebe3c9a8ddf80e2dd15dfe82182ea162e2ebcf0e2e7d",
+        "textSha256": "5aa222a3a3652538837e76d85b6893cab1969b65968f49881f1db728f4fe22a5"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1313,
+        "endLine": 1317
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ProcessPropertiesOfTypeItem",
+      "signature": "System.Void ProcessPropertiesOfTypeItem(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x06000097",
+        "signatureSha256": "d64ef7331af26339cf4a21717ee07b5efdb9a0e303fb04a95a212d2abe61c7fa",
+        "ilSha256": "d4568c456b5ceccfea0eddc5439fba8376eec11134c66ac75d2d07611517aacd",
+        "bodySha256": "45e0cf2362702f03748688bf52e146b5eaa7cf96f1b6bbd00ab5408e7733d936",
+        "textSha256": "d19f62bfb01088d7f8f1b7cd2b775e7680717475f9876a3bc7cde43ee10837bc"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1852,
+        "endLine": 1907
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RecurseCheck",
+      "signature": "System.Void RecurseCheck(System.Xml.XmlDocument, System.IO.StreamWriter, System.Collections.IList)",
+      "lock": {
+        "token": "0x06000077",
+        "signatureSha256": "3642c48d163b74219f5fee2517e93c95b6b998aec66854b51b78c60379c5056a",
+        "ilSha256": "970b4e5f9c04998e56a2bbf4580b87f862f0a17147d4133f3546ce4464f8fc20",
+        "bodySha256": "998ce0ce8f148692f533a79a38bb3249feb423b9f2106f0baed6c43d24e62e92",
+        "textSha256": "b36d6f9841048c300106083ba3f8047dc074ac6ac0ee19c19d7ac3c8ed2467ef"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 901,
+        "endLine": 1004
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveEmptyRelationships",
+      "signature": "System.Void RemoveEmptyRelationships(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x0600009b",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "7231e6336cd53547a140201d97c4cc9595fb6477eed506cf69b77d3626f39fcb",
+        "bodySha256": "c1d4712824b0fffa824820c512712a798f7b4f8983552372bb950dc77ec6d875",
+        "textSha256": "32c57ffdd3987cdf131bf0163d0efcaaeb5a682971530c50fa799d77018cb0c9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1973,
+        "endLine": 1987
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveNamespaceNodes",
+      "signature": "System.Void RemoveNamespaceNodes(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x0600009a",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "a3d73bedc77b53d0bb8b4993251d0c067a288f28661bebc537e2a88e2a49d4d6",
+        "bodySha256": "47b7d383caa15254d818e50b4d0703addb4d42fd428cd073f57bbc625dcc40c6",
+        "textSha256": "8953a12d1de588a0ad6bd61cbbd595d74b68333e3dffebacedf03cb039afe848"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1941,
+        "endLine": 1971
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveReferencesToAnotherPackages",
+      "signature": "System.Void RemoveReferencesToAnotherPackages(Aras.Tools.SolutionUpgrade.ExportItem, System.Xml.XmlDocument, System.String, System.Collections.Hashtable)",
+      "lock": {
+        "token": "0x0600008a",
+        "signatureSha256": "888f5e3ebafa233ab64a6f9b7dce8e88b4246d3a3d9c37552c695d960b39fab4",
+        "ilSha256": "3286622793c8373894a50d876bdcd8a901a4936b035ca063b6a4ffa402975b9d",
+        "bodySha256": "b000069ac4d3b8a1ae4a2eba807059a263f60a24bdd5b7e1bc13fb1416b74716",
+        "textSha256": "1194e5dc2009d16d51b8cc14896a868bbd1d3d6374784c46e68b1b5eefda2fea"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1444,
+        "endLine": 1544
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveRelationshipItem",
+      "signature": "System.Void RemoveRelationshipItem(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x0600008c",
+        "signatureSha256": "1c872876d8d3e19ef2cedbf82cd3f31c98cc409c679fe20d0787f4994b3493b1",
+        "ilSha256": "cfe821d29df8f880c37c11874ce01a5ee2c9fa8185ff7b9926a863968cd90713",
+        "bodySha256": "cfeefa915019bf1c2db903fb6e933afbdafff48bffbea8d5dd154bf67bd1e719",
+        "textSha256": "9f855d975a46a027259b549a01644d3d4ad73af0e9c096f1d52c73145c653955"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1581,
+        "endLine": 1589
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ReplaceReferencesToPolyLists",
+      "signature": "System.Void ReplaceReferencesToPolyLists(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000094",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "e65023954af798d3bb8e42c62b97a970f51c5256ba62c419c2486028ff1b97f6",
+        "bodySha256": "a1b285b050b60730fab400c85dbe8edf33d2ef47c48b9c6d923bc25e6a2b7231",
+        "textSha256": "126930b2d1a98fad04d8949400543b0d078e7df87908db08750043c177df9fb1"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1754,
+        "endLine": 1795
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::SetItemIdToLastGeneration",
+      "signature": "System.Void SetItemIdToLastGeneration(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x0600007b",
+        "signatureSha256": "d64ef7331af26339cf4a21717ee07b5efdb9a0e303fb04a95a212d2abe61c7fa",
+        "ilSha256": "685d9e88c7247462f693f92c7cc14493d2329f3aedcaffe3e27204336047205f",
+        "bodySha256": "4d54fcb0facf1868860a93a4a263ad9b25a5e8dd7f24332bbaf7cd8bd0d53a86",
+        "textSha256": "573b7a33e53770b03a0a2b9edffc35d4bad77528c81861fe01d84a9fad99e145"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1099,
+        "endLine": 1134
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::Unlock",
+      "signature": "System.Void Unlock(System.String, System.String)",
+      "lock": {
+        "token": "0x0600007f",
+        "signatureSha256": "d6045e3691dde84d1c8000945562b6178a4d3b22f0ae6450913b33ea59cc2613",
+        "ilSha256": "f9c0137ce8af5c72a56501da3ca5e793dd6b7e3d49b62865cdfa1528411e6c82",
+        "bodySha256": "9ffca266f7d4ef4e7b090434343ee80c84be9191e87b4afe675089022118bcaa",
+        "textSha256": "3a44cc9b5870c34f0b5be9f8f8447cf58e4d10ee409628ba5192c285378b4265"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1230,
+        "endLine": 1234
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::WriteReleaseData",
+      "signature": "System.String WriteReleaseData(System.String, System.Int32, System.String, System.String)",
+      "lock": {
+        "token": "0x0600007a",
+        "signatureSha256": "1fe068506b161eec40bf920018b91dd96ca48d9324ce561b00ac534fa8afedf7",
+        "ilSha256": "f99da2fd261e1307d89d7115efde1e5d742680ada136a06fb8d1e0e928d8dce9",
+        "bodySha256": "a4e64a40ab1c823331aa5afe012fd84ecbbf6c6327415cd183fdebdd30691a36",
+        "textSha256": "f9a05943f40896321c9821487fb3d2fc2e35a85b06467e72896ab7455c251238"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1025,
+        "endLine": 1097
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::_getDBList",
+      "signature": "System.String[] _getDBList(System.String)",
+      "lock": {
+        "token": "0x0600009c",
+        "signatureSha256": "81394fc6d4617220c4980cea7729d3d41c03e61569005da61c03107625bb2586",
+        "ilSha256": "567301ed3fb07063bf63e82d74b2731b83f29d2370e8ef515e766def64b35038",
+        "bodySha256": "9825c26120e9b70885680b0e5ba8a2ceb264aa9372e9d28d6aa1d400b6c55a59",
+        "textSha256": "f85e47099d76d2a5878108443b81eb052d32769ec2c628f2b9c2496d1da4d249"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1989,
+        "endLine": 2081
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::applyAML",
+      "signature": "System.Xml.XmlDocument applyAML(System.String)",
+      "lock": {
+        "token": "0x06000085",
+        "signatureSha256": "c573946844a64ac73d37db247e6cfb3673f079a94da43e2d7fff4cdd6edde2bb",
+        "ilSha256": "bc305cd2f8d5f6b5ca28ff1c74be6efddd73fa1da88de807aaf3ea1a9c41c811",
+        "bodySha256": "f50f47aaa7285a34d86c7c4f88b8bbd3e5609b5b7fe71d015636c4a0c4c96d0a",
+        "textSha256": "be9010402d14a08e559b44668322c8a7dce414128e6439326bf78780ec7d4770"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1360,
+        "endLine": 1370
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::createAttr",
+      "signature": "System.Xml.XmlNode createAttr(System.String, System.String, System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000079",
+        "signatureSha256": "42c9c0f7d313f0cbe35dfb20470bbe34ee7d9d5f317380f08bce0b69b36a1164",
+        "ilSha256": "77625dc1d801efea545b0ba56b387d0bf4da9fc891b2178d931905476be6b712",
+        "bodySha256": "9a0b6df59a4d9a01ca6358c763793086defeb4819de876d30380de75acbd0fd5",
+        "textSha256": "42923d2300a518105ba88541d72bcf744ae7f8c9254fedd826d15dbae63a4fb8"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1017,
+        "endLine": 1023
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::doImport",
+      "signature": "System.Void doImport(System.Xml.XmlDocument, System.Boolean)",
+      "lock": {
+        "token": "0x0600007d",
+        "signatureSha256": "614f3e905e23720a86043590762ca8a8e577b3a9d729919ccf30194f6fc553b4",
+        "ilSha256": "75ba3b82a9dc22f1f54a6403e47603e41589eed2fefe3e19b7647f0735ec502a",
+        "bodySha256": "f066f7a0b19b34a96449db99f36bcdd0c60dc8d318f96a941eeede5ba1aa3475",
+        "textSha256": "e98243675d1de75b057a50b312e3c63766bb08568f824a8a420fb82d7285f402"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1206,
+        "endLine": 1210
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getDepencyLevel",
+      "signature": "System.Int32 getDepencyLevel(System.String, System.Int32)",
+      "lock": {
+        "token": "0x06000081",
+        "signatureSha256": "37fcc0070f6be15c65813e3846426e567add09dc0d139babb2ebb92820beac2d",
+        "ilSha256": "c759af73837d6a7a9863d81306a1817dc2608f6d1f73b76636416945701b4960",
+        "bodySha256": "b7ff8699ff460ce1c1cd8af01a8d8dbcbd4d07bf6b9a7754bd24d299e93758d0",
+        "textSha256": "0b6fbe7ac0ca6f0f4bf779e72d832db74bd876920ceeb20a13b7ab8f1470c1ad"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1264,
+        "endLine": 1311
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getItemID",
+      "signature": "System.String getItemID(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x06000091",
+        "signatureSha256": "bcdce938aa4756b9743078da2d3c1e95fb8e24e8b98575c4ef37ba0f52afd9bb",
+        "ilSha256": "52067e106f5c065e234fdabc9f7613ba570f42b873eb4ff02af69e02f8093d7b",
+        "bodySha256": "6f6375865497dc45e9e9d25a00d445e1d81e20572eb83f7787f7cfbaf3c72193",
+        "textSha256": "d8045b751b18e59652d9a7c3a826c218d626aac0e44cd33d54d1ec9c72e3cbd6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1706,
+        "endLine": 1721
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getRelationshipTypeID",
+      "signature": "System.String getRelationshipTypeID(System.String)",
+      "lock": {
+        "token": "0x06000090",
+        "signatureSha256": "b7ee7a27e884ef3ae7f033968aae76cb7144c7dafeada0616bffe7343d941264",
+        "ilSha256": "9a229016d01685f45aadba06c418cd5586eeb178d6fbfbed73bf222093e10d04",
+        "bodySha256": "dc2a015e2a44d3b6f81640e6b96c0d21a4f24a8373d4b078faa5ed42dd8eb559",
+        "textSha256": "11323e2f45136672dfc9414aae0fd46f907bba4c3674ae8b12b3789687f787ad"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1693,
+        "endLine": 1704
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getSolutions",
+      "signature": "System.Xml.XmlDocument getSolutions()",
+      "lock": {
+        "token": "0x06000087",
+        "signatureSha256": "8cacfe34e51159510540f56ae1aae1dfe6317312aa902b66a82c3f3f20016c71",
+        "ilSha256": "cfb508d1e2f79b89995307285a39d5292a4d73591aa703f735627a575cd80574",
+        "bodySha256": "5c40629b24c25f8ce996b2746831643680bdcc944b60e3082884fd905a3ff951",
+        "textSha256": "e096c7397a40570dbedddb66fca8f16e088de2da7751fbafd7d9a437f40ad6c7"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1378,
+        "endLine": 1393
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::get_Folder",
+      "signature": "System.String get_Folder()",
+      "lock": {
+        "token": "0x06000055",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "5c78034482047c92cd01a882fc28e4345853973aa74bb45ef5df630dcf7a8011",
+        "bodySha256": "b7ebe7aedc77b4801ded13c1acb15ca51d05d845e6b59318342e586f83d2a417",
+        "textSha256": "b7b980790482621fe90e1b9043bf8a307c1d9d3d3e7c57efce2ce69361bc731a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 65,
+        "endLine": 65
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::get_Inn",
+      "signature": "Aras.IOM.Innovator get_Inn()",
+      "lock": {
+        "token": "0x06000059",
+        "signatureSha256": "7ede0795c9f0c55e997449372ca4daee70dc95f1e6d73d6f5033a743f2befa5d",
+        "ilSha256": "2a2e9b34c808d865d3a78d30211ef914b1dc46eadcef18ab3ab043dce60876cd",
+        "bodySha256": "ade509ddbc4537ba79d1e22fdac81f0f219f23d8cd55fc94e7264d15105180d4",
+        "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 70,
+        "endLine": 70
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::get_InnovatorVersion",
+      "signature": "Aras.Tools.SolutionUpgrade.ArasVersion get_InnovatorVersion()",
+      "lock": {
+        "token": "0x0600005b",
+        "signatureSha256": "4ca1a21dba19c4557b857f5494e36139e10b2015264e8c4fb08b2de835d4226f",
+        "ilSha256": "7cf43f1778782bf9c33b16aa0d51d5aad93de2944384d4638e0a94c0f5d1cdab",
+        "bodySha256": "e001fe2a715e6812049028f4fe9b6d349879e3f324ab6785725ce6c7a158de62",
+        "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 72,
+        "endLine": 72
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::isInNonCorePackages",
+      "signature": "System.Boolean isInNonCorePackages(System.String, System.String)",
+      "lock": {
+        "token": "0x0600008d",
+        "signatureSha256": "169fca057184304b943d195a157a248bf3c2e03b5ae5f467fbe94d349249486e",
+        "ilSha256": "51dcc557f25a08dab5c6fe3d28a3c6a3124dcc4a71c39dc55f8b5073911190eb",
+        "bodySha256": "fa562fca917f3c1a8e162a226cec0eee97874a68cffc7abb99a9b06d6481dff6",
+        "textSha256": "84d8400e5bb0596d4c180c9b4428a1eaa888473bd8ed15188fba5a441b49fb94"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1591,
+        "endLine": 1628
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::logout",
+      "signature": "System.Void logout()",
+      "lock": {
+        "token": "0x06000069",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "a4cdaab23cb46e6b9ad90227c8dc62b827e487f9d12aa9e25e9f91109a49fc5b",
+        "bodySha256": "8a381e574366448d3464be294d4fddbefc46663641d556955fe1e020a0bf5343",
+        "textSha256": "37254b5541faf16cbdf54dd5c08df5fc73520e5943ffd33693ddf1a0fa7eb974"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 380,
+        "endLine": 387
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::processIndependentRelatedItems",
+      "signature": "System.Void processIndependentRelatedItems(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x06000096",
+        "signatureSha256": "704012dad32d79a8d442b1b434a3f272b020d6dfee28ae99737717c0ccac456e",
+        "ilSha256": "6537427d214955cec3170d3638e914d74d5b16c2c8265f629831572c6aa2ff54",
+        "bodySha256": "6e08990c7470a5e10e05149e94404423b7f1bd2f61fdbdaa2dc14c5fc272b95e",
+        "textSha256": "2ffe0a16138264b6ca48e87299f90ae8a8bcd06e4a4642c415277eeeb213d6f6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 1828,
+        "endLine": 1850
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Cookie",
+      "signature": "System.Void set_Cookie(System.Net.CookieContainer)",
+      "lock": {
+        "token": "0x06000058",
+        "signatureSha256": "94ed05bcd7070f0ff856da612255650b37aa2a282ffe5deed03a9e15c9a5d35b",
+        "ilSha256": "d93032a37ccd7ec4cdba02a97e6130f83edcaff641dd569856b1a570c26cc7f1",
+        "bodySha256": "d169634e5c38d073557700ddcebd9361af69d693382c87f4eecd3f814bbbfb8b",
+        "textSha256": "ea53a626b4f78990a998624dac667cc39a863cc65bf1182a207022e0fb9a7a13"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 68,
+        "endLine": 68
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Folder",
+      "signature": "System.Void set_Folder(System.String)",
+      "lock": {
+        "token": "0x06000056",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "97875f3c0c12558ae9e7461f18da6032094ab06307b6c2a3fdfebdb981eb9fd2",
+        "bodySha256": "39c6a6a1a272840995a3f83ef733b6a6771c1e1a4910e735f8efc4a7b5bc8b53",
+        "textSha256": "b7b980790482621fe90e1b9043bf8a307c1d9d3d3e7c57efce2ce69361bc731a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 65,
+        "endLine": 65
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Inn",
+      "signature": "System.Void set_Inn(Aras.IOM.Innovator)",
+      "lock": {
+        "token": "0x0600005a",
+        "signatureSha256": "dba56780cdd4d8a68c7e4fe38d86762688d757b459fc9ef2c6ffcc24a587a74e",
+        "ilSha256": "ba09f4da2d1cdc2eaffb4dd7996e4897fd25161f9aae8f605b0132e698b1d22a",
+        "bodySha256": "86a9d45dd8b09da9cabace742fb1b349338ba150da9a1ddf331e4bf5d6a0d992",
+        "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 70,
+        "endLine": 70
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_InnovatorVersion",
+      "signature": "System.Void set_InnovatorVersion(Aras.Tools.SolutionUpgrade.ArasVersion)",
+      "lock": {
+        "token": "0x0600005c",
+        "signatureSha256": "6ae2a1b63aa677c9e8a01f38a1d096ceb4dc3f353d7c226a1f7cb407f0b7c74c",
+        "ilSha256": "7e55500364258a62ed746ff6f7d630a142805ff83305f56c0dc923104503e91e",
+        "bodySha256": "29402fe8701d054cc404eb291f06c199001688dcaba98dde07de2cb093ffce36",
+        "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/CItemHelper.cs",
+        "startLine": 72,
+        "endLine": 72
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x060000ad",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "cc1d91bc98c46a0ec2862dfc3aef633e135bad83b88571f5badaccc8f9359ffe",
+        "bodySha256": "a1ea62cc9852a965847600ea028fe5e6ce68c3ae41c4afc143f10fec18b81ecc"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ExecuteDelayedResolution",
+      "signature": "System.Void ExecuteDelayedResolution(Aras.Tools.SolutionUpgrade.ICItemHelper, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000a8",
+        "signatureSha256": "8ce2bdb9c183dbad5a990d953975ec04b8a2536fcff8c2689689306674555380",
+        "ilSha256": "df5f60403895f3dabc4d2cfd5e7e908c62878c964b6d16ac5f6b879fd908dae3",
+        "bodySha256": "52dc2afba2ec9f028739f6c4fa735a00792f509d789188b0b0e072e76a4e1ed5",
+        "textSha256": "f02283725161bb0798ae05c0464529d6338ff96d7a5d074fd36bee51e06315ef"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 40,
+        "endLine": 49
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessForDelayedResolution",
+      "signature": "System.Void ProcessForDelayedResolution(System.Collections.ICollection, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000a7",
+        "signatureSha256": "7744da21fdabca13b3c93b7246ed19434e331adf9516a60943336083c10204ff",
+        "ilSha256": "e914642c99dc1dddc441c8afe6b92d4efe8c6e5b4267bc42ea10b4ee0f6fa1d5",
+        "bodySha256": "2777d1b137de4181869ec1432b8afed69755012f0bbde08713c1252ffb775b4a",
+        "textSha256": "39bd34582563500788d4b680f3fa3e1effd5fc063482700f6ddde572ad59ca85"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 18,
+        "endLine": 38
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessRelatedItem",
+      "signature": "System.Void ProcessRelatedItem(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x060000ab",
+        "signatureSha256": "a3e0728a0b7afde47df24f4a611c31bc624d9bab79e91b93b710a34e607c26d3",
+        "ilSha256": "5667bbc184340c4267a480dea7ee331b0e8dc4de05d93caf0bc154215cd00716",
+        "bodySha256": "805290d5ade4b8a6b7f7e84a6847c638d4d18eab639e1716082045addae15c45",
+        "textSha256": "4266e26659543ce2c7326ae2123b6097b2d3fc32b265c912162ba44df008fd09"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 92,
+        "endLine": 116
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessRelatedRelationshipItem",
+      "signature": "System.Void ProcessRelatedRelationshipItem(System.Xml.XmlNode)",
+      "lock": {
+        "token": "0x060000aa",
+        "signatureSha256": "a3e0728a0b7afde47df24f4a611c31bc624d9bab79e91b93b710a34e607c26d3",
+        "ilSha256": "a0184c1258f8c6017051782ead6f88b760997283cd497631fbfb3cda0f589599",
+        "bodySha256": "33d2ca58b969c3196912347dd31cd002f1cd2fca62fd667f36dd2ba65d4c0bbe",
+        "textSha256": "6e804e8d04d03d4867ba29b611627ad38fd6cffd84a05eb003630b469af4c8b7"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 67,
+        "endLine": 90
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessUnresolvedNode",
+      "signature": "System.Void ProcessUnresolvedNode(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x060000ac",
+        "signatureSha256": "d64ef7331af26339cf4a21717ee07b5efdb9a0e303fb04a95a212d2abe61c7fa",
+        "ilSha256": "6fff82bb662fe962f79cc1cae620baafd91da49950968d56f71fe3eee5a89261",
+        "bodySha256": "b8b8d10dec2d83df77e9d55581f10b897c57041a543bf17c3878362b4ae452ca",
+        "textSha256": "73eee58a5a38208cb9365292b420943fec805417a059a53e5425bb35db95fa66"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 118,
+        "endLine": 157
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ReplaceRelatedIdOnLatestId",
+      "signature": "System.String ReplaceRelatedIdOnLatestId(Aras.Tools.SolutionUpgrade.ICItemHelper, System.String)",
+      "lock": {
+        "token": "0x060000a9",
+        "signatureSha256": "5b1724c111a1c7aca5751af34795b41466eb0866ea4e83994b32940ff1982647",
+        "ilSha256": "fc04ebb273eac387ebbe7b6ba3d7da21774eb5d39d325d09e42ef3ef945915e5",
+        "bodySha256": "e0dfdec942057dcda7fa312879f4f7b4b0569396f3ed41043029f66e27b493b6",
+        "textSha256": "7281b2787f79a8b30933adbf2c43392a62aed5229a4ead3e9eb9e3675dc88d53"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/DelayedResolutionManager.cs",
+        "startLine": 51,
+        "endLine": 65
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::GetPackagePath",
+      "signature": "System.String GetPackagePath(System.Xml.XmlElement, System.String)",
+      "lock": {
+        "token": "0x060000c6",
+        "signatureSha256": "02cfe02b429b0ba445298e674b18fe99c1fe2a0d9f6fd49b30eeb932520784f3",
+        "ilSha256": "05a27fb8efd385223af91da3631808d1d72943f52ddf9ca481210f7f16567ea8",
+        "bodySha256": "f82b3acd2bfc664f1eb8933f8f95e22ce8e8239eb44dd49cb9f981a433e372c7",
+        "textSha256": "1c9349468790d06dd6003f20a2b513d1aae22b7818b51806545eb1eb397b185a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportImportBase.cs",
+        "startLine": 10,
+        "endLine": 29
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsCorePackage",
+      "signature": "System.Boolean IsCorePackage(System.String)",
+      "lock": {
+        "token": "0x060000c7",
+        "signatureSha256": "c6804a6b6167553b78bfc424ea29f72681c1c3a2b46bb746dbb1bbe467c68bb5",
+        "ilSha256": "86b14f1696f4886140bf216e25aa30cb8251f2c2f57917838bd1700c313c4d71",
+        "bodySha256": "bbdcebdb4fa421677023ae83bc5b1ebb02dd322f497bfca9a18cadb8f95ac772",
+        "textSha256": "34ca5c9384d1d00ba10a9f3eb0aec34a52d3e029878cb8cd23eefcb11d98b6b4"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportImportBase.cs",
+        "startLine": 31,
+        "endLine": 40
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsDefaultPackage",
+      "signature": "System.Boolean IsDefaultPackage(System.String)",
+      "lock": {
+        "token": "0x060000c8",
+        "signatureSha256": "c6804a6b6167553b78bfc424ea29f72681c1c3a2b46bb746dbb1bbe467c68bb5",
+        "ilSha256": "1f71ad35a6b486108b31d7ffef0580106a4dace440fe1c1ac36df97739ccd741",
+        "bodySha256": "92af585254ff21ec7a77be79584ce44299267a37265c692fecf5f3f9df80ee43",
+        "textSha256": "1c0c9546282c1411c0bd527e99285a692a09811ef7ae97fb7521b62133deae5a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportImportBase.cs",
+        "startLine": 42,
+        "endLine": 46
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsImportableType",
+      "signature": "System.Boolean IsImportableType(System.String)",
+      "lock": {
+        "token": "0x060000ca",
+        "signatureSha256": "c6804a6b6167553b78bfc424ea29f72681c1c3a2b46bb746dbb1bbe467c68bb5",
+        "ilSha256": "35e723b43562f8bb6205ab3b784053d14887b46d4f0f87b78eeb73c06bd6a449",
+        "bodySha256": "b87ae8003be49531b1d312b288db4ef12621bab8422f87b67cf84265e5a24590",
+        "textSha256": "51e0631b82df3ef9c62a46a4f58977f1bd877341e9dbebf3284b1f73e811497a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportImportBase.cs",
+        "startLine": 57,
+        "endLine": 65
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsStandardPackage",
+      "signature": "System.Boolean IsStandardPackage(System.String)",
+      "lock": {
+        "token": "0x060000c9",
+        "signatureSha256": "c6804a6b6167553b78bfc424ea29f72681c1c3a2b46bb746dbb1bbe467c68bb5",
+        "ilSha256": "4ae3ef762b7800c9c06c7c21095e539643b7a6b599fd1608484969e3593a63de",
+        "bodySha256": "02f1e1f67ee1b31ea2a52eab18f9980637e1a1e4a61a55cd19c0aeb135a8c12d",
+        "textSha256": "2c78d5c08ca245a32c076c4f61af0b3d4daf215e3c2c8171726e8fda9f8b45a2"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportImportBase.cs",
+        "startLine": 48,
+        "endLine": 55
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportItem::.ctor",
+      "signature": "System.Void .ctor(System.String, System.String, System.String)",
+      "lock": {
+        "token": "0x06000119",
+        "signatureSha256": "3d39b63977e16fdf20a07b1a4cf154ec32f22946eb6cdbc122933ca9e293e525",
+        "ilSha256": "d73fe83799b4a4e06df62671350f970197172d6c873707d92c3cb8ab8c63184b",
+        "bodySha256": "5b4570f57b19af9e074844f57925d6c05709f318c2de8df968508dabb5099241",
+        "textSha256": "f27f14153aa4fd59efaf06a26d06231fe46bb903640dd143c897a5c3f95a80ef"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportItem.cs",
+        "startLine": 16,
+        "endLine": 22
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ExportItem::ToString",
+      "signature": "System.String ToString()",
+      "lock": {
+        "token": "0x0600011a",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "bf5fd6a4fc7c31d54c2de52050225a384bc25e582a4fdc3df92d46977d2b8d1f",
+        "bodySha256": "8cac4d08f7bda9b6ff8dcfc76db0cb1cf05c75c541899b54719890258f53c329",
+        "textSha256": "d5a23a18eed6e5308bafb64ebf9ddda8c0aa44ea6d65943aecc1eca45d01419f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ExportItem.cs",
+        "startLine": 24,
+        "endLine": 27
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.HttpConnectorExtension::.ctor",
+      "signature": "System.Void .ctor(System.String, System.String, System.String, System.String)",
+      "lock": {
+        "token": "0x060000cc",
+        "signatureSha256": "01602d5c79e074527d4886b5038e1b0bb2dd3c77fd47ffa2a1e494dd17ef6d66",
+        "ilSha256": "15bf3142df4be855d18cf068cf040e661d28e93121b00f6bd30431ea30ff4885",
+        "bodySha256": "119aa09828e99275a791318148277767d6c8e68e38bca7b618808d5fef3bcf0a",
+        "textSha256": "c95c7c329fcfa966a70fa4dbd93f4ed2c6326e97212740acee429ffed2713dae"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/HttpConnectorExtension.cs",
+        "startLine": 8,
+        "endLine": 12
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::.ctor",
+      "signature": "System.Void .ctor(Aras.Tools.SolutionUpgrade.ISolutionUpgradeContext, Aras.Tools.SolutionUpgrade.IMessagesFactory, Aras.Tools.SolutionUpgrade.ICItemHelper)",
+      "lock": {
+        "token": "0x060000af",
+        "signatureSha256": "cdf08c34535ca46d37581a488f159628ea9577ff206fa9931c25e07a28944281",
+        "ilSha256": "3941b799def5b0dafce17f4675def3885cb165b9d00a6ca0d37d377968065db3",
+        "bodySha256": "63812ae1e3dffa358b9853809f473ab4ffad174cf29a71aafd8751cd20edf61b",
+        "textSha256": "6da39a53b28821f6d4c71f81065457e67609c9674b7095dec29ad6206cbea162"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 49,
+        "endLine": 83
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::AddToRefsForExport",
+      "signature": "System.Void AddToRefsForExport(System.Collections.IDictionary, System.String, Aras.Tools.SolutionUpgrade.ExportItem)",
+      "lock": {
+        "token": "0x060000c3",
+        "signatureSha256": "beaba69045347445130108d64aea42ff678cd896703afdc335ab8861a3795729",
+        "ilSha256": "7582f90c7a70b76bb4168f659fe7a07b985f27c1c6e29684aa6372a2943d2689",
+        "bodySha256": "a8393bc8f27624c717a9f67fab541309c64b3c6d79324d161b686b71ba1d6e5a",
+        "textSha256": "ac244877c1c654abb554e008f95a2690d79c529b82ab41ad080e50770660dd44"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 644,
+        "endLine": 656
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Aras.Tools.SolutionUpgrade.IImportExportManager.GetItemsFromPackageDom",
+      "signature": "System.Collections.Generic.IEnumerable`1<System.Xml.XmlDocument> Aras.Tools.SolutionUpgrade.IImportExportManager.GetItemsFromPackageDom(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x060000b6",
+        "signatureSha256": "164fd81b218ff31f4ef3fe88aa0a11e2ebfb9d4714e72f2122ad975cfb30d2ac",
+        "ilSha256": "711787a0d0edb538b1081dce439de5232a82cfa6c7072cae8c723d0079ba6f27",
+        "bodySha256": "e1fdfb829c9d008f64c41a45daf33f429b151972332a411208fe067045503b90",
+        "textSha256": "ca11f0cfed4e57972287d54977ca7c4be4ca4a855cdba8e676aa679683db1b62"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 116,
+        "endLine": 123
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Aras.Tools.SolutionUpgrade.IImportExportManager.GetSolutionPath",
+      "signature": "System.String Aras.Tools.SolutionUpgrade.IImportExportManager.GetSolutionPath(System.String, System.String, Aras.Tools.SolutionUpgrade.ManifestFile)",
+      "lock": {
+        "token": "0x060000b7",
+        "signatureSha256": "1cfca128d23a1d72257126c65e32eb30db99d42cbeca4c40426a779628210d74",
+        "ilSha256": "c1c10fb2cf9adf8e2b18077fc8e5310fb830c062a66497d216aa5c4bb10e0314",
+        "bodySha256": "ba5a234ae6b6a25a65c7f87e841cff65c1c322039ad05615f3683a66668e68d6",
+        "textSha256": "55a20969333d377bde696a01cc01dfbe26db9dd90ee0b871b1a6fc134ae8a036"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 125,
+        "endLine": 128
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Aras.Tools.SolutionUpgrade.IImportExportManager.LoadPackageDom",
+      "signature": "System.Xml.XmlDocument Aras.Tools.SolutionUpgrade.IImportExportManager.LoadPackageDom(System.String, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000b5",
+        "signatureSha256": "ce45fceebc8e162feffd5bba527d223133e67e410f83e977881ba6ff169130ba",
+        "ilSha256": "1a32b72251ce4ba57a6e12ae5f13fdf2d9ff2e6c1f8c3209f4bd8129d4c3543b",
+        "bodySha256": "5a659c4596d7b2e0f94c74e49925ad0386b5c0c705f7396065c082193e1ed340",
+        "textSha256": "170e83c13c044947596559106db29915fa86538ea8b27b62a80f227e4231f145"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 111,
+        "endLine": 114
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Cancel",
+      "signature": "System.Void Cancel()",
+      "lock": {
+        "token": "0x060000ae",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "31aa0cb9d6baf34f63613c66f9aff89664335db3db8e40643207bc5e6965d060",
+        "bodySha256": "ea42131d17ab8fb489f9f042e8e8b8a4dba5825dd3f8b75b68644d15f23d0ce3",
+        "textSha256": "629732667b9e17a0a2c530d075b631f294a0899ccfd3466be9e8193f5bd38b55"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 44,
+        "endLine": 47
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::CreateOutputDir",
+      "signature": "System.String CreateOutputDir(System.String)",
+      "lock": {
+        "token": "0x060000c2",
+        "signatureSha256": "b7ee7a27e884ef3ae7f033968aae76cb7144c7dafeada0616bffe7343d941264",
+        "ilSha256": "73bd302f48faa9f818bbc3c1768a5a179ce2346104cd151ddc186600cfcbf788",
+        "bodySha256": "062aab0e9b9d5194fe686232ae3ac3278ae1954792ece97daccf0ee64f8cda6a",
+        "textSha256": "b76cbb4d7cdfc4f78d1e3aca5838c72bac4c694181993795b155f08864f853b8"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 621,
+        "endLine": 642
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc",
+      "signature": "System.Void ExportProc(Aras.Tools.SolutionUpgrade.SUExportContext, System.String, System.Collections.Hashtable, System.String, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000bf",
+        "signatureSha256": "bc42a9e50144cefd2b512043ef6a273d52c4ff07eebbe2d46451e158b5b9b297",
+        "ilSha256": "97e88958b6200f9ddf8a66b49d32c2d7b868957f6f124a0c8fb40c5fd6ed5132",
+        "bodySha256": "80e43e8f006892c70a368c7580e0d0860841e4790ac2c9a5d54dd88549a30ed4",
+        "textSha256": "4652d1a4770eb4c5e2b4335c1fb2e2fbb5e79e39bac9da1b01db5baaf021e4b8"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 485,
+        "endLine": 566
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ExportReferencedElements",
+      "signature": "System.Void ExportReferencedElements(Aras.Tools.SolutionUpgrade.SUExportContext, System.Collections.Hashtable, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000c1",
+        "signatureSha256": "ad0f60a72a74ae0915e2237aa6d9df4a7cbb466d9d7a7af77af0044f16b8c50e",
+        "ilSha256": "cd0edf84c48d11cf66e9c3735a1364868568baf6a446359e5eb10e65eddd19e4",
+        "bodySha256": "1e340a1914973426426104e7f6e9c1c8454aca697489e0c0d319e8144dcb8c01",
+        "textSha256": "b392b0f48121ee81559c0ecbfa5f4a5988d2c5ad96afb866c92f6b1f31ae10ab"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 604,
+        "endLine": 619
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions",
+      "signature": "System.Void ExportSolutions(Aras.Tools.SolutionUpgrade.SUExportContext, System.Collections.Hashtable)",
+      "lock": {
+        "token": "0x060000c5",
+        "signatureSha256": "cbe03423e018caf4dff0d8d8104a0b858b82234c628ee0a7346d3f498e2934eb",
+        "ilSha256": "7c4a7a4f431b6cdaa3651f8dafeddf896f213aa455838d7c4a3ddfdaa7b93101",
+        "bodySha256": "884cab282b3f4886c7fd4e62d963fd39b837251a1bee49d378185b35c1f28519",
+        "textSha256": "8ee6c7e7351ef3094a5b98c835d5272f55ee5074d2abe56a8b7e739b8e26bb6e"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 690,
+        "endLine": 774
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GenerateHashtableFromManifest",
+      "signature": "System.Collections.Hashtable GenerateHashtableFromManifest(System.String)",
+      "lock": {
+        "token": "0x060000c0",
+        "signatureSha256": "7f2e744c3f6f840de384e90375b9697d9d3fbd7d12c8918da65033ebfd259bf2",
+        "ilSha256": "e5adb50f84cf5649ff9369fca48cdae764283483f716e55ff8531beaf827644c",
+        "bodySha256": "c1887b825a9a377ddf127bc52006910c5bda7a80eb61f9abdbda92c836cbd600",
+        "textSha256": "6beb6232886eadd6aae32b9fb1ad465a6e64b3f10f2c40857d2383d014819a1a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 568,
+        "endLine": 602
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetImportableItemsCount",
+      "signature": "System.Int32 GetImportableItemsCount(System.Collections.Generic.IEnumerable`1<System.Xml.XmlDocument>)",
+      "lock": {
+        "token": "0x060000ba",
+        "signatureSha256": "909925cc78b479e40ba927ac0747560bb80109604448f0ea710a00c4e44b9e60",
+        "ilSha256": "1e016470e2bc059c336a211161f5ccf60754a08d15bc6b3053ec7a7db87a9d98",
+        "bodySha256": "d039d2093b2107123b63bcb94781f78e22c75f29020ab0cbb3ae6cc9803d5230",
+        "textSha256": "bdafa669ff689f49d241da73776182a7779c2d39a2dc32a635aeb27b2348c96f"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 217,
+        "endLine": 233
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetItemsFromPackageDom",
+      "signature": "System.Collections.Generic.IEnumerable`1<System.Xml.XmlDocument> GetItemsFromPackageDom(System.Xml.XmlDocument)",
+      "lock": {
+        "token": "0x060000b9",
+        "signatureSha256": "292a72ac86082d349f131afda36f6cf611cd56cc5931ce66529b5fa2c3cf37c8",
+        "ilSha256": "2e4350b58335e407cf5ea5f56675859a5759dee4236cfa5f1d80e56664174fe0",
+        "bodySha256": "4049f4ffe52782216e0b94d9a7ecf5991d436305c8016345329a893a8982ca90",
+        "textSha256": "fa9cda188f08d200cbbd55f4cad1f2b0a2450f31b201c0c9e9e7202c01acadcb"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 200,
+        "endLine": 215
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutionPath",
+      "signature": "System.String GetSolutionPath(System.String, System.String, Aras.Tools.SolutionUpgrade.IManifestFile)",
+      "lock": {
+        "token": "0x060000b4",
+        "signatureSha256": "4518b58a2ee2f609d04ef1443b90a080bb1e0f51487639fb59008e507d90af6f",
+        "ilSha256": "12d777b54031f76cb3591f433b64333e9aac14f51450076152b78d620273feca",
+        "bodySha256": "909110dea15c07d4f6ca9fc5ffcfb7f5307d7d5bc86883b1f09ea119ff7b32b2",
+        "textSha256": "1ce9ea4d91fded9c07e7c1bdc2c01f4d70aba8cdce999cdd1e3fa02b32954f49"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 85,
+        "endLine": 109
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutions2Xml",
+      "signature": "System.Xml.XmlDocument GetSolutions2Xml()",
+      "lock": {
+        "token": "0x060000c4",
+        "signatureSha256": "8cacfe34e51159510540f56ae1aae1dfe6317312aa902b66a82c3f3f20016c71",
+        "ilSha256": "c366473a5f3ac4cafb305d2746a4690ce04c3f040796349ad920f248ad1dec5f",
+        "bodySha256": "601db6917892c0b339785ab6d078d8b4384b92b6eb00495642212e79a1b1c526",
+        "textSha256": "7d51c45e71b350d7676df26abee184a0e8e98fb3713af5b037e2d321b3a4cbac"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 658,
+        "endLine": 688
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ImportPackage",
+      "signature": "System.Void ImportPackage(Aras.Tools.SolutionUpgrade.SUImportContext, System.IO.StreamWriter, System.String)",
+      "lock": {
+        "token": "0x060000bd",
+        "signatureSha256": "bba3bec3fd7803eec4e64bd7fe75678e095ea5e0c30d8f8639640c725613b89e",
+        "ilSha256": "2986ae826338aefc678de773ef5e5b9f1744f4fb5330316dad62bccef79fe7c1",
+        "bodySha256": "3e163a1438cb799c6078b1b39f8931cce35ab6bb4635a2dbfcf9fb5cc7eb738c",
+        "textSha256": "611562af5dd2f4414213d3d334c62d1725aa7e468befd084c03dacc98739bd98"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 449,
+        "endLine": 474
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc",
+      "signature": "System.Void ImportProc(System.String, System.IO.StreamWriter, Aras.Tools.SolutionUpgrade.SUImportContext)",
+      "lock": {
+        "token": "0x060000bb",
+        "signatureSha256": "3a05936e2a4efde2a52dfb82964a13e9b695612ea51f63e5b1b928c9987ab336",
+        "ilSha256": "eb537e00720dcd61058ffc8777c2ece58d9347e2752f804b7e581af8c3f615bf",
+        "bodySha256": "4896f4ab0fdd39fae29ad55e463b742abd1b321bfc54092962f06e528b98f5cb",
+        "textSha256": "c455815e4436adb0c138328bf710a80a378278ace6aad744b84ae8b4b040204b"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 235,
+        "endLine": 398
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ImportSolutions",
+      "signature": "System.Int32 ImportSolutions(System.Collections.ICollection, Aras.Tools.SolutionUpgrade.SUImportContext)",
+      "lock": {
+        "token": "0x060000bc",
+        "signatureSha256": "5b91eeb93f3127acca87f6ea34334d3b67910f845cd0f8c0aa74c1b9d319f29e",
+        "ilSha256": "c78c49b8d5780466afc3b807cb43313ff235846bb092ab0dc91862f4e8fc3252",
+        "bodySha256": "3c25315e4bb2ff092a2aa176d5203c3ee05d2bbcba857f5df25bb13df1fd1278",
+        "textSha256": "d8d85843fd3d2371b2ccb0418e8c7ec0a5a48bf7081b880a37608e77800684f3"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 400,
+        "endLine": 447
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::LoadPackageDom",
+      "signature": "System.Xml.XmlDocument LoadPackageDom(System.String, System.IO.TextWriter)",
+      "lock": {
+        "token": "0x060000b8",
+        "signatureSha256": "8c80f92ba3b6e8be684d0f3c45c8f0cbd8e1aae49329ad1ab005739bc8473c7c",
+        "ilSha256": "ca657741fb89cfb912b301c6594dc98766ef0272bac6fc0d482e0734d6ac39cf",
+        "bodySha256": "a09e82dd953ed699efdacf4827aa21482400f97be617b0a5f2e26eb98b87ab56",
+        "textSha256": "471d73f1b7ea007259e6727399ae3263ccaaa32a0f62f02367d79e7f2e122fec"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 130,
+        "endLine": 198
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::LogError",
+      "signature": "System.Void LogError(System.Exception, System.IO.StreamWriter)",
+      "lock": {
+        "token": "0x060000be",
+        "signatureSha256": "8bb306b47a94d88c252bfc1d7a19138f70fab26b32f96a66e3c95f15654ffb8c",
+        "ilSha256": "1ef74930f0e97991507405454730a971ea7f20f48ef30a7984e667ceb4d30d2b",
+        "bodySha256": "0bc5166ca496a9636591ba9a9ed8de779d01acf5164d8227089e030a37ddc5e0",
+        "textSha256": "8e81c68e9f8a65d3e14ae8a66cf00639ab9bbd971f787512b44b9a75617718a3"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 476,
+        "endLine": 483
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::get_ItemHelper",
+      "signature": "Aras.Tools.SolutionUpgrade.ICItemHelper get_ItemHelper()",
+      "lock": {
+        "token": "0x060000b0",
+        "signatureSha256": "4ff24a5455a5acd80e44fbbf2c45c41c280f1b3044c06e7bc1084662eff26398",
+        "ilSha256": "1e2c61e6992c452094905ffc0e4411e30cdf11a52e3eb35eea38e87b3bf7d6ab",
+        "bodySha256": "4e26998c9b041f608bf96758bf9b5d62bf52e328765ea6083549d9c2d8ac797d",
+        "textSha256": "9cee56a3ec47edfcee5b04f44762535f8f6aab6d205f262cbf83f3004ca2b7db"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 36,
+        "endLine": 36
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::get_ManifestFile",
+      "signature": "Aras.Tools.SolutionUpgrade.IManifestFile get_ManifestFile()",
+      "lock": {
+        "token": "0x060000b1",
+        "signatureSha256": "cd89510abaeef37a9763acb0ad81ca7fb3fd50508d1c8f2427b872df79e8598e",
+        "ilSha256": "6b2cd0b1ed01f3733b57f4edea404f62c952b36384a2e02074259c563e49bf27",
+        "bodySha256": "d992cd2c26573dd416ee6bb7c2c54671c6a0d3f62e0b4377963557023f38813a",
+        "textSha256": "6a1d863fda61c8eee186706072941e80ed772f8271bfa7443419aeec64e2d570"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ImportExportManager.cs",
+        "startLine": 38,
+        "endLine": 38
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x06000104",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "6f68102a69a82d81740856cce780acc79a3a08885f731cb989adac5df50fa74a",
+        "bodySha256": "cd9d1a085c2c988d7f600850855578c4ae26cb04bcbfe37daaccbbf6e7f091ba",
+        "textSha256": "78b29fd3fb9f0f52d9dae60c5b4ce63d9a1aec9837069af7e1755a2111bafb3c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 17,
+        "endLine": 21
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::.ctor",
+      "signature": "System.Void .ctor(System.String)",
+      "lock": {
+        "token": "0x06000105",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "612bcd13536db551a6ce0dd295e6f056a08aee85b52d6b6f6990598eb911b5a6",
+        "bodySha256": "3f10ea1623fa436eaf0462f792d48935ec14d7484490f1a5d9375cccc625b1da",
+        "textSha256": "666bab67e44bf57da9b1069bfaad62819d9a6640bfd33cfd9d555ed811812e3a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 23,
+        "endLine": 27
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddDependsOn",
+      "signature": "System.Xml.XmlElement AddDependsOn(System.Xml.XmlElement, System.String)",
+      "lock": {
+        "token": "0x06000107",
+        "signatureSha256": "a77b54c88f59ed69bf722226266317a1b99d88eedfc22c7db5257cb8aeed5387",
+        "ilSha256": "ea0f0e7c4c6399c882dfb70c475073f084c715cfff5edf6a912783438264e77c",
+        "bodySha256": "0d82ac65c741abf2728e211567bafafbfc17c538be583ce0b1c934d4a151d14e",
+        "textSha256": "bb51a5e49c9c1e75d88460a05796a58746cbd3313639f913f2cce6b6a66a3843"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 58,
+        "endLine": 80
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage",
+      "signature": "System.Xml.XmlElement AddPackage(System.String)",
+      "lock": {
+        "token": "0x06000106",
+        "signatureSha256": "fb60c708016bd782d393c8b041160ecb1fbd24c665efdc2f75830aba04fa371c",
+        "ilSha256": "f8871a704e0878760c57a97e64114f5a8aa1b01f4009a8a5134d4fd22a2827f8",
+        "bodySha256": "e734b8c1c150717306b77df3393efae489affd7934191e0d7e64fb8177069597",
+        "textSha256": "8992fb89e358de50bc8df2e5e816771bd98504b2e08f2890f2f4d5390582c29a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 29,
+        "endLine": 56
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::AddReferencedElement",
+      "signature": "System.Xml.XmlElement AddReferencedElement(System.Xml.XmlElement, Aras.Tools.SolutionUpgrade.ExportItem)",
+      "lock": {
+        "token": "0x06000108",
+        "signatureSha256": "06f0674514939572e4389866ebd366d594e00c6d370317672cc90c070e737935",
+        "ilSha256": "99f1d0cdcfc34baba3ad13c4e60f14baaa602849e4cdbf734b90f81789505ce4",
+        "bodySha256": "41715d327c7e128a362c3511ac6ea36cdcf78f1a5d0738a1178b377944cf4498",
+        "textSha256": "644d8713043e8dfc608c915430e1042493d6459f9a07bcc4e1de0abdec18c1fd"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 82,
+        "endLine": 110
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetAllDependsOnNames",
+      "signature": "System.Collections.ICollection GetAllDependsOnNames(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x0600010c",
+        "signatureSha256": "27e84b71fbbbc4e76188ff19db8c99f3993335cdb8206595d3d631dd432a6152",
+        "ilSha256": "3bcfa736203ff8f529c2fc8a9980afb5d0aca8398ef9a27209592bcc908e4e90",
+        "bodySha256": "218b82c7f768671625c5d017521654ad856cae79518c0f8cc36228912539677e",
+        "textSha256": "9134a4d9e3830290ebfecd0acc71d87a01e7a8e7f74adb93f98d2bb12d3d7bad"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 152,
+        "endLine": 168
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetAllPackageNames",
+      "signature": "System.Collections.ICollection GetAllPackageNames()",
+      "lock": {
+        "token": "0x0600010a",
+        "signatureSha256": "50929f5e68cbccb43bcac419812fa6f3213e7779bb03e49b640e7bc6973b5bb8",
+        "ilSha256": "de80ecd6f1c4f8a2d6271e50e3b418b26891d0ef51eeabc205a56744a8716107",
+        "bodySha256": "2bda32ccc6b052b66e20548a689b99aa5c9ad86d6bc251ef4d16f46a097354ac",
+        "textSha256": "d52bc4d85114646a7692e94ba4feeba7dda810a0dd02e8372443e9d9c8003253"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 123,
+        "endLine": 135
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetDependsOn",
+      "signature": "System.Xml.XmlElement GetDependsOn(System.Xml.XmlElement, System.String)",
+      "lock": {
+        "token": "0x0600010b",
+        "signatureSha256": "a77b54c88f59ed69bf722226266317a1b99d88eedfc22c7db5257cb8aeed5387",
+        "ilSha256": "ba3d1aa09f6732e66bbe9d57fb886ef28903127becbcbe0b802aadf887c92d0b",
+        "bodySha256": "95dcfa257b903c9be77d54f1f334627849c92ba23496762c08cb2303b83f743c",
+        "textSha256": "ddf8d3b10b5303693e5c73007c77abbdd0ab7c06212e6e95c2824f829f72a2c0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 137,
+        "endLine": 150
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetDependsOnInfo",
+      "signature": "System.Collections.Hashtable GetDependsOnInfo(System.String)",
+      "lock": {
+        "token": "0x0600010e",
+        "signatureSha256": "7f2e744c3f6f840de384e90375b9697d9d3fbd7d12c8918da65033ebfd259bf2",
+        "ilSha256": "5ee7b586aa4467430dff2efb83ad2503cca3f9eb2e5ff4ead4a580c728802245",
+        "bodySha256": "6c8df70d1d35b5c1379d4b735e4c5a7022160eb3ce83c7332be9caaafa57bfa8",
+        "textSha256": "8d08d73472748155790febfcd54f2d8fd45d6913a26e4c51fe645db9a7597346"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 190,
+        "endLine": 204
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageDependencies",
+      "signature": "System.String[] GetPackageDependencies(System.String)",
+      "lock": {
+        "token": "0x0600010d",
+        "signatureSha256": "c18380c90b4eb39f4f97a759ce0bddabee69d0a53128b175aa6e073a69ce062f",
+        "ilSha256": "c9c494c9c2c45a04650b625be958deff01a009be06c30ffdd1d49badb2751261",
+        "bodySha256": "a217624740b2f169b15b50ccfa2b1ef210af6e6691a75802fbc57198c570c20f",
+        "textSha256": "9bc874e62b58048c3768fa2f6a117edf57e2aa7ccc07acb6747f09a48a7f8411"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 170,
+        "endLine": 188
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageNamesInImportOrder",
+      "signature": "System.Collections.ICollection GetPackageNamesInImportOrder(System.Collections.ICollection, System.Xml.XmlDocument, System.Collections.IList)",
+      "lock": {
+        "token": "0x06000110",
+        "signatureSha256": "147739e7b967e18798d30e7a3c06ba38eb67b44cec7a2f4fd4b67e2567b256a1",
+        "ilSha256": "17e9756101cddbe1c56da2a0a2b21c93d5a4d90d57cda69171e0b33c38f5f93a",
+        "bodySha256": "a9b98f527d28690d99c1f3abfe4ec51af6bb369918a8483e13f0dd729f3a588c",
+        "textSha256": "6e309edfe4288ee3dd4a29cdc8586892835781024c65dee74144d4cdc0535e1a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 228,
+        "endLine": 284
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetPackageNode",
+      "signature": "System.Xml.XmlElement GetPackageNode(System.String)",
+      "lock": {
+        "token": "0x06000109",
+        "signatureSha256": "fb60c708016bd782d393c8b041160ecb1fbd24c665efdc2f75830aba04fa371c",
+        "ilSha256": "b70e148b67298d531914a1bbcc571bfe55261f9d25bb13e6bedfea7299b9153e",
+        "bodySha256": "f3e52c82fc533cb4f3e17ffa2e44bb7ed9c1c9869b4ed3328bd67fbacdb3ea39",
+        "textSha256": "3dabe783395207cb59bbd42c3202f407502d285dab67dd18c8f572b0d7526ce0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 112,
+        "endLine": 121
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::GetReferencedElements",
+      "signature": "System.Collections.ICollection GetReferencedElements(System.Xml.XmlElement)",
+      "lock": {
+        "token": "0x0600010f",
+        "signatureSha256": "27e84b71fbbbc4e76188ff19db8c99f3993335cdb8206595d3d631dd432a6152",
+        "ilSha256": "544d06b340c591b557c7e2822a5488edd7d391582b7dc4555e2a0cf4402f5539",
+        "bodySha256": "d955c0580b9d1fdd33403fa7e41c0e533c0e26f6238ab7131bfe6fe78a9e3864",
+        "textSha256": "dd605a3ddf83d28afa9636df33fb9a93e1fbf419b40a91fc4ca14ad479fba810"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 206,
+        "endLine": 226
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::MoveToOrderedList",
+      "signature": "System.Void MoveToOrderedList(System.String, System.String, System.Collections.IDictionary, System.Collections.IList, System.Xml.XmlNode, System.Collections.IList)",
+      "lock": {
+        "token": "0x06000112",
+        "signatureSha256": "9930c4b82a7d958ffd47a88bc2bf863e25ad7cbe5e83cc5c0d347408b8c123e3",
+        "ilSha256": "8ec940d88b162a2582a494afe10165a1bbbb7e17764185e557b02f54450e03a9",
+        "bodySha256": "843f0d9f3061729f7fabdf2ef412d50545f194effc764a8b3d440cf082f713e1",
+        "textSha256": "93c9a9048b945acc1e86fb76a5c6b76f9f718333de9a60b2f0408b9294d37be8"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 291,
+        "endLine": 321
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.ManifestFile::Save",
+      "signature": "System.Void Save(System.String)",
+      "lock": {
+        "token": "0x06000111",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "75b4096906eeb6b56578bca2da6fd6689f46637bc35a40ec44968c6babb1b886",
+        "bodySha256": "aebc40146b8c459aaa258aa5133a04e54d2bfea406fb2ca0d7f57afc101fb56c",
+        "textSha256": "ba8390a56e9e96b5f39c075b17a5be78ec8b4cb2e11beef4188374c1756c7c53"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/ManifestFile.cs",
+        "startLine": 286,
+        "endLine": 289
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.Message::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x06000035",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
+        "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.Message::get_Text",
+      "signature": "System.String get_Text()",
+      "lock": {
+        "token": "0x06000032",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "36ea2d1b6c80d99d49c898f9281e7a8ca2e719da17df0f2433736f439c493343",
+        "bodySha256": "ce3753328c4efa9f3e982ae7dd17967bb169071d09dcf00f53d22311d36e2a57",
+        "textSha256": "ef048fe3928c1c0c173fef5ef6a6e3e2a7b538fe98fe69ec9d3992550fdf6b1e"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/Message.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.Message::set_Text",
+      "signature": "System.Void set_Text(System.String)",
+      "lock": {
+        "token": "0x06000033",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "e9dd4fdfe978c944c17f65fd2fd371279224f52bd7d7b4349bb6cc1070d0bcc8",
+        "bodySha256": "1d2ecdb733948a871c3045076af5763b458aeeab37ec4c069d412488703f50d4",
+        "textSha256": "ef048fe3928c1c0c173fef5ef6a6e3e2a7b538fe98fe69ec9d3992550fdf6b1e"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/Message.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::.ctor",
+      "signature": "System.Void .ctor(Aras.Tools.SolutionUpgrade.ICItemHelper, System.String, System.Boolean)",
+      "lock": {
+        "token": "0x060000a0",
+        "signatureSha256": "d2946ca783262dc46b115608a6c4889340e4787c11a647863c81e538ac8b3477",
+        "ilSha256": "0d0e8080bb79c74828e883489a079877afb5025b7885d5b1920bb174d044fe94",
+        "bodySha256": "f18c8b5887eacd16e9c9599f81ac1a9a602ba6b481ee80c08f5d0e0c546d012d",
+        "textSha256": "d6cc723524e6e29d04e22c950a957ec43a8f448d4868a9bbad9eaeb9e6ad4a4c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 17,
+        "endLine": 22
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::AddDependencyInfo",
+      "signature": "System.Void AddDependencyInfo(System.Collections.Hashtable, System.Collections.IList)",
+      "lock": {
+        "token": "0x060000a3",
+        "signatureSha256": "bc654a01e0fca89a3a7316b497934447ffcae89d10936f921e943d1883a2d573",
+        "ilSha256": "26817766b53eb6d07f60cef41f04096320716c4ba6a4724ccb62154e73f6a400",
+        "bodySha256": "5671dbe558dd15322f4b5f7c3537a8c14b3c6623536a9adc497c4423778d713b",
+        "textSha256": "04527e4a086ea9942a88f108838ac3f775b8ff7b88808f08cc1e0214088dd8bf"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 102,
+        "endLine": 114
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::AddDependsOn",
+      "signature": "System.String AddDependsOn(System.String)",
+      "lock": {
+        "token": "0x060000a5",
+        "signatureSha256": "b7ee7a27e884ef3ae7f033968aae76cb7144c7dafeada0616bffe7343d941264",
+        "ilSha256": "8263471d8bb13baed71c54f66d7e91cb5d0f068c0e4d654b36e2ed516b1f3275",
+        "bodySha256": "2a72f066dc05358b409e40daa0609d53f5c1bc43ff407b6ad6006e42d4671b68",
+        "textSha256": "beaea190ccd44d9404918ae519c980393a22533da6c0f4a7c80fc44d251682d2"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 148,
+        "endLine": 169
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::AddElement2Group",
+      "signature": "System.Boolean AddElement2Group(System.String, System.String, System.String, System.String)",
+      "lock": {
+        "token": "0x060000a1",
+        "signatureSha256": "3307b14f632247b6ec4a06c76b88fcf00e3fe80a75228d3df49079593eeca36b",
+        "ilSha256": "5b9a472de422cb2b29b5e824c033b22621f2c33db50273741f98571c25d4ea51",
+        "bodySha256": "f473f64a27c27332efd96e7a1f28601008535cf1e1234f1b9d826b9e3cfb71a8",
+        "textSha256": "72e7a7b977bbdfb8b601dab8b69fdbd4255a12448ae4ca13b17267d07db283a1"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 24,
+        "endLine": 56
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::AddReferencedElements",
+      "signature": "System.Void AddReferencedElements(System.String, System.Collections.ICollection, System.Collections.IList)",
+      "lock": {
+        "token": "0x060000a6",
+        "signatureSha256": "36d06c4c5b477394bee0404f9c564eba9277ec8d0d6500bb178f82dc9e7715c5",
+        "ilSha256": "e0b1af6f433e86f9d1d8765891f80e9ce6ed7b359894db82a9103d6fc8c57a7a",
+        "bodySha256": "a1a522f1028ba40fb289f0975ee7f08d91bad536e9b071100f5300c8e980eaef",
+        "textSha256": "a0e619e39ce79069a6196dc89026973c851d5f37eeda599e78c18431f9398a45"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 171,
+        "endLine": 195
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::FindReferencedElements",
+      "signature": "System.Collections.ICollection FindReferencedElements(System.String)",
+      "lock": {
+        "token": "0x060000a2",
+        "signatureSha256": "440089e9ad672bcfe8a2762e930147dbaca66f96badfd489cfa7e5070c65b6f8",
+        "ilSha256": "52a0a26a426ae4dc614f1bdca0254d269b34690034b4e207a65a05e3948910b6",
+        "bodySha256": "d3dac9b1073b34072214f561c7b846ed4c024ade1bb4fb630862bc9df4869d3c",
+        "textSha256": "01555071dfade31970d55e3f007036bb44e5a6b0d4ff8fe3e5dcc0a9f3ecdc78"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 58,
+        "endLine": 100
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.PackageDefinitionManager::InitSolution",
+      "signature": "System.Void InitSolution(System.Boolean)",
+      "lock": {
+        "token": "0x060000a4",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "ded7a23ba7a650efbd24042073cf724ace31ec308d4997d9b952ac31f4179c18",
+        "bodySha256": "18db880d297003f79a6c49b3ef71ff352cb7215811f4645bab4c24f19d296c85",
+        "textSha256": "0d4084a547f819f7a249073b27d16239a48c48c685d8e2ef2fc9e9d955cd8325"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/PackageDefinitionManager.cs",
+        "startLine": 116,
+        "endLine": 146
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::.ctor",
+      "signature": "System.Void .ctor(System.String, System.String, Aras.Tools.SolutionUpgrade.RemovedRefReason)",
+      "lock": {
+        "token": "0x06000113",
+        "signatureSha256": "3605bf7c7a301a2321636f91f208a8015c0268faf5a14172dadd2ade6bd63a1a",
+        "ilSha256": "c01ac78e417a941380274ccdc6082d7266595446a739cae38db732e26f9358f7",
+        "bodySha256": "8ad672740663f9ae7095db3089614d092e3702942944a953cd1c527a6b359f64",
+        "textSha256": "60b5bc111c86d8b4f73343eb029695818f1c847b2cd03748af23cc53c3fcbdb3"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
+        "startLine": 41,
+        "endLine": 46
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_From",
+      "signature": "System.String get_From()",
+      "lock": {
+        "token": "0x06000114",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "0aedc00db10a91b9990d313f6b8decaefa1527413cbdbd19ff1c1b6b274ebb6d",
+        "bodySha256": "94d97c7505bb1246893ce77aec612b911fa0520decd4def4452f85992a21a7a2",
+        "textSha256": "021c77f94466e55f8078c0ab9262e630e8a4b63a0296b1a1fe6e7a8ed5a9a9aa"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
+        "startLine": 17,
+        "endLine": 17
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_Reason",
+      "signature": "System.String get_Reason()",
+      "lock": {
+        "token": "0x06000116",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "950880c53f380163c3e1b4cfeaa966c0fffbbef6b9bbf7ee047285f552cff987",
+        "bodySha256": "7d7ed4f78402546a5c93b87e76694a833abb64675154b1b9a281b0a6fdd30617",
+        "textSha256": "f130617d809110b85ae2b08cc3295ce8e0bd085936aad6178c03b112d191746c"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
+        "startLine": 23,
+        "endLine": 38
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_To",
+      "signature": "System.String get_To()",
+      "lock": {
+        "token": "0x06000115",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "2658f4b57495dd0b562288ab466515138e68214163273ced8c5dca460bf7dfb5",
+        "bodySha256": "7c830cd65f8df4fd92f9e6a9a5fc44cca449f950d4bb4d16d333ef38521d63ad",
+        "textSha256": "4a777c31d65dd7df9287c3d6ef859c4e0360276edd5e54b2922bc56d0d9b33c0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/RemovedReference.cs",
+        "startLine": 19,
+        "endLine": 19
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x0600003e",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
+        "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::get_RefToUnknownPacks",
+      "signature": "Aras.Tools.SolutionUpgrade.ReferencesToUnknownPackages get_RefToUnknownPacks()",
+      "lock": {
+        "token": "0x0600003a",
+        "signatureSha256": "49aba873ad79b3eeaed950d302715e1911b8f48232cc1d4b8be02e4d635164a9",
+        "ilSha256": "b432fdc59fdbc46ee13685ec1869969cb001138c8da46c48fd47dc169adc446a",
+        "bodySha256": "64b8b2ec91ae67f46f06f40980e54ef0967bec1dc77b229206710b3d066b0bb9",
+        "textSha256": "c1217fbc3b60a88a4bd0b6d8433ee73e9ea54683ae2a4099d6535466bd1b64b0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 13,
+        "endLine": 13
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::get_UseImport",
+      "signature": "System.Boolean get_UseImport()",
+      "lock": {
+        "token": "0x0600003c",
+        "signatureSha256": "59a9a8765c535212b9ad71c5c8e1e24ffadbd3331fd04b3bbe1b121ecf6004cc",
+        "ilSha256": "f9912469569591931054e1a5645f30b97540f588a35e6bad81976239cc151213",
+        "bodySha256": "8fe624a5d7cbebf5b84555022f36c9231f0343cd12fa7d6ed299927474c4a14b",
+        "textSha256": "93b66b5842c2a28fc590ac1af8f29281cc100d5ec26abba53ea3bcd23b882d56"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 15,
+        "endLine": 15
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::get_bExportReferencedItems",
+      "signature": "System.Boolean get_bExportReferencedItems()",
+      "lock": {
+        "token": "0x06000038",
+        "signatureSha256": "59a9a8765c535212b9ad71c5c8e1e24ffadbd3331fd04b3bbe1b121ecf6004cc",
+        "ilSha256": "248b7e743af7042559dfd35cb5b77a9b0590143c7a51fa4487e6b97eec5cb693",
+        "bodySha256": "b2165cfa408406b7bcdc5e554389bb7123ed00b62d680fe8de35d6486f9deeca",
+        "textSha256": "faff10f7f40959209600ea69ad118272640f4de4f9ea9323c812e1c1b6b94401"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 11,
+        "endLine": 11
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::get_sLevel",
+      "signature": "System.String get_sLevel()",
+      "lock": {
+        "token": "0x06000036",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "35f048af38d3c1609a91683baa715056f9af97fe2c49f2ceab3753110591887c",
+        "bodySha256": "1ba1500981d2c517ce5d6304377e74f88b067f99a7bb381da6cace2f08b9830c",
+        "textSha256": "77a4e772a6a3cf989d106c417eb3e0668763de9ffcac0e7c92079bff1cae7939"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 8,
+        "endLine": 8
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::set_RefToUnknownPacks",
+      "signature": "System.Void set_RefToUnknownPacks(Aras.Tools.SolutionUpgrade.ReferencesToUnknownPackages)",
+      "lock": {
+        "token": "0x0600003b",
+        "signatureSha256": "682592fb6b1dd6e3aca614336982c483f3a1fb22f11e0508bc2cf87a7977058f",
+        "ilSha256": "142c98cc275ea21808b82bdce026562be01e2649a2e2d15a52d6f89108fd7581",
+        "bodySha256": "5101e7d9d4cff84c265c5437f5bab9791b00bd6c3e3bd4242bb3e77c417b60c9",
+        "textSha256": "c1217fbc3b60a88a4bd0b6d8433ee73e9ea54683ae2a4099d6535466bd1b64b0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 13,
+        "endLine": 13
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::set_UseImport",
+      "signature": "System.Void set_UseImport(System.Boolean)",
+      "lock": {
+        "token": "0x0600003d",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "7fbb875a5175f731825dfb1776d4faf4ac4374f2e25db6c0bb4fe987b35f0284",
+        "bodySha256": "8dde82c81c640604e59a249d25b61a42ab4b3151f98d6957e248482e336882f3",
+        "textSha256": "93b66b5842c2a28fc590ac1af8f29281cc100d5ec26abba53ea3bcd23b882d56"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 15,
+        "endLine": 15
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::set_bExportReferencedItems",
+      "signature": "System.Void set_bExportReferencedItems(System.Boolean)",
+      "lock": {
+        "token": "0x06000039",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "ba77c5605be278e62e39ff1617744c26fa0619baeff7f331e16c8fddb4ae64c3",
+        "bodySha256": "0bce8f129e7fcfd08a010b56ceef5664e9a20d968be36787081341287407755b",
+        "textSha256": "faff10f7f40959209600ea69ad118272640f4de4f9ea9323c812e1c1b6b94401"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 11,
+        "endLine": 11
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUExportContext::set_sLevel",
+      "signature": "System.Void set_sLevel(System.String)",
+      "lock": {
+        "token": "0x06000037",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "c47ef5d6db3fd5e7fa8a74fe2bc11343fe42e31c7ddeddfff981ea283c15668a",
+        "bodySha256": "c81d5e431329321383f81650c08333f0d561ad7525bce7dd2ac2668a5dfe9154",
+        "textSha256": "77a4e772a6a3cf989d106c417eb3e0668763de9ffcac0e7c92079bff1cae7939"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUExportContext.cs",
+        "startLine": 8,
+        "endLine": 8
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x060000d7",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
+        "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_Description",
+      "signature": "System.String get_Description()",
+      "lock": {
+        "token": "0x060000d3",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "2b17933ad905a7b68b369ffdebe71d6ee7d14a62622d6edf9fefb955c4641b26",
+        "bodySha256": "f5b51feb5c7b2185534191d1347bbd5b25b0a8bbc55bb96d7bddc21720692f9e",
+        "textSha256": "2987fbe114b5c788209e6467ac7be7ba631f926fc6d290941507a1df4816977a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 26,
+        "endLine": 26
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_Release",
+      "signature": "System.String get_Release()",
+      "lock": {
+        "token": "0x060000d1",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "a1cc2c54773ecf96f839ca57dc83ae41ed293154fab496b9f5f84a328a3ab7c9",
+        "bodySha256": "b5b2cb8af4f1b28bbd7db4fd3c210455582d1d7b4abbd6eb1a74f3a736818474",
+        "textSha256": "e80469f521a7b4f407f907ce2d6e9fb81d5acf2c41bf82f4e92ee1776e535b24"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 24,
+        "endLine": 24
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_bFast",
+      "signature": "System.Boolean get_bFast()",
+      "lock": {
+        "token": "0x060000cf",
+        "signatureSha256": "59a9a8765c535212b9ad71c5c8e1e24ffadbd3331fd04b3bbe1b121ecf6004cc",
+        "ilSha256": "5b55b32cd23edf60a78e0dfd9231d5c40e7825de136817b3128eb1b695c8c40a",
+        "bodySha256": "84a0936ff1fba6d2811d094757231685673447aed2170738872305076026a316",
+        "textSha256": "0a05e876068981b63f9d32fb42c5b217358fc0f8e682de50c62061525f0213db"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 15,
+        "endLine": 18
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::get_bMerge",
+      "signature": "System.Boolean get_bMerge()",
+      "lock": {
+        "token": "0x060000cd",
+        "signatureSha256": "59a9a8765c535212b9ad71c5c8e1e24ffadbd3331fd04b3bbe1b121ecf6004cc",
+        "ilSha256": "881ca6d524be7fbe31d35ce7c32311b94ef5233824e426fedde631c033acb1fa",
+        "bodySha256": "cc672f455f50efbf0c2bd38ceb4fb04d78740d96fddb9838fd788d6e9e2d1c72",
+        "textSha256": "81f7e2962c347ab8a95d1df1e67ce664d1a4250832b1ee86ac890e77fa69a437"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 8,
+        "endLine": 8
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_Description",
+      "signature": "System.Void set_Description(System.String)",
+      "lock": {
+        "token": "0x060000d4",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "b181cfbe0fe20f53cde5bbb8b015eecee1ce2eabaf32e46c6173330f17ab59a5",
+        "bodySha256": "cb7b4591f2a7f761cde787d406b6ecd397fb69f501100f7b685754d063ec204a",
+        "textSha256": "2987fbe114b5c788209e6467ac7be7ba631f926fc6d290941507a1df4816977a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 26,
+        "endLine": 26
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_Release",
+      "signature": "System.Void set_Release(System.String)",
+      "lock": {
+        "token": "0x060000d2",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "2526ba90a94030d0f289fa3917a3b62199cd4b21bd8c177d60b9c0cc90f2f9c9",
+        "bodySha256": "1bd3169a693661aa441ae293f998a541b31978ee333e2094c57a5df0b4620345",
+        "textSha256": "e80469f521a7b4f407f907ce2d6e9fb81d5acf2c41bf82f4e92ee1776e535b24"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 24,
+        "endLine": 24
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_bFast",
+      "signature": "System.Void set_bFast(System.Boolean)",
+      "lock": {
+        "token": "0x060000d0",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "ae6db1282a680413f5e7d5f2705b3e95105f51e7e3fd1b5cfc0e2c39972464b7",
+        "bodySha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+        "textSha256": "c53a00a0f00e98f40d9964ceea791276236ef339bfd24976442fee5970722f83"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 19,
+        "endLine": 21
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_bMerge",
+      "signature": "System.Void set_bMerge(System.Boolean)",
+      "lock": {
+        "token": "0x060000ce",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "e6af2ba2a7b00b21004eaa10bb9aac9cb96c34ffeec6dcbafb0d1c4510ff1710",
+        "bodySha256": "5c222fe1cf5597b9d37025d01246a51894af74ef204c359f49dff663cc407e44",
+        "textSha256": "81f7e2962c347ab8a95d1df1e67ce664d1a4250832b1ee86ac890e77fa69a437"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 8,
+        "endLine": 8
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SUImportContext::set_bVault",
+      "signature": "System.Void set_bVault(System.Boolean)",
+      "lock": {
+        "token": "0x060000d6",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "8c6cb78a070846dc8aa37c72cfdf6374cc1684d695359c52d1b1c25d773753f8",
+        "bodySha256": "765affb6a686e135fec3c1771c47e4b9c874ef66cab8af41b804fcfc8525dd08",
+        "textSha256": "f1d28e841959375a26225f8389d6a39e3ffba97354ed0370011c1c69a788336a"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SUImportContext.cs",
+        "startLine": 29,
+        "endLine": 29
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::.ctor",
+      "signature": "System.Void .ctor()",
+      "lock": {
+        "token": "0x0600012f",
+        "signatureSha256": "0c9373898d2dd1c85902837a9e979cb88484e2548a008ad2b2176cc7119d09df",
+        "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
+        "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_Action",
+      "signature": "Aras.Tools.SolutionUpgrade.ImportExport get_Action()",
+      "lock": {
+        "token": "0x0600011b",
+        "signatureSha256": "67a2e18bb74ea90c9e562617fcca6bfe7090e4195962d868624f8e837c9f770a",
+        "ilSha256": "e25a080beee9d86cd69af1747fa5ed1a75dc65193564d06ffea13b0221d4f10a",
+        "bodySha256": "175fad01b608bd108bdf45a877a05284461f6329c7972336b16c4b2561d78762",
+        "textSha256": "f4105b199351b6eb75fdf745e2e828de1428a50f93544112d60ca6189d0939a9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_DataBase",
+      "signature": "System.String get_DataBase()",
+      "lock": {
+        "token": "0x06000121",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "bbe75d648f5ec297685b80b7efcad989bbfc4c3918db09cd0db4e1fa5645f783",
+        "bodySha256": "c511d5c19f938d2178a86f66c218bbc883218d3c3c3a0cebb4815c046f962f0f",
+        "textSha256": "60c16b959e0371fbe31288bd206638438f478f979c51a9b1d70dd1cee19d3555"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 11,
+        "endLine": 11
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_LogFilePath",
+      "signature": "System.String get_LogFilePath()",
+      "lock": {
+        "token": "0x06000129",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "a869049a75fce05baafe890a35432d5fb544b739fe9487b8e1a5735de336a215",
+        "bodySha256": "afcd922df8c4d830554ca53c7b8e031cf695efacbe0004e7eacd2d22b059c19d",
+        "textSha256": "45f6d3aca04a3e500a9e4bd0257addfb2c71c569a31e674b2fbf1ca676e2f800"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 19,
+        "endLine": 19
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_ManifestFile",
+      "signature": "System.String get_ManifestFile()",
+      "lock": {
+        "token": "0x0600012b",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "d7c3858de62c7d5213c83fb7832e7d4c1a73e8d9153f19dbb772559077ce2c9e",
+        "bodySha256": "0f1575c8585e0730e1244baf3dc1f3cc7c6b9fdce11b60a4c13c431ade88557d",
+        "textSha256": "e238e59d830a1811e4e7e71f5dcd57377ec58f7754eb3198324ca10b09dbd7d0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 21,
+        "endLine": 21
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_Password",
+      "signature": "System.String get_Password()",
+      "lock": {
+        "token": "0x0600011f",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "f4fc8939a6341b57697146b4f06a0cefb1330d89e658fb5381c13dad9ec711b0",
+        "bodySha256": "41f6129228ce7c6968f4c10ff764cae9710cae3b4f67afe9adad8150f3557032",
+        "textSha256": "4d49a632ef5311cfeb4fd839d1540ebfa00293c2fac9b1ecbaa3229bef02a477"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 9,
+        "endLine": 9
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_Timeout",
+      "signature": "System.Int32 get_Timeout()",
+      "lock": {
+        "token": "0x0600012d",
+        "signatureSha256": "19e1bd1daf2ae492b895802f55c905ef2d25aea509c6010868e218adb408c010",
+        "ilSha256": "bf753a54a85378371000963a720701516ccfe3714414797e32ac98ab26f3f0ac",
+        "bodySha256": "06ee1d399950967243a980df5f207adcbca8bbcf82fb5de2a04b233ffd88a627",
+        "textSha256": "0c7e43057c35ca3714470e61c49ce77958bda43cbd44d1eb5e4eb1e155f386a6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 23,
+        "endLine": 23
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_Url",
+      "signature": "System.String get_Url()",
+      "lock": {
+        "token": "0x0600011d",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "a9387c032a5e65a17280bdba8232a38efc323ce9a9f4129037d71f496166ffef",
+        "bodySha256": "5e2a6f058b32ca2b5ae56e3f1c4252129c5364d45087d8110a4e379bfff1ed41",
+        "textSha256": "fa3efab935e3bdc6a5ab696867313a49aef6d9be5721e350a96f088e1d12b2f4"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 7,
+        "endLine": 7
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_UserName",
+      "signature": "System.String get_UserName()",
+      "lock": {
+        "token": "0x06000123",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "dc4f49e9e1da9a3be009e1bcb1f99ff1fa3283d9acfeae2282fcafc672f864ae",
+        "bodySha256": "2bef66ab4d0078dddb0a9b241e77080f3d8e59cdcafb0b014981c11b7aba7b0d",
+        "textSha256": "90a68a7dc2df93f8deaeb89e70d3045ac9d2c5e454037c6eb1bc8cb440e9ebf6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 13,
+        "endLine": 13
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_Verbose",
+      "signature": "System.Boolean get_Verbose()",
+      "lock": {
+        "token": "0x06000127",
+        "signatureSha256": "59a9a8765c535212b9ad71c5c8e1e24ffadbd3331fd04b3bbe1b121ecf6004cc",
+        "ilSha256": "d15bd702a86f3521b06cb0cb646982432cb3fdfecd7cd57ac246223212082332",
+        "bodySha256": "f843b0c083bc093df64202535eb3f6d65c4ec3c06d0bc7cbf26f480ff39b8ca2",
+        "textSha256": "d7dd0de2f72992da6d5feb7f9e8814d578793531c65ffbebbf37417ce56e8431"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 17,
+        "endLine": 17
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::get_WorkingDirectory",
+      "signature": "System.String get_WorkingDirectory()",
+      "lock": {
+        "token": "0x06000125",
+        "signatureSha256": "df29f5ab2554df47369dafce3bc8630f16eabc3f72c21bbd24c5e73c286f650f",
+        "ilSha256": "62cba7d23b4decd871ca7fbaaae678563a52f567484fc6f0f451e276c943ee0e",
+        "bodySha256": "4621341e718b78337269a1e2baeda3d21e12f833f83ad9c3528337dd972715ce",
+        "textSha256": "62b3eb02e9de76356ea8733171e87c4533abda4f417b768703583af448f02eba"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 15,
+        "endLine": 15
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_Action",
+      "signature": "System.Void set_Action(Aras.Tools.SolutionUpgrade.ImportExport)",
+      "lock": {
+        "token": "0x0600011c",
+        "signatureSha256": "04de2fcb4b6c6a3bfacc7acc390376de894452019c338210a4ece9054f1a347d",
+        "ilSha256": "b83a5602bfbc35746d6240157a7fff20d449565d4b2e58f42179e55b092789ba",
+        "bodySha256": "fa34a3c94f24be514a5917a3935edd9bb07f4edc489bea34f218a5191a3aa987",
+        "textSha256": "f4105b199351b6eb75fdf745e2e828de1428a50f93544112d60ca6189d0939a9"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 5,
+        "endLine": 5
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_DataBase",
+      "signature": "System.Void set_DataBase(System.String)",
+      "lock": {
+        "token": "0x06000122",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "afb2b4284b58ef8aa2627242679404b039ef231634eb6457085048f89603356b",
+        "bodySha256": "3853e72764c685e371f88bf6f0e78910cbb7e909330a53fe7d90fe8b790cdbec",
+        "textSha256": "60c16b959e0371fbe31288bd206638438f478f979c51a9b1d70dd1cee19d3555"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 11,
+        "endLine": 11
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_LogFilePath",
+      "signature": "System.Void set_LogFilePath(System.String)",
+      "lock": {
+        "token": "0x0600012a",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "9c47b599c85ff1f413fa4701d30056a327b4c0ea9556e73a792f102416fbab4f",
+        "bodySha256": "b357d0afef2726336f56f243811c60f9780a11b24184cd944fc861b56dc38a1e",
+        "textSha256": "45f6d3aca04a3e500a9e4bd0257addfb2c71c569a31e674b2fbf1ca676e2f800"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 19,
+        "endLine": 19
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_ManifestFile",
+      "signature": "System.Void set_ManifestFile(System.String)",
+      "lock": {
+        "token": "0x0600012c",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "bcbb3a21e6da93229367676ec172cdaa565295f09cd2d1ddf5e0c4ac84c014bd",
+        "bodySha256": "e0092c1e83a8476509ff4a20bff8fb4f8f28390fa2f0f439a622b1e1f049a9b6",
+        "textSha256": "e238e59d830a1811e4e7e71f5dcd57377ec58f7754eb3198324ca10b09dbd7d0"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 21,
+        "endLine": 21
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_Password",
+      "signature": "System.Void set_Password(System.String)",
+      "lock": {
+        "token": "0x06000120",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "c79a0344c89088ae75510e471a362dff58d9b75e1271925d8091308969a7e102",
+        "bodySha256": "06b895ac7cb89a153b6b9159e0df864a071e54a25165c60ebd8bc7db683868fd",
+        "textSha256": "4d49a632ef5311cfeb4fd839d1540ebfa00293c2fac9b1ecbaa3229bef02a477"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 9,
+        "endLine": 9
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_Timeout",
+      "signature": "System.Void set_Timeout(System.Int32)",
+      "lock": {
+        "token": "0x0600012e",
+        "signatureSha256": "c889396c66b535112cb33472b6ecf61ad5f09860a1ea642fb8c31a4ed004296a",
+        "ilSha256": "e01b7fa2a8154f7b34f0ffcac3975020258ffd00c3076cee70683b1879bcd319",
+        "bodySha256": "f9905214bb1b63e57c35e6c869f5a3d23ca8c2b731e6dfed52c3887c35a62fba",
+        "textSha256": "0c7e43057c35ca3714470e61c49ce77958bda43cbd44d1eb5e4eb1e155f386a6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 23,
+        "endLine": 23
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_Url",
+      "signature": "System.Void set_Url(System.String)",
+      "lock": {
+        "token": "0x0600011e",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "8a73beba1e1c67510222c56a54eba5b95aebb19ef9b36111a6696eb9d05fee56",
+        "bodySha256": "d6de88f7cab23460889ad328197bf473127c6b04fb47b81944ec994ca6b9e55b",
+        "textSha256": "fa3efab935e3bdc6a5ab696867313a49aef6d9be5721e350a96f088e1d12b2f4"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 7,
+        "endLine": 7
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_UserName",
+      "signature": "System.Void set_UserName(System.String)",
+      "lock": {
+        "token": "0x06000124",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "ddd265c3474df858a165500bab80b6fec35c572d38b6dea10268bb2c87a68913",
+        "bodySha256": "382698cae6a258536640fdb2ebfcf2048262e2210f91078a18ba75a9db848476",
+        "textSha256": "90a68a7dc2df93f8deaeb89e70d3045ac9d2c5e454037c6eb1bc8cb440e9ebf6"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 13,
+        "endLine": 13
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_Verbose",
+      "signature": "System.Void set_Verbose(System.Boolean)",
+      "lock": {
+        "token": "0x06000128",
+        "signatureSha256": "7366e2ddae008ee5e5ba63f1c2504e9a452ccd8cc0f40fdd3d8d03430bae9e33",
+        "ilSha256": "ce79c0627a691c57407456eeef4b6710867296bd5a68460cff9b87d1d05b64a1",
+        "bodySha256": "6e06ab81feffe59683cd1dd0a90c66bb1800b4acbd1d447ead792fcf43480d55",
+        "textSha256": "d7dd0de2f72992da6d5feb7f9e8814d578793531c65ffbebbf37417ce56e8431"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 17,
+        "endLine": 17
+      }
+    },
+    {
+      "fullName": "Aras.Tools.SolutionUpgrade.SolutionUpgradeContext::set_WorkingDirectory",
+      "signature": "System.Void set_WorkingDirectory(System.String)",
+      "lock": {
+        "token": "0x06000126",
+        "signatureSha256": "c65dc7d303e94729245de0fa4db4b80ac687af6d0bb38c5c884bc9c11f01e005",
+        "ilSha256": "b86db53ada75c5db58cf9e8ad2696a3ad1c9d29808f394431693ceff1c47568e",
+        "bodySha256": "1eedd36af4287bc7ad1fb2d8b625e21ae060494420fea4ecdd408611d79a22f0",
+        "textSha256": "62b3eb02e9de76356ea8733171e87c4533abda4f417b768703583af448f02eba"
+      },
+      "decomp": {
+        "path": "Aras.Tools.SolutionUpgrade/SolutionUpgradeContext.cs",
+        "startLine": 15,
+        "endLine": 15
+      }
+    }
+  ]
+}

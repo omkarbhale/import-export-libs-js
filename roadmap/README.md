@@ -10,6 +10,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 | [round-4.md](round-4.md) | The 14.35 additions, 14.35's parallel export, build order |
 | [round-5.md](round-5.md) | The confirmed shared understanding, with the captain's corrections |
 
+[`lock-diff-12.0.md`](lock-diff-12.0.md) accounts for the REA lock diff between the 12.0 and 14.0.7 builds (wayfinder ticket 46).
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).

@@ -14,6 +14,8 @@ Conventions used below:
 - **`{x}`** in a text is a value interpolated by `string.Format` with the invariant culture. Values interpolated into AML or XPath are never escaped (AGENTS.md rule 7).
 - **CRLF** is `\r\n`. Texts that contain `\n` alone say so.
 
+The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`), compared method by method with 14.0.7's, from Aras's `ConsoleUpgrade.exe` 12.0, and from live runs of the vendored 12.0 engine against dev through the oracle (a rule says *observed* where it quotes one). The 12.0 orchestration writes no log header, opens the log after `GetSolutions2Xml`, and has no message catalogue (EXP-504).
+
 ## Inputs and the host
 
 ### EXP-500: ExportSolutions takes a context and a table of packages to items
@@ -27,6 +29,8 @@ Conventions used below:
 The manager has already been built around a logged-in helper (EXP-502). `ExportSolutions` reads `ItemHelper.InnovatorVersion` while writing the log header (EXP-506), and only `CItemHelper.Login()` sets it (WIRE-021). A host that skipped the login therefore gets a `NullReferenceException` out of `ExportSolutions`: the log file has been opened (and created when it did not exist) but nothing is written to it, no message is sent and no manifest is saved. *Inferred from the code.* The library's client always logs in first (WIRE-001), so this is a programming error there, reported as the same exception text, `Object reference not set to an instance of an object.`
 
 The library takes the two tables as ordered sequences of `(key, value)` insertions in the order the host performed them, and derives table order itself (EXP-508, EXP-514). Building them is the host's job: `ConsoleUpgrade.exe` and the console-mode rules (`EXP-700`–`EXP-799`, ticket 66) build them, and the CLI's own export builds them in ticket 43.
+
+[12.0] Same inputs and the same argument checks (`exportContext`, then `selItemsTable`). One consequence differs: `ExportSolutions` does not read `InnovatorVersion` up front, because there is no log header (EXP-506). A host that skipped the login does not fail at the start. Only an item whose request needs the server version fails, and only that item: each `Export` of a type with the default row or of an `ItemType` (EXP-023, EXP-024) ends with the `NullReferenceException` of EXP-054, as `Can't export item.` The other types export. With the exact-type login of WIRE-017, a host that built a plain `HttpServerConnection` is such a host.
 
 ### EXP-501: The export and upgrade contexts
 
@@ -51,6 +55,8 @@ The enum's default is its first member, `RemoveSilently` (value 0). `ConsoleUpgr
 
 Export never reads `Password` (only the host does, to log in), `Verbose` or `LPDebug`. `Verbose` changes only the import log.
 
+[12.0] `SUExportContext` is the same four settings. `SolutionUpgradeContext` has the properties `Action`, `Url`, `Password`, `DataBase`, `UserName`, `WorkingDirectory`, `Verbose`, `LogFilePath`, `ManifestFile` and `Timeout`; it has no `LPPath`, `LPPackage` or `LPDebug` and no certificate settings. The `ImportExport` enum has `Import` and `Export` only. Export reads `ManifestFile`, `LogFilePath`, `WorkingDirectory` and `Timeout`, with the effects of 14.0.7, and `Action` only in the constructor, to tell an import from an export. Nothing is logged from the settings, as there is no header.
+
 ### EXP-502: The manager is built around a helper, a context and a message factory
 
 [14.0.7] `ImportExportManager(context, messagesFactory, itemHelper)` throws `ArgumentNullException` for a null `itemHelper` (checked first) or a null `context`. For an export it then:
@@ -61,6 +67,8 @@ Export never reads `Password` (only the host does, to log in), `Verbose` or `LPD
 4. keeps the helper, context and factory. `messagesFactory` is not checked, and a null one fails on first use.
 
 The helper, the loaded manifest and the engine's `IOWrapper` are read through the properties `ItemHelper`, `ManifestFile` and `iOWrapper`. They have no behaviour of their own.
+
+[12.0] Same checks, in the same order, and the same timeout and manifest loading, with the differences of the older code: the manager has no `IOWrapper`, so `File.Exists(ManifestFile)` and the load go to the path as given (no normalisation, EXP-421), and the manifest is read with `XmlDocument.Load(path)` (MAN-003), which honours the encoding declaration and throws on invalid bytes, where 14.0.7 reads text and calls `LoadXml`.
 
 ## Messages and the log
 
@@ -83,6 +91,8 @@ The helper, the loaded manifest and the engine's `IOWrapper` are read through th
 The reference hosts answer as follows. `ConsoleUpgrade.exe` prints `currentPackage`, `status` and `warning` texts to stdout, each preceded by an empty line, and prints `error` texts the same way to stderr. Its factory returns the *error* message for `errorQuestion`, whose answer is `false`, so it always continues. `export.exe` (the GUI) shows `error` and `errorQuestion` as an OK-only message box, which answers null, so it always continues too. No shipped host aborts a package after an item error. The oracle host answers `yes` or `no` (default `no`) to exercise both paths. The library exposes the answer as an option (`--on-item-error`, default `continue`, round 2 Q6, built in ticket 34); `abort-package` answers `true`.
 
 *Observed:* run `r1` sent `currentPackage` "Exporting package com.aras.innovator.servicereporting", `status` "Item 1 of 1: List - Report Format Types", `status` "completed" and `currentPackage` "".
+
+[12.0] Same as 14.0.7.
 
 ### EXP-504: Message texts come from a fixed catalogue, filled with the invariant culture
 
@@ -117,6 +127,18 @@ The templates the export uses, with `\r\n` and `\n` literal in the templates and
 
 The other templates in the catalogue belong to the import and the item-level rules. The ones that no export text reaches (the second argument of `ErrorMessageStringDetailCodeAML` and `faultAMLMessage`, EXP-516) are dead.
 
+[12.0] There is no message catalogue and no `ResourceManager`: every text is a literal in the code, built with `string.Format(CultureInfo.InvariantCulture, …)` or by concatenation. They are the texts of the table above, except for these, which differ:
+
+- **The end-of-run warning and log text** (`ErrorMessageMessage`, EXP-520) has a closing line: `          ****ErrorMessage****\r\n       {0}\r\n          *******************` (ten leading spaces on the first and last lines, nineteen stars, seven spaces before `{0}`). In 14.0.7 the text ends after `{0}`.
+- **The `GetSolutions2Xml` error** (EXP-507) is `          ****ErrorMessage****\r\nfaultstring: {0}\r\nfaultdetail :{1}\r\nfaultcode: {2}\r\n          *******************`, the block of the abort question (EXP-516) without its question. 14.0.7 uses `ErrorMessageStringDetailCode`.
+- **`getSolutions`** (`UnableToGetPackagesMeta`) appends `Unable to get packages meta.` to the `faultdetail`, with no leading space, line break or exception message.
+- **The failed item's log line** (EXP-516) has one space before `type`: `Error of exporting Item id :{0}  keyed_name : {1} type : {2}`. Its `status` message keeps four spaces.
+- **`FailedToProcessPropertiesOfTypeItemForItemType`** has no closing quote (EXP-044).
+- **`UnableToGetDepencyLevelForRelationshipType`** is ` Unable to get depency level for RelationshipType.` (EXP-043). In 14.0.7 it is the empty string.
+- **Date-times and numbers** are formatted with the current culture where the code concatenates them (EXP-505).
+
+Every other text of the table, and the `{0}` and `{1}` arguments, are the same.
+
 ### EXP-505: The log is an append-only UTF-8 file written with CRLF
 
 [14.0.7] `ExportSolutions` opens the log first, through `IOWrapper.NewStreamWriter(LogFilePath, append: true)`, before anything else is sent or created, and keeps one writer for the whole run:
@@ -130,6 +152,10 @@ The other templates in the catalogue belong to the import and the item-level rul
 A date-time written to the log is `DateTime.Now.ToString(CultureInfo.InvariantCulture)`, the local time as `MM/dd/yyyy HH:mm:ss`, for example `10/18/2026 05:22:16`. The port formats the host's local time the same way; tests inject a clock.
 
 *Observed:* run `r1` wrote the log with CRLF line ends and no BOM.
+
+[12.0] The log is opened later and without normalisation. `ExportSolutions` opens it with `new StreamWriter(LogFilePath, append: true)`, after the argument checks and after `GetSolutions2Xml` (EXP-507), and keeps one writer for the rest of the run. The path is not normalised (EXP-421). The file, the encoding (UTF-8 without a BOM), the append, the CRLF line ends, the missing buffer flush and the read-sharing are as in 14.0.7; a missing directory fails with `DirectoryNotFoundException` and an empty path with `ArgumentException`, both after the first request has been sent, and both escape `ExportSolutions`.
+
+**Date-times.** The three date-times that the code concatenates (`start of execution : ` at the head of each package or referenced package, and `end of execution : ` after a cancel and after an abort) are `DateTime.Now.ToString()` of the **current culture**: its general date and time pattern (short date, long time). Only the last `end of execution : ` of a package is formatted with the invariant culture (`MM/dd/yyyy HH:mm:ss`, as in 14.0.7). Observed on the oracle machine, whose culture is en-IN: `start of execution : 19-10-2026 01:17:50`, then at the end `end of execution : 10/19/2026 01:17:51`. The port formats the host's local time with the general pattern of a culture the host names (the build ticket defines the option; the default is the process locale) and carries these patterns (probed with .NET Framework 4.8 on Windows): invariant `MM/dd/yyyy HH:mm:ss`, `en-US` `M/d/yyyy h:mm:ss tt`, `en-GB` and `fr-FR` `dd/MM/yyyy HH:mm:ss`, `en-IN` `dd-MM-yyyy HH:mm:ss`, `de-DE` `dd.MM.yyyy HH:mm:ss`. For another culture it uses the invariant pattern, which differs from the engine's there. The `faultcode` that the log and the abort question concatenate is also written with the current culture; for the cultures above it is the same as the invariant text.
 
 ### EXP-506: The log opens with a header block
 
@@ -158,6 +184,8 @@ Export using import structure: {UseImport}
 - The import log adds import lines instead of the four export lines; they belong to the import orchestration rules.
 
 *Observed* (`r1`, `r6`): the block above, with `Innovator version: 12.0 SP9 Build 24090`, `Manifest file: ` and both language-pack lines empty, and the empty line after `Export using import structure: False`.
+
+[12.0] Not present. 12.0 writes no header: nothing is written to the log when it is opened, and the first line is the first package's `         ****Export {package}****` (EXP-513). There is no `Tool version`, `Innovator version` or other line, and no blank line. The input parameters are not logged, and `ExportSolutions` does not read the server version for the log.
 
 ## The run
 
@@ -190,6 +218,14 @@ The response document is the envelope, with the package definitions as `Item[@ty
 
 *Observed:* request 7 of `r1`, with the whitespace above.
 
+[12.0] The request, the faultcode `0` branch (the `warning` and a null result) and the rule that a non-`CItemException` is not caught are as in 14.0.7. Three things differ for any other fault:
+
+- `getSolutions` extends the `faultdetail` by `Unable to get packages meta.` alone (EXP-504), without a line break or the exception message;
+- `GetSolutions2Xml` sends the `error` message with, and writes to the log, the text `          ****ErrorMessage****\r\nfaultstring: {faultstring}\r\nfaultdetail :{faultdetail}\r\nfaultcode: {faultcode}\r\n          *******************` (EXP-504);
+- the log write goes through the second writer opened with `new StreamWriter(LogFilePath, append: true)` and closed at once, as in 14.0.7, but **nothing else holds the file**: `ExportSolutions` calls `GetSolutions2Xml` before it opens its own writer (EXP-505), so the write succeeds, creates the file when it is missing and appends the text and a line end (EXP-541 does not occur). The function returns null, and `ExportSolutions` goes on with the null document: its first package is added to the manifest and its definition looked up (EXP-509), and then the dependency XPath on the null document fails with a `NullReferenceException`, which EXP-520 handles with the warning `Object reference not set to an instance of an object.` in the text of EXP-504. A definition lookup that fails first escapes as in EXP-542.
+
+Called on its own, as the console modes of ticket 66 do, it behaves the same.
+
 ### EXP-508: The package loop visits non-empty tables in table order
 
 [14.0.7] After the log header, `ExportSolutions` calls `GetSolutions2Xml` (EXP-507), creates its `currentPackage` message and an empty `ManifestFile` document (EXP-511), and enters a `try` block (EXP-520) that sets the progress state to *in progress* (EXP-518). It then walks `selItemsTable` in table order. For each `(package, items)`:
@@ -201,6 +237,8 @@ The response document is the envelope, with the package definitions as `Item[@ty
 After the loop, when the referenced-elements table has any package, EXP-519 runs. The last thing the `try` block does is send `currentPackage` with an empty text, so a host can clear its label. That message is not sent when an exception leaves the block early; a cancel does reach it.
 
 The order of the outer table decides the order of packages in the log, in the messages and in `imports.mf`. The order of an inner table decides the order of the items.
+
+[12.0] Same loop. The sequence before it differs: after the argument checks `GetSolutions2Xml` runs first, then the log is opened, with no header (EXP-505, EXP-506), then the `currentPackage` message and the empty manifest document are created and the `try` block (EXP-520) is entered.
 
 ### EXP-509: A package definition must exist: PackageDefinitionManager with doCreate false
 
@@ -218,6 +256,8 @@ The order of the outer table decides the order of packages in the log, in the me
 - Any other exception is wrapped in a new `CItemException(-1, <stack trace>, <message> + " Fails to init solution to PackageDefinition: {package}", <inner>)`, which also escapes.
 
 *Observed* (`r2`, a package that does not exist): the manifest holds the package's entry, the run stops with the `CItemException` of WIRE-051 whose request is the AML above and whose faultcode is `0`, no message was sent, and the log holds the header only.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-510: Each dependency of a package contributes referenced elements
 
@@ -255,6 +295,8 @@ The elements found so far are dropped when one node fails. The error handling:
 
 *Observed* (`r1`): request 9 for dependency `com.aras.innovator.ssvc` returned no referenced elements, and the run went on. Dev has no `PackageReferencedElement` rows, so the element branch is inferred.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-511: The manifest document gets one entry per package, dependency and referenced element
 
 [14.0.7] `ExportSolutions` builds a new `ManifestFile`, whose document is `<imports/>`, and fills it as the loop goes. Each add finds an existing entry with an XPath that interpolates the name unescaped (EXP-544) and creates the entry only when none exists:
@@ -274,6 +316,8 @@ The manifest is saved by `ManifestFile.Save` to `WorkingDirectory + "\imports.mf
 
 *Observed* (`r1`, `r6`, `r5`): `<imports>`, a `package name="com.aras.innovator.servicereporting" path=".\"` with `<dependson name="com.aras.innovator.ssvc" />`, a non-standard package as `path="configurator\Import"` and an empty `<imports />`, in 2-space indentation with CRLF, no BOM and no final line end.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-512: refsToExport collects referenced elements by dependency, by insertion order
 
 [14.0.7] When `bExportReferencedItems` is set, `ExportSolutions` fills a `Hashtable refsToExport` from package name (the dependency's name, not the exporting package's) to an inner `Hashtable` from `idName` to `ExportItem`. `AddToRefsForExport(refs, dep, item)` does, in this order:
@@ -284,6 +328,8 @@ The manifest is saved by `ManifestFile.Save` to `WorkingDirectory + "\imports.mf
 So the first element with an id wins, and a later one with the same id (from another package that depends on the same package, or a repeated row) is dropped. The outer table gets one `Add` per distinct dependency name, in order of first occurrence. The inner table gets one `Add` per distinct id, in order of first occurrence. Both facts matter because `Hashtable` enumeration depends on the insertion sequence (ticket 07). The occurrence order is the loop order of EXP-508 and EXP-510: packages in table order, dependencies in document order, elements in response order.
 
 With the setting off the table stays empty, so there is no second pass.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-513: A package is exported into its own directory, with a per-package log header
 
@@ -307,6 +353,8 @@ and then:
 
 *Observed* (`r1`): `         ****Export com.aras.innovator.servicereporting****` and `start of execution : 10/18/2026 05:22:16`.
 
+[12.0] Same, except that the `start of execution : {now}` line uses the current culture (EXP-505). Observed on the oracle machine: `start of execution : 19-10-2026 01:17:50`.
+
 ### EXP-514: Items are exported one at a time, in table order
 
 [14.0.7] `ExportProc` walks the inner table in table order. For each item:
@@ -322,6 +370,8 @@ and then:
 
 *Observed* (`r3`): `Item 1 of 3: List - Report Format Types`, then `Item 2 of 3: List - Nope Two` and `Item 3 of 3: List - Nope One`, where the second and third items come in table order and not in the order they were passed.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-515: A successful item is logged
 
 [14.0.7] `PackageItem` builds a `CExportItems` for the helper and calls its `Export(item, package, sLevel, excludedRefs)`, which does the whole item (the other `EXP-` documents). When that returns, `ExportProc` writes to the log:
@@ -333,6 +383,8 @@ Item id :{idName}  keyed_name : {keyedName}   type : {typeName} successfully exp
 Nothing is sent as a message. `PackageItem` and the `Folder` property of the helper, which the item export reads for its file paths, have no behaviour beyond this.
 
 *Observed* (`r1`): `Item id :1854A8A75F5940A78369146966674FA6  keyed_name : Report Format Types   type : List successfully exported`.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-516: A failed item asks the host whether to abort the package
 
@@ -367,6 +419,26 @@ faultcode:   0
 
 With `no`, the third item was tried and failed the same way, and the package ended with `end of execution`; with `yes`, `status` `completed` followed the first failure and the third item was never tried.
 
+[12.0] The same steps, status and question texts, and the same decision. The log lines differ in two respects:
+
+1. The first log line has one space before `type`: `Error of exporting Item id :{idName}  keyed_name : {keyedName} type : {typeName}`. The `status` text keeps four (`…keyed_name : {keyedName}    type : {typeName}`).
+2. The block is written as separate lines, not from one template, with the same bytes as 14.0.7's `ErrorMessageStringDetailCode` text: `      ******Error message******`, `faultstring: {faultstring}`, `faultdetail: {faultdetail}`, `faultcode:   {faultcode}`, `     **********************`, each ended by CR LF. A `faultAML` block (the lines `faultAML:` and the text, in the log and on stderr) would sit before the closing line; it is dead as in 14.0.7.
+
+For a failed request, `faultstring` is the response's outer XML and not the `Server error` text (WIRE-006). Observed (12.0, an item that does not exist):
+
+```text
+Error of exporting Item id :00000000000000000000000000000002  keyed_name : Nope Two type : List
+      ******Error message******
+faultstring: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault …>…</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+faultdetail: No items of type List found.No items of type 'List' found using the criteria:
+<Item type="List" action="get" levels="1"><id>00000000000000000000000000000002</id></Item>
+
+faultcode:   0
+     **********************
+```
+
+With the answer `yes` the log gets `end of execution : {now}` in the current culture (EXP-505).
+
 ### EXP-517: A package ends with its removed references, a warning and a completion
 
 [14.0.7] When the loop of EXP-514 ends without a cancel or an abort, `ExportProc`:
@@ -389,6 +461,8 @@ An empty inner table cannot reach here from `ExportSolutions` (EXP-508 skips it)
 
 *Observed* (`r6`, `RemoveWithWarning`, item `ScopeCacheDependency` of `com.aras.innovator.configurator`): after the item's success line, three blocks, each `From:{tab}[com.aras.innovator.configurator].[ItemType].ScopeCacheDependency (ID='A22E…1459')` with a different `To:` (`[Method].868F…`, `[ItemType].A8C3…`, `[ItemType].0B47…`) and the item-type `Reason:`; then `end of execution`. The messages were `currentPackage`, `status` (item), `warning` ("…package 'com.aras.innovator.configurator'.\nSee log file for more details (search for words 'REMOVED REFERENCE')"), `status` `completed` and `currentPackage` "".
 
+[12.0] Same as 14.0.7.
+
 ### EXP-518: Cancel is a flag that two places look at
 
 [14.0.7] `Cancel()` sets the manager's progress state to *cancelled*. `ExportSolutions` sets it to *in progress* when its `try` block starts and to *idle* in `finally` (EXP-520). So:
@@ -401,6 +475,8 @@ An empty inner table cannot reach here from `ExportSolutions` (EXP-508 skips it)
 
 After a cancel the run still passes the referenced pass (EXP-543), sends the empty `currentPackage` and saves the manifest (EXP-520). It ends normally, with no error.
 
+[12.0] Same, and the two `end of execution : {now}` lines that this and EXP-516 write after a cancel or an abort use the current culture (EXP-505).
+
 ### EXP-519: Referenced elements are exported in a second pass
 
 [14.0.7] After the package loop (and also after a cancel, EXP-543), when `refsToExport` has any package, `ExportReferencedElements(exportContext, refsToExport, log)` walks `refsToExport.Keys` in table order. For each dependency package `dep`:
@@ -411,6 +487,8 @@ After a cancel the run still passes the referenced pass (EXP-543), sends the emp
 4. a progress state of *cancelled* ends the loop.
 
 The items are the referenced elements of EXP-510, exported as ordinary items with the keyed name from `element_description`. `AddPackage` is never called for `dep`, so the second pass does not appear in `imports.mf` (EXP-540). Referenced elements are collected only when `bExportReferencedItems` is set, and the pass never runs otherwise.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-520: Errors of the run, and what always happens at the end
 
@@ -426,24 +504,36 @@ Failures before the block (EXP-500, the header, EXP-507's log sharing) save no m
 
 *Observed* (`r5`, package name `LIBSJS-SCRATCH-O'B`): the `AddPackage` XPath failed, the `warning` text was `          ****ErrorMessage****\r\n       'imports/package[@name='LIBSJS-SCRATCH-O'B']' has an invalid token.`, the log got the same two lines after the header, no directory was created and the manifest was `<imports />`. (`r2`: the `CItemException` of EXP-509 escaped, the manifest kept the package entry.)
 
+[12.0] The same structure. The warning and the log text of a `SystemException` is the 12.0 text of `ErrorMessageMessage` (EXP-504), with its closing line: `          ****ErrorMessage****\r\n       {message}\r\n          *******************`. The `finally` block saves the manifest through `ManifestFile.Save` with the raw path (MAN-006).
+
 ## Reproduced bugs
 
 ### EXP-540: Packages exported in the referenced pass are missing from the manifest (bug)
 
 [14.0.7] Referenced packages are exported into their own directories and logged (EXP-519), but `imports.mf` lists only the packages of the main loop, because `ExportReferencedElements` never calls `AddPackage`. The manifest has `dependson` entries naming those packages, with their `referenced_element` children, but no `package` entry for them, so an import from the manifest does not import them. See EXP-511 and EXP-519. *Inferred from the code*; dev needs seeded referenced elements (ticket 67) to observe it.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-541: A package-definition query that fails inside an export crashes on the log file (bug)
 
 [14.0.7] `GetSolutions2Xml` writes its error to the log through a second writer on `LogFilePath` (EXP-507). When `ExportSolutions` calls it, its own writer (EXP-505) still holds the file open for writing with read sharing only, so the second open fails with `IOException`, `The process cannot access the file '{path}' because it is being used by another process.` The exception comes from `GetSolutions2Xml`, which `ExportSolutions` calls before its `try` block, so it escapes: the `error` message was already sent, the header is flushed when the writer is disposed, the first request fails, no manifest is saved and nothing else is created. The second open uses the raw `LogFilePath`, not the normalised path of EXP-505. *The sharing failure is proven with a .NET Framework probe of two `StreamWriter(path, true)` on one file; the faultcode ≠ 0 response was not provoked on dev.*
+
+[12.0] Not present. `GetSolutions2Xml` runs before the engine opens its own log writer, so its second writer succeeds (EXP-507). The bug is 14.0.7's only.
 
 ### EXP-542: A missing package definition aborts the whole export (bug)
 
 [14.0.7] `CItemException` is not a `SystemException`, so the handler of EXP-520 does not catch it. A package that has no current definition (EXP-509), a failing dependency query or a referenced element without id or type (EXP-510) escapes `ExportSolutions`, after the manifest is saved in `finally`: the packages after it, the referenced pass and the `currentPackage` clearing are skipped, no warning is sent, nothing is logged for it, and the host sees the exception. The packages before it keep their directories, and the failing package keeps its `package` entry (EXP-511) and, for a lookup that fails after `AddPackage`, no directory. The same failure on the query of the item (EXP-516) is handled per item.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-543: A cancel during the main loop still runs the referenced pass (bug)
 
 [14.0.7] The main loop stops on *cancelled* (EXP-518), but the referenced pass that follows it is conditional only on `refsToExport` being non-empty. After a cancel it still wipes and recreates the first referenced package's directory, sends `currentPackage`, writes that package's log header and then, at its first item, the cancel text and `end of execution` (EXP-518), and stops after that one package. A table with no items never sees the flag. The directory of a dependency that is also a main package is wiped (EXP-519), so a cancelled run can delete output it had finished. *Inferred from the code.*
 
+[12.0] Same as 14.0.7.
+
 ### EXP-544: Package and dependency names are interpolated unescaped into XPath and AML (bug)
 
 [14.0.7] The package name goes unescaped into the XPath of EXP-510, the manifest XPaths of EXP-511 and the AML of EXP-509, and the dependency name into the manifest XPath, the AML of EXP-510 and the lookups of the second pass. A name with an apostrophe makes the XPath malformed, which is a `SystemException` (`XPathException`), so the whole run ends with the warning and log text of EXP-520, with the manifest saved as it stood. For the manifest's `package` XPath the text is `'imports/package[@name='{name}']' has an invalid token.`, as the `.NET` XPath compiler words it; other malformed names give other `.NET` wordings. A name that closes the literal and adds a valid predicate is accepted and selects other nodes. The port interpolates exactly and reports the `.NET` message of the same defect. *Observed* (`r5`).
+
+[12.0] Same as 14.0.7.
