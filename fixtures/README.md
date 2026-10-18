@@ -26,3 +26,5 @@ Rules for this folder:
 `import-run/` is evidence for `spec/import-run.md`, not an engine run against a server: probes of the 14.0.7 import orchestration, package registration, audit row and SQL handling against a stub connection. Its own README lists the files.
 
 `language-pack/` is evidence for `spec/language-pack.md`, not an engine run: probes of the 14.0.7 `LanguagePackPreprocessor` against a fake IOM connection, the host's argument parser, and the invariant lower-casing table. Its own README lists the files.
+
+`xml-core/` is evidence for the XML core (`src/xml/`), not an engine run: `vectors.json` holds about thirteen hundred inputs of .NET Framework's `System.Xml`, `WebUtility`, `File.ReadAllText` and XPath, each with the result .NET gave. The test `src/xml/vectors.test.ts` replays it, and `oracle/xml-core-probe/` records it.

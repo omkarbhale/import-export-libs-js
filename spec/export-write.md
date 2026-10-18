@@ -329,7 +329,8 @@ Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in p
 [14.0.7]
 
 - **CDATA** is written as `<![CDATA[…]]>`, with LF, CR and CRLF in the body written as `\r\n`. An empty CDATA node stays `<![CDATA[]]>`. Adjacent CDATA nodes stay separate. A body that contains `]]>` (only possible when the DOM was built by code or by EXP-405) is split as `]]]]><![CDATA[>`. A CDATA node counts as content for EXP-425.
-- **Comments and processing instructions** in element-only content are written on their own indented line, like elements, and do not stop the indentation.
+- **Comments and processing instructions** in element-only content are written on their own indented line, like elements, and do not stop the indentation. A processing instruction with no data is `<?pi?>`. One named `xml` (an XML declaration that `InnerXml` put inside an element, IMP-018) makes the writer throw `ArgumentException` (`Cannot write XML declaration. WriteStartDocument method has already written it.`) before it closes the start tag of its parent, so the file ends with the parent's `<p` (EXP-428).
+- **An entity reference** that `InnerXml` kept (IMP-018) is written `&name;` and counts as content for EXP-425.
 - **Document level:** a DOM that holds an XML declaration node would write it (a declaration cannot exist after EXP-401); whitespace after the root element is written, with its line breaks as `\r\n`, but the transform output has none.
 
 [12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
@@ -342,7 +343,9 @@ Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in p
 - setting `InnerText` to an empty string on an element that was parsed as `<p/>` leaves `<p></p>`;
 - setting `InnerXml` to an empty string gives `<x />`;
 - removing a node's last child leaves the parent's flag unchanged, so a parent that had content becomes `<x></x>` (EXP-412);
-- removing all children keeps the element's previous flag.
+- removing all children keeps the element's previous flag, and `RemoveAll()` removes the attributes too;
+- setting `InnerText` on an element that has one text child changes that child, and replaces anything else with one text child;
+- setting `InnerXml` replaces the children with the nodes of the text (IMP-018). The flag is cleared by the first node added, so an empty text leaves it as it is: `<p/>` stays `<p />` and `<p>x</p>` becomes `<p></p>`.
 
 [12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
 

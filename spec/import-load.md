@@ -78,8 +78,8 @@ Registered in `bugs.md`.
 
 Reading (`ReadAllText`, ticket 06 rules R1 to R3, probe `encodings`, `utf16-nobom`):
 
-- a UTF-8, UTF-16LE, UTF-16BE or UTF-32LE byte order mark is detected and removed. With no mark the bytes are UTF-8;
-- invalid byte sequences become U+FFFD and the load goes on (Latin-1 `é` gives `caf�`);
+- a UTF-8 (`EF BB BF`), UTF-16LE (`FF FE`), UTF-16BE (`FE FF`), UTF-32LE (`FF FE 00 00`) or UTF-32BE (`00 00 FE FF`) byte order mark is detected and removed. With no mark the bytes are UTF-8. A file that holds only a mark, or nothing, reads as the empty text;
+- invalid byte sequences become U+FFFD and the load goes on (Latin-1 `é` gives `caf�`). Each invalid byte is one U+FFFD: a lead byte that is not valid (`80` to `C1`, `F5` to `FF`), a lead byte whose next byte is not a continuation byte, and a valid beginning that stops short (`E2 82` followed by `(`, three bytes of a four-byte character). A lead byte followed by a continuation byte that its range forbids (`E0 80`, `ED A0`, `F0 80`, `F4 90`) is replaced together with that byte, so `E0 80 80` gives two U+FFFD and `ED A0 80`, an encoded surrogate, gives two. A valid beginning that the end of the file cuts off (`C3`, `E2 82`, `F0 9F 98` as the last bytes) gives nothing, no U+FFFD. UTF-16 and UTF-32 text decode the same way: a lone surrogate unit gives U+FFFD, and a final odd byte or unit is dropped;
 - the `encoding` named in an XML declaration is never consulted (a `windows-1252` declaration over Latin-1 bytes decodes as UTF-8, giving U+FFFD);
 - UTF-16 without a mark is not detected, and fails in the parser as IMP-011 describes.
 
@@ -90,9 +90,9 @@ Parsing (`LoadXml`, ticket 06 rules R5 to R7 as corrected by ticket 08, F1 and F
 - attribute values are kept raw: a literal tab, CR or LF in an attribute stays exactly as written. Text and CDATA keep CR and CRLF as written too. Nothing is normalized to LF or a space;
 - a raw control character (U+0001 and so on, other than tab, CR and LF) or a raw U+FFFE or U+FFFF is a parse error;
 - a character reference to such a character (`&#1;`, `&#xFFFE;`, `&#xD800;`) loads without error;
-- a CDATA section, a comment and a processing instruction are kept in the DOM;
-- a DOCTYPE and an XML declaration load fine in the file by itself (IMP-010 explains why they then fail the import);
-- an entity reference that is not declared is a parse error, as is any ill-formed document, an empty file and a file of only whitespace.
+- a CDATA section, a comment and a processing instruction are kept in the DOM, and so is the difference between `<x/>` and `<x></x>` (the first is written `<x />` by every later `OuterXml` and `Save`);
+- a DOCTYPE and an XML declaration load fine in the file by itself (IMP-010 explains why they then fail the import). The library loads a DOCTYPE with a name only, see IMP-016;
+- an entity reference that is not declared is a parse error, as is any ill-formed document, an empty file and a file of only whitespace. IMP-017 gives the messages and the positions, and IMP-018 says exactly which white space is dropped.
 
 [12.0] Not yet specified. 12.0 reads with `XmlDocument.Load(path)`, which honours the declared encoding and throws on invalid bytes (ticket 06, R8); the 12.0 import ticket adds the variant.
 
@@ -201,6 +201,67 @@ Vectors for each point are in `build-xsl.out.txt` (the `RAW:` lines).
 [14.0.7] `GetItemsFromPackageDom(dom)` throws `ArgumentNullException` for a null document (parameter name `packageDom`). Otherwise it returns a list: for each `Item` element that is a direct child of the root `AML` of `dom`, in document order, a new `XmlDocument` (`PreserveWhitespace` false) loaded from that element's `OuterXml`. The documents are built eagerly, so the list holds an independent copy of each item.
 
 An item that `build.xsl` emitted more than once (IMP-026) appears once per copy. An empty `AML` gives an empty list. Nothing is removed or merged, and no item is skipped.
+
+[12.0] Not yet specified.
+
+### IMP-016: A DOCTYPE with an internal subset or an external identifier is not loaded (bug)
+
+[14.0.7] `XmlDocument.LoadXml` accepts any DOCTYPE. `<!DOCTYPE a>` (with or without an empty `[]`) becomes a document type node and changes nothing else. A DOCTYPE with declarations in square brackets adds the entities and attribute defaults they declare to the document, and one with `SYSTEM` or `PUBLIC` makes .NET read the named file (a missing file is a `FileNotFoundException`). The library loads the first kind only. Any other DOCTYPE throws `NotSupportedException` (not an `XmlException`) whose message names the DOCTYPE and this rule, unless the text ends first, which is the `XmlException` `Incomplete DTD content.` as in .NET.
+
+A package file with any DOCTYPE fails the import in .NET too (IMP-010), with an `XmlException` for the `<!DOCTYPE` that no longer starts the text. The library fails it with the `NotSupportedException` when the file has such a DOCTYPE. A manifest with one is the case that differs, because the engine loads a manifest as it is (MAN-003). Real packages and manifests carry none. Registered in `bugs.md` as a deviation of the library.
+
+### IMP-017: A malformed document throws an XmlException with .NET's text and position
+
+[14.0.7] `LoadXml` and `InnerXml` throw `System.Xml.XmlException`. Its message is the text of the table with ` Line L, position P.` appended. `L` and `P` start at 1; `P` counts UTF-16 units from the start of the line, and each LF, CR and CRLF ends a line. The text `Root element is missing.` is the one message without a position. The table names the character `P` points at. Every row is in the vectors `wf.*`, `xd.*` and `op.ix*` of `fixtures/xml-core/vectors.json`, which are the complete reference (about three hundred inputs).
+
+| Situation | Text | Position |
+|---|---|---|
+| Nothing but white space, comments, instructions and a DOCTYPE | `Root element is missing.` | none |
+| Text outside the root (`x<a/>`, `<a/>x`, a byte-order mark character) | `Data at the root level is invalid.` | that character |
+| A `<` outside the root with fewer than four characters left in the text (`<a>`, `<a/`, `<!-`) | `Data at the root level is invalid.` | the `<` |
+| A second root element | `There are multiple root elements.` | the first character of its name |
+| An end tag with nothing open | `Unexpected end tag.` | the character after `</` |
+| An end tag with another name | `The 'a' start tag on line L position P does not match the end tag of 'b'.` (`L`, `P`: the start tag's name) | the end tag's name |
+| The text ends inside content, a start tag or an end tag | `Unexpected end of file has occurred. The following elements are not closed: b, a.` (innermost first; with nothing open the list and its full stop are empty: `closed:  Line`) | the end of the text |
+| The text ends in a name, after `=`, in a reference or in the XML declaration | `Unexpected end of file while parsing Name has occurred.`, `Unexpected end of file has occurred.`, `Unexpected end of file while parsing  has occurred.` (a numeric reference) | the end of the text; the `&` of a reference; the `?` when a declaration ends in `?` |
+| A comment, CDATA section or instruction that does not end | `Unexpected end of file while parsing Comment` (`CDATA`, `PI`) `has occurred.` | the end of the text, but where the content starts when fewer than three characters follow it |
+| An attribute value that does not end | `There is an unclosed literal string.` | the end of the text |
+| A DOCTYPE that does not end | `Incomplete DTD content.` | the end of the text |
+| A name that begins with a bad character | `Name cannot begin with the 'c' character, hexadecimal value 0xHH.` | that character |
+| A bad character inside a name | `The 'c' character, hexadecimal value 0xHH, cannot be included in a name.` | that character |
+| A raw character XML forbids | `'c', hexadecimal value 0xHH, is an invalid character.` | that character |
+| `]]>` in text | `']]>' is not allowed in character data.` | its first `]` |
+| `<` in an attribute value | `'<', hexadecimal value 0x3C, is an invalid attribute character.` | the `<` |
+| An unquoted value, a missing `=`, a missing white space, a stray `/` | `'c' is an unexpected token. The expected token is '"' or '''.`, `... The expected token is '='.`, `... Expecting white space.`, `... The expected token is '>'.` | the character named (for `/`: the `/` when it follows the element name directly, else the character after it) |
+| A second attribute with the same name or the same namespace and local name | `'b' is a duplicate attribute name.` (the qualified name) | the second attribute's name |
+| A reference to an unknown entity | `Reference to undeclared entity 'n'.` | the first character of the name |
+| `&` not followed by a name and `;` | `An error occurred while parsing EntityName.` (in an attribute value, only when no name follows the `&`; a name without `;` there gives `'c' is an unexpected token. The expected token is ';'.`) | the first character after the `&` (there: the character that is not `;`) |
+| A bad numeric reference | `Invalid syntax for a decimal numeric entity reference.`, `... hexadecimal ...`; `Invalid value of a character entity reference.` when the number passes 2147483647 | the character that is not a digit; the digit that overflows |
+| `--` in a comment | `An XML comment cannot contain '--', and '-' cannot be the last character.` | the first of the two |
+| A prefix with no declaration | `'p' is an undeclared prefix.` | the name |
+| A bad namespace declaration | `Invalid namespace declaration.` (a prefix bound to ""), `Prefix "xml" is reserved for use by XML and can be mapped only to namespace name "http://www.w3.org/XML/1998/namespace".`, `Prefix "xmlns" is reserved for use by XML.`, `Prefix 'p' cannot be mapped to namespace name reserved for "xml" or "xmlns".` (the xmlns namespace) | the opening quote; the declaration's name; the declaration's name; the first character of the value |
+| `<?xml` after the start, or a DOCTYPE inside an element | `Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it.`, `Unexpected DTD declaration.` | the `x` after `<?`; the `D` after `<!` |
+| A bad processing instruction | `'XML' is an invalid name for processing instructions.` (any case but `xml`) | the name |
+| A bad XML declaration | `Syntax for an XML declaration is invalid.`, `Version number '1.1' is invalid.` (only `1.0` is) | the offending word; the value |
+| A bad DOCTYPE | `Cannot have multiple DTDs.`, `DTD must be defined before the document root element.`, `'doctype' is an unexpected token. The expected token is 'DOCTYPE'.` | the `<`; the `<`; the word after `<!` |
+| Markup that is none | `'ELEMENT' is an unexpected token. The expected token is '<!--' or '<[CDATA['.` | the word after `<!` |
+| `xml:space` with another value than `preserve` or `default` | `'bogus' is an invalid xml:space value.` | the attribute's name |
+
+A NUL character appears in these messages as a full stop. A character outside the Basic Multilingual Plane is shown whole, with its code point in `0xHH` (`0x1F600`), and never starts or continues a name. The classes of letters and name characters follow Unicode categories, because XML 1.0's fourth edition tables follow Unicode 2.0. They differ only for letters added to Unicode since then, which real item and package names do not use.
+
+[12.0] Not yet specified. 12.0 reads with `XmlDocument.Load(path)` and `XmlTextReader`, which words these errors the same way.
+
+### IMP-018: Which white space a loaded document keeps, and what InnerXml keeps
+
+[14.0.7] `XmlTextReader` sorts a run of text between two pieces of markup (an element tag, a comment, an instruction, a CDATA section) as white space when every character is a space, tab, CR or LF that the text spells out, and decimal character references are not counted as spelled out. `PreserveWhitespace` false then keeps it only inside `xml:space="preserve"` (until an `xml:space="default"` below it); `PreserveWhitespace` true keeps all of it, outside the root element too (the nodes between the declaration, the DOCTYPE, comments and the root). Everything else is text. So `<a>  </a>` has no child and `<a>&#x20;</a>` has none either, but `<a>&#32;</a>` has the text `" "`, as have `<a>&#10;</a>` and a run that holds a decimal reference next to a hexadecimal one (`&#x20;&#32;`). A run with a named reference (`&amp;`) is text because it decodes to a non-blank character. A non-self-closed element that lost its white space is `<e></e>`, never `<e />`.
+
+`XmlElement.InnerXml = text` reads the text as element content with `XmlTextReader` in fragment mode, whatever the document's `PreserveWhitespace`:
+
+- all white space is kept, also next to other markup, and several elements and text may follow each other;
+- an entity reference that is not one of the five predefined ones is not an error. It becomes a node that is written back as `&name;` (inside an attribute value it is still the error of IMP-017);
+- a leading XML declaration is accepted and becomes a node inside the element. `OuterXml` writes it back. An `XmlWriter` that has written nothing yet leaves it out (the DAC condition writer of EXP-119); the item-file writer, which has written the start tags above it, refuses it with `ArgumentException` `Cannot write XML declaration. WriteStartDocument method has already written it.`, leaving the text before it (EXP-428);
+- the namespace declarations in scope at the element apply to the text;
+- as at the top of a document, a `<` with fewer than four characters left outside any element is `Data at the root level is invalid.` (IMP-017).
 
 [12.0] Not yet specified.
 

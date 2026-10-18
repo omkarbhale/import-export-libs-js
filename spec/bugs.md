@@ -281,6 +281,13 @@ The coverage test checks that every heading here names a rule defined in an area
 - **C# location:** `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`, `AddDependsOn`, `AddReferencedElement`, `GetPackageNode`, `GetDependsOn`, `MoveToOrderedList`.
 - **Versions:** 12.0, 14.0.7.
 
+## IMP-016: a DOCTYPE with an internal subset or an external identifier is not loaded
+
+- **Behaviour:** .NET's `XmlDocument.LoadXml` loads any DOCTYPE: it declares the entities and attribute defaults of an internal subset and reads the file named by `SYSTEM` or `PUBLIC`. The port loads only a DOCTYPE with a name (`<!DOCTYPE a>`, `<!DOCTYPE a[]>`) and throws `NotSupportedException` for any other.
+- **Why it is a bug:** this is a deliberate deviation of the library, not an engine bug. Modelling DTD declarations would add entity expansion and default attributes to the DOM for a case no real package or manifest has: a package file with a DOCTYPE fails the import in the engine anyway (IMP-010).
+- **C# location:** `System.Xml.XmlDocument` (the .NET Framework), reached from `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentLoad`.
+- **Versions:** 14.0.7.
+
 ## MAN-018: Hashtable order becomes random after 100 probe collisions
 
 - **Behaviour:** .NET Framework switches a `Hashtable` to a per-process randomized string hash when one insertion walks more than 100 occupied buckets, so the enumeration order differs from run to run. The port cannot follow a random order and throws an error naming the table and key at that point.
