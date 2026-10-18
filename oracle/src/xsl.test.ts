@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -91,7 +91,8 @@ describe("recorded XSL fixtures", () => {
     });
 
     it("matches the committed case inputs it was recorded from", () => {
-      const set = run.xsl.replace(/\.xsl$/, "");
+      // a set's inputs are in the case folder of its name (export-items), else in its stylesheet's (export, and build for build-sv-SE)
+      const set = existsSync(join(CASES_DIR, basename(dir))) ? basename(dir) : run.xsl.replace(/\.xsl$/, "");
       for (const c of run.cases.filter((c) => !c.source.includes("transcript"))) {
         expect(readFileSync(join(dir, "cases", c.name, "input.xml"))).toEqual(readFileSync(join(CASES_DIR, set, basename(c.source))));
       }

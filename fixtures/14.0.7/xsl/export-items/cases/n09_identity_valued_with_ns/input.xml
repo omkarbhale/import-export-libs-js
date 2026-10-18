@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="View" id="V"><role keyed_name="World" type="Identity" xmlns:z="urn:z">R</role><method keyed_name="m" type="Method" xmlns:y="urn:y">M</method></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

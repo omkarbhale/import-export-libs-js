@@ -3,7 +3,8 @@
  *
  * - dom.ts: the DOM (xmldom's) and what is recorded beside it: `IsEmpty`, `PreserveWhitespace`, the XML declaration;
  * - parser.ts: `LoadXml` and `InnerXml`, with .NET's errors and positions; read-text.ts: `File.ReadAllText`;
- * - writer-xmlwriter.ts: the `XmlWriter` of the item files, the DAC conditions and `XDocument.ToString` (xdocument.ts);
+ * - writer-xmlwriter.ts: the `XmlWriter` of the item files, the DAC conditions and `XDocument.ToString` (xdocument.ts), and the
+ *   escaping and character checks that every `XmlWriter` shares (the export transform's output writer uses them);
  * - writer-legacy.ts: `XmlTextWriter`, behind `Save(path)` (the manifest), `OuterXml` and `InnerXml`; save.ts: the files;
  * - xpath.ts and xpath-syntax.ts: `SelectNodes`, `SelectSingleNode`, `Evaluate`; html.ts: `WebUtility`; file-names.ts.
  *
@@ -24,5 +25,5 @@ export { xdocumentToString } from "./xdocument.js";
 export { evaluate, selectNodes, selectSingleNode } from "./xpath.js";
 export type { XPathValue } from "./xpath.js";
 export { innerXml, outerXml, saveBytes } from "./writer-legacy.js";
-export { ITEM_FILE_SETTINGS, writeDocument, writeNodes } from "./writer-xmlwriter.js";
+export { ITEM_FILE_SETTINGS, escapeAttributeValue, escapeText, invalidCharacterMessage, normalizeLineBreaks, writeDocument, writeNodes } from "./writer-xmlwriter.js";
 export type { XmlWriterSettings } from "./writer-xmlwriter.js";

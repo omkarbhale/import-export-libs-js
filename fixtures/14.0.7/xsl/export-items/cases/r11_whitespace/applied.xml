@@ -1,0 +1,8 @@
+<AML><Item type="A" id="1" action="add">
+  <name>n</name>
+  <Relationships>
+    <Item type="B" id="2" action="add">
+      <name>b</name>
+    </Item>
+  </Relationships>
+</Item></AML>

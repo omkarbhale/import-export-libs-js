@@ -19,7 +19,7 @@ Rules for this folder:
 - **14.35 logs compare as a set.** 14.35 exports in parallel, so its log line order is not deterministic.
 - Fixtures are recorded only on the dev instance. Imports use `LIBSJS-SCRATCH-*` packages and items, cleaned up after each run.
 
-`<engine>/xsl/<set>/` holds recordings of that engine's embedded `export.xsl` and `build.xsl` on given documents, made by `npm run oracle -- xsl` (see `oracle/README.md`, "The XSL probe"). Each folder has `run.json` and `cases/<name>/{input.xml,transform.xml,applied.xml}`, and `oracle/src/xsl-fixtures.ts` loads them. The inputs are `oracle/xsl-cases/` plus a recorded response of ticket 24's export. The stylesheets themselves are never committed.
+`<engine>/xsl/<set>/` holds recordings of that engine's embedded `export.xsl` and `build.xsl` on given documents, made by `npm run oracle -- xsl` (see `oracle/README.md`, "The XSL probe"). Each folder has `run.json` and `cases/<name>/{input.xml,transform.xml,applied.xml}`, and `oracle/src/xsl-fixtures.ts` loads them. The inputs are `oracle/xsl-cases/` plus a recorded response of ticket 24's export. `src/export/transform.test.ts` replays the 14.0.7 `export` and `export-items` recordings against the export transform. The stylesheets themselves are never committed.
 
 `export-write/` is evidence for `spec/export-write.md`, not an engine run: the output of `oracle/export-write-probe/` (offline calls of the 14.0.7 post-XSL, file-layout and file-system code, and `probe-12.0.txt` for the 12.0 steps that differ) and the NTFS case-collision table it measured.
 

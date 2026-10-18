@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="a&amp;b&lt;c&gt;&quot;d'e	f&#xA;g&#xD;h" action="add"><n a="&amp;&lt;&gt;&quot;'	&#xA;&#xD;  " /></Item></AML>

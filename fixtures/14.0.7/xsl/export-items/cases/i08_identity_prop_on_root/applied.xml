@@ -1,0 +1,1 @@
+<AML><Item type="View" id="V1" action="add"><role keyed_name="World" type="Identity"><Item type="Identity" action="get" select="id"><name>World</name></Item></role><method keyed_name="mm" type="Method"><Item type="Method" action="get" select="id"><name>mm</name></Item></method></Item></AML>

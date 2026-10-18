@@ -1,0 +1,4 @@
+<AML><Item type="Foo" id="IT1" action="add"><Relationships>
+<Item type="Property" id="PA" action="add"><name>pa</name><data_source name="DA">A</data_source></Item>
+<Item type="Property" id="PF" action="add"><data_type> foreign </data_type><data_source>A</data_source></Item>
+<Item type="Property" id="PG" action="add"><data_type>foreign</data_type>t1<data_source><Item type="Property" action="get" select="id"><name></name><source_id></source_id></Item></data_source>t2<foreign_property><Item type="Property" action="get" select="id"><keyed_name></keyed_name><source_id><Item type="ItemType" action="get" select="id"><name></name></Item></source_id></Item></foreign_property>t3</Item></Relationships></Item></AML>

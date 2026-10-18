@@ -106,7 +106,7 @@ class RawIndentWriter {
         break;
       case COMMENT_NODE:
         this.markContentAfterIndent(() => {
-          this.out += `<!--${this.lineBreaks(this.checked((node as unknown as { data: string }).data))}-->`;
+          this.out += `<!--${normalizeLineBreaks(this.checked((node as unknown as { data: string }).data))}-->`;
         });
         break;
       case PROCESSING_INSTRUCTION_NODE: {
@@ -117,7 +117,7 @@ class RawIndentWriter {
           this.fail("Cannot write XML declaration. WriteStartDocument method has already written it.");
         }
         this.markContentAfterIndent(() => {
-          this.out += pi.data === "" ? `<?${pi.target}?>` : `<?${pi.target} ${this.lineBreaks(this.checked(pi.data))}?>`;
+          this.out += pi.data === "" ? `<?${pi.target}?>` : `<?${pi.target} ${normalizeLineBreaks(this.checked(pi.data))}?>`;
         });
         break;
       }
@@ -150,7 +150,7 @@ class RawIndentWriter {
     this.out += `<${element.tagName}`;
     for (const attribute of attributesOf(element)) {
       this.out += ` ${attribute.name}="`;
-      this.out += `${this.attributeValue(attribute.value)}"`;
+      this.out += `${escapeAttributeValue(this.checked(attribute.value, true))}"`;
     }
     this.startTagOpen = true;
     this.contentWritten = false;
@@ -183,69 +183,83 @@ class RawIndentWriter {
     if (value === "") return;
     this.contentWritten = true;
     const text = this.checked(value);
-    this.out += this.lineBreaks(text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+    this.out += escapeText(text);
   }
 
   private writeCData(value: string): void {
     this.mixed = true;
     this.markContent();
-    const text = this.lineBreaks(this.checked(value));
+    const text = normalizeLineBreaks(this.checked(value));
     this.out += `<![CDATA[${text.split("]]>").join("]]]]><![CDATA[>")}]]>`;
-  }
-
-  /** CR, LF and CRLF become the writer's new line (`NewLineHandling.Replace`). */
-  private lineBreaks(value: string): string {
-    return value.replace(/\r\n|\r|\n/g, NEW_LINE);
-  }
-
-  private attributeValue(value: string): string {
-    return this.checked(value, true).replace(/[&<>"\t\n\r]/g, (character) => {
-      switch (character) {
-        case "&":
-          return "&amp;";
-        case "<":
-          return "&lt;";
-        case ">":
-          return "&gt;";
-        case '"':
-          return "&quot;";
-        case "\t":
-          return "&#x9;";
-        case "\n":
-          return "&#xA;";
-        default:
-          return "&#xD;";
-      }
-    });
   }
 
   /** `CheckCharacters`: a character XML cannot hold makes the writer throw (EXP-428). */
   private checked(value: string, insideStartTag = false): string {
-    for (let i = 0; i < value.length; i += 1) {
-      const unit = value.charCodeAt(i);
-      if (unit >= 0x20 && unit < 0xd800) continue;
-      if (unit === 0x09 || unit === 0x0a || unit === 0x0d) continue;
-      if (unit >= 0xe000 && unit <= 0xfffd) continue;
-      if (unit >= 0xd800 && unit <= 0xdbff) {
-        const next = value.charCodeAt(i + 1);
-        if (next >= 0xdc00 && next <= 0xdfff) {
-          i += 1;
-          continue;
-        }
-        if (!insideStartTag) this.closeStartTag();
-        if (i + 1 >= value.length) this.fail("The surrogate pair is invalid. Missing a low surrogate character.");
-        this.fail(
-          `The surrogate pair (${hexValue(unit)}, ${hexValue(next)}) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).`,
-        );
-      }
-      if (!insideStartTag) this.closeStartTag();
-      if (unit >= 0xdc00 && unit <= 0xdfff) {
-        this.fail(`Invalid high surrogate character (${hexValue(unit)}). A high surrogate character must have a value from range (0xD800 - 0xDBFF).`);
-      }
-      this.fail(`'${String.fromCharCode(unit)}', hexadecimal value ${hexValue(unit)}, is an invalid character.`);
-    }
-    return value;
+    const message = invalidCharacterMessage(value);
+    if (message === undefined) return value;
+    if (!insideStartTag) this.closeStartTag();
+    this.fail(message);
   }
+}
+
+/**
+ * The message `XmlWriter` throws (`ArgumentException`) for the first character of `value` that an XML document cannot hold, or
+ * undefined when every character is valid.
+ * @spec EXP-428 EXP-361
+ */
+export function invalidCharacterMessage(value: string): string | undefined {
+  for (let i = 0; i < value.length; i += 1) {
+    const unit = value.charCodeAt(i);
+    if (unit >= 0x20 && unit < 0xd800) continue;
+    if (unit === 0x09 || unit === 0x0a || unit === 0x0d) continue;
+    if (unit >= 0xe000 && unit <= 0xfffd) continue;
+    if (unit >= 0xd800 && unit <= 0xdbff) {
+      const next = value.charCodeAt(i + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        i += 1;
+        continue;
+      }
+      if (i + 1 >= value.length) return "The surrogate pair is invalid. Missing a low surrogate character.";
+      return `The surrogate pair (${hexValue(unit)}, ${hexValue(next)}) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).`;
+    }
+    if (unit >= 0xdc00 && unit <= 0xdfff) {
+      return `Invalid high surrogate character (${hexValue(unit)}). A high surrogate character must have a value from range (0xD800 - 0xDBFF).`;
+    }
+    return `'${String.fromCharCode(unit)}', hexadecimal value ${hexValue(unit)}, is an invalid character.`;
+  }
+  return undefined;
+}
+
+/** CR, LF and CRLF become the writer's new line (`NewLineHandling.Replace`). */
+export function normalizeLineBreaks(value: string): string {
+  return value.replace(/\r\n|\r|\n/g, NEW_LINE);
+}
+
+/** Element text as the writer escapes it: `&`, `<` and `>` become references and line breaks become `\r\n`. */
+export function escapeText(value: string): string {
+  return normalizeLineBreaks(value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+}
+
+/** An attribute value as the writer escapes it (`NewLineHandling.Replace` writes each line break as a character reference). */
+export function escapeAttributeValue(value: string): string {
+  return value.replace(/[&<>"\t\n\r]/g, (character) => {
+    switch (character) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "\t":
+        return "&#x9;";
+      case "\n":
+        return "&#xA;";
+      default:
+        return "&#xD;";
+    }
+  });
 }
 
 /** `XmlDocument.Save(XmlWriter)` for a document, written with the given settings. */
