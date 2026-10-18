@@ -1,0 +1,365 @@
+## REL RemoveEmptyRelationships
+REL1 in : <AML><Item type=\"a\"><Relationships/></Item><Item type=\"b\"><Relationships></Relationships></Item><Item type=\"c\"><Name>x</Name></Item></AML>
+REL1 out: [BOM]"<AML>\r\n <Item type=\"a\"></Item>\r\n <Item type=\"b\"></Item>\r\n <Item type=\"c\">\r\n  <Name>x</Name>\r\n </Item>\r\n</AML>"
+REL2 in : <AML><Item type=\"a\"><Relationships/><Relationships/><Relationships/></Item></AML>
+REL2 out: [BOM]"<AML>\r\n <Item type=\"a\"></Item>\r\n</AML>"
+REL3 in : <AML><Item type=\"c\"><Relationships><Item type=\"d\"><Relationships/></Item></Relationships></Item></AML>
+REL3 out: [BOM]"<AML>\r\n <Item type=\"c\">\r\n  <Relationships>\r\n   <Item type=\"d\"></Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+REL4 in : <AML><Item type=\"a\"><Relationships> </Relationships><Relationships><!--c--></Relationships><Relationships>text</Relationships><Relationships><![CDATA[]]></Relationships></Item></AML>
+REL4 out: [BOM]"<AML>\r\n <Item type=\"a\"></Item>\r\n</AML>"
+REL5 in : <AML><Relationships/><Item type=\"a\"/></AML>
+REL5 out: [BOM]"<AML>\r\n <Item type=\"a\" />\r\n</AML>"
+REL6 in : <AML>\r\n <Item type=\"a\">\r\n  <name>x</name>\r\n  <Relationships />\r\n </Item>\r\n</AML>
+REL6 out: [BOM]"<AML>\r\n <Item type=\"a\">\r\n  <name>x</name>\r\n  \r\n </Item>\r\n</AML>"
+REL7 in : <AML><Item type=\"a\"><name>x</name><Relationships/></Item></AML>
+REL7 out: [BOM]"<AML>\r\n <Item type=\"a\">\r\n  <name>x</name>\r\n </Item>\r\n</AML>"
+REL8 in : <AML><Item type=\"a\"><name>x</name><Relationships><Item type=\"b\"/></Relationships></Item></AML>
+REL8 out: [BOM]"<AML>\r\n <Item type=\"a\">\r\n  <name>x</name>\r\n </Item>\r\n</AML>"
+REL9 in : <AML><Item type=\"a\"><Relationships xmlns:p=\"urn:p\"/><p:Relationships xmlns:p=\"urn:p\"/></Item></AML>
+REL9 out: [BOM]"<AML>\r\n <Item type=\"a\">\r\n  <p:Relationships xmlns:p=\"urn:p\" />\r\n </Item>\r\n</AML>"
+## RNN RemoveNamespaceNodes
+RNN1 in : <AML xmlns:q=\"urn:q\"><Item type=\"a\" id=\"1\" xmlns:i18n=\"http://www.aras.com/I18N\" i18n:x=\"1\" xml:lang=\"en\" q:z=\"2\" xmlns=\"urn:def\"><name xmlns:i18n=\"urn:n\" i18n:y=\"1\">n</name></Item></AML>
+RNN1 out: [BOM]"<AML xmlns:q=\"urn:q\">\r\n <Item type=\"a\" id=\"1\" xmlns:i18n=\"http://www.aras.com/I18N\" i18n:x=\"1\" xml:lang=\"en\" q:z=\"2\" xmlns=\"urn:def\">\r\n  <name xmlns:i18n=\"urn:n\" i18n:y=\"1\">n</name>\r\n </Item>\r\n</AML>"
+RNN2 in : <AML><Item type=\"a\" xmlns=\"urn:def\"><Item type=\"b\" xmlns:p=\"urn:p\" p:a=\"1\"/></Item><Other xmlns:p=\"urn:p\" p:a=\"1\"/></AML>
+RNN2 out: [BOM]"<AML>\r\n <Item type=\"a\" xmlns=\"urn:def\">\r\n  <Item type=\"b\" xmlns:p=\"urn:p\" p:a=\"1\" />\r\n </Item>\r\n <Other xmlns:p=\"urn:p\" p:a=\"1\" />\r\n</AML>"
+RNN3 in : <AML><x:Item xmlns:x=\"urn:x\" xmlns:y=\"urn:y\" y:a=\"1\"/><Item xmlns:y=\"urn:y\" y:a=\"1\" b=\"2\"/></AML>
+RNN3 out: [BOM]"<AML>\r\n <x:Item xmlns:x=\"urn:x\" xmlns:y=\"urn:y\" y:a=\"1\" />\r\n <Item b=\"2\" />\r\n</AML>"
+RNN4 in : <AML><Item type=\"a\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" action=\"add\"/></AML>
+RNN4 out: [BOM]"<AML>\r\n <Item type=\"a\" action=\"add\" />\r\n</AML>"
+## CDF CdataFilterXml
+CDF1 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>a&b</filter_xml>]]></condition_xml></Item></AML>
+CDF1 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[a&b]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF2 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml>]]></condition_xml></Item></AML>
+CDF2 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF3 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml>&lt;filter_xml&gt;&lt;a x=\"1\"&gt;t&amp;amp;u&lt;/a&gt;&lt;/filter_xml&gt;</condition_xml></Item></AML>
+CDF3 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml>\r\n   <filter_xml>\r\n    <a x=\"1\">t&amp;u</a>\r\n   </filter_xml>\r\n  </condition_xml>\r\n </Item>\r\n</AML>"
+CDF4 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[no filter here &amp; &lt;]]></condition_xml></Item></AML>
+CDF4 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[no filter here & <]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF5 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml/></Item></AML>
+CDF5 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml />\r\n </Item>\r\n</AML>"
+CDF6 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml><filter_xml>y</filter_xml>]]></condition_xml></Item></AML>
+CDF6 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml><filter_xml><![CDATA[y]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF7 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x &amp;nbsp; &#160; &lt;b&gt; &eacute;</filter_xml>]]></condition_xml></Item><Item type=\"mp_MacPolicy\" id=\"2\"><condition_xml><![CDATA[<filter_xml>y</filter_xml>]]></condition_xml></Item></AML>
+CDF7 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x &nbsp; \u00A0 <b> \u00E9]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n <Item type=\"mp_MacPolicy\" id=\"2\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[y]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF8 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x]]]]><![CDATA[></filter_xml>]]></condition_xml></Item></AML>
+CDF8 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF9 in : <AML><Item type=\"dr_RelationshipFamily\" id=\"1\"><implementation_query><![CDATA[<Item type=\"x\" action=\"get\"/>]]></implementation_query><condition_xml><![CDATA[<filter_xml>q</filter_xml>]]></condition_xml></Item></AML>
+CDF9 out: [BOM]"<AML>\r\n <Item type=\"dr_RelationshipFamily\" id=\"1\">\r\n  <implementation_query><![CDATA[<Item type=\"x\" action=\"get\"/>]]></implementation_query>\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[q]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF10 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml>plain &amp; text</condition_xml></Item><Item type=\"mp_MacPolicy\" id=\"2\"><a><condition_xml>deep</condition_xml></a></Item></AML>
+CDF10 EXC: System.Xml.XmlException: An error occurred while parsing EntityName. Line 1, position 8.
+CDF11 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml>]]>  tail</condition_xml></Item></AML>
+CDF11 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml>]]>  tail</condition_xml>\r\n </Item>\r\n</AML>"
+CDF12 in : <AML><Item type=\"dr_RelationshipFamily\" id=\"1\"><implementation_query><![CDATA[<filter_xml>q</filter_xml>]]></implementation_query></Item></AML>
+CDF12 out: [BOM]"<AML>\r\n <Item type=\"dr_RelationshipFamily\" id=\"1\">\r\n  <implementation_query><![CDATA[<filter_xml><![CDATA[q]]]]><![CDATA[></filter_xml>]]></implementation_query>\r\n </Item>\r\n</AML>"
+## RPL ReplaceReferencesToPolyLists (polytype names = Poly)
+RPL1 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"Poly\" type=\"List\">AAAA</data_source></Item></Relationships></Item></AML>
+RPL1 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Poly\">\r\n     <Item type=\"List\" action=\"get\" select=\"id\" page=\"1\" pagesize=\"1\">\r\n      <name>Poly</name>\r\n     </Item>\r\n    </data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL2 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"Plain\" type=\"List\">AAAA</data_source></Item></Relationships></Item></AML>
+RPL2 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Plain\" type=\"List\">AAAA</data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL3 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"poly\" type=\"List\">AAAA</data_source></Item></Relationships></Item></AML>
+RPL3 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"poly\" type=\"List\">AAAA</data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL4 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source type=\"List\">AAAA</data_source></Item></Relationships></Item></AML>
+RPL4 EXC: System.NullReferenceException: Object reference not set to an instance of an object.
+RPL5 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type></Item></Relationships></Item></AML>
+RPL5 EXC: System.NullReferenceException: Object reference not set to an instance of an object.
+RPL6 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\" \" type=\"List\">AAAA</data_source></Item></Relationships></Item></AML>
+RPL6 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\" \" type=\"List\">AAAA</data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL7 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"Other Poly &amp; &lt;x&gt;\" type=\"List\"/></Item></Relationships></Item></AML>
+RPL7 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Other Poly &amp; &lt;x&gt;\" type=\"List\" />\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL8 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"Other Poly\" type=\"List\"/></Item></Relationships></Item></AML>
+RPL8 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Other Poly\">\r\n     <Item type=\"List\" action=\"get\" select=\"id\" page=\"1\" pagesize=\"1\">\r\n      <name>Other Poly</name>\r\n     </Item>\r\n    </data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL9 in : <AML><Item type=\"ItemType\" id=\"1\" action=\"add\"><name>T</name><Relationships><Item type=\"Property\" id=\"2\" action=\"add\"><name>p</name><data_type>list</data_type><data_source keyed_name=\"Poly\" is_null=\"0\"/></Item></Relationships></Item></AML>
+RPL9 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"1\" action=\"add\">\r\n  <name>T</name>\r\n  <Relationships>\r\n   <Item type=\"Property\" id=\"2\" action=\"add\">\r\n    <name>p</name>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Poly\">\r\n     <Item type=\"List\" action=\"get\" select=\"id\" page=\"1\" pagesize=\"1\">\r\n      <name>Poly</name>\r\n     </Item>\r\n    </data_source>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL10 in : <AML><Item type=\"X\" id=\"1\"><Relationships><Item type=\"Property\"><data_type>float</data_type><data_source keyed_name=\"Poly\"/></Item><Item type=\"Other\"><data_type>list</data_type><data_source keyed_name=\"Poly\"/></Item></Relationships></Item></AML>
+RPL10 out: [BOM]"<AML>\r\n <Item type=\"X\" id=\"1\">\r\n  <Relationships>\r\n   <Item type=\"Property\">\r\n    <data_type>float</data_type>\r\n    <data_source keyed_name=\"Poly\" />\r\n   </Item>\r\n   <Item type=\"Other\">\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name=\"Poly\" />\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL11 in : <AML><Item type=\"X\" id=\"1\"><Item type=\"Property\"><data_type>list</data_type></Item><Relationships><Item type=\"Property\"><Relationships><Item type=\"Property\"><data_type>list</data_type><data_source keyed_name=\"Poly\"/><data_source keyed_name=\"Other Poly\"/></Item></Relationships></Item></Relationships></Item></AML>
+RPL11 out: [BOM]"<AML>\r\n <Item type=\"X\" id=\"1\">\r\n  <Item type=\"Property\">\r\n   <data_type>list</data_type>\r\n  </Item>\r\n  <Relationships>\r\n   <Item type=\"Property\">\r\n    <Relationships>\r\n     <Item type=\"Property\">\r\n      <data_type>list</data_type>\r\n      <data_source keyed_name=\"Poly\">\r\n       <Item type=\"List\" action=\"get\" select=\"id\" page=\"1\" pagesize=\"1\">\r\n        <name>Poly</name>\r\n       </Item>\r\n      </data_source>\r\n      <data_source keyed_name=\"Other Poly\" />\r\n     </Item>\r\n    </Relationships>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPL12 in : <AML><Item type=\"X\"><Relationships>\r\n <Item type=\"Property\"><data_type>list</data_type> <data_source keyed_name=\"Poly\"/></Item></Relationships></Item></AML>
+RPL12 out: [BOM]"<AML>\r\n <Item type=\"X\">\r\n  <Relationships>\r\n <Item type=\"Property\"><data_type>list</data_type> <data_source keyed_name=\"Poly\"><Item type=\"List\" action=\"get\" select=\"id\" page=\"1\" pagesize=\"1\"><name>Poly</name></Item></data_source></Item></Relationships>\r\n </Item>\r\n</AML>"
+## RPM RemovePermissionIdWhenItMatchesToDefaultPermission
+RPM1 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM1 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\" action=\"add\">\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+RPM2 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM2 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\" action=\"add\">\r\n  <name>n</name>\r\n  <permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id>\r\n </Item>\r\n</AML>"
+RPM3 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM3 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\" action=\"add\">\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+RPM4 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM4 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\" action=\"add\">\r\n  <name>n</name>\r\n  <permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id>\r\n </Item>\r\n</AML>"
+RPM5 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM5 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\" action=\"add\">\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+RPM6 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM6 EXC: System.NullReferenceException: Object reference not set to an instance of an object.
+RPM7 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM7 EXC: System.NullReferenceException: Object reference not set to an instance of an object.
+RPM8 in : <AML><Item type=\"TypeA\" id=\"1\" action=\"add\"><name>n</name><permission_id keyed_name=\"p\" type=\"Permission\">PERM1</permission_id></Item></AML>
+RPM8 EXC: System.NullReferenceException: Object reference not set to an instance of an object.
+RPM9 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id>P</permission_id><permission_id>Q</permission_id></Item></AML>
+RPM9 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <permission_id>Q</permission_id>\r\n </Item>\r\n</AML>"
+RPM10 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id>PERM1</permission_id><Relationships><Item type=\"TypeA\" id=\"2\"><permission_id>PERM1</permission_id><x><permission_id>PERM1</permission_id></x></Item></Relationships></Item></AML>
+RPM10 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <Relationships>\r\n   <Item type=\"TypeA\" id=\"2\">\r\n    <x>\r\n     <permission_id>PERM1</permission_id>\r\n    </x>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+RPM11 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id keyed_name=\"k\" type=\"Permission\"> PERM1 </permission_id></Item></AML>
+RPM11 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <permission_id keyed_name=\"k\" type=\"Permission\"> PERM1 </permission_id>\r\n </Item>\r\n</AML>"
+RPM12 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id keyed_name=\"k\" type=\"Permission\"/></Item></AML>
+RPM12 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <permission_id keyed_name=\"k\" type=\"Permission\" />\r\n </Item>\r\n</AML>"
+RPM13 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><PERMISSION_ID>PERM1</PERMISSION_ID><Permission_Id>PERM1</Permission_Id></Item></AML>
+RPM13 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <PERMISSION_ID>PERM1</PERMISSION_ID>\r\n  <Permission_Id>PERM1</Permission_Id>\r\n </Item>\r\n</AML>"
+RPM15 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id>PERM1</permission_id></Item><Item type=\"View\" action=\"delete\" where=\"x\"/></AML>
+RPM15 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n </Item>\r\n <Item type=\"View\" action=\"delete\" where=\"x\" />\r\n</AML>"
+RPM16 in : <AML><Item type=\"TypeA\" id=\"1\"><name>n</name><permission_id></permission_id><a/></Item></AML>
+RPM16 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <permission_id></permission_id>\r\n  <a />\r\n </Item>\r\n</AML>"
+RPM17 in : <AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  <permission_id>PERM1</permission_id>\r\n </Item>\r\n</AML>
+RPM17 out: [BOM]"<AML>\r\n <Item type=\"TypeA\" id=\"1\">\r\n  <name>n</name>\r\n  \r\n </Item>\r\n</AML>"
+## RNN extra
+RNN5 in : <AML xmlns=\"urn:d\"><Item xmlns=\"\" type=\"a\" xmlns:p=\"urn:p\" p:z=\"1\" xml:lang=\"en\" xml:space=\"preserve\" xmlns:xml2=\"urn:x\"/></AML>
+RNN5 out: [BOM]"<AML xmlns=\"urn:d\">\r\n <Item xmlns=\"\" type=\"a\" />\r\n</AML>"
+RNN6 in : <AML><Item type=\"a\" xmlns:p=\"urn:p\" id=\"1\"><Item type=\"b\" xml:lang=\"en\" p:k=\"1\" id=\"2\"><name xml:lang=\"de\">n</name></Item></Item></AML>
+RNN6 out: [BOM]"<AML>\r\n <Item type=\"a\" id=\"1\">\r\n  <Item type=\"b\" id=\"2\">\r\n   <name xml:lang=\"de\">n</name>\r\n  </Item>\r\n </Item>\r\n</AML>"
+## XSL ApplyXsl (real export.xsl, then the strip and reload)
+AX1 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result><Item type=\"Method\" id=\"M1\" keyed_name=\"m\" is_current=\"1\"><name>m</name><method_type>JavaScript</method_type><method_code>a xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" b</method_code><comments>xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"</comments><label xml:lang=\"en\" i18n:xx=\"1\">l</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX1 out: [BOM]"<AML>\r\n <Item type=\"Method\" id=\"M1\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>m</name>\r\n  <method_type>JavaScript</method_type>\r\n  <method_code><![CDATA[a  b]]></method_code>\r\n  <comments></comments>\r\n  <label xml:lang=\"en\" i18n:xx=\"1\">l</label>\r\n </Item>\r\n</AML>"
+AX2 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result><Item type=\"Method\" id=\"M1\" keyed_name=\"m\" is_current=\"1\"><name>m</name><method_type>JavaScript</method_type><method_code>a xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" b</method_code><comments>xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"</comments><label xml:lang=\"en\" i18n:xx=\"1\">l</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX2 out: [BOM]"<AML>\r\n <Item type=\"Method\" id=\"M1\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>m</name>\r\n  <method_type>JavaScript</method_type>\r\n  <method_code><![CDATA[a  b]]></method_code>\r\n  <comments></comments>\r\n  <label xml:lang=\"en\" i18n:xx=\"1\">l</label>\r\n </Item>\r\n</AML>"
+AX3 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n  <Item type=\"Method\" id=\"M1\" keyed_name=\"m\" is_current=\"1\"><name>m</name><method_type>JavaScript</method_type><method_code>a xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" b</method_code><comments>xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"</comments><label xml:lang=\"en\" i18n:xx=\"1\">l</label>\r\n  </Item>\r\n</Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX3 out: [BOM]"<AML>\r\n <Item type=\"Method\" id=\"M1\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>m</name>\r\n  <method_type>JavaScript</method_type>\r\n  <method_code><![CDATA[a  b]]></method_code>\r\n  <comments></comments>\r\n  <label xml:lang=\"en\" i18n:xx=\"1\">l</label>\r\n  </Item>\r\n</AML>"
+AX4 in : <AML><Item type=\"Method\" id=\"M1\"/></AML>
+AX4 EXC: System.Xml.XmlException: Root element is missing.
+AX5 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX5 EXC: System.Xml.XmlException: Root element is missing.
+AX6 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result><Item type=\"ItemType\" id=\"IT\"><name>x</name><Relationships><Item type=\"FileSelectorTemplate\" id=\"F\"/></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX6 out: [BOM]"<AML>\r\n <Item type=\"ItemType\" id=\"IT\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>x</name>\r\n  <Relationships>\r\n   <Item type=\"FileSelectorTemplate\" id=\"F\" action=\"add\" />\r\n  </Relationships>\r\n </Item>\r\n <Item type=\"View\" action=\"delete\" where=\"source_id='IT'\" />\r\n <Item type=\"Form\" action=\"delete\" where=\"name='x'\" />\r\n</AML>"
+AX7 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result><Item type=\"Method\" id=\"M1\"><name>m</name><method_code>x]]&gt;y</method_code></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX7 out: [BOM]"<AML>\r\n <Item type=\"Method\" id=\"M1\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>m</name>\r\n  <method_code><![CDATA[x]]]]><![CDATA[>y]]></method_code>\r\n </Item>\r\n</AML>"
+AX8 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><Result><Item type=\"List\" id=\"L1\"><name>n</name><label/><xp-x/></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX8 out: [BOM]"<AML>\r\n <Item type=\"List\" id=\"L1\" action=\"add\" xmlns:i18n=\"http://www.aras.com/I18N\">\r\n  <name>n</name>\r\n  <label />\r\n  <xp-x />\r\n </Item>\r\n</AML>"
+AX9 EXC: System.Management.Automation.MethodInvocationException: Exception calling \"Invoke\" with \"2\" argument(s): \"Value cannot be null.\r\nParameter name: xmlDoc\"
+AX10 EXC: System.Management.Automation.MethodInvocationException: Exception calling \"Invoke\" with \"2\" argument(s): \" Unable to get 'Aras.Tools.SolutionUpgrade.nosuch.xsl' from compiled resource. Probably it's not compiled as resource or exist at all. Error of  applying export.xsl.\" | inner:  Unable to get 'Aras.Tools.SolutionUpgrade.nosuch.xsl' from compiled resource. Probably it's not compiled as resource or exist at all. Error of  applying export.xsl.
+AX11 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><Result><Item type=\"Method\" id=\"M1\"><name>m</name><method_code>xxx</method_code></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+AX11 out: [BOM]"<AML>\r\n <Item type=\"Method\" id=\"M1\" action=\"add\">\r\n  <name>m</name>\r\n  <method_code><![CDATA[xxx]]></method_code>\r\n </Item>\r\n</AML>"
+## IsStandardPackage / IsCorePackage / IsDefaultPackage
+STD pkg=com.aras.innovator.core core=True default=False standard=True
+STD pkg=com.aras.innovator. core=True default=False standard=True
+STD pkg=com.aras.innovator core=False default=False standard=False
+STD pkg=com.aras.innovator.solution.PLM core=False default=False standard=False
+STD pkg=com.aras.innovator.solution. core=False default=False standard=False
+STD pkg=com.aras.innovator.solution core=True default=False standard=True
+STD pkg=com.aras.innovator.solutionX core=True default=False standard=True
+STD pkg=com.aras.innovator.Solution.PLM core=True default=False standard=True
+STD pkg=COM.ARAS.INNOVATOR.core core=False default=False standard=False
+STD pkg=Com.Aras.Innovator.core core=False default=False standard=False
+STD pkg=com.aras.defaults.x core=False default=True standard=True
+STD pkg=COM.ARAS.DEFAULTS.x core=False default=True standard=True
+STD pkg=com.aras.defaults core=False default=False standard=False
+STD pkg=com.aras.defaults. core=False default=True standard=True
+STD pkg=com.aras.innov\u00ADator.x core=True default=False standard=True
+STD pkg=com.aras.innovator.\u00ADx core=True default=False standard=True
+STD pkg=com.aras.innovator\u200B.x core=False default=False standard=False
+STD pkg=x.com.aras.innovator.core core=False default=False standard=False
+STD pkg= com.aras.innovator.core core=False default=False standard=False
+STD pkg= core=False default=False standard=False
+STD null EXC NullReferenceException
+## Engine call form for the type directory: Folder\type\ then DirectoryExists, CreateDirectory, save
+TW type=Method name=a.xml ok
+TW type=method name=b.xml ok
+TW type=METHOD name=A.XML ok
+TW type=Sp  name=a.xml EXC DirectoryNotFoundException: Could not find a part of the path '<WD>\fs5\Sp \a.xml'.
+TW type=Sp name=b.xml ok
+TW type=Dot. name=a.xml ok
+TW type=Dot name=b.xml ok
+TW type=Two   name=a.xml EXC DirectoryNotFoundException: Could not find a part of the path '<WD>\fs5\Two  \a.xml'.
+TW type=Sp..  name=a.xml EXC DirectoryNotFoundException: Could not find a part of the path '<WD>\fs5\Sp.. \a.xml'.
+TW type=a/b name=x.xml ok
+TW type=a\b name=y.xml ok
+TW type=a:b name=x.xml EXC NotSupportedException: The given path's format is not supported.
+TW type=a*b name=x.xml EXC ArgumentException: Illegal characters in path.
+TW type=a?b name=x.xml EXC ArgumentException: Illegal characters in path.
+TW type=a\"b name=x.xml EXC ArgumentException: Illegal characters in path.
+TW type=a<b name=x.xml EXC ArgumentException: Illegal characters in path.
+TW type=a|b name=x.xml EXC ArgumentException: Illegal characters in path.
+TW type= name=x.xml ok
+TW type=Item Type name=with space.xml ok
+TW type=NUL name=x.xml EXC DirectoryNotFoundException: Could not find a part of the path '<WD>\fs5\NUL\x.xml'.
+TW type=CON name=x.xml ok
+TW type=.. name=up.xml ok
+TW type=. name=cur.xml ok
+TW type=T name= .xml ok
+TW type=T name=..xml ok
+TW type=T name=.xml ok
+FS5 tree:
+  <FS>\a [dir]
+  <FS>\CON [dir]
+  <FS>\Dot [dir]
+  <FS>\Item Type [dir]
+  <FS>\Method [dir]
+  <FS>\Sp [dir]
+  <FS>\T [dir]
+  <FS>\Two [dir]
+  <FS>\cur.xml = <AML>\r\n <Item id=\"dot\" />\r\n</AML>
+  <FS>\x.xml = <AML>\r\n <Item id=\"empty-type\" />\r\n</AML>
+  <FS>\a\b [dir]
+  <FS>\a\b\x.xml = <AML>\r\n <Item id=\"slash\" />\r\n</AML>
+  <FS>\a\b\y.xml = <AML>\r\n <Item id=\"backslash\" />\r\n</AML>
+  <FS>\CON\x.xml = <AML>\r\n <Item id=\"con\" />\r\n</AML>
+  <FS>\Dot\a.xml = <AML>\r\n <Item id=\"dot\" />\r\n</AML>
+  <FS>\Dot\b.xml = <AML>\r\n <Item id=\"dot-plain\" />\r\n</AML>
+  <FS>\Item Type\with space.xml = <AML>\r\n <Item id=\"sp-name\" />\r\n</AML>
+  <FS>\Method\a.xml = <AML>\r\n <Item id=\"m3\" />\r\n</AML>
+  <FS>\Method\b.xml = <AML>\r\n <Item id=\"m2\" />\r\n</AML>
+  <FS>\Sp\b.xml = <AML>\r\n <Item id=\"sp-plain\" />\r\n</AML>
+  <FS>\T\ .xml = <AML>\r\n <Item id=\"space-name\" />\r\n</AML>
+  <FS>\T\..xml = <AML>\r\n <Item id=\"dots-name\" />\r\n</AML>
+  <FS>\T\.xml = <AML>\r\n <Item id=\"only-ext\" />\r\n</AML>
+parent listing: up.xml
+## NLP NormalizeLongPath
+NLP in=C:\a\b.xml len=10 out=C:\a\b.xml
+NLP in=.\x\y.xml len=9 out=.\x\y.xml
+NLP in=x\y.xml len=7 out=x\y.xml
+NLP in=\\server\share\dir\f.xml len=24 out=server\share\dir\f.xml
+NLP in=\\?\C:\a\b.xml len=14 out=C:\a\b.xml
+NLP in=\\?\UNC\server\share\f.xml len=26 out=UNC\server\share\f.xml
+NLP in=??C:\a len=6 out=C:\a
+NLP in=C:\ddddddddddddddddddddddddddddddddddddd...(250 chars)...eeeeee\f.xml len=250 out=C:\ddddddddddddddddddddddddddddddddddddd...(250 chars)...eeeeee\f.xml
+NLP in=C:\ddddddddddddddddddddddddddddddddddddd...(254 chars)...dddddddddddd len=254 out=C:\ddddddddddddddddddddddddddddddddddddd...(254 chars)...dddddddddddd
+NLP in=C:\ddddddddddddddddddddddddddddddddddddd...(255 chars)...dddddddddddd len=255 out=\\?\C:\ddddddddddddddddddddddddddddddddd...(259 chars)...dddddddddddd
+NLP in=C:\ddddddddddddddddddddddddddddddddddddd...(256 chars)...dddddddddddd len=256 out=\\?\C:\ddddddddddddddddddddddddddddddddd...(260 chars)...dddddddddddd
+NLP in=C:\a\..\b len=9 out=C:\a\..\b
+NLP in= len=0 out=
+NLP in= len=0 out=
+NLP in=//server/share/x len=16 out=//server/share/x
+NLP in=C:/a/b.xml len=10 out=C:/a/b.xml
+NLP in=C:\a\b.xml  len=11 out=C:\a\b.xml 
+cwd=<WD>
+## COD CreateOutputDir
+COD pkg=com.aras.innovator.core -> <WD>\com\aras\innovator\core
+COD pkg=com.aras.innovator.solution.PLM -> <WD>\PLM\Import
+COD pkg=com.aras.innovator.Core -> <WD>\com\aras\innovator\Core
+COD pkg=COM.ARAS.DEFAULTS.x -> <WD>\COM\ARAS\DEFAULTS\x
+COD pkg=com.aras.defaults -> <WD>\defaults\Import
+COD pkg=com.aras.defaults. -> <WD>\com\aras\defaults\
+COD pkg=com.aras.innovator. -> <WD>\com\aras\innovator\
+COD pkg=com.aras.innovator -> <WD>\innovator\Import
+COD pkg=com.acme.thing -> <WD>\thing\Import
+COD pkg=Thing -> <WD>\Thing\Import
+COD pkg=a.b. -> <WD>\\Import
+COD pkg=a.b.c. -> <WD>\\Import
+COD pkg=. -> <WD>\\Import
+COD pkg= -> <WD>\\Import
+COD pkg=a..b -> <WD>\b\Import
+COD pkg=com.x.PLM -> <WD>\PLM\Import
+COD pkg=org.y.PLM -> <WD>\PLM\Import
+COD pkg=a.b  EXC System.IO.DirectoryNotFoundException: Could not find a part of the path '<WD>\b \Import'.
+COD pkg=a.b.CON -> <WD>\CON\Import
+COD pkg=a.b\n EXC System.ArgumentException: Illegal characters in path.
+COD pkg=a b.c d -> <WD>\c d\Import
+COD pkg=a.b.c:d EXC System.NotSupportedException: The given path's format is not supported.
+COD pkg=a.b/c -> <WD>\b/c\Import
+-- wipe test
+before: <WD>\PLM\Import\sub, <WD>\PLM\Import\keep.txt
+after :  (exists=True)
+## CreateOutputDir forms
+COD2 pkg=com.aras.innovator.core -> <WD>\wd2\\com\aras\innovator\core
+COD2 pkg=com.x.PLM -> <WD>\wd2\\PLM\Import
+COD3 relative WD -> rel_out\PLM\Import
+-- case-insensitive wipe
+before: <WD>\com\aras, <WD>\com\aras\innovator, <WD>\com\aras\innovator\Core, <WD>\com\aras\innovator\Core\x.txt
+after : <WD>\com\aras, <WD>\com\aras\innovator, <WD>\com\aras\innovator\core ; x.txt exists=False
+-- wipe leaves readonly/hidden?
+RO wipe EXC UnauthorizedAccessException: Access to the path 'ro.txt' is denied.
+-- file where dir expected
+FILEDIR EXC IOException: Cannot create \"<WD>\wd4\FF\Import\" because a file or directory with the same name already exists.
+## FS case rules and device-named directories
+FSW c_00E4_00C4\\u00E4.xml ok
+FSW c_00E4_00C4\\u00C4.xml ok
+CASE a-umlaut (U+00E4 / U+00C4) -> files: \u00E4.xml
+FSW c_00E9_00C9\\u00E9.xml ok
+FSW c_00E9_00C9\\u00C9.xml ok
+CASE e-acute (U+00E9 / U+00C9) -> files: \u00E9.xml
+FSW c_0131_0049\\u0131.xml ok
+FSW c_0131_0049\I.xml ok
+CASE dotless-i vs I (U+0131 / U+0049) -> files: I.xml | \u0131.xml
+FSW c_0130_0069\\u0130.xml ok
+FSW c_0130_0069\i.xml ok
+CASE dotted-I vs i (U+0130 / U+0069) -> files: i.xml | \u0130.xml
+FSW c_017F_0053\\u017F.xml ok
+FSW c_017F_0053\S.xml ok
+CASE long-s vs S (U+017F / U+0053) -> files: S.xml | \u017F.xml
+FSW c_212A_006B\\u212A.xml ok
+FSW c_212A_006B\k.xml ok
+CASE kelvin vs k (U+212A / U+006B) -> files: k.xml | \u212A.xml
+FSW c_03C3_03A3\\u03C3.xml ok
+FSW c_03C3_03A3\\u03A3.xml ok
+CASE sigma vs Sigma (U+03C3 / U+03A3) -> files: \u03C3.xml
+FSW c_03C2_03A3\\u03C2.xml ok
+FSW c_03C2_03A3\\u03A3.xml ok
+CASE final-sigma vs Sigma (U+03C2 / U+03A3) -> files: \u03A3.xml | \u03C2.xml
+FSW c_00DF_1E9E\\u00DF.xml ok
+FSW c_00DF_1E9E\\u1E9E.xml ok
+CASE sharp-s vs capital sharp-s (U+00DF / U+1E9E) -> files: \u00DF.xml | \u1E9E.xml
+FSW c_00B5_039C\\u00B5.xml ok
+FSW c_00B5_039C\\u039C.xml ok
+CASE micro vs Mu (U+00B5 / U+039C) -> files: \u00B5.xml | \u039C.xml
+FSW c_01C5_01C4\\u01C5.xml ok
+FSW c_01C5_01C4\\u01C4.xml ok
+CASE Dz-titlecase vs DZ (U+01C5 / U+01C4) -> files: \u01C4.xml | \u01C5.xml
+FSW c_1E9B_1E60\\u1E9B.xml ok
+FSW c_1E9B_1E60\\u1E60.xml ok
+CASE long-s-dot vs S-dot (U+1E9B / U+1E60) -> files: \u1E60.xml | \u1E9B.xml
+FSW c_0069_0049\i.xml ok
+FSW c_0069_0049\I.xml ok
+CASE i vs I (U+0069 / U+0049) -> files: i.xml
+FSW NUL\x.xml EXC System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\'.
+FSW CON\x.xml ok
+FSW aux\x.xml ok
+FSW LPT1\x.xml ok
+DEVDIR: aux | CON | LPT1
+FSW Dir  \z.xml EXC System.IO.DirectoryNotFoundException: Could not find a part of the path '<WD>\fs2\Dir  \z.xml'.
+FSW Dir.\z2.xml ok
+FSW D\z.xml ok
+FSW d\z.xml ok
+D: D | Dir
+DZ: <AML>\r\n <Item id=\"d-lower\" />\r\n</AML>
+## Partial write: lone surrogate reference
+SUR EXC System.ArgumentException: The surrogate pair (0xD800, 0x79) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).
+SUR file bytes=36 hex=EFBBBF3C414D4C3E0D0A203C4974656D20747970653D2261223E0D0A20203C6E616D653E
+## Trailing space and dot in file names (direct)
+W2 tr.xml  ok
+W2 tr.xml. ok
+W2 tr2.xml   ok
+W2 tr3 .xml ok
+W2 dot.. ok
+LS3: dot | sur.xml | tr.xml | tr2.xml | tr3 .xml
+## NormalizeLongPath boundaries
+NLPB len=252 prefixed=False outlen=252
+NLPB len=253 prefixed=False outlen=253
+NLPB len=254 prefixed=False outlen=254
+NLPB len=255 prefixed=True outlen=259
+NLPB len=256 prefixed=True outlen=260
+NLPB len=259 EXC PathTooLongException
+NLPB len=260 EXC PathTooLongException
+NLPB len=261 EXC PathTooLongException
+NLPB len=270 EXC PathTooLongException
+NLPU len=250 out=\\?\C:\Users\<user>\AppData\Local\libsjs...(303 chars)...dddddddddddd outlen=303
+NLPU len=254 out=\\?\C:\Users\<user>\AppData\Local\libsjs...(307 chars)...dddddddddddd outlen=307
+NLPU len=255 out=\\?\C:\Users\<user>\AppData\Local\libsjs...(308 chars)...dddddddddddd outlen=308
+NLPU len=256 out=\\?\C:\Users\<user>\AppData\Local\libsjs...(309 chars)...dddddddddddd outlen=309
+NLPU len=300 EXC PathTooLongException
+NLPR len=255 prefixed=True outlen=310 startsWithCwd=True
+NLPR len=300 EXC PathTooLongException
+NLPT in=\\?\C:\a\b out=C:\a\b
+NLPT in=\\?\\C:\a out=C:\a
+NLPT in=?\?C:\a out=C:\a
+NLPT in=\\\a out=a
+NLPT in=\\? EXC ArgumentException: The path is not of a legal form.
+NLPT in=\\ EXC ArgumentException: The path is not of a legal form.
+NLPT in=? EXC ArgumentException: The path is not of a legal form.
+NLPT in=\\?\\\?\X:\q out=X:\q
+NLPT in=\?\C:\a out=C:\a
+## NLP unc write: where does the file land
+cwd=<WD>
+UNCW EXC DirectoryNotFoundException: Could not find a part of the path '<WD>\localhost\C$\Users\<user>\AppData\Local\libsjs-15-probe\work\uncw\f.xml'.
+UNCW real exists=False
+UNCW relative exists=False
+## Astral code points and Unicode normalisation in file names
+ASTRAL files=6:D801DC00002E0078006D006C | 6:D801DC28002E0078006D006C
+NORM files=00650301002E0078006D006C | 00E9002E0078006D006C
+## T1 Same file name in different case: overwrite keeps the first spelling
+T1 files: y.XML = <AML>\r\n <Item id=\"third\" />\r\n</AML>

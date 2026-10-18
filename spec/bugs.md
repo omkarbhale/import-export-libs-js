@@ -84,3 +84,66 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the reference cannot be resolved on import, and a null property should stay null or be left out.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
 - **Versions:** 14.0.7 (14.35's `is_null` drop template changes this).
+
+## EXP-402: the SOAP-ENV namespace strip deletes that text from element content
+
+- **Behaviour:** after the transform, `ApplyXsl` removes every occurrence of `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` from the serialized output, so the same text is also removed from element text and CDATA: a method whose code contains it exports without it, and a `comments` element holding only that text exports as `<comments></comments>`.
+- **Why it is a bug:** the strip is meant to drop the namespace declaration the transform copies onto each `Item`. A correct engine would remove the declaration nodes, not text.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl`.
+- **Versions:** 14.0.7.
+
+## EXP-404: a type with incomplete default permission data fails the item with a NullReferenceException
+
+- **Behaviour:** when the ItemType answer lacks `is_relationship` or `use_src_access`, or neither of them is `1` and the type has no default Allowed Permission, the item fails with `Object reference not set to an instance of an object. Can't export item.`
+- **Why it is a bug:** a missing default permission is a normal state (it means the permission is kept), and a missing flag could be read as `0`. A correct engine would keep the `permission_id` instead of failing the export of the item.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::RemovePermissionIdWhenItMatchesToDefaultPermission`.
+- **Versions:** 14.0.7.
+
+## EXP-406: CdataFilterXml decodes entity-like text inside CDATA and fails on a bare ampersand
+
+- **Behaviour:** the step sets the element's markup to the HTML-decoded markup, so text inside a CDATA section is decoded too (`&amp;nbsp;` becomes `&nbsp;`, `&lt;b&gt;` becomes `<b>`), and plain text holding `&amp;` becomes a bare `&` that cannot be loaded, which fails the item.
+- **Why it is a bug:** CDATA content is literal text and must come out as it went in, and a decoded document must still be well formed.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::CdataFilterXml`.
+- **Versions:** 14.0.7.
+
+## EXP-409: a failed poly-type lookup is remembered as "no poly types"
+
+- **Behaviour:** the poly-type name list is stored empty before it is fetched. If the fetch fails with a faultcode other than `0`, the item fails, and every later item in the process finds the empty list, so no list property is converted.
+- **Why it is a bug:** a transient failure silently changes the content of every later item file. A correct engine would not store the list until the fetch succeeded.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`.
+- **Versions:** 14.0.7.
+
+## EXP-411: RemoveNamespaceNodes tests for a null prefix that never occurs
+
+- **Behaviour:** the condition "prefix is null or prefix is not empty" can only act through its second half, because .NET reports the prefix of an unprefixed attribute as the empty string. Only prefixed attributes of non-namespaced `Item` elements are removed.
+- **Why it is a bug:** the first half is dead code, written for a null that never happens. Its intent cannot be told from the code; the library reproduces the effect (prefixed attributes go, plain attributes and `xmlns=""` stay).
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::RemoveNamespaceNodes`.
+- **Versions:** 14.0.7.
+
+## EXP-416: packages with the same last segment wipe each other's output folder
+
+- **Behaviour:** a non-standard package is exported into `<last segment>\Import`, and the folder is deleted recursively and recreated before each package. Two packages with the same last segment, and a referenced package whose last segment equals a main package's, delete each other's files; packages with an empty last segment (a trailing dot) share `Import`.
+- **Why it is a bug:** an export deletes the output of another package of the same run, without a warning, and the manifest still lists it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::CreateOutputDir`.
+- **Versions:** 14.0.7.
+
+## EXP-419: two items with the same file name overwrite each other
+
+- **Behaviour:** the file name is the keyed name (case-insensitively on Windows), nothing checks for an existing file, and the export reports every item as successful. Only the last item of a name keeps its file.
+- **Why it is a bug:** items are lost from the exported package silently. A correct engine would detect the collision, or name the file by id.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export`, writing through `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings`.
+- **Versions:** 14.0.7.
+
+## EXP-422: NormalizeLongPath turns a UNC path into a relative path
+
+- **Behaviour:** `NormalizeLongPath` removes all leading `\` and `?` characters, so `\\server\share\dir` becomes `server\share\dir` and is then resolved against the process's current directory. A working directory, manifest or log given as a UNC path is read from or written to the wrong place or fails.
+- **Why it is a bug:** the trim is meant to drop a `\\?\` prefix. A correct engine would remove only that prefix. The same code returns the trimmed path, not the full path, when it is shorter than 255 characters.
+- **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::NormalizeLongPath`.
+- **Versions:** 14.0.7.
+
+## EXP-428: a failed write leaves a partial item file
+
+- **Behaviour:** the file is created before serialization, so a serialization failure (a character reference to a lone surrogate, for example) leaves the file with the BOM and the text written so far, and the exception is not turned into a per-item error.
+- **Why it is a bug:** a truncated file looks like an export result. A correct engine would serialize before writing, or delete the file on failure.
+- **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings`.
+- **Versions:** 14.0.7.

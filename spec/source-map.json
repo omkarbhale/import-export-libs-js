@@ -324,7 +324,11 @@
             "bodySha256": "c1333c2ee09b4222be020900459b3479ab9a9f60b6f881f34102e0d8f8344e74",
             "textSha256": "0f93a7bb705ae03bc6aa04a8414e022d56aa41820d65b1a3b2e7eae7372ec379"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-405",
+            "EXP-406"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::Export",
@@ -336,7 +340,14 @@
             "bodySha256": "7fe5be843d5e70578de04f400162790f4e250bd21e2fe977ec41435bd3d7a3d2",
             "textSha256": "4c40a8a9ebce7e0344dcf6b7e2f666d0334e8ba8f1cd59558bb018c61fb84d3e"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-400",
+            "EXP-417",
+            "EXP-418",
+            "EXP-419",
+            "EXP-423"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::GetDefaultSelectAttribute",
@@ -471,7 +482,11 @@
             "bodySha256": "0ca1bcdaeffb58b81f244d9d08e5ecba5ed0bb719f216fe480f49da850f53f82",
             "textSha256": "f9470f10fe0171989578b4d3a733a3aa337d8d049ddc0e5959cac5daa821183b"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-403",
+            "EXP-404"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CExportItems::RemoveRelationshipHelper",
@@ -761,7 +776,9 @@
             "EXP-260",
             "EXP-270",
             "EXP-271",
-            "EXP-272"
+            "EXP-272",
+            "EXP-401",
+            "EXP-402"
           ]
         },
         {
@@ -1122,7 +1139,11 @@
             "bodySha256": "58a4e845a73182ca541b58fca66b1dd867915c9571ee8bfe1457c1a9089e7a5f",
             "textSha256": "32d6a6125b58e740425d08dd4a16dec3ccdf488d0619f0ea45daa4d3b36e2629"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-408",
+            "EXP-409"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetRelatedItemConfigId",
@@ -1331,7 +1352,10 @@
             "bodySha256": "381216548e314be166e4ff334ca76d4a9f83366a22e9b5f52c6746a071a20d59",
             "textSha256": "32c57ffdd3987cdf131bf0163d0efcaaeb5a682971530c50fa799d77018cb0c9"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-412"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveNamespaceNodes",
@@ -1343,7 +1367,11 @@
             "bodySha256": "69d5786bf330576a4b548e1869a64b1c691dccf9389b1307a6888be14c5f6b47",
             "textSha256": "8953a12d1de588a0ad6bd61cbbd595d74b68333e3dffebacedf03cb039afe848"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-410",
+            "EXP-411"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveReferencesToAnotherPackages",
@@ -1379,7 +1407,10 @@
             "bodySha256": "eaf7ab5c85ffeffcc92fc9d856eaf656525de5fd4264b83670ff1402d2be8872",
             "textSha256": "126930b2d1a98fad04d8949400543b0d078e7df87908db08750043c177df9fb1"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-407"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::SetItemIdToLastGeneration",
@@ -1449,7 +1480,10 @@
             "bodySha256": "f6f09f8a53a362d7ee85924340d96684e0e431f07457fe57eeb45fdce65bb10d",
             "textSha256": "42923d2300a518105ba88541d72bcf744ae7f8c9254fedd826d15dbae63a4fb8"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-407"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::doImport",
@@ -1764,7 +1798,10 @@
             "bodySha256": "63813eb62d2a2321c23e325b64a0abd3e6f25dd539241d91794e94921a53d9ac",
             "textSha256": "34ca5c9384d1d00ba10a9f3eb0aec34a52d3e029878cb8cd23eefcb11d98b6b4"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-413"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsDefaultPackage",
@@ -1776,7 +1813,10 @@
             "bodySha256": "c88222235027229772923c8cabca9b72c65d2fcf7313ba14e7756643a67fff9c",
             "textSha256": "1c0c9546282c1411c0bd527e99285a692a09811ef7ae97fb7521b62133deae5a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-413"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportImportBase::IsImportableType",
@@ -1800,7 +1840,10 @@
             "bodySha256": "f1ca3f606b9b0c7264c14fd2276e07ee0a7c95ce459ba9167c80fc14f72b76b6",
             "textSha256": "2c78d5c08ca245a32c076c4f61af0b3d4daf215e3c2c8171726e8fda9f8b45a2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-413"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ExportItem::.ctor",
@@ -1979,7 +2022,11 @@
             "bodySha256": "68dc74621a5b289b930a421bbb39fe057d5ca9f5aa69d4f52849888979c575fe",
             "textSha256": "2bea8b75d3d56938e58a3af724346b0c09b1b9cf31289de27fa63cd659757472"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-420",
+            "EXP-421"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryDelete",
@@ -1991,7 +2038,10 @@
             "bodySha256": "353a980a62ddc3685e11a165be08959c57e5fb086d60d7f02a32833ac4761f78",
             "textSha256": "490baca4329bc120c69882bed29597aa4bc4dde97b52d8810e47def873885bf8"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-415"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryExists",
@@ -2003,7 +2053,11 @@
             "bodySha256": "d29ec0b7028a222ae6859cdcdc51b21e22971798dbed376bca49ed06e70595c9",
             "textSha256": "c4c5e24d7ce2d15859109b6224c192f21fe8eed9daa53d19f5d51ed8524bc1a7"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-420",
+            "EXP-421"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryGetDirectories",
@@ -2099,7 +2153,11 @@
             "bodySha256": "d5061462b254a3686fe72ab32b092ffc6ce83ee2570606131fdd503a6ea542a5",
             "textSha256": "54f074974083dc6378b93257c95134a24fcdafff96fabdf3991f5c9ae25d9127"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-421",
+            "EXP-422"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::PathCombine",
@@ -2183,7 +2241,15 @@
             "bodySha256": "23d28350b8917f6dbf0de92a7f3a56242fa96ed08fc40d4afb10c698d960f20b",
             "textSha256": "08a413cb637d224b352f7e18c76d8b6aefee90cb60dd10b23cf692e08940c88a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-423",
+            "EXP-424",
+            "EXP-425",
+            "EXP-426",
+            "EXP-427",
+            "EXP-428"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::.ctor",
@@ -2270,7 +2336,12 @@
             "bodySha256": "874e112777b95b69922b4c1f3faae924091cc44041a0653cf1f7d0f3e4f2b778",
             "textSha256": "ea1e8f3f744687199c840a790c10974e4e2119056f50ccf9b11adab6270ae154"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-414",
+            "EXP-415",
+            "EXP-416"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc",
