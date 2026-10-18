@@ -313,4 +313,24 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the dependency names of a package are cached in a `static readonly` table that no constructor clears, unlike the three other caches of the same code. A second export in the same process reuses the dependency list read by the first.
 - **Why it is a bug:** the dependencies can change between runs, or the second run can talk to another database; a correct engine would start each run with empty caches.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames`.
+
+## IMP-211: a relationship owner addressed by where is queued with the text System.Xml.XmlAttribute
+
+- **Behaviour:** when the owner of a missing related item has a `where` attribute and no `id`, the queued delayed edit reads ` where='System.Xml.XmlAttribute'`. The real `where` clause is lost.
+- **Why it is a bug:** the engine writes the `ToString()` of the attribute object, which is its type name, and not the attribute's value. A correct engine would write the `where` expression.
+- **C# location:** `Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessRelatedItem`.
+- **Versions:** 14.0.7.
+
+## IMP-213: the where branch of the relationship routine can never be taken
+
+- **Behaviour:** for a relationship that could not be resolved (code 10005) the owner is always addressed as ` id='…'`. An owner with no `id`, including one addressed by `where`, is queued with ` id=''`.
+- **Why it is a bug:** the engine chooses the form by testing `GetAttribute("id") != null`, and `GetAttribute` returns the empty string for a missing attribute, never null. The `where` form is dead code. A correct engine would test for the attribute's presence.
+- **C# location:** `Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ProcessRelatedRelationshipItem`.
+- **Versions:** 14.0.7.
+
+## IMP-242: the floating-reference replacement never runs
+
+- **Behaviour:** an AML that holds `__find_latest_generation_` is parsed, and then sent unchanged, with the marker attribute and the id that did not resolve still on the `related_id`. `GetCurrentIdOfVersion` is never called from the delayed run. A malformed entry that holds the marker fails in the parse.
+- **Why it is a bug:** the replacement selects `/AML/Item/Relationships/Item/related_id`, but every queued entry is rooted at `Item`, so the selection never matches and the method returns null. A correct engine would select from `/Item`.
+- **C# location:** `Aras.Tools.SolutionUpgrade.DelayedResolutionManager::ReplaceRelatedIdOnLatestId`.
 - **Versions:** 14.0.7.
