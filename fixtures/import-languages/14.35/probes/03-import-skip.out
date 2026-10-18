@@ -1,0 +1,95 @@
+## baseline-languages-null
+Languages given => null
+Languages after construction => null
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">FR</i18n:label><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+## languages-de-en-removes-fr
+Languages given => ["de", "en"]
+Languages after construction => ["de", "en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+## languages-en-removes-de-fr
+Languages given => ["en"]
+Languages after construction => ["en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+## languages-de-removes-en-and-fr
+Languages given => ["de"]
+Languages after construction => ["de"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label></Item>"
+## languages-star-removes-nothing
+Languages given => ["*"]
+Languages after construction => ["de", "en", "fr"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">FR</i18n:label><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+## languages-empty-removes-nothing
+Languages given => []
+Languages after construction => []
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">FR</i18n:label><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+## languages-all-used-removes-nothing
+Languages given => ["de", "fr", "en"]
+Languages after construction => ["de", "fr", "en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">DE</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">FR</i18n:label><i18n:label xml:lang=\"en\" xmlns:i18n=\"http://www.aras.com/I18N\">EN</i18n:label></Item>"
+#### what the selector reaches
+## any-element-and-nested
+Languages given => ["de", "en"]
+Languages after construction => ["de", "en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><r xml:lang=\"de\">keep</r><s>no lang</s></Item>"
+## xml-lang-on-the-item-itself
+Languages given => ["de", "en"]
+Languages after construction => ["de", "en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" xml:lang=\"fr\" doGetItem=\"0\"><name>n</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+## xml-lang-on-the-item-itself-and-used
+Languages given => ["de", "en"]
+Languages after construction => ["de", "en"]
+result => 1
+message => "error | \t\t****ErrorMessage****\r\n\r\nImport package 'P1' failed with message:\n\nObject reference not set to an instance of an object. Can't merge item  \nUpdating P1 to failed release status\r\n"
+## uppercase-in-file-is-lowered-in-the-selector
+Languages given => ["en"]
+Languages after construction => ["en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"DE\" xmlns:i18n=\"http://www.aras.com/I18N\">upper</i18n:label></Item>"
+## apostrophe-in-a-used-code
+Languages given => ["de"]
+Languages after construction => ["de"]
+result => 1
+message => "error | \t\t****ErrorMessage****\r\n\r\nImport package 'P1' failed with message:\n\n'//node()[@xml:lang='d'e']' has an invalid token.\nUpdating P1 to failed release status\r\n"
+## apostrophe-in-a-used-code-star
+Languages given => ["*"]
+Languages after construction => ["de", "d'e"]
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: d'e.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: d'e.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+## per-package-skip-sets
+Languages given => ["de", "en"]
+Languages after construction => ["de", "en"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000002\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000002</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+## item-with-empty-lang
+Languages given => ["de"]
+Languages after construction => ["de"]
+result => 0
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+#### batch mode
+## batch-success
+Languages given => ["de"]
+Languages after construction => ["de"]
+result => 0
+sent => "<AML><Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item><Item type=\"Method\" id=\"M0000000000000000000000000000002\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000002</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item></AML>"
+log => "Try to execute AMLs in AML batch mode..."
+log => "AML successfully applied in AML batch mode:"
+## batch-falls-back-to-one-by-one
+Languages given => ["de"]
+Languages after construction => ["de"]
+result => 0
+sent => "<AML><Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item><Item type=\"Method\" id=\"M0000000000000000000000000000002\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000002</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item></AML>"
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000001\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000001</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+sent => "<Item type=\"Method\" id=\"M0000000000000000000000000000002\" action=\"add\" doGetItem=\"0\"><name>MM0000000000000000000000000000002</name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">v</i18n:label></Item>"
+message => "warning |           ****Warning! Import of an item failed. Trying to resolve the error... ****\r\n       <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>batch refused</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+log => "Try to execute AMLs in AML batch mode..."
+log => "Error of import in AML batch mode:"
+log => "      <faultstring>batch refused</faultstring>"

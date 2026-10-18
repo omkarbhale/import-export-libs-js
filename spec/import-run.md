@@ -54,7 +54,7 @@ A null `Release` or `Description` is concatenated as the empty string (`IMP-451`
 
 [12.0] `SUImportContext` is the same class with the same five properties (observed `s31-bfast`: `bFast` set to `true` reads back `False`). The engine reads from `SolutionUpgradeContext` (EXP-501 [12.0]) only `Action` (must be `Import`, IMP-402), `ManifestFile`, `LogFilePath`, `Verbose` and `Timeout`. `WorkingDirectory` is not used for an import (the constructor replaces it by the manifest folder) and is not logged. 12.0 writes no header (IMP-403), so `Url`, `DataBase` and `UserName` are not logged, and `LPPath` and `LPPackage` do not exist. `Release` and `Description` are read as in 14.0.7 (IMP-451).
 
-[14.35] The five properties of 14.0.7, unchanged (`bFast` still discards its value and reads `false`). `SUImportContext` has four more plain properties, all off by default: `AmlBatchMode` (bool), `AmlBatchMaxSize` (int), `CollectImportErrors` (bool) and `CollectImportErrorsMaxCount` (int); `IMP-5xx` specifies them. With them at their defaults nothing below differs from 14.0.7. The shared `SolutionUpgradeContext` has one more setting, `Languages` (a string array, null by default), which the constructor reads (`IMP-6xx`).
+[14.35] The five properties of 14.0.7, unchanged (`bFast` still discards its value and reads `false`). `SUImportContext` has four more plain properties, all off by default: `AmlBatchMode` (bool), `AmlBatchMaxSize` (int), `CollectImportErrors` (bool) and `CollectImportErrorsMaxCount` (int); `IMP-5xx` specifies them. With them at their defaults nothing below differs from 14.0.7. The shared `SolutionUpgradeContext` has one more setting, `Languages` (a string array, null by default), which the constructor reads (`IMP-600`, `IMP-620`, `IMP-621`).
 
 ### IMP-402: The manager for an import checks its manifest and takes the manifest's folder
 
@@ -69,7 +69,7 @@ The manifest folder is what `GetSolutionPath` resolves relative package paths ag
 
 [12.0] The same checks in the same order, with the same `CItemException` and text for a manifest that does not exist (observed `s25-manifest-missing`, identical output). The constructor takes the paths as given: `File.Exists(ManifestFile)` and `Directory.GetParent(path).FullName` get no long-path normalisation (EXP-421), and the manifest is loaded by `new ManifestFile(path)`, which calls `XmlDocument.Load(path)` (MAN-003 [12.0]): a declared encoding is honoured and invalid bytes throw.
 
-[14.35] Steps 1 to 4 are as in 14.0.7. At the end of the constructor, after the manager's fields are set, an import also scans the language codes of every package of the manifest, expands `*` in `Languages` and refuses languages that are not installed (`IMP-6xx`). With `Languages` unset only the scan matters, and it can fail on any package of the manifest, not only on the ones to be imported.
+[14.35] Steps 1 to 4 are as in 14.0.7. At the end of the constructor, after the manager's fields are set, an import also scans the language codes of every package of the manifest, expands `*` in `Languages` and refuses languages that are not installed (`IMP-610`, `IMP-620`, `IMP-621`). With `Languages` unset only the scan matters, and it can fail on any package of the manifest, not only on the ones to be imported.
 
 ### IMP-403: The log is opened first and starts with a header
 
@@ -789,7 +789,7 @@ Every other template of the table is the same text: `Building  solution`, `Addin
 | `ErrorMessageMessageEnd` | `\r\n\t\t****ErrorMessage****\r\n{0}\r\n\t\t********************` (a CRLF first) |
 | `ServerErrorRequestResponse` | the 14.35 text of `WIRE-051` |
 
-The batch and collected-errors modes add keys of their own (`IMP-5xx`); the language and DB-patch keys belong to the `IMP-6xx` and `DBP-` rules.
+The batch and collected-errors modes add keys of their own (`IMP-5xx`); the language check writes its text as a literal and not through a resource key (`IMP-621`), and the DB-patch keys belong to the `DBP-` rules.
 
 ### IMP-471: What the import sends to the host
 
@@ -841,4 +841,4 @@ The engine chooses nothing the host leaves open: the log path is required (`IMP-
 
 [12.0] The host of 12.0 (`ConsoleUpgrade.exe`, `import.exe`) performs the same steps. Two points differ: the import does not need the login for the log (IMP-403), so a host that built a plain `HttpServerConnection` and skipped `CItemHelper.Login()` (which WIRE-017 [12.0] makes a no-op for any type but `HttpConnectorExtension`) imports normally (observed `s37-not-logged-in`); and the host's `fastmode` option sets the `bFast` that the engine ignores (IMP-401). The library's client logs in and logs out as in 14.0.7 (WIRE-002).
 
-[14.35] The same sequence. A 14.35 host may also set `Languages` on the context (`IMP-6xx`) and the batch and collection options on the import context (`IMP-5xx`); a host that sets none of them gets the behaviour of this document. The result is `0` only when every package was imported (`IMP-408`, `IMP-409`).
+[14.35] The same sequence. A 14.35 host may also set `Languages` on the context (`IMP-600`) and the batch and collection options on the import context (`IMP-5xx`); a host that sets none of them gets the behaviour of this document. The result is `0` only when every package was imported (`IMP-408`, `IMP-409`).

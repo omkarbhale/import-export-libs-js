@@ -496,42 +496,43 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the preprocessor asks the server for its languages and ignores whether the request worked. A fault, an empty result or a response that is not a SOAP envelope gives an item count of 0 or -1, so no language is supported and no translation is written. The preprocessor finishes without an error, the `Fixes` folder is empty, and the import that follows imports a package with no items and reports success.
 - **Why it is a bug:** a correct engine would stop with the server's fault, so a user who lacks the right to read `Language` items, or whose session has ended, is told so.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::GetSupportedLanguages`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## LP-020: the item type is the file name with every `.xml` removed
 
 - **Behaviour:** the name of a row file is made with `Replace(".xml", "")` on the file name, so the text is removed wherever it occurs, in lower case only. `Foo.xmlbak` gives `Foobak`, `Foo.XML` stays `Foo.XML`, and `Foo.xml.xml` gives `Foo`, the same as `Foo.xml`, whose output file it overwrites.
 - **Why it is a bug:** a correct engine would remove only the extension, and only for the files the folder is meant to hold.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7 (14.35 uses `Path.GetFileNameWithoutExtension`, LP-020).
 
 ## LP-021: a configuration without `itemtype` entries fails on the first row file
 
 - **Behaviour:** the file filter skips a file only when the configuration has entries and the file's name is not one of them. With no `itemtype` entry nothing is skipped, and the lookup that follows throws `KeyNotFoundException` for the first row file, after the temp package was made.
 - **Why it is a bug:** the test is written so that "no entries" would mean "all item types", the way an empty property list means all properties. A correct engine would then use an empty property list for every file, or skip them all.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## LP-023: the property list is lower-cased, the property names are not
 
 - **Behaviour:** the `list` of an `itemtype`'s `properties` element is trimmed as a whole and lower-cased, then split on commas without trimming the parts. Each property's `__name` is compared with those parts as written. A property whose name has an upper-case letter is never selected by a non-empty list, and `name, label` selects `name` only. An empty list selects every property.
 - **Why it is a bug:** a correct engine would compare both sides the same way, and trim each part.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::GetItemTypes` and `::GetUpdateParameters`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## LP-025: the row's attributes are interpolated unescaped into the where clause
 
 - **Behaviour:** the `where` of each generated `edit` item is `[table].name='value'` for every attribute of the row's `Item` except `keyed_name` and `type`, with the value between apostrophes as the XML gives it. An `id` of `a'b` gives `[Foo].id='a'b'`. The table is the file name with spaces replaced by underscores.
 - **Why it is a bug:** a correct engine would double the apostrophe, or match on the id alone. As it is, the clause is malformed, or matches other items, for a value with an apostrophe.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## LP-033: the fixes are written where the import does not look for a dotted package name
 
 - **Behaviour:** the preprocessor writes the fixes to `<temp>\<whole package name>\Import\Fixes`, while the manifest it writes sends the import to `<temp>\<last segment of the name>\Import`, and for a core or default package (`com.aras.innovator.`, `com.aras.defaults.`) to a folder with no `Import` at all. A name with a dot therefore fails to load, with a folder-not-found error naming the wrong folder.
+- **14.35:** the failure comes when the manager is built, as a `DirectoryNotFoundException` from the language scan (IMP-640), not as the package failure of the 14.0.7 import.
 - **Why it is a bug:** a correct engine would write the fixes into the folder that the manifest it saved points to.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyToTempDirectory`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## LP-035: a failed preprocessor leaves its temp folder behind
 
@@ -650,4 +651,61 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the versionable relationship pass looks the relationship up with an empty `related_id` and, when something is found, edits it with `where="source_id='…' and related_id=''"`.
 - **Why it is a bug:** the relationship is matched on an empty id instead of the item its `where` names. A correct engine would match on the related item, or leave the relationship alone.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem`.
+
+- **Versions:** 14.0.7, 14.35.
+
+## IMP-612: a file the import would never read can fail the constructor
+
+- **Behaviour:** 14.35's `ImportExportManager` constructor scans every `*.xml` file at any depth under every package of the manifest for `xml:lang` codes. A malformed or stray `*.xml` anywhere in a package folder, in any package of the manifest, ends the constructor with `System.AggregateException` (`One or more errors occurred.`, the `XmlException` inside). A missing package folder gives `DirectoryNotFoundException`. `Languages` need not be set.
+- **Why it is a bug:** the import reads only the files of the immediate subfolders of the packages it imports (IMP-002), and 14.0.7 imported packages with such files. A correct engine would scan only the files it imports, and only when a language selection is given.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguageCodesExtractor::ExtractLanguageCodesFromPackages`, called from `Aras.Tools.SolutionUpgrade.ImportExportManager::.ctor`.
+- **Versions:** 14.35.
+
+## IMP-614: used codes are lower-cased, but nodes are matched by their exact text
+
+- **Behaviour:** the scan stores every `xml:lang` it finds in lower case, and the deletion selects `@xml:lang='{code}'` with that code. A node written `xml:lang="DE"` is counted as `de`, so `*` and the installed check treat it as `de`, but when `de` is not selected the XPath does not match `DE` and the node is sent.
+- **Why it is a bug:** a correct engine would match in the case it stored, or store the text as written.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguageCodesExtractor::ExtractLanguageCodesFromPackages` and `Aras.Tools.SolutionUpgrade.ImportExportManager::CheckWorkItem`.
+- **Versions:** 14.35.
+
+## IMP-623: a failed Language get makes every selected language "not installed"
+
+- **Behaviour:** `GetLanguagesFromInnovator` yields nothing for a fault, an empty result or a response that is not SOAP, without an exception. The installed-language check then says every selected language is not installed, with the text `Some of the selected languages are not installed for current Aras Innovator: …`, whatever the cause. To print it the engine enumerates the languages again, so it sends the `Language` request a second time.
+- **Why it is a bug:** a correct engine would stop with the server's fault instead of blaming the languages.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetLanguagesFromInnovator` and `Aras.Tools.SolutionUpgrade.ImportExportManager::ThrowIfNoSelectedLanguagesInDatabase`.
+- **Versions:** 14.35.
+
+## IMP-633: the skip code is put into the XPath unescaped
+
+- **Behaviour:** the deletion builds `//node()[@xml:lang='{code}']` from a code found in a package file. A code with an apostrophe makes the expression invalid and the package fails with the `XPathException` (`'//node()[@xml:lang='d'e']' has an invalid token.`).
+- **Why it is a bug:** a correct engine would escape the literal or compare the attribute in code.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::CheckWorkItem`.
+- **Versions:** 14.35.
+
+## IMP-634: a skipped language on the Item element removes the item itself
+
+- **Behaviour:** when the `Item` element carries `xml:lang` of a skipped language (and some child of an item of the package uses the same code), `//node()[@xml:lang=…]` selects the root `Item` and the deletion removes the document element. `doImport` then fails with a null reference, wrapped as `Object reference not set to an instance of an object. Can't merge item  `, and the package fails.
+- **Why it is a bug:** a correct engine would only delete the language nodes below the item.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::CheckWorkItem`.
+- **Versions:** 14.35.
+
+## LP-040: the null-value test compares the service pack with a number that belongs to the service update
+
+- **Behaviour:** `NeedToHandleNullPropertyValues` compares the server's major, minor and service pack with `new ArasVersion(14, 0, 22, 39629, 0)`, whose `22` is in the service-pack argument. A 14.x server reports its fixes as the service update (`14.0.{serviceUpdate}.{build}`), which the test never reads, so a 14.0 server with service pack 0 and service update 22 or more is still "needs the handling". It is true for every server below 14 as well, which includes the dev instance (12.0 SP9).
+- **Why it is a bug:** the threshold was meant to be 14.0 service update 22 (the "14.0 SP22" of the change); a correct engine would compare the matching field.
+- **C# location:** `Aras.Tools.SolutionUpgrade.Extensions.ArasVersionExtensions::NeedToHandleNullPropertyValues` (and its static initialiser).
+- **Versions:** 14.35.
+
+## LP-041: a property the server does not have fails with "Not a single item"
+
+- **Behaviour:** for a `Property` row, the preprocessor (and, for the generated item, the import) asks the server for the property and swallows the "no items" fault, then reads a value from the error item. `getProperty` on an item that is not exactly one throws `System.Exception` (`Not a single item`). The same happens for an empty answer and for two matches. In the preprocessor it ends the constructor with the earlier files written; in the import it ends the package.
+- **Why it is a bug:** the swallow of faultcode 0 shows the code was meant to tolerate a missing property. A correct engine would skip the item or report which property is missing.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::GetSystemPropertiesValueIfHave` and `Aras.Tools.SolutionUpgrade.CImportItems::GetPropertyItemWithRequiredProps` (called from `::Import`).
+- **Versions:** 14.35.
+
+## LP-044: the values of the SQL update are interpolated unescaped
+
+- **Behaviour:** the `UPDATE innovator.PROPERTY` statement of the lpimport branch puts the translated text between `N'` and `'` without doubling an apostrophe, and the column name, suffix and property id unquoted or unescaped. A translation with an apostrophe makes invalid SQL.
+- **Why it is a bug:** a correct engine would double the apostrophes or use parameters.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::SetLocalizedValueViaApplySqlRequest`.
 - **Versions:** 14.35.

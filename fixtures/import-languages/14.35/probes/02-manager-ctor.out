@@ -1,0 +1,215 @@
+## languages-null
+ctor => ok
+context.Languages after => null
+requests => 0
+static cache "P1" => "de", "fr"
+## languages-empty-array
+ctor => ok
+context.Languages after => []
+requests => 0
+static cache "P1" => "de", "fr"
+## languages-de-en
+ctor => ok
+context.Languages after => ["de", "en"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## languages-de-only
+ctor => ok
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## languages-en-only
+ctor => ok
+context.Languages after => ["en"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## languages-star
+ctor => ok
+context.Languages after => ["de", "en", "fr"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "en", "fr"
+## languages-star-package-without-languages
+ctor => ok
+context.Languages after => []
+requests => 0
+static cache "P1" => 
+## languages-star-two-packages
+ctor => ok
+context.Languages after => ["de", "en", "fr"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+static cache "P2" => "de", "en"
+## languages-star-uppercase-in-files
+ctor => ok
+context.Languages after => ["de", "fr"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## languages-star-and-more
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["*", "de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-de-and-star
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de", "*"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-star-twice
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["*", "*"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-star-not-installed
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: es.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: es.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de", "es"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "es"
+## languages-star-two-not-installed
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: es,it,pt-br.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: es,it,pt-br.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de", "es", "it", "pt-br"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "es", "it", "pt-br"
+## languages-not-installed-duplicates
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: xx,yy.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: xx,yy.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["xx", "yy", "xx", "de", "yy"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-uppercase-selected
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: DE.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: DE.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["DE", "en"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-uppercase-installed
+ctor => ok
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## languages-with-spaces
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator:  de,fr .\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator:  de,fr .\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => [" de", "fr "]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## languages-empty-string
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: .\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: .\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => [""]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## language-get-fault0
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## language-get-other-fault
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## language-get-empty-result
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## language-get-garbage
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## language-get-item-without-code
+ctor => System.NullReferenceException: "Object reference not set to an instance of an object."
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## language-get-item-without-code-after-all-found
+ctor => System.NullReferenceException: "Object reference not set to an instance of an object."
+context.Languages after => ["en"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## language-get-duplicate-code
+ctor => ok
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## language-get-item-without-name
+ctor => ok
+context.Languages after => ["de"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 1
+static cache "P1" => "de", "fr"
+## export-action-checks-languages
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: xx.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: xx.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["xx"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## export-action-star-not-expanded
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding." [faultcode=0 faultstring="" faultdetail="Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding."]
+context.Languages after => ["*"]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,name\" />"
+requests => 2
+static cache "P1" => "de", "fr"
+## scan failures
+## bad-file-in-unrelated-package
+ctor => System.AggregateException: "One or more errors occurred."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Unexpected end of file has occurred. The following elements are not closed: Item, AML. Line 1, position 12."
+context.Languages after => ["de"]
+requests => 0
+static cache "P1" => "de"
+static cache "P2" => 
+## bad-file-no-languages-option
+ctor => System.AggregateException: "One or more errors occurred."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Data at the root level is invalid. Line 1, position 1."
+context.Languages after => null
+requests => 0
+static cache "P1" => 
+## non-item-xml-files-are-fine
+ctor => ok
+context.Languages after => null
+requests => 0
+static cache "P1" => "de"
+## missing-package-folder
+ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\libsjs73-probe\\cases\\missing-package-folder\\P1\\Import'."
+requests => 0
+## static cache survives a later export manager
+cache after the export manager, P1 => "de"
+## relative manifest paths (the scan uses Path.GetDirectoryName of the path as given)
+ctor, manifest "sub\\imports.mf" => ok
+ctor, manifest "%USERPROFILE%\\AppData\\Local\\libsjs73-probe\\cases\\relative-manifest\\sub\\imports.mf" => ok
+ctor, manifest "imports.mf" (bare file name) => ok
