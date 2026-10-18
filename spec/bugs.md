@@ -651,8 +651,7 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the versionable relationship pass looks the relationship up with an empty `related_id` and, when something is found, edits it with `where="source_id='…' and related_id=''"`.
 - **Why it is a bug:** the relationship is matched on an empty id instead of the item its `where` names. A correct engine would match on the related item, or leave the relationship alone.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem`.
-
-- **Versions:** 14.0.7, 14.35.
+- **Versions:** 14.35.
 
 ## IMP-612: a file the import would never read can fail the constructor
 
