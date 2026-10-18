@@ -1,0 +1,111 @@
+{
+  "id": "collect-max-unset",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "collected errors"
+  ],
+  "title": "Collected errors with the maximum left at 0",
+  "exercises": "A maximum of 0 trips on the first error: the AggregateException ends the package at once, before the failed item is registered, and the last items are never read.",
+  "rules": [
+    "IMP-541",
+    "IMP-544"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-COLLZERO"
+      ],
+      "options": {
+        "collectErrors": {
+          "maxCount": 0
+        }
+      },
+      "expect": "returned:1",
+      "result": {
+        "hostExit": 0,
+        "calls": 34,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "8BAE686C00324F0389EC4E70607DD501"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "5E2BADA6C49B4B72A7CE84047C0F62C3"
+          },
+          {
+            "type": "Variable",
+            "id": "AA0AE90968DA7BE0EF754632C9F5305E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "CF2C9E9597A447A8A3B1A7F2A0FEF655"
+          },
+          {
+            "type": "PackageElement",
+            "id": "72AA10A94ECC447885BAE344E2A19282"
+          },
+          {
+            "type": "Variable",
+            "id": "C94FB62F61F8BA0310D9E85E38B649F0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "AB2A131A77C748A989FC0EA1AFC57369"
+          },
+          {
+            "type": "Variable",
+            "id": "B9124BC2F70EF4204FA40C46BED68EDF"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C95589D26C014286A0752CA88FFF7C46"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "C95589D26C014286A0752CA88FFF7C46"
+    },
+    {
+      "type": "Variable",
+      "id": "B9124BC2F70EF4204FA40C46BED68EDF"
+    },
+    {
+      "type": "PackageElement",
+      "id": "AB2A131A77C748A989FC0EA1AFC57369"
+    },
+    {
+      "type": "Variable",
+      "id": "C94FB62F61F8BA0310D9E85E38B649F0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "72AA10A94ECC447885BAE344E2A19282"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "CF2C9E9597A447A8A3B1A7F2A0FEF655"
+    },
+    {
+      "type": "Variable",
+      "id": "AA0AE90968DA7BE0EF754632C9F5305E"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "5E2BADA6C49B4B72A7CE84047C0F62C3"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "8BAE686C00324F0389EC4E70607DD501"
+    }
+  ]
+}

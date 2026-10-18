@@ -1,0 +1,95 @@
+{
+  "id": "batch-cancel",
+  "engine": "14.35",
+  "catalogue": [
+    "S0",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "Cancel pressed with items waiting in the batch queue",
+  "exercises": "The cancel test returns from the loop without flushing: the queued items are never sent (IMP-524) and the run returns 1.",
+  "rules": [
+    "IMP-524"
+  ],
+  "steps": [
+    {
+      "name": "import, cancelled",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "cancelAfterStatus": 4,
+        "amlBatch": {
+          "maxSize": 10
+        }
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 29,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "D63E8EDE66F14DD59CC7A32334F8B56A"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "A6D9C8F6CB5745858FF56FA60A0C3C33"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "3D01151AF45F4AC29943718E9BD21A9C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8C2BABFCBD1344CBAF858EA28DF0AC52"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "FD425A3905C44CEFBC5298EACF57E2DA"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "FD425A3905C44CEFBC5298EACF57E2DA"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8C2BABFCBD1344CBAF858EA28DF0AC52"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "3D01151AF45F4AC29943718E9BD21A9C"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "A6D9C8F6CB5745858FF56FA60A0C3C33"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "D63E8EDE66F14DD59CC7A32334F8B56A"
+    }
+  ]
+}

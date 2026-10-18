@@ -1,0 +1,20 @@
+﻿<AML>
+ <Item type="Grid" id="DBEA5052DEBB3FE9304F72623D0E0489" action="add">
+  <query><![CDATA[<Item type="User" action="get" />]]></query>
+  <name>LIBSJS-SCRATCH-Grid_1</name>
+  <Relationships>
+   <Item type="Grid Column" id="4ED9CDBB383AA3CEA4E28246D7684BA9" action="add">
+    <align>left</align>
+    <datatype>default</datatype>
+    <label xml:lang="en">Name</label>
+    <property>keyed_name</property>
+    <sort_order>100</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-Grid_1" type="Grid">DBEA5052DEBB3FE9304F72623D0E0489</source_id>
+    <starts_nested_row>0</starts_nested_row>
+    <visible>1</visible>
+    <width>200</width>
+    <xpath>self::Item</xpath>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

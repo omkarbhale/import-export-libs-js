@@ -1,0 +1,48 @@
+{
+  "case": "lp05",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`languages list=\"xx\"`: no language qualifies, empty import",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "xx"
+  },
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "Nothing qualifies, so no row produces a translation and no Fixes file is written; the import runs on an empty package and succeeds. The `Language` get is still sent.",
+  "rules": [
+    "LP-011",
+    "LP-014",
+    "LP-026"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 16,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "3ACD3CE2C7794BEE9BF2ED2F5524F694"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "2E7C509EA1BD464EA653354A9E499CCB"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "2E7C509EA1BD464EA653354A9E499CCB"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "3ACD3CE2C7794BEE9BF2ED2F5524F694"
+    }
+  ]
+}

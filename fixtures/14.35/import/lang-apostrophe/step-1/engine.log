@@ -1,0 +1,40 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220852-14.35-import-6426b7\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220852-14.35-import-6426b7\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220852-14.35-import-6426b7\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:38:55
+Updating 'LIBSJS-SCRATCH-LANGAPOS' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LANGAPOS****
+Processing (add)   id : 6BF3AA65DEF1451EA7DF044F82FA3CF6    keyed_name : LIBSJS-SCRATCH-LangApos-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220852-14.35-import-6426b7\input\LIBSJS-SCRATCH-LANGAPOS\Import\List\LIBSJS-SCRATCH-LangApos-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-LANGAPOS' package to failed release status
+end of execution : 10/19/2026 03:38:55
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-LANGAPOS' failed with message:
+
+'//node()[@xml:lang='d'e']' has an invalid token.
+Updating LIBSJS-SCRATCH-LANGAPOS to failed release status
+
+		********************

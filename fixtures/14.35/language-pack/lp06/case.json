@@ -1,0 +1,52 @@
+{
+  "case": "lp06",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`Languages` = `de` over a pack that translates `de` and `fr`",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de, fr"
+  },
+  "languages": [
+    "de"
+  ],
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "ConsoleUpgrade's `langs=de` (accepted for `lpimport` without `en`): the skip set is `fr`, so every generated `edit` item is sent without its `fr` elements (IMP-640).",
+  "rules": [
+    "IMP-601",
+    "IMP-630",
+    "IMP-631",
+    "IMP-640"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "B2907A45CBCA4770815C4DC1CAE62C43"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "A2691C103B594A73B9E1878263448D0A"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "A2691C103B594A73B9E1878263448D0A"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "B2907A45CBCA4770815C4DC1CAE62C43"
+    }
+  ]
+}

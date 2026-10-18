@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":810525752402,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":810526527589,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-SQLCHILD","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":810526894187,"channel":"status","text":"Item 1 of 1: SQL - LIBSJS-SCRATCH-V2","answer":null}
+{"event":19,"seq":4,"thread":16,"ticks":810527671749,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\nImport package 'LIBSJS-SCRATCH-SQLCHILD' failed with message:\n\nError - empty 'id' or 'type'\nUpdating LIBSJS-SCRATCH-SQLCHILD to failed release status\r\n","answer":null}

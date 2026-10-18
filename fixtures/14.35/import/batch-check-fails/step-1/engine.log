@@ -1,0 +1,77 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:39:42
+Updating 'LIBSJS-SCRATCH-BATCHCHK' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHCHK****
+Processing (add)   id : 25E946F9C36B86F6130E2728ED0BC0C3    keyed_name : LIBSJS-SCRATCH-BatchChk_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Processing (add)   id : 7516B30075F875318D294298AA8F564C    keyed_name : LIBSJS-SCRATCH-BatchChk_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 8F1A31E32A66525D1B457156967AC9BB    keyed_name : LIBSJS-SCRATCH-BatchChk_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = 25E946F9C36B86F6130E2728ED0BC0C3 and type = Variable
+Item successfully added in packdefinition  id  25E946F9C36B86F6130E2728ED0BC0C3 type Variable
+Adding item into PackageDefinition with id = 7516B30075F875318D294298AA8F564C and type = Variable
+Item successfully added in packdefinition  id  7516B30075F875318D294298AA8F564C type Variable
+Adding item into PackageDefinition with id = 8F1A31E32A66525D1B457156967AC9BB and type = Variable
+Item successfully added in packdefinition  id  8F1A31E32A66525D1B457156967AC9BB type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0235835
+   Resolve dependencies time: 00:00:00.1849159
+Processing (add)   id : 4F5A141A6B920F49E4D6F6210A7EE99E    keyed_name : LIBSJS-SCRATCH-BatchChk_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220939-14.35-import-5db73d\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+Error of check dependencies in AML batch mode:
+ Bad Relation type Property for Variable Recurse check has failed.
+Trying to resolve AML dependencies in AML batch mode...
+Try to execute AMLs in AML batch mode...
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0139489
+   Resolve dependencies time: 00:00:00.0000084
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+Updating 'LIBSJS-SCRATCH-BATCHCHK' package to failed release status
+end of execution : 10/19/2026 03:39:43
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-BATCHCHK' failed with message:
+
+Bad Relation type Property for Variable Recurse check has failed.
+Updating LIBSJS-SCRATCH-BATCHCHK to failed release status
+
+		********************

@@ -1,0 +1,2 @@
+{"event":10,"seq":1,"thread":16,"ticks":811143788884,"channel":"status","text":"Building  solution","answer":null}
+{"event":15,"seq":2,"thread":16,"ticks":811144946021,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\nImport package 'LIBSJS-SCRATCH-FSDECL' failed with message:\n\nUnexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.\nUpdating LIBSJS-SCRATCH-FSDECL to failed release status\r\n","answer":null}

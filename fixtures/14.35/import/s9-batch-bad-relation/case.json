@@ -1,0 +1,101 @@
+{
+  "id": "s9-batch-bad-relation",
+  "engine": "14.35",
+  "catalogue": [
+    "S9"
+  ],
+  "title": "The fourth of seven items fails the engine's own check",
+  "exercises": "On 14.0.7 the first failure stops the package: three items are imported and registered, the failing one raises 'Bad Relation type', the last three are never read. (14.35's batch and collected-errors modes differ; ticket 57 records them.)",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCH"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 34,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "354E20F097E1407C833C9B273F96B461"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "ECA872E1D94C42D5A9D2AE7F293A31CF"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B143D62E18F04E32BF692F36DB94A830"
+          },
+          {
+            "type": "PackageElement",
+            "id": "FA0B114228AB4ABF90D70E01C50D7695"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E055B7A7BF0D47FD93E036F93A0516E6"
+          },
+          {
+            "type": "Variable",
+            "id": "E85E5A09574812188E8060248C111FE0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "16752D65B11B4267BDFC3B2EDC8F2D7D"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "16752D65B11B4267BDFC3B2EDC8F2D7D"
+    },
+    {
+      "type": "Variable",
+      "id": "E85E5A09574812188E8060248C111FE0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E055B7A7BF0D47FD93E036F93A0516E6"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "FA0B114228AB4ABF90D70E01C50D7695"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B143D62E18F04E32BF692F36DB94A830"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "ECA872E1D94C42D5A9D2AE7F293A31CF"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "354E20F097E1407C833C9B273F96B461"
+    }
+  ]
+}

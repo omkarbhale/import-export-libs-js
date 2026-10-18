@@ -1,0 +1,177 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:40:42
+Updating 'LIBSJS-SCRATCH-BATCHSRV' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHSRV****
+Processing (add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Processing (add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : E85E5A09574812188E8060248C111FE0    keyed_name : LIBSJS-SCRATCH-Batch_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 1028AD2AE5A230B328A502D762179971    keyed_name : LIBSJS-SCRATCH-Batch_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 34EDC091CFC4D8800EE005CCEC0B058C    keyed_name : LIBSJS-SCRATCH-Batch_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 95C1161A65A77C6651F63C6AA9ADF8C8    keyed_name : LIBSJS-SCRATCH-Batch_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 907534A8FB674E86811A7F7878C49AAD    keyed_name : LIBSJS-SCRATCH-Batch_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221039-14.35-import-d1e374\input\LIBSJS-SCRATCH-BATCHSRV\Import\Variable\LIBSJS-SCRATCH-Batch_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Error of import in AML batch mode:
+ <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-Batch_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="1028AD2AE5A230B328A502D762179971" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-Batch_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Try to execute AML one by one...
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+Adding item into PackageDefinition with id = 58760E04551E59833BC3B0DD0A8C48DC and type = Variable
+Item successfully added in packdefinition  id  58760E04551E59833BC3B0DD0A8C48DC type Variable
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+Adding item into PackageDefinition with id = 3172ED4C9B7DC0304F67A4238F7739FA and type = Variable
+Item successfully added in packdefinition  id  3172ED4C9B7DC0304F67A4238F7739FA type Variable
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E85E5A09574812188E8060248C111FE0    keyed_name : LIBSJS-SCRATCH-Batch_3    type : Variable  
+Adding item into PackageDefinition with id = E85E5A09574812188E8060248C111FE0 and type = Variable
+Item successfully added in packdefinition  id  E85E5A09574812188E8060248C111FE0 type Variable
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="1028AD2AE5A230B328A502D762179971" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-Batch_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-Batch_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="1028AD2AE5A230B328A502D762179971" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-Batch_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************
+completed
+Updating 'LIBSJS-SCRATCH-BATCHSRV' package to failed release status
+end of execution : 10/19/2026 03:40:43
+
+		****ErrorMessage****
+One or more errors occurred.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="1028AD2AE5A230B328A502D762179971" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-Batch_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-Batch_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-Batch_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="1028AD2AE5A230B328A502D762179971" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-Batch_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************

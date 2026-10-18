@@ -1,0 +1,334 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:24:02
+Updating 'LIBSJS-SCRATCH-BASE' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BASE****
+Processing (add)   id : 02FC1773E9FCF8E024A3FE0C37D824D2    keyed_name : LIBSJS-SCRATCH-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\List\LIBSJS-SCRATCH-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 02FC1773E9FCF8E024A3FE0C37D824D2    keyed_name : LIBSJS-SCRATCH-List_1    type : List  
+Adding item into PackageDefinition with id = 02FC1773E9FCF8E024A3FE0C37D824D2 and type = List
+Item successfully added in packdefinition  id  02FC1773E9FCF8E024A3FE0C37D824D2 type List
+Processing (add)   id : 67CBD9B47C02D5104BC5C97C25A2483E    keyed_name : LIBSJS-SCRATCH-Seq_1    type : Sequence  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Sequence\LIBSJS-SCRATCH-Seq_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Sequence</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 67CBD9B47C02D5104BC5C97C25A2483E    keyed_name : LIBSJS-SCRATCH-Seq_1    type : Sequence  
+Adding item into PackageDefinition with id = 67CBD9B47C02D5104BC5C97C25A2483E and type = Sequence
+Item successfully added in packdefinition  id  67CBD9B47C02D5104BC5C97C25A2483E type Sequence
+Processing (add)   id : 9DFD42E0D1D332A37468535A17E9E071    keyed_name : LIBSJS-SCRATCH-Var_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Variable\LIBSJS-SCRATCH-Var_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 9DFD42E0D1D332A37468535A17E9E071    keyed_name : LIBSJS-SCRATCH-Var_1    type : Variable  
+Adding item into PackageDefinition with id = 9DFD42E0D1D332A37468535A17E9E071 and type = Variable
+Item successfully added in packdefinition  id  9DFD42E0D1D332A37468535A17E9E071 type Variable
+Processing (add)   id : 8D1FA15B385BD9268D12CDB127520F9C    keyed_name : LIBSJS-SCRATCH-Identity_1    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Identity\LIBSJS-SCRATCH-Identity_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 8D1FA15B385BD9268D12CDB127520F9C    keyed_name : LIBSJS-SCRATCH-Identity_1    type : Identity  
+Adding item into PackageDefinition with id = 8D1FA15B385BD9268D12CDB127520F9C and type = Identity
+Item successfully added in packdefinition  id  8D1FA15B385BD9268D12CDB127520F9C type Identity
+Processing (add)   id : 0FD85985D9C574513CB9B6D231B177B4     type : Member  
+File full name ''
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Member</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>A73B655731924CD0B027E4F4D5FCC0A9</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 0FD85985D9C574513CB9B6D231B177B4     type : Member  
+Processing (add)   id : 51F2FDF85AB07DF3C25F71CA50B4FF4C    keyed_name : LIBSJS-SCRATCH-Perm_1    type : Permission  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Permission\LIBSJS-SCRATCH-Perm_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Permission</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Access</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Access</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>A73B655731924CD0B027E4F4D5FCC0A9</id></Item>
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>2618D6F5A90949BAA7E920D1B04C7EE1</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 51F2FDF85AB07DF3C25F71CA50B4FF4C    keyed_name : LIBSJS-SCRATCH-Perm_1    type : Permission  
+Adding item into PackageDefinition with id = 51F2FDF85AB07DF3C25F71CA50B4FF4C and type = Permission
+Item successfully added in packdefinition  id  51F2FDF85AB07DF3C25F71CA50B4FF4C type Permission
+Processing (add)   id : 5E0832E42849900FA499343A85F8A1D0    keyed_name : LIBSJS-SCRATCH-Method_1    type : Method  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Method\LIBSJS-SCRATCH-Method_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Method</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 5E0832E42849900FA499343A85F8A1D0    keyed_name : LIBSJS-SCRATCH-Method_1    type : Method  
+Adding item into PackageDefinition with id = 5E0832E42849900FA499343A85F8A1D0 and type = Method
+Getting config_id  of versionable item  id  5E0832E42849900FA499343A85F8A1D0 type Method
+Item successfully added in packdefinition  id  5E0832E42849900FA499343A85F8A1D0 type Method
+Processing (add)   id : 6E1629D001235406CBAF1C1BC71F19E1    keyed_name : LIBSJS-SCRATCH-Action_1    type : Action  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Action\LIBSJS-SCRATCH-Action_1.xml'
+********** Start of reference checking ************
+checking item with get action:<Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Method_1</name></Item>
+-> was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Action</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 6E1629D001235406CBAF1C1BC71F19E1    keyed_name : LIBSJS-SCRATCH-Action_1    type : Action  
+Adding item into PackageDefinition with id = 6E1629D001235406CBAF1C1BC71F19E1 and type = Action
+Item successfully added in packdefinition  id  6E1629D001235406CBAF1C1BC71F19E1 type Action
+Processing (add)   id : 13E641DA215894EBC9281A99B5BA656B    keyed_name : LIBSJS-SCRATCH-Report_1    type : Report  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Report\LIBSJS-SCRATCH-Report_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Report</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 13E641DA215894EBC9281A99B5BA656B    keyed_name : LIBSJS-SCRATCH-Report_1    type : Report  
+Adding item into PackageDefinition with id = 13E641DA215894EBC9281A99B5BA656B and type = Report
+Item successfully added in packdefinition  id  13E641DA215894EBC9281A99B5BA656B type Report
+Processing (add)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Form_1    type : Form  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Form\LIBSJS-SCRATCH-Form_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Form</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Body</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Field</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 80C1916ED13FB91AABE8B59712B5B25D    keyed_name : LIBSJS-SCRATCH-Form_1    type : Form  
+Adding item into PackageDefinition with id = 80C1916ED13FB91AABE8B59712B5B25D and type = Form
+Item successfully added in packdefinition  id  80C1916ED13FB91AABE8B59712B5B25D type Form
+Processing (add)   id : 97036156528C7C8959E5E0D9E2B89E1D    keyed_name : LIBSJS-SCRATCH-WFM_1    type : Workflow Map  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Workflow Map\LIBSJS-SCRATCH-WFM_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Workflow Map</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Workflow Map Activity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Workflow Map Activity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 97036156528C7C8959E5E0D9E2B89E1D    keyed_name : LIBSJS-SCRATCH-WFM_1    type : Workflow Map  
+Adding item into PackageDefinition with id = 97036156528C7C8959E5E0D9E2B89E1D and type = Workflow Map
+Getting config_id  of versionable item  id  97036156528C7C8959E5E0D9E2B89E1D type Workflow Map
+Item successfully added in packdefinition  id  97036156528C7C8959E5E0D9E2B89E1D type Workflow Map
+Processing (add)   id : 8B5690F5CDA03F7F570CFF04DF20BA30    keyed_name : LIBSJS-SCRATCH-LCM_1    type : Life Cycle Map  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Life Cycle Map\LIBSJS-SCRATCH-LCM_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Life Cycle Map</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Life Cycle State</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Life Cycle State</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Life Cycle Transition</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 8B5690F5CDA03F7F570CFF04DF20BA30    keyed_name : LIBSJS-SCRATCH-LCM_1    type : Life Cycle Map  
+Adding item into PackageDefinition with id = 8B5690F5CDA03F7F570CFF04DF20BA30 and type = Life Cycle Map
+Item successfully added in packdefinition  id  8B5690F5CDA03F7F570CFF04DF20BA30 type Life Cycle Map
+Processing (add)   id : DBEA5052DEBB3FE9304F72623D0E0489    keyed_name : LIBSJS-SCRATCH-Grid_1    type : Grid  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\Grid\LIBSJS-SCRATCH-Grid_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Grid</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Grid Column</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : DBEA5052DEBB3FE9304F72623D0E0489    keyed_name : LIBSJS-SCRATCH-Grid_1    type : Grid  
+Adding item into PackageDefinition with id = DBEA5052DEBB3FE9304F72623D0E0489 and type = Grid
+Item successfully added in packdefinition  id  DBEA5052DEBB3FE9304F72623D0E0489 type Grid
+Processing (add)   id : E0FAE5389340631DC4962AE25970C7BB    keyed_name : LIBSJS-SCRATCH-IT_A    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\ItemType\LIBSJS-SCRATCH-IT_A.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Allowed Permission</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking <data_source> reference to list/sequence
+<Item action='get' type='list' select='id'><id>02FC1773E9FCF8E024A3FE0C37D824D2</id></Item>
+  was obtained from server
+checking for related items
+<Item type='Permission' action='get' levels='0'><id>51F2FDF85AB07DF3C25F71CA50B4FF4C</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : E0FAE5389340631DC4962AE25970C7BB    keyed_name : LIBSJS-SCRATCH-IT_A    type : ItemType  
+Adding item into PackageDefinition with id = E0FAE5389340631DC4962AE25970C7BB and type = ItemType
+Item successfully added in packdefinition  id  E0FAE5389340631DC4962AE25970C7BB type ItemType
+Processing (add)   id : 0B033B1E3B6425C1276A61E3F5E5F283    keyed_name : LIBSJS-SCRATCH-IT_V    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\ItemType\LIBSJS-SCRATCH-IT_V.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Allowed Permission</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking for related items
+<Item type='Permission' action='get' levels='0'><id>51F2FDF85AB07DF3C25F71CA50B4FF4C</id></Item>
+************* End of reference checking ************
+Item successfully applied(add)   id : 0B033B1E3B6425C1276A61E3F5E5F283    keyed_name : LIBSJS-SCRATCH-IT_V    type : ItemType  
+Adding item into PackageDefinition with id = 0B033B1E3B6425C1276A61E3F5E5F283 and type = ItemType
+Item successfully added in packdefinition  id  0B033B1E3B6425C1276A61E3F5E5F283 type ItemType
+Processing (add)   id : E2855368158C72AE7E4BF3B6E8D1D337    keyed_name : LIBSJS-SCRATCH-IT_P    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\ItemType\LIBSJS-SCRATCH-IT_P.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Morphae</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='ItemType' action='get' levels='0'><id>E0FAE5389340631DC4962AE25970C7BB</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : E2855368158C72AE7E4BF3B6E8D1D337    keyed_name : LIBSJS-SCRATCH-IT_P    type : ItemType  
+Adding item into PackageDefinition with id = E2855368158C72AE7E4BF3B6E8D1D337 and type = ItemType
+Item successfully added in packdefinition  id  E2855368158C72AE7E4BF3B6E8D1D337 type ItemType
+Processing (add)   id : 2E86BE71406A024A7610EBE387CA19FA    keyed_name : LIBSJS-SCRATCH-REL_A    type : RelationshipType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\RelationshipType\LIBSJS-SCRATCH-REL_A.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>RelationshipType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking RelationshipType's source_id,related_id
+<Item levels='0' action='get' type='ItemType'><id>E0FAE5389340631DC4962AE25970C7BB</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 2E86BE71406A024A7610EBE387CA19FA    keyed_name : LIBSJS-SCRATCH-REL_A    type : RelationshipType  
+Adding item into PackageDefinition with id = 2E86BE71406A024A7610EBE387CA19FA and type = RelationshipType
+Item successfully added in packdefinition  id  2E86BE71406A024A7610EBE387CA19FA type RelationshipType
+Processing (add)   id : 2CAA9483C5AF745CE43A9975AB133C39    keyed_name : LIBSJS-SCRATCH-REL_V    type : RelationshipType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\RelationshipType\LIBSJS-SCRATCH-REL_V.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>RelationshipType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking RelationshipType's source_id,related_id
+<Item levels='0' action='get' type='ItemType'><id>E0FAE5389340631DC4962AE25970C7BB</id></Item>
+checking RelationshipType's source_id,related_id
+<Item levels='0' action='get' type='ItemType'><id>0B033B1E3B6425C1276A61E3F5E5F283</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 2CAA9483C5AF745CE43A9975AB133C39    keyed_name : LIBSJS-SCRATCH-REL_V    type : RelationshipType  
+Adding item into PackageDefinition with id = 2CAA9483C5AF745CE43A9975AB133C39 and type = RelationshipType
+Item successfully added in packdefinition  id  2CAA9483C5AF745CE43A9975AB133C39 type RelationshipType
+Processing (add)   id : B1728187A78D330129D6FC48530DD38F    keyed_name : LIBSJS-SCRATCH-REL_B    type : RelationshipType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\RelationshipType\LIBSJS-SCRATCH-REL_B.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>RelationshipType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking RelationshipType's source_id,related_id
+<Item levels='0' action='get' type='ItemType'><id>59C43392EBE068DEA9AD799407BC55DB</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : B1728187A78D330129D6FC48530DD38F    keyed_name : LIBSJS-SCRATCH-REL_B    type : RelationshipType  
+Adding item into PackageDefinition with id = B1728187A78D330129D6FC48530DD38F and type = RelationshipType
+Item successfully added in packdefinition  id  B1728187A78D330129D6FC48530DD38F type RelationshipType
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : View  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : View  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (delete)     type : Form  
+File full name ''
+********** Start of reference checking ************
+************* End of reference checking ************
+Item successfully applied(delete)     type : Form  
+Processing (add)   id : 48CC1F963C2BD3526D145E6EF7622AE1    keyed_name : LIBSJS-SCRATCH-Msg_1    type : UserMessage  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215359-14.35-import-580dca\input\LIBSJS-SCRATCH-BASE\Import\UserMessage\LIBSJS-SCRATCH-Msg_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>UserMessage</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 48CC1F963C2BD3526D145E6EF7622AE1    keyed_name : LIBSJS-SCRATCH-Msg_1    type : UserMessage  
+Adding item into PackageDefinition with id = 48CC1F963C2BD3526D145E6EF7622AE1 and type = UserMessage
+Item successfully added in packdefinition  id  48CC1F963C2BD3526D145E6EF7622AE1 type UserMessage
+completed
+Updating 'LIBSJS-SCRATCH-BASE' package to success release status
+end of execution : 10/19/2026 03:24:12

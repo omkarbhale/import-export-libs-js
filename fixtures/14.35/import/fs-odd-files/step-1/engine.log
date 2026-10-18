@@ -1,0 +1,50 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:28:44
+Updating 'LIBSJS-SCRATCH-FS' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-FS****
+WARNING: File 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input\LIBSJS-SCRATCH-FS\Import\Variable\LIBSJS-SCRATCH-Fs_NoItem.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.
+Processing (add)   id : 44402126489F68289C53980576DE1D39    keyed_name : LIBSJS-SCRATCH-Fs_Plain    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input\LIBSJS-SCRATCH-FS\Import\Variable\LIBSJS-SCRATCH-Fs_Plain.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 44402126489F68289C53980576DE1D39    keyed_name : LIBSJS-SCRATCH-Fs_Plain    type : Variable  
+Adding item into PackageDefinition with id = 44402126489F68289C53980576DE1D39 and type = Variable
+Item successfully added in packdefinition  id  44402126489F68289C53980576DE1D39 type Variable
+Processing (add)   id : DC08FF9FF82BB32E36FCD3B99C380DC8    keyed_name : LIBSJS-SCRATCH-Fs_Utf16    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input\LIBSJS-SCRATCH-FS\Import\Variable\LIBSJS-SCRATCH-Fs_Utf16.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : DC08FF9FF82BB32E36FCD3B99C380DC8    keyed_name : LIBSJS-SCRATCH-Fs_Utf16    type : Variable  
+Adding item into PackageDefinition with id = DC08FF9FF82BB32E36FCD3B99C380DC8 and type = Variable
+Item successfully added in packdefinition  id  DC08FF9FF82BB32E36FCD3B99C380DC8 type Variable
+Processing (add)   id : EE37B579701D1BE8841859BE8ACECBA5    keyed_name : LIBSJS-SCRATCH-Fs_Backup    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215842-14.35-import-fc8d31\input\LIBSJS-SCRATCH-FS\Import\Variable\LIBSJS-SCRATCH-Fs_Backup.xmlbak'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : EE37B579701D1BE8841859BE8ACECBA5    keyed_name : LIBSJS-SCRATCH-Fs_Backup    type : Variable  
+Adding item into PackageDefinition with id = EE37B579701D1BE8841859BE8ACECBA5 and type = Variable
+Item successfully added in packdefinition  id  EE37B579701D1BE8841859BE8ACECBA5 type Variable
+completed
+Updating 'LIBSJS-SCRATCH-FS' package to success release status
+end of execution : 10/19/2026 03:28:45

@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":816947262468,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":816948251145,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-LANGUNSET","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":816948594343,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-LangUnset-List_1","answer":null}
+{"event":25,"seq":4,"thread":16,"ticks":816950943882,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":26,"seq":5,"thread":16,"ticks":816950945433,"channel":"status","text":"completed","answer":null}
+{"event":31,"seq":6,"thread":16,"ticks":816951741978,"channel":"status","text":"completed","answer":null}

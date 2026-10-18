@@ -1,0 +1,6 @@
+<import>
+  <languages list="de, fr" />
+  <itemtype name="Forum">
+    <properties list="label" />
+  </itemtype>
+</import>

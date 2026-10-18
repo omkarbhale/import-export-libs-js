@@ -1,0 +1,45 @@
+{
+  "id": "s4-del-missing",
+  "engine": "14.35",
+  "catalogue": [
+    "S4"
+  ],
+  "title": "A delete of an item that does not exist",
+  "exercises": "The server answers a delete of an unknown id without an error, so the item counts as applied.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-DELMISSING"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 17,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "A98530A5B7CC48ADA2D7432D84E4297E"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "A6015FA290ED4A9F80B4A2746211EA15"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "A6015FA290ED4A9F80B4A2746211EA15"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "A98530A5B7CC48ADA2D7432D84E4297E"
+    }
+  ]
+}

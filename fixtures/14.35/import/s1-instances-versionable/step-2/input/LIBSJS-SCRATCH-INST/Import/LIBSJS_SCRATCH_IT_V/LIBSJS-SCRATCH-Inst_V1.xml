@@ -1,0 +1,12 @@
+﻿<AML>
+ <Item type="LIBSJS_SCRATCH_IT_V" id="CFC67070B8926819B48BC0B108536FF2" action="add">
+  <name>LIBSJS-SCRATCH-Inst_V1</name>
+  <title>versioned</title>
+  <Relationships>
+   <Item type="LIBSJS_SCRATCH_REL_V" id="BEBF8BE13782B73CDCB1B1D411CF1A56" action="add">
+    <related_id keyed_name="LIBSJS-SCRATCH-Inst_A1" type="LIBSJS_SCRATCH_IT_A">4747CF811D4EFD42FA073ACA3A1BF1BE</related_id>
+    <source_id keyed_name="LIBSJS-SCRATCH-Inst_V1" type="LIBSJS_SCRATCH_IT_V">CFC67070B8926819B48BC0B108536FF2</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

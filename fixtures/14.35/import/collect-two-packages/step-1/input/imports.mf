@@ -1,0 +1,4 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-COLLPKGA" path="LIBSJS-SCRATCH-COLLPKGA\Import" />
+  <package name="LIBSJS-SCRATCH-COLLPKGB" path="LIBSJS-SCRATCH-COLLPKGB\Import" />
+</imports>

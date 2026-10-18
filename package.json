@@ -33,6 +33,7 @@
     "oracle:export-scratch-cases": "tsx oracle/src/record-export-scratch-cases.ts",
     "oracle:import-cases": "tsx oracle/src/record-import-cases.ts",
     "oracle:dbpatch-cases": "tsx oracle/src/record-dbpatch-cases.ts",
+    "oracle:lp-cases": "tsx oracle/src/record-lp-cases.ts",
     "prepare": "tsup",
     "rea-map": "tsx tools/rea-map/cli.ts"
   },

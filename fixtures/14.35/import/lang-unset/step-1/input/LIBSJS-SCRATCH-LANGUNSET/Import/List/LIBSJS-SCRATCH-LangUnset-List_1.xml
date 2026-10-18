@@ -1,0 +1,21 @@
+﻿<AML>
+ <Item type="List" id="FD35793BFEF02D5761DCA1A821AF12CA" action="add">
+  <name>LIBSJS-SCRATCH-LangUnset-List_1</name>
+  <Relationships>
+   <Item type="Value" id="185FA6B7B137E87B5360C2340CE933E5" action="add">
+    <label xml:lang="en">Value 1 (en)</label>
+    <label xml:lang="de">Value 1 (de)</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LangUnset-List_1" type="List">FD35793BFEF02D5761DCA1A821AF12CA</source_id>
+    <value>lang1</value>
+   </Item>
+   <Item type="Value" id="8509F988C994D75A7073941AC79B3DC6" action="add">
+    <label xml:lang="en">Value 2 (en)</label>
+    <label xml:lang="de">Value 2 (de)</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LangUnset-List_1" type="List">FD35793BFEF02D5761DCA1A821AF12CA</source_id>
+    <value>lang2</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

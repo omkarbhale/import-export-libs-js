@@ -1,0 +1,94 @@
+{
+  "id": "s8-coll-duplicate",
+  "engine": "14.35",
+  "catalogue": [
+    "S8"
+  ],
+  "title": "The same item in two packages",
+  "exercises": "PackageElement is looked up globally by element id: the second package finds the first one's element in another group and fails with the duplicate-element error (-2).",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-A.Coll",
+        "LIBSJS-SCRATCH-B.Coll"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 36,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "7E8AE9133270443EB96091E9F8359BFF"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "4AFDD40CD5104533A9FECB480D620C98"
+          },
+          {
+            "type": "Variable",
+            "id": "416141614D62782894BB63F6E612448D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B53C71BB2325401DABD3A8CDE5567937"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6C227E17FFEF43A892C5AC083A037A23"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "E371454159F1413AB200CC0E43A91C69"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "2FB0813A28644C2CACAE90399C46249A"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "72839CB3ECFC4D20B1246AF607B3407A"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageGroup",
+      "id": "72839CB3ECFC4D20B1246AF607B3407A"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "2FB0813A28644C2CACAE90399C46249A"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "E371454159F1413AB200CC0E43A91C69"
+    },
+    {
+      "type": "PackageElement",
+      "id": "6C227E17FFEF43A892C5AC083A037A23"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B53C71BB2325401DABD3A8CDE5567937"
+    },
+    {
+      "type": "Variable",
+      "id": "416141614D62782894BB63F6E612448D"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "4AFDD40CD5104533A9FECB480D620C98"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "7E8AE9133270443EB96091E9F8359BFF"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "id": "collect-two-errors-max2",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "collected errors"
+  ],
+  "title": "Two failing items, maximum 2",
+  "exercises": "The second error reaches the maximum (the test is >=) and ends the package; the items after the second failure are never read.",
+  "rules": [
+    "IMP-541"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHTWO"
+      ],
+      "options": {
+        "collectErrors": {
+          "maxCount": 2
+        }
+      },
+      "expect": "returned:2",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 2,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "CFF19B01DAC74F408A47EC7449797F76"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "60CA36A3515C476F891FC92C9F0FA544"
+          },
+          {
+            "type": "Variable",
+            "id": "0AE9C503D4AB17164394AC775290C24D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "888E0BF53EB140FEA5A159FF471038B8"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BF359910FAFA40DABFB42C12C316F876"
+          },
+          {
+            "type": "Variable",
+            "id": "DBF7285965597B3A17EA1EB53532C982"
+          },
+          {
+            "type": "PackageElement",
+            "id": "4A1CDBA6705C465A808B17A8F7F109D4"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A707C9986FFD41A6B02776EE0C3D1FED"
+          },
+          {
+            "type": "Variable",
+            "id": "2EBC1C85DC9E9949D4E5CE2E2A6A7DD7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "381249280D884FCAAC8D6E03480B36C6"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "381249280D884FCAAC8D6E03480B36C6"
+    },
+    {
+      "type": "Variable",
+      "id": "2EBC1C85DC9E9949D4E5CE2E2A6A7DD7"
+    },
+    {
+      "type": "PackageElement",
+      "id": "A707C9986FFD41A6B02776EE0C3D1FED"
+    },
+    {
+      "type": "PackageElement",
+      "id": "4A1CDBA6705C465A808B17A8F7F109D4"
+    },
+    {
+      "type": "Variable",
+      "id": "DBF7285965597B3A17EA1EB53532C982"
+    },
+    {
+      "type": "PackageElement",
+      "id": "BF359910FAFA40DABFB42C12C316F876"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "888E0BF53EB140FEA5A159FF471038B8"
+    },
+    {
+      "type": "Variable",
+      "id": "0AE9C503D4AB17164394AC775290C24D"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "60CA36A3515C476F891FC92C9F0FA544"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "CFF19B01DAC74F408A47EC7449797F76"
+    }
+  ]
+}

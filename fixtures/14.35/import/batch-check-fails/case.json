@@ -1,0 +1,110 @@
+{
+  "id": "batch-check-fails",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "The fourth item fails the engine's own check in batch mode",
+  "exercises": "A failed check flushes the queue (the three waiting items go out in one <AML> and are registered), restores the item and checks it again; the second failure ends the package (IMP-518), and an empty <AML></AML> is sent too (IMP-515).",
+  "rules": [
+    "IMP-518"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHCHK"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 3
+        }
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 34,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "8C98CEB260B94766BA8355FBD8736FE1"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1D99A369053D414F8B2B2C95D03887AA"
+          },
+          {
+            "type": "Variable",
+            "id": "25E946F9C36B86F6130E2728ED0BC0C3"
+          },
+          {
+            "type": "Variable",
+            "id": "7516B30075F875318D294298AA8F564C"
+          },
+          {
+            "type": "Variable",
+            "id": "8F1A31E32A66525D1B457156967AC9BB"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "C11764A65C46461BB6FA758FB7DCA246"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BB4ECF715A5948F4B319FD59DBD3B42A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "40AB7656148345E7A184DAE891521781"
+          },
+          {
+            "type": "PackageElement",
+            "id": "2A7391811572491A99E315A9A5D668B4"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "2A7391811572491A99E315A9A5D668B4"
+    },
+    {
+      "type": "PackageElement",
+      "id": "40AB7656148345E7A184DAE891521781"
+    },
+    {
+      "type": "PackageElement",
+      "id": "BB4ECF715A5948F4B319FD59DBD3B42A"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "C11764A65C46461BB6FA758FB7DCA246"
+    },
+    {
+      "type": "Variable",
+      "id": "8F1A31E32A66525D1B457156967AC9BB"
+    },
+    {
+      "type": "Variable",
+      "id": "7516B30075F875318D294298AA8F564C"
+    },
+    {
+      "type": "Variable",
+      "id": "25E946F9C36B86F6130E2728ED0BC0C3"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "1D99A369053D414F8B2B2C95D03887AA"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "8C98CEB260B94766BA8355FBD8736FE1"
+    }
+  ]
+}

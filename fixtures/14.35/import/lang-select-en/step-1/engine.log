@@ -1,0 +1,35 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220837-14.35-import-990a18\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220837-14.35-import-990a18\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220837-14.35-import-990a18\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:38:40
+Updating 'LIBSJS-SCRATCH-LANGEN' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LANGEN****
+Processing (add)   id : BEFE09BC85FE6275E0379C31519BC445    keyed_name : LIBSJS-SCRATCH-LangEn-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220837-14.35-import-990a18\input\LIBSJS-SCRATCH-LANGEN\Import\List\LIBSJS-SCRATCH-LangEn-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : BEFE09BC85FE6275E0379C31519BC445    keyed_name : LIBSJS-SCRATCH-LangEn-List_1    type : List  
+Adding item into PackageDefinition with id = BEFE09BC85FE6275E0379C31519BC445 and type = List
+Item successfully added in packdefinition  id  BEFE09BC85FE6275E0379C31519BC445 type List
+completed
+Updating 'LIBSJS-SCRATCH-LANGEN' package to success release status
+end of execution : 10/19/2026 03:38:40

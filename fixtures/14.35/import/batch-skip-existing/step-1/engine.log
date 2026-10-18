@@ -1,0 +1,85 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:39:24
+Updating 'LIBSJS-SCRATCH-BATCHSKP' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHSKP****
+Processing (add)   id : B497BAA0F18D424E345EA7A4B961D2DA    keyed_name : LIBSJS-SCRATCH-BatchSkp_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : B497BAA0F18D424E345EA7A4B961D2DA    keyed_name : LIBSJS-SCRATCH-BatchSkp_1    type : Variable  
+Adding item into PackageDefinition with id = B497BAA0F18D424E345EA7A4B961D2DA and type = Variable
+Item successfully added in packdefinition  id  B497BAA0F18D424E345EA7A4B961D2DA type Variable
+Processing (add)   id : 8832564D54AF13B9D24AF0F483D7A764    keyed_name : LIBSJS-SCRATCH-BatchSkp_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 8832564D54AF13B9D24AF0F483D7A764    keyed_name : LIBSJS-SCRATCH-BatchSkp_2    type : Variable  
+Adding item into PackageDefinition with id = 8832564D54AF13B9D24AF0F483D7A764 and type = Variable
+Item successfully added in packdefinition  id  8832564D54AF13B9D24AF0F483D7A764 type Variable
+Processing (add)   id : AF46DB98131A88E9CD0899123123E8A1    keyed_name : LIBSJS-SCRATCH-BatchSkp_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : AF46DB98131A88E9CD0899123123E8A1    keyed_name : LIBSJS-SCRATCH-BatchSkp_3    type : Variable  
+Adding item into PackageDefinition with id = AF46DB98131A88E9CD0899123123E8A1 and type = Variable
+Item successfully added in packdefinition  id  AF46DB98131A88E9CD0899123123E8A1 type Variable
+Processing (add)   id : F95A5A6F3D6C939FB6E075743488BB05    keyed_name : LIBSJS-SCRATCH-BatchSkp_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : F95A5A6F3D6C939FB6E075743488BB05    keyed_name : LIBSJS-SCRATCH-BatchSkp_4    type : Variable  
+Adding item into PackageDefinition with id = F95A5A6F3D6C939FB6E075743488BB05 and type = Variable
+Item successfully added in packdefinition  id  F95A5A6F3D6C939FB6E075743488BB05 type Variable
+Processing (add)   id : 20D8072619A339B87A781476BF02C7A0    keyed_name : LIBSJS-SCRATCH-BatchSkp_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 20D8072619A339B87A781476BF02C7A0    keyed_name : LIBSJS-SCRATCH-BatchSkp_5    type : Variable  
+Adding item into PackageDefinition with id = 20D8072619A339B87A781476BF02C7A0 and type = Variable
+Item successfully added in packdefinition  id  20D8072619A339B87A781476BF02C7A0 type Variable
+Processing (add)   id : 756138F0BF60A8BC6DDD86C3754D1A5E    keyed_name : LIBSJS-SCRATCH-BatchSkp_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 756138F0BF60A8BC6DDD86C3754D1A5E    keyed_name : LIBSJS-SCRATCH-BatchSkp_6    type : Variable  
+Adding item into PackageDefinition with id = 756138F0BF60A8BC6DDD86C3754D1A5E and type = Variable
+Item successfully added in packdefinition  id  756138F0BF60A8BC6DDD86C3754D1A5E type Variable
+Processing (add)   id : AF7B410495BB376497AABBE7B41E58AE    keyed_name : LIBSJS-SCRATCH-BatchSkp_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220920-14.35-import-eb9171\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : AF7B410495BB376497AABBE7B41E58AE    keyed_name : LIBSJS-SCRATCH-BatchSkp_7    type : Variable  
+Adding item into PackageDefinition with id = AF7B410495BB376497AABBE7B41E58AE and type = Variable
+Item successfully added in packdefinition  id  AF7B410495BB376497AABBE7B41E58AE type Variable
+completed
+Updating 'LIBSJS-SCRATCH-BATCHSKP' package to success release status
+end of execution : 10/19/2026 03:39:25

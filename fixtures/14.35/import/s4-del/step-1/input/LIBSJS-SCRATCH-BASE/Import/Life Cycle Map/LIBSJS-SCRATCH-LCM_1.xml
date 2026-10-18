@@ -1,0 +1,41 @@
+﻿<AML>
+ <Item type="Life Cycle Map" id="8B5690F5CDA03F7F570CFF04DF20BA30" action="add">
+  <description>Scratch life cycle</description>
+  <start_state keyed_name="Start" type="Life Cycle State">09B755537F20E6BB9909A828FF5D76C5</start_state>
+  <name>LIBSJS-SCRATCH-LCM_1</name>
+  <Relationships>
+   <Item type="Life Cycle State" id="E0C2F2ADDAFF2F4F698B796266BE0F1D" action="add">
+    <image>../images/LifeCycleState.svg</image>
+    <label xml:lang="en">Done</label>
+    <set_is_released>0</set_is_released>
+    <set_not_lockable>0</set_not_lockable>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LCM_1" type="Life Cycle Map">8B5690F5CDA03F7F570CFF04DF20BA30</source_id>
+    <x>331</x>
+    <y>62</y>
+    <name>Done</name>
+   </Item>
+   <Item type="Life Cycle State" id="09B755537F20E6BB9909A828FF5D76C5" action="add">
+    <image>../images/LifeCycleState.svg</image>
+    <label xml:lang="en">Start</label>
+    <set_is_released>0</set_is_released>
+    <set_not_lockable>0</set_not_lockable>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LCM_1" type="Life Cycle Map">8B5690F5CDA03F7F570CFF04DF20BA30</source_id>
+    <x>102</x>
+    <y>62</y>
+    <name>Start</name>
+   </Item>
+   <Item type="Life Cycle Transition" id="7762C3A48F36C97052FBEBD1845E55E2" action="add">
+    <from_state keyed_name="Start" type="Life Cycle State">09B755537F20E6BB9909A828FF5D76C5</from_state>
+    <get_comment>0</get_comment>
+    <segments />
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LCM_1" type="Life Cycle Map">8B5690F5CDA03F7F570CFF04DF20BA30</source_id>
+    <to_state keyed_name="Done" type="Life Cycle State">E0C2F2ADDAFF2F4F698B796266BE0F1D</to_state>
+    <x>-1</x>
+    <y>-1</y>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

@@ -1,0 +1,150 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:40:06
+Updating 'LIBSJS-SCRATCH-COLLSRV' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-COLLSRV****
+Processing (add)   id : 869121B98673CF8382BB252B0F44B0D9    keyed_name : LIBSJS-SCRATCH-CollSrv_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 869121B98673CF8382BB252B0F44B0D9    keyed_name : LIBSJS-SCRATCH-CollSrv_1    type : Variable  
+Adding item into PackageDefinition with id = 869121B98673CF8382BB252B0F44B0D9 and type = Variable
+Item successfully added in packdefinition  id  869121B98673CF8382BB252B0F44B0D9 type Variable
+Processing (add)   id : 18C5C0CB315799C40E1184280CD8BEC3    keyed_name : LIBSJS-SCRATCH-CollSrv_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 18C5C0CB315799C40E1184280CD8BEC3    keyed_name : LIBSJS-SCRATCH-CollSrv_2    type : Variable  
+Adding item into PackageDefinition with id = 18C5C0CB315799C40E1184280CD8BEC3 and type = Variable
+Item successfully added in packdefinition  id  18C5C0CB315799C40E1184280CD8BEC3 type Variable
+Processing (add)   id : C329C9235B5763279D3C75E23EBF6028    keyed_name : LIBSJS-SCRATCH-CollSrv_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : C329C9235B5763279D3C75E23EBF6028    keyed_name : LIBSJS-SCRATCH-CollSrv_3    type : Variable  
+Adding item into PackageDefinition with id = C329C9235B5763279D3C75E23EBF6028 and type = Variable
+Item successfully added in packdefinition  id  C329C9235B5763279D3C75E23EBF6028 type Variable
+Processing (add)   id : 93256FE2304F19EC8A872ED9F1A13DFC    keyed_name : LIBSJS-SCRATCH-CollSrv_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="93256FE2304F19EC8A872ED9F1A13DFC" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollSrv_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollSrv_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="93256FE2304F19EC8A872ED9F1A13DFC" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollSrv_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************
+Adding item into PackageDefinition with id = 93256FE2304F19EC8A872ED9F1A13DFC and type = Variable
+Item successfully added in packdefinition  id  93256FE2304F19EC8A872ED9F1A13DFC type Variable
+Processing (add)   id : AD33EF5E743449F63FDC6B7DB05C6B23    keyed_name : LIBSJS-SCRATCH-CollSrv_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : AD33EF5E743449F63FDC6B7DB05C6B23    keyed_name : LIBSJS-SCRATCH-CollSrv_5    type : Variable  
+Adding item into PackageDefinition with id = AD33EF5E743449F63FDC6B7DB05C6B23 and type = Variable
+Item successfully added in packdefinition  id  AD33EF5E743449F63FDC6B7DB05C6B23 type Variable
+Processing (add)   id : 479809B62ACCB26658B591F3A25A9EB8    keyed_name : LIBSJS-SCRATCH-CollSrv_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 479809B62ACCB26658B591F3A25A9EB8    keyed_name : LIBSJS-SCRATCH-CollSrv_6    type : Variable  
+Adding item into PackageDefinition with id = 479809B62ACCB26658B591F3A25A9EB8 and type = Variable
+Item successfully added in packdefinition  id  479809B62ACCB26658B591F3A25A9EB8 type Variable
+Processing (add)   id : F7E293E47DE805A94819FB94A97F51E6    keyed_name : LIBSJS-SCRATCH-CollSrv_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221003-14.35-import-920350\input\LIBSJS-SCRATCH-COLLSRV\Import\Variable\LIBSJS-SCRATCH-CollSrv_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : F7E293E47DE805A94819FB94A97F51E6    keyed_name : LIBSJS-SCRATCH-CollSrv_7    type : Variable  
+Adding item into PackageDefinition with id = F7E293E47DE805A94819FB94A97F51E6 and type = Variable
+Item successfully added in packdefinition  id  F7E293E47DE805A94819FB94A97F51E6 type Variable
+completed
+Updating 'LIBSJS-SCRATCH-COLLSRV' package to failed release status
+end of execution : 10/19/2026 03:40:06
+
+		****ErrorMessage****
+One or more errors occurred.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="93256FE2304F19EC8A872ED9F1A13DFC" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollSrv_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollSrv_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollSrv_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="93256FE2304F19EC8A872ED9F1A13DFC" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollSrv_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************

@@ -1,0 +1,12 @@
+ENGINE 14.35: Libs 14.35.0.43890 (bdb15286-0555-4e3d-a61a-0fc29b2b2160), IOM 15.0.0.0 (9d41c787-a018-40ee-a8e7-47efa0e2ad65)
+       ****Import   LIBSJS-SCRATCH-MINI****
+Building  solution
+Importing LIBSJS-SCRATCH-MINI-List_1  type List   1  of  6
+Importing LIBSJS-SCRATCH-MINI-List_2  type List   2  of  6
+Importing LIBSJS-SCRATCH-MINI-Seq_1  type Sequence   3  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_1  type Variable   4  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_2  type Variable   5  of  6
+Importing LIBSJS-SCRATCH-MINI-Var_3  type Variable   6  of  6
+Delayed resolution of unresolved references ...
+completed
+HOST_EXIT 0

@@ -1,0 +1,82 @@
+{
+  "id": "lang-star-en-only",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages *"
+  ],
+  "title": "Languages = * over a package that uses en only",
+  "exercises": "`*` is replaced by the languages the packages use (en), the installed check passes, and nothing is deleted.",
+  "rules": [
+    "IMP-620",
+    "IMP-621",
+    "IMP-635"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGSTAREN"
+      ],
+      "options": {
+        "languages": [
+          "*"
+        ]
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 26,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "0761E1F16FFB472696F712F57CC3DD52"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "5A96042D1032447BBFA145F739B02D80"
+          },
+          {
+            "type": "List",
+            "id": "B170C4F565DF9C444CDDCFFD8BCDD517"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "910E08CD734748439210DDF06C44396B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "74B28C9411BF42208483950AB31D6AE1"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "74B28C9411BF42208483950AB31D6AE1"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "910E08CD734748439210DDF06C44396B"
+    },
+    {
+      "type": "List",
+      "id": "B170C4F565DF9C444CDDCFFD8BCDD517"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "5A96042D1032447BBFA145F739B02D80"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "0761E1F16FFB472696F712F57CC3DD52"
+    }
+  ]
+}

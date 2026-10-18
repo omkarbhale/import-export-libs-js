@@ -1,0 +1,30 @@
+﻿<AML>
+ <Item type="Permission" id="51F2FDF85AB07DF3C25F71CA50B4FF4C" action="add">
+  <is_private>0</is_private>
+  <name>LIBSJS-SCRATCH-Perm_1</name>
+  <Relationships>
+   <Item type="Access" id="D1B9EEE3577B6550C5BD0339A830EDA9" action="add">
+    <can_change_access>0</can_change_access>
+    <can_delete>0</can_delete>
+    <can_discover>1</can_discover>
+    <can_get>1</can_get>
+    <can_update>0</can_update>
+    <related_id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</related_id>
+    <show_permissions_warning>1</show_permissions_warning>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="Perm_1" type="Permission">51F2FDF85AB07DF3C25F71CA50B4FF4C</source_id>
+   </Item>
+   <Item type="Access" id="6822866467692F14AF0D3AC5641551D8" action="add">
+    <can_change_access>1</can_change_access>
+    <can_delete>1</can_delete>
+    <can_discover>1</can_discover>
+    <can_get>1</can_get>
+    <can_update>1</can_update>
+    <related_id keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</related_id>
+    <show_permissions_warning>1</show_permissions_warning>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="Perm_1" type="Permission">51F2FDF85AB07DF3C25F71CA50B4FF4C</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

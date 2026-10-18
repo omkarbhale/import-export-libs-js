@@ -1,0 +1,30 @@
+{
+  "case": "lp08",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "a package name with a dot",
+  "lpPackage": "LIBSJS-SCRATCH-LP.Dot",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de"
+  },
+  "lpDebug": false,
+  "expect": "refused",
+  "exercises": "The preprocessor writes its fixes where LP-033 says, the manifest points elsewhere, and the folder the 14.35 scan lists does not exist: `DirectoryNotFoundException` ends the constructor, so the run ends with an exception and no return code (14.0.7 failed later, inside the import).",
+  "rules": [
+    "LP-033",
+    "IMP-612",
+    "IMP-640"
+  ],
+  "result": {
+    "hostExit": 2,
+    "calls": 7,
+    "returned": null,
+    "error": "System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\\Users\\omkarb\\AppData\\Local\\Temp\\LanguagePack_gu3a3hu0.2sw\\Dot\\Import'.\r\n   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileSystemEnumerableIterator`1.CommonInit()\r\n   at System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)\r\n   at System.IO.Directory.GetFiles(String path, String searchPattern, SearchOption searchOption)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.ExtractLanguageCodesFromPackages(IEnumerable`1 packages)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager..ctor(ISolutionUpgradeContext context, IMessagesFactory messagesFactory, ICItemHelper itemHelper)\r\n   at LibsJsOracle.Host.Run(HostRequest r)",
+    "created": []
+  },
+  "deleted": []
+}

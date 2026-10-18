@@ -1,0 +1,9 @@
+<export>
+  <Item type="Forum" id="11B5C0DE00000000000000000000D001" keyed_name="LIBSJS-SCRATCH-LP-Forum">
+    <property __name="label" en="LIBSJS scratch forum" de="LIBSJS Test-Forum (lp06)" fr="Forum de test LIBSJS (lp06)" />
+    <property __name="name" en="LIBSJS-SCRATCH-LP-Forum" de="LIBSJS-SCRATCH-LP-Forum-de" />
+  </Item>
+  <Item type="Forum" id="11B5C0DE00000000000000000000D002" keyed_name="LIBSJS-SCRATCH-LP-Forum2">
+    <property __name="label" en="LIBSJS scratch forum two" de="LIBSJS Test-Forum zwei (lp06)" fr="Forum de test LIBSJS deux (lp06)" />
+  </Item>
+</export>

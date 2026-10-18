@@ -1,0 +1,159 @@
+{
+  "id": "collect-two-errors-max3",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "collected errors"
+  ],
+  "title": "Two failing items, maximum 3",
+  "exercises": "Both errors are collected and the rest of the package is imported; the run returns 2.",
+  "rules": [
+    "IMP-541",
+    "IMP-546"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHTWO"
+      ],
+      "options": {
+        "collectErrors": {
+          "maxCount": 3
+        }
+      },
+      "expect": "returned:2",
+      "result": {
+        "hostExit": 0,
+        "calls": 48,
+        "returned": 2,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "80B493B413AC4B6BA94DA020AD79CBBB"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "902A5F0854C34745B43773A8780239E5"
+          },
+          {
+            "type": "Variable",
+            "id": "0AE9C503D4AB17164394AC775290C24D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D35ADD9BE0AB413F87C9808D6337F5F7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "223A663761CB4DB3B10BE65AACA7A3C9"
+          },
+          {
+            "type": "Variable",
+            "id": "DBF7285965597B3A17EA1EB53532C982"
+          },
+          {
+            "type": "PackageElement",
+            "id": "605EB57C3618476B9C67AF9A37340044"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C47C0FBF34F647A1B9CD6FC5684042DC"
+          },
+          {
+            "type": "Variable",
+            "id": "2EBC1C85DC9E9949D4E5CE2E2A6A7DD7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "67CDFA4AFA4748B18629F1833E923296"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E5BCD11FF7DA4FBF835E0B9F6275E872"
+          },
+          {
+            "type": "Variable",
+            "id": "7D0D726B1BA2E2C2A22C3C46E68BD2A6"
+          },
+          {
+            "type": "PackageElement",
+            "id": "4AE54AC1E85043A4BEE6475F5B860806"
+          },
+          {
+            "type": "Variable",
+            "id": "2A9D18BD013A6E2D322557D868D05EDE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "9915F2573B3F40EAAEC1F117D60B8540"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "9915F2573B3F40EAAEC1F117D60B8540"
+    },
+    {
+      "type": "Variable",
+      "id": "2A9D18BD013A6E2D322557D868D05EDE"
+    },
+    {
+      "type": "PackageElement",
+      "id": "4AE54AC1E85043A4BEE6475F5B860806"
+    },
+    {
+      "type": "Variable",
+      "id": "7D0D726B1BA2E2C2A22C3C46E68BD2A6"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E5BCD11FF7DA4FBF835E0B9F6275E872"
+    },
+    {
+      "type": "PackageElement",
+      "id": "67CDFA4AFA4748B18629F1833E923296"
+    },
+    {
+      "type": "Variable",
+      "id": "2EBC1C85DC9E9949D4E5CE2E2A6A7DD7"
+    },
+    {
+      "type": "PackageElement",
+      "id": "C47C0FBF34F647A1B9CD6FC5684042DC"
+    },
+    {
+      "type": "PackageElement",
+      "id": "605EB57C3618476B9C67AF9A37340044"
+    },
+    {
+      "type": "Variable",
+      "id": "DBF7285965597B3A17EA1EB53532C982"
+    },
+    {
+      "type": "PackageElement",
+      "id": "223A663761CB4DB3B10BE65AACA7A3C9"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "D35ADD9BE0AB413F87C9808D6337F5F7"
+    },
+    {
+      "type": "Variable",
+      "id": "0AE9C503D4AB17164394AC775290C24D"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "902A5F0854C34745B43773A8780239E5"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "80B493B413AC4B6BA94DA020AD79CBBB"
+    }
+  ]
+}

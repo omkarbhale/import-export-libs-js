@@ -1,0 +1,120 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:40:10
+Updating 'LIBSJS-SCRATCH-COLLZERO' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-COLLZERO****
+Processing (add)   id : AA0AE90968DA7BE0EF754632C9F5305E    keyed_name : LIBSJS-SCRATCH-CollZero_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input\LIBSJS-SCRATCH-COLLZERO\Import\Variable\LIBSJS-SCRATCH-CollZero_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : AA0AE90968DA7BE0EF754632C9F5305E    keyed_name : LIBSJS-SCRATCH-CollZero_1    type : Variable  
+Adding item into PackageDefinition with id = AA0AE90968DA7BE0EF754632C9F5305E and type = Variable
+Item successfully added in packdefinition  id  AA0AE90968DA7BE0EF754632C9F5305E type Variable
+Processing (add)   id : C94FB62F61F8BA0310D9E85E38B649F0    keyed_name : LIBSJS-SCRATCH-CollZero_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input\LIBSJS-SCRATCH-COLLZERO\Import\Variable\LIBSJS-SCRATCH-CollZero_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : C94FB62F61F8BA0310D9E85E38B649F0    keyed_name : LIBSJS-SCRATCH-CollZero_2    type : Variable  
+Adding item into PackageDefinition with id = C94FB62F61F8BA0310D9E85E38B649F0 and type = Variable
+Item successfully added in packdefinition  id  C94FB62F61F8BA0310D9E85E38B649F0 type Variable
+Processing (add)   id : B9124BC2F70EF4204FA40C46BED68EDF    keyed_name : LIBSJS-SCRATCH-CollZero_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input\LIBSJS-SCRATCH-COLLZERO\Import\Variable\LIBSJS-SCRATCH-CollZero_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : B9124BC2F70EF4204FA40C46BED68EDF    keyed_name : LIBSJS-SCRATCH-CollZero_3    type : Variable  
+Adding item into PackageDefinition with id = B9124BC2F70EF4204FA40C46BED68EDF and type = Variable
+Item successfully added in packdefinition  id  B9124BC2F70EF4204FA40C46BED68EDF type Variable
+Processing (add)   id : 4E5EC7176FC9CF782D55DDDC0601364B    keyed_name : LIBSJS-SCRATCH-CollZero_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221008-14.35-import-ef5fee\input\LIBSJS-SCRATCH-COLLZERO\Import\Variable\LIBSJS-SCRATCH-CollZero_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="4E5EC7176FC9CF782D55DDDC0601364B" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollZero_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollZero_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="4E5EC7176FC9CF782D55DDDC0601364B" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollZero_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************
+Updating 'LIBSJS-SCRATCH-COLLZERO' package to failed release status
+end of execution : 10/19/2026 03:40:10
+
+		****ErrorMessage****
+One or more errors occurred.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="4E5EC7176FC9CF782D55DDDC0601364B" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollZero_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollZero_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollZero_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="4E5EC7176FC9CF782D55DDDC0601364B" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollZero_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************

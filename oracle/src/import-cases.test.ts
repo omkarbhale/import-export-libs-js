@@ -2,10 +2,11 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } 
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { CASE_ENGINES, blobsDir, casesDir, type CaseEngine } from "./case-engine.js";
+import { IMPORT_ENGINES, blobsDir, casesDir, type ImportEngine } from "./case-engine.js";
 import { IMPORT_CASES, casesFor, expectedOutcome, hostOptions } from "./import-cases.js";
 import { exportBytes, manifestText, sid, writePackages, type ScratchPackage } from "./import-packages.js";
-import { caseFile, caseReadme, indexReadme, outcomeMatches, returnedValue, type CaseFile } from "./record-import-cases.js";
+import { PROPERTY_WHERE } from "./import-packages-14.35.js";
+import { caseFile, caseReadme, expectText, expectedReturn, indexReadme, outcomeMatches, returnedValue, type CaseFile } from "./record-import-cases.js";
 import { manifestPackageNames } from "./record.js";
 import { blobMatchesName } from "./transcript.js";
 
@@ -28,7 +29,7 @@ function tree(dir: string): Map<string, string> {
   return files;
 }
 
-describe("the 14.0.7 import case list", () => {
+describe("the import case list", () => {
   it("has unique, folder-safe ids and at least one step each", () => {
     const ids = IMPORT_CASES.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
@@ -39,7 +40,7 @@ describe("the 14.0.7 import case list", () => {
   });
 
   it("records a case on every engine unless it names its engines, and the 12.0-only cases pin one variant rule each", () => {
-    const only12 = IMPORT_CASES.filter((c) => c.engines !== undefined);
+    const only12 = IMPORT_CASES.filter((c) => c.engines?.includes("12.0") === true);
     expect(only12.map((c) => c.id)).toEqual(["r11-ac-attribute-actions", "r15-latin1-file", "r15-utf16-no-bom"]);
     for (const c of only12) {
       expect(c.engines, c.id).toEqual(["12.0"]);
@@ -47,7 +48,22 @@ describe("the 14.0.7 import case list", () => {
       expect(casesFor("14.0.7").map((x) => x.id), c.id).not.toContain(c.id);
       expect(casesFor("12.0").map((x) => x.id), c.id).toContain(c.id);
     }
-    expect(casesFor("14.0.7")).toHaveLength(IMPORT_CASES.length - only12.length);
+    const only35 = IMPORT_CASES.filter((c) => c.engines?.includes("14.35") === true);
+    for (const c of only35) {
+      expect(c.engines, c.id).toEqual(["14.35"]);
+      expect(casesFor("14.0.7").map((x) => x.id), c.id).not.toContain(c.id);
+      expect(casesFor("12.0").map((x) => x.id), c.id).not.toContain(c.id);
+    }
+    expect(only35.length).toBeGreaterThan(0);
+    expect(casesFor("14.0.7")).toHaveLength(IMPORT_CASES.length - only12.length - only35.length);
+    expect(casesFor("14.35")).toHaveLength(IMPORT_CASES.length - only12.length);
+  });
+
+  it("takes the 14.35 outcome of the cancel case from expectOn", () => {
+    const cancel = IMPORT_CASES.find((c) => c.id === "s0-mini-cancel")!;
+    expect(expectedOutcome(cancel.steps[0]!, "14.0.7")).toBe("success");
+    expect(expectedOutcome(cancel.steps[0]!, "14.35")).toBe("engine-failure");
+    expect(cancel.exercisesOn?.["14.35"]).toContain("OperationCanceledException");
   });
 
   it("takes a step's expected outcome per engine", () => {
@@ -78,6 +94,11 @@ describe("the 14.0.7 import case list", () => {
         if (typeof f.content !== "string") continue;
         for (const m of f.content.matchAll(/where="([^"]*)"/g)) {
           const where = m[1]!;
+          if (where === PROPERTY_WHERE) {
+            // The delayed Property edit of IMP-220: scoped to a scratch ItemType's id and one property name.
+            expect(where, `${id} ${f.file}`).toMatch(/^\[Property\]\.source_id='[0-9A-F]{32}' AND \[Property\]\.name='ref'$/);
+            continue;
+          }
           const view = /^source_id='([0-9A-F]{32})'$/.exec(where);
           const form = /^name='(LIBSJS_SCRATCH_[A-Za-z0-9_]+)'$/.exec(where);
           expect(view !== null ? ids.has(view[1]!) : form !== null, `${id} ${f.file}: where="${where}"`).toBe(true);
@@ -111,7 +132,20 @@ describe("the 14.0.7 import case list", () => {
     expect(hostOptions(undefined)).toEqual({});
     expect(
       hostOptions(
-        { merge: true, fast: true, vault: true, verbose: true, release: "R", description: "D", cancelAfterStatus: 4, lockUpgradeRows: true, versionBefore: [{ type: "Method", id: "AB" }] },
+        {
+          merge: true,
+          fast: true,
+          vault: true,
+          verbose: true,
+          release: "R",
+          description: "D",
+          cancelAfterStatus: 4,
+          lockUpgradeRows: true,
+          versionBefore: [{ type: "Method", id: "AB" }],
+          languages: ["de", "*"],
+          amlBatch: { maxSize: 3 },
+          collectErrors: { maxCount: 0 },
+        },
         ["P", "P"],
       ),
     ).toEqual({
@@ -124,6 +158,11 @@ describe("the 14.0.7 import case list", () => {
       CancelAfterStatus: 4,
       LockUpgradeRows: true,
       VersionBefore: ["Method\tAB"],
+      Languages: ["de", "*"],
+      AmlBatchMode: true,
+      AmlBatchMaxSize: 3,
+      CollectImportErrors: true,
+      CollectImportErrorsMaxCount: 0,
       Packages: ["P", "P"],
     });
   });
@@ -172,10 +211,22 @@ describe("outcomes", () => {
     expect(outcomeMatches("success", { hostExit: 0, returned: 1, error: null })).toBe(false);
     expect(outcomeMatches("engine-failure", { hostExit: 0, returned: 1, error: null })).toBe(true);
     expect(outcomeMatches("engine-failure", { hostExit: 2, returned: null, error: "boom" })).toBe(false);
+    expect(outcomeMatches("returned:2", { hostExit: 0, returned: 2, error: null })).toBe(true);
+    expect(outcomeMatches("returned:2", { hostExit: 0, returned: 1, error: null })).toBe(false);
+    expect(outcomeMatches("refused", { hostExit: 2, returned: null, error: "System.Exception" })).toBe(true);
+    expect(outcomeMatches("refused", { hostExit: 0, returned: 0, error: null })).toBe(false);
+  });
+
+  it("names each outcome's return value and README text", () => {
+    expect(expectedReturn("success")).toBe(0);
+    expect(expectedReturn("engine-failure")).toBe(1);
+    expect(expectedReturn("returned:3")).toBe(3);
+    expect(expectText("returned:2")).toBe("2 errors collected (2)");
+    expect(expectText("refused")).toBe("constructor refused (exception)");
   });
 });
 
-describe.each(CASE_ENGINES)("the recorded %s import fixtures", (engine: CaseEngine) => {
+describe.each(IMPORT_ENGINES)("the recorded %s import fixtures", (engine: ImportEngine) => {
   const CASES_DIR = casesDir(engine, "import");
   const BLOBS_DIR = blobsDir(engine, "import");
   const recorded = casesFor(engine).filter((c) => existsSync(join(CASES_DIR, c.id, "case.json")));

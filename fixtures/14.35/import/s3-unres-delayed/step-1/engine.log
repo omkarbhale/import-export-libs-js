@@ -1,0 +1,76 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:37:27
+Updating 'LIBSJS-SCRATCH-UNRES' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-UNRES****
+Processing (add)   id : 178F5CDDAEDCBB34BD09F06470745602    keyed_name : LIBSJS-SCRATCH-Identity_A    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input\LIBSJS-SCRATCH-UNRES\Import\Identity\LIBSJS-SCRATCH-Identity_A.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Member</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>3493A7900BEC83EA6396B8AC4120A691</id></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<related_id keyed_name="LIBSJS-SCRATCH-Identity_Z" type="Identity">3493A7900BEC83EA6396B8AC4120A691</related_id>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Item successfully applied(add)   id : 178F5CDDAEDCBB34BD09F06470745602    keyed_name : LIBSJS-SCRATCH-Identity_A    type : Identity  
+Adding item into PackageDefinition with id = 178F5CDDAEDCBB34BD09F06470745602 and type = Identity
+Item successfully added in packdefinition  id  178F5CDDAEDCBB34BD09F06470745602 type Identity
+Processing (add)   id : 3493A7900BEC83EA6396B8AC4120A691    keyed_name : LIBSJS-SCRATCH-Identity_Z    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input\LIBSJS-SCRATCH-UNRES\Import\Identity\LIBSJS-SCRATCH-Identity_Z.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 3493A7900BEC83EA6396B8AC4120A691    keyed_name : LIBSJS-SCRATCH-Identity_Z    type : Identity  
+Adding item into PackageDefinition with id = 3493A7900BEC83EA6396B8AC4120A691 and type = Identity
+Item successfully added in packdefinition  id  3493A7900BEC83EA6396B8AC4120A691 type Identity
+Processing (add)   id : 6E7E6F3785C0EA0207C5648D1A072EA7    keyed_name : LIBSJS-SCRATCH-UNRES_X    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input\LIBSJS-SCRATCH-UNRES\Import\ItemType\LIBSJS-SCRATCH-UNRES_X.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking <data_source> reference to the ItemType
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_UNRES_Y</name></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<data_source keyed_name="LIBSJS_SCRATCH_UNRES_Y" type="ItemType">D4F96DA7FCAACB328A32D7EADA3D9480</data_source>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Item successfully applied(add)   id : 6E7E6F3785C0EA0207C5648D1A072EA7    keyed_name : LIBSJS-SCRATCH-UNRES_X    type : ItemType  
+Adding item into PackageDefinition with id = 6E7E6F3785C0EA0207C5648D1A072EA7 and type = ItemType
+Item successfully added in packdefinition  id  6E7E6F3785C0EA0207C5648D1A072EA7 type ItemType
+Processing (add)   id : D4F96DA7FCAACB328A32D7EADA3D9480    keyed_name : LIBSJS-SCRATCH-UNRES_Y    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220725-14.35-import-02f90d\input\LIBSJS-SCRATCH-UNRES\Import\ItemType\LIBSJS-SCRATCH-UNRES_Y.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : D4F96DA7FCAACB328A32D7EADA3D9480    keyed_name : LIBSJS-SCRATCH-UNRES_Y    type : ItemType  
+Adding item into PackageDefinition with id = D4F96DA7FCAACB328A32D7EADA3D9480 and type = ItemType
+Item successfully added in packdefinition  id  D4F96DA7FCAACB328A32D7EADA3D9480 type ItemType
+DELAYED RESOLUTION: applying AML <Item type='Identity' id='178F5CDDAEDCBB34BD09F06470745602' action='edit' doGetItem='0' version='0'><Relationships><Item type="Member" id="6E70809A6C36B2E5874649B8F06FAF61" action="add"><related_id keyed_name="LIBSJS-SCRATCH-Identity_Z" type="Identity">3493A7900BEC83EA6396B8AC4120A691</related_id><sort_order>128</sort_order><source_id keyed_name="LIBSJS-SCRATCH-Identity_A" type="Identity">178F5CDDAEDCBB34BD09F06470745602</source_id></Item></Relationships></Item>
+DELAYED RESOLUTION: applying AML <Item type='ItemType' id='6E7E6F3785C0EA0207C5648D1A072EA7' action='edit' doGetItem='0'><Relationships><Item type='Property' id='E8C2E5C76E65131F0AEFD3EE81CA853A' action='edit'><data_source type='ItemType'><Item type='ItemType' keyed_name='LIBSJS_SCRATCH_UNRES_Y' action='get'><id>D4F96DA7FCAACB328A32D7EADA3D9480</id></Item></data_source></Item></Relationships></Item>
+completed
+Updating 'LIBSJS-SCRATCH-UNRES' package to success release status
+end of execution : 10/19/2026 03:37:30

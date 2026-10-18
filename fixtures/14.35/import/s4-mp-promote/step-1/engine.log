@@ -1,0 +1,55 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215735-14.35-import-d7167b\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215735-14.35-import-d7167b\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215735-14.35-import-d7167b\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:27:37
+Updating 'LIBSJS-SCRATCH-DELPROMOTE' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-DELPROMOTE****
+Processing (mp_PromoteItem)   id : 21174E822233C4695860AA7C6BB0F019    keyed_name : LIBSJS-SCRATCH-Promote_Policy    type : mp_MacPolicy  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215735-14.35-import-d7167b\input\LIBSJS-SCRATCH-DELPROMOTE\Import\mp_MacPolicy\LIBSJS-SCRATCH-Promote_Policy.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>mp_MacPolicy</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-DELPROMOTE' package to failed release status
+end of execution : 10/19/2026 03:27:38
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-DELPROMOTE' failed with message:
+
+Server error
+
+Request (formatted):
+<Item type="mp_MacPolicy" id="21174E822233C4695860AA7C6BB0F019" action="mp_PromoteItem" doGetItem="0" />
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>0</faultcode>
+      <faultstring><![CDATA[No items of type mp_MacPolicy found.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[No items of type mp_MacPolicy found.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[No items of type 'mp_MacPolicy' found using the criteria: 
+<Item isNew="1" isTemp="1" type="mp_MacPolicy" action="get" id="21174E822233C4695860AA7C6BB0F019" />
+]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-DELPROMOTE to failed release status
+
+		********************

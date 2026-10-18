@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-LANGBATCH" path="LIBSJS-SCRATCH-LANGBATCH\Import" />
+</imports>

@@ -1,0 +1,54 @@
+{
+  "id": "batch-delete-missing",
+  "engine": "14.35",
+  "catalogue": [
+    "S4",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "A delete of an item that does not exist, in batch mode",
+  "exercises": "A delete is suitable for batching and goes into the <AML> (IMP-526); the server answers a delete of an unknown id without an error.",
+  "rules": [
+    "IMP-526"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-DELMISSING"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 3
+        }
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 17,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "2F2FB435CB1D459ABFBD0CB2C8A0A5B7"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "00396C2AA81A44F4B0E48D9A1E46D4FE"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "00396C2AA81A44F4B0E48D9A1E46D4FE"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "2F2FB435CB1D459ABFBD0CB2C8A0A5B7"
+    }
+  ]
+}

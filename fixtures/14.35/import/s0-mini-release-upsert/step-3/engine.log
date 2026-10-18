@@ -1,0 +1,80 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: True
+Import release: LIBSJS-SCRATCH-R2
+
+Start of importing packages
+start of execution : 10/19/2026 03:22:24
+Updating 'LIBSJS-SCRATCH-MINI' package to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-MINI****
+Processing (add)   id : C6018EE6DD2187000216C39E55D07AAE    keyed_name : LIBSJS-SCRATCH-MINI-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\List\LIBSJS-SCRATCH-MINI-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : C6018EE6DD2187000216C39E55D07AAE    keyed_name : LIBSJS-SCRATCH-MINI-List_1    type : List  
+Adding item into PackageDefinition with id = C6018EE6DD2187000216C39E55D07AAE and type = List
+Item already exist in packdefinition  id  C6018EE6DD2187000216C39E55D07AAE type List
+Processing (add)   id : E182B4D73FB907759D5E1BA11441412D    keyed_name : LIBSJS-SCRATCH-MINI-List_2    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\List\LIBSJS-SCRATCH-MINI-List_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E182B4D73FB907759D5E1BA11441412D    keyed_name : LIBSJS-SCRATCH-MINI-List_2    type : List  
+Adding item into PackageDefinition with id = E182B4D73FB907759D5E1BA11441412D and type = List
+Item already exist in packdefinition  id  E182B4D73FB907759D5E1BA11441412D type List
+Processing (add)   id : 39AADEEB61E0B66B7E4EFAC25E18229E    keyed_name : LIBSJS-SCRATCH-MINI-Seq_1    type : Sequence  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\Sequence\LIBSJS-SCRATCH-MINI-Seq_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Sequence</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 39AADEEB61E0B66B7E4EFAC25E18229E    keyed_name : LIBSJS-SCRATCH-MINI-Seq_1    type : Sequence  
+Adding item into PackageDefinition with id = 39AADEEB61E0B66B7E4EFAC25E18229E and type = Sequence
+Item already exist in packdefinition  id  39AADEEB61E0B66B7E4EFAC25E18229E type Sequence
+Processing (add)   id : C64257819194D0C9B4C3BDF82D642D78    keyed_name : LIBSJS-SCRATCH-MINI-Var_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\Variable\LIBSJS-SCRATCH-MINI-Var_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : C64257819194D0C9B4C3BDF82D642D78    keyed_name : LIBSJS-SCRATCH-MINI-Var_1    type : Variable  
+Adding item into PackageDefinition with id = C64257819194D0C9B4C3BDF82D642D78 and type = Variable
+Item already exist in packdefinition  id  C64257819194D0C9B4C3BDF82D642D78 type Variable
+Processing (add)   id : 6E6B61827EA6F5DB6F735218645E60F3    keyed_name : LIBSJS-SCRATCH-MINI-Var_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\Variable\LIBSJS-SCRATCH-MINI-Var_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 6E6B61827EA6F5DB6F735218645E60F3    keyed_name : LIBSJS-SCRATCH-MINI-Var_2    type : Variable  
+Adding item into PackageDefinition with id = 6E6B61827EA6F5DB6F735218645E60F3 and type = Variable
+Item already exist in packdefinition  id  6E6B61827EA6F5DB6F735218645E60F3 type Variable
+Processing (add)   id : DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D    keyed_name : LIBSJS-SCRATCH-MINI-Var_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215222-14.35-import-a48710\input\LIBSJS-SCRATCH-MINI\Import\Variable\LIBSJS-SCRATCH-MINI-Var_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D    keyed_name : LIBSJS-SCRATCH-MINI-Var_3    type : Variable  
+Adding item into PackageDefinition with id = DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D and type = Variable
+Item already exist in packdefinition  id  DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D type Variable
+completed
+Updating 'LIBSJS-SCRATCH-MINI' package to success release status
+end of execution : 10/19/2026 03:22:25

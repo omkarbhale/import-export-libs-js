@@ -1,0 +1,48 @@
+{
+  "case": "lp02",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`languages list=\"de\"`",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de"
+  },
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "Only `de` is requested: the generated `edit` items carry the `de` labels only.",
+  "rules": [
+    "LP-011",
+    "LP-014",
+    "LP-024"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "B0BA26BB8E9D4735B6E48EFA9B3D319B"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "CA1DFF4A60D449C68FF17F9D65B239F3"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "CA1DFF4A60D449C68FF17F9D65B239F3"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "B0BA26BB8E9D4735B6E48EFA9B3D319B"
+    }
+  ]
+}

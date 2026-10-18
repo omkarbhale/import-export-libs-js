@@ -1,0 +1,6 @@
+{"event":11,"seq":1,"thread":16,"ticks":825298621659,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":825299742102,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-LANGDE","answer":null}
+{"event":15,"seq":3,"thread":16,"ticks":825300303414,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-LangDe-List_1","answer":null}
+{"event":26,"seq":4,"thread":16,"ticks":825303184393,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":27,"seq":5,"thread":16,"ticks":825303196420,"channel":"status","text":"completed","answer":null}
+{"event":32,"seq":6,"thread":16,"ticks":825304188977,"channel":"status","text":"completed","answer":null}

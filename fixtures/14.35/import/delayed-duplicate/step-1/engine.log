@@ -1,0 +1,66 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: True
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:38:25
+Updating 'LIBSJS-SCRATCH-DELAYDUP' package to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-DELAYDUP****
+Processing (add)   id : C66E97DEE5FF291814F9DC8C29F0C1D5    keyed_name : LIBSJS-SCRATCH-DelayId_A1    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\input\LIBSJS-SCRATCH-DELAYDUP\Import\Identity\LIBSJS-SCRATCH-DelayId_A1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Member</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>AB5102AE39151A20E06BE8F50EDFCF1E</id></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<related_id keyed_name="LIBSJS-SCRATCH-DelayId_Z" type="Identity">AB5102AE39151A20E06BE8F50EDFCF1E</related_id>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Item successfully applied(add)   id : C66E97DEE5FF291814F9DC8C29F0C1D5    keyed_name : LIBSJS-SCRATCH-DelayId_A1    type : Identity  
+Adding item into PackageDefinition with id = C66E97DEE5FF291814F9DC8C29F0C1D5 and type = Identity
+Item successfully added in packdefinition  id  C66E97DEE5FF291814F9DC8C29F0C1D5 type Identity
+Processing (add)   id : C66E97DEE5FF291814F9DC8C29F0C1D5    keyed_name : LIBSJS-SCRATCH-DelayId_A2    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\input\LIBSJS-SCRATCH-DELAYDUP\Import\Identity\LIBSJS-SCRATCH-DelayId_A2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Member</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+checking for related items
+<Item type='Identity' action='get' levels='0'><id>AB5102AE39151A20E06BE8F50EDFCF1E</id></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<related_id keyed_name="LIBSJS-SCRATCH-DelayId_Z" type="Identity">AB5102AE39151A20E06BE8F50EDFCF1E</related_id>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Item successfully applied(add)   id : C66E97DEE5FF291814F9DC8C29F0C1D5    keyed_name : LIBSJS-SCRATCH-DelayId_A2    type : Identity  
+Adding item into PackageDefinition with id = C66E97DEE5FF291814F9DC8C29F0C1D5 and type = Identity
+Item already exist in packdefinition  id  C66E97DEE5FF291814F9DC8C29F0C1D5 type Identity
+Processing (add)   id : AB5102AE39151A20E06BE8F50EDFCF1E    keyed_name : LIBSJS-SCRATCH-DelayId_Z    type : Identity  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220823-14.35-import-b0e02b\input\LIBSJS-SCRATCH-DELAYDUP\Import\Identity\LIBSJS-SCRATCH-DelayId_Z.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Identity</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : AB5102AE39151A20E06BE8F50EDFCF1E    keyed_name : LIBSJS-SCRATCH-DelayId_Z    type : Identity  
+Adding item into PackageDefinition with id = AB5102AE39151A20E06BE8F50EDFCF1E and type = Identity
+Item successfully added in packdefinition  id  AB5102AE39151A20E06BE8F50EDFCF1E type Identity
+DELAYED RESOLUTION: applying AML <Item type='Identity' id='C66E97DEE5FF291814F9DC8C29F0C1D5' action='edit' doGetItem='0' version='0'><Relationships><Item type="Member" id="025C0C2B0423AD50729CAF4A39B7CA5D" action="add"><related_id keyed_name="LIBSJS-SCRATCH-DelayId_Z" type="Identity">AB5102AE39151A20E06BE8F50EDFCF1E</related_id><sort_order>128</sort_order><source_id keyed_name="LIBSJS-SCRATCH-DelayId_A" type="Identity">C66E97DEE5FF291814F9DC8C29F0C1D5</source_id></Item></Relationships></Item>
+completed
+Updating 'LIBSJS-SCRATCH-DELAYDUP' package to success release status
+end of execution : 10/19/2026 03:38:25

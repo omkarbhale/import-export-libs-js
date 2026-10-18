@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":817811821995,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":817813077010,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-DELMISSING","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":817813499264,"channel":"status","text":"Post actions","answer":null}
+{"event":17,"seq":4,"thread":16,"ticks":817813912919,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":18,"seq":5,"thread":16,"ticks":817813923982,"channel":"status","text":"completed","answer":null}
+{"event":23,"seq":6,"thread":16,"ticks":817814757369,"channel":"status","text":"completed","answer":null}

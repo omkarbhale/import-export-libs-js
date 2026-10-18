@@ -1,0 +1,34 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215558-14.35-import-4a0b5f\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215558-14.35-import-4a0b5f\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215558-14.35-import-4a0b5f\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+One of imported packages depends on the package 'LIBSJS-SCRATCH-REFDEP' that neither imported in this session nor exists in the database
+start of execution : 10/19/2026 03:26:01
+Updating 'LIBSJS-SCRATCH-REF' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-REF****
+WARNING (importing 'LIBSJS-SCRATCH-REF' package): Item of type 'List' with id 'ADFEE419D8DB444BF5EDED7C490E4BA2' is not added as a referenced element for package 'LIBSJS-SCRATCH-REF' because the item was not found in the target database
+WARNING (importing 'LIBSJS-SCRATCH-REF' package): Item of type 'List' with id '17122DC1E922ACFFD59DB017AD0C4FFC' is not added as a referenced element for package 'LIBSJS-SCRATCH-REF' because the item was not found in the target database
+Processing (add)   id : 6A880A1FAC02A374F97FFF2376246C91    keyed_name : LIBSJS-SCRATCH-REF-Var_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215558-14.35-import-4a0b5f\input\LIBSJS-SCRATCH-REF\Import\Variable\LIBSJS-SCRATCH-REF-Var_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 6A880A1FAC02A374F97FFF2376246C91    keyed_name : LIBSJS-SCRATCH-REF-Var_1    type : Variable  
+Adding item into PackageDefinition with id = 6A880A1FAC02A374F97FFF2376246C91 and type = Variable
+Item successfully added in packdefinition  id  6A880A1FAC02A374F97FFF2376246C91 type Variable
+completed
+Updating 'LIBSJS-SCRATCH-REF' package to success release status
+end of execution : 10/19/2026 03:26:03

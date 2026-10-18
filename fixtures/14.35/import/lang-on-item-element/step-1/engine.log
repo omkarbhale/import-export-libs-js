@@ -1,0 +1,36 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220856-14.35-import-befa35\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220856-14.35-import-befa35\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220856-14.35-import-befa35\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:38:58
+Updating 'LIBSJS-SCRATCH-LANGSELF' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LANGSELF****
+Processing (add)   id : A0C08A39B0A62690FE8DF63CDE55FA61    keyed_name : LIBSJS-SCRATCH-LangSelf-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220856-14.35-import-befa35\input\LIBSJS-SCRATCH-LANGSELF\Import\List\LIBSJS-SCRATCH-LangSelf-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-LANGSELF' package to failed release status
+end of execution : 10/19/2026 03:38:58
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-LANGSELF' failed with message:
+
+Object reference not set to an instance of an object. Can't merge item  
+Updating LIBSJS-SCRATCH-LANGSELF to failed release status
+
+		********************

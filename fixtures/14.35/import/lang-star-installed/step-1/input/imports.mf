@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-LANGSTAR" path="LIBSJS-SCRATCH-LANGSTAR\Import" />
+</imports>

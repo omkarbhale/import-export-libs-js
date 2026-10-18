@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":19,"ticks":817175388859,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":19,"ticks":817175835225,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-LANGSELF","answer":null}
+{"event":15,"seq":3,"thread":19,"ticks":817176180580,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-LangSelf-List_1","answer":null}
+{"event":23,"seq":4,"thread":19,"ticks":817177475268,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\nImport package 'LIBSJS-SCRATCH-LANGSELF' failed with message:\n\nObject reference not set to an instance of an object. Can't merge item  \nUpdating LIBSJS-SCRATCH-LANGSELF to failed release status\r\n","answer":null}

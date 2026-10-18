@@ -1,0 +1,56 @@
+{
+  "id": "lang-on-item-element",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "bug"
+  ],
+  "title": "A skipped language on the Item element itself",
+  "exercises": "The selection also matches the root Item when it carries xml:lang of a skipped language, and removing it leaves an empty document (IMP-634).",
+  "rules": [
+    "IMP-634"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGSELF"
+      ],
+      "options": {
+        "languages": [
+          "en"
+        ]
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 19,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "6158DCAD229A465DBA19EA513DD4DEF5"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1B2DC4B6A15E48C181D583AA05222804"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "1B2DC4B6A15E48C181D583AA05222804"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "6158DCAD229A465DBA19EA513DD4DEF5"
+    }
+  ]
+}

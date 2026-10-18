@@ -140,6 +140,20 @@ The folder it writes holds `run.json` (engine, toolset identity, stylesheet size
 - `--engine 12.0` records the cases into `fixtures/12.0/import/` (ticket 48). A case lists the engines it runs on (`engines`; default all), and a step can name another expected outcome per engine (`expectOn`). Cases named `r*` exist only for 12.0, each pinning one of its variant rules. 12.0 has no language-pack import.
 - The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
 
+## 14.35 import fixture cases
+
+`npm run oracle:import-cases -- --engine 14.35` records the 14.35 cases of `src/import-cases.ts` into `fixtures/14.35/import/<case>/step-<n>/`, with the same recorder, layout and rules as the 14.0.7 cases above (`--only`, `--force`, `--list` and `--readme-only` work the same; without `--engine` it records 14.0.7). The list is ticket 05's catalogue with the overrides in `OVERRIDES_14_35` (where 14.35 ends a case differently, such as the cancel), plus the cases only 14.35 has, in `NEW_14_35`:
+
+- `cui-order`, `delayed-duplicate`, `delayed-property-where`: the 14.35 variants of `build.xsl` and the delayed resolution;
+- `lang-*`: the `Languages` selection. A step's `languages` option is the `Languages` host parameter; a case lists the `devLanguages` it needs. The cases that need `de` and `fr` installed (`lang-select-de`, `lang-star-installed`, `lang-unset-installed`, `lang-two-packages`, `lang-batch-select`) were recorded while dev had both; the others with `en` only. The oracle cannot add a `Language`: they were added and deleted by hand, as for the language-pack runs below;
+- `batch-*` and `collect-*`: the AML batch mode (`amlBatch: { maxSize }`) and the collected errors (`collectErrors: { maxCount }`), on ticket 05's S9 shape (`src/import-packages-14.35.ts`).
+
+A step can end with the engine refusing the run before any item (`"refused"`: the `ImportExportManager` constructor threw, so the host ends with the exception and no return value) or with a count of collected errors (`"returned:n"`). The recorder refuses a run that does not end as its case says, so a run that the server spoiled (a deadlock victim, a foreign key race right after the previous case's cleanup) is repeated, and only the repeat is committed.
+
+## 14.35 language-pack fixture cases
+
+`npm run oracle:lp-cases` records `src/language-pack-cases.ts` (`lpimport` on 14.35) into `fixtures/14.35/language-pack/<case>/`. The packs are the 14.0.7 runs' (ticket 45), built by `writePack`; `lp06` and `lp07` set `Languages`. Dev needs the Languages `de` and `fr` and the two scratch `Forum` items of `fixtures/14.0.7/language-pack/setup.aml`. Apply them by hand (each Language add takes longer than 30 seconds because the server adds a `LABEL_<code>` column to every table with a multilingual property) and remove them with `teardown.aml` afterwards, deleting the Teams of the Forums too. The recorder then imports the package `LIBSJS-SCRATCH-LP` only and deletes what it created.
+
 ## A recorded fixture folder
 
 | File | What |

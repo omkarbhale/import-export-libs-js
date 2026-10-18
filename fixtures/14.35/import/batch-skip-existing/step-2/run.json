@@ -1,0 +1,138 @@
+{
+  "engine": "14.35",
+  "command": "import",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "AmlBatchMode": true,
+    "AmlBatchMaxSize": 3,
+    "PriorCreated": [
+      "DatabaseUpgrade\t871A5E3E2C4744BC821DEE85B18059CE\t0",
+      "PackageDefinition\t3561F94D2E0843F3967A0E11E785B321\t0",
+      "Variable\tB497BAA0F18D424E345EA7A4B961D2DA\t0",
+      "PackageGroup\tECF2448C08DD4DAF8ABAC64E9A24B8C0\t0",
+      "PackageElement\t5693A84BB6F54573B277556D68D2864A\t0",
+      "Variable\t8832564D54AF13B9D24AF0F483D7A764\t0",
+      "PackageElement\t8425C8561F54433EA0ED40ECCE413E87\t0",
+      "Variable\tAF46DB98131A88E9CD0899123123E8A1\t0",
+      "PackageElement\t07F6435D1532441783B2EFBCBEFFA4DC\t0",
+      "Variable\tF95A5A6F3D6C939FB6E075743488BB05\t0",
+      "PackageElement\tDB67EB3E672344CEA70BCDB9D6F302DE\t0",
+      "Variable\t20D8072619A339B87A781476BF02C7A0\t0",
+      "PackageElement\t73BA3E812B9D45D0ABD92AD367D354BF\t0",
+      "Variable\t756138F0BF60A8BC6DDD86C3754D1A5E\t0",
+      "PackageElement\tD3FAE3A771E8441E8EC3D6073DFE5E45\t0",
+      "Variable\tAF7B410495BB376497AABBE7B41E58AE\t0",
+      "PackageElement\tFFCBDF3AD6D34A8A8FE011D2B498D0B5\t0"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:09:26.181Z",
+  "finishedAt": "2026-10-18T22:09:29.984Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 24,
+    "messages": 12,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "FFCBDF3AD6D34A8A8FE011D2B498D0B5"
+      },
+      {
+        "type": "Variable",
+        "id": "AF7B410495BB376497AABBE7B41E58AE"
+      },
+      {
+        "type": "PackageElement",
+        "id": "D3FAE3A771E8441E8EC3D6073DFE5E45"
+      },
+      {
+        "type": "Variable",
+        "id": "756138F0BF60A8BC6DDD86C3754D1A5E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "73BA3E812B9D45D0ABD92AD367D354BF"
+      },
+      {
+        "type": "Variable",
+        "id": "20D8072619A339B87A781476BF02C7A0"
+      },
+      {
+        "type": "PackageElement",
+        "id": "DB67EB3E672344CEA70BCDB9D6F302DE"
+      },
+      {
+        "type": "Variable",
+        "id": "F95A5A6F3D6C939FB6E075743488BB05"
+      },
+      {
+        "type": "PackageElement",
+        "id": "07F6435D1532441783B2EFBCBEFFA4DC"
+      },
+      {
+        "type": "Variable",
+        "id": "AF46DB98131A88E9CD0899123123E8A1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "8425C8561F54433EA0ED40ECCE413E87"
+      },
+      {
+        "type": "Variable",
+        "id": "8832564D54AF13B9D24AF0F483D7A764"
+      },
+      {
+        "type": "PackageElement",
+        "id": "5693A84BB6F54573B277556D68D2864A"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "ECF2448C08DD4DAF8ABAC64E9A24B8C0"
+      },
+      {
+        "type": "Variable",
+        "id": "B497BAA0F18D424E345EA7A4B961D2DA"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "3561F94D2E0843F3967A0E11E785B321"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "871A5E3E2C4744BC821DEE85B18059CE"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

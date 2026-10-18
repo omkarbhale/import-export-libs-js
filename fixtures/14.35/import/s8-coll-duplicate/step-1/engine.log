@@ -1,0 +1,49 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215802-14.35-import-846a12\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215802-14.35-import-846a12\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215802-14.35-import-846a12\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:28:04
+Updating 'LIBSJS-SCRATCH-A.Coll' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-A.Coll****
+Processing (add)   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215802-14.35-import-846a12\input\LIBSJS-SCRATCH-A\Coll\Variable\LIBSJS-SCRATCH-Coll_Same.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+Adding item into PackageDefinition with id = 416141614D62782894BB63F6E612448D and type = Variable
+Item successfully added in packdefinition  id  416141614D62782894BB63F6E612448D type Variable
+completed
+Updating 'LIBSJS-SCRATCH-A.Coll' package to success release status
+end of execution : 10/19/2026 03:28:05
+start of execution : 10/19/2026 03:28:05
+Updating 'LIBSJS-SCRATCH-B.Coll' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-B.Coll****
+Processing (add)   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215802-14.35-import-846a12\input\LIBSJS-SCRATCH-B\Coll\Variable\LIBSJS-SCRATCH-Coll_Same.xml'
+Item successfully skipped   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+Adding item into PackageDefinition with id = 416141614D62782894BB63F6E612448D and type = Variable
+Updating 'LIBSJS-SCRATCH-B.Coll' package to failed release status
+end of execution : 10/19/2026 03:28:05
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-B.Coll' failed with message:
+
+The package 'LIBSJS-SCRATCH-B.Coll' already contains the PackageElement with name='LIBSJS-SCRATCH-Coll_Same' and id='416141614D62782894BB63F6E612448D' but of different type: DB - type='Variable', group_id='B53C71BB2325401DABD3A8CDE5567937';   being imported - type='Variable', group_id='72839CB3ECFC4D20B1246AF607B3407A'
+Updating LIBSJS-SCRATCH-B.Coll to failed release status
+
+		********************

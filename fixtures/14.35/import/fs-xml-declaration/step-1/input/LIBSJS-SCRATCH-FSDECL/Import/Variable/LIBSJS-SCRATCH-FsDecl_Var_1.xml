@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AML>
+ <Item type="Variable" id="85531A80CB1965CF493645E9435B473F" action="add">
+  <default_value>1</default_value>
+  <name>LIBSJS-SCRATCH-FsDecl_Var_1</name>
+ </Item>
+</AML>

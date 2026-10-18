@@ -1,0 +1,90 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215651-14.35-import-9b73ed\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215651-14.35-import-9b73ed\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215651-14.35-import-9b73ed\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:26:54
+Updating 'LIBSJS-SCRATCH-UNRESRT' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-UNRESRT****
+Processing (add)   id : 3B1A99A15CF185BAD8413819ECAC7773    keyed_name : LIBSJS-SCRATCH-UNRES_REL    type : RelationshipType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215651-14.35-import-9b73ed\input\LIBSJS-SCRATCH-UNRESRT\Import\RelationshipType\LIBSJS-SCRATCH-UNRES_REL.xml'
+********** Start of reference checking ************
+checking item with get action:<Item type="ItemType" action="get" select="id"><name>LIBSJS_SCRATCH_NOPE_related</name></Item>
+-> was obtained from server
+checking item with get action:<Item type="ItemType" action="get" select="id"><name>LIBSJS_SCRATCH_NOPE_source</name></Item>
+-> was obtained from server
+<Item type='ItemType' action='get' select='id'><name>RelationshipType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<related_id keyed_name="LIBSJS_SCRATCH_NOPE_related" type="ItemType"><Item type="ItemType" action="get" select="id"><name>LIBSJS_SCRATCH_NOPE_related</name></Item></related_id>
+contains unresolved reference that will be tried to resolve at the end of the package import
+WARNING: The following portion of the AML 
+<source_id keyed_name="LIBSJS_SCRATCH_NOPE_source" type="ItemType"><Item type="ItemType" action="get" select="id"><name>LIBSJS_SCRATCH_NOPE_source</name></Item></source_id>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-UNRESRT' package to failed release status
+end of execution : 10/19/2026 03:26:55
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-UNRESRT' failed with message:
+
+Server error
+
+Request (formatted):
+<Item type="RelationshipType" id="3B1A99A15CF185BAD8413819ECAC7773" action="add" doGetItem="0">
+  <auto_search>1</auto_search>
+  <behavior>float</behavior>
+  <copy_permissions>0</copy_permissions>
+  <create_related>0</create_related>
+  <hide_in_all>0</hide_in_all>
+  <inc_rel_key_name>1</inc_rel_key_name>
+  <inc_related_key_name>1</inc_related_key_name>
+  <is_list_type>0</is_list_type>
+  <label xml:lang="en">LIBSJS_SCRATCH_UNRES_REL</label>
+  <new_show_related>0</new_show_related>
+  <related_id keyed_name="LIBSJS_SCRATCH_NOPE_related" type="ItemType">
+    <Item type="ItemType" action="get" select="id">
+      <name>LIBSJS_SCRATCH_NOPE_related</name>
+    </Item>
+  </related_id>
+  <related_notnull>0</related_notnull>
+  <related_option>0</related_option>
+  <sort_order>128</sort_order>
+  <source_id keyed_name="LIBSJS_SCRATCH_NOPE_source" type="ItemType">
+    <Item type="ItemType" action="get" select="id">
+      <name>LIBSJS_SCRATCH_NOPE_source</name>
+    </Item>
+  </source_id>
+  <name>LIBSJS_SCRATCH_UNRES_REL</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server</faultcode>
+      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: 
+<Item type="ItemType" action="get" select="id" doGetItem="1"><name>LIBSJS_SCRATCH_NOPE_source</name></Item>
+]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-UNRESRT to failed release status
+
+		********************
