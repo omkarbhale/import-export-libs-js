@@ -1,0 +1,232 @@
+=== order-basic
+List|add|l1|
+Identity|add|i1|
+Method|add|m1|k1
+Form|add|fa|
+ItemType|add|it-plain|
+ItemType|add|it-none|
+ItemType|add|it-poly|
+RelationshipType|add|r-none|
+RelationshipType|add|r-x|
+RelationshipType|add|r-neg|
+RelationshipType|add|r1|
+RelationshipType|add|r1b|
+RelationshipType|add|r2|
+RelationshipType|add|r10|
+Field|add|f1|
+Property|edit|p1|
+View|merge|v1|
+SQL|delete|s1|
+Form|delete|fd|
+List|edit|le|
+alpha|get|al|
+Beta|edit|be|
+Zeta|add|z|
+=== following-dup
+ItemType|add|A|k1
+ItemType|edit|E|
+ItemType|delete|D|
+ItemType|edit|E2|
+ItemType|add|B|
+ItemType|edit|E|
+ItemType|delete|D|
+ItemType|edit|E2|
+RelationshipType|add|R|
+ItemType|edit|E2|
+=== edit-without-preceding-add
+ItemType|add|A|
+RelationshipType|add|RA|k3
+ItemType|edit|E-after-rt|
+ItemType|edit|E0|k1
+ItemType|edit|E-file2|k2
+=== drops
+Field||f-noact|
+Property|delete|pd|
+SQL|add|SQL-up|
+Form|edit|fe|
+Morphae|edit|mo-e|
+list|add|l-lower|
+sql|add|sql-lower|
+Unlisted|delete|ul-d|
+Unlisted||ul-none|
+=== sort-types
+_x||13|
+1x||14|
+a||3|
+a||16|
+A||4|
+a b||15|
+a.b||20|
+a_b||8|
+ab||5|
+ab-||7|
+a-b||6|
+-ab||9|
+apple||11|
+Apple||12|
+b||1|k1
+B||2|
+e||18|
+é||17|
+f||19|
+z||22|
+Z||21|
+Zebra||10|
+=== typeless-and-bars
+List|add|l|
+|add|nt|k1
+|add|et|
+||add|barbar|
+Foo|add|foo|
+Sequence|Foo|add|bar3|
+=== multi-items-and-skips
+skip part 2
+skip part 3
+List|add|f1a|k1
+List|add|f1b|
+List|add|f5|k5
+Method|add|f4m|k4
+=== raw-namespace-comments-cdata
+RAW: <AML><Item type="List" action="add" id="l1" xmlns:i18n="http://www.aras.com/I18N"  /><Item type="Method" action="add" id="m1" tempKeyName="k1" tempFullName="f1" xmlns:i18n="http://www.aras.com/I18N"  xmlns:foo="urn:foo"><method_code><![CDATA[a<b && c]]]]><![CDATA[>d]]></method_code><name i18n:x="1">n</name><empty /><ws /><txt>  x  </txt></Item></AML>
+List|add|l1|
+Method|add|m1|k1
+=== raw-nested-itemtype
+RAW: <AML><Item type="ItemType" action="add" id="A" tempKeyName="k1" tempFullName="f1"><Relationships><Item type="ItemType" action="add" id="nestedA" /><Item type="ItemType" action="edit" id="nestedE" /><Item type="ItemType" action="edit" id="nestedE" /></Relationships></Item><Item type="ItemType" action="edit" id="E" /></AML>
+ItemType|add|A|k1
+ItemType|edit|E|
+=== raw-empty
+RAW: <AML />
+=== polymorphic-detail
+ItemType|add|p1|k1
+ItemType|add|p2|
+ItemType|add|p3|
+ItemType|add|p5|
+ItemType|add|p4|
+ItemType|add|p6|
+=== cross-file-document-order
+List|add|f1-l|
+List|add|f2-l|k2
+Method|add|f1-m|k1
+Method|add|f2-m|
+=== decl
+EXC: System.Management.Automation.MethodInvocationException: Exception calling "LoadXml" with "1" argument(s): "Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8."
+=== doctype
+EXC: System.Management.Automation.MethodInvocationException: Exception calling "LoadXml" with "1" argument(s): "Unexpected DTD declaration. Line 1, position 8."
+=== comment-pi-before-and-after-root
+RAW: <AML><Item type="List" action="add" id="d" tempKeyName="k1" tempFullName="f1" /></AML>
+List|add|d|k1
+=== existing-tempKeyName
+RAW: <AML><Item tempKeyName="k1" type="List" tempFullName="f1" action="add" id="d" /></AML>
+List|add|d|k1
+=== default-ns-item
+skip part 1
+skip part 2
+skip part 3
+skip part 4
+RAW: <AML />
+=== crlf-tab-attr-text
+RAW: <AML><Item type="Method" action="add" id="m" desc="l1&#xA;l2&#xD;&#x9;t" tempKeyName="k1" tempFullName="f1"><name>a\r\nb</name><method_code><![CDATA[x\r\ny\r\nz\r\n]]></method_code></Item></AML>
+Method|add|m|k1
+=== specials
+RAW: <AML><Item type="A&amp;B" action="add" id="q&quot;" tempKeyName="k1" tempFullName="f1"><name>&lt;&amp;&gt;"'</name></Item></AML>
+A&B|add|q"|k1
+=== undeclared-entity
+EXC: System.Management.Automation.MethodInvocationException: Exception calling "LoadXml" with "1" argument(s): "Reference to undeclared entity 'foo'. Line 1, position 38."
+=== non-xml
+EXC: System.Management.Automation.MethodInvocationException: Exception calling "LoadXml" with "1" argument(s): "Data at the root level is invalid. Line 1, position 1."
+=== stylesheet-cdata-names
+RAW: <AML><Item type="Method" action="add" id="m" tempKeyName="k1" tempFullName="f1"><html_code><![CDATA[<b>]]></html_code><stylesheet><![CDATA[s]]></stylesheet><query><![CDATA[q]]></query><class_structure /><report_query><![CDATA[r]]></report_query><xsl_stylesheet /><sqlserver_body><![CDATA[b]]></sqlserver_body><deep><method_code><![CDATA[c]]></method_code></deep></Item></AML>
+Method|add|m|k1
+=== soap-env-in-content
+RAW: <AML><Item type="Method" action="add" id="m" tempKeyName="k1" tempFullName="f1"><method_code><![CDATA[a  b]]></method_code><comments></comments></Item></AML>
+Method|add|m|k1
+=== mixed-depth-nonitem-root-children
+RAW: <AML><Item type="List" action="add" id="a" tempKeyName="k1" tempFullName="f1" /></AML>
+List|add|a|k1
+=== numsort
+RelationshipType|add|v1|
+RelationshipType|add|v2|
+RelationshipType|add|v8|
+RelationshipType|add|v9|
+RelationshipType|add|v10|
+RelationshipType|add|v11|
+RelationshipType|add|v12|
+RelationshipType|add|v13|
+RelationshipType|add|v18|
+RelationshipType|add|v19|
+RelationshipType|add|v21|
+RelationshipType|add|v22|
+RelationshipType|add|v25|
+RelationshipType|add|v27|
+RelationshipType|add|v28|
+RelationshipType|add|v16|
+RelationshipType|add|v17|
+RelationshipType|add|v5|
+RelationshipType|add|v6|
+RelationshipType|add|v3|
+RelationshipType|add|v7|
+RelationshipType|add|v23|
+RelationshipType|add|v20|
+RelationshipType|add|v0|k1
+RelationshipType|add|v4|
+RelationshipType|add|v15|
+RelationshipType|add|v14|
+RelationshipType|add|v26|
+RelationshipType|add|v24|
+=== numsort
+RelationshipType|add|v9|
+RelationshipType|add|v10|
+RelationshipType|add|v11|
+RelationshipType|add|v12|
+RelationshipType|add|v13|
+RelationshipType|add|v14|
+RelationshipType|add|v15|
+RelationshipType|add|v16|
+RelationshipType|add|v17|
+RelationshipType|add|v18|
+RelationshipType|add|v19|
+RelationshipType|add|v0|k1
+RelationshipType|add|v1|
+RelationshipType|add|v2|
+RelationshipType|add|v3|
+RelationshipType|add|v4|
+RelationshipType|add|v5|
+RelationshipType|add|v6|
+RelationshipType|add|v7|
+RelationshipType|add|v8|
+RelationshipType|add|v20|
+RelationshipType|add|v21|
+RelationshipType|add|v22|
+=== ns-order
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:a="urn:a" xmlns:b="urn:b" /><Item type="List" action="add" id="2" a:x="1" xmlns:a="urn:a" xmlns:b="urn:b" xmlns:c="urn:c" /><Item type="List" action="add" id="3" xmlns:b="urn:b" xmlns:a="urn:a2" /><Item type="List" action="add" id="4" xmlns:a="urn:a" xmlns:b="urn:b" xmlns:d="urn:b" /><Item type="List" action="add" id="5" xmlns:a="urn:a" xmlns:b="urn:b" /></AML>
+List|add|1|k1
+List|add|2|
+List|add|3|
+List|add|4|
+List|add|5|
+=== ns-nested
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:a="urn:a"><x xmlns:p="urn:p"><y /></x><z xmlns:a="urn:a3" /><a:w /></Item></AML>
+List|add|1|k1
+=== ns-soap-env-position
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1"  /><Item type="List" action="add" id="1" tempKeyName="k2" tempFullName="f2" xmlns:z="urn:z"  xmlns:y="urn:y" /><Item type="List" action="add" id="1" tempKeyName="k3" tempFullName="f3"  xmlns:q="urn:q"><n /></Item></AML>
+List|add|1|k1
+List|add|1|k2
+List|add|1|k3
+=== ns-different-soap-uri
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:SOAP-ENV="urn:other" /></AML>
+List|add|1|k1
+=== ns-two-files-same-prefix
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:i18n="http://www.aras.com/I18N"><name i18n:lang="de">x</name></Item><Item type="List" action="add" id="2" tempKeyName="k2" tempFullName="f2"><name i18n:lang="de" xmlns:i18n="http://www.aras.com/I18N">x</name></Item></AML>
+List|add|1|k1
+List|add|2|k2
+=== ns-first-item-of-wrapper
+RAW: <AML><Item type="ItemType" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:i18n="http://www.aras.com/I18N"><Relationships><Item type="ItemType" action="add" id="n" /></Relationships></Item></AML>
+ItemType|add|1|k1
+=== ns-redeclare-same
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:b="urn:b" xmlns:a="urn:a" /><Item type="List" action="add" id="2" xmlns:a="urn:a" xmlns:z="urn:z" xmlns:b="urn:b2" /><Item type="List" action="add" id="3" xmlns:a="urn:a" xmlns:b="urn:b"><n /></Item></AML>
+List|add|1|k1
+List|add|2|
+List|add|3|
+=== ns-nested-ordering
+RAW: <AML><Item type="List" action="add" id="1" tempKeyName="k1" tempFullName="f1" xmlns:q="urn:q"><n a="1" xmlns:y="urn:y" xmlns:x="urn:x" /></Item></AML>
+List|add|1|k1

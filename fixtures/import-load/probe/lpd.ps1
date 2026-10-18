@@ -14,6 +14,7 @@ $origCwd = [Environment]::CurrentDirectory
 foreach ($c in $cases) {
   [void]$sb.AppendLine('=== ' + $c.name)
   $root = Join-Path $root0 $c.name
+  if (Test-Path $root) { $root = $root + '2' }
   New-Item -ItemType Directory -Path $root | Out-Null
   $pre = if ($c.longCreate) { '\\?\' } else { '' }
   foreach ($d in $c.dirs) { [void][System.IO.Directory]::CreateDirectory($pre + (Join-Path $root ($d -replace '/', '\'))) }

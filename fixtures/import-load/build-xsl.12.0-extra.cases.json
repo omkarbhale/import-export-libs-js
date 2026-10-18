@@ -1,0 +1,22 @@
+[
+ {
+  "name": "ac-policy-actions",
+  "parts": [
+   "<AML><Item type='Method' action='add' id='m1'/><Item type='ac_PolicyAccessItemAttribute' action='edit' id='ac-e1'/><Item type='ad_Type' action='add' id='ad1'/><Item type='ac_PolicyAccessItemAttribute' action='add' id='ac-a1'/><Item type='ab_Type' action='add' id='ab1'/><Item type='ac_PolicyAccessItemAttribute' action='delete' id='ac-d1'/><Item type='ac_PolicyAccessItemAttribute' action='merge' id='ac-m1'/><Item type='ac_PolicyAccessItemAttribute' id='ac-n1'/><Item type='ac_PolicyAccessItemAttribute' action='purge' id='ac-p1'/><Item type='Dashboard' action='add' id='dash1'/><Item type='mp_PolicyAccessEnvAttribute' action='add' id='env1'/><Item type='mp_MacPolicy' action='add' id='mac1'/><Item type='Zebra' action='delete' id='z1'/></AML>"
+  ]
+ },
+ {
+  "name": "ac-policy-two-files",
+  "parts": [
+   "<AML><Item type='ac_PolicyAccessItemAttribute' action='add' id='f1-add'/><Item type='ac_PolicyAccessItemAttribute' action='edit' id='f1-edit'/></AML>",
+   "<AML><Item type='ac_PolicyAccessItemAttribute' action='delete' id='f2-delete'/><Item type='ac_PolicyAccessItemAttribute' action='add' id='f2-add'/></AML>",
+   "<AML><Item type='ac_PolicyAccessItemAttribute' id='f3-none'/><Item type='ac' action='add' id='f3-ac'/></AML>"
+  ]
+ },
+ {
+  "name": "promote-item",
+  "parts": [
+   "<AML><Item type='mp_MacPolicy' action='mp_PromoteItem' id='p1'/><Item type='mp_MacPolicy' action='add' id='a1'/><Item type='mp_MacPolicy' action='edit' id='e1'/><Item type='mp_MacPolicy' action='delete' id='d1'/><Item type='mp_MacPolicy' id='n1'/><Item type='mp_MacPolicy' action='merge' id='m1'/><Item type='mp_MacPolicy' action='mp_PromoteItem' id='p2'/><Item type='qry_QueryDefinition' action='add' id='q1'/></AML>"
+  ]
+ }
+]

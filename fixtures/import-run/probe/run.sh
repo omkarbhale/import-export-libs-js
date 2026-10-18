@@ -1,6 +1,6 @@
 #!/bin/sh
 # Stage a vendored toolset and this folder to %LOCALAPPDATA%, run the probe, copy the output back.
-# usage: run.sh <repo-root> <output file> [scenario glob] [engine: 14.0.7 (default) | 14.35]
+# usage: run.sh <repo-root> <output file> [scenario glob] [engine: 14.0.7 (default) | 14.35 | 12.0]
 set -e
 REPO="$1"; OUT="$2"; ONLY="${3:-}"; ENGINE="${4:-14.0.7}"
 HERE="$(cd "$(dirname "$0")" && pwd)"

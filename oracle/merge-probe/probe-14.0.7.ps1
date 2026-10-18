@@ -1,6 +1,6 @@
 <#
-Merge probe for engine 14.0.7 (ticket 21). Windows PowerShell 5.1. It loads the staged
-14.0.7 toolset (IOM.dll and Libs.dll, hash-checked by the caller) and runs:
+Merge probe for engine 14.0.7 (ticket 21), and with -Engine 12.0 for engine 12.0 (ticket 47). Windows PowerShell 5.1. It loads the staged
+toolset (IOM.dll and Libs.dll, hash-checked by the caller) and runs:
 
   - the engine's own CImportItems against StubHelper.cs's scriptable ICItemHelper, which records
     every call in order and answers from tables the scenario fills;
@@ -15,7 +15,8 @@ of what each scenario sent and returned, which is the evidence spec/import-merge
 param(
     [Parameter(Mandatory)][string] $ToolsetDir,
     [Parameter(Mandatory)][string] $RequestProbeDir,
-    [Parameter(Mandatory)][string] $Out
+    [Parameter(Mandatory)][string] $Out,
+    [ValidateSet('12.0', '14.0.7')][string] $Engine = '14.0.7'
 )
 Set-StrictMode -Version 2
 $ErrorActionPreference = 'Stop'
@@ -23,12 +24,13 @@ $iomPath = Join-Path $ToolsetDir 'IOM.dll'
 $libsPath = Join-Path $ToolsetDir 'Libs.dll'
 [void][System.Reflection.Assembly]::LoadFrom($iomPath)
 $libs = [System.Reflection.Assembly]::LoadFrom($libsPath)
-if ($libs.GetName().Version.ToString() -ne '14.0.7.35492') { throw "Libs.dll is $($libs.GetName().Version), not 14.0.7.35492" }
+$expectedVersion = @{ '12.0' = '12.0.0.13341'; '14.0.7' = '14.0.7.35492' }[$Engine]
+if ($libs.GetName().Version.ToString() -ne $expectedVersion) { throw "Libs.dll is $($libs.GetName().Version), not $expectedVersion" }
 $refs = @($iomPath, $libsPath, 'System.Xml', 'System.Net')
 Add-Type -TypeDefinition (Get-Content -Raw -LiteralPath (Join-Path $RequestProbeDir 'Stub.cs')) -ReferencedAssemblies $refs
 Add-Type -TypeDefinition (Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'StubHelper.cs')) -ReferencedAssemblies $refs
 
-$log = [ordered]@{ engine = '14.0.7'; assemblyVersion = $libs.GetName().Version.ToString(); scenarios = [ordered]@{} }
+$log = [ordered]@{ engine = $Engine; assemblyVersion = $libs.GetName().Version.ToString(); scenarios = [ordered]@{} }
 function Note([string] $key, $value) { $log.scenarios[$key] = $value }
 $bf = [Reflection.BindingFlags]'NonPublic,Public,Instance,Static'
 function Unwrap($ex) {
@@ -188,7 +190,8 @@ Note 'P.processVersionableItem' $p
 # ---------------------------------------------------------------------------------------------
 function New-Helper($conn) {
     $helper = New-Object Aras.Tools.SolutionUpgrade.CItemHelper($conn)
-    $version = New-Object Aras.Tools.SolutionUpgrade.ArasVersion(14, 0, 9, 1, 0)
+    # 12.0's version type has three fields, 14.0.7's five.
+    if ($Engine -eq '12.0') { $version = New-Object Aras.Tools.SolutionUpgrade.ArasVersion(12, 0, 9) } else { $version = New-Object Aras.Tools.SolutionUpgrade.ArasVersion(14, 0, 9, 1, 0) }
     $helper.GetType().GetProperty('InnovatorVersion').GetSetMethod($true).Invoke($helper, [object[]]@($version.psobject.BaseObject)) | Out-Null
     $helper.Folder = 'C:\probe-out'
     return $helper

@@ -25,6 +25,8 @@ Conventions:
 
 If a check throws, the end line is not written and the list is not handed on. The import orchestration decides the flag (`IMP-4xx`): it is false only for `delete` items on the first attempt, and true when the retry after a failed import checks the item again.
 
+[12.0] Same: the same two log lines around the checks, the same flag, the same hand-over to `ProcessForDelayedResolution` and the same behaviour when a check throws. The log lines are the same text (observed in every scenario of `fixtures/import-run/probe-12.0.txt`).
+
 [14.35] Same as 14.0.7.
 
 ### IMP-101: RecurseCheck runs its checks in a fixed order
@@ -41,6 +43,8 @@ If a check throws, the end line is not written and the list is not handed on. Th
 
 Checks 1, 2, 4 and 5 append to `unresolved` in that order, so the list holds the 10005 entries first, then those of `CheckGetItems` in document order, then 10000, then 10001 (IMP-103). The first failure ends the run (IMP-104). A null argument throws `ArgumentNullException` before anything else and is not wrapped; the import path never passes one.
 
+[12.0] Same: the same seven checks in the same order.
+
 [14.35] Same as 14.0.7.
 
 ### IMP-102: Responses are cached by request string, per helper, for successes only
@@ -48,6 +52,8 @@ Checks 1, 2, 4 and 5 append to `unresolved` in that order, so the list holds the
 [14.0.7] A `CItemHelper` owns one dictionary from AML string to response document, `_requestedItems`, with ordinal, case-sensitive keys. It is created with the helper and never emptied or invalidated, so it lives for the whole import run, across packages and items; a type created or changed by an earlier item of the run is still seen as it was when first read. Every lookup in this document, and the other cached lookups of the engine (the unique-key and float-property lookups, the export's `GetItemType(name)`), share it.
 
 A lookup checks the dictionary under the exact string it is about to send. On a hit the stored response is used and nothing is sent. On a miss the request is sent and, only when it succeeds, its response is stored. A fault is never stored, so a request that failed, including a faultcode `0` "not found", is sent again every time it is made. The checks that log the outcome write `-> was obtained from server` / `-> was obtained from cache` (`CheckRelationshipItems`, `CheckGetItems`) or `  was obtained from server` / `  was obtained from cache` (the others, with two leading spaces).
+
+[12.0] Same: the same `_requestedItems` dictionary, the same keys, the same rule that only successes are stored, the same log words (observed in `fixtures/import-run/probe-12.0.txt`: `was obtained from server` on a first request, `was obtained from cache` on the next).
 
 [14.35] The cache is one `ConcurrentDictionary` from the AML string to a lazily run request, owned by the `CItemHelper` and keyed as before (ordinal, case-sensitive). It is shared by the same lookups as in 14.0.7 and is not emptied during the run. The lookups differ in how they use it.
 
@@ -74,6 +80,8 @@ The helper that built the cache is the only one: a new `CItemHelper` starts with
 
 The enum `eUnresolvedError` that names these codes is never used; the engine writes the integers.
 
+[12.0] Same: the same codes recorded by the same checks (`eUnresolvedError` is unused here too).
+
 [14.35] Same as 14.0.7.
 
 ## Failure
@@ -89,6 +97,8 @@ The import path reads only `Message` (the warning of the retry, the failure text
 - `XmlException(text)` has just the text;
 - the .NET texts the port must reproduce, where a rule below says a check raises the exception: `Object reference not set to an instance of an object.` (`NullReferenceException`), and `Unable to cast object of type 'System.Xml.XmlComment' to type 'System.Xml.XmlElement'.` (`InvalidCastException`, IMP-130; the node type named is the offending node's). The text of an `XPathException` or `XmlException` for malformed XPath or XML is the .NET parser's and is pinned by the XML core's fixtures, not here.
 
+[12.0] The same handler, with the same faultcode `-1`, the same suffix ` Recurse check has failed.` and the same loss of the original faultcode. The `Message` of an exception raised by `applyAML` differs, because 12.0 builds it from the response alone (WIRE-051 [12.0]): it is the whole response document's outer XML, with no `Server error`, `Request:` and `Responce:` parts, so the wrapped message reads `<SOAP-ENV:Envelope …>…</SOAP-ENV:Envelope> Recurse check has failed.` The other sources of `Message` (the four-argument `CItemException`, `XmlException(text)` and the .NET texts) are the same.
+
 [14.35] Same handler and rules. The `Message` of the original `CItemException` that `applyAML` raises is the 14.35 text of `WIRE-051`, which pretty-prints the request and the response (wayfinder ticket 69 specifies it), so the texts quoted above change with it (probe `s05`, `s06`: `Server error`, then `Request (formatted):` and `Response (formatted):`, no longer `Request:` and `Responce:`). The suffix ` Recurse check has failed.` and the other texts quoted here are unchanged.
 
 ### IMP-180: The detail texts the checks attach to a fault never reach the error (bug)
@@ -96,6 +106,8 @@ The import path reads only `Message` (the warning of the retry, the failure text
 [14.0.7] Three places set `faultdetail` on a `CItemException` caught from a lookup and rethrow it: `GetTypeAmlInner` (`Unable to get definition of {type}: {name}`, IMP-132), the RelationshipType check (`Bad {source_id|related_id} {keyed_name} for {name}`, IMP-160) and the grid check (`Bad Grid {keyed_name} for {name}`, IMP-161). `Message` of an exception from `applyAML` does not change when `faultdetail` does, and IMP-104 builds its error from `Message`, so none of these texts is ever shown or logged. The wrapped error says `Server error … Responce: … Recurse check has failed.` instead. A port that logs the intended text instead would differ.
 
 `GetTypeAmlInner` builds its text from the `type` attribute object rather than its value, so even the property it sets reads `Unable to get definition of System.Xml.XmlAttribute: {name}`; it is visible only in the `faultdetail` field of the exception object, which nothing on the import path reads.
+
+[12.0] Same bug. The three places set `faultdetail` as in 14.0.7 (with the same texts, `Unable to get definition of {type}: {name}`, `Bad {source_id|related_id} {keyed_name} for {name}` and `Bad Grid {keyed_name} for {name}`), `GetTypeAmlInner` builds its text from the attribute object, and `IMP-104` builds its error from `Message`, so none of them is shown. The wrapped error differs only in the form of `Message` (IMP-104 [12.0]). Registered in `bugs.md`.
 
 [14.35] Same as 14.0.7.
 
@@ -131,6 +143,10 @@ The import path reads only `Message` (the warning of the retry, the failure text
 
 So an existing template with children is both rewritten and queued, and a missing one is queued unchanged. The fixed id is the built-in discussion template; the comparison is exact (upper case). Step 5 sets the attribute through `GetNamedItem("action").Value`: a relationship element with no `action` attribute throws `NullReferenceException`, after the response was cached, and fails the check (IMP-104).
 
+[12.0] Steps 1 to 4 are the same, as are the request (with the space before `=` of `action`), the cache, the log lines and the 10005 entries. Step 5 differs: **every** nested `Item` whose `action` is `add` becomes `merge`, with no exception. A `FeedTemplate` below the built-in template `9D257D4D16AC480493571BBF816D13BE` is `merge` like the others, where 14.0.7 makes it `edit`. The relationship element's own `action` is still set to `edit`, a relationship with no `action` attribute still throws `NullReferenceException` after the response was cached, and the entry 10005 is still recorded.
+
+Observed (`s64-discussion-template` in `fixtures/import-run/probe-12.0.txt`; the same scenario in `probe-14.0.7.txt`): a `Discussion Forum` with a `DiscussionTemplate` of the built-in id holding `FeedTemplate` add `FT1`, `Other` add `O1` and `FeedTemplate` edit `FT2`, and a second template `T2` holding `FeedTemplate` add `FT3`. The queued edits of the forum carry `FT1 action="merge"` in 12.0 and `FT1 action="edit"` in 14.0.7; `O1` and `FT3` are `merge` in both and `FT2` stays `edit`.
+
 [14.35] The decision is as in 14.0.7 (steps 1 and 5, the same attribute edits, the same 10005 record). The cache handling differs (probe `n04`, `n04b`):
 
 - a hit (an entry for the request exists) writes `-> was obtained from cache` and does nothing else, as before;
@@ -140,6 +156,8 @@ So an existing template with children is both rewritten and queued, and a missin
 ### IMP-111: A relationship is rewritten only the first time its id is checked (bug)
 
 [14.0.7] Because step 2 of IMP-110 returns on a cache hit and the cache is never emptied (IMP-102), the edit/merge rewrite happens only for the first relationship element carrying that `id` in the whole run, and a later element with the same id, in this or another item or package, is left as it is, without being recorded as 10005 either. A correct engine would rewrite each element on its own merits.
+
+[12.0] Same bug: the same early return on a cache hit and the same never-emptied cache. Registered in `bugs.md`.
 
 [14.35] Partly fixed. The entry of a template that had nested items is removed (`IMP-110`), so every element with that id is rewritten and recorded 10005 (probe `n04`: both forums' templates become `edit` with their nested `FeedTemplate` adds changed to `merge`, and both are queued; in 14.0.7 only the first forum's was). The entry of a template with **no** nested items stays, and a later element with the same id that does have nested items hits it and is left as it is, without a record (probe `n04b`), as in 14.0.7. A correct engine would rewrite each element on its own merits. Registered in `bugs.md`.
 
@@ -157,6 +175,8 @@ So an existing template with children is both rewritten and queued, and a missin
    - any other parent: 0.
 
 The root item counts when its own action is `get`: its parent is the document, which matches no name, so it is recorded with code 0 and the document as its node. The engine skips an element with no parent; none can occur. Nothing is changed in the document here; the entries are acted on by `ProcessForDelayedResolution` (`IMP-2xx`).
+
+[12.0] Same: the same elements, the same request (the element's `OuterXml`), the same log lines and the same codes by parent name.
 
 [14.35] Same selection, order, request (the element's `OuterXml`), unresolved codes (`IMP-103`) and fault handling as 14.0.7, with the cache differences of `IMP-102` (probes `n01`, `n02`):
 
@@ -176,11 +196,15 @@ The root item counts when its own action is `get`: its parent is the document, w
 
 A `t` that holds a quote makes the XPath malformed.
 
+[12.0] Same: the same type check, the same request, the same recursion and the same failures. The texts of the failures are the same (`type attribute is missing`, `Relationships tag can contain only Item tags, but found {name}`, `Bad Relation type {t} for {type}`; faultstring `RecurseCheck`).
+
 [14.35] Same as 14.0.7, with the type-definition cache of `IMP-132`: the re-request of step 4 is not stored (`IMP-182`), so each later item whose relationship type the cached definition lacks sends the definition again (probe `n03`: three `Part` items and a definition that lacks the relationship type at first give four definition requests, where 14.0.7 gives two).
 
 ### IMP-131: The property check compares a name with itself and so never fires (bug)
 
 [14.0.7] The `else` arm of step 3 of IMP-130 is for a child node named `Property`: it looks for `Item[@type='Property' and name='{x}']` in the type definition, where `x` is the child's element name, which is always `Property`. It would pass when the ItemType has a property named `Property` and otherwise throw `CItemException` (faultcode `-1`, faultstring `RecurseCheck`, detail `Bad property name Property for type {type}`). Property values of an item are child elements named after the property, so the property names of the document are never checked: only an item whose element is literally `<Property>` reaches it. A correct check would look up each child element's name. The definition request already asks for the properties, but nothing else reads them.
+
+[12.0] Same bug: the same comparison of the element name with itself, the same text `Bad property name Property for type {type}`. Registered in `bugs.md`.
 
 [14.35] Same as 14.0.7.
 
@@ -189,6 +213,8 @@ A `t` that holds a quote makes the XPath malformed.
 [14.0.7] `GetTypeAmlInner(aml, log, force=false)` writes `aml` to the log when a log writer is given, and returns the cached response for that exact string (IMP-102) unless `force`; otherwise it sends it, caches the response (replacing any earlier one) and writes `  was obtained from server`. A hit writes `  was obtained from cache`. A `CItemException` of faultcode `0` gets a `faultdetail` of `Unable to get definition of {type attribute}: {first name child, or empty}` (IMP-180) and is rethrown; every other exception is rethrown as it is.
 
 `GetMetaDataInfo(type, name, select, log)` builds `<Item type='{type}'`, then ` select='{select}'` when `select` is not empty, then ` action='get'>`, then `<name>{name}</name></Item>` (no whitespace), and calls `GetTypeAmlInner` with it. `GetItemType(name, select, log)` is `GetMetaDataInfo` for `ItemType` and `GetRelationshipType(name, select, log)` for `RelationshipType`. `IsVersionable` and `CheckRelatedItems` pass no log writer, so those requests are not logged.
+
+[12.0] Same: `GetTypeAmlInner`, `GetMetaDataInfo`, `GetItemType` and `GetRelationshipType` build the same requests and use the same cache and the same log words. The fault detail `Unable to get definition of System.Xml.XmlAttribute: {name}` is the same (IMP-180).
 
 [14.35] `GetTypeAmlInner(aml, log, force)` writes `aml` to the log when a log writer is given, as before. Without `force`, an entry for `aml` is used and `  was obtained from cache` is written. Otherwise a lazy request is created and added **only if no entry exists yet** (`TryAdd`), then run, and `  was obtained from server` is written after the answer. A forced request on an existing entry therefore runs and returns its own answer to the caller, but the old document stays in the cache (`IMP-182`). A `CItemException` removes the entry for `aml` (an older successful one too, in the forced case), then gets the faultcode-0 detail of `IMP-180` and is rethrown, as in 14.0.7. `GetMetaDataInfo`, `GetItemType` and `GetRelationshipType` are unchanged.
 
@@ -203,6 +229,8 @@ A `t` that holds a quote makes the XPath malformed.
 
 The `data_source!=''` and `!=` tests are node-set comparisons: they hold when some `data_source` child has text that differs.
 
+[12.0] Same: the same selection, the same `data_type` handling and the same request.
+
 [14.35] Same selection, texts and decisions as 14.0.7, with the cache differences of `IMP-102`: step 4 writes the request string, then looks it up; a hit writes nothing more (14.0.7 wrote `  was obtained from cache`), a miss writes `  was obtained from server` before the request is sent (`IMP-181`), and a `CItemException` removes the entry before faultcode `0` records 10000 (probes `n01`, `n02b`).
 
 ### IMP-150: CheckRelatedItems checks plain related_id references, and makes floating ones follow the current version
@@ -215,6 +243,8 @@ The `data_source!=''` and `!=` tests are node-set comparisons: they hold when so
 4. A fault with another faultcode from any request of steps 1 to 3 is thrown.
 
 The handler of step 3 is the one around steps 1 and 2 as well, so a faultcode `0` from `IsVersionable` (the related type is not on the server) or from the relationship lookup (`parentType` is not a RelationshipType name) in step 2 is taken for a missing related item; step 3 then repeats the lookup that failed, which is sent again (IMP-102) and now throws, ending the check (IMP-104).
+
+[12.0] Same: the same selection, request, versionable test, behavior lookup and `__find_latest_generation_` marker.
 
 [14.35] Same selection, requests and decisions as 14.0.7 (the request of step 1, the `IsVersionable` and behavior lookups only for a versionable related type, the `float` test, the marker attribute and the 10001 record), with the cache differences of `IMP-102`: a hit writes nothing after `checking for related items` and the request, a miss writes `  was obtained from server` before sending (`IMP-181`). The handler removes the entry of the `get` for any `CItemException`, including one raised by the `IsVersionable` or behavior lookups after the `get` succeeded, so that `get` is sent again next time.
 
@@ -229,6 +259,8 @@ The handler of step 3 is the one around steps 1 and 2 as well, so a faultcode `0
 
 When the item's generation is not the current one, the result is the id of the current generation of that config. An id that matches nothing, neither as an item id nor as a `config_id`, is an error, not the same id back.
 
+[12.0] Same: the same two requests, the same swallowing of faultcode `0` and the same errors. The suffix `Unable to find a current version of the item (ID='{id}'; Type='{type}')` is the same.
+
 [14.35] Same as 14.0.7.
 
 ### IMP-160: A RelationshipType's source_id and related_id must name existing ItemTypes
@@ -237,11 +269,15 @@ When the item's generation is not the current one, the result is the id of the c
 
 Unlike the other checks, a missing item is an error, not an unresolved reference: any fault, faultcode `0` included, is thrown. A faultcode `0` first gets the detail `Bad {source_id or related_id} {keyed_name} for {name}` (IMP-180). When no RelationshipType in the document has a `name`, the detail line itself throws `NullReferenceException`, which replaces the fault. References that hold a nested `Item` are not selected; those are `CheckGetItems`'s (10002 and 10003).
 
+[12.0] Same: the same selection, request and failures (including the `NullReferenceException` when no RelationshipType has a name).
+
 [14.35] Same as 14.0.7, with the cache differences of `IMP-102`: a hit writes nothing after the request line, a miss writes `  was obtained from server` before sending (`IMP-181`), and the entry is removed before the faultcode-0 detail of `IMP-180` is set and the fault is rethrown.
 
 ### IMP-161: A Relationship View's grid must name an existing Grid
 
 [14.0.7] Each element of `.//Item[@type='RelationshipType']/Relationships/Item[@type='Relationship View']/grid`, in document order, with `type` and `keyed_name` its attributes, is skipped when either is empty. Otherwise: write `checking Grids types`, then `<Item levels='0' action='get' type='Grid'><id>{inner text}</id></Item>`, send it through the cache (IMP-102) and write the outcome. Any fault is thrown, a faultcode `0` first getting the detail `Bad Grid {keyed_name} for {name}` (IMP-180), where `name` is the same document-wide RelationshipType name as in IMP-160, with the same `NullReferenceException` when there is none. A grid element that holds a nested `Item` is not excluded; the request then carries the concatenated text of its descendants.
+
+[12.0] Same.
 
 [14.35] Same as 14.0.7, with the cache differences of `IMP-102` described for `IMP-160`.
 
@@ -252,5 +288,7 @@ Unlike the other checks, a missing item is an error, not an unresolved reference
 [14.0.7] `IsVersionable(typeName)` calls `GetItemType(typeName, "is_versionable")` (IMP-132), which sends `<Item type='ItemType' select='is_versionable' action='get'><name>{typeName}</name></Item>`, with no logging. The response is cached under that string (IMP-102), so one request is made per distinct type name for the life of the helper; a type that is not found (faultcode `0`) is not cached and the request is repeated on every call, and the exception reaches the caller unchanged. The result is true when `Item/is_versionable` is present and its text equals `1`, ignoring case, and false for any other text. When the element is absent it throws `CItemException` (faultcode `-1`, faultstring and detail `Can't determine whether item versionable or not`).
 
 The rule applies to every caller: the checks (IMP-150), the import orchestration (`IMP-4xx`), the merge (`IMP-3xx`) and the export.
+
+[12.0] Same: one request per type name for the life of the helper, the same result test and the same `Can't determine whether item versionable or not`.
 
 [14.35] Same as 14.0.7: one request per distinct type name for the life of the helper, a missing type (faultcode `0`) is not remembered and is requested every time (probe `n09`), and the result and the `Can't determine whether item versionable or not` error are as before. The cache mechanism is `IMP-132`.

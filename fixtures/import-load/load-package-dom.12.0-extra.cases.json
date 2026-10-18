@@ -1,0 +1,266 @@
+[
+ {
+  "name": "x-latin1-nodecl",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2wxJz48bmFtZT5jYWbpPC9uYW1lPjwvSXRlbT48L0FNTD4="
+   }
+  ]
+ },
+ {
+  "name": "x-utf8-valid-nodecl",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J3U4Jz48bmFtZT5jYWbDqTwvbmFtZT48L0l0ZW0+PC9BTUw+"
+   }
+  ]
+ },
+ {
+  "name": "x-cp1252-decl",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0id2luZG93cy0xMjUyIj8+PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2wxJz48bmFtZT5jYWbpPC9uYW1lPjwvSXRlbT48L0FNTD4="
+   }
+  ]
+ },
+ {
+  "name": "x-utf16-decl-over-utf8",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTE2Ij8+PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J3U4Jz48bmFtZT5jYWbDqTwvbmFtZT48L0l0ZW0+PC9BTUw+"
+   }
+  ]
+ },
+ {
+  "name": "x-unknown-enc-decl",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0ibm8tc3VjaC1lbmMiPz48QU1MPjxJdGVtIHR5cGU9J0xpc3QnIGFjdGlvbj0nYWRkJyBpZD0ndTgnPjxuYW1lPmNhZsOpPC9uYW1lPjwvSXRlbT48L0FNTD4="
+   }
+  ]
+ },
+ {
+  "name": "x-utf8-decl-latin1-bytes",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48QU1MPjxJdGVtIHR5cGU9J0xpc3QnIGFjdGlvbj0nYWRkJyBpZD0nbDEnPjxuYW1lPmNhZuk8L25hbWU+PC9JdGVtPjwvQU1MPg=="
+   }
+  ]
+ },
+ {
+  "name": "x-utf16le-bom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "//48AEEATQBMAD4APABJAHQAZQBtACAAdAB5AHAAZQA9ACcATABpAHMAdAAnACAAYQBjAHQAaQBvAG4APQAnAGEAZABkACcAIABpAGQAPQAnAGwAZQAnAC8APgA8AC8AQQBNAEwAPgA="
+   }
+  ]
+ },
+ {
+  "name": "x-utf16be-bom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "/v8APABBAE0ATAA+ADwASQB0AGUAbQAgAHQAeQBwAGUAPQAnAEwAaQBzAHQAJwAgAGEAYwB0AGkAbwBuAD0AJwBhAGQAZAAnACAAaQBkAD0AJwBiAGUAJwAvAD4APAAvAEEATQBMAD4="
+   }
+  ]
+ },
+ {
+  "name": "x-utf32le-bom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "//4AADwAAABBAAAATQAAAEwAAAA+AAAAPAAAAEkAAAB0AAAAZQAAAG0AAAAgAAAAdAAAAHkAAABwAAAAZQAAAD0AAAAnAAAATAAAAGkAAABzAAAAdAAAACcAAAAgAAAAYQAAAGMAAAB0AAAAaQAAAG8AAABuAAAAPQAAACcAAABhAAAAZAAAAGQAAAAnAAAAIAAAAGkAAABkAAAAPQAAACcAAAB1AAAAMwAAADIAAABsAAAAZQAAACcAAAAvAAAAPgAAADwAAAAvAAAAQQAAAE0AAABMAAAAPgAAAA=="
+   }
+  ]
+ },
+ {
+  "name": "x-utf32be-bom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "AAD+/wAAADwAAABBAAAATQAAAEwAAAA+AAAAPAAAAEkAAAB0AAAAZQAAAG0AAAAgAAAAdAAAAHkAAABwAAAAZQAAAD0AAAAnAAAATAAAAGkAAABzAAAAdAAAACcAAAAgAAAAYQAAAGMAAAB0AAAAaQAAAG8AAABuAAAAPQAAACcAAABhAAAAZAAAAGQAAAAnAAAAIAAAAGkAAABkAAAAPQAAACcAAAB1AAAAMwAAADIAAABiAAAAZQAAACcAAAAvAAAAPgAAADwAAAAvAAAAQQAAAE0AAABMAAAAPg=="
+   }
+  ]
+ },
+ {
+  "name": "x-utf16le-nobom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PABBAE0ATAA+ADwASQB0AGUAbQAgAHQAeQBwAGUAPQAnAEwAaQBzAHQAJwAgAGEAYwB0AGkAbwBuAD0AJwBhAGQAZAAnACAAaQBkAD0AJwBsAGUAJwAvAD4APAAvAEEATQBMAD4A"
+   }
+  ]
+ },
+ {
+  "name": "x-utf16be-nobom",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "ADwAQQBNAEwAPgA8AEkAdABlAG0AIAB0AHkAcABlAD0AJwBMAGkAcwB0ACcAIABhAGMAdABpAG8AbgA9ACcAYQBkAGQAJwAgAGkAZAA9ACcAYgBlACcALwA+ADwALwBBAE0ATAA+"
+   }
+  ]
+ },
+ {
+  "name": "x-bom-only",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "77u/"
+   }
+  ]
+ },
+ {
+  "name": "x-raw-control-char",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a.xml",
+    "b64": "PEFNTD48SXRlbSB0eXBlPSdMaXN0JyBhY3Rpb249J2FkZCcgaWQ9J2MnPjxuYW1lPmEBYjwvbmFtZT48L0l0ZW0+PC9BTUw+"
+   }
+  ]
+ },
+ {
+  "name": "x-name-hash",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a#b.xml",
+    "text": "<AML><Item type='List' action='add' id='hash'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "x-name-percent",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a%20b.xml",
+    "text": "<AML><Item type='List' action='add' id='pct20'/></AML>"
+   },
+   {
+    "path": "pkg/d/a%41.xml",
+    "text": "<AML><Item type='List' action='add' id='pct41'/></AML>"
+   },
+   {
+    "path": "pkg/d/100%.xml",
+    "text": "<AML><Item type='List' action='add' id='pct'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "x-name-chars",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d/a&b.xml",
+    "text": "<AML><Item type='List' action='add' id='amp'/></AML>"
+   },
+   {
+    "path": "pkg/d/a b.xml",
+    "text": "<AML><Item type='List' action='add' id='space'/></AML>"
+   },
+   {
+    "path": "pkg/d/a+b.xml",
+    "text": "<AML><Item type='List' action='add' id='plus'/></AML>"
+   },
+   {
+    "path": "pkg/d/a[1].xml",
+    "text": "<AML><Item type='List' action='add' id='brack'/></AML>"
+   },
+   {
+    "path": "pkg/d/a;b.xml",
+    "text": "<AML><Item type='List' action='add' id='semi'/></AML>"
+   },
+   {
+    "path": "pkg/d/a=b.xml",
+    "text": "<AML><Item type='List' action='add' id='eq'/></AML>"
+   },
+   {
+    "path": "pkg/d/a,b.xml",
+    "text": "<AML><Item type='List' action='add' id='comma'/></AML>"
+   },
+   {
+    "path": "pkg/d/a@b.xml",
+    "text": "<AML><Item type='List' action='add' id='at'/></AML>"
+   },
+   {
+    "path": "pkg/d/a'b.xml",
+    "text": "<AML><Item type='List' action='add' id='apos'/></AML>"
+   },
+   {
+    "path": "pkg/d/é中.xml",
+    "text": "<AML><Item type='List' action='add' id='uni'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "x-dir-hash",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d#1/a.xml",
+    "text": "<AML><Item type='List' action='add' id='dirhash'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "x-dir-percent",
+  "solutionPath": "pkg",
+  "dirs": [],
+  "files": [
+   {
+    "path": "pkg/d%20e/a.xml",
+    "text": "<AML><Item type='List' action='add' id='dirpct'/></AML>"
+   }
+  ]
+ },
+ {
+  "name": "x-solutionpath-hash",
+  "solutionPath": "p#q",
+  "dirs": [],
+  "files": [
+   {
+    "path": "p#q/d/a.xml",
+    "text": "<AML><Item type='List' action='add' id='sphash'/></AML>"
+   }
+  ]
+ }
+]
