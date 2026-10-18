@@ -79,8 +79,8 @@ Expect: 100-continue
 
 - `Content-Type` is exactly `text/xml`, with no charset. `SOAPAction` is the bare action name, unquoted: `ApplyItem`, `ApplyAML`, `ValidateUser` or `Logoff`.
 - `LOCALE` starts as `en-US`, from the reference host's constructor. `TIMEZONE_NAME` starts as the client machine's Windows time zone id (`TimeZoneInfo.Local.Id`, for example `India Standard Time`), because the constructor passes none. After every `ValidateUser` response, even a fault, both are replaced by the response's `Result/i18nsessioncontext/locale` and `time_zone`, trimmed. When an element is missing or blank the value becomes empty, and the header is then sent with an empty value. Against dev the server returns `en-US` and `India Standard Time`, so the values do not change.
-- The library also sends a Windows time zone id as the initial `TIMEZONE_NAME`. On Windows it uses the machine's local id. Elsewhere it maps the local IANA zone to its Windows id through the CLDR `windowsZones` table. That table names zones by CLDR's canonical ids, which are often older IANA names, so the local zone is first resolved through CLDR's time zone aliases (`bcp47/timezone.xml`) to its canonical id: `Asia/Kolkata` becomes `Asia/Calcutta`. The Windows id is then taken from the `mapZone` entry whose space-separated type list contains that id, preferring territory `001`; `Asia/Calcutta` gives `India Standard Time`. A `--time-zone <Windows id>` flag overrides the value on any platform. When no flag is given and the local zone has no mapping, the run stops with a usage error that names the zone and the flag. This is not a deviation: the header carries the same value the reference host sends on the same machine.
-- The authorization header is `Authorization: Bearer <token>` when the discovery document's `protocol_info.protocol_type` is `Standard`. For `Custom` the header is named by `protocol_info.authorization_header` (Aras uses `X-Aras-Authorization`). Under the legacy login (WIRE-016) it is replaced by `AUTHUSER`, `AUTHPASSWORD` and `DATABASE`. With OAuth there is no `DATABASE` header.
+- The library also sends a Windows time zone id as the initial `TIMEZONE_NAME`. On Windows it uses the machine's local id. Elsewhere it maps the local IANA zone to its Windows id through the CLDR `windowsZones` table. That table names zones by CLDR's canonical ids, which are often older IANA names, so the local zone is first resolved through CLDR's time zone aliases (`bcp47/timezone.xml`) to its canonical id: `Asia/Kolkata` becomes `Asia/Calcutta`. The Windows id is then taken from the `mapZone` entry whose space-separated type list contains that id, preferring territory `001`; `Asia/Calcutta` gives `India Standard Time`. The library carries the result as a table generated from CLDR release 47 (`tools/windows-zones/generate.ts`). A `--time-zone <Windows id>` flag overrides the value on any platform. When no flag is given and the local zone has no mapping, the run stops with a usage error that names the zone and the flag. This is not a deviation: the header carries the same value the reference host sends on the same machine.
+- The authorization header is `Authorization: Bearer <token>` when the discovery document's `protocol_info.protocol_type` is `Standard`, and `X-Aras-Authorization: Bearer <token>` when it is `Custom`. The header is chosen by the type alone: IOM requires the document's `authorization_header`, `www_authenticate_header` and `unauthorized_status_code` to be present, but does not use their values. Under the legacy login (WIRE-016) it is replaced by `AUTHUSER`, `AUTHPASSWORD` and `DATABASE`. With OAuth there is no `DATABASE` header.
 - Cookies: the connection keeps one cookie container and replays what the server sets, in practice `ASP.NET_SessionId`, set by the `ValidateUser` response.
 - No `User-Agent`, `Accept`, `Accept-Encoding`, `Cache-Control` or `Content-Encoding` is sent. Compression is off. The first request on a new TCP connection may also carry `Connection: Keep-Alive`; that header belongs to the transport and is not part of the contract.
 - Port note: `Host`, `Content-Length` and `Expect` are what .NET writes. A Node client need not match the transport headers (`Host`, `Connection`, `Content-Length`, `Expect`) byte for byte, but sends the others with these names, values and order.
@@ -93,13 +93,15 @@ Expect: 100-continue
 
 ### WIRE-006: `CItemHelper.applyAML` sends ApplyItem and throws on any fault
 
-[14.0.7] `CItemHelper.applyAML(aml)` loads the AML string into a new IOM item (`Innovator.newItem().loadAML(aml)`) and applies it, which is one `ApplyItem` call (WIRE-004). Because `Item.apply` requires a single `<Item>` root, a string with a different root is refused by IOM before anything is sent. When the response is a fault it throws a `CItemException` built from the request AML and the response (WIRE-051), whatever the faultcode, including `0` ("no items"). Callers that treat faultcode `0` as an empty result catch that exception and test its `faultcode` (WIRE-052). Otherwise it returns the whole response document, envelope included.
+[14.0.7] `CItemHelper.applyAML(aml)` loads the AML string into a new IOM item (`Innovator.newItem().loadAML(aml)`) and applies it, which is one `ApplyItem` call (WIRE-004). `Item.apply` sends the one `Item` the string holds, found as `Item`, `AML/Item` or `//Result/Item`, so an `<AML>` wrapper around exactly one item sends that item bare. A string with no such item or with several is refused by IOM before anything is sent, with a plain `System.Exception` whose message is `Not a single item`. When the response is a fault it throws a `CItemException` built from the request AML and the response (WIRE-051), whatever the faultcode, including `0` ("no items"). Callers that treat faultcode `0` as an empty result catch that exception and test its `faultcode` (WIRE-052). Otherwise it returns the whole response document, envelope included.
 
 [12.0] Same, except for the exception it throws. `applyAML` throws `CItemException(item)` (WIRE-051), built from the response alone: the exception's `faultstring` and message are the response document's whole outer XML, with no `Server error`, `Request:` and `Responce:` parts. The request AML is not in the message. Observed (a `List` that does not exist): the logged `faultstring` starts `<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault …>` and the `faultdetail` is the server's detail text, as in 14.0.7.
 
 ### WIRE-007: The AML string literals are part of the request bytes
 
 [14.0.7] Every AML literal the engine sends is reproduced with its exact whitespace. Where a literal contains CR LF and tab characters inside the root element, they reach the wire unchanged, as the version probe's requests show (WIRE-020). Whitespace before the root is dropped (WIRE-004). Each area document that defines a request literal gives it with its whitespace; this rule is the framing that all of them rely on.
+
+The oracle's transcripts hold a request as the loaded document's outer XML, not as the wire bytes: quotes are already double and empty elements already `<X />`, but the whitespace before the root is kept, so a probe request starts with `\r\n\t\t\t` there and not on the wire. The library's client reports each call in the same form to anything that records it.
 
 [12.0] Same as 14.0.7.
 
@@ -129,6 +131,8 @@ The token endpoint is `<uri>connect/token` of the location that won, built by IO
 
 Only a discovery that "is not there" falls back to the legacy headers: a 404 from `OAuthServerDiscovery.aspx`, or an empty body. Every other discovery failure fails login with a fault (WIRE-015): another HTTP error status, a connection failure, a body that is not JSON, an empty `locations` list, every OpenID configuration request failing, a missing required field, or a failed key set request. A failed discovery is not remembered, so the next call on the connection tries discovery again.
 
+The texts of these faults are IOM's. A non-404 error status from `OAuthServerDiscovery.aspx` is `System.Net.Http.HttpRequestException: Cannot get OAuthServer urls from '<discovery url>' url: (<status>) <reason>.`. A body that is not a JSON object is a `Newtonsoft.Json.JsonReaderException`. Each OpenID configuration request, together with the reading of its document (a missing required field, a `protocol_type` that is neither `Standard` nor `Custom`, an `unauthorized_status_code` that is not an integer), is tried inside a loop that discards the failure and goes to the next location, so when no location works, or there are none, the fault is `System.AggregateException: Cannot get OAuthServer discovery document.` The key set request is outside that loop: its failure fails login as `System.InvalidOperationException: Cannot get key set: (<status>) <reason>.`, or `…: Cannot get key set: Response content is empty.` for a blank body, without trying another location. A request that cannot be sent at all (connection refused, a name that does not resolve) is `System.Net.Http.HttpRequestException: An error occurred while sending the request.`, and a request that times out is `System.Threading.Tasks.TaskCanceledException: A task was canceled.`; these two texts come from the .NET Framework's `HttpClient` and are not in the capture.
+
 [12.0] Same threshold: a `protocol_version` of 1.0 or more selects the OAuth password grant (WIRE-012), anything below selects the legacy headers (WIRE-016). Only "no discovery endpoint" falls back to the legacy headers: a 404 from `OAuthServerDiscovery.aspx`, or an empty body. The other discovery failures are IOM 12's own and are not caught by the authenticator choice, so they become the general IOM fault (WIRE-050), faultcode `999` and faultstring `<exception type>: <message>`:
 
 - another HTTP error status or a connection failure on the discovery request: `System.Net.WebException: <message>`;
@@ -154,9 +158,9 @@ grant_type=password&client_id=IOMApp&scope=Innovator&database=<db>&username=<use
 
 - The fields are form-encoded in that order (spaces as `+`, other reserved characters percent-encoded).
 - `<digest>` is the password's hash (WIRE-014): the lowercase MD5 hex of its ASCII bytes. The committed capture has this value replaced by `SCRUBBED` (AGENTS.md rule 6), so its form rests on IOM's hashing as WIRE-014 states, not on the capture.
-- An empty database or user name fails login before any request (faultstring `System.ArgumentException: Database`, or `…: UserName`).
+- An empty database or user name fails login (faultstring `System.ArgumentException: Database`, or `…: UserName`) when IOM creates the token provider, which is after the three discovery requests and before the token request or `ValidateUser`. The database is checked first.
 - A 200 or 400 response is read as JSON. A body with a non-blank `error` is an OAuth error whose code is `error` and whose message is `error_description` (looked up case-insensitively), or `error` when there is no description. Any other status is an OAuth error with code `server_error` and message `(<status name>) <reason phrase>`, for example `(InternalServerError) Internal Server Error`. A body that is not JSON is an OAuth error whose code and message are both the JSON parser's message.
-- Otherwise the token is `access_token`. `expires_in` is ignored: the token is kept for the life of the connection, with no expiry tracking and no refresh.
+- Otherwise the token is `access_token`; a response without one fails as `System.ArgumentException: Token value can not be null or empty.`. `expires_in` is ignored: the token is kept for the life of the connection, with no expiry tracking and no refresh.
 
 [12.0] The token is fetched lazily, when the first SOAP call (`ValidateUser`) is about to be sent, with the same request line and headers as 14.0.7 (`Accept: application/json`, `Content-Type: application/x-www-form-urlencoded`, `Host`, `Content-Length`, `Expect: 100-continue`). The body differs in field order and in what is optional:
 
@@ -182,6 +186,8 @@ client_id=IOMApp&grant_type=password&scope=Innovator&username=<user>&database=<d
 - A password that already looks like a hash is used verbatim: 32 hex characters (any case) as MD5, 64 hex characters as SHA-256.
 - Otherwise the MD5 digest is the lowercase hex of MD5 over the password's ASCII bytes, and the SHA-256 digest is the uppercase hex of SHA-256 over the same bytes.
 - ASCII encoding turns every non-ASCII character into `?` (0x3F) before hashing, so two passwords that differ only in non-ASCII characters have the same digest. This is reproduced (WIRE-055).
+
+A password that already is the other kind of hash cannot be switched to that mode. Switching a 32-hex password to SHA-256 throws `System.InvalidOperationException: Parole already contains Md5 hash.`, and switching a 64-hex one to MD5 throws `…: Parole already contains Sha256 hash.`. A mode other than exactly `MD5` or `SHA256` throws `…: Unknown hashing mode.`
 
 The same digest is used in the token request (WIRE-012) and in the legacy `AUTHPASSWORD` header (WIRE-016). The reference host passes the password plain; the library takes it from `ARAS_PASSWORD` or stdin (AGENTS.md) and never puts it on a command line.
 
@@ -225,7 +231,7 @@ When that request returns a fault, a second `ApplyItem` follows with the same it
 
 ### WIRE-018: One token renewal on an unauthorized status
 
-[14.0.7] Under OAuth, when a SOAP request is answered with the discovery document's `unauthorized_status_code` (401 for `Standard`, 498 for `Custom`), IOM fetches a new token with a fresh password grant (WIRE-012) and resends the request once. A second refusal becomes an IOM `999` fault (WIRE-050). The legacy login never retries. IOM's re-login on session-timeout faults is off by default and neither the engine nor the reference host turns it on, so it does not happen.
+[14.0.7] Under OAuth, when a SOAP request is answered with the protocol type's refusal status (401 for `Standard`, 498 for `Custom`; the document's own `unauthorized_status_code` is not used), IOM fetches a new token with a fresh password grant (WIRE-012) and resends the request once. A second refusal becomes an IOM `999` fault (WIRE-050). The legacy login never retries. IOM's re-login on session-timeout faults is off by default and neither the engine nor the reference host turns it on, so it does not happen.
 
 [12.0] Same as 14.0.7.
 
@@ -277,9 +283,11 @@ The result is the server version (major, minor, service pack, build, service upd
 
 The engine also refuses a 9.x server whose minor version is not 4 when its own major version is 11. That branch can never apply to 14.0.7 and is not reproduced.
 
-A refusal throws a `CItemException` with faultcode `0` (WIRE-024), faultstring `You are trying to use incompatible utility of version {0} with innovator version {1}.` (WIRE-024 gives the values), and no detail, so its message is empty.
+A refusal throws a `CItemException` with faultcode `0` (WIRE-024), faultstring `You are trying to use incompatible utility of version {0} with innovator version {1}.` (WIRE-024 gives the values), and no detail. With no detail the exception has no message of its own, so its `Message` is .NET's default text, `Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown.`.
 
 The library adds `--skip-version-check`, which skips this comparison (the probe still runs) and is recorded in the log and the JSON summary. A refusal from the library also names the engines whose window fits the server (round 3, Q3). Both are additions; the engine has neither.
+
+The windows are each engine's own comparison (the engine's major version is its assembly's): 12.0 accepts server majors 10 to 12, and 14.0.7 and 14.35 accept 12 to 14. The refusal is the engine's exception unchanged, with the library's text kept apart from it, so the fault code, text and message stay the engine's. That text reads `Engine {engine} does not accept Aras server {major}.{minor}. Engines that accept it: {list}. Use --engine with one of them, or --skip-version-check to run {engine} anyway.`, or, when no engine accepts the server, `Engine {engine} does not accept Aras server {major}.{minor}, and no engine of this library does. Use --skip-version-check to run {engine} anyway.`. A server let through by the flag is recorded as skipped, and one inside the window is never marked skipped.
 
 [12.0] The same comparison with the engine's major version 12:
 
@@ -341,6 +349,8 @@ with the usual headers (WIRE-005). The response is ignored, and a transport fail
 ```
 
 - For any exception (connection failure, timeout, a 4xx or 5xx status other than WIRE-018's retry, a body that is not XML) the faultstring is `<exception type full name>: <message>`, for example `System.Net.WebException: The remote server returned an error: (500) Internal Server Error.`. The body of an error response is discarded. The .NET message texts are reproduced in English.
+- A body that is not XML gives `System.Xml.XmlException: <message>`, with .NET's message and its line and position, for example `Root element is missing.` for an empty body and `Data at the root level is invalid. Line 1, position 1.` for text.
+- A request the caller gives that is not XML is not a fault: loading it fails with the same `XmlException` before any request is made.
 - For an OAuth error (WIRE-015) the faultcode, faultstring, faultactor `OAuthServer` and detail are as WIRE-015 says.
 - When a login response has no fault and no user id, the fault is IOM's "Unknown error" item: faultcode `1`, an empty faultactor and faultstring `Unknown error`.
 
@@ -357,7 +367,7 @@ The server itself returns faults with HTTP 200 (the capture's "No items" faults)
 - built from the response alone, `faultstring` and the message are the whole response document's outer XML;
 - built from a request and its response (`applyAML`, WIRE-006), `faultstring` and the message are `Server error\r\n\r\nRequest: {request AML}\r\n\r\nResponce: {response outer XML}`, with Aras's spelling `Responce`.
 
-The engine's own errors use the four-part constructor: an explicit faultcode, faultstring, detail and inner exception, with the detail as the message.
+The engine's own errors use the four-part constructor: an explicit faultcode, faultstring, detail and inner exception, with the detail as the message. A null detail leaves the exception without a message, so its `Message` is .NET's default text (WIRE-023).
 
 [12.0] `CItemException` has the constructors of 14.0.7 except the one that takes a request and a response. Built from a fault response (`CItemException(item)`): `faultcode` is the response's `faultcode` text parsed as an integer, or `1` when it does not parse; `faultdetail` is the concatenated text of the whole `detail` element, or empty; `faultstring` and the message are the whole response document's outer XML. `applyAML` uses this form (WIRE-006), so every engine error that comes from a failed request carries the response only. The four-part constructor is as in 14.0.7.
 
