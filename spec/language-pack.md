@@ -34,7 +34,7 @@ Not probed: the server's side of the generated AML (what Aras does with `where` 
 6. run the import (`ProcessImport`): the manifest's package names go to `ImportSolutions` (LP-004);
 7. in a `finally`: `CItemHelper.logout()` (WIRE-040), then `Dispose()` of the preprocessor if one was created (LP-034).
 
-The result is the import's (IMP-4xx). The library's `lpimport` command performs the same steps in the same order. The library's own client replaces step 2 (WIRE-002).
+The result is the import's (IMP-408, IMP-407). The library's `lpimport` command performs the same steps in the same order. The library's own client replaces step 2 (WIRE-002).
 
 [12.0] There is no language-pack import. Its `ImportExport` enumeration holds only `Import` and `Export`, its decompile has no `LanguagePackPreprocessor`, and its `ConsoleUpgrade.exe` has no reference to one (scope check F12). The 12.0 import ticket records that.
 
@@ -56,7 +56,7 @@ The `lppath` and `lppackage` options given to an `import` are read and ignored.
 
 ### LP-003: A failure after login is logged and rethrown; the temp package is not cleaned up then
 
-[14.0.7] An exception from steps 3 to 6 of LP-001 is caught in `Main`: its `ToString()` (type, message and stack trace) is appended as a line to the log file, and the exception is thrown again unchanged, so the tool ends with an unhandled exception and no return code. The `finally` still logs out. `ImportSolutions` returns 1 for its own failures instead of throwing (IMP-4xx), so what reaches this catch is the preprocessor's failures (LP-010 to LP-036) and the exceptions of the manager's constructor (a missing manifest cannot happen here: the preprocessor wrote it).
+[14.0.7] An exception from steps 3 to 6 of LP-001 is caught in `Main`: its `ToString()` (type, message and stack trace) is appended as a line to the log file, and the exception is thrown again unchanged, so the tool ends with an unhandled exception and no return code. The `finally` still logs out. `ImportSolutions` returns 1 for its own failures instead of throwing (IMP-407), so what reaches this catch is the preprocessor's failures (LP-010 to LP-036) and the exceptions of the manager's constructor (a missing manifest cannot happen here: the preprocessor wrote it).
 
 When the preprocessor's constructor throws, there is no preprocessor to dispose, so the temp package it had already made stays on disk whatever `lpdebug` says (LP-035).
 
@@ -64,7 +64,7 @@ The library reports these failures through its own error type and exit code (CLI
 
 ### LP-004: The import that follows is a normal import of one package
 
-[14.0.7] The manager is built for `Action = Import` with `ManifestFile` = the temp manifest. As for any import, its constructor requires the file to exist (`Manifest file '{0}' doesn't exist`), reads it, and takes the manifest's folder from the manifest file's parent folder, which is the temp folder (the `dir` option is not used). The manager then imports every package name of the manifest (`GetAllPackageNames()`: the language package alone), in the order the manifest gives (MAN-020), with `merge`, `fastmode`, `release` and `description` from the arguments. The package is found, loaded, ordered, checked, applied and registered by the import rules, and the generated `edit` items go through them like any other item.
+[14.0.7] The manager is built for `Action = Import` with `ManifestFile` = the temp manifest. As for any import (IMP-402), its constructor requires the file to exist (`Manifest file '{0}' doesn't exist`), reads it, and takes the manifest's folder from the manifest file's parent folder, which is the temp folder (the `dir` option is not used). The manager then imports every package name of the manifest (`GetAllPackageNames()`: the language package alone), in the order the manifest gives (MAN-020), with `merge`, `fastmode`, `release` and `description` from the arguments (IMP-401). The package is found, loaded, ordered, checked, applied and registered by the import rules, and the generated `edit` items go through them like any other item.
 
 What matters for the preprocessor's output: the import looks for the package at `GetSolutionPath` (MAN-032), reads the immediate subfolders of that folder (IMP-002) and, in each, the `*.xml` files (IMP-003). Whether that finds the `Fixes` folder depends on the package name (LP-033).
 
