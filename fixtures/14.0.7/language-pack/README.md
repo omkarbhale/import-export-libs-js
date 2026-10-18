@@ -12,9 +12,9 @@ Five recorded runs of engine 14.0.7.35492's `lpimport` (ConsoleUpgrade's sequenc
 
 ## What was on dev
 
-- **Languages.** Dev had only `en`. Ticket 45 added `de` and `fr` (`setup.aml`). They stay on dev for the later language tickets. Adding a Language made the server add a `LABEL_DE` and `LABEL_FR` column to every table with a multilingual property. To remove them, delete the two Language items; the columns are the server's to drop.
+- **Languages.** Dev had only `en`. Ticket 45 added `de` and `fr` (`setup.aml`) for the recording and deleted both afterwards, so dev has `en` only again. Adding a Language made the server add a `LABEL_DE` and a `LABEL_FR` column to every table with a multilingual property, and each add took longer than 30 s. After the delete the server's insert statements no longer list those columns. A later ticket that needs real languages re-adds them with `setup.aml` and removes them again.
 - **Items.** The packs translate the `label` of two scratch `Forum` items (`LIBSJS-SCRATCH-LP-Forum`, `…-Forum2`, ids in `setup.aml`). They were purged, with their Teams, after the last run (`teardown.aml`). A scratch ItemType was not possible: an ItemType name must match `^[a-zA-Z](\w*| +\w+)*$`, so it cannot be named `LIBSJS-SCRATCH-*` and the oracle's scratch guard would refuse it. `Action` and `CommandBarSection` need a Method id and a classification the scratch rows do not have. `Forum` is non-versionable, so the engine's `edit` takes the plain path (`is_versionable` lookup, call 14).
-- **Import bookkeeping.** Each run added a `DatabaseUpgrade` and a `PackageDefinition` named `LIBSJS-SCRATCH-LP` and the host deleted both (ids in `run.json`, `cleanup`). Nothing is left on dev.
+- **Import bookkeeping.** Each run added a `DatabaseUpgrade` and a `PackageDefinition` named `LIBSJS-SCRATCH-LP` and the host deleted both (ids in `run.json`, `cleanup`). Nothing of this ticket is left on dev.
 
 ## No stock language pack
 
