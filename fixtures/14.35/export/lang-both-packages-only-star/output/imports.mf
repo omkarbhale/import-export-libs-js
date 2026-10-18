@@ -1,0 +1,4 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-LANGINST" path="LIBSJS-SCRATCH-LANGINST\Import" />
+  <package name="LIBSJS-SCRATCH-LANG" path="LIBSJS-SCRATCH-LANG\Import" />
+</imports>

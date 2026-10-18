@@ -1,0 +1,44 @@
+{
+  "id": "l1-only-star",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportLanguageResourcesOnly with `*` on a server that has `en` only",
+  "exercises": "LP-111, LP-112: `*` becomes the server's codes, `en` is removed, so the list is empty and the engine sends no translated-value request; the reshaping steps of LP-140 to LP-145 still run on the plain answer.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly",
+    "languages": [
+      "*"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-110",
+    "LP-111",
+    "LP-112",
+    "LP-115",
+    "LP-124",
+    "LP-140",
+    "LP-150"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "error": null
+  }
+}

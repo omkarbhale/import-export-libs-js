@@ -1,0 +1,32 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222514-14.35-export-dc1168\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222514-14.35-export-dc1168\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:55:16
+Item id :F288A3345225407EACBC936191097BCD  keyed_name : Activity Template   type : Form successfully exported
+end of execution : 10/19/2026 03:55:17
+         ****Export com.aras.innovator.solution.PLM****
+start of execution : 10/19/2026 03:55:17
+Item id :968471EC23804034A3B7B2B5C78601E7  keyed_name : CAD Angular Units   type : Variable successfully exported
+end of execution : 10/19/2026 03:55:17
+         ****Export com.aras.defaults.filerepresentations****
+start of execution : 10/19/2026 03:55:17
+Item id :16039DDADB33459A9F6B344B9DD8C735  keyed_name : CATIA Assembly SCS Representation   type : fr_RepresentationType successfully exported
+end of execution : 10/19/2026 03:55:18
+         ****Export com.steepgraph.pagex****
+start of execution : 10/19/2026 03:55:18
+Item id :0DD3CB20F7224E3FB3D5CA87E100A04A  keyed_name : com.steepgraph.pagex.builder.button   type : CommandBarButton successfully exported
+end of execution : 10/19/2026 03:55:18

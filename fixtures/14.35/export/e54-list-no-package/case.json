@@ -1,0 +1,28 @@
+{
+  "id": "e54-list-no-package",
+  "engine": "14.35",
+  "catalogue": [
+    "E54"
+  ],
+  "title": "List: item in no package, keyed name that is not a file name (True/False)",
+  "exercises": "The keyed name has '/', so the file is named by the id. The item is in no package; the engine accepts it under any existing package key (core here). The CLI's refusal is a ticket 43 unit test.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "F8CDB96400C445879DA9E6FCA53889A2",
+          "keyedName": "True/False"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 18,
+    "error": null
+  }
+}

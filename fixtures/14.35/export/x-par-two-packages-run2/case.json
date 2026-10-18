@@ -1,0 +1,101 @@
+{
+  "id": "x-par-two-packages-run2",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 parallel"
+  ],
+  "title": "Eight Lists and five Variables in two packages (run 2 of 3)",
+  "exercises": "Packages are still exported one after another (EXP-551), each with its own parallel loop, so the package headers and 'start of execution' lines stay in order while the lines between them are a set.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        },
+        {
+          "type": "List",
+          "id": "51D8F6076D2E41AAA7D72D6F1B2184D1",
+          "keyedName": "Configurable Grid Events"
+        },
+        {
+          "type": "List",
+          "id": "858DCAAD7FF94EDC969A1C3CFA57FA93",
+          "keyedName": "Data Types"
+        },
+        {
+          "type": "List",
+          "id": "972269F295174215AEB67FB24262468D",
+          "keyedName": "DBUpgadeStatus"
+        },
+        {
+          "type": "List",
+          "id": "F90729D18482477CBB61311F108A3379",
+          "keyedName": "DBUpgradeType"
+        },
+        {
+          "type": "List",
+          "id": "6056059D6CCB4E65A6465E1C36D2055D",
+          "keyedName": "Field Length Unit"
+        },
+        {
+          "type": "List",
+          "id": "AEE9D6567EDB45A4A50A669F5B385BD5",
+          "keyedName": "Field Positioning"
+        },
+        {
+          "type": "List",
+          "id": "DA63CDCCBB654870B291EBA9A5FFBBA9",
+          "keyedName": "Field Types"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Variable",
+          "id": "968471EC23804034A3B7B2B5C78601E7",
+          "keyedName": "CAD Angular Units"
+        },
+        {
+          "type": "Variable",
+          "id": "A41D0BAAF61B4427BAE59D3879DB5FF6",
+          "keyedName": "CAD Length Units"
+        },
+        {
+          "type": "Variable",
+          "id": "ED8C1F0C5721435A9CA1D8FADB30A168",
+          "keyedName": "CAD Transformation Matrix Format"
+        },
+        {
+          "type": "Variable",
+          "id": "049573909D3D49FD81E0C2AEA1CDD62C",
+          "keyedName": "PE_Impact_Matrix_expand"
+        },
+        {
+          "type": "Variable",
+          "id": "679408C1EFE845AFA526D3897B42DBFF",
+          "keyedName": "Product Engineering"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "rules": [
+    "EXP-551",
+    "EXP-552",
+    "EXP-553",
+    "EXP-554",
+    "EXP-558",
+    "EXP-508"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 37,
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "e55-lists-no-package-pair",
+  "engine": "14.35",
+  "catalogue": [
+    "E54",
+    "E55"
+  ],
+  "title": "Lists: two items in no package under one package (True/False, Yes/No)",
+  "exercises": "The same pair of cases as e54-list-no-package, with a second item to show item ordering within one package.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "F8CDB96400C445879DA9E6FCA53889A2",
+          "keyedName": "True/False"
+        },
+        {
+          "type": "List",
+          "id": "9FEC936F59F14FECAA3621F726FBAAF2",
+          "keyedName": "Yes/No"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 19,
+    "error": null
+  }
+}

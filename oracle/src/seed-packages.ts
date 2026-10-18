@@ -620,3 +620,104 @@ export const specialIds = {
   cmfItemType: baseId(CMF.itemType),
 } as const;
 
+
+// ---------------------------------------------------------------------------
+// S10 LANG: a scratch ItemType whose labels and one ml_string Property carry
+// translations, with instances that translate the Property. The language-
+// resource export modes of 14.35 (ticket 57) ask for translated values, and
+// dev holds none of its own, so the seed brings them. It needs the Languages
+// `de` and `fr` installed on the server; the server drops an `xml:lang` it
+// does not know.
+// ---------------------------------------------------------------------------
+
+export const LANG = {
+  name: "LIBSJS-SCRATCH-LANG",
+  instancesName: "LIBSJS-SCRATCH-LANGINST",
+  perm: "ML_Perm",
+  itemType: "LIBSJS_SCRATCH_ML",
+  /** Translated into `de` and `fr`. */
+  all: "LIBSJS-SCRATCH-ML_All",
+  /** Translated into `de` only. */
+  german: "LIBSJS-SCRATCH-ML_De",
+  /** The default language only. */
+  plain: "LIBSJS-SCRATCH-ML_En",
+} as const;
+
+const l = (name: string) => sid(`LANG:${name}`);
+
+/** The id the S10 instance files give an item. */
+export const langId = l;
+
+/** The ItemType's own id (the same as `itemTypeFile` gives it). */
+export const langItemTypeId = (): string => baseId(LANG.itemType);
+
+/**
+ * Adds `de` and `fr` siblings after the English element that carries `text`.
+ * A translated value is an `i18n:` element with `xml:lang`, the form the
+ * export writes (LP-143) and the server stores.
+ */
+function translated(content: string, text: string, de: string, fr: string): string {
+  const en = new RegExp(`^([ \\t]*)<label xml:lang="en">${text}</label>$`, "m");
+  if (!en.test(content)) throw new Error(`no English label ${text}`);
+  return content.replace(en, (line, indent: string) => [line, `${indent}<i18n:label xml:lang="de">${de}</i18n:label>`, `${indent}<i18n:label xml:lang="fr">${fr}</i18n:label>`].join("\n"));
+}
+
+const I18N = 'xmlns:i18n="http://www.aras.com/I18N"';
+
+/** The ItemType, with `de` and `fr` labels on it and on its two translatable Properties. */
+export function lang(): ScratchPackage {
+  const permId = baseId(LANG.perm);
+  const permName = `LIBSJS-SCRATCH-${LANG.perm}`;
+  const itemType = itemTypeFile(LANG.itemType, {
+    body: [
+      defaultPermission(LANG.itemType, LANG.perm),
+      canAdd(LANG.itemType),
+      keyedName(LANG.itemType),
+      property(LANG.itemType, "title", 128, [], "ml_string"),
+      property(LANG.itemType, "summary", 192, [], "ml_string"),
+    ],
+  });
+  let content = itemType.content as string;
+  content = translated(content, LANG.itemType, "Skratch-Typ", "Type de test");
+  content = translated(content, "title", "Titel", "Titre");
+  content = translated(content, "summary", "Zusammenfassung", "Resume");
+  content = content.replace('<Item type="ItemType"', `<Item type="ItemType" ${I18N}`);
+  return {
+    name: LANG.name,
+    files: [
+      aml(
+        "Permission",
+        `${permName}.xml`,
+        item("Permission", permId, "add", [
+          "<is_private>0</is_private>",
+          `<name>${permName}</name>`,
+          "<Relationships>",
+          worldAccess(LANG.perm, permId, 256, false),
+          worldAccess(LANG.perm, permId, 128, true),
+          "</Relationships>",
+        ]),
+      ),
+      { ...itemType, content },
+    ],
+  };
+}
+
+/** Three instances, imported in a second run (see `xpropInstances`): translated twice, once, and not at all. */
+export function langInstances(): ScratchPackage {
+  const instance = (name: string, titles: string[], summaries: string[]): PackageFile =>
+    aml(
+      LANG.itemType,
+      `${name}.xml`,
+      item(LANG.itemType, l(name), "add", [`<name>${name}</name>`, ...titles, ...summaries], I18N),
+    );
+  const t = (lang: string, text: string) => (lang === "en" ? `<title xml:lang="en">${text}</title>` : `<i18n:title xml:lang="${lang}">${text}</i18n:title>`);
+  const s = (lang: string, text: string) => (lang === "en" ? `<summary xml:lang="en">${text}</summary>` : `<i18n:summary xml:lang="${lang}">${text}</i18n:summary>`);
+  return {
+    name: LANG.instancesName,
+    files: [
+      instance(LANG.all, [t("en", "All three"), t("de", "Alle drei"), t("fr", "Les trois")], [s("en", "English summary"), s("de", "Deutsche Zusammenfassung"), s("fr", "Resume francais")]),
+      instance(LANG.german, [t("en", "German too"), t("de", "Auch deutsch")], [s("en", "Only two")]),
+      instance(LANG.plain, [t("en", "English only")], []),
+    ],
+  };
+}

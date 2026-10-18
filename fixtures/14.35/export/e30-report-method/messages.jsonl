@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":18,"ticks":825595198924,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":18,"ticks":825595240522,"channel":"status","text":"Item 1 of 1: Report - BOM Costing Report","answer":null}
+{"event":21,"seq":3,"thread":18,"ticks":825597876356,"channel":"status","text":"completed","answer":null}
+{"event":22,"seq":4,"thread":18,"ticks":825597877025,"channel":"currentPackage","text":"","answer":null}

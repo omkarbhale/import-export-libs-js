@@ -1,0 +1,45 @@
+{
+  "engine": "14.35",
+  "command": "export",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "LIBSJS-SCRATCH-ABSENT\tGrid\t4B9FF34674E34677B877FC8F71B5CDBE\tHistory_whereTemplateUsed"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:25:11.506Z",
+  "finishedAt": "2026-10-18T22:25:13.930Z",
+  "hostExit": 2,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 8,
+    "messages": 0,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 0,
+    "result": null,
+    "error": "Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\">\r\n  <name>LIBSJS-SCRATCH-ABSENT</name>\r\n  <is_current>1</is_current>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type PackageDefinition found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type PackageDefinition found.]]></af:legacy_detail>\r\n        <af:legacy_faultstring><![CDATA[No items of type 'PackageDefinition' found using the criteria: \r\n<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>LIBSJS-SCRATCH-ABSENT</name><is_current>1</is_current></Item>\r\n]]></af:legacy_faultstring>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.applyAML(String aml)\r\n   at Aras.Tools.SolutionUpgrade.PackageDefinitionManager.InitSolution(Boolean bCreate)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ExportSolutions(SUExportContext exportContext, Hashtable selItemsTable)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  },
+  "scrubbed": {}
+}

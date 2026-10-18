@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":826241212590,"channel":"currentPackage","text":"Exporting package com.steepgraph.powerplay","answer":null}
+{"event":10,"seq":2,"thread":5,"ticks":826241230054,"channel":"status","text":"Item 1 of 1: CommandBarButton - sg_powerplay_relationshipgrid","answer":null}
+{"event":20,"seq":3,"thread":16,"ticks":826244430968,"channel":"status","text":"completed","answer":null}
+{"event":21,"seq":4,"thread":16,"ticks":826244431499,"channel":"currentPackage","text":"","answer":null}

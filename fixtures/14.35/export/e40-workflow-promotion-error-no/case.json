@@ -1,0 +1,41 @@
+{
+  "id": "e40-workflow-promotion-error-no",
+  "engine": "14.35",
+  "catalogue": [
+    "E40",
+    "ErrorQuestion"
+  ],
+  "title": "Workflow Promotion (absent on 12 SP9): server fault, ErrorQuestion answered no",
+  "exercises": "12 SP9 has no Workflow Promotion ItemType, so a dummy id pins the levels-1 request shape and the failure path: the type lookup finds no ItemType, the engine reports 'Error of exporting Item' and asks the ErrorQuestion, answered no (abort the package). A second package is in the run. The success branch stays covered by the spec and a unit test.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Workflow Promotion",
+          "id": "00000000000000000000000000000001",
+          "keyedName": "Nope Promotion"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "errorQuestionAnswer": "no"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 32,
+    "error": null
+  }
+}

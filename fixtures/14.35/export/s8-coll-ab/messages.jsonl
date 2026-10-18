@@ -1,0 +1,7 @@
+{"event":9,"seq":1,"thread":16,"ticks":819449333144,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-A.Coll","answer":null}
+{"event":10,"seq":2,"thread":10,"ticks":819449398047,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_A","answer":null}
+{"event":18,"seq":3,"thread":16,"ticks":819451351516,"channel":"status","text":"completed","answer":null}
+{"event":20,"seq":4,"thread":16,"ticks":819451573296,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-B.Coll","answer":null}
+{"event":21,"seq":5,"thread":16,"ticks":819451574984,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_B","answer":null}
+{"event":23,"seq":6,"thread":16,"ticks":819451765219,"channel":"status","text":"completed","answer":null}
+{"event":24,"seq":7,"thread":16,"ticks":819451765448,"channel":"currentPackage","text":"","answer":null}

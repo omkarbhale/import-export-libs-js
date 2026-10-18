@@ -1,0 +1,8 @@
+{"event":11,"seq":1,"thread":18,"ticks":827243916198,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cmf","answer":null}
+{"event":12,"seq":2,"thread":18,"ticks":827243927166,"channel":"status","text":"Item 1 of 1: List - cmf_DocumentPropertyDataType","answer":null}
+{"event":22,"seq":3,"thread":18,"ticks":827246548345,"channel":"status","text":"completed","answer":null}
+{"event":25,"seq":4,"thread":18,"ticks":827246938342,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":26,"seq":5,"thread":18,"ticks":827246940122,"channel":"status","text":"Item 1 of 2: List - Configurable Grid Events","answer":null}
+{"event":27,"seq":6,"thread":16,"ticks":827246956280,"channel":"status","text":"Item 1 of 2: List - Categories","answer":null}
+{"event":30,"seq":7,"thread":18,"ticks":827248371478,"channel":"status","text":"completed","answer":null}
+{"event":31,"seq":8,"thread":18,"ticks":827248371784,"channel":"currentPackage","text":"","answer":null}

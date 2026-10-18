@@ -1,0 +1,28 @@
+{
+  "id": "e01-change-controlled-item",
+  "engine": "14.35",
+  "catalogue": [
+    "E01"
+  ],
+  "title": "ItemType: polymorphic and versionable (Change Controlled Item)",
+  "exercises": "Polymorphic and versionable ItemType: the base-ItemType request body, the cmf probe, the Morphae re-emitted as an ItemType edit, the poly-list data_source rewrite, the effective/release/superseded_date Property drop when versionable, and the mode=fix ItemType edit.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "198BF0BCCC364EE29F56434D803D5F1E",
+          "keyedName": "Change Controlled Item"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 40,
+    "error": null
+  }
+}

@@ -1,0 +1,4 @@
+{"event":12,"seq":1,"thread":18,"ticks":827828844254,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cmf","answer":null}
+{"event":13,"seq":2,"thread":18,"ticks":827828849721,"channel":"status","text":"Item 1 of 1: List - cmf_DocumentPropertyDataType","answer":null}
+{"event":26,"seq":3,"thread":18,"ticks":827831253064,"channel":"status","text":"completed","answer":null}
+{"event":27,"seq":4,"thread":18,"ticks":827831253567,"channel":"currentPackage","text":"","answer":null}

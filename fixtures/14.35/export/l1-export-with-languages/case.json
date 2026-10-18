@@ -1,0 +1,38 @@
+{
+  "id": "l1-export-with-languages",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "A plain Export with the list `en`",
+  "exercises": "LP-110: outside the language modes the constructor only runs the installed-language check, and `en` is checked like any other code. The export itself is the plain one.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "languages": [
+      "en"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-110",
+    "LP-114"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "error": null
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "e53-level-1",
+  "engine": "14.35",
+  "catalogue": [
+    "E53"
+  ],
+  "title": "CommandBarSection: sLevel 1",
+  "exercises": "sLevel 1 explicitly.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.i18n",
+      "items": [
+        {
+          "type": "CommandBarSection",
+          "id": "0212985C3E90930D618120D9625E4BB8",
+          "keyedName": "Language_TOC_Content"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "level": "1"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 26,
+    "error": null
+  }
+}

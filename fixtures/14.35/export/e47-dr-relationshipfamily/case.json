@@ -1,0 +1,28 @@
+{
+  "id": "e47-dr-relationshipfamily",
+  "engine": "14.35",
+  "catalogue": [
+    "E47"
+  ],
+  "title": "dr_RelationshipFamily: User Identities (empty implementation_query)",
+  "exercises": "Levels 2; IncludeDrRelationshipAsValue embeds dr_Relationship D54BFC482F8C4FC89E2C44C35479D789. Its implementation_query is empty, so this pins what R10's XDocument.Parse does with empty text. It has no dr_FamilyEventHandler; event_data (R6) needs scratch state.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.derivedrelationships_default",
+      "items": [
+        {
+          "type": "dr_RelationshipFamily",
+          "id": "CB35C14E66EC407F984CD37BF8CF38A0",
+          "keyedName": "DerivedRelationshipFamily"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 30,
+    "error": null
+  }
+}

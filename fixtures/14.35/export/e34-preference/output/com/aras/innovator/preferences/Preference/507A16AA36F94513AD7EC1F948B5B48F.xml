@@ -1,0 +1,24 @@
+﻿<AML>
+ <Item type="Preference" id="507A16AA36F94513AD7EC1F948B5B48F" action="add">
+  <permission_id keyed_name="World preference" type="Permission">E734B425C0F144EB825A5FB1023FEBC1</permission_id>
+  <identity_id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</identity_id>
+  <Relationships>
+   <Item type="Core_GlobalLayout" id="DB4652A5C55D4EB38F39E5C0602CEC48" action="add">
+    <core_append_items>false</core_append_items>
+    <core_debug>false</core_debug>
+    <core_default_download_location>0</core_default_download_location>
+    <core_popupmessage_timeout>0</core_popupmessage_timeout>
+    <core_show_item_properties>true</core_show_item_properties>
+    <core_show_labels>false</core_show_labels>
+    <core_show_scan_button_for_file>0</core_show_scan_button_for_file>
+    <core_structure_layout>9</core_structure_layout>
+    <core_successmessage_type>Popup</core_successmessage_type>
+    <core_tear_off>true</core_tear_off>
+    <core_toc_pinned>0</core_toc_pinned>
+    <core_use_wildcards>true</core_use_wildcards>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="World" type="Preference">507A16AA36F94513AD7EC1F948B5B48F</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

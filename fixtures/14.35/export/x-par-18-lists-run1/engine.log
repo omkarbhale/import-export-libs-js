@@ -1,0 +1,37 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222617-14.35-export-9d6582\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222617-14.35-export-9d6582\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:56:19
+Item id :AEE9D6567EDB45A4A50A669F5B385BD5  keyed_name : Field Positioning   type : List successfully exported
+Item id :972269F295174215AEB67FB24262468D  keyed_name : DBUpgadeStatus   type : List successfully exported
+Item id :F90729D18482477CBB61311F108A3379  keyed_name : DBUpgradeType   type : List successfully exported
+Item id :61E86B1378F64F67B729F9EA0FAB9BED  keyed_name : Grid Events   type : List successfully exported
+Item id :242AA7A17BC14718AA7302912CDE8910  keyed_name : RelationshipType Hide In   type : List successfully exported
+Item id :61C1853DD1A44AAF85A519A6FACF8203  keyed_name : Form View Types   type : List successfully exported
+Item id :DA63CDCCBB654870B291EBA9A5FFBBA9  keyed_name : Field Types   type : List successfully exported
+Item id :0F4DD6406FFB4CAFBB244FA7A4D06D0F  keyed_name : Server Events Version   type : List successfully exported
+Item id :858DCAAD7FF94EDC969A1C3CFA57FA93  keyed_name : Data Types   type : List successfully exported
+Item id :5AD0FB60496647E2862A4323BBAD2F6C  keyed_name : Report Types   type : List successfully exported
+Item id :B65DA95B86694210BBD6490C894C0DA0  keyed_name : ItemType Implementation   type : List successfully exported
+Item id :B6DD3DDC3BD9494185913C6CB274E141  keyed_name : Server Events   type : List successfully exported
+Item id :EAB29654E2CD4D30B376957788198B40  keyed_name : Categories   type : List successfully exported
+Item id :9369CAC90D9942D5B9260EC502593BBE  keyed_name : Method Types   type : List successfully exported
+Item id :80A7E494F7294BCF9AF46A4D980862E4  keyed_name : SQL Item Execution Flags   type : List successfully exported
+Item id :51D8F6076D2E41AAA7D72D6F1B2184D1  keyed_name : Configurable Grid Events   type : List successfully exported
+Item id :6056059D6CCB4E65A6465E1C36D2055D  keyed_name : Field Length Unit   type : List successfully exported
+Item id :4E7C6E40D16145D399C9E7D468E5E28E  keyed_name : Form Events   type : List successfully exported
+end of execution : 10/19/2026 03:56:20

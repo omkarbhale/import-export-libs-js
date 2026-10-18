@@ -1,0 +1,136 @@
+{
+  "id": "s8-coll-ab",
+  "engine": "14.35",
+  "catalogue": [
+    "S8",
+    "P4"
+  ],
+  "title": "Two packages whose names end in the same segment, A.Coll inserted first",
+  "exercises": "CreateOutputDir with two packages that share the last dot-segment (Coll): both map to Coll\\Import, so the folder the second one creates wipes the first one's. Which wins depends on the Hashtable's enumeration order.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-A.Coll",
+      "items": [
+        {
+          "type": "Variable",
+          "keyedName": "LIBSJS-SCRATCH-Coll_A",
+          "id": "B884DA4086B47D93861052CA33041D07"
+        }
+      ]
+    },
+    {
+      "name": "LIBSJS-SCRATCH-B.Coll",
+      "items": [
+        {
+          "type": "Variable",
+          "keyedName": "LIBSJS-SCRATCH-Coll_B",
+          "id": "EB4A3D180B43F8CE6B393C6484D3F650"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 17,
+    "error": null
+  },
+  "seed": {
+    "group": "s8-coll",
+    "steps": [
+      {
+        "name": "import both",
+        "packages": [
+          "LIBSJS-SCRATCH-A.Coll",
+          "LIBSJS-SCRATCH-B.Coll"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "993DBB18D19A4F0FB0B5772039E66A4F"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "9BEEEE7A9F974DAB9E0AFDA71B462DBA"
+          },
+          {
+            "type": "Variable",
+            "id": "B884DA4086B47D93861052CA33041D07"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "AD0DE0ED798A42E3AF1CD2ED07F45B1B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "B0BCE89D9B1C4FC38B4FB49840DF5352"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "F9042B2CDD2343EFA30067698E06913D"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "A4C0916529E8446D8A8F8DD32F8C16AD"
+          },
+          {
+            "type": "Variable",
+            "id": "EB4A3D180B43F8CE6B393C6484D3F650"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "4AFEE68EB19A48DD9CF28F84B93AFA28"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D963B27B2F3B425CAB1F587C87AC58EB"
+          }
+        ]
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "D963B27B2F3B425CAB1F587C87AC58EB"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "4AFEE68EB19A48DD9CF28F84B93AFA28"
+      },
+      {
+        "type": "Variable",
+        "id": "EB4A3D180B43F8CE6B393C6484D3F650"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "A4C0916529E8446D8A8F8DD32F8C16AD"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "F9042B2CDD2343EFA30067698E06913D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "B0BCE89D9B1C4FC38B4FB49840DF5352"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "AD0DE0ED798A42E3AF1CD2ED07F45B1B"
+      },
+      {
+        "type": "Variable",
+        "id": "B884DA4086B47D93861052CA33041D07"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "9BEEEE7A9F974DAB9E0AFDA71B462DBA"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "993DBB18D19A4F0FB0B5772039E66A4F"
+      }
+    ]
+  }
+}

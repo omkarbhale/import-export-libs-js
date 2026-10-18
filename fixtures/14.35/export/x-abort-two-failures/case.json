@@ -1,0 +1,56 @@
+{
+  "id": "x-abort-two-failures",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 abort"
+  ],
+  "title": "Two failing Lists in one package",
+  "exercises": "EXP-572: only the first failure of a run is reported. The second finds the state already cancelled and is dropped without a message or a log line.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "00000000000000000000000000000001",
+          "keyedName": "Nope One"
+        },
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        },
+        {
+          "type": "List",
+          "id": "51D8F6076D2E41AAA7D72D6F1B2184D1",
+          "keyedName": "Configurable Grid Events"
+        },
+        {
+          "type": "List",
+          "id": "858DCAAD7FF94EDC969A1C3CFA57FA93",
+          "keyedName": "Data Types"
+        },
+        {
+          "type": "List",
+          "id": "00000000000000000000000000000002",
+          "keyedName": "Nope Two"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "rules": [
+    "EXP-516",
+    "EXP-555",
+    "EXP-570",
+    "EXP-571",
+    "EXP-572",
+    "EXP-558"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 22,
+    "error": null
+  }
+}

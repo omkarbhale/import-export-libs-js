@@ -52,7 +52,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 
    - `dbpatch <manifest.xml>` (14.35 only) calls `ImportExportManager.ApplyDBUpdateManifest` with a `DBUpdateConfig` built from the manifest, `--patches-folder` (default the manifest's folder) and `--tool-name` (default `Libs`), with `Action = ImportDPPatch` as Aras Update sets it (DBP-002). See "The DB patch command".
 6. **Import steps.** An `import` can act around the recorded run (none of it reaches the transcript):
-   - `--cancel-after-status <n>` presses Cancel (`ImportExportManager.Cancel()`) once the n-th status message has been delivered, which is where the GUI's button acts: the loop reads the flag before its next item.
+   - `--cancel-after-status <n>` presses Cancel (`ImportExportManager.Cancel()`) once the n-th status message has been delivered, which is where the GUI's button acts: the loop reads the flag before its next item. An `export` takes it too (14.35's parallel loop reads the flag at the start of every item, EXP-557).
    - `--lock-upgrade-rows` locks the packages' `DatabaseUpgrade` rows first (the engine's unlock path), `--version-before <type>:<id>,...` gives scratch items a new generation first (the merge's current-generation path). Both refuse anything without a scratch name (step 7) and are made through a connection of their own.
    - `--keep-created` skips the cleanup and reports what the run created as `deferred`; a later run (or `cleanup`) deletes it. This is how a case re-imports what an earlier step imported. The recorder (`oracle:import-cases`) cleans up in a `finally`, so a failed case leaves nothing behind.
 7. **The scratch guard.** Right before `ImportSolutions`, the host checks what the engine is about to get. Every package in the set must be named `LIBSJS-SCRATCH-*`; for `lpimport` that is the temp manifest's package, `--lp-package`. For `import`, so must every item file `LoadPackageDom` reads for those packages (the file name is the keyed name the engine records), and every top-level item's `name`. Aras restricts ItemType, SQL item and other names to word characters (`^[a-zA-Z]\w*$`), so an item `name` (and the cleanup's owner check, below) may also start with `LIBSJS_SCRATCH_`; package names and file names never may. An extended property's name must match `^xp-\w+$` and the server stores it in lower case, so `xp-LIBSJS_SCRATCH_` also counts, compared without regard to case. For `lpimport`, so must the `keyed_name` of every item in the language pack's `xml/` folder. An empty package set is refused too. Before anything is staged, the WSL side checks the package names the same way. The guard checks names only (see Rules).
@@ -60,7 +60,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 
 ## Export fixture cases
 
-`npm run oracle:export-cases` records ticket 05's 14.0.7 export catalogue (`src/export-cases.ts`) into `fixtures/14.0.7/export/<case>/`, one oracle export per case, read-only on dev. `--only <id>,…` picks cases, `--force` re-records, `--list` shows what is recorded, `--readme-only` rewrites the READMEs and index from the case list without running the engine. Each case lists its packages and items in the order the host inserts them into the engine's `Hashtable`; the multi-package ordering cases (`p1-*`) rely on that. The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
+`npm run oracle:export-cases` records ticket 05's 14.0.7 export catalogue (`src/export-cases.ts`) into `fixtures/14.0.7/export/<case>/`, one oracle export per case, read-only on dev. `--engine 14.35` records the same catalogue and the cases of the `[14.35]` export rules (`src/export-cases-1435.ts`: the request tree and its level, the first failure that stops the export, a cancel through `--cancel-after-status`, parallel runs, and the language modes on a server with `en` only) into `fixtures/14.35/export/<case>/`. 14.35 exports a package's items in parallel, so the cases whose outcome depends on timing exist three times (`-run1` to `-run3`) and their logs compare as sets (EXP-558). `--only <id>,…` picks cases, `--force` re-records, `--list` shows what is recorded, `--readme-only` rewrites the READMEs and index from the case list without running the engine. Each case lists its packages and items in the order the host inserts them into the engine's `Hashtable`; the multi-package ordering cases (`p1-*`) rely on that. The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
 
 `--engine 12.0` records the same catalogue from engine 12.0 into `fixtures/12.0/export/` (ticket 48); `fixtures/12.0/README.md` maps the 12.0 variant rules to cases. The same flag works for `oracle:export-scratch-cases` and `oracle:import-cases`.
 
@@ -84,9 +84,9 @@ ARAS_PASSWORD=… npm run oracle -- --engine 14.35 dbpatch oracle/dbpatch/manife
 
 ## Scratch-seeded export cases
 
-`npm run oracle:export-scratch-cases` records the export cases whose items do not exist on dev (ticket 67, ticket 05's "24b" pass) into `fixtures/14.0.7/export/<case>/`, in the same layout as `oracle:export-cases` plus a `seed` record in `case.json` and a "Seed" section in the README. `--only <case or group>,…`, `--force`, `--list` and `--readme-only` work as there. It writes to dev, but only `LIBSJS-SCRATCH-*` packages and items, and deletes everything it created, even when a step fails.
+`npm run oracle:export-scratch-cases` records the export cases whose items do not exist on dev (ticket 67, ticket 05's "24b" pass) into `fixtures/14.0.7/export/<case>/` (`--engine 14.35` repeats the groups below for 14.35 into `fixtures/14.35/export/`, and adds the `lang-ml` group, which needs the Languages `de` and `fr` on dev: see "Language state" below), in the same layout as `oracle:export-cases` plus a `seed` record in `case.json` and a "Seed" section in the README. `--only <case or group>,…`, `--force`, `--list` and `--readme-only` work as there. It writes to dev, but only `LIBSJS-SCRATCH-*` packages and items, and deletes everything it created, even when a step fails.
 
-**The recipe** (the same for any engine; ticket 48 ran it for 12.0 with `--engine 12.0`, and ticket 57 repeats it for 14.35 by adding 14.35 to `CASE_ENGINES` in `src/case-engine.ts`, and to the case list where an engine differs):
+**The recipe** (the same for any engine; ticket 48 ran it for 12.0 with `--engine 12.0`, and ticket 57 repeats it for 14.35 with `--engine 14.35`, which `EXPORT_ENGINES` in `src/case-engine.ts` allows, and with `src/export-cases-1435.ts` where an engine differs):
 
 1. **Import.** A seed group (`SEED_GROUPS` in `src/export-scratch-cases.ts`) lists import steps. Each is one oracle `import` of scratch packages built by `src/seed-packages.ts` (and `src/import-packages.ts` for S2 and S8), run with `--keep-created`, so the next step finds what it made. Every step must end as its `expect` says. A step that needs what an earlier one made, because the server looks it up when the item is added, is a step of its own.
 2. **Export.** Each case of the group is one read-only oracle `export` of the seeded items, named by type, id and keyed name. The id is the one the package file gives the item, except for a versionable item, which the server gives a new id on import: `{ created: n }` names the n-th created item of that type.
@@ -100,6 +100,7 @@ The password arrives through `ARAS_PASSWORD` or stdin. A case README lists the i
 | `s8-coll` | S8: two packages whose names end in `.Coll` | `s8-coll-ab`, `s8-coll-ba` |
 | `s7-xprop` | S7: a scratch ItemType in a classification tree whose class holds two extended properties; classified and unclassified instances | `s7-xp-values`, `s7-xp-empty` |
 | `s6-special` | S6: an mp_MacPolicy with two `filter_xml`; a derived relationship family with a dr_Relationship and an event handler with `event_data`; an ItemType with a cmf_ContentType; an ac_PolicyAccessItemAttribute; a dac_DomainDefinition; a cmf_TabularView | `s6-mac-two-filters`, `s6-dr-family`, `s6-ac-attribute`, `s6-dac-domain`, `s6-cmf-content-type`, `s6-cmf-itemtype`, `s6-cmf-tabular-view` |
+| `lang-ml` (14.35) | S10: a scratch ItemType `LIBSJS_SCRATCH_ML` whose labels and two `ml_string` Properties are translated into `de` and `fr`, and three instances translated twice, once and not at all | `lang-only-*`, `lang-meta-*`, `lang-both-packages-only-star`, `lang-export-de-instances`, `lang-only-upper-case-code` |
 
 What the server taught the seeds (each is a failure the first import hit):
 - An extended property's name must match `^xp-\w+$` and is stored in lower case, which the scratch guard allows (`xp-LIBSJS_SCRATCH_`, compared without regard to case). Its value applies to an item only through a class of an xClassificationTree bound to the item's ItemType; binding the property to the ItemType alone stores nothing. The classification tree, the ItemType's `_xClass` relationship type and the Morphae row the server adds are removed by deleting the tree and the ItemType.
@@ -109,6 +110,16 @@ What the server taught the seeds (each is a failure the first import hit):
 - A cmf_ContentType makes the server generate an ItemType for each element and property type, named after them (`LIBSJS_SCRATCH_*`), and deleting the content type removes them.
 
 `--engine 12.0` records the same groups from engine 12.0 into `fixtures/12.0/export/` (ticket 48), seeding with the 12.0 oracle.
+
+### Language state
+
+The 14.35 language-resource export modes (LP-100 and on) return translated values only when the server has more than `en`. Dev has `en` only, so the `lang-ml` group runs between two writes that the recorder does not make:
+
+1. **Add the Languages** (once per code, each add takes longer than 30 s because the server adds a `LABEL_<code>` column to every table with a multilingual property): the first AML of `fixtures/14.0.7/language-pack/setup.aml`.
+2. **Record**: `ARAS_PASSWORD=… npm run oracle:export-scratch-cases -- --engine 14.35 --only lang-ml`. It imports the S10 packages, exports, and deletes everything it created.
+3. **Delete the Languages** by id, and check that dev has `en` only again.
+
+The cases that need no translations (`l1-*` of `npm run oracle:export-cases -- --engine 14.35`) were recorded with `en` only, and say so in their README.
 
 ## The XSL probe
 

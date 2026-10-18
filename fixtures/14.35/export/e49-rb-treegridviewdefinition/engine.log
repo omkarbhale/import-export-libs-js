@@ -1,0 +1,20 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T223435-14.35-export-564bb3\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T223435-14.35-export-564bb3\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.solution.PLM****
+start of execution : 10/19/2026 04:04:37
+Item id :005102D88C68467C9378686CCF08AC3D  keyed_name : PE_BomStructure   type : rb_TreeGridViewDefinition successfully exported
+end of execution : 10/19/2026 04:04:38

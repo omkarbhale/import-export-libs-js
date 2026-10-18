@@ -1,0 +1,28 @@
+{
+  "id": "e21-workflow-map-system-owner",
+  "engine": "14.35",
+  "catalogue": [
+    "E21"
+  ],
+  "title": "Workflow Map: system process_owner (PE_Deviation)",
+  "exercises": "process_owner is Creator, a system identity, so it becomes an Item type=Identity action=get by name.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Workflow Map",
+          "id": "3473F755D9D74B33BFF93D32164FABB7",
+          "keyedName": "PE_Deviation"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 65,
+    "error": null
+  }
+}

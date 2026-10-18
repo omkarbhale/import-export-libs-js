@@ -1,0 +1,28 @@
+{
+  "id": "e39-usermessage",
+  "engine": "14.35",
+  "catalogue": [
+    "E39"
+  ],
+  "title": "UserMessage: levels 1 (effs_ItemTypeWithOtherName)",
+  "exercises": "Levels 1.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.effectivityservices",
+      "items": [
+        {
+          "type": "UserMessage",
+          "id": "04BBDF47D751496490568B771E204F4B",
+          "keyedName": "effs_ItemTypeWithOtherName"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 18,
+    "error": null
+  }
+}

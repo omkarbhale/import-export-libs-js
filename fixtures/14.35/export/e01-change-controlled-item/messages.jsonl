@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":18,"ticks":823663805194,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":18,"ticks":823663839948,"channel":"status","text":"Item 1 of 1: ItemType - Change Controlled Item","answer":null}
+{"event":43,"seq":3,"thread":18,"ticks":823678278051,"channel":"status","text":"completed","answer":null}
+{"event":44,"seq":4,"thread":18,"ticks":823678278931,"channel":"currentPackage","text":"","answer":null}

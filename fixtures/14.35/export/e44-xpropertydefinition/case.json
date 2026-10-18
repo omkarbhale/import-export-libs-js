@@ -1,0 +1,28 @@
+{
+  "id": "e44-xpropertydefinition",
+  "engine": "14.35",
+  "catalogue": [
+    "E44"
+  ],
+  "title": "xPropertyDefinition: xp-es_batch_size (default-type branch)",
+  "exercises": "The default-type branch (sLevel plus the xp select). The xp-* values on items (ProcessXProperties, the set= attribute) cannot be exercised on dev; ticket 67 records them.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.es",
+      "items": [
+        {
+          "type": "xPropertyDefinition",
+          "id": "46C0E4FFB0A94E379DFAE0C69B32F3A0",
+          "keyedName": "xp-es_batch_size"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "error": null
+  }
+}

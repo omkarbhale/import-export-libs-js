@@ -1,0 +1,39 @@
+{
+  "id": "l1-meta-not-installed",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportMetadataWithLanguageResources with `de` on a server that lacks it",
+  "exercises": "LP-114 in the other mode: the same refusal.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportMetadataWithLanguageResources",
+    "languages": [
+      "de"
+    ]
+  },
+  "expectsError": true,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-114",
+    "LP-115"
+  ],
+  "result": {
+    "hostExit": 2,
+    "calls": 8,
+    "error": "Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ThrowIfNoSelectedLanguagesInDatabase(String[] languages)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  }
+}

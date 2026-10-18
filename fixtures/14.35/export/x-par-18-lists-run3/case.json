@@ -1,0 +1,120 @@
+{
+  "id": "x-par-18-lists-run3",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 parallel"
+  ],
+  "title": "Eighteen Lists of one package (run 3 of 3)",
+  "exercises": "EXP-551 to EXP-554: the items of a package run concurrently. The log's success lines, the 'Item {i} of 18' texts and the order of the finished items are not fixed; the manifest, the header and the files are.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        },
+        {
+          "type": "List",
+          "id": "51D8F6076D2E41AAA7D72D6F1B2184D1",
+          "keyedName": "Configurable Grid Events"
+        },
+        {
+          "type": "List",
+          "id": "858DCAAD7FF94EDC969A1C3CFA57FA93",
+          "keyedName": "Data Types"
+        },
+        {
+          "type": "List",
+          "id": "972269F295174215AEB67FB24262468D",
+          "keyedName": "DBUpgadeStatus"
+        },
+        {
+          "type": "List",
+          "id": "F90729D18482477CBB61311F108A3379",
+          "keyedName": "DBUpgradeType"
+        },
+        {
+          "type": "List",
+          "id": "6056059D6CCB4E65A6465E1C36D2055D",
+          "keyedName": "Field Length Unit"
+        },
+        {
+          "type": "List",
+          "id": "AEE9D6567EDB45A4A50A669F5B385BD5",
+          "keyedName": "Field Positioning"
+        },
+        {
+          "type": "List",
+          "id": "DA63CDCCBB654870B291EBA9A5FFBBA9",
+          "keyedName": "Field Types"
+        },
+        {
+          "type": "List",
+          "id": "4E7C6E40D16145D399C9E7D468E5E28E",
+          "keyedName": "Form Events"
+        },
+        {
+          "type": "List",
+          "id": "61C1853DD1A44AAF85A519A6FACF8203",
+          "keyedName": "Form View Types"
+        },
+        {
+          "type": "List",
+          "id": "61E86B1378F64F67B729F9EA0FAB9BED",
+          "keyedName": "Grid Events"
+        },
+        {
+          "type": "List",
+          "id": "B65DA95B86694210BBD6490C894C0DA0",
+          "keyedName": "ItemType Implementation"
+        },
+        {
+          "type": "List",
+          "id": "9369CAC90D9942D5B9260EC502593BBE",
+          "keyedName": "Method Types"
+        },
+        {
+          "type": "List",
+          "id": "242AA7A17BC14718AA7302912CDE8910",
+          "keyedName": "RelationshipType Hide In"
+        },
+        {
+          "type": "List",
+          "id": "5AD0FB60496647E2862A4323BBAD2F6C",
+          "keyedName": "Report Types"
+        },
+        {
+          "type": "List",
+          "id": "0F4DD6406FFB4CAFBB244FA7A4D06D0F",
+          "keyedName": "Server Events Version"
+        },
+        {
+          "type": "List",
+          "id": "B6DD3DDC3BD9494185913C6CB274E141",
+          "keyedName": "Server Events"
+        },
+        {
+          "type": "List",
+          "id": "80A7E494F7294BCF9AF46A4D980862E4",
+          "keyedName": "SQL Item Execution Flags"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "rules": [
+    "EXP-551",
+    "EXP-552",
+    "EXP-553",
+    "EXP-554",
+    "EXP-558"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 37,
+    "error": null
+  }
+}

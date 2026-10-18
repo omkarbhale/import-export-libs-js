@@ -1,0 +1,18 @@
+{"event":10,"seq":1,"thread":16,"ticks":827559866101,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":10,"ticks":827559876439,"channel":"status","text":"Item 1 of 18: List - Field Types","answer":null}
+{"event":12,"seq":3,"thread":4,"ticks":827559877300,"channel":"status","text":"Item 1 of 18: List - RelationshipType Hide In","answer":null}
+{"event":13,"seq":4,"thread":11,"ticks":827559878400,"channel":"status","text":"Item 1 of 18: List - Form View Types","answer":null}
+{"event":14,"seq":5,"thread":6,"ticks":827559879043,"channel":"status","text":"Item 1 of 18: List - ItemType Implementation","answer":null}
+{"event":15,"seq":6,"thread":16,"ticks":827559895102,"channel":"status","text":"Item 1 of 18: List - Server Events","answer":null}
+{"event":16,"seq":7,"thread":14,"ticks":827559895949,"channel":"status","text":"Item 1 of 18: List - Field Positioning","answer":null}
+{"event":17,"seq":8,"thread":3,"ticks":827559896970,"channel":"status","text":"Item 1 of 18: List - Report Types","answer":null}
+{"event":18,"seq":9,"thread":13,"ticks":827559898281,"channel":"status","text":"Item 1 of 18: List - Data Types","answer":null}
+{"event":19,"seq":10,"thread":15,"ticks":827559898448,"channel":"status","text":"Item 1 of 18: List - Server Events Version","answer":null}
+{"event":20,"seq":11,"thread":5,"ticks":827559898829,"channel":"status","text":"Item 1 of 18: List - DBUpgradeType","answer":null}
+{"event":21,"seq":12,"thread":24,"ticks":827559900931,"channel":"status","text":"Item 1 of 18: List - Categories","answer":null}
+{"event":22,"seq":13,"thread":21,"ticks":827559903124,"channel":"status","text":"Item 1 of 18: List - DBUpgadeStatus","answer":null}
+{"event":23,"seq":14,"thread":22,"ticks":827559904601,"channel":"status","text":"Item 1 of 18: List - Grid Events","answer":null}
+{"event":24,"seq":15,"thread":23,"ticks":827559913702,"channel":"status","text":"Item 1 of 18: List - Method Types","answer":null}
+{"event":48,"seq":16,"thread":21,"ticks":827562515977,"channel":"status","text":"Export was canceled by user","answer":null}
+{"event":49,"seq":17,"thread":12,"ticks":827562516421,"channel":"status","text":"Export was canceled by user","answer":null}
+{"event":51,"seq":18,"thread":16,"ticks":827562601955,"channel":"currentPackage","text":"","answer":null}

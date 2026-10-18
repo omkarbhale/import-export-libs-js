@@ -1,0 +1,30 @@
+{
+  "id": "opt-timeout-default",
+  "engine": "14.35",
+  "catalogue": [
+    "Timeout"
+  ],
+  "title": "Option: Timeout at the host default",
+  "exercises": "The host's own default of 600000 ms; the catalogue expects the timeout to be recorded only.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "timeout": 600000
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 27,
+    "error": null
+  }
+}

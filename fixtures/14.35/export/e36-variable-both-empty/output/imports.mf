@@ -1,0 +1,8 @@
+<imports>
+  <package name="com.aras.innovator.es" path=".\">
+    <dependson name="com.aras.innovator.core" />
+    <dependson name="com.aras.innovator.extendedclassification" />
+    <dependson name="com.aras.innovator.preferences" />
+    <dependson name="com.aras.innovator.cui_default" />
+  </package>
+</imports>

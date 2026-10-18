@@ -1,0 +1,14 @@
+﻿<AML>
+ <Item type="List" id="ADFEE419D8DB444BF5EDED7C490E4BA2" action="add">
+  <name>LIBSJS-SCRATCH-REFDEP-List_1</name>
+  <Relationships>
+   <Item type="Value" id="EE13636B6134363136CCB6E37072845B" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">Dep</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-REFDEP-List_1" type="List">ADFEE419D8DB444BF5EDED7C490E4BA2</source_id>
+    <value>dep</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

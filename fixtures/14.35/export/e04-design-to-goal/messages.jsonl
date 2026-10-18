@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":823790388489,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":823790398151,"channel":"status","text":"Item 1 of 1: ItemType - Design To Goal","answer":null}
+{"event":32,"seq":3,"thread":16,"ticks":823794613569,"channel":"status","text":"completed","answer":null}
+{"event":33,"seq":4,"thread":16,"ticks":823794613952,"channel":"currentPackage","text":"","answer":null}

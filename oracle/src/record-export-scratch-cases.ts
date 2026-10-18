@@ -3,10 +3,10 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { CASE_ENGINES, DEFAULT_CASE_ENGINE, blobsDir, casesDir, isCaseEngine, type CaseEngine } from "./case-engine.js";
+import { DEFAULT_CASE_ENGINE, EXPORT_ENGINES, blobsDir, casesDir, isExportEngine, type ExportEngine } from "./case-engine.js";
 import { readPassword } from "./cli.js";
 import { hostItems, hostOptions } from "./export-cases.js";
-import { SCRATCH_EXPORT_CASES, SEED_GROUPS, resolveCase, type ResolvedCase, type SeedGroup, type SeedRecord } from "./export-scratch-cases.js";
+import { SCRATCH_EXPORT_CASES, SCRATCH_EXPORT_CASES_1435, SEED_GROUPS, SEED_GROUPS_1435, resolveCase, type ResolvedCase, type SeedGroup, type SeedRecord } from "./export-scratch-cases.js";
 import { hostOptions as importHostOptions } from "./import-cases.js";
 import { writePackages } from "./import-packages.js";
 import { caseFile, caseReadme, indexReadme, pruneBlobs, recordedCases } from "./record-export-cases.js";
@@ -15,9 +15,9 @@ import { DEV_SERVER, record, type CleanupReport, type ItemRef } from "./record.j
 import { externalizeLargeResponses } from "./transcript.js";
 
 
-const USAGE = `Usage: npm run oracle:export-scratch-cases -- [--engine 14.0.7|12.0] [--only <case or group>,...] [--force] [--list] [--readme-only]
+const USAGE = `Usage: npm run oracle:export-scratch-cases -- [--engine 14.0.7|12.0|14.35] [--only <case or group>,...] [--force] [--list] [--readme-only]
 
-Records the export cases that need scratch state on dev (tickets 67 and 48) into
+Records the export cases that need scratch state on dev (tickets 67, 48 and 57) into
 fixtures/<engine>/export/<case>/ (default engine 14.0.7). For each seed group: import its LIBSJS-SCRATCH-*
 packages, export each case (read-only), then delete everything the import
 created, even when a step failed. A case that is already recorded is skipped
@@ -28,7 +28,7 @@ without running the engine.
 
 const priorLines = (created: readonly ItemRef[]): string[] => created.map((c) => [c.type, c.id, c.unconfirmed === true ? "1" : "0"].join("\t"));
 
-const common = (engine: CaseEngine, password: string) => ({
+const common = (engine: ExportEngine, password: string) => ({
   engine,
   url: DEV_SERVER.url,
   database: DEV_SERVER.database,
@@ -49,7 +49,7 @@ interface GroupRecorded {
 }
 
 /** Runs one group into `work`. Null when something did not go as expected; the created items are deleted either way. */
-async function runGroup(engine: CaseEngine, group: SeedGroup, chosen: ReadonlySet<string>, password: string, work: string): Promise<GroupRecorded | null> {
+async function runGroup(engine: ExportEngine, group: SeedGroup, chosen: ReadonlySet<string>, password: string, work: string): Promise<GroupRecorded | null> {
   const created: ItemRef[] = [];
   const steps: SeedRecord["steps"] = [];
   const cases: GroupRecorded["cases"] = [];
@@ -102,7 +102,7 @@ async function runGroup(engine: CaseEngine, group: SeedGroup, chosen: ReadonlySe
           problem = `${c.id}: credential-shaped text survived scrubbing: ${result.remainingSecrets.join(", ")}`;
           break;
         }
-        if (result.hostExit !== 0 || result.error !== null) {
+        if (c.expectsError === true ? result.error === null : result.hostExit !== 0 || result.error !== null) {
           problem = `${c.id}: the export failed (host exit ${result.hostExit}, error ${result.error?.split("\n")[0] ?? "none"})`;
           break;
         }
@@ -135,7 +135,7 @@ async function runGroup(engine: CaseEngine, group: SeedGroup, chosen: ReadonlySe
   return { seed: { group: group.id, steps, deleted }, cases };
 }
 
-function install(engine: CaseEngine, recorded: GroupRecorded): void {
+function install(engine: ExportEngine, recorded: GroupRecorded): void {
   const dir = casesDir(engine, "export");
   mkdirSync(dir, { recursive: true });
   for (const c of recorded.cases) {
@@ -160,14 +160,16 @@ async function main(argv: readonly string[]): Promise<number> {
     return 0;
   }
   const engine = values.engine ?? DEFAULT_CASE_ENGINE;
-  if (!isCaseEngine(engine)) {
-    process.stderr.write(`unknown engine: ${engine} (${CASE_ENGINES.join(", ")})\n`);
+  if (!isExportEngine(engine)) {
+    process.stderr.write(`unknown engine: ${engine} (${EXPORT_ENGINES.join(", ")})\n`);
     return 64;
   }
+  const groups = engine === "14.35" ? SEED_GROUPS_1435 : SEED_GROUPS;
+  const allCases = engine === "14.35" ? SCRATCH_EXPORT_CASES_1435 : SCRATCH_EXPORT_CASES;
   const dir = casesDir(engine, "export");
   const only = values.only === undefined ? null : new Set(values.only.split(",").map((s) => s.trim()));
   if (only !== null) {
-    const known = new Set([...SEED_GROUPS.map((g) => g.id), ...SCRATCH_EXPORT_CASES.map((c) => c.id)]);
+    const known = new Set([...groups.map((g) => g.id), ...allCases.map((c) => c.id)]);
     const unknown = [...only].filter((id) => !known.has(id));
     if (unknown.length > 0) {
       process.stderr.write(`unknown case or group: ${unknown.join(", ")}\n`);
@@ -178,14 +180,14 @@ async function main(argv: readonly string[]): Promise<number> {
   const recordedFile = (id: string) => join(dir, id, "case.json");
 
   if (values.list === true) {
-    for (const g of SEED_GROUPS) {
+    for (const g of groups) {
       for (const c of g.cases.filter((x) => selected(g.id, x.id))) process.stdout.write(`${g.id}/${c.id}${existsSync(recordedFile(c.id)) ? "" : "  (not recorded)"}\n`);
     }
     return 0;
   }
 
   if (values["readme-only"] === true) {
-    for (const g of SEED_GROUPS) {
+    for (const g of groups) {
       for (const c of g.cases.filter((x) => selected(g.id, x.id))) {
         if (!existsSync(recordedFile(c.id))) continue;
         const old = JSON.parse(readFileSync(recordedFile(c.id), "utf8")) as ReturnType<typeof caseFile>;
@@ -204,7 +206,7 @@ async function main(argv: readonly string[]): Promise<number> {
   const work = mkdtempSync(join(tmpdir(), "libsjs-export-scratch-"));
   const failures: string[] = [];
   try {
-    for (const g of SEED_GROUPS) {
+    for (const g of groups) {
       const todo = g.cases.filter((c) => selected(g.id, c.id) && (values.force === true || !existsSync(recordedFile(c.id))));
       if (todo.length === 0) {
         process.stdout.write(`${g.id}: already recorded\n`);

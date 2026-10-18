@@ -1,0 +1,62 @@
+{
+  "engine": "14.35",
+  "command": "export",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "com.aras.innovator.core\tList\tEAB29654E2CD4D30B376957788198B40\tCategories",
+      "com.aras.innovator.core\tList\t51D8F6076D2E41AAA7D72D6F1B2184D1\tConfigurable Grid Events",
+      "com.aras.innovator.core\tList\t858DCAAD7FF94EDC969A1C3CFA57FA93\tData Types",
+      "com.aras.innovator.core\tList\t972269F295174215AEB67FB24262468D\tDBUpgadeStatus",
+      "com.aras.innovator.core\tList\tF90729D18482477CBB61311F108A3379\tDBUpgradeType",
+      "com.aras.innovator.core\tList\t6056059D6CCB4E65A6465E1C36D2055D\tField Length Unit",
+      "com.aras.innovator.core\tList\tAEE9D6567EDB45A4A50A669F5B385BD5\tField Positioning",
+      "com.aras.innovator.core\tList\tDA63CDCCBB654870B291EBA9A5FFBBA9\tField Types",
+      "com.aras.innovator.core\tList\t4E7C6E40D16145D399C9E7D468E5E28E\tForm Events",
+      "com.aras.innovator.core\tList\t61C1853DD1A44AAF85A519A6FACF8203\tForm View Types",
+      "com.aras.innovator.core\tList\t61E86B1378F64F67B729F9EA0FAB9BED\tGrid Events",
+      "com.aras.innovator.core\tList\tB65DA95B86694210BBD6490C894C0DA0\tItemType Implementation",
+      "com.aras.innovator.core\tList\t9369CAC90D9942D5B9260EC502593BBE\tMethod Types",
+      "com.aras.innovator.core\tList\t242AA7A17BC14718AA7302912CDE8910\tRelationshipType Hide In",
+      "com.aras.innovator.core\tList\t5AD0FB60496647E2862A4323BBAD2F6C\tReport Types",
+      "com.aras.innovator.core\tList\t0F4DD6406FFB4CAFBB244FA7A4D06D0F\tServer Events Version",
+      "com.aras.innovator.core\tList\tB6DD3DDC3BD9494185913C6CB274E141\tServer Events",
+      "com.aras.innovator.core\tList\t80A7E494F7294BCF9AF46A4D980862E4\tSQL Item Execution Flags"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:26:24.410Z",
+  "finishedAt": "2026-10-18T22:26:26.694Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 37,
+    "messages": 21,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "exported",
+    "error": null
+  },
+  "scrubbed": {}
+}

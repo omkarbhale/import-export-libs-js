@@ -32,6 +32,12 @@ export interface ExportCaseOptions {
   verbose?: true;
   timeout?: number;
   errorQuestionAnswer?: "yes" | "no" | "none";
+  /** 14.35 only: the engine's `Context.Action` (the host's default is `Export`). */
+  engineAction?: "Export" | "ExportLanguageResourcesOnly" | "ExportMetadataWithLanguageResources";
+  /** 14.35 only: `Context.Languages` as the host sets it. */
+  languages?: string[];
+  /** 14.35 only: press `ImportExportManager.Cancel()` once this many status messages have been delivered. */
+  cancelAfterStatus?: number;
 }
 
 export interface ExportCase {
@@ -52,6 +58,8 @@ export interface ExportCase {
   expectsError?: true;
   /** What the case needs from dev beyond a plain read, or what it does not cover. */
   note?: string;
+  /** The spec rules that pin the case (14.35 cases name them; the 14.0.7 catalogue predates the rules). */
+  rules?: readonly string[];
 }
 
 const P = "com.aras.innovator.";
@@ -727,6 +735,9 @@ export function hostOptions(options: ExportCaseOptions | undefined): Record<stri
   if (options.verbose) params.ContextVerbose = true;
   if (options.timeout !== undefined) params.Timeout = options.timeout;
   if (options.errorQuestionAnswer !== undefined) params.ErrorQuestionAnswer = options.errorQuestionAnswer;
+  if (options.engineAction !== undefined) params.EngineAction = options.engineAction;
+  if (options.languages !== undefined) params.Languages = options.languages;
+  if (options.cancelAfterStatus !== undefined) params.CancelAfterStatus = options.cancelAfterStatus;
   return params;
 }
 

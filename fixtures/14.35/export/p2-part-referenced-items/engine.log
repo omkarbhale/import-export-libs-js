@@ -1,0 +1,20 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222505-14.35-export-ca2429\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222505-14.35-export-ca2429\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: True
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.solution.PLM****
+start of execution : 10/19/2026 03:55:08
+Item id :4F1AC04A2B484F3ABA4E20DB63808A88  keyed_name : Part   type : ItemType successfully exported
+end of execution : 10/19/2026 03:55:10

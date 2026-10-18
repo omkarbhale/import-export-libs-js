@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":17,"ticks":822124810241,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-LANG","answer":null}
+{"event":12,"seq":2,"thread":17,"ticks":822124815564,"channel":"status","text":"Item 1 of 1: ItemType - LIBSJS_SCRATCH_ML","answer":null}
+{"event":64,"seq":3,"thread":17,"ticks":822133758506,"channel":"status","text":"completed","answer":null}
+{"event":65,"seq":4,"thread":17,"ticks":822133759132,"channel":"currentPackage","text":"","answer":null}

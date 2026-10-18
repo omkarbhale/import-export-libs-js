@@ -1,0 +1,21 @@
+{"event":10,"seq":1,"thread":16,"ticks":827656531823,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":827656537630,"channel":"status","text":"Item 1 of 18: List - RelationshipType Hide In","answer":null}
+{"event":12,"seq":3,"thread":6,"ticks":827656537984,"channel":"status","text":"Item 1 of 18: List - Server Events","answer":null}
+{"event":13,"seq":4,"thread":5,"ticks":827656538714,"channel":"status","text":"Item 1 of 18: List - Field Positioning","answer":null}
+{"event":14,"seq":5,"thread":12,"ticks":827656539157,"channel":"status","text":"Item 1 of 18: List - Form View Types","answer":null}
+{"event":15,"seq":6,"thread":11,"ticks":827656558645,"channel":"status","text":"Item 1 of 18: List - ItemType Implementation","answer":null}
+{"event":16,"seq":7,"thread":15,"ticks":827656558910,"channel":"status","text":"Item 1 of 18: List - Field Types","answer":null}
+{"event":17,"seq":8,"thread":4,"ticks":827656559113,"channel":"status","text":"Item 1 of 18: List - DBUpgradeType","answer":null}
+{"event":18,"seq":9,"thread":10,"ticks":827656559505,"channel":"status","text":"Item 1 of 18: List - Server Events Version","answer":null}
+{"event":19,"seq":10,"thread":22,"ticks":827656560193,"channel":"status","text":"Item 1 of 18: List - Method Types","answer":null}
+{"event":20,"seq":11,"thread":24,"ticks":827656560453,"channel":"status","text":"Item 1 of 18: List - Grid Events","answer":null}
+{"event":21,"seq":12,"thread":23,"ticks":827656561475,"channel":"status","text":"Item 1 of 18: List - Categories","answer":null}
+{"event":22,"seq":13,"thread":14,"ticks":827656564196,"channel":"status","text":"Item 1 of 18: List - Report Types","answer":null}
+{"event":23,"seq":14,"thread":3,"ticks":827656565023,"channel":"status","text":"Item 1 of 18: List - Data Types","answer":null}
+{"event":24,"seq":15,"thread":21,"ticks":827656565755,"channel":"status","text":"Item 1 of 18: List - DBUpgadeStatus","answer":null}
+{"event":48,"seq":16,"thread":4,"ticks":827659558993,"channel":"status","text":"Item 2 of 18: List - SQL Item Execution Flags","answer":null}
+{"event":49,"seq":17,"thread":24,"ticks":827659577035,"channel":"status","text":"Item 3 of 18: List - Configurable Grid Events","answer":null}
+{"event":50,"seq":18,"thread":21,"ticks":827659579742,"channel":"status","text":"Item 4 of 18: List - Field Length Unit","answer":null}
+{"event":51,"seq":19,"thread":5,"ticks":827659581386,"channel":"status","text":"Item 5 of 18: List - Form Events","answer":null}
+{"event":57,"seq":20,"thread":16,"ticks":827659854409,"channel":"status","text":"completed","answer":null}
+{"event":58,"seq":21,"thread":16,"ticks":827659854610,"channel":"currentPackage","text":"","answer":null}

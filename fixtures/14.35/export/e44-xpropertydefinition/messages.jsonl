@@ -1,0 +1,4 @@
+{"event":13,"seq":1,"thread":16,"ticks":826008913595,"channel":"currentPackage","text":"Exporting package com.aras.innovator.es","answer":null}
+{"event":14,"seq":2,"thread":16,"ticks":826008919472,"channel":"status","text":"Item 1 of 1: xPropertyDefinition - xp-es_batch_size","answer":null}
+{"event":23,"seq":3,"thread":16,"ticks":826010759850,"channel":"status","text":"completed","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":826010760500,"channel":"currentPackage","text":"","answer":null}

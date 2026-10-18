@@ -1,0 +1,28 @@
+{
+  "id": "e12-field-event",
+  "engine": "14.35",
+  "catalogue": [
+    "E12"
+  ],
+  "title": "RelationshipType: dependency level 2 (Field Event)",
+  "exercises": "dependencyLevel 2: Field Event, Field, Body.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "RelationshipType",
+          "id": "D55863B80B9048C18523E1C70C3320E1",
+          "keyedName": "Field Event"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 62,
+    "error": null
+  }
+}

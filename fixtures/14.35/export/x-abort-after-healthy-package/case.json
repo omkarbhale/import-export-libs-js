@@ -1,0 +1,52 @@
+{
+  "id": "x-abort-after-healthy-package",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 abort"
+  ],
+  "title": "The same two packages inserted the other way round: the healthy package comes first",
+  "exercises": "The packages of x-abort-skips-later-package with `core` inserted first. The Hashtable then enumerates `history` first, so its item is exported and logged, and the failure in `core` ends the run after it. The manifest holds both packages.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "00000000000000000000000000000001",
+          "keyedName": "Nope One"
+        },
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "rules": [
+    "EXP-516",
+    "EXP-555",
+    "EXP-570",
+    "EXP-571",
+    "EXP-572",
+    "EXP-558",
+    "EXP-508"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 38,
+    "error": null
+  }
+}

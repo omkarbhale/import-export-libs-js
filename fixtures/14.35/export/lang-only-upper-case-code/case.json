@@ -1,0 +1,211 @@
+{
+  "id": "lang-only-upper-case-code",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes",
+    "S10"
+  ],
+  "title": "ExportLanguageResourcesOnly with `DE`",
+  "exercises": "LP-180: the check compares exactly while the server's codes are lower-cased, so `DE` is reported as not installed although `de` is.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-LANGINST",
+      "items": [
+        {
+          "type": "LIBSJS_SCRATCH_ML",
+          "keyedName": "LIBSJS-SCRATCH-ML_All",
+          "id": "9A6E52C3E2003A22F014863A787CC9F3"
+        },
+        {
+          "type": "LIBSJS_SCRATCH_ML",
+          "keyedName": "LIBSJS-SCRATCH-ML_De",
+          "id": "DCEA32D00A07DB24159FDBB5AC7CD1F0"
+        },
+        {
+          "type": "LIBSJS_SCRATCH_ML",
+          "keyedName": "LIBSJS-SCRATCH-ML_En",
+          "id": "FF462072D1C8242084376811138692E3"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly",
+    "languages": [
+      "DE"
+    ]
+  },
+  "expectsError": true,
+  "note": "Recorded while dev had the Languages `en`, `de` and `fr` (added for the recording and deleted again afterwards, as ticket 45 did; `oracle/README.md` says how).",
+  "rules": [
+    "LP-114",
+    "LP-115",
+    "LP-180"
+  ],
+  "result": {
+    "hostExit": 2,
+    "calls": 8,
+    "error": "Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: DE.\r\nPlease, install missing languages or remove them from import package before proceeding.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ThrowIfNoSelectedLanguagesInDatabase(String[] languages)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  },
+  "seed": {
+    "group": "lang-ml",
+    "steps": [
+      {
+        "name": "scratch ItemType with translated labels",
+        "packages": [
+          "LIBSJS-SCRATCH-LANG"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "5261411CD16F41289AC8D01F3CC496F7"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "0D5135C02C1F49D2837CFF73532BCD20"
+          },
+          {
+            "type": "Permission",
+            "id": "250E490AF633DA5FD221FBE757210F7D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "A57FE058D782408A87C3CE5377ACEE21"
+          },
+          {
+            "type": "PackageElement",
+            "id": "85BBE9F02C96470D90AB29D7A7C44210"
+          },
+          {
+            "type": "ItemType",
+            "id": "C442609F868621BBE8487B6F8EA1A27E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "FBB69B16E9874A03A3848E3A295F64E8"
+          },
+          {
+            "type": "PackageElement",
+            "id": "EC4ACD5D41E74FEDB54465B8FC371ECE"
+          }
+        ]
+      },
+      {
+        "name": "instances with translated values",
+        "packages": [
+          "LIBSJS-SCRATCH-LANGINST"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "0DD4BBB8F8B1481B98EB0128957B3142"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "CAF623BCE42F411EB34A36C3FC99AF23"
+          },
+          {
+            "type": "LIBSJS_SCRATCH_ML",
+            "id": "9A6E52C3E2003A22F014863A787CC9F3"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "70A459A71546426282818AED8DCCDB45"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C9899C5DCEB1422C9722A653B4BAD58A"
+          },
+          {
+            "type": "LIBSJS_SCRATCH_ML",
+            "id": "DCEA32D00A07DB24159FDBB5AC7CD1F0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5E132F86CC13403D8D7DDA450336F6AD"
+          },
+          {
+            "type": "LIBSJS_SCRATCH_ML",
+            "id": "FF462072D1C8242084376811138692E3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5ADE33D537214DE4A69E607EC1BEABAD"
+          }
+        ]
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "5ADE33D537214DE4A69E607EC1BEABAD"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_ML",
+        "id": "FF462072D1C8242084376811138692E3"
+      },
+      {
+        "type": "PackageElement",
+        "id": "5E132F86CC13403D8D7DDA450336F6AD"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_ML",
+        "id": "DCEA32D00A07DB24159FDBB5AC7CD1F0"
+      },
+      {
+        "type": "PackageElement",
+        "id": "C9899C5DCEB1422C9722A653B4BAD58A"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "70A459A71546426282818AED8DCCDB45"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_ML",
+        "id": "9A6E52C3E2003A22F014863A787CC9F3"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "CAF623BCE42F411EB34A36C3FC99AF23"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "0DD4BBB8F8B1481B98EB0128957B3142"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EC4ACD5D41E74FEDB54465B8FC371ECE"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "FBB69B16E9874A03A3848E3A295F64E8"
+      },
+      {
+        "type": "ItemType",
+        "id": "C442609F868621BBE8487B6F8EA1A27E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "85BBE9F02C96470D90AB29D7A7C44210"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "A57FE058D782408A87C3CE5377ACEE21"
+      },
+      {
+        "type": "Permission",
+        "id": "250E490AF633DA5FD221FBE757210F7D"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "0D5135C02C1F49D2837CFF73532BCD20"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "5261411CD16F41289AC8D01F3CC496F7"
+      }
+    ]
+  }
+}

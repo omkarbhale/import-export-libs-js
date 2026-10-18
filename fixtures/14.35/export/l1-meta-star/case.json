@@ -1,0 +1,43 @@
+{
+  "id": "l1-meta-star",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportMetadataWithLanguageResources with `*` on a server that has `en` only",
+  "exercises": "The same list as l1-only-star in the other mode: the metadata is exported and no translations are asked for.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportMetadataWithLanguageResources",
+    "languages": [
+      "*"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-110",
+    "LP-111",
+    "LP-112",
+    "LP-123",
+    "LP-140",
+    "LP-150"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 23,
+    "error": null
+  }
+}

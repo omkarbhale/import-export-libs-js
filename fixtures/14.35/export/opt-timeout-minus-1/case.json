@@ -1,0 +1,30 @@
+{
+  "id": "opt-timeout-minus-1",
+  "engine": "14.35",
+  "catalogue": [
+    "Timeout"
+  ],
+  "title": "Option: Timeout -1",
+  "exercises": "Timeout -1, recorded only.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "timeout": -1
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 27,
+    "error": null
+  }
+}

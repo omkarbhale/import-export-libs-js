@@ -1,0 +1,7 @@
+﻿<AML>
+ <Item type="CommandBarSection" id="0212985C3E90930D618120D9625E4BB8" action="add">
+  <classification>Data Model</classification>
+  <location keyed_name="TOC" type="cui_Location">02A5F61EF1C94C41834486FA8D76B4E1</location>
+  <name>Language_TOC_Content</name>
+ </Item>
+</AML>

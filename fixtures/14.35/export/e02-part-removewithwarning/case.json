@@ -1,0 +1,30 @@
+{
+  "id": "e02-part-removewithwarning",
+  "engine": "14.35",
+  "catalogue": [
+    "E02"
+  ],
+  "title": "ItemType: RemoveWithWarning control (Part)",
+  "exercises": "The control for the removal modes: nothing is removed from Part, the unknown-package request group is still sent.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "refToUnknownPacks": "RemoveWithWarning"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 123,
+    "error": null
+  }
+}
