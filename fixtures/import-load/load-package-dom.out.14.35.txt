@@ -1,0 +1,146 @@
+=== order
+RESULT: <AML><Item type="List" action="add" id="10" tempKeyName="one" tempFullName="<ROOT>\pkg\10\one.xml" /><Item type="List" action="add" id="9" tempKeyName="one" tempFullName="<ROOT>\pkg\9\one.xml" /><Item type="List" action="add" id="A" tempKeyName="one" tempFullName="<ROOT>\pkg\A\one.xml" /><Item type="List" action="add" id="a b" tempKeyName="one" tempFullName="<ROOT>\pkg\a b\one.xml" /><Item type="List" action="add" id="a-b" tempKeyName="one" tempFullName="<ROOT>\pkg\a-b\one.xml" /><Item type="List" action="add" id="b" tempKeyName="one" tempFullName="<ROOT>\pkg\b\one.xml" /><Item type="List" action="add" id="Z" tempKeyName="one" tempFullName="<ROOT>\pkg\Z\one.xml" /><Item type="List" action="add" id="_x" tempKeyName="one" tempFullName="<ROOT>\pkg\_x\one.xml" /><Item type="List" action="add" id="ä" tempKeyName="one" tempFullName="<ROOT>\pkg\ä\one.xml" /><Item type="List" action="add" id="é" tempKeyName="one" tempFullName="<ROOT>\pkg\é\one.xml" /><Item type="Method" action="add" id=".xml" tempKeyName="" tempFullName="<ROOT>\pkg\b\.xml" /><Item type="Method" action="add" id="a.xml" tempKeyName="a" tempFullName="<ROOT>\pkg\b\a.xml" /><Item type="Method" action="add" id="a.xmlbak" tempKeyName="a" tempFullName="<ROOT>\pkg\b\a.xmlbak" /><Item type="Method" action="add" id="B.xml" tempKeyName="B" tempFullName="<ROOT>\pkg\b\B.xml" /><Item type="Method" action="add" id="m.xmlx" tempKeyName="m" tempFullName="<ROOT>\pkg\b\m.xmlx" /><Item type="Method" action="add" id="p.xml~" tempKeyName="p" tempFullName="<ROOT>\pkg\b\p.xml~" /><Item type="Method" action="add" id="q.Xml" tempKeyName="q" tempFullName="<ROOT>\pkg\b\q.Xml" /><Item type="Method" action="add" id="s.xml.xml" tempKeyName="s.xml" tempFullName="<ROOT>\pkg\b\s.xml.xml" /><Item type="Method" action="add" id="x.XML" tempKeyName="x" tempFullName="<ROOT>\pkg\b\x.XML" /><Item type="Method" action="add" id="Z.xml" tempKeyName="Z" tempFullName="<ROOT>\pkg\b\Z.xml" /></AML>
+ITEMS: 20
+LOG: 
+=== missing-dir
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Could not find a part of the path '<ROOT>\nope'. Unable to get solutions files by path in .mf file <ROOT>\nope
+  faultcode=-1 faultstring=   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileSystemEnumerableIterator`1.CommonInit()\r\n   at System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)\r\n   at System.IO.Directory.GetDirectories(String path)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.IO.DirectoryNotFoundException :: Could not find a part of the path '<ROOT>\nope'.
+LOG: 
+=== path-is-file
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: The directory name is invalid.\r\n Unable to get solutions files by path in .mf file <ROOT>\afile.xml
+  faultcode=-1 faultstring=   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileSystemEnumerableIterator`1.CommonInit()\r\n   at System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)\r\n   at System.IO.Directory.GetDirectories(String path)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.IO.IOException :: The directory name is invalid.\r\n
+LOG: 
+=== empty-package
+RESULT: <AML />
+ITEMS: 0
+LOG: 
+=== skips
+RESULT: <AML><Item type="List" action="add" id="ok" tempKeyName="f-ok" tempFullName="<ROOT>\pkg\d\f-ok.xml" /></AML>
+ITEMS: 1
+LOG: WARNING: File '<ROOT>\pkg\d\a-noitem.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\nWARNING: File '<ROOT>\pkg\d\b-otherroot.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\nWARNING: File '<ROOT>\pkg\d\c-defaultns.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\nWARNING: File '<ROOT>\pkg\d\d-nested.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\nWARNING: File '<ROOT>\pkg\d\e-lowercase.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\n
+=== malformed
+EXC: System.Xml.XmlException :: The 'Item' start tag on line 1 position 7 does not match the end tag of 'AML'. Line 1, position 26.
+LOG: 
+=== empty-file
+EXC: System.Xml.XmlException :: Root element is missing.
+LOG: 
+=== whitespace-file
+EXC: System.Xml.XmlException :: Root element is missing.
+LOG: 
+=== decl-first
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParsePI(StringBuilder piInDtdStringBuilder)\r\n   at System.Xml.XmlTextReaderImpl.ParseElementContent()\r\n   at System.Xml.XmlLoader.LoadNode(Boolean skipOverWhitespace)\r\n   at System.Xml.XmlLoader.LoadDocSequence(XmlDocument parentDoc)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.Xml.XmlException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8.
+LOG: 
+=== decl-second
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 158. Unable to apply build.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParsePI(StringBuilder piInDtdStringBuilder)\r\n   at System.Xml.XmlTextReaderImpl.ParseElementContent()\r\n   at System.Xml.XmlLoader.LoadNode(Boolean skipOverWhitespace)\r\n   at System.Xml.XmlLoader.LoadDocSequence(XmlDocument parentDoc)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.Xml.XmlException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 158.
+LOG: 
+=== decl-bom
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParsePI(StringBuilder piInDtdStringBuilder)\r\n   at System.Xml.XmlTextReaderImpl.ParseElementContent()\r\n   at System.Xml.XmlLoader.LoadNode(Boolean skipOverWhitespace)\r\n   at System.Xml.XmlLoader.LoadDocSequence(XmlDocument parentDoc)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.Xml.XmlException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8.
+LOG: 
+=== doctype
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Unexpected DTD declaration. Line 1, position 8. Unable to apply build.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseElementContent()\r\n   at System.Xml.XmlLoader.LoadNode(Boolean skipOverWhitespace)\r\n   at System.Xml.XmlLoader.LoadDocSequence(XmlDocument parentDoc)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.Xml.XmlException :: Unexpected DTD declaration. Line 1, position 8.
+LOG: 
+=== comment-before-root
+RESULT: <AML><Item type="List" action="add" id="a" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml" /></AML>
+ITEMS: 1
+LOG: 
+=== encodings
+RESULT: <AML><Item type="List" action="add" id="u8bom" tempKeyName="a-utf8bom" tempFullName="<ROOT>\pkg\d\a-utf8bom.xml" /><Item type="List" action="add" id="u16le" tempKeyName="b-utf16le" tempFullName="<ROOT>\pkg\d\b-utf16le.xml" /><Item type="List" action="add" id="u16be" tempKeyName="c-utf16be" tempFullName="<ROOT>\pkg\d\c-utf16be.xml" /><Item type="List" action="add" id="l1" tempKeyName="d-latin1" tempFullName="<ROOT>\pkg\d\d-latin1.xml"><name>caf�</name></Item><Item type="List" action="add" id="cp" tempKeyName="e-cp1252decl" tempFullName="<ROOT>\pkg\d\e-cp1252decl.xml"><name>caf�</name></Item><Item type="List" action="add" id="u8" tempKeyName="f-utf8" tempFullName="<ROOT>\pkg\d\f-utf8.xml"><name>café 中 😀</name></Item></AML>
+ITEMS: 6
+LOG: 
+=== utf16-nobom
+EXC: System.Xml.XmlException :: Name cannot begin with the '.' character, hexadecimal value 0x00. Line 1, position 2.
+LOG: 
+=== stamps
+RESULT: <AML><Item type="List" action="add" id="dotxml" tempKeyName="" tempFullName="<ROOT>\pkg\d\.xml" /><Item type="List" action="add" id="one" tempKeyName="a.b" tempFullName="<ROOT>\pkg\d\a.b.xml" /><Item type="List" action="add" id="two" /><Item tempKeyName="c" type="List" tempFullName="<ROOT>\pkg\d\c.xmlbak" action="add" id="three" /><Item type="List" action="add" id="uni" tempKeyName="é ü" tempFullName="<ROOT>\pkg\d\é ü.xml" /></AML>
+ITEMS: 5
+LOG: 
+=== relative-and-trailing
+RESULT: <AML><Item type="List" action="add" id="a" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml" /></AML>
+ITEMS: 1
+LOG: 
+=== relative-dot
+RESULT: <AML><Item type="List" action="add" id="a" tempKeyName="a" tempFullName="<ROOT>\d\a.xml" /></AML>
+ITEMS: 1
+LOG: 
+=== trailing-slash
+RESULT: <AML><Item type="List" action="add" id="a" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml" /></AML>
+ITEMS: 1
+LOG: 
+=== crlf-attrs
+RESULT: <AML><Item type="Method" action="add" id="m" d="l1&#xD;&#xA;l2\tl3" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><method_code><![CDATA[x\r\ny]]></method_code><name>  sp  </name><empty /></Item></AML>
+ITEMS: 1
+LOG: 
+=== locked
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: The process cannot access the file '<ROOT>\pkg\d\b.xml' because it is being used by another process. Unable to load <ROOT>\pkg\d\b.xml
+  faultcode=-1 faultstring=   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)\r\n   at System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)\r\n   at System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)\r\n   at Aras.Tools.SolutionUpgrade.IOWrapper.XmlDocumentLoad(String path)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.IO.IOException :: The process cannot access the file '<ROOT>\pkg\d\b.xml' because it is being used by another process.
+LOG: 
+=== unc
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Could not find a part of the path '<CWD>\localhost\C$\Users\<USER>\AppData\Local\libsjs-18\run\unc\pkg'. Unable to get solutions files by path in .mf file \\localhost\C$\Users\<USER>\AppData\Local\libsjs-18\run\unc\pkg
+  faultcode=-1 faultstring=   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileSystemEnumerableIterator`1.CommonInit()\r\n   at System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)\r\n   at System.IO.Directory.GetDirectories(String path)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.IO.DirectoryNotFoundException :: Could not find a part of the path '<CWD>\localhost\C$\Users\<USER>\AppData\Local\libsjs-18\run\unc\pkg'.
+LOG: 
+=== longpath
+RESULT: <AML />
+ITEMS: 0
+LOG: 
+=== longpath
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3\d\a.xml" /></AML>
+ITEMS: 1
+LOG: WARNING: File '<ROOT>\pkg\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss1\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss2\ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss3\d\nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.xml' doesn't have any items by next xpath : 'AML/Item'. File is skipped.\r\n
+=== charref-1-text
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: '', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlEncodedRawTextWriter.WriteElementTextBlock(Char* pSrc, Char* pSrcEnd)\r\n   at System.Xml.XmlEncodedRawTextWriter.WriteString(String text)\r\n   at System.Xml.Xsl.Runtime.XmlQueryOutput.WriteString(String text, Boolean disableOutputEscaping)\r\n   at <xsl:apply-templates>(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator )\r\n   at <xsl:template match="*">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:template match="*">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:template match="/AML">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:apply-templates>(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator )\r\n   at Root(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime)\r\n   at System.Xml.Xsl.XmlILCommand.Execute(Object defaultDocument, XmlResolver dataSources, XsltArgumentList argumentList, XmlWriter writer)\r\n   at System.Xml.Xsl.XslCompiledTransform.Transform(IXPathNavigable input, XsltArgumentList arguments, TextWriter results)\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.ApplyXsl(XmlDocument xmlDoc, String xslName) bInnError=True
+  inner=System.ArgumentException :: '', hexadecimal value 0x01, is an invalid character.
+LOG: 
+=== charref-1-attr
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: '', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlEncodedRawTextWriter.WriteAttributeTextBlock(Char* pSrc, Char* pSrcEnd)\r\n   at System.Xml.XmlEncodedRawTextWriter.WriteString(String text)\r\n   at System.Xml.Xsl.Runtime.XmlAttributeCache.FlushAttributes()\r\n   at System.Xml.Xsl.Runtime.XmlAttributeCache.StartElementContent()\r\n   at System.Xml.Xsl.Runtime.XmlQueryOutput.StartElementContentUnchecked()\r\n   at System.Xml.Xsl.Runtime.XmlQueryOutput.WriteEndElement()\r\n   at <xsl:template match="*">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:template match="/AML">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:apply-templates>(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator )\r\n   at Root(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime)\r\n   at System.Xml.Xsl.XmlILCommand.Execute(Object defaultDocument, XmlResolver dataSources, XsltArgumentList argumentList, XmlWriter writer)\r\n   at System.Xml.Xsl.XslCompiledTransform.Transform(IXPathNavigable input, XsltArgumentList arguments, TextWriter results)\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.ApplyXsl(XmlDocument xmlDoc, String xslName) bInnError=True
+  inner=System.ArgumentException :: '', hexadecimal value 0x01, is an invalid character.
+LOG: 
+=== charref-FFFE
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: '￾', hexadecimal value 0xFFFE, is an invalid character. Error of  applying export.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlEncodedRawTextWriter.WriteElementTextBlock(Char* pSrc, Char* pSrcEnd)\r\n   at System.Xml.XmlEncodedRawTextWriter.WriteString(String text)\r\n   at System.Xml.Xsl.Runtime.XmlQueryOutput.WriteString(String text, Boolean disableOutputEscaping)\r\n   at <xsl:apply-templates>(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator )\r\n   at <xsl:template match="*">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:template match="*">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:template match="/AML">(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator {urn:schemas-microsoft-com:xslt-debug}current)\r\n   at <xsl:apply-templates>(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime, XPathNavigator )\r\n   at Root(XmlQueryRuntime {urn:schemas-microsoft-com:xslt-debug}runtime)\r\n   at System.Xml.Xsl.XmlILCommand.Execute(Object defaultDocument, XmlResolver dataSources, XsltArgumentList argumentList, XmlWriter writer)\r\n   at System.Xml.Xsl.XslCompiledTransform.Transform(IXPathNavigable input, XsltArgumentList arguments, TextWriter results)\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.ApplyXsl(XmlDocument xmlDoc, String xslName) bInnError=True
+  inner=System.ArgumentException :: '￾', hexadecimal value 0xFFFE, is an invalid character.
+LOG: 
+=== charref-D800
+EXC: System.ArgumentException :: The surrogate pair (0xD800, 0x62) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).
+LOG: 
+=== charref-cdata-no
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><method_code><![CDATA[a]]]]><![CDATA[>b]]></method_code></Item></AML>
+ITEMS: 1
+LOG: 
+=== entity-nbsp
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><name> &amp;nbsp; </name></Item></AML>
+ITEMS: 1
+LOG: 
+=== xml-space
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><a xml:space="preserve">  <b />  </a><c><b /></c></Item></AML>
+ITEMS: 1
+LOG: 
+=== gt-in-text
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><name>a&gt;b ]]&gt; "q'</name></Item></AML>
+ITEMS: 1
+LOG: 
+=== xmlns-default-child
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><name xmlns="urn:x">n</name></Item></AML>
+ITEMS: 1
+LOG: 
+=== nonbmp-name
+RESULT: <AML><Item type="List" action="add" id="x" tempKeyName="a" tempFullName="<ROOT>\pkg\d\a.xml"><name>😀</name></Item></AML>
+ITEMS: 1
+LOG: 
+=== hidden
+RESULT: <AML><Item type="List" action="add" id="hd" tempKeyName="a" tempFullName="<ROOT>\pkg\hd\a.xml" /><Item type="List" action="add" id="hf" tempKeyName="h" tempFullName="<ROOT>\pkg\vis\h.xml" /><Item type="List" action="add" id="vf" tempKeyName="v" tempFullName="<ROOT>\pkg\vis\v.xml" /></AML>
+ITEMS: 3
+LOG: 

@@ -5,7 +5,8 @@ This document specifies how an import turns a package folder into the ordered li
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `ImportExportManager::LoadPackageDom`, `GetItemsFromPackageDom`, `IOWrapper`, `CItemHelper::ApplyXsl` and the embedded `build.xsl`;
-- the probes in `fixtures/import-load/` (see its README). The real engine's `LoadPackageDom` and the engine's own `build.xsl` were run on .NET Framework 4.8 over the cases listed there. Rule text cites a case by its `name`.
+- the probes in `fixtures/import-load/` (see its README). The real engine's `LoadPackageDom` and the engine's own `build.xsl` were run on .NET Framework 4.8 over the cases listed there. Rule text cites a case by its `name`;
+- for the `[14.35]` lines: the 14.35 decompile (`.decomp/14.35/`, never committed) compared with the 14.0.7 one for every method these rules map, and the same probes run against the vendored 14.35 `Libs.dll` (`load-package-dom.out.14.35.txt`, `build-xsl.out.14.35.txt`, and the `build-xsl-cui` cases for the two types 14.35 adds). `LoadPackageDom` and `ApplyXsl` are the same code in both builds; only `build.xsl` differs.
 
 The stylesheet is not reproduced. Its logic is written below as ordering rules, and the library implements those rules (AGENTS.md rule 5). `plan import` (round 2, Q4) reports the model of IMP-033, so the same rules decide what is reported and what is imported.
 
@@ -26,7 +27,7 @@ The function is static and has no state. The log writer receives only the skippe
 
 [12.0] Not yet specified; the 12.0 variant ticket adds it (12.0 reads files with `XmlDocument.Load(path)`).
 
-[14.35] Not yet specified; the 14.35 variant tickets add it.
+[14.35] Same as 14.0.7. The steps, their order and the log writer's use are unchanged; `LoadPackageDom` is the same code, and only the stylesheet of step 3 differs (`IMP-020` to `IMP-029`). The 35 cases of `load-package-dom.cases.json` give the same result on the 14.35 `Libs.dll` (`fixtures/import-load/load-package-dom.out.14.35.txt`).
 
 ### IMP-002: Only the immediate subdirectories of the package folder are read
 
@@ -34,11 +35,15 @@ The function is static and has no state. The log writer receives only the skippe
 
 The directory names have no meaning to the engine, only their order does (IMP-004). Aras's exporter writes one folder per item type (`Method`, `ItemType`, …); any folder name works.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-003: A file is read when its name matches `*.xml` in the .NET Framework sense
 
 [14.0.7] The files of a subdirectory are `Directory.GetFiles(dir, "*.xml")`, files only, no recursion. In .NET Framework this pattern matches every file whose extension starts with `xml`, compared case-insensitively. That includes `.xml`, `.XML`, `.Xml`, `.xmlbak`, `.xmlx` and `.xml~`. It excludes `.xm`, `.txt` and a name such as `t.xml.bak`. `s.xml.xml` matches. A file named just `.xml` matches. In the probe `order` the folder `b` held `Z.xml a.xml B.xml a.xmlbak t.xml.bak x.XML s.xml.xml .xml m.xmlx n.xm o.txt p.xml~ q.Xml`; exactly `t.xml.bak`, `n.xm` and `o.txt` were not read.
 
 Hidden and read-only files are read (case `hidden`).
+
+[14.35] Same as 14.0.7.
 
 ### IMP-004: Directories and files are visited in NTFS order, on every OS
 
@@ -53,6 +58,8 @@ Two names that differ only by case cannot exist together on NTFS. On a case-sens
 
 The order is an NTFS property the Windows API does not promise. The library treats it as the engine's order because every recorded run shows it (`listing-order.json`, 52 names including accented letters, ligature digraphs and supplementary-plane letters).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-005: Path handling is host-native, and long paths are transparent
 
 [14.0.7] `IOWrapper` passes every path through `NormalizeLongPath` before it touches the file system. A path of 255 characters or more (after `Path.GetFullPath`) is prefixed with `\\?\`. This changes nothing observable: the prefix reaches neither the log nor `tempFullName` (case `longpath`, a file path of about 270 characters). The library has no long-path mechanism of its own.
@@ -64,6 +71,8 @@ The paths the engine puts in its output are the host's own spelling:
 
 On Windows these have `\` separators. The library writes the host separator and does not translate to Windows form. This is a documented deviation: the engine's path text depends on the OS it runs on, and the rest of the output does not.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-006: A path that starts with backslashes loses them (UNC paths fail)
 
 [14.0.7] `NormalizeLongPath` removes every leading `\` and `?` character from the path before anything else. (It calls `TrimStart` with the characters of `\\?\`, which is a set, not a prefix.) A UNC package folder `\\server\share\pkg` therefore becomes `server\share\pkg`, a relative path that `GetDirectories` resolves against the process's current directory. The call fails with `DirectoryNotFoundException`, shown by IMP-011 as `Could not find a part of the path '<cwd>\server\share\pkg'.` (case `unc`, run against `\\localhost\C$\…`). The `Unable to get solutions files…` suffix still shows the original UNC path.
@@ -71,6 +80,8 @@ On Windows these have `\` separators. The library writes the host separator and 
 The library reproduces this on Windows hosts by applying the same trim to the paths it hands to the file system. On other hosts a path does not start with `\`, and a leading `?` is a literal character that the trim removes in the same way. The engine reads a package from a UNC path only through this defect, so a UNC package folder is unsupported in 14.0.7.
 
 Registered in `bugs.md`.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-007: A package file is read as text, then parsed with whitespace dropped
 
@@ -96,6 +107,8 @@ Parsing (`LoadXml`, ticket 06 rules R5 to R7 as corrected by ticket 08, F1 and F
 
 [12.0] Not yet specified. 12.0 reads with `XmlDocument.Load(path)`, which honours the declared encoding and throws on invalid bytes (ticket 06, R8); the 12.0 import ticket adds the variant.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-008: A file without `AML/Item` is skipped with a warning
 
 [14.0.7] After parsing, the engine selects `AML/Item` from the document: the first `Item` child of a root element named `AML`. The names are matched exactly and without a namespace. The file is skipped, and contributes nothing to the result, when there is none. That is the case when:
@@ -112,6 +125,8 @@ The line ends with CRLF on Windows (`TextWriter.WriteLine`); the library writes 
 
 A file with `AML/Item` but also other content is read whole, including the other items (IMP-010).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-009: The first item of each read file is stamped with its file name and path
 
 [14.0.7] On the selected `AML/Item` (the first one) the engine calls `SetAttribute` twice, in this order:
@@ -122,6 +137,8 @@ A file with `AML/Item` but also other content is read whole, including the other
 `SetAttribute` replaces the value of an attribute that already exists and leaves it where it was. A new attribute is appended after the existing ones. So `<Item tempKeyName="old" type="List" tempFullName="oldf">` keeps that attribute order with the two new values (case `stamps`, file `c.xmlbak`), and any other `Item` gets the two attributes at its end.
 
 Only the first `Item` of a file is stamped. The other items of the file carry no stamp (case `stamps`, file `a.b.xml`: item `one` is stamped, `two` is not). `tempKeyName` is later the package element's name (`IMP-4xx`), so an item that is not first in its file is registered under an empty name, and the stamp is lost if `build.xsl` drops the stamped item (IMP-029).
+
+[14.35] Same as 14.0.7.
 
 ### IMP-010: The files are concatenated through `OuterXml` into one `AML` string
 
@@ -141,6 +158,8 @@ Only the first `Item` of a file is stamped. The other items of the file carry no
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-011: LoadPackageDom failures: three paths, two exception types
 
 [14.0.7] Errors leave `LoadPackageDom` as one of these.
@@ -154,6 +173,8 @@ Only the first `Item` of a file is stamped. The other items of the file carry no
 `ImportPackage` catches every exception from the load and turns it into the package failure (the `IMP-4xx` rules own that step).
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-012: build.xsl is applied by ApplyXsl, in four steps
 
@@ -170,6 +191,8 @@ The library does not embed or run the stylesheet. IMP-020 to IMP-032 give its ef
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7: `ApplyXsl` is unchanged. The stylesheet it runs is 14.35's (`IMP-020` onwards); the text it writes follows `IMP-014` as before.
+
 ### IMP-013: The `xmlns:SOAP-ENV` replace also deletes it from element content
 
 [14.0.7] Step 2 of IMP-012 is a plain text replace over the whole serialized output, so it removes that exact string wherever it occurs, including inside element text and CDATA, not only where it is a namespace declaration. A `method_code` whose script contains `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` loses it, and a `comments` element holding only that string comes out as `<comments></comments>` (probe `soap-env-in-content` in `build-xsl.cases.json`, ticket 06 X2). Attribute values are safe, because `"` is written as `&quot;` there. The same text with a different namespace URI, or `xmlns:i18n`, is not touched.
@@ -177,6 +200,8 @@ The library does not embed or run the stylesheet. IMP-020 to IMP-032 give its ef
 The replace leaves the space before the removed declaration, so an element that had one now has two spaces there (`… xmlns:i18n="…"  />`, probe `raw-namespace-comments-cdata`).
 
 Registered in `bugs.md`.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-014: What the transform writes: text rules the plan and the import share
 
@@ -196,6 +221,8 @@ Vectors for each point are in `build-xsl.out.txt` (the `RAW:` lines).
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-015: GetItemsFromPackageDom gives one document per `AML/Item`
 
 [14.0.7] `GetItemsFromPackageDom(dom)` throws `ArgumentNullException` for a null document (parameter name `packageDom`). Otherwise it returns a list: for each `Item` element that is a direct child of the root `AML` of `dom`, in document order, a new `XmlDocument` (`PreserveWhitespace` false) loaded from that element's `OuterXml`. The documents are built eagerly, so the list holds an independent copy of each item.
@@ -203,6 +230,8 @@ Vectors for each point are in `build-xsl.out.txt` (the `RAW:` lines).
 An item that `build.xsl` emitted more than once (IMP-026) appears once per copy. An empty `AML` gives an empty list. Nothing is removed or merged, and no item is skipped.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-016: A DOCTYPE with an internal subset or an external identifier is not loaded (bug)
 
@@ -277,6 +306,8 @@ An item is selected at most once by the groups themselves; the only way it is wr
 
 [12.0] Not yet specified.
 
+[14.35] Fifty-five groups: the fifty-three of 14.0.7 and the two of `IMP-021` that run between G12 and G13. Everything else in the rule is as in 14.0.7.
+
 ### IMP-021: The groups and their order
 
 [14.0.7] The groups, in the order they run. `T` is the item's `type` attribute and `A` its `action` attribute. Each comparison is exact and case-sensitive, and an absent attribute equals nothing (IMP-023). "Add" means `A = 'add'`.
@@ -333,6 +364,15 @@ Probe `order-basic` (`build-xsl.out.txt`) walks these groups.
 
 [12.0] Not yet specified.
 
+[14.35] The table of 14.0.7 with two groups added, right after G12 (`Report`, add) and before G13 (`Form`, add):
+
+| Group | Selects | Order |
+|---|---|---|
+| G12a | `cui_Control`, add | document |
+| G12b | `cui_WindowSection`, add | document |
+
+The groups of 14.0.7 keep their names and their order, and the new ones are named G12a and G12b, so that a group name means the same in the plan of every engine. Both types are also in the edit list and the unlisted-types list (`IMP-022`), so G52 takes their `edit` items and G53 no longer takes any of their items (`IMP-029`). Probe (`build-xsl-cui` cases): `Form, cui_WindowSection, Method, cui_Control, Report, List, cui_Control, Workflow Map, cui_WindowSection` (all adds) comes out `List, Method, Report, cui_Control, cui_Control, cui_WindowSection, cui_WindowSection, Form, Workflow Map` (case `cui-order`), and with two files all `cui_Control` adds of both files precede all `cui_WindowSection` adds (case `cui-order-two-files`). In 14.0.7 the same items came out at the end, after `Workflow Map`, from G53 sorted by type.
+
 ### IMP-022: A type counts as listed when `|type|` is a substring of a fixed list
 
 [14.0.7] G52 and G53 test the type against two strings of `|`-separated names by a substring test: the type counts as in the list when `'|' + T + '|'` occurs inside it. This is `contains(list, concat('|', @type, '|'))`, not a comparison against each name.
@@ -350,17 +390,23 @@ Registered in `bugs.md`.
 
 [12.0] Not yet specified.
 
+[14.35] Both lists have `cui_Control` and `cui_WindowSection` inserted between `Report` and `Form`, in that order (the string is `…|Report|cui_Control|cui_WindowSection|Form|…`); the rest of each list is as in 14.0.7. The test is the same substring test, so the neighbours that count as listed runs change: `Report|cui_Control`, `cui_Control|cui_WindowSection` and `cui_WindowSection|Form` are listed now, and `Report|Form`, which was a listed run in 14.0.7, is not (case `cui-substring-runs`: an add of type `Report|Form` is emitted by G53 in 14.35 and dropped in 14.0.7, an add of type `Report|cui_Control` or `cui_WindowSection|Form` the reverse; `Action|Report` is listed in both). An `edit` of `cui_Control` or `cui_WindowSection` is now emitted by G52, in document order with the other edit-list types (case `cui-edit`: `cui_Control, cui_WindowSection, List, Report` stay in file order, with `Zeta` after them from G53), where 14.0.7 emitted it from G53 sorted by type. Registered in `bugs.md`.
+
 ### IMP-023: Attribute tests are exact, and a missing attribute matches nothing
 
 [14.0.7] Every `@type` and `@action` comparison in the groups is a case-sensitive string equality. `list`, `Method` with action `ADD`, and `sql` are different from `List`, `add` and `SQL`. Lower-case `list` and `sql` are not in any list, so G53 emits them (probe `drops`). `@action!='add'` of IMP-026 is true only for an item that has an action attribute with another value: an absent action is neither equal to `add` nor different from it. So an item with no action matches no add, edit or delete group. It is emitted only by G37 to G40 (types `Field`, `Property`, `View`, `SQL`) and by G53 (unlisted types).
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-024: ItemType adds split by the first `implementation_type` child, exactly
 
 [14.0.7] G32 and G33 decide by `string(implementation_type)`: the string value (all descendant text, concatenated) of the first `implementation_type` child element of the `ItemType` item, or the empty string if it has none. The comparison with `polymorphic` is exact: `Polymorphic` and `polymorphic ` (trailing space) are not polymorphic, an `implementation_type` nested inside another child element is ignored, and only the first of two `implementation_type` children counts. The monomorphic group G32 therefore also takes an item with no `implementation_type`. Probe `polymorphic-detail`: `p1 p2 p3 p5` in G32 and `p4 p6` in G33, each in document order.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-025: RelationshipType adds are ordered by `dependencyLevel` as an XPath number, not-a-number first
 
@@ -373,6 +419,8 @@ Registered in `bugs.md`.
 Probes `numsort` (two files, `build-xsl.out.txt`, cases 3 and 4). In real packages the attribute holds a small integer (`0`, `1`, `2`) that the exporter writes.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-026: An ItemType or RelationshipType add is followed by every later ItemType sibling that has another action
 
@@ -390,17 +438,23 @@ Registered in `bugs.md`.
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-027: An ItemType edit with no earlier ItemType or RelationshipType add in its file is imported by G35
 
 [14.0.7] G35 selects `ItemType` items with action `edit` that have no earlier sibling (same file root) `Item` of type `ItemType` or `RelationshipType` with action `add`. Such an item is emitted by G35 and by no other group. An `edit` that has an earlier add is emitted only as a copy after an add (IMP-026). Earlier means earlier in the same file, not the same package: an `edit` in a file of its own is always selected. Probe `edit-without-preceding-add`: `E0` (before the add in file 1) and `E-file2` come out at G35, in file order, while `E-after-rt` (after a `RelationshipType` add in file 3) comes out after that add. `D0`, a delete with no earlier add, is dropped.
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-028: Items of unlisted types are sorted by type name, in the NLS word-sort order
 
 [14.0.7] G53 sorts the selected items by their `@type` string (the empty string for an absent attribute), ascending, stable. The comparison is `CompareInfo.Compare(a, b, CompareOptions.None)` of the process's current culture; the library fixes that to the order of IMP-030. Items of one type keep their document order, which is file order then position, so an unlisted type's items from several files stay together and in package order.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7. The items of `cui_Control` and `cui_WindowSection` are no longer among the items G53 sorts (`IMP-022`).
 
 ### IMP-029: Items that no group selects are dropped without a message
 
@@ -427,6 +481,8 @@ Registered in `bugs.md`.
 
 [12.0] Not yet specified.
 
+[14.35] The cases of 14.0.7 and two more: an item of type `cui_Control` or `cui_WindowSection` is written only with the action `add` (G12a, G12b) or `edit` (G52). With any other action, or none (`delete`, `merge`, `purge`, `get`, `ADD`), it is dropped with no message (case `cui-other-actions`: all eight items of the two types are dropped, where 14.0.7 wrote all eight from G53). The two types join the lost-`delete` cases of 14.0.7. Registered in `bugs.md`.
+
 ### IMP-030: The NLS word-sort comparison, for the characters of type names
 
 [14.0.7] The order of IMP-028 is the .NET Framework NLS "word sort" with no options. It is not ICU, not `localeCompare`, not code-unit order. The library implements it with sort keys as follows, for the repertoire it covers: U+0020 to U+007E, and U+00C0 to U+00FF without U+00D7 and U+00F7.
@@ -451,11 +507,15 @@ The reference model in `spec/import-load.test.ts` reproduces the order of all 3,
 
 [12.0] Not yet specified.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-031: Where the order depends on the file system or the sort, it is emulated and not read from the OS
 
 [14.0.7] Two things in this document depend on the .NET platform and are emulated on every OS: the NTFS directory order (IMP-004) and the NLS type sort (IMP-030). The library never calls `readdir` order, `Intl.Collator`, `localeCompare` or `String.prototype.sort` on code units for either. Both rules have recorded vectors, so any host can verify the emulation: `listing-order.json` and `nls-word-sort.json`.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-032: The generic copy template copies elements, attributes and text, and drops comments
 
@@ -470,6 +530,8 @@ Attributes keep the order in the file, including the stamps (IMP-009) and prefix
 Probe `raw-namespace-comments-cdata` shows a comment and a processing instruction dropped, an empty element written `<empty />`, a CDATA section split on `]]>`, and an attribute with a namespace prefix kept.
 
 [12.0] Not yet specified.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-033: The import plan is what these rules produce, as a sequence and a list of dropped items
 
@@ -486,6 +548,8 @@ The output format (text and `--json`) belongs to the CLI ticket.
 
 [12.0] Not yet specified.
 
+[14.35] The plan names the two extra groups `G12a` and `G12b` and lists the dropped `cui_Control` and `cui_WindowSection` items of `IMP-029` with the reason `action not selected for this type`. Everything else is as in 14.0.7.
+
 ## What the import loop does with the order
 
 ### IMP-040: Nothing is removed from the dictionary that CImportItems enumerates
@@ -494,4 +558,4 @@ The output format (text and `--json`) belongs to the CLI ticket.
 
 [12.0] Not yet specified.
 
-[14.35] Not yet specified.
+[14.35] Same as 14.0.7: `CImportItems.Import` builds the same `Dictionary` in the same way, and nothing is removed from it.

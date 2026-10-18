@@ -8,6 +8,7 @@ Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`): `CImportItems`, `CItemHelper` (`doImport`, `SetItemIdToLastGeneration`, `GetCurrentIdByUniqueKey`, `GetCurrentIdOfVersion`, `Unlock`, `ExistRelItemInCurVer`, `DoesItemAlreadyExist`, `ItemExistById`), `SUImportContext` and the call sites in `ImportExportManager.ImportProc` (decompiled locally, never committed);
 - the merge probe `fixtures/import-merge/14.0.7-probe/results.json` (quoted below as "the probe"). It was produced by `oracle/merge-probe/` with the vendored 14.0.7 `Libs.dll` and `IOM.dll`: the real `CImportItems` run against a scriptable `ICItemHelper` that records every call, and the real `CItemHelper` run against a stub connection. No server is involved, so the probe pins what the engine sends and how it reacts to scripted answers, not what Aras answers. What the server does with the final item (for example an `edit` whose `where` matches nothing) needs the scratch import fixtures (wayfinder ticket 25).
+- for the `[14.35]` lines: the 14.35 decompile (`.decomp/14.35/`) compared with the 14.0.7 one, and the probes `n06` of `fixtures/import-run/` (`probe-14.35.txt`) and the import scenarios `s01` to `s63` run against the real 14.35 `Libs.dll`. `CImportItems.Import` is the same code apart from the versionable relationship pass (`IMP-332`, `IMP-333`) and the branches for AML batch mode and language packs, which other rules specify.
 
 ## Conventions used by every rule here
 
@@ -34,6 +35,8 @@ Sources:
 
 Because the document is edited in place, a call that fails after step 2 or 3 leaves those edits in the document. The retry of `IMP-250` runs `Import` again on that edited document.
 
+[14.35] `doImport(itemInXml, mergeMode)` throws `ArgumentNullException` (parameter `itemInXml`) for a null document, then creates a `CImportItems` and calls `Import(itemInXml, mergeMode, amlBatchMode: false)`. With `amlBatchMode` false the steps and their order are those of 14.0.7, ending with the send of `IMP-340`. The constructor also evaluates a server-version test that only the language-pack branch of `Import` uses (the `LP-` rules); an item of a package never takes that branch. `mergeMode` and the skip flag are as before.
+
 ## Validation
 
 ### IMP-301: Every Item in the document must have a type attribute
@@ -41,6 +44,8 @@ Because the document is edited in place, a call that fails after step 2 or 3 lea
 [14.0.7] The first thing `Import` does is count `//Item[not(@type)]`. When there is one, it throws `CItemException` with faultcode `-1`, faultstring `Items must have 'type' set` and faultdetail (and `Message`) `Error - empty 'type'`. It is not wrapped (`IMP-304`). Nothing has been requested by then: not even the versionable lookup of the root.
 
 The test is for a missing attribute. An item with `type=""` passes it. The root with an empty type then asks `IsVersionable("")` (probe `V.rootEmptyType` shows the call), which sends the metadata lookup with an empty name (`IMP-170`). No ItemType has that name, so the server's faultcode `0` is thrown and reaches the caller unchanged.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-302: Items to add or edit need an id or a where, and a versionable root exempts its own relationships
 
@@ -61,9 +66,13 @@ A count above zero throws `CItemException` with faultcode `-1`, faultstring `Ite
 - A root addressed by `where` and no `id` has `{id}` empty, so nothing is exempt: every relationship without its own `id` or `where` fails (`versionableRootWhere`, `versionableRootWhereEmptySource`), and so does a root with neither (`versionableRootAddNoIdNoWhere`).
 - An `id` that holds a single quote breaks the XPath of the versionable row: `XPathException`, wrapped by `IMP-304` (`versionableApostropheId`). In the non-versionable row `{id}` is not used, and the same item goes through to the send (`nonVersionableApostropheId`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-303: The edit test reads a child element named action, not the attribute (bug)
 
 [14.0.7] The selection of `IMP-302` writes `action='edit'` where it means `@action='edit'`. That is a test on a child *element* named `action`, so an item with the attribute `action="edit"` and no `id` or `where` is not counted: the import goes on and sends it. Only an `add` is validated; an `edit` addressed by nothing is sent (probe `V.plainEditNoId`: `applyAML` is called with the item) and the server decides what it means. An item that happens to hold an `<action>edit</action>` child is counted whatever its attribute says (`plainEditNoIdWithActionChild`). A correct check would test the attribute. Registered in `bugs.md`.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-304: A failure of Import is wrapped as faultcode -1 when it is an NRE, an XmlException or an XPathException
 
@@ -78,6 +87,8 @@ The wrapped exceptions come from: the XPath of `IMP-302` (a quote in the root `i
 
 Everything else leaves `Import` as it is. That includes the `CItemException`s thrown by `IMP-301`, `IMP-302` and the helper calls (`IsVersionable`, `Unlock`, `ExistRelItemInCurVer`, `SetItemIdToLastGeneration`, and the `applyAML` of every request, faultcode `0` included: probes `M.getFault999`, `M.unlockFails`, `F.finalApply`). The `.NET` wording of `{original Message}` for a parse error or an XPath error is the framework's; the port reproduces the shape `{message} Can't merge item {text} {type}` and the exception kind, not the framework's sentence.
 
+[14.35] Same as 14.0.7, except that the null reference of `IMP-333` no longer occurs, so it is no longer one of the exceptions this handler wraps.
+
 ## Merge mode
 
 Everything in this section runs only when `mergeMode` is true. With it false, `Import` does not look at `add` items, makes no `get`, and calls `IsVersionable` only for the root (probe `M.notMerge`).
@@ -86,11 +97,15 @@ Everything in this section runs only when `mergeMode` is true. With it false, `I
 
 [14.0.7] The add list is `.//Item[@action='add']` from the document node: the root, if it is an add, and every nested add at any depth and in any position, `related_id/Item` included, in document order. It is taken once, before anything else is changed, and the list is a snapshot: the later edits to `id` and `action` do not change which items it holds, and an item the rules remove from the document (`IMP-315`) stays in it.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-311: A versionable add is first moved to the latest generation of its id
 
 [14.0.7] Each item of the add list, in order, is asked `IsVersionable(type)` with its own `type` (`GetAttribute`; a missing type has been refused by `IMP-301`). The lookups are cached per type (`IMP-170`), so the requests are the distinct types in order of first appearance, after the root's. When the type is versionable the helper's `SetItemIdToLastGeneration(item)` runs on that item (`IMP-320`), and its effects (the new `id`, the new `source_id` texts) are in place before the item's `id` is read for `IMP-312`. A non-versionable item is not touched.
 
 An add item with no `id` is not an error here when its type is not versionable (it stays an `add` and takes no part in the existence check, `IMP-312`). For a versionable type the call is made even with no `id` (probe `G.versionableNoIdSkipsDictionary`, whose stub helper accepts it), and the real helper refuses it (`IMP-320` step 1), so an add addressed only by `where` of a versionable type cannot be imported in merge mode.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-312: One idlist get per type asks which of the add items exist
 
@@ -106,17 +121,23 @@ The ids are joined with `,` and no space. A faultcode `0` is the answer "none of
 
 Add items without an `id`, and every item whose action is not `add`, are not asked about: they are sent as they are (`M.addWithoutIdIgnored`, `M.editAndDeleteIgnored`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-313: An item found by the get is unlocked first when it is locked
 
 [14.0.7] For each id of the type's list, in order, the engine looks in the answer for `Envelope/Body/Result/Item[@id='{id}']`: `Envelope`, `Body` and `Result` are matched by local name, in the SOAP namespace or in no namespace, and `Item` is a direct child of `Result`. The `id` is compared as a string, case-sensitively (probe `M.idCaseSensitive`: an add with `id="a"` does not match an answer item `A`, and stays `add`). An answer with another envelope namespace, or with the `Item` inside another element, finds nothing (`M.responseOtherNamespace`, `M.responseItemInsideItems`). An id not found in the answer is skipped.
 
 When it is found and the item has a `locked_by_id` child (a direct child) with non-empty text, `Unlock(id, type)` (`IMP-322`) is called before the item is changed. An empty `locked_by_id` is not locked (`M.lockedEmpty`). The answer is read once per type, so an id listed twice is unlocked twice (`M.lockedDuplicateId`). A failing unlock ends the call with that exception, with the document unchanged (`M.unlockFails`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-314: Every add item with the found id becomes an edit
 
 [14.0.7] Once an id is found (and unlocked, `IMP-313`), the engine walks the whole add list of `IMP-310` and, for each item whose `id` attribute equals the found id (an ordinal comparison), unless `IMP-315` removes it, sets its `action` attribute to `edit`. The attribute keeps its place among the item's attributes, and nothing else about the item changes: its `id`, its properties and its relationships stay, and a nested add whose own id was not found stays an `add` (`M.onlySomeExist`, `M.existsBecomesEdit`).
 
 The match is by id only, not by type: an add of another type that carries the same id is switched too, even though the get for its own type found nothing (`M.sameIdOtherType`). Real ids are unique across the database, so this is only visible in hand-made packages.
+
+[14.35] Same as 14.0.7.
 
 ### IMP-315: A system property of Change Controlled Relationship is removed instead of edited
 
@@ -129,13 +150,19 @@ When `keyed` equals `Change Controlled Relationship` and `name` is one of `relat
 
 When the removed item is the root of the document, the document is left with no root. Its `OuterXml` is the empty string, and the send of `IMP-340` fails with `XmlException` (`Root element is missing.`; the real `applyAML("")` sends nothing: probe `X.lookups`, `applyAML.emptyString`), which `IMP-304` wraps (`C.ccr.rootProperty`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-316: A removal that meets the same item twice throws a null reference (bug)
 
 [14.0.7] The removal is run for each id of the type's list. When the list holds the same id twice (two items with that id, or one listed twice), the second pass takes the same item from the add list again. It has been detached from the document by the first, so its `ParentNode` is null and `RemoveChild` throws `NullReferenceException`, which `IMP-304` wraps as `Object reference not set to an instance of an object. Can't merge item {text} {type}` (probe `C.ccr.sameIdTwoNodes`). The other item with that id has been switched by then, and stays switched in the document. A correct engine would remove the item once. Registered in `bugs.md`.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-317: Merge never deletes, and leaves what the file does not mention
 
 [14.0.7] Merge mode only turns `add` into `edit` (and removes the properties of `IMP-315`). It sends no `delete` and no `purge`, it does not look at `edit`, `delete`, `merge`, `get` or other actions, and relationships of an existing item that are not in the file are not touched in the database (the `edit` carries only what the file holds). The item sent is the document as the earlier rules left it.
+
+[14.35] Same as 14.0.7.
 
 ## Helper lookups of the merge
 
@@ -149,13 +176,19 @@ When the removed item is the root of the document, the document is left with no 
 4. When the new id is null or empty, or equals the item's id, nothing changes (`S.oldGenerationSameIdAsLatest`, `S.uniqueKeyNoPropertiesLeavesIdAlone`).
 5. Otherwise the item's `id` attribute is set to the new id, and the text of every `source_id` in `Relationships/Item/source_id` (the direct `Relationships` children of the item, their direct `Item` children, their `source_id`) is replaced by the new id, whatever it held (`S.oldGeneration`: a relationship whose `source_id` was `OTHER` is also changed). Relationships nested deeper, and the `related_id` side, are left alone (`S.nestedInRelatedIdUntouched`, `S.oldGeneration`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-321: The unique-key lookup is used with a missing key property being an error
 
 [14.0.7] The merge, and `DoesItemAlreadyExist` (`IMP-351`), call `GetCurrentIdByUniqueKey(item, true)`, specified in `EXP-041`: the keyed and required properties of the type, other than `generation`, are read from the child elements of the **package item** and sent as a `get`; the first `Item` of the answer gives the id, any fault gives null. With `true`, a key property that the package item lacks is `CItemException` faultcode `-1` (`Property {name} that is part of the unique key for type {type} is not part of the response`: probe `S.uniqueKeyMissingPropertyThrows`), which leaves `SetItemIdToLastGeneration` and `Import` unwrapped. A type with no keyed required property, or whose property request fails with faultcode `0`, gives null, and the item keeps its id.
 
+[14.35] Same as 14.0.7, with one difference in the keyed-properties request: it is looked up in the cache (`IMP-102`) and **a failed request stays there** (`IMP-183`). After the first failure for a type, faultcode `0` included, every later call for that type throws the same exception without a request and gives null, or throws it, as the first did (probe `n09`: two calls send one request, where 14.0.7 sends two).
+
 ### IMP-322: Unlock sends one unlock and lets any fault through
 
 [14.0.7] `Unlock(id, type)` sends `<Item type='{type}' id='{id}' action='unlock' doGetItem='0' />` with `applyAML` and returns nothing. Every fault is thrown, faultcode `0` included (probe `X.lookups`, `unlock.ok`, `unlock.fault`, `unlock.fault0`).
+
+[14.35] Same as 14.0.7.
 
 ## Versionable processing
 
@@ -171,6 +204,8 @@ For each relationship item:
 
 The `where` the pass writes holds the interpolated texts unescaped. It is set with `SetAttribute`, so the document escapes it when it is written, and the texts reach the attribute as the DOM held them (`P.apostropheInRelated`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-331: An mp_MacCondition relationship is matched by its source and ref ids
 
 [14.0.7] For an `mp_MacCondition`, `ref_id` is the text of the relationship's `ref_id` child; a missing `ref_id` is a `NullReferenceException` (wrapped by `IMP-304`; probe `P.mpMacNoRefId`). The engine asks with `applyAML`:
@@ -181,6 +216,8 @@ The `where` the pass writes holds the interpolated texts unescaped. It is set wi
 
 A `CItemException` with a faultcode other than `0` is thrown (`P.mpMacFault999`). A faultcode `0` means "no such relationship": the relationship's `action` attribute is set to `add` and nothing else changes (`P.mpMacMissing`: an existing `where` and the `id` stay). Otherwise the relationship's `where` is set to `source_id='{source_id}' and ref_id='{ref_id}'` and its `action` to `edit`; its `id` attribute is **not** removed (`P.mpMacFound`). The `related_id` of such a relationship is not looked at (`P.mpMacWithRelatedIdIgnored`).
 
+[14.35] Same as 14.0.7.
+
 ### IMP-332: Any other relationship with a related_id is matched by its source and related ids
 
 [14.0.7] Let `related` be the relationship's `related_id` child. Its text is `related_id`: the inner text of the element when it holds no `Item`; and when its first `Item` child exists, the value of the first attribute selected by `related_id/Item/@id` from the relationship (`IMP-333` for the case it is not there). Then:
@@ -190,11 +227,20 @@ A `CItemException` with a faultcode other than `0` is thrown (`P.mpMacFault999`)
 
 So the relationship is always re-addressed by its two ends, and its original id is dropped, which is what makes it follow the source to a new generation: the relationship of the old generation has a different id than the one in the file. In merge mode the idlist get of `IMP-312` has already run for the relationship's own id; its result is overwritten here (`P.mergeThenVersionable`).
 
+[14.35] As in 14.0.7, with a different rule for a `related_id` that holds an `Item`. Let `related` be the relationship's `related_id` child; its text is the inner text when it holds no `Item`, as before. When it does, `related_id` is the value of the first attribute selected by `related_id/Item/@id` from the relationship, or null when there is none, and:
+
+1. when that value is null or empty and the **first** `Item` child of `related` has `action` exactly `get` (ordinal), the relationship is skipped whole: nothing is changed, not even its `id` attribute, and no request is made (probe `n06`);
+2. otherwise the relationship goes on with `related_id` as it is, a null being the empty string in every text built from it (`IMP-353`).
+
+The rest is as in 14.0.7: the relationship's own `id` attribute is removed, `ExistRelItemInCurVer(type, source_id, related_id)` decides, and the relationship becomes an `add`, or an `edit` with `where` = `source_id='{source_id}' and related_id='{related_id}'`. A relationship with no `related_id` child is left alone, as before.
+
 ### IMP-333: A related_id with an Item and no id throws a null reference (bug)
 
 [14.0.7] When `related_id` holds an `Item`, the engine reads `related_id/Item/@id` as an attribute node and takes its `Value` without testing that it exists. An `Item` without `id` (for example one addressed by `where`) leaves the selection empty and raises `NullReferenceException`, which `IMP-304` wraps as `Object reference not set to an instance of an object. Can't merge item {text} {type}`; the relationships already handled keep their edits in the document, and the document is not sent (probe `P.relatedIdWithItemNoId`). The selection is made from the relationship, not from the first `Item`, so it takes the first `id` attribute among all the `Item`s under `related_id`: when the first one has no `id` and a later one has, that later id is used and there is no fault (probe `P.relatedIdTwoItemsSecondHasId`). A correct engine would fall back to the text, or to the `where`. Registered in `bugs.md`.
 
 An `Item` under `related_id` without `id` and `where`, and with action `add`, is refused earlier by `IMP-302`. The null reference is therefore seen for an `Item` that has a `where`, or whose action is not `add` or `edit`, and for an `edit` (`IMP-303`).
+
+[14.35] Fixed. The selection of the id is guarded, so an `Item` under `related_id` with no `id` no longer raises a `NullReferenceException`: it is skipped when its action is `get` and otherwise handled by `IMP-353` (probes `n06`, `n06b`; 14.0.7 failed the package with `Object reference not set to an instance of an object. Can't merge item … `). The selection is still made from the relationship, so the first `id` attribute among all `Item`s under `related_id` is used, as in 14.0.7; a later item's id is used when the first has none, and the action test then does not apply.
 
 ### IMP-334: ExistRelItemInCurVer asks whether the relationship already exists between the two ends
 
@@ -206,11 +252,15 @@ An `Item` under `related_id` without `id` and `where`, and with action `add`, is
 
 Any answer is true. A `CItemException` with faultcode `0` is false. Any other `CItemException` is thrown (probe `X.lookups`, `rel.found`, `rel.missing`, `rel.error999`). Values are not escaped: `&` in either id is an `XmlException` from the request (`rel.unescapedValues`), which `IMP-304` wraps. Nothing is cached.
 
+[14.35] Same as 14.0.7.
+
 ## Sending
 
 ### IMP-340: The edited document is sent as it stands and its answer is ignored
 
 [14.0.7] The last step of `Import` is `applyAML(itemInXml.OuterXml)`: the document, as the rules above left it, serialised as the DOM writes it. Its answer is not read. A fault is thrown as it is, faultcode `0` included, and is not wrapped (probe `F.finalApply`: `sendFaultCode0`, `sendFault999`). What the import loop does with that `CItemException` is `IMP-4xx`'s. For the `edit` with a `where` written by `IMP-331` and `IMP-332`, whether a `where` that matches nothing is a fault is the server's; the scratch import fixtures (wayfinder ticket 25) record it.
+
+[14.35] Same as 14.0.7 when `amlBatchMode` is false, the default: the document is sent with `applyAML` as the rules above left it, and its answer is ignored. In the AML batch mode the send is skipped and the batch sends it (`IMP-5xx`).
 
 ## The skip path when merge mode is off
 
@@ -226,6 +276,8 @@ When it is true:
 
 When it is false, the item goes on to the checks and to `doImport`. The test applies to every `add` item, whatever its type.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-351: DoesItemAlreadyExist asks by id for plain items and by version for versionable ones
 
 [14.0.7] `DoesItemAlreadyExist(item, pair)` is called with `pair` null, the only call there is; the overload that takes an `IdTypePair` is not reachable and the port does not offer it (the probe `E.idTypePairIsUsed` shows that the pair replaces the item's own id and type and receives the final id). With the item's `id` and `type` attributes (`GetNamedItem`, so a missing one is empty):
@@ -237,6 +289,16 @@ When it is false, the item goes on to the checks and to `doImport`. The test app
 
 The requests are those of `IMP-151`, `EXP-041` and `IMP-352`; the metadata lookup for `IsVersionable` comes first and is cached.
 
+[14.35] Same as 14.0.7.
+
 ### IMP-352: ItemExistById treats any CItemException as "does not exist"
 
 [14.0.7] `ItemExistById(id, type)` sends `<Item type='{type}' action='get' select='id'><id>{id}</id></Item>` with `applyAML`. A normal answer is true. A `CItemException` of **any** faultcode is false: a server error, a permission fault or a dropped connection are taken for "the item is not there", and the import then goes on to add it (probe `X.lookups`, `rel.error999`, whose first column is `ItemExistById`). Exceptions that are not `CItemException` (a request that does not parse) are thrown. Nothing is cached. The package-definition rules (`IMP-4xx`) use the same method for the elements of a package.
+
+[14.35] Same as 14.0.7.
+
+### IMP-353: A related Item with no id and an action other than get is matched on an empty related id (bug)
+
+[14.0.7] Not present: the same relationship raises the null reference of `IMP-333`.
+
+[14.35] When `IMP-332` goes on with an `Item` under `related_id` that has no `id` attribute (or an empty one) and whose action is not `get` (an `add` or `edit` addressed by `where`, for example), `related_id` is null or empty. The request of `IMP-334` is then `<Item type='{type}' action='get' select='id'><source_id>{source_id}</source_id><related_id></related_id></Item>`, and when it finds something the relationship becomes an `edit` with `where="source_id='{source_id}' and related_id=''"` (probe `n06b`: `where="source_id='P…1' and related_id=''"`). The relationship is matched on an empty related id, not on the item its `where` names. A correct engine would match on the related item, or leave the relationship alone. Registered in `bugs.md`.
