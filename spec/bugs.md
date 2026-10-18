@@ -570,4 +570,38 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the list of polymorphic ItemType names is a shared static that the first worker assigns empty before it requests the names and fills. A worker that runs `ReplaceReferencesToPolyLists` in that window reads an empty or partly filled list and converts no list Property whose data source is polymorphic. With the request held for three seconds, one of eight items was converted and seven were not.
 - **Why it is a bug:** the output of an item depends on whether another item happened to ask first. A correct engine would wait for the names or fetch them before the loop.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`, `Aras.Tools.SolutionUpgrade.CItemHelper::ReplaceReferencesToPolyLists`.
+
+## DBP-090: a branch and a message that can never run
+
+- **Behaviour:** after testing an `ApplyUpdate` answer for a fault, the engine tests `isEmpty()`, which is true only for a fault with faultcode `0`. The branch that sends `Could not get applied update id.` is never taken, and the catalogue's `DBPatchImportFailed` is never sent. A success answer without one item throws `Not a single item` at `getID()` instead.
+- **Why it is a bug:** the test was meant to catch an answer with no applied-update id, and cannot.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ApplyDBUpdateManifest`.
+- **Versions:** 14.35.
+
+## DBP-091: a short software_version crashes the run
+
+- **Behaviour:** the release string is built with `Substring(0, 2)` on the manifest's first `software_version` text. An empty element, or one with a single character, throws `ArgumentOutOfRangeException` after `ValidateRootUser` and before anything is created.
+- **Why it is a bug:** a correct engine would take what the text holds, as it does for a missing element (`00`).
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ApplyDBUpdateManifest`.
+- **Versions:** 14.35.
+
+## DBP-092: a patch file with an XML declaration breaks the request
+
+- **Behaviour:** the `ApplyUpdate` request embeds the patch document's `InnerXml`, which includes its XML declaration (and a DOCTYPE). Inside `<Item>` the declaration makes `LoadXml` throw `XmlException` before the request is sent. The run ends with the `DatabaseUpgrade` row still at status `0`.
+- **Why it is a bug:** a correct engine would embed the root element only.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ApplyDBUpdateManifest`.
+- **Versions:** 14.35.
+
+## DBP-093: entry values and patch XML are interpolated unescaped
+
+- **Behaviour:** `up_number`, `name`, `generation` and the patch XML go into the `ApplyUpdate` request without escaping. A value with `<`, `&` or a quote makes the request malformed, or changes what the server's own AML selects.
+- **Why it is a bug:** a correct engine would escape text it puts into XML.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ApplyDBUpdateManifest`.
+- **Versions:** 14.35.
+
+## DBP-094: one failed patch does not stop the later ones
+
+- **Behaviour:** after a patch that is missing, unreadable, refused by the server or not linked, the loop goes on with the next entry. The run ends with status `2` on the `DatabaseUpgrade` row and no exception, so a host that does not read the `error` channel sees a success.
+- **Why it is a bug:** later patches can depend on the failed one, and the method's `void` result hides the failure.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ApplyDBUpdateManifest`.
 - **Versions:** 14.35.
