@@ -20,6 +20,8 @@ export function encodeItemFile(doc: XmlDocument): Buffer {
  * `IOWrapper.XmlDocumentSaveWithSettings(doc, path)` without the path normalisation: creates or truncates the file and
  * writes the item file. A document that cannot be written leaves the byte-order mark and the text before the failing
  * node in the file, and the exception goes on to the caller. The caller applies the engine's path rules first (EXP-421).
+ * The source-map entry stays unmapped until the path ticket (the build ticket that implements NormalizeLongPath,
+ * EXP-421; wayfinder tickets 28 and 33 call these wrappers) makes this wrapper apply the path rules.
  * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427 EXP-428
  */
 export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string): void {
@@ -35,7 +37,9 @@ export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string): voi
 
 /**
  * `IOWrapper.XmlDocumentSave(doc, path)` without the path normalisation: `XmlDocument.Save(path)`, which is how the
- * manifest is written. The caller applies the engine's path rules first (MAN-004).
+ * manifest is written. The caller applies the engine's path rules first (MAN-004). The source-map entry stays
+ * unmapped until the path ticket (the build ticket that implements NormalizeLongPath, EXP-421; wayfinder tickets 28
+ * and 33 call these wrappers) makes this wrapper apply the path rules.
  * @spec MAN-006
  */
 export function xmlDocumentSave(doc: XmlDocument, path: string): void {
