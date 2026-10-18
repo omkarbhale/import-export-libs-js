@@ -444,4 +444,52 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** `DeleteSqlItems` accepts an SQL item that has its id only as an `<id>` child, but always sends the `id` attribute, which is empty: `<Item type='sql' id='' action='delete' />`. The item is not deleted by this request (what the server answers to it was not probed), and it is still imported afterwards.
 - **Why it is a bug:** the check passes for an item the delete cannot name. A correct engine would send the child's text.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::DeleteSqlItems`.
+
+## LP-014: a failed Language request is taken as "no languages"
+
+- **Behaviour:** the preprocessor asks the server for its languages and ignores whether the request worked. A fault, an empty result or a response that is not a SOAP envelope gives an item count of 0 or -1, so no language is supported and no translation is written. The preprocessor finishes without an error, the `Fixes` folder is empty, and the import that follows imports a package with no items and reports success.
+- **Why it is a bug:** a correct engine would stop with the server's fault, so a user who lacks the right to read `Language` items, or whose session has ended, is told so.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::GetSupportedLanguages`.
+- **Versions:** 14.0.7.
+
+## LP-020: the item type is the file name with every `.xml` removed
+
+- **Behaviour:** the name of a row file is made with `Replace(".xml", "")` on the file name, so the text is removed wherever it occurs, in lower case only. `Foo.xmlbak` gives `Foobak`, `Foo.XML` stays `Foo.XML`, and `Foo.xml.xml` gives `Foo`, the same as `Foo.xml`, whose output file it overwrites.
+- **Why it is a bug:** a correct engine would remove only the extension, and only for the files the folder is meant to hold.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
+- **Versions:** 14.0.7.
+
+## LP-021: a configuration without `itemtype` entries fails on the first row file
+
+- **Behaviour:** the file filter skips a file only when the configuration has entries and the file's name is not one of them. With no `itemtype` entry nothing is skipped, and the lookup that follows throws `KeyNotFoundException` for the first row file, after the temp package was made.
+- **Why it is a bug:** the test is written so that "no entries" would mean "all item types", the way an empty property list means all properties. A correct engine would then use an empty property list for every file, or skip them all.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
+- **Versions:** 14.0.7.
+
+## LP-023: the property list is lower-cased, the property names are not
+
+- **Behaviour:** the `list` of an `itemtype`'s `properties` element is trimmed as a whole and lower-cased, then split on commas without trimming the parts. Each property's `__name` is compared with those parts as written. A property whose name has an upper-case letter is never selected by a non-empty list, and `name, label` selects `name` only. An empty list selects every property.
+- **Why it is a bug:** a correct engine would compare both sides the same way, and trim each part.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::GetItemTypes` and `::GetUpdateParameters`.
+- **Versions:** 14.0.7.
+
+## LP-025: the row's attributes are interpolated unescaped into the where clause
+
+- **Behaviour:** the `where` of each generated `edit` item is `[table].name='value'` for every attribute of the row's `Item` except `keyed_name` and `type`, with the value between apostrophes as the XML gives it. An `id` of `a'b` gives `[Foo].id='a'b'`. The table is the file name with spaces replaced by underscores.
+- **Why it is a bug:** a correct engine would double the apostrophe, or match on the id alone. As it is, the clause is malformed, or matches other items, for a value with an apostrophe.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyLanguagePack`.
+- **Versions:** 14.0.7.
+
+## LP-033: the fixes are written where the import does not look for a dotted package name
+
+- **Behaviour:** the preprocessor writes the fixes to `<temp>\<whole package name>\Import\Fixes`, while the manifest it writes sends the import to `<temp>\<last segment of the name>\Import`, and for a core or default package (`com.aras.innovator.`, `com.aras.defaults.`) to a folder with no `Import` at all. A name with a dot therefore fails to load, with a folder-not-found error naming the wrong folder.
+- **Why it is a bug:** a correct engine would write the fixes into the folder that the manifest it saved points to.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::CopyToTempDirectory`.
+- **Versions:** 14.0.7.
+
+## LP-035: a failed preprocessor leaves its temp folder behind
+
+- **Behaviour:** the temp folder is made in the constructor, and the host disposes the preprocessor only if the constructor returned. Any failure after the folder is made (a missing configuration file or `xml` folder, a malformed file, a duplicate property, an illegal package name) leaves the folder and what was written in it, even without `lpdebug`.
+- **Why it is a bug:** a correct engine would remove the folder it made before it lets the exception out.
+- **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::.ctor` (and the host's `ConsoleUpgrade::Main`).
 - **Versions:** 14.0.7.

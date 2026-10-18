@@ -1,0 +1,251 @@
+#### config file and xml folder
+## config-missing
+ctor => System.IO.FileNotFoundException: "File not found : %USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\no-such\\ImportConfig.xml."
+temp dirs created => 1
+## config-is-directory
+ctor => System.IO.FileNotFoundException: "File not found : %USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\config-is-directory\\ImportConfig.xml."
+temp dirs created => 1
+## config-malformed
+ctor => System.Xml.XmlException: "Unexpected end of file while parsing Name has occurred. Line 1, position 25."
+temp dirs created => 1
+## config-empty
+ctor => System.Xml.XmlException: "Root element is missing."
+temp dirs created => 1
+## config-only-no-xml-folder
+ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\config-only-no-xml-folder\\xml'."
+temp dirs created => 1
+## config-other-file-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## config-xml-sibling-is-file
+ctor => System.IO.IOException: "The directory name is invalid.\r\n"
+temp dirs created => 1
+#### config path spellings
+## path-bare-file-name
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## path-forward-slashes
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## path-with-dotdot
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## path-empty-string
+ctor => ok
+temp dirs created => 0
+Dispose => ok
+temp dirs after Dispose => 0
+## path-null
+ctor => ok
+temp dirs created => 0
+Dispose => ok
+temp dirs after Dispose => 0
+#### package names and the temp layout
+## pkg-plain
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "LIBSJS-SCRATCH-LP"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  file "imports.mf" => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+  dir  "LIBSJS-SCRATCH-LP" => 
+  dir  "LIBSJS-SCRATCH-LP\\Import" => 
+  dir  "LIBSJS-SCRATCH-LP\\Import\\Fixes" => 
+  file "LIBSJS-SCRATCH-LP\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-with-dots
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "My.Pkg"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  file "imports.mf" => "<imports>\r\n  <package name=\"My.Pkg\" path=\"Pkg\\Import\" />\r\n</imports>"
+  dir  "My.Pkg" => 
+  dir  "My.Pkg\\Import" => 
+  dir  "My.Pkg\\Import\\Fixes" => 
+  file "My.Pkg\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-standard-core
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "com.aras.innovator.core"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "com.aras.innovator.core" => 
+  dir  "com.aras.innovator.core\\Import" => 
+  dir  "com.aras.innovator.core\\Import\\Fixes" => 
+  file "com.aras.innovator.core\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"com.aras.innovator.core\" path=\".\\\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-standard-default
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "com.aras.defaults.Lang"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "com.aras.defaults.Lang" => 
+  dir  "com.aras.defaults.Lang\\Import" => 
+  dir  "com.aras.defaults.Lang\\Import\\Fixes" => 
+  file "com.aras.defaults.Lang\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"com.aras.defaults.Lang\" path=\".\\\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-trailing-dot
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "a.b."
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "a.b" => 
+  dir  "a.b\\Import" => 
+  dir  "a.b\\Import\\Fixes" => 
+  file "a.b\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"a.b.\" path=\"\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-with-space
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "a b"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "a b" => 
+  dir  "a b\\Import" => 
+  dir  "a b\\Import\\Fixes" => 
+  file "a b\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"a b\" path=\"a b\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-empty
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => ""
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "Import" => 
+  dir  "Import\\Fixes" => 
+  file "Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"\" path=\"\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-slash
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "a/b"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "a" => 
+  dir  "a\\b" => 
+  dir  "a\\b\\Import" => 
+  dir  "a\\b\\Import\\Fixes" => 
+  file "a\\b\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"a/b\" path=\"a/b\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-backslash
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "a\\b"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "a" => 
+  dir  "a\\b" => 
+  dir  "a\\b\\Import" => 
+  dir  "a\\b\\Import\\Fixes" => 
+  file "a\\b\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+  file "imports.mf" => "<imports>\r\n  <package name=\"a\\b\" path=\"a\\b\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-dotdot
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => ".."
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  file "imports.mf" => "<imports>\r\n  <package name=\"..\" path=\"\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+dotdot Fixes folder outside the LanguagePack folder => True
+## pkg-illegal-char-pipe
+ctor => System.ArgumentException: "Illegal characters in path."
+temp dirs created => 1
+## pkg-colon
+ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path 'a:b\\Import\\Fixes'."
+temp dirs created => 1
+## pkg-quote
+ctor => System.Xml.XPath.XPathException: "'imports/package[@name='a'b']' has an invalid token."
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  dir  "a'b" => 
+  dir  "a'b\\Import" => 
+  dir  "a'b\\Import\\Fixes" => 
+  file "a'b\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+## pkg-unicode
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "P\u00FCck"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  file "imports.mf" => "<imports>\r\n  <package name=\"P\u00FCck\" path=\"P\u00FCck\\Import\" />\r\n</imports>"
+  dir  "P\u00FCck" => 
+  dir  "P\u00FCck\\Import" => 
+  dir  "P\u00FCck\\Import\\Fixes" => 
+  file "P\u00FCck\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 1
+## pkg-rooted-path
+ctor => ok
+TempManifestFilePath => "%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\imports.mf"
+TempPackagesNames => "%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\rooted-out\\Lp"
+request => "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code,suffix\" />"
+temp dirs created => 1
+  file "imports.mf" => "<imports>\r\n  <package name=\"%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\rooted-out\\Lp\" path=\"%USERPROFILE%\\AppData\\Local\\libsjs23-probe\\cases\\rooted-out\\Lp\\Import\" />\r\n</imports>"
+Dispose => ok
+temp dirs after Dispose => 1
+rooted package folder exists outside the temp folder => True
+#### debug retention and Dispose
+## debug-false
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 0
+## debug-true
+ctor => ok
+temp dirs created => 1
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item></AML>"
+Dispose => ok
+temp dirs after Dispose => 1
+## dispose-twice-and-after-external-delete
+Dispose 1 => ok
+Dispose 2 => ok
+temp dirs left => 0
+Dispose after external delete => ok
+Dispose with a locked file => System.IO.IOException: "The process cannot access the file 'extra.txt' because it is being used by another process."
+temp dir still there => True
+#### the TempManifestFile object and the empty-path constructor
+TempManifestFile is the object passed in => True
+manifest names => "PKG"
+empty LPPath "" => TempManifestFilePath="imports.mf" names=0 requests=0
+empty LPPath "" => TempManifestFilePath="imports.mf" names=0 requests=0
+new dirs after empty-path runs => 0
+## null arguments
+null iOWrapper => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: iOWrapper"
+null cItemHelper => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: cItemHelper"
+null manifestFile => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: manifestFile"
+new dirs after null runs => 0
