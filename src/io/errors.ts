@@ -51,6 +51,17 @@ export class DirectoryNotFoundException extends IOException {
   }
 }
 
+/** `System.IO.PathTooLongException`: a path or a path segment .NET Framework 4.8 refuses (EXP-420, EXP-421). */
+export class PathTooLongException extends IOException {
+  override name = "PathTooLongException";
+
+  constructor() {
+    super(
+      "The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.",
+    );
+  }
+}
+
 /** `System.UnauthorizedAccessException` for a path. */
 export class UnauthorizedAccessException extends Error {
   override name = "UnauthorizedAccessException";
