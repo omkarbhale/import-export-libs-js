@@ -1,7 +1,10 @@
+import { XPathException, XmlException } from "../xml/errors.js";
+
 /**
  * The few .NET behaviours the client reproduces: an exception that carries its
- * full type name, which IOM writes into the faults it makes (WIRE-050), and
- * `int.Parse` / `int.TryParse` with the invariant culture and
+ * full type name, which IOM writes into the faults it makes (WIRE-050), the
+ * exception types the engine catches by name (EXP-054), `string.IsNullOrWhiteSpace`,
+ * and `int.Parse` / `int.TryParse` with the invariant culture and
  * `NumberStyles.Integer` (WIRE-021).
  */
 
@@ -19,6 +22,33 @@ export class DotNetException extends Error {
   get faultString(): string {
     return `${this.typeName}: ${this.message}`;
   }
+}
+
+/** `System.Xml.XmlException`, whether it came from the client's parser or from the XML core. */
+export function isXmlException(error: unknown): error is Error {
+  return error instanceof XmlException || (error instanceof DotNetException && error.typeName === "System.Xml.XmlException");
+}
+
+/** `System.Xml.XPath.XPathException`. */
+export function isXPathException(error: unknown): error is Error {
+  return error instanceof XPathException || (error instanceof DotNetException && error.typeName === "System.Xml.XPath.XPathException");
+}
+
+/** `System.NullReferenceException`. */
+export function isNullReference(error: unknown): error is Error {
+  return error instanceof DotNetException && error.typeName === "System.NullReferenceException";
+}
+
+/** The exception .NET throws for a member used on a null reference. */
+export function nullReference(): DotNetException {
+  return new DotNetException("System.NullReferenceException", "Object reference not set to an instance of an object.");
+}
+
+const WHITE_SPACE = /^[\t-\r \u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/;
+
+/** `string.IsNullOrWhiteSpace`: .NET's `Char.IsWhiteSpace` set, which is not JavaScript's `\s`. */
+export function isNullOrWhiteSpace(text: string | null | undefined): boolean {
+  return text === null || text === undefined || WHITE_SPACE.test(text);
 }
 
 const INT32_FORMAT = /^[\t\n\v\f\r ]*([+-]?)([0-9]+)[\t\n\v\f\r ]*$/;

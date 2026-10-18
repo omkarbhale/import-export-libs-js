@@ -217,6 +217,8 @@ class Parser {
     const name = this.text.slice(begin, this.index);
     const bad = name === "" ? this.text.charAt(begin) : NAME_START.test(name.charAt(0)) ? "" : name.charAt(0);
     if (bad !== "") this.fail(`Name cannot begin with the '${bad}' character, hexadecimal value ${hex(bad)}.`, begin);
+    // a '<' straight after a name is part of the name token to .NET, which refuses it there (EXP-004)
+    if (this.text.charAt(this.index) === "<") this.fail(`The '<' character, hexadecimal value 0x3C, cannot be included in a name.`, this.index);
     return name;
   }
 
