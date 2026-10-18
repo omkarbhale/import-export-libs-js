@@ -1,0 +1,75 @@
+=== x-latin1-nodecl
+EXC: System.Xml.XmlException :: Invalid character in the given encoding. Line 1, position 54.
+LOG: 
+=== x-utf8-valid-nodecl
+RESULT: <AML><Item type="List" action="add" id="u8" tempKeyName="a"><name>café</name></Item></AML>
+ITEMS: 1
+LOG: 
+=== x-cp1252-decl
+EXC: Aras.Tools.SolutionUpgrade.CItemException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8. Unable to apply build.xsl.
+  faultcode=-1 faultstring=   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParsePI(StringBuilder piInDtdStringBuilder)\r\n   at System.Xml.XmlTextReaderImpl.ParseElementContent()\r\n   at System.Xml.XmlLoader.LoadNode(Boolean skipOverWhitespace)\r\n   at System.Xml.XmlLoader.LoadDocSequence(XmlDocument parentDoc)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.LoadPackageDom(String solutionPath, TextWriter logWriter) bInnError=True
+  inner=System.Xml.XmlException :: Unexpected XML declaration. The XML declaration must be the first node in the document, and no white space characters are allowed to appear before it. Line 1, position 8.
+LOG: 
+=== x-utf16-decl-over-utf8
+EXC: System.Xml.XmlException :: There is no Unicode byte order mark. Cannot switch to Unicode.
+LOG: 
+=== x-unknown-enc-decl
+EXC: System.Xml.XmlException :: System does not support 'no-such-enc' encoding. Line 1, position 31.
+LOG: 
+=== x-utf8-decl-latin1-bytes
+EXC: System.Xml.XmlException :: Invalid character in the given encoding. Line 1, position 92.
+LOG: 
+=== x-utf16le-bom
+RESULT: <AML><Item type="List" action="add" id="le" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-utf16be-bom
+RESULT: <AML><Item type="List" action="add" id="be" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-utf32le-bom
+RESULT: <AML><Item type="List" action="add" id="u32le" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-utf32be-bom
+RESULT: <AML><Item type="List" action="add" id="u32be" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-utf16le-nobom
+RESULT: <AML><Item type="List" action="add" id="le" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-utf16be-nobom
+RESULT: <AML><Item type="List" action="add" id="be" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-bom-only
+EXC: System.Xml.XmlException :: Root element is missing.
+LOG: 
+=== x-raw-control-char
+EXC: System.Xml.XmlException :: '', hexadecimal value 0x01, is an invalid character. Line 1, position 51.
+LOG: 
+=== x-name-hash
+RESULT: <AML><Item type="List" action="add" id="hash" tempKeyName="a#b" /></AML>
+ITEMS: 1
+LOG: 
+=== x-name-percent
+RESULT: <AML><Item type="List" action="add" id="pct" tempKeyName="100%" /><Item type="List" action="add" id="pct20" tempKeyName="a%20b" /><Item type="List" action="add" id="pct41" tempKeyName="a%41" /></AML>
+ITEMS: 3
+LOG: 
+=== x-name-chars
+RESULT: <AML><Item type="List" action="add" id="space" tempKeyName="a b" /><Item type="List" action="add" id="amp" tempKeyName="a&amp;b" /><Item type="List" action="add" id="apos" tempKeyName="a'b" /><Item type="List" action="add" id="plus" tempKeyName="a+b" /><Item type="List" action="add" id="comma" tempKeyName="a,b" /><Item type="List" action="add" id="semi" tempKeyName="a;b" /><Item type="List" action="add" id="eq" tempKeyName="a=b" /><Item type="List" action="add" id="at" tempKeyName="a@b" /><Item type="List" action="add" id="brack" tempKeyName="a[1]" /><Item type="List" action="add" id="uni" tempKeyName="é中" /></AML>
+ITEMS: 10
+LOG: 
+=== x-dir-hash
+RESULT: <AML><Item type="List" action="add" id="dirhash" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-dir-percent
+RESULT: <AML><Item type="List" action="add" id="dirpct" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 
+=== x-solutionpath-hash
+RESULT: <AML><Item type="List" action="add" id="sphash" tempKeyName="a" /></AML>
+ITEMS: 1
+LOG: 

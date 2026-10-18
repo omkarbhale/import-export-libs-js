@@ -1,0 +1,1664 @@
+{
+  "engine": "12.0",
+  "assemblyVersion": "12.0.0.13341",
+  "scenarios": {
+    "V.validation": {
+      "nestedWithoutType": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item action='add' id='B' /></Relationships></Item>",
+        "calls": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'type' set",
+          "faultdetail": "Error - empty 'type'",
+          "message": "Error - empty 'type'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item action=\"add\" id=\"B\" /></Relationships></Item>"
+      },
+      "rootWithoutType": {
+        "merge": false,
+        "input": "<Item id='A' action='add' />",
+        "calls": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'type' set",
+          "faultdetail": "Error - empty 'type'",
+          "message": "Error - empty 'type'"
+        },
+        "documentAfter": "<Item id=\"A\" action=\"add\" />"
+      },
+      "rootEmptyType": {
+        "merge": false,
+        "input": "<Item type='' id='A' action='add' />",
+        "calls": [
+          "IsVersionable ",
+          "applyAML <Item type=\"\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"\" id=\"A\" action=\"add\" />"
+      },
+      "plainAddNoId": {
+        "merge": false,
+        "input": "<Item type='Part' action='add' />",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" action=\"add\" />"
+      },
+      "plainEditNoId": {
+        "merge": false,
+        "input": "<Item type='Part' action='edit' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" action=\"edit\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" action=\"edit\" />"
+      },
+      "plainEditNoIdWithActionChild": {
+        "merge": false,
+        "input": "<Item type='Part' action='edit'><action>edit</action></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" action=\"edit\"><action>edit</action></Item>"
+      },
+      "plainNoActionNoId": {
+        "merge": false,
+        "input": "<Item type='Part' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" />"
+      },
+      "plainDeleteNoId": {
+        "merge": false,
+        "input": "<Item type='Part' action='delete' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" action=\"delete\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" action=\"delete\" />"
+      },
+      "plainAddWhereOnly": {
+        "merge": false,
+        "input": "<Item type='Part' where=\"name='x'\" action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" where=\"name='x'\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" where=\"name='x'\" action=\"add\" />"
+      },
+      "plainAddEmptyId": {
+        "merge": false,
+        "input": "<Item type='Part' id='' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"\" action=\"add\" />"
+      },
+      "nestedAddNoId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\" /></Relationships></Item>"
+      },
+      "nestedEditNoId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='edit' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"edit\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"edit\" /></Relationships></Item>"
+      },
+      "versionableNestedAddNoId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\" /></Relationships></Item>"
+      },
+      "versionableNestedAddSourceMatches": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add'><source_id>A</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item>"
+      },
+      "versionableNestedAddSourceOther": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add'><source_id>Z</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>Z</source_id></Item></Relationships></Item>"
+      },
+      "versionableNestedAddSourceElementChild": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add'><source_id><Item type='Part' id='A'/></source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id><Item type=\"Part\" id=\"A\" /></source_id></Item></Relationships></Item>"
+      },
+      "versionableRootWhere": {
+        "merge": false,
+        "input": "<Item type='Part' where=\"name='x'\" action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>Z</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" where=\"name='x'\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>Z</source_id></Item></Relationships></Item>"
+      },
+      "versionableRootWhereEmptySource": {
+        "merge": false,
+        "input": "<Item type='Part' where=\"name='x'\" action='edit'><Relationships><Item type='Part BOM' action='add'><source_id /></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" where=\"name='x'\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id /></Item></Relationships></Item>"
+      },
+      "versionableRootAddNoIdNoWhere": {
+        "merge": false,
+        "input": "<Item type='Part' action='add' />",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" action=\"add\" />"
+      },
+      "versionableApostropheId": {
+        "merge": false,
+        "input": "<Item type='Part' id=\"A'B\" action='add' />",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": true,
+          "faultdetail": "'//Item[(@action='add' or action='edit') and not(@id) and not(@where) and not(source_id/text()='A'B')]' has an invalid token. Can't merge item A'B Part",
+          "inner": "System.Xml.XPath.XPathException",
+          "message": "'//Item[(@action='add' or action='edit') and not(@id) and not(@where) and not(source_id/text()='A'B')]' has an invalid token. Can't merge item A'B Part"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A'B\" action=\"add\" />"
+      },
+      "nonVersionableApostropheId": {
+        "merge": false,
+        "input": "<Item type='Part' id=\"A'B\" action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A'B\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A'B\" action=\"add\" />"
+      },
+      "versionableRootEditWithId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='edit' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" /></Relationships></Item>"
+      }
+    },
+    "F.finalApply": {
+      "plainSend": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add' doGetItem='0'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" doGetItem=\"0\"><name>n</name></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" doGetItem=\"0\"><name>n</name></Item>"
+      },
+      "sendFaultCode0": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstringIsStack": false,
+          "faultstring": "fault 0",
+          "faultdetail": "fault 0",
+          "message": "fault 0"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      },
+      "sendFault999": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "fault 999",
+          "faultdetail": "fault 999",
+          "message": "fault 999"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      }
+    },
+    "M.merge": {
+      "notMerge": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='add'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><name>n</name></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><name>n</name></Item>"
+      },
+      "existsBecomesEdit": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><name>n</name></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><name>n</name></Item>"
+      },
+      "absentStaysAdd": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><name>n</name></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><name>n</name></Item>"
+      },
+      "getFault999": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "fault 999",
+          "faultdetail": "fault 999",
+          "message": "fault 999"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><name>n</name></Item>"
+      },
+      "addWithoutIdIgnored": {
+        "merge": true,
+        "input": "<Item type='Part' where=\"name='x'\" action='add'><name>n</name></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" where=\"name='x'\" action=\"add\"><name>n</name></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" where=\"name='x'\" action=\"add\"><name>n</name></Item>"
+      },
+      "editAndDeleteIgnored": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='B' action='delete' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"B\" action=\"delete\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"B\" action=\"delete\" /></Relationships></Item>"
+      },
+      "nestedAddsGroupedByType": {
+        "merge": true,
+        "input": "<Item type='Part' id='P1' action='add'><Relationships><Item type='Part BOM' id='R1' action='add' /><Item type='Part AML' id='R2' action='add' /><Item type='Part BOM' id='R3' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part BOM",
+          "IsVersionable Part AML",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='R1,R3' select='id, locked_by_id' />",
+          "applyAML <Item type='Part AML' action='get' idlist='R2' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"P1\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\" /><Item type=\"Part AML\" id=\"R2\" action=\"add\" /><Item type=\"Part BOM\" id=\"R3\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"P1\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\" /><Item type=\"Part AML\" id=\"R2\" action=\"add\" /><Item type=\"Part BOM\" id=\"R3\" action=\"add\" /></Relationships></Item>"
+      },
+      "typeOrderFollowsFirstAdd": {
+        "merge": true,
+        "input": "<Item type='B' id='B1' action='add'><Relationships><Item type='A' id='A1' action='add' /><Item type='B' id='B2' action='add' /><Item type='A' id='A2' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable B",
+          "IsVersionable B",
+          "IsVersionable A",
+          "IsVersionable B",
+          "IsVersionable A",
+          "applyAML <Item type='B' action='get' idlist='B1,B2' select='id, locked_by_id' />",
+          "applyAML <Item type='A' action='get' idlist='A1,A2' select='id, locked_by_id' />",
+          "applyAML <Item type=\"B\" id=\"B1\" action=\"add\"><Relationships><Item type=\"A\" id=\"A1\" action=\"add\" /><Item type=\"B\" id=\"B2\" action=\"add\" /><Item type=\"A\" id=\"A2\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"B\" id=\"B1\" action=\"add\"><Relationships><Item type=\"A\" id=\"A1\" action=\"add\" /><Item type=\"B\" id=\"B2\" action=\"add\" /><Item type=\"A\" id=\"A2\" action=\"add\" /></Relationships></Item>"
+      },
+      "typeWithoutIdFirst": {
+        "merge": true,
+        "input": "<Item type='B' action='add' where=\"name='x'\"><Relationships><Item type='A' id='A1' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable B",
+          "IsVersionable B",
+          "IsVersionable A",
+          "applyAML <Item type='A' action='get' idlist='A1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"B\" action=\"add\" where=\"name='x'\"><Relationships><Item type=\"A\" id=\"A1\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"B\" action=\"add\" where=\"name='x'\"><Relationships><Item type=\"A\" id=\"A1\" action=\"add\" /></Relationships></Item>"
+      },
+      "sameIdTwiceSameType": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R' action='add' /><Item type='Part BOM' id='R' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part BOM",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='R,R' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R\" action=\"add\" /><Item type=\"Part BOM\" id=\"R\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R\" action=\"add\" /><Item type=\"Part BOM\" id=\"R\" action=\"add\" /></Relationships></Item>"
+      },
+      "typeIsCaseSensitive": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='part' id='B' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type='part' action='get' idlist='B' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"part\" id=\"B\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"part\" id=\"B\" action=\"add\" /></Relationships></Item>"
+      },
+      "onlySomeExist": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='B' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='B' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"B\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"B\" action=\"add\" /></Relationships></Item>"
+      },
+      "sameIdOtherType": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='A' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"A\" action=\"edit\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"A\" action=\"edit\" /></Relationships></Item>"
+      },
+      "idCaseSensitive": {
+        "merge": true,
+        "input": "<Item type='Part' id='a' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='a' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"a\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"a\" action=\"add\" />"
+      },
+      "locked": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "Unlock A|Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\" />"
+      },
+      "lockedEmpty": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\" />"
+      },
+      "lockedDuplicateId": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part' id='A' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A,A' select='id, locked_by_id' />",
+          "Unlock A|Part",
+          "Unlock A|Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part\" id=\"A\" action=\"edit\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part\" id=\"A\" action=\"edit\" /></Relationships></Item>"
+      },
+      "unlockFails": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "Unlock A|Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "unlock fault",
+          "faultdetail": "unlock fault",
+          "message": "unlock fault"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      },
+      "responseNoNamespaceEnvelope": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\" />"
+      },
+      "responseOtherNamespace": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      },
+      "responseItemInsideItems": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      },
+      "apostropheInType": {
+        "merge": true,
+        "input": "<Item type=\"Pa'rt\" id='A' action='add' />",
+        "calls": [
+          "IsVersionable Pa'rt",
+          "IsVersionable Pa'rt",
+          "applyAML <Item type='Pa'rt' action='get' idlist='A' select='id, locked_by_id' />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": true,
+          "faultdetail": "'rt' is an unexpected token. Expecting white space. Line 1, position 16. Can't merge item A Pa'rt",
+          "inner": "System.Xml.XmlException",
+          "message": "'rt' is an unexpected token. Expecting white space. Line 1, position 16. Can't merge item A Pa'rt"
+        },
+        "documentAfter": "<Item type=\"Pa'rt\" id=\"A\" action=\"add\" />"
+      },
+      "ampersandInId": {
+        "merge": true,
+        "input": "<Item type='Part' id='A&amp;B' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A&B' select='id, locked_by_id' />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": true,
+          "faultdetail": "''' is an unexpected token. The expected token is ';'. Line 1, position 43. Can't merge item A&B Part",
+          "inner": "System.Xml.XmlException",
+          "message": "''' is an unexpected token. The expected token is ';'. Line 1, position 43. Can't merge item A&B Part"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A&amp;B\" action=\"add\" />"
+      },
+      "getRequestsKeepDuplicates": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part' id='A' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A,A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part\" id=\"A\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships><Item type=\"Part\" id=\"A\" action=\"add\" /></Relationships></Item>"
+      }
+    },
+    "G.versionableMerge": {
+      "versionableAddCallsSetItemId": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "SetItemIdToLastGeneration Part|A",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='A2' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='R' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A2\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A2\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R\" action=\"add\" /></Relationships></Item>"
+      },
+      "versionableIdChangedThenExists": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "SetItemIdToLastGeneration Part|A",
+          "applyAML <Item type='Part' action='get' idlist='A2' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A2\" action=\"edit\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A2\" action=\"edit\" />"
+      },
+      "nonVersionableNoCall": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "applyAML <Item type='Part' action='get' idlist='A' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\" />"
+      },
+      "versionableCalledForNestedEditsNot": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part' id='B' action='add' /></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "SetItemIdToLastGeneration Part|B",
+          "applyAML <Item type='Part' action='get' idlist='B' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part\" id=\"B\" action=\"add\" /></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part\" id=\"B\" action=\"add\" /></Relationships></Item>"
+      },
+      "versionableNoIdSkipsDictionary": {
+        "merge": true,
+        "input": "<Item type='Part' where=\"name='x'\" action='add' />",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "SetItemIdToLastGeneration Part|",
+          "applyAML <Item type=\"Part\" where=\"name='x'\" action=\"add\" />"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" where=\"name='x'\" action=\"add\" />"
+      }
+    },
+    "C.ccrProperty": {
+      "ccr.Related_Id": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>Related_Id</name><source_id keyed_name='Change Controlled Relationship' type='ItemType'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>Related_Id</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>Related_Id</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.sort_order": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>sort_order</name><source_id keyed_name='Change Controlled Relationship' type='ItemType'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>sort_order</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>sort_order</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.source_id": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>source_id</name><source_id keyed_name='Change Controlled Relationship' type='ItemType'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>source_id</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>source_id</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.name": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>name</name><source_id keyed_name='Change Controlled Relationship' type='ItemType'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>name</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>name</name><source_id keyed_name=\"Change Controlled Relationship\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.otherKeyedName": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>related_id</name><source_id keyed_name='Part' type='ItemType'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Part\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Part\" type=\"ItemType\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.noKeyedName": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>related_id</name><source_id>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id>IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id>IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.noName": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><source_id keyed_name='Change Controlled Relationship'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.notExisting": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>related_id</name><source_id keyed_name='Change Controlled Relationship'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"add\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"add\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.anyTypeWithTheShape": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Other' id='P1' action='add'><name>related_id</name><source_id keyed_name='Change Controlled Relationship'>IT</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Other",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Other' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Other\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Other\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item></Relationships></Item>"
+      },
+      "ccr.rootProperty": {
+        "merge": true,
+        "input": "<Item type='Property' id='P1' action='add'><name>related_id</name><source_id keyed_name='Change Controlled Relationship'>IT</source_id></Item>",
+        "calls": [
+          "IsVersionable Property",
+          "IsVersionable Property",
+          "applyAML <Item type='Property' action='get' idlist='P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item>"
+      },
+      "ccr.sameIdTwoNodes": {
+        "merge": true,
+        "input": "<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><name>related_id</name><source_id keyed_name='Change Controlled Relationship'>IT</source_id></Item><Item type='Property' id='P1' action='add'><name>other</name></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable ItemType",
+          "IsVersionable ItemType",
+          "IsVersionable Property",
+          "IsVersionable Property",
+          "applyAML <Item type='ItemType' action='get' idlist='IT' select='id, locked_by_id' />",
+          "applyAML <Item type='Property' action='get' idlist='P1,P1' select='id, locked_by_id' />",
+          "applyAML <Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>other</name></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"ItemType\" id=\"IT\" action=\"add\"><Relationships><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>related_id</name><source_id keyed_name=\"Change Controlled Relationship\">IT</source_id></Item><Item type=\"Property\" id=\"P1\" action=\"edit\"><name>other</name></Item></Relationships></Item>"
+      }
+    },
+    "P.processVersionableItem": {
+      "plainRelationshipExists": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "plainRelationshipMissing": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='edit' where=\"x='y'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\" where=\"x='y'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\" where=\"x='y'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "relationshipWithoutSourceId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "relationshipWithoutRelatedId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item>"
+      },
+      "relatedIdWithItemAndId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' id='B' action='add' /></related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id><Item type=\"Part\" id=\"B\" action=\"add\" /></related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id><Item type=\"Part\" id=\"B\" action=\"add\" /></related_id></Item></Relationships></Item>"
+      },
+      "relatedIdWithItemNoId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' action='add' where=\"name='b'\" /></related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": true,
+          "faultdetail": "Object reference not set to an instance of an object. Can't merge item A Part",
+          "inner": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object. Can't merge item A Part"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id><related_id><Item type=\"Part\" action=\"add\" where=\"name='b'\" /></related_id></Item></Relationships></Item>"
+      },
+      "relatedIdTwoItemsSecondHasId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' action='add' where=\"name='b'\" /><Item type='Part' id='B2' action='add' /></related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B2",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B2'\"><source_id>A</source_id><related_id><Item type=\"Part\" action=\"add\" where=\"name='b'\" /><Item type=\"Part\" id=\"B2\" action=\"add\" /></related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B2'\"><source_id>A</source_id><related_id><Item type=\"Part\" action=\"add\" where=\"name='b'\" /><Item type=\"Part\" id=\"B2\" action=\"add\" /></related_id></Item></Relationships></Item>"
+      },
+      "relatedIdTextWithWhitespaceChildren": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>A</source_id><related_id keyed_name='k' type='Part'>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id keyed_name=\"k\" type=\"Part\">B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id keyed_name=\"k\" type=\"Part\">B</related_id></Item></Relationships></Item>"
+      },
+      "existFaultOther": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "rel fault",
+          "faultdetail": "rel fault",
+          "message": "rel fault"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "apostropheInRelated": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>A</source_id><related_id>B'C</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer Part BOM|A|B'C",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'C'\"><source_id>A</source_id><related_id>B'C</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'C'\"><source_id>A</source_id><related_id>B'C</related_id></Item></Relationships></Item>"
+      },
+      "sourceIdNotRootId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>OTHER</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>OTHER</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "nonVersionableRootUntouched": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "relationshipsNotUnderRootIgnored": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Foo><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Foo></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Foo><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Foo></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Foo><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Foo></Item>"
+      },
+      "deeperRelationshipsIgnored": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='Part BOM' action='add'><source_id>A</source_id><Relationships><Item type='X' id='R9' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>A</source_id><Relationships><Item type=\"X\" id=\"R9\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"Part BOM\" action=\"add\"><source_id>A</source_id><Relationships><Item type=\"X\" id=\"R9\" action=\"add\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "mpMacFound": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' id='R1' action='add'><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type='mp_MacCondition' action='get' select='id'><source_id>A</source_id><ref_id>RR</ref_id></Item>",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" id=\"R1\" action=\"edit\" where=\"source_id='A' and ref_id='RR'\"><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" id=\"R1\" action=\"edit\" where=\"source_id='A' and ref_id='RR'\"><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>"
+      },
+      "mpMacMissing": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' id='R1' where=\"z='1'\" action='edit'><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type='mp_MacCondition' action='get' select='id'><source_id>A</source_id><ref_id>RR</ref_id></Item>",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" id=\"R1\" where=\"z='1'\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" id=\"R1\" where=\"z='1'\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>"
+      },
+      "mpMacFault999": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' action='add'><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type='mp_MacCondition' action='get' select='id'><source_id>A</source_id><ref_id>RR</ref_id></Item>"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "fault 999",
+          "faultdetail": "fault 999",
+          "message": "fault 999"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id></Item></Relationships></Item>"
+      },
+      "mpMacNoRefId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' action='add'><source_id>A</source_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": true,
+          "faultdetail": "Object reference not set to an instance of an object. Can't merge item A Part",
+          "inner": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object. Can't merge item A Part"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item>"
+      },
+      "mpMacNoSourceId": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' action='add'><ref_id>RR</ref_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Items must have 'id' or 'where' set",
+          "faultdetail": "Error - empty 'id' or 'where'",
+          "message": "Error - empty 'id' or 'where'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><ref_id>RR</ref_id></Item></Relationships></Item>"
+      },
+      "mpMacWithRelatedIdIgnored": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' action='add'><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type='mp_MacCondition' action='get' select='id'><source_id>A</source_id><ref_id>RR</ref_id></Item>",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "mpMacApostrophe": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='mp_MacCondition' action='add'><source_id>A</source_id><ref_id>R'R</ref_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "applyAML <Item type='mp_MacCondition' action='get' select='id'><source_id>A</source_id><ref_id>R'R</ref_id></Item>",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>R'R</ref_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"mp_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>R'R</ref_id></Item></Relationships></Item>"
+      },
+      "mpMacTypeCaseSensitive": {
+        "merge": false,
+        "input": "<Item type='Part' id='A' action='edit'><Relationships><Item type='MP_MacCondition' action='add'><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "ExistRelItemInCurVer MP_MacCondition|A|B",
+          "applyAML <Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"MP_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"edit\"><Relationships><Item type=\"MP_MacCondition\" action=\"add\"><source_id>A</source_id><ref_id>RR</ref_id><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "mergeThenVersionable": {
+        "merge": true,
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>",
+        "calls": [
+          "IsVersionable Part",
+          "IsVersionable Part",
+          "SetItemIdToLastGeneration Part|A",
+          "IsVersionable Part BOM",
+          "applyAML <Item type='Part' action='get' idlist='A2' select='id, locked_by_id' />",
+          "applyAML <Item type='Part BOM' action='get' idlist='R1' select='id, locked_by_id' />",
+          "ExistRelItemInCurVer Part BOM|A|B",
+          "applyAML <Item type=\"Part\" id=\"A2\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A2\" action=\"add\"><Relationships><Item type=\"Part BOM\" action=\"edit\" where=\"source_id='A' and related_id='B'\"><source_id>A</source_id><related_id>B</related_id></Item></Relationships></Item>"
+      }
+    },
+    "S.setItemIdToLastGeneration": {
+      "noId": {
+        "input": "<Item type='Part' action='add'/>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item type=\"Part\" action=\"add\" />"
+      },
+      "noType": {
+        "input": "<Item id='A' action='add'/>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item id=\"A\" action=\"add\" />"
+      },
+      "emptyId": {
+        "input": "<Item type='Part' id='' action='add'/>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"\" action=\"add\" />"
+      },
+      "notVersionable": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item type is not versionable",
+          "faultdetail": "Error - item type is not versionable",
+          "message": "Error - item type is not versionable"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "alreadyCurrent": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "oldGeneration": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>LATEST</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>LATEST</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "oldGenerationSameIdAsLatest": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "currentIdLookupMissingConfigFound": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>LATEST</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>LATEST</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "notFoundAnywhereFallsToUniqueKey": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"KEYID\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>KEYID</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>KEYID</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "currentIdLookupFaultOtherFallsToUniqueKey": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"KEYID\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>KEYID</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>KEYID</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "currentIdNoConfigIsNotCaught": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>"
+        ],
+        "thrown": {
+          "type": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object."
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "uniqueKeyNoPropertiesLeavesIdAlone": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "uniqueKeyMissingPropertyThrows": {
+        "input": "<Item type='Part' id='A' action='add'><Relationships /></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Property item_number that is part of the unique key for type Part is not part of the response",
+          "faultdetail": "Property item_number that is part of the unique key for type Part is not part of the response",
+          "message": "Property item_number that is part of the unique key for type Part is not part of the response"
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><Relationships /></Item>"
+      },
+      "relationshipsWithoutSourceId": {
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><related_id>B</related_id></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><related_id>B</related_id></Item></Relationships></Item>"
+      },
+      "nestedInRelatedIdUntouched": {
+        "input": "<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' id='A'><Relationships><Item type='Y'><source_id>A</source_id></Item></Relationships></Item></related_id></Item></Relationships></Item>",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>LATEST</source_id><related_id><Item type=\"Part\" id=\"A\"><Relationships><Item type=\"Y\"><source_id>A</source_id></Item></Relationships></Item></related_id></Item></Relationships></Item>"
+      }
+    },
+    "E.doesItemAlreadyExist": {
+      "plainExists": {
+        "input": "<Item type='List' id='L1' action='add'><name>n</name></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>List</name></Item>",
+          "<Item type=\"List\" action=\"get\" select=\"id\"><id>L1</id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"List\" id=\"L1\" action=\"add\"><name>n</name></Item>"
+      },
+      "plainMissing": {
+        "input": "<Item type='List' id='L1' action='add'><name>n</name></Item>",
+        "result": false,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>List</name></Item>",
+          "<Item type=\"List\" action=\"get\" select=\"id\"><id>L1</id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"List\" id=\"L1\" action=\"add\"><name>n</name></Item>"
+      },
+      "plainServerError999IsNotExist": {
+        "input": "<Item type='List' id='L1' action='add'><name>n</name></Item>",
+        "result": false,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>List</name></Item>",
+          "<Item type=\"List\" action=\"get\" select=\"id\"><id>L1</id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"List\" id=\"L1\" action=\"add\"><name>n</name></Item>"
+      },
+      "noIdAttribute": {
+        "input": "<Item type='List' action='add'/>",
+        "result": null,
+        "pairId": null,
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item type=\"List\" action=\"add\" />"
+      },
+      "noTypeAttribute": {
+        "input": "<Item id='L1' action='add'/>",
+        "result": null,
+        "pairId": null,
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item id=\"L1\" action=\"add\" />"
+      },
+      "emptyIdAttribute": {
+        "input": "<Item type='List' id='' action='add'/>",
+        "result": null,
+        "pairId": null,
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -1,
+          "faultstringIsStack": false,
+          "faultstring": "Item with action \"add\" must have 'id' and 'type' set",
+          "faultdetail": "Error - empty 'id' or 'type'",
+          "message": "Error - empty 'id' or 'type'"
+        },
+        "documentAfter": "<Item type=\"List\" id=\"\" action=\"add\" />"
+      },
+      "versionableCurrent": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableOldGeneration": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>LATEST</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>LATEST</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableConfigFoundByLookup": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>LATEST</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>LATEST</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableNotFoundUniqueKeyFinds": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"KEYID\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>KEYID</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>KEYID</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableNotFoundUniqueKeyNone": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": false,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>A</config_id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableLookupFault999FallsToUniqueKey": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": true,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"ItemType\" action=\"get\" select=\"id\"><name>Part</name><Relationships><Item type=\"Property\" action=\"get\" select=\"name\"><is_keyed>1</is_keyed><is_required>1</is_required><name condition=\"ne\">generation</name></Item></Relationships></Item>",
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><item_number>P1</item_number></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"KEYID\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>KEYID</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>KEYID</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "versionableNoConfigNotCaught": {
+        "input": "<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>",
+        "result": null,
+        "pairId": null,
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>"
+        ],
+        "thrown": {
+          "type": "System.NullReferenceException",
+          "message": "Object reference not set to an instance of an object."
+        },
+        "documentAfter": "<Item type=\"Part\" id=\"A\" action=\"add\"><item_number>P1</item_number><Relationships><Item type=\"Part BOM\" id=\"R1\" action=\"add\"><source_id>A</source_id></Item><Item type=\"Part BOM\" id=\"R2\" action=\"add\"><source_id>OTHER</source_id><Relationships><Item type=\"X\" action=\"add\"><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>"
+      },
+      "idTypePairIsUsed": {
+        "input": "<Item type='Part' id='IGNORED' action='add'/>",
+        "result": true,
+        "pairId": "LATEST",
+        "requests": [
+          "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Part</name></Item>",
+          "<Item type=\"Part\" select=\"config_id, is_current\" action=\"get\"><id>A</id></Item>",
+          "<Item type=\"Part\" select=\"id\" action=\"get\"><config_id>CFG</config_id></Item>"
+        ],
+        "thrown": null,
+        "documentAfter": "<Item type=\"Part\" id=\"LATEST\" action=\"add\" />"
+      }
+    },
+    "X.lookups": {
+      "rel.found": {
+        "itemExistById": true,
+        "itemExistByIdThrown": null,
+        "existRel": true,
+        "existRelThrown": null,
+        "requests": [
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><id>A</id></Item>",
+          "<Item type=\"Part BOM\" action=\"get\" select=\"id\"><source_id>A</source_id><related_id>B</related_id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ]
+      },
+      "rel.missing": {
+        "itemExistById": false,
+        "itemExistByIdThrown": null,
+        "existRel": false,
+        "existRelThrown": null,
+        "requests": [
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><id>A</id></Item>",
+          "<Item type=\"Part BOM\" action=\"get\" select=\"id\"><source_id>A</source_id><related_id>B</related_id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ]
+      },
+      "rel.error999": {
+        "itemExistById": false,
+        "itemExistByIdThrown": null,
+        "existRel": null,
+        "existRelThrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP",
+          "faultdetail": "boom",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP"
+        },
+        "requests": [
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><id>A</id></Item>",
+          "<Item type=\"Part BOM\" action=\"get\" select=\"id\"><source_id>A</source_id><related_id>B</related_id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ]
+      },
+      "rel.xmlerror": {
+        "itemExistById": null,
+        "itemExistByIdThrown": {
+          "type": "System.Xml.XmlException",
+          "message": "Root element is missing."
+        },
+        "existRel": null,
+        "existRelThrown": {
+          "type": "System.Xml.XmlException",
+          "message": "Root element is missing."
+        },
+        "requests": [
+          "<Item type=\"Part\" action=\"get\" select=\"id\"><id>A</id></Item>",
+          "<Item type=\"Part BOM\" action=\"get\" select=\"id\"><source_id>A</source_id><related_id>B</related_id></Item>"
+        ],
+        "actions": [
+          "ApplyItem",
+          "ApplyItem"
+        ]
+      },
+      "unlock.ok": {
+        "requests": [
+          "<Item type=\"Part\" id=\"A\" action=\"unlock\" doGetItem=\"0\" />"
+        ],
+        "actions": [
+          "ApplyItem"
+        ]
+      },
+      "unlock.fault": {
+        "requests": [
+          "<Item type=\"Part\" id=\"A\" action=\"unlock\" doGetItem=\"0\" />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 999,
+          "faultstringIsStack": false,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultcode><faultstring><![CDATA[cannot unlock]]></faultstring><detail><af:legacy_detail><![CDATA[cannot unlock]]></af:legacy_deta",
+          "faultdetail": "cannot unlock",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>999</faultcode><faultstring><![CDATA[cannot unlock]]></faultstring><detail><af:legacy_detail><![CDATA[cannot unlock]]></af:legacy_deta"
+        }
+      },
+      "unlock.fault0": {
+        "requests": [
+          "<Item type=\"Part\" id=\"A\" action=\"unlock\" doGetItem=\"0\" />"
+        ],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstringIsStack": false,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items]]></faultstring><detail><af:legacy_detail><![CDATA[No items]]></af:legacy_detail></detail>",
+          "faultdetail": "No items",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items]]></faultstring><detail><af:legacy_detail><![CDATA[No items]]></af:legacy_detail></detail>"
+        }
+      },
+      "rel.unescapedValues": {
+        "requests": [],
+        "thrown": {
+          "type": "System.Xml.XmlException",
+          "message": "An error occurred while parsing EntityName. Line 1, position 88."
+        }
+      },
+      "applyAML.emptyString": {
+        "requests": [],
+        "thrown": {
+          "type": "System.Xml.XmlException",
+          "message": "Root element is missing."
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 <#
-Import-run probe for engines 14.0.7 and 14.35 (wayfinder tickets 22 and 53; -Engine names the build the
+Import-run probe for engines 14.0.7 and 14.35 (wayfinder tickets 22 and 53) and, with -Engine 12.0, for engine 12.0 (ticket 47; the s* scenarios only; -Engine names the build the
 staged toolset must be). Windows PowerShell 5.1. It loads the staged toolset and runs the engine's own
 ImportExportManager.ImportSolutions, CItemHelper and PackageDefinitionManager against Probe.cs's
 StubConnection, which never touches a network: it records what the engine hands to IOM and answers from a
@@ -22,7 +22,7 @@ $resolver = [System.ResolveEventHandler]{ param($s, $e) $n = ($e.Name -split ','
 [AppDomain]::CurrentDomain.add_AssemblyResolve($resolver)
 [void][System.Reflection.Assembly]::LoadFrom($iomPath)
 $libs = [System.Reflection.Assembly]::LoadFrom($libsPath)
-$expect = @{ '14.0.7' = '14.0.7.35492'; '14.35' = '14.35.0.43890' }[$Engine]
+$expect = @{ '12.0' = '12.0.0.13341'; '14.0.7' = '14.0.7.35492'; '14.35' = '14.35.0.43890' }[$Engine]
 if ($libs.GetName().Version.ToString() -ne $expect) { throw "Libs.dll is $($libs.GetName().Version), not $expect" }
 Add-Type -TypeDefinition (Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'Probe.cs')) -ReferencedAssemblies @($iomPath, $libsPath, 'System.Xml')
 $SU = 'Aras.Tools.SolutionUpgrade'
@@ -48,6 +48,11 @@ function DescEx($ex, [string] $root) {
     }
     if ($x.InnerException) { $o += "`n    inner=" + $x.InnerException.GetType().FullName + ' :: ' + (Scrub (Esc $x.InnerException.Message) $root) }
     return $o
+}
+# The dev server (12.0 SP9, build 24090) as the engine's version type holds it: 12.0 has three fields, the others five.
+function New-ServerVersion {
+    if ($Engine -eq '12.0') { return New-Object Aras.Tools.SolutionUpgrade.ArasVersion(12, 0, 9) }
+    return New-Object Aras.Tools.SolutionUpgrade.ArasVersion(12, 0, 9, 24090, 0)
 }
 function Fault($code, $text) { return [Probe.Env]::Fault([string]$code, $text) }
 function Res($inner) { return [Probe.Env]::Result($inner) }
@@ -190,7 +195,7 @@ function Run-Import($c) {
     }.GetNewClosure()
     $helper = New-Object Aras.Tools.SolutionUpgrade.CItemHelper($conn)
     if (-not $c.noVersion) {
-        $version = New-Object Aras.Tools.SolutionUpgrade.ArasVersion(12, 0, 9, 24090, 0)
+        $version = New-ServerVersion
         $helper.GetType().GetProperty('InnovatorVersion').GetSetMethod($true).Invoke($helper, [object[]]@($version.psobject.BaseObject)) | Out-Null
     }
     $ctx = New-Object Aras.Tools.SolutionUpgrade.SolutionUpgradeContext
@@ -239,7 +244,7 @@ function New-StubHelper($w) {
         return (Model-Respond $w $req)
     }.GetNewClosure()
     $helper = New-Object Aras.Tools.SolutionUpgrade.CItemHelper($conn)
-    $version = New-Object Aras.Tools.SolutionUpgrade.ArasVersion(12, 0, 9, 24090, 0)
+    $version = New-ServerVersion
     $helper.GetType().GetProperty('InnovatorVersion').GetSetMethod($true).Invoke($helper, [object[]]@($version.psobject.BaseObject)) | Out-Null
     return @{ conn = $conn; helper = $helper }
 }
@@ -673,6 +678,13 @@ Def 'n09-caches-direct' {
         @{ label = 'IsVersionable(Part) twice on one helper, the type is missing (fault 0)'; run = { param($h) $w.rules = @({ param($r, $n) Fault 0 'none' }); try { [void]$h.IsVersionable('Part') } catch { 'first: fault' }; try { [void]$h.IsVersionable('Part') } catch { 'second: fault' } } }
     )
     Run-Direct 'n09-caches-direct' 'what a failed lookup leaves in the helper cache' $w $calls
+}
+Def 's64-discussion-template' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    # Any ItemType definition lists the relationship types the item uses, so the type check passes.
+    $w.rules += { param($req, $n) if ($req -like '<Item type="ItemType" action="get" select="id"><name>*') { return (Res '<Item type="ItemType" id="IT"><name>x</name><Relationships><Item type="RelationshipType" id="R1"><name>DiscussionTemplate</name></Item><Item type="RelationshipType" id="R2"><name>FeedTemplate</name></Item><Item type="RelationshipType" id="R3"><name>Other</name></Item></Relationships></Item>') }; return $null }
+    $forum = F 'Forum' 'Forum1' ('<Item type="Discussion Forum" id="DF1" action="add"><Relationships><Item type="DiscussionTemplate" id="9D257D4D16AC480493571BBF816D13BE" action="add"><Relationships><Item type="FeedTemplate" id="FT1" action="add" /><Item type="Other" id="O1" action="add" /><Item type="FeedTemplate" id="FT2" action="edit" /></Relationships></Item><Item type="DiscussionTemplate" id="T2" action="add"><Relationships><Item type="FeedTemplate" id="FT3" action="add" /></Relationships></Item></Relationships></Item>')
+    Run-Import @{ name = 's64-discussion-template'; note = 'two DiscussionTemplate relationships that exist, each with nested adds; the first has the built-in template id (the nested adds are rewritten, queued and sent at the end of the package)'; packages = [ordered]@{ $A = @{ files = @($forum) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w }
 }
 foreach ($k in $scenarios.Keys) { if ($Only -eq '' -or $k -like $Only) { & $scenarios[$k] } }
 [System.IO.File]::WriteAllText($Out, $sb.ToString(), $utf8)

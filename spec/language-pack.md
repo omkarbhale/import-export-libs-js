@@ -36,7 +36,13 @@ Recorded against dev: five `lpimport` runs of the whole engine on scratch `Forum
 
 The result is the import's (IMP-408, IMP-407). The library's `lpimport` command performs the same steps in the same order. The library's own client replaces step 2 (WIRE-002).
 
-[12.0] There is no language-pack import. Its `ImportExport` enumeration holds only `Import` and `Export`, its decompile has no `LanguagePackPreprocessor`, and its `ConsoleUpgrade.exe` has no reference to one (scope check F12). The 12.0 import ticket records that.
+[12.0] There is no language-pack import, and none of the `LP-` rules has a `[12.0]` variant. Checked on the 12.0 toolset (`Libs.dll` 12.0.0.13341 and `ConsoleUpgrade.exe`):
+
+- the `ImportExport` enumeration holds only `Import` and `Export`, so `Action` cannot be `LPImport`;
+- the decompile of `Libs.dll` has no `LanguagePackPreprocessor`, and `SolutionUpgradeContext` has no `LPPath`, `LPPackage` or `LPDebug`;
+- `ConsoleUpgrade.exe` has no reference to a language pack, and its usage text lists no language-pack option.
+
+The library's `import-language-pack` command refuses on engine `12.0` (the CLI core ticket). The 12.0 import variants (`spec/import-*.md`) leave this area out for the same reason (scope check F12).
 
 [14.35] Not yet specified; the 14.35 language tickets add it. 14.35's preprocessor differs beyond null-value handling.
 

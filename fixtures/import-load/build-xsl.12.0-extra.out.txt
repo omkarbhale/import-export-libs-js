@@ -1,0 +1,25 @@
+=== ac-policy-actions
+Method|add|m1|k1
+Dashboard|add|dash1|
+mp_PolicyAccessEnvAttribute|add|env1|
+mp_MacPolicy|add|mac1|
+ab_Type|add|ab1|
+ac_PolicyAccessItemAttribute|edit|ac-e1|
+ac_PolicyAccessItemAttribute|add|ac-a1|
+ac_PolicyAccessItemAttribute|delete|ac-d1|
+ac_PolicyAccessItemAttribute|merge|ac-m1|
+ac_PolicyAccessItemAttribute||ac-n1|
+ac_PolicyAccessItemAttribute|purge|ac-p1|
+ad_Type|add|ad1|
+Zebra|delete|z1|
+=== ac-policy-two-files
+ac|add|f3-ac|
+ac_PolicyAccessItemAttribute|add|f1-add|k1
+ac_PolicyAccessItemAttribute|edit|f1-edit|
+ac_PolicyAccessItemAttribute|delete|f2-delete|k2
+ac_PolicyAccessItemAttribute|add|f2-add|
+ac_PolicyAccessItemAttribute||f3-none|k3
+=== promote-item
+mp_MacPolicy|add|a1|
+qry_QueryDefinition|add|q1|
+mp_MacPolicy|edit|e1|

@@ -9,6 +9,7 @@ Sources:
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`): `DelayedResolutionManager`, its callers `CItemHelper.DoChecking` and `ImportExportManager.ImportProc`, and the producers of the references (decompiled locally, never committed);
 - probes that ran the real 14.0.7 `DelayedResolutionManager` on .NET Framework 4.8 (Windows PowerShell 5.1), loaded from a staged copy of the vendored `Libs.dll` and driven by reflection with hand-built item documents and a recording `ICItemHelper`. Every behaviour below that reads "probed" was observed that way: the processing of each code, the queued text, the document afterwards, the log lines, and the queue run. The server side of the queued AML (what Aras does with `id=''` or with `where='System.Xml.XmlAttribute'`) was not probed. It needs the scratch import fixtures (wayfinder ticket 25).
 - for the `[14.35]` lines: the 14.35 decompile (`.decomp/14.35/`) compared with the 14.0.7 one, and the probes `n04` and `n05` of `fixtures/import-run/` (`probe-14.35.txt`), which run the real 14.35 `ImportExportManager.ImportSolutions` over packages whose items leave references unresolved. The manager's processing of each code is unchanged; what differs is the queue (`IMP-251`) and the address of a Property (`IMP-220`).
+- for the `[12.0]` lines: the 12.0 decompile (`.decomp/12.0/`, never committed) compared method by method with the 14.0.7 one, and the 12.0 probes (`fixtures/import-load/*.12.0*`, `fixtures/import-run/probe-12.0.txt`, `fixtures/import-merge/12.0-probe/results.json`).
 
 ## Conventions used by every rule here
 
@@ -28,6 +29,8 @@ Sources:
 The queue is applied by `ExecuteDelayedResolution` (`IMP-240`), once, after the last item of the package. It is not applied when the import is cancelled (the loop returns first) or when an item fails (the exception leaves `ImportProc`): the queue is simply dropped. The queue is never cleared, shared or carried to the next package, and it is not deduplicated.
 
 The constructor only creates the empty queue.
+
+[12.0] Same: `ImportProc` creates one manager per package at the same place, the queue has the same life (applied once after the last item; dropped on a cancel or a failure) and the constructor only creates it.
 
 [14.35] As in 14.0.7, except that the queue ignores an entry equal to one it already holds (`IMP-251`). The manager has two further members for the AML batch mode (`IMP-5xx`); the constructor still only creates the empty queue.
 
@@ -50,6 +53,8 @@ The constructor only creates the empty queue.
 
 Each reference is completed before the next is looked at, so a later reference sees the edits of the earlier ones (`IMP-250`). The first reference that fails ends the call (`IMP-203`). The result is `void`.
 
+[12.0] Same: the same table of codes and the same order.
+
 [14.35] Same as 14.0.7.
 
 ### IMP-202: A warning line is written for every reference before it is processed
@@ -61,6 +66,8 @@ WARNING: The following portion of the AML \n{0}\ncontains unresolved reference t
 ```
 
 The text has a space after `AML`, and its two line feeds stay line feeds. On Windows the terminator `WriteLine` adds is CR LF (probed); the log rules of the orchestration fix it for the port. The line is written before the node is looked at, so it appears even when the reference then fails. A reference whose node is null (the checks never produce one) raises a `NullReferenceException` here, not wrapped.
+
+[12.0] Same: the warning text is the same literal (`WARNING: The following portion of the AML \n{0}\ncontains unresolved reference that will be tried to resolve at the end of the package import`, LF characters inside), written to the same log writer. In 12.0 that writer is the package log, which loses its tail (IMP-412).
 
 [14.35] Same as 14.0.7.
 
@@ -78,6 +85,8 @@ The failures the routines can hit are structural, a node missing where a rule ex
 
 Nothing is undone. Edits made to the document and entries queued by earlier references stay. The failing reference itself has changed nothing: each routine reads everything it needs before it queues or edits. References after the failing one are not processed. A reference's edits are never repeated: processing the same node twice makes the second attempt fail, because its relationship is already detached (`IMP-250`).
 
+[12.0] Same: the same wrapping in a plain `System.Exception` with the text `Wrong format of the AML that contains tag {0}`, the same ending of the call and nothing rolled back.
+
 [14.35] Same as 14.0.7.
 
 ### IMP-204: The queued AML is built by string concatenation
@@ -88,6 +97,8 @@ Nothing is undone. Edits made to the document and entries queued by earlier refe
 - a `keyed_name` or a data-source id that contains `&` or `<` is written raw, because the engine reads the decoded text of the DOM and puts it back without encoding it (probed: `keyed_name="A &amp; B"` is queued as `keyed_name='A & B'`).
 
 A malformed entry is not detected when it is queued. It fails when it is run (`IMP-240`). The port builds the same strings, with the same quotes, and does not escape.
+
+[12.0] Same: the same string concatenation and no escaping.
 
 [14.35] Same as 14.0.7.
 
@@ -116,6 +127,8 @@ Probed result, for an owner `<Item type='Part' id='AAA' action='add'>` holding `
 
 The owner in the document is not edited, and keeps its own `action`. At the end of the package the server receives the relationship as an `add` under an `edit` of the owner, with `version='0'`. When the `related_id` carries the floating-reference attribute, it travels with the relationship (`IMP-242`).
 
+[12.0] Same: the same entry, the same removal of `rel` and the same failures.
+
 [14.35] Same as 14.0.7. Step 6 queues the entry through `IMP-251`, so an entry equal to a queued one is dropped; `rel` is removed from its parent in both cases.
 
 ### IMP-211: A relationship owner addressed by where is queued with the text System.Xml.XmlAttribute (bug)
@@ -123,6 +136,8 @@ The owner in the document is not edited, and keeps its own `action`. At the end 
 [14.0.7] In the `where` form of `IMP-210` step 2 the engine intends ` where='` followed by the `where` expression. It writes the `ToString()` of the attribute object instead, which for an XML attribute is its type name. The entry therefore reads ` where='System.Xml.XmlAttribute'` (probed), and the real `where` clause is lost. The owner's `type`, `action='edit'`, `doGetItem='0'` and `version='0'` are as in `IMP-210`.
 
 The server receives an edit of the owner's type addressed by that text instead of the real clause (not probed live). This is a reproduced bug (registered in `bugs.md`). A correct engine would write the attribute's value.
+
+[12.0] Same bug: the `where` branch concatenates the attribute object, so the entry reads ` where='System.Xml.XmlAttribute'`. Registered in `bugs.md`.
 
 [14.35] Same as 14.0.7.
 
@@ -145,11 +160,15 @@ Unlike `IMP-210`, the node's `action` is not changed: the check that recorded th
 
 The failures are structural. A node whose parent is not an element (the document's root item, probed) raises an `InvalidCastException`, and a detached node (no parent) a `NullReferenceException`, both wrapped (`IMP-203`). An `owner` that is not an element or is missing (the container is the root) fails the same way. A missing `type` or `id` does not fail.
 
+[12.0] Same: the same entry, the same removal and the same structural failures. The built-in template and `merge` or `edit` choice that precedes it belongs to the check (IMP-110 [12.0]).
+
 [14.35] Same as 14.0.7. Step 4 queues the entry through `IMP-251`; the node is removed from `container` in both cases.
 
 ### IMP-213: The where branch of the relationship routine can never be taken (bug)
 
 [14.0.7] `IMP-212` is written like `IMP-210`: it chooses the `id` form when the owner has an `id`, the `where` form when it has a `where` and no `id`. The test, though, is `GetAttribute("id") != null`, and `GetAttribute` returns the empty string for a missing attribute, never null. So the test is always true. The `where` form is dead code, and an owner addressed only by `where` (or with no address) is queued with ` id=''` (probed: `<Item type='Discussion Forum' id='' action='edit' …>`). The server receives an edit by an empty id (not probed live). This is a reproduced bug (registered in `bugs.md`). A correct engine would test for the attribute's presence, as `IMP-210` does.
+
+[12.0] Same bug: the test is `GetAttribute("id") != null`, always true. Registered in `bugs.md`.
 
 [14.35] Same as 14.0.7.
 
@@ -171,6 +190,8 @@ The failures are structural. A node whose parent is not an element (the document
 5. sets `fp`'s text to the zero id (`IMP-222`).
 
 Neither `Item` carries `version` here, and the Property is edited by its id (` id=''` when it has none; probed). The queued entry is built from `text`, which was taken before the zero id was written.
+
+[12.0] Same: the same entry, the same zero id and the same failures.
 
 [14.35] Same as 14.0.7 except the address of the Property in step 4. Let `pid` be `prop.GetAttribute("id")`. When `pid` is not empty the Property is addressed by it, ` id='{pid}'`, as before. When it is empty (no `id` attribute, or an empty one) the Property is addressed by its own `where`: ` where="{where}"`, with **double** quotes, `where` being `prop.GetAttribute("where")`, the empty string when it has none (` where=""`). The value is not escaped (`IMP-204`). The entry is then:
 
@@ -204,6 +225,8 @@ The formatting is culture independent. The other attributes of `fp`, including a
 
 The nested `get` names the source by its id, so at the end of the package, when the list, sequence or ItemType has been imported, the edit of the Property points it at the real item (not probed live).
 
+[12.0] Same: the same data types, the same rewritten text.
+
 [14.35] Same as 14.0.7.
 
 ### IMP-222: The reference is replaced by the zero id in the imported document
@@ -212,6 +235,8 @@ The nested `get` names the source by its id, so at the end of the package, when 
 
 The same value is what the data-source check ignores (`IMP-140` selects only `data_source` values that are neither empty nor the zero id), so a second pass over the same document does not report the node again.
 
+[12.0] Same: the same `FakedDataSource` value of 32 zeros set through `InnerText`.
+
 [14.35] Same as 14.0.7.
 
 ## References that are only logged
@@ -219,6 +244,8 @@ The same value is what the data-source check ignores (`IMP-140` selects only `da
 ### IMP-230: Codes 10002, 10003, 0 and unknown ones change nothing
 
 [14.0.7] A reference with the code `10002` (a `source_id` of a `RelationshipType`), `10003` (a `related_id` of a `RelationshipType`), `0` (a reference the checks could not classify) or any other value gets only the warning line of `IMP-202`. The document and the queue are not touched, and the call goes on to the next reference (probed for 10002, 10003, 0 and 10006). The node stays in the document, and the import goes on without any delayed fix for it.
+
+[12.0] Same: codes 10002, 10003, 0 and unknown ones get the warning line only.
 
 [14.35] Same as 14.0.7.
 
@@ -241,6 +268,8 @@ An empty queue does nothing (no log line). There is no `try`: the first exceptio
 
 An entry that is not well-formed fails in one of two places, with the same class of error: with the text of step 1 present, in the parse of `IMP-241` before the log line (probed: no line, no request for it, an `XmlException` whose message is the parser's); without it, inside `applyAML`, because IOM loads the AML string before sending it (`WIRE-006`; the log line is written first). An entry made by `IMP-204` from a value with an apostrophe or `&` ends up in one of these.
 
+[12.0] Same: the same marker test, the same log line `DELAYED RESOLUTION: applying AML {0}` and the same `applyAML` per entry, stopping at the first failure. A fault's `Message` is the response document alone (WIRE-051 [12.0]).
+
 [14.35] Same as 14.0.7.
 
 ### IMP-241: ReplaceRelatedIdOnLatestId parses the entry and looks for a floating related_id
@@ -252,6 +281,8 @@ An entry that is not well-formed fails in one of two places, with the same class
 3. otherwise (never reached, `IMP-242`) removes the attribute, reads the node's text as the id and its `type` attribute as the type (a missing `type` raises a `NullReferenceException`), sets the node's text to `helper.GetCurrentIdOfVersion(id, type)` and returns the document's outer XML.
 
 The attribute is put on a `related_id` by the checks to mark a reference to a floating relationship whose target does not exist yet (`IMP-150`), so that the delayed run can replace the id by the target's current generation. Step 3 is that replacement. Probed by calling the method directly with an AML whose root is `AML`: the attribute is removed, the id replaced by the helper's answer, and `GetCurrentIdOfVersion` receives the id and the type.
+
+[12.0] Same: the same parse and the same selection starting at `/AML`.
 
 [14.35] Same as 14.0.7.
 
@@ -266,6 +297,8 @@ The effects are:
 
 This is a reproduced bug (registered in `bugs.md`). The port parses and returns null, as the engine does, and does not implement step 3. A correct engine would match `/Item/Relationships/Item/related_id`.
 
+[12.0] Same bug: the path starts at `/AML` and every entry starts with `<Item`, so the replacement never runs. Registered in `bugs.md`.
+
 [14.35] Same as 14.0.7.
 
 ## Interplay
@@ -279,6 +312,8 @@ This is a reproduced bug (registered in `bugs.md`). The port parses and returns 
 - a failure leaves the earlier effects in place (`IMP-203`).
 
 The same item can go through `DoChecking` twice (`IMP-100`: the first pass without the full check, the second after a failed `doImport`), and the manager is the same. The second pass reports only what the first left in the document (the zero id of `IMP-222` keeps a processed `data_source` out of it), and every entry it adds is queued after the first pass's. Duplicated entries are run in order, and two entries that add the same relationship are both sent.
+
+[12.0] Same: the same one-by-one processing on the live document, the same duplicates and the same second pass.
 
 [14.35] As in 14.0.7, except that the queue is deduplicated (`IMP-251`): a second entry equal to a queued one is dropped, not run again. Entries that differ in any character stay, so the nested relationship that two references of the probed example both reach is still queued twice (once with its template, once alone).
 
