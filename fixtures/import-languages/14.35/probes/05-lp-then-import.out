@@ -1,0 +1,48 @@
+## plain-package-no-languages
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+manager ctor => ok
+Languages after => null
+ImportSolutions => 0
+sent => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name></Item>"
+## plain-package-languages-de
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+manager ctor => ok
+Languages after => ["de"]
+ImportSolutions => 0
+sent => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item>"
+## plain-package-languages-de-en
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+manager ctor => ok
+Languages after => ["de", "en"]
+ImportSolutions => 0
+sent => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name></Item>"
+## plain-package-languages-en-only
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+manager ctor => ok
+Languages after => ["en"]
+ImportSolutions => 0
+sent => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"></Item>"
+## plain-package-languages-star
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"LIBSJS-SCRATCH-LP\" path=\"LIBSJS-SCRATCH-LP\\Import\" />\r\n</imports>"
+manager ctor => ok
+Languages after => ["de", "fr"]
+## dotted-package-name
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"My.Pkg\" path=\"Pkg\\Import\" />\r\n</imports>"
+manager ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\Pkg\\Import'."
+Languages after => null
+## dotted-package-name-languages-star
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"My.Pkg\" path=\"Pkg\\Import\" />\r\n</imports>"
+manager ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\Temp\\LanguagePack_<random>\\Pkg\\Import'."
+Languages after => ["*"]
+## dotted-package-name-dot-at-end
+preprocessor => ok
+manifest => "<imports>\r\n  <package name=\"a.b.\" path=\"\\Import\" />\r\n</imports>"
+manager ctor => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\libsjs73-probe\\Import'."
+Languages after => null

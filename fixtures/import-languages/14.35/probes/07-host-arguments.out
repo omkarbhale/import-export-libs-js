@@ -1,0 +1,43 @@
+import without langs => rc=0 console=""
+    IMPORT="Import" LANGS=[] count=0
+import langs=de,en => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "en"] count=2
+import langs=en,de keeps order => rc=0 console=""
+    IMPORT="Import" LANGS=["en", "de"] count=2
+import langs=* alone => rc=0 console=""
+    IMPORT="Import" LANGS=["*"] count=1
+import langs=*,de (star first) => rc=0 console=""
+    IMPORT="Import" LANGS=["*", "de"] count=2
+import langs=de,*,en (star not first, en present) => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "*", "en"] count=3
+import langs=de (no en) => rc=1 console="'en' language is required for 'langs' list"
+import langs=en => rc=0 console=""
+    IMPORT="Import" LANGS=["en"] count=1
+import langs=EN,de (en in any case) => rc=0 console=""
+    IMPORT="Import" LANGS=["EN", "de"] count=2
+import LANGS=DE,EN (name in any case, values kept) => rc=0 console=""
+    IMPORT="Import" LANGS=["DE", "EN"] count=2
+import langs=de,de,en (distinct) => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "en"] count=2
+import langs=de,DE,en (distinct is case sensitive) => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "DE", "en"] count=3
+import langs=,de,,en, (empty entries dropped) => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "en"] count=2
+import langs=,, (only separators) => rc=0 console=""
+    IMPORT="Import" LANGS=[] count=0
+import langs= (nothing after =) => rc=1 console="\r\nunrecognized option langs="
+import langs bare word => rc=1 console="\r\nunrecognized option langs"
+import langs with space after comma => rc=1 console="'en' language is required for 'langs' list"
+import langs quoted => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "en"] count=2
+import langs=*,* (star twice) => rc=0 console=""
+    IMPORT="Import" LANGS=["*"] count=1
+import langs=de,en last one wins => rc=0 console=""
+    IMPORT="Import" LANGS=["de", "en"] count=2
+export (the default operation) langs=de (no en) => rc=1 console="'en' language is required for 'langs' list"
+lpimport langs=de (no en needed) => rc=0 console=""
+    IMPORT="LPImport" LANGS=["de"] count=1
+lpimport langs=*  => rc=0 console=""
+    IMPORT="LPImport" LANGS=["*"] count=1
+lpimport without langs => rc=0 console=""
+    IMPORT="LPImport" LANGS=[] count=0

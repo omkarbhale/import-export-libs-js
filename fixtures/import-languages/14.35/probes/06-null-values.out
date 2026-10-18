@@ -1,0 +1,234 @@
+## source-id-goes-by-sql
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## related-id-goes-by-sql
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## other-property-goes-by-aml
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## keyed-name-compared-ordinal
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## property-get-no-items
+doImport => System.Exception: "Not a single item"
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## property-get-other-fault
+doImport => Aras.Tools.SolutionUpgrade.CItemException: "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" [faultcode=5 faultstring="<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" faultdetail=""]
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## property-get-two-items
+doImport => System.Exception: "Not a single item"
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## property-get-no-keyed-name
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-not-in-the-answer
+doImport => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"es\">Etiqueta</i18n:label></Item>"
+## language-get-no-items
+doImport => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-get-other-fault
+doImport => Aras.Tools.SolutionUpgrade.CItemException: "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" [faultcode=5 faultstring="<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" faultdetail=""]
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-get-duplicate-code
+doImport => System.ArgumentException: "An item with the same key has already been added."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-get-item-without-code
+doImport => System.ArgumentNullException: "Value cannot be null.\r\nParameter name: key"
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-get-item-without-suffix
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## language-get-uppercase-code
+doImport => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">x</i18n:label></Item>"
+## value-with-quote-amp-lt
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'O'Brien &amp; &lt;b&gt; N'x'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">O'Brien &amp; &lt;b&gt; N'x</i18n:label></Item>"
+## value-non-ascii
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'\u00E9tiquette'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">\u00E9tiquette</i18n:label></Item>"
+## value-empty
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'',[label_fr] = N'x'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\"></i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">x</i18n:label></Item>"
+## child-without-prefix
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'plain'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><label xml:lang=\"de\">plain</label></Item>"
+## child-with-other-prefix
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'other'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><x:label xmlns:x=\"urn:x\" xml:lang=\"de\">other</x:label></Item>"
+## only-plain-children-nothing-is-sent
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><data_type>string</data_type></Item>"
+## empty-lang-attribute-skipped
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'y'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><label xml:lang=\"\">x</label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">y</i18n:label></Item>"
+## element-with-nested-markup
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'abc'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">a<b>b</b>c</i18n:label></Item>"
+## batch-mode-sql-still-sent
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## batch-mode-other-property-not-sent
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## merge-mode-edit-item
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+#### what the version and the item type decide
+## version-14-35-keeps-context-action
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## version-14-0-sp22-keeps-context-action
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## version-14-0-sp21-handles
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## version-14-0-service-update-22-handles
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## other-type-keeps-context-action
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Foo</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Foo].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Foo].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## property-without-context-action
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## context-action-other-value
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"x\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"x\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## context-action-case
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"LPIMPORT\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"LPIMPORT\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## lowercase-type-property
+doImport => ok
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+#### the version predicate itself
+major=9 minor=4 servicePack=0 build=0 serviceUpdate=0 => True
+major=11 minor=0 servicePack=0 build=0 serviceUpdate=0 => True
+major=12 minor=0 servicePack=0 build=0 serviceUpdate=0 => True
+major=12 minor=0 servicePack=9 build=0 serviceUpdate=0 => True
+major=12 minor=5 servicePack=99 build=0 serviceUpdate=0 => True
+major=13 minor=0 servicePack=0 build=0 serviceUpdate=0 => True
+major=13 minor=9 servicePack=30 build=0 serviceUpdate=0 => True
+major=14 minor=0 servicePack=0 build=0 serviceUpdate=0 => True
+major=14 minor=0 servicePack=7 build=0 serviceUpdate=7 => True
+major=14 minor=0 servicePack=21 build=0 serviceUpdate=0 => True
+major=14 minor=0 servicePack=22 build=0 serviceUpdate=0 => False
+major=14 minor=0 servicePack=22 build=39629 serviceUpdate=0 => False
+major=14 minor=0 servicePack=30 build=0 serviceUpdate=0 => False
+major=14 minor=0 servicePack=0 build=0 serviceUpdate=22 => True
+major=14 minor=0 servicePack=0 build=0 serviceUpdate=35 => True
+major=14 minor=1 servicePack=0 build=0 serviceUpdate=0 => False
+major=14 minor=35 servicePack=0 build=0 serviceUpdate=0 => False
+major=15 minor=0 servicePack=0 build=0 serviceUpdate=0 => False
+major=35 minor=0 servicePack=0 build=0 serviceUpdate=0 => False

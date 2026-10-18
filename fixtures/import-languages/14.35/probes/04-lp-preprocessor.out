@@ -1,0 +1,135 @@
+#### file names: Path.GetFileNameWithoutExtension
+## name-plain
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-two-dots
+ctor => ok
+  file "PKG\\Import\\Fixes\\A.B.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"A.B\" action=\"edit\" doGetItem=\"0\" where=\"[A.B].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-xmlbak
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-upper-extension
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-xml-twice
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo.xml\" action=\"edit\" doGetItem=\"0\" where=\"[Foo.xml].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-xml-in-the-middle
+ctor => ok
+  file "PKG\\Import\\Fixes\\A.xml.xml.B.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"A.xml.xml.B\" action=\"edit\" doGetItem=\"0\" where=\"[A.xml.xml.B].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-with-spaces
+ctor => ok
+  file "PKG\\Import\\Fixes\\Sub Type.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Sub Type\" action=\"edit\" doGetItem=\"0\" where=\"[Sub_Type].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-hidden-file
+ctor => ok
+  file "PKG\\Import\\Fixes\\.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" doGetItem=\"0\" where=\"[].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-collision-two-files
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+  file "PKG\\Import\\Fixes\\Foo.xml.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo.xml\" action=\"edit\" doGetItem=\"0\" where=\"[Foo.xml].id='A2'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+## name-config-key-14-0-7-style
+ctor => ok
+## itemtype-none-with-file
+ctor => System.Collections.Generic.KeyNotFoundException: "The given key was not present in the dictionary."
+## itemtype-none-without-files
+ctor => ok
+## itemtype-other-only
+ctor => ok
+#### Property items (version 12.0 SP9: null-value handling on)
+## property-values-P1
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## property-values-P2
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P2</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P2' AND [Property].action='x'\"><data_type>item</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## property-values-P3
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P3</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P3' AND [Property].action='x'\"><default_value></default_value><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## property-values-P4
+ctor => System.Exception: "Not a single item"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P4</id><action>x</action></Item>"
+## property-values-PX
+ctor => System.Exception: "Not a single item"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>PX</id><action>x</action></Item>"
+## property-get-fault-other
+ctor => Aras.Tools.SolutionUpgrade.CItemException: "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" [faultcode=5 faultstring="<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>5</faultcode>\r\n      <faultstring>boom</faultstring>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>" faultdetail=""]
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+## property-get-empty-result
+ctor => System.Exception: "Not a single item"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+## property-get-garbage
+ctor => System.Exception: "Not a single item"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+## property-no-translation-still-asks
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id></Item>"
+## property-two-items-attributes-as-properties
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><foo>bar</foo></Item>"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P2</id></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].foo='bar'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">A</i18n:label></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P2'\"><data_type>item</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">B</i18n:label></Item></AML>"
+## property-item-without-attributes
+ctor => System.Exception: "Not a single item"
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\" />"
+## property-prefixed-attribute
+ctor => System.Xml.XPath.XPathException: "Namespace prefix 'a' is not defined."
+## property-lowercase-file-name-not-property
+ctor => ok
+  file "PKG\\Import\\Fixes\\property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"property\" action=\"edit\" doGetItem=\"0\" where=\"[property].id='P1' AND [property].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## property-with-spaces-name
+ctor => ok
+  file "PKG\\Import\\Fixes\\Property .xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property \" action=\"edit\" doGetItem=\"0\" where=\"[Property_].id='P1' AND [Property_].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## foo-type-never-asks
+ctor => ok
+  file "PKG\\Import\\Fixes\\Foo.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Foo\" action=\"edit\" doGetItem=\"0\" where=\"[Foo].id='A1'\"><i18n:name xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Hallo</i18n:name><i18n:name xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Salut</i18n:name><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label></Item></AML>"
+#### the version decides (Property P1 file, answers as above)
+## version-11.0.0.0.0
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-12.0.0.0.0
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-13.0.0.0.0
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.0.0.0.0
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.0.21.0.0
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.0.22.0.0
+ctor => ok
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1' AND [Property].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.0.0.0.22
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.0.7.0.7
+ctor => ok
+request => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"default_value[is_not_null()], data_source[is_not_null()], data_type[is_not_null()]\"><id>P1</id><action>x</action></Item>"
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" context_action=\"lpimport\" where=\"[Property].id='P1' AND [Property].action='x'\"><default_value>dv</default_value><data_source>ds</data_source><data_type>string</data_type><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.1.0.0.0
+ctor => ok
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1' AND [Property].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-14.35.0.0.0
+ctor => ok
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1' AND [Property].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+## version-15.0.0.0.0
+ctor => ok
+  file "PKG\\Import\\Fixes\\Property.xml" => "<AML><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1' AND [Property].action='x'\"><i18n:label xml:lang=\"de\" xmlns:i18n=\"http://www.aras.com/I18N\">Etikett</i18n:label><i18n:label xml:lang=\"fr\" xmlns:i18n=\"http://www.aras.com/I18N\">Libelle</i18n:label></Item></AML>"
+#### the version is read when the preprocessor is built
+## no-version-with-a-pack
+ctor => System.NullReferenceException: "Object reference not set to an instance of an object."
+## no-version-with-an-empty-lp-path
+ctor => System.NullReferenceException: "Object reference not set to an instance of an object."
+## version-with-an-empty-lp-path
+ctor => ok

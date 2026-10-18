@@ -1,0 +1,89 @@
+## basic-all-depths
+extract => ok
+by package "P" => "de", "en", "es", "fr"
+by packages (engine order) => "de", "en", "es", "fr"
+## file-name-patterns
+extract => ok
+by package "P" => "aa", "bb", "cc", "ff", "gg"
+by packages (engine order) => "aa", "bb", "cc", "ff", "gg"
+## selection-rules
+extract => ok
+by package "P" => "", "child", "deepitem", "relchild"
+by packages (engine order) => "", "child", "deepitem", "relchild"
+## case-lowered-and-merged
+extract => ok
+by package "P" => "de", "\u0130", "zh-cn", "\u03B1\u03C3"
+by packages (engine order) => "de", "\u0130", "zh-cn", "\u03B1\u03C3"
+## two-packages
+extract => ok
+by package "P1" => "de", "fr"
+by package "P2" => "de", "es"
+by package "P3" => 
+by package "Unknown" => 
+by packages (engine order) => "de", "es", "fr"
+by packages P1,P2 => "de", "es", "fr"
+by packages P2,P1,P2 => "de", "es", "fr"
+by packages none => 
+## same-package-name-twice-first-wins
+extract => ok
+by package "P" => "de"
+by packages (engine order) => "de"
+## order-of-package-names-in-the-sort
+## sort-order
+extract => ok
+by package "P" => "1", "10", "2", "a", "\u00E4", "a_b", "ab", "a-b", "b", "de", "de-ch", "dex", "e", "\u00E9", "en", "en-us", "f", "z", "zh", "zhcn", "zh-cn", "zh-tw"
+by packages (engine order) => "1", "10", "2", "a", "\u00E4", "a_b", "ab", "a-b", "b", "de", "de-ch", "dex", "e", "\u00E9", "en", "en-us", "f", "z", "zh", "zhcn", "zh-cn", "zh-tw"
+## sort-order-realistic
+extract => ok
+by package "P" => "da", "de", "dea", "de-ch", "en", "en-us", "es", "es-mx", "fr", "fr-ca", "nl", "nl-be", "pt", "pt-br", "sv", "sv-fi", "zh-cn", "zh-tw"
+by packages (engine order) => "da", "de", "dea", "de-ch", "en", "en-us", "es", "es-mx", "fr", "fr-ca", "nl", "nl-be", "pt", "pt-br", "sv", "sv-fi", "zh-cn", "zh-tw"
+## re-extract-clears-the-cache
+after first extract, A => "de"
+after second extract, A => 
+after second extract, B => "fr"
+after empty extract, B => 
+## failures
+## malformed-file-in-first-package
+extract => System.AggregateException: "One or more errors occurred."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Unexpected end of file has occurred. The following elements are not closed: Item, AML. Line 1, position 12."
+by package "P" => 
+by package "Q" => 
+by packages (engine order) => 
+## three-malformed-files
+extract => System.AggregateException: "One or more errors occurred."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Root element is missing."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "There are multiple root elements. Line 1, position 6."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Unexpected end of file has occurred. The following elements are not closed: Item, AML. Line 1, position 12."
+by package "P" => 
+by packages (engine order) => 
+## malformed-file-in-second-package
+extract => System.AggregateException: "One or more errors occurred."
+    inner (order of the list is not defined; sorted here) System.Xml.XmlException: "Unexpected end of file has occurred. The following elements are not closed: Item, AML. Line 1, position 12."
+by package "P" => "de"
+by package "Q" => 
+by packages (engine order) => "de"
+## package-without-xml
+extract => ok
+by package "P" => 
+by packages (engine order) => 
+## missing-folder
+extract => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%USERPROFILE%\\AppData\\Local\\libsjs73-probe\\cases\\empty-pkg\\Missing'."
+by package "P" => 
+by package "M" => 
+by packages (engine order) => 
+## folder-is-a-file
+extract => System.IO.IOException: "The directory name is invalid.\r\n"
+by package "F" => 
+by packages (engine order) => 
+## no-packages
+extract => ok
+by package "P" => 
+by packages (engine order) => 
+## doctype-in-file
+extract => ok
+by package "P" => "de"
+by packages (engine order) => "de"
+## bom-and-declaration
+extract => ok
+by package "P" => "de"
+by packages (engine order) => "de"
