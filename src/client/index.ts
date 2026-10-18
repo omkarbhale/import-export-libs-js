@@ -8,7 +8,7 @@ export type { ServerConnection } from "./innovator.js";
 export { CLIENT_ENGINES, CItemHelper, EngineNotSupportedError } from "./item-helper.js";
 export type { ItemHelperOptions, VersionGate } from "./item-helper.js";
 export { ItemLookups, independentRelatedItems } from "./item-lookups.js";
-export type { IndependentRelatedItem, LookupHost, MetadataType, RelatedItemMetadata } from "./item-lookups.js";
+export type { IndependentRelatedItem, LookupHost, LookupLog, MetadataType, RelatedItemMetadata } from "./item-lookups.js";
 export { UnmappedTimeZoneError, localWindowsTimeZoneId } from "./timezone.js";
 export { nodeTransport } from "./transport.js";
 export type { HttpTransport, TransportRequest, TransportResponse } from "./transport.js";
