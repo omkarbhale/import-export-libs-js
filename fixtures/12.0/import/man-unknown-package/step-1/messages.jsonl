@@ -1,0 +1,2 @@
+{"event":9,"seq":1,"thread":16,"ticks":812415099565,"channel":"status","text":"Building  solution","answer":null}
+{"event":14,"seq":2,"thread":16,"ticks":812415802144,"channel":"error","text":"\t\t****ErrorMessage****\n\nImport package LIBSJS-SCRATCH-NOTLISTED failed with message:\n\nNode for package 'LIBSJS-SCRATCH-NOTLISTED' doesn't exist in the manifest file Enable to detemine path to LIBSJS-SCRATCH-NOTLISTED.\nUpdating LIBSJS-SCRATCH-NOTLISTED to failed release status\n\t\t**********************","answer":null}

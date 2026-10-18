@@ -1,0 +1,47 @@
+{
+  "id": "s4-mp-promote",
+  "engine": "12.0",
+  "catalogue": [
+    "S4",
+    "R12"
+  ],
+  "title": "An mp_PromoteItem action on an mp_MacPolicy",
+  "exercises": "build.xsl selects mp_* items with any action in 14.x, so the engine sends it; the policy does not exist, so the server's answer ends the package. 12.0 drops mp_PromoteItem (R12): nothing is sent and the package succeeds.",
+  "note": "No mp_MacPolicy is created: the item names an id that exists nowhere.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-DELPROMOTE"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 14,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "7C66BACD65C84ABCA250A19C1EB8F92B"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "BDC806C1FF344426857F8DF2BD22B49E"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "BDC806C1FF344426857F8DF2BD22B49E"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "7C66BACD65C84ABCA250A19C1EB8F92B"
+    }
+  ]
+}

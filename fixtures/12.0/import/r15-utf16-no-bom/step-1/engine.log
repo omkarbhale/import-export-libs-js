@@ -1,0 +1,14 @@
+Start of importing packages
+start of execution : 10/19/2026 03:31:36
+Updating LIBSJS-SCRATCH-FSUTF16NOBOM to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-FSUTF16NOBOM****
+Processing (add)   id : DF49D631DA2FC3854888CFC00FD37AD6    keyed_name : LIBSJS-SCRATCH-FsU16Nb_Var_1    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : DF49D631DA2FC3854888CFC00FD37AD6    keyed_name : LIBSJS-SCRATCH-FsU16Nb_Var_1    type : Variable  
+Adding item into PackageDefinition with id = DF49D631DA2FC3854888CFC00FD37AD6 and type = Variable
+Item successfully added in packdefinition  id  DF49D631DA2FC3854888CFC00FD37AD6 type Variable
+completed
+Updating LIBSJS-SCRATCH-FSUTF16NOBOM to suc

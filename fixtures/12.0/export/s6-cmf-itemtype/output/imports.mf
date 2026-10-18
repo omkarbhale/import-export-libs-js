@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-SPECIAL" path="LIBSJS-SCRATCH-SPECIAL\Import" />
+</imports>

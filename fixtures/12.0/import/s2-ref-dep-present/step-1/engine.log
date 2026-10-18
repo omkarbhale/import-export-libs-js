@@ -1,0 +1,13 @@
+Start of importing packages
+start of execution : 10/19/2026 03:29:08
+Updating LIBSJS-SCRATCH-REFDEP to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-REFDEP****
+Processing (add)   id : ADFEE419D8DB444BF5EDED7C490E4BA2    keyed_name : LIBSJS-SCRATCH-REFDEP-List_1    type : List  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : ADFEE419D8DB444BF5EDED7C490E4BA2    keyed_name : LIBSJS-SCRATCH-REFDEP-List_1    type : List  
+Adding item into PackageDefinit

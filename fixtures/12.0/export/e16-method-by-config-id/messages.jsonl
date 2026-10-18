@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":805323573182,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":805323578977,"channel":"status","text":"Item 1 of 1: Method - Add Alias Identity","answer":null}
+{"event":19,"seq":3,"thread":16,"ticks":805325559454,"channel":"status","text":"completed","answer":null}
+{"event":20,"seq":4,"thread":16,"ticks":805325559892,"channel":"currentPackage","text":"","answer":null}

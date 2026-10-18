@@ -1,0 +1,22 @@
+Start of importing packages
+start of execution : 10/19/2026 03:30:39
+Updating LIBSJS-SCRATCH-A.Coll to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-A.Coll****
+Processing (add)   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 416141614D62782894BB63F6E612448D    keyed_name : LIBSJS-SCRATCH-Coll_Same    type : Variable  
+Adding item into PackageDefinition with id = 416141614D62782894BB63F6E612448D and type = Variable
+Item successfully added in packdefinition  id  416141614D62782894BB63F6E612448D type Variable
+completed
+Updating LIBSJS-SCRATCH-A.Coll to success release status
+end o
+		****ErrorMessage****
+
+Import package LIBSJS-SCRATCH-B.Coll failed with message:
+
+The package 'LIBSJS-SCRATCH-B.Coll' already contains the PackageElement with id='416141614D62782894BB63F6E612448D' but of different type: DB - type='Variable', group_id='36D73466F4B64EE59BAEA36EC4B4A66B';   being imported - type='Variable', group_id='ECC526D8D5DD4A4F931D01F699AD7C93'
+Updating LIBSJS-SCRATCH-B.Coll to failed release status
+		********************

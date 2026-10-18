@@ -1,0 +1,6 @@
+{"event":9,"seq":1,"thread":16,"ticks":812756726135,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":812757486312,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-FSUTF16NOBOM","answer":null}
+{"event":13,"seq":3,"thread":16,"ticks":812757820494,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-FsU16Nb_Var_1","answer":null}
+{"event":23,"seq":4,"thread":16,"ticks":812759717280,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":24,"seq":5,"thread":16,"ticks":812759718411,"channel":"status","text":"completed","answer":null}
+{"event":29,"seq":6,"thread":16,"ticks":812760548010,"channel":"status","text":"completed","answer":null}

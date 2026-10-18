@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":806213869411,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":806213875944,"channel":"status","text":"Item 1 of 1: SQL - ConvertFromLocal","answer":null}
+{"event":16,"seq":3,"thread":16,"ticks":806216046609,"channel":"status","text":"completed","answer":null}
+{"event":17,"seq":4,"thread":16,"ticks":806216047277,"channel":"currentPackage","text":"","answer":null}

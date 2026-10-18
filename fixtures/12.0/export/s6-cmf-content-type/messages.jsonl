@@ -1,0 +1,4 @@
+{"event":8,"seq":1,"thread":18,"ticks":807403141076,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-SPECIAL","answer":null}
+{"event":9,"seq":2,"thread":18,"ticks":807403146933,"channel":"status","text":"Item 1 of 1: cmf_ContentType - LIBSJS_SCRATCH_CmfContent","answer":null}
+{"event":23,"seq":3,"thread":18,"ticks":807408348875,"channel":"status","text":"completed","answer":null}
+{"event":24,"seq":4,"thread":18,"ticks":807408349371,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,28 @@
+{
+  "id": "e25-identity-non-system",
+  "engine": "12.0",
+  "catalogue": [
+    "E25"
+  ],
+  "title": "Identity: non-system Identity as the root (Conversion Manager)",
+  "exercises": "Levels 1. The Member rows are dropped in place and re-emitted.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.conversion",
+      "items": [
+        {
+          "type": "Identity",
+          "id": "694C8B27E5D940DAA8BD336E45EC3A63",
+          "keyedName": "Conversion Manager"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 14,
+    "error": null
+  }
+}

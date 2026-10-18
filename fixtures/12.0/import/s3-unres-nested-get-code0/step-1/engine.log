@@ -1,0 +1,22 @@
+Start of importing packages
+start of execution : 10/19/2026 03:29:23
+Updating LIBSJS-SCRATCH-UNRES0 to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-UNRES0****
+Processing (add)   id : 5418FC7EB1F82B9657477A47F0EDF88B    keyed_name : LIBSJS-SCRATCH-UNRES-Action_1    type : Action  
+********** Start of reference checking ************
+checking item with get action:<Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Missing_Method</name></Item>
+<Item type='ItemType' action='get' select='id'><name>Action</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<method keyed_name="LIBSJS-SCRATCH-Missing_Method" type="Method"><Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Missing_Method</name></Item></method>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of re
+		****ErrorMessage****
+
+Import package LIBSJS-SCRATCH-UNRES0 failed with message:
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>SOAP-ENV:Server</faultcode><faultstring><![CDATA[No items of type Method found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type Method found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'Method' found using the criteria: 
+<Item type="Method" action="get" select="id" doGetItem="0"><name>LIBSJS-SCRATCH-Missing_Method</name></Item>
+]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-UNRES0 to failed release status
+		********************

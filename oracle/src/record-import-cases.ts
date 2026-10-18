@@ -3,23 +3,23 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+import { CASE_ENGINES, DEFAULT_CASE_ENGINE, ENGINE_BUILD, blobsDir, casesDir, isCaseEngine, recorderCommand, type CaseEngine } from "./case-engine.js";
 import { readPassword } from "./cli.js";
-import { IMPORT_CASES, hostOptions, type ImportCase, type ImportStep, type StepOutcome } from "./import-cases.js";
+import { casesFor, expectedOutcome, hostOptions, type ImportCase, type ImportStep, type StepOutcome } from "./import-cases.js";
 import { writePackages } from "./import-packages.js";
 import { DEV_SERVER, record, type CleanupReport, type ItemRef } from "./record.js";
 import { externalizeLargeResponses } from "./transcript.js";
 
-const ENGINE = "14.0.7";
-const ROOT = fileURLToPath(new URL("../..", import.meta.url));
-/** Where the cases are committed. */
-export const CASES_DIR = join(ROOT, "fixtures", ENGINE, "import");
-/** Shared large responses (see transcript.ts). */
-export const BLOBS_DIR = join(CASES_DIR, "_blobs");
+const ENGINE: CaseEngine = DEFAULT_CASE_ENGINE;
+/** Where the 14.0.7 cases are committed. */
+export const CASES_DIR = casesDir(ENGINE, "import");
+/** Shared large responses of the 14.0.7 cases (see transcript.ts). */
+export const BLOBS_DIR = blobsDir(ENGINE, "import");
 
-const USAGE = `Usage: npm run oracle:import-cases -- [--only <id>,<id>...] [--force] [--list] [--readme-only]
+const USAGE = `Usage: npm run oracle:import-cases -- [--engine 14.0.7|12.0] [--only <id>,<id>...] [--force] [--list] [--readme-only]
 
-Records the 14.0.7 import fixture cases from import-cases.ts on dev into
-fixtures/${ENGINE}/import/<case>/step-<n>/. Every case imports LIBSJS-SCRATCH-*
+Records the import fixture cases from import-cases.ts on dev into
+fixtures/<engine>/import/<case>/step-<n>/ (default engine 14.0.7). Every case imports LIBSJS-SCRATCH-*
 packages only and deletes what it created (a failed case is cleaned up too).
 A case that is already recorded is skipped unless --force. The password comes
 from ARAS_PASSWORD or stdin. --readme-only rewrites each case's case.json and
@@ -41,7 +41,7 @@ export interface StepResult {
 /** `case.json`: the case's input and what was recorded. */
 export interface CaseFile {
   id: string;
-  engine: typeof ENGINE;
+  engine: CaseEngine;
   catalogue: string[];
   title: string;
   exercises: string;
@@ -58,10 +58,10 @@ export interface CaseFile {
   deleted: ItemRef[];
 }
 
-export function caseFile(c: ImportCase, results: readonly StepResult[], deleted: readonly ItemRef[]): CaseFile {
+export function caseFile(c: ImportCase, results: readonly StepResult[], deleted: readonly ItemRef[], engine: CaseEngine = ENGINE): CaseFile {
   return {
     id: c.id,
-    engine: ENGINE,
+    engine,
     catalogue: c.catalogue,
     title: c.title,
     exercises: c.exercises,
@@ -71,7 +71,7 @@ export function caseFile(c: ImportCase, results: readonly StepResult[], deleted:
       packages: s.packages.map((p) => p.name),
       ...(s.only === undefined ? {} : { only: s.only }),
       options: s.options ?? {},
-      expect: s.expect,
+      expect: expectedOutcome(s, engine),
       result: results[i]!,
     })),
     deleted: [...deleted],
@@ -146,25 +146,27 @@ export function caseReadme(file: CaseFile): string {
     "",
     "The return code is `run.json` `host.result` (`ImportSolutions returned N`); `hostExit` is the host process's own exit code.",
     "",
-    `Re-record: \`ARAS_PASSWORD=… npm run oracle:import-cases -- --only ${file.id} --force\`.`,
+    `Re-record: \`ARAS_PASSWORD=… ${recorderCommand("oracle:import-cases", file.engine, `--only ${file.id} --force`)}\`.`,
     "",
   ];
   return lines.join("\n");
 }
 
-export function indexReadme(cases: readonly CaseFile[]): string {
+export function indexReadme(cases: readonly CaseFile[], engine: CaseEngine = ENGINE): string {
   return [
-    "# 14.0.7 import fixtures",
+    `# ${engine} import fixtures`,
     "",
-    "Recorded from engine 14.0.7.35492 on the dev instance, from ticket 05's scratch packages (S1 to S5, S8, S9), its manifest and file-system cases and its import option matrix. Every import used `LIBSJS-SCRATCH-*` packages and items only, and deleted what it created; each case README lists the ids created and deleted.",
+    `Recorded from engine ${ENGINE_BUILD[engine]} on the dev instance, from ticket 05's scratch packages (S1 to S5, S8, S9), its manifest and file-system cases and its import option matrix. Every import used \`LIBSJS-SCRATCH-*\` packages and items only, and deleted what it created; each case README lists the ids created and deleted.`,
     "",
     "- A case is one or more runs (`step-<n>/`). A step keeps what it created for the next step; the last step, or the recorder if a step fails, deletes everything. Each case starts from and ends at a dev instance without scratch data.",
     "- The packages are built by `oracle/src/import-packages.ts`, so a case can be rebuilt byte for byte. Each step's `input/` holds what the engine read.",
     "- Names follow `LIBSJS-SCRATCH-*`; ItemType and SQL names, which Aras restricts to word characters, use `LIBSJS_SCRATCH_*`.",
     "- A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript. Every import begins with the list of all PackageDefinitions (about 2.7 MB), which differs between steps because the earlier steps' scratch packages are in it. `oracle/src/transcript.ts` puts the blobs back.",
-    "- Not here: the language-pack import (ticket 45), the 14.35 batch and collected-errors modes (ticket 57), the 12.0 variants (ticket 48), the scratch-seeded export cases (S6, S7 and the export side of S2 and S8; ticket 67, `npm run oracle:export-scratch-cases`), whose seed imports are not kept as import fixtures, and the merge of core Forum and Change Controlled Relationship (captain decision 2026-10-13, option (a): rules R13 and R14 are pinned by unit tests on synthetic input and are not exercisable on dev).",
+    engine === ENGINE
+      ? "- Not here: the language-pack import (ticket 45), the 14.35 batch and collected-errors modes (ticket 57), the 12.0 variants (ticket 48), the scratch-seeded export cases (S6, S7 and the export side of S2 and S8; ticket 67, `npm run oracle:export-scratch-cases`), whose seed imports are not kept as import fixtures, and the merge of core Forum and Change Controlled Relationship (captain decision 2026-10-13, option (a): rules R13 and R14 are pinned by unit tests on synthetic input and are not exercisable on dev)."
+      : `- Not here: a language-pack import (12.0 has no \`LanguagePackPreprocessor\`; \`import-language-pack\` refuses on it), the scratch-seeded export cases (S6, S7 and the export side of S2 and S8; ticket 48, \`${recorderCommand("oracle:export-scratch-cases", engine)}\`), whose seed imports are not kept as import fixtures, and the merge of core Forum and Change Controlled Relationship (captain decision 2026-10-13, option (a): rules R13 and R14 are pinned by unit tests on synthetic input and are not exercisable on dev). Cases named \`r*\` exist only here: each pins one of 12.0's variant rules.`,
     "- The dev state a case ran against can change. `run.json` carries the time of each run.",
-    "- Re-record with `ARAS_PASSWORD=… npm run oracle:import-cases` (see `npm run oracle:import-cases -- --help`).",
+    `- Re-record with \`ARAS_PASSWORD=… ${recorderCommand("oracle:import-cases", engine)}\` (see \`${recorderCommand("oracle:import-cases", engine, "--help")}\`).`,
     "",
     "| Case | Catalogue | What | Steps | Calls | Created |",
     "|---|---|---|---|---|---|",
@@ -176,28 +178,30 @@ export function indexReadme(cases: readonly CaseFile[]): string {
   ].join("\n");
 }
 
-function recordedCases(): CaseFile[] {
-  return IMPORT_CASES.flatMap((c) => {
-    const file = join(CASES_DIR, c.id, "case.json");
+export function recordedCases(engine: CaseEngine = ENGINE): CaseFile[] {
+  return casesFor(engine).flatMap((c) => {
+    const file = join(casesDir(engine, "import"), c.id, "case.json");
     return existsSync(file) ? [JSON.parse(readFileSync(file, "utf8")) as CaseFile] : [];
   });
 }
 
 /** Deletes the blobs no recorded transcript names any more (a re-recorded step leaves its old ones behind). */
-export function pruneBlobs(cases: readonly CaseFile[]): string[] {
-  if (!existsSync(BLOBS_DIR)) return [];
+export function pruneBlobs(cases: readonly CaseFile[], engine: CaseEngine = ENGINE): string[] {
+  const dir = casesDir(engine, "import");
+  const blobs = blobsDir(engine, "import");
+  if (!existsSync(blobs)) return [];
   const used = new Set<string>();
   for (const c of cases) {
     for (const i of c.steps.keys()) {
-      const text = readFileSync(join(CASES_DIR, c.id, `step-${i + 1}`, "transcript.jsonl"), "utf8");
+      const text = readFileSync(join(dir, c.id, `step-${i + 1}`, "transcript.jsonl"), "utf8");
       for (const line of text.split("\n").filter((l) => l !== "")) {
         const blob = (JSON.parse(line) as { responseBlob?: string }).responseBlob;
         if (blob !== undefined) used.add(blob);
       }
     }
   }
-  const removed = readdirSync(BLOBS_DIR).filter((f) => !used.has(f.replace(/\.xml$/, "")));
-  for (const f of removed) rmSync(join(BLOBS_DIR, f));
+  const removed = readdirSync(blobs).filter((f) => !used.has(f.replace(/\.xml$/, "")));
+  for (const f of removed) rmSync(join(blobs, f));
   return removed;
 }
 
@@ -230,7 +234,7 @@ interface Recorded {
  * Runs a case's steps into `work/<id>/step-<n>/`. Returns null (and cleans up
  * what the steps created) when a step does not end as its case says.
  */
-async function runCase(c: ImportCase, password: string, work: string): Promise<Recorded | null> {
+async function runCase(engine: CaseEngine, c: ImportCase, password: string, work: string): Promise<Recorded | null> {
   const results: StepResult[] = [];
   const created: ItemRef[] = [];
   let finished = false;
@@ -242,7 +246,7 @@ async function runCase(c: ImportCase, password: string, work: string): Promise<R
       writePackages(input, s.packages);
       const out = join(work, c.id, `step-${i + 1}`);
       const result = await record({
-        engine: ENGINE,
+        engine,
         command: "import",
         url: DEV_SERVER.url,
         database: DEV_SERVER.database,
@@ -272,8 +276,8 @@ async function runCase(c: ImportCase, password: string, work: string): Promise<R
         problem = `credential-shaped text survived scrubbing: ${result.remainingSecrets.join(", ")}`;
         break;
       }
-      if (!outcomeMatches(s.expect, step)) {
-        problem = `step ${i + 1} (${s.name}): expected ${s.expect}, got host exit ${step.hostExit}, returned ${step.returned}, error ${step.error?.split("\n")[0] ?? "none"}`;
+      if (!outcomeMatches(expectedOutcome(s, engine), step)) {
+        problem = `step ${i + 1} (${s.name}): expected ${expectedOutcome(s, engine)}, got host exit ${step.hostExit}, returned ${step.returned}, error ${step.error?.split("\n")[0] ?? "none"}`;
         break;
       }
       if (last) {
@@ -294,7 +298,7 @@ async function runCase(c: ImportCase, password: string, work: string): Promise<R
       const out = join(work, `${c.id}-cleanup`);
       try {
         const cleanup = await record({
-          engine: ENGINE,
+          engine,
           command: "cleanup",
           url: DEV_SERVER.url,
           database: DEV_SERVER.database,
@@ -315,16 +319,16 @@ async function runCase(c: ImportCase, password: string, work: string): Promise<R
   return null;
 }
 
-function install(c: ImportCase, work: string, recorded: Recorded): void {
-  const to = join(CASES_DIR, c.id);
+function install(engine: CaseEngine, c: ImportCase, work: string, recorded: Recorded): void {
+  const to = join(casesDir(engine, "import"), c.id);
   rmSync(to, { recursive: true, force: true });
   mkdirSync(to, { recursive: true });
   for (const i of c.steps.keys()) {
     const from = join(work, c.id, `step-${i + 1}`);
-    externalizeLargeResponses(join(from, "transcript.jsonl"), BLOBS_DIR);
+    externalizeLargeResponses(join(from, "transcript.jsonl"), blobsDir(engine, "import"));
     cpSync(from, join(to, `step-${i + 1}`), { recursive: true });
   }
-  const file = caseFile(c, recorded.results, recorded.deleted);
+  const file = caseFile(c, recorded.results, recorded.deleted, engine);
   writeFileSync(join(to, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
   writeFileSync(join(to, "README.md"), caseReadme(file));
 }
@@ -332,37 +336,44 @@ function install(c: ImportCase, work: string, recorded: Recorded): void {
 async function main(argv: readonly string[]): Promise<number> {
   const { values } = parseArgs({
     args: [...argv],
-    options: { only: { type: "string" }, force: { type: "boolean" }, list: { type: "boolean" }, "readme-only": { type: "boolean" }, help: { type: "boolean", short: "h" } },
+    options: { engine: { type: "string" }, only: { type: "string" }, force: { type: "boolean" }, list: { type: "boolean" }, "readme-only": { type: "boolean" }, help: { type: "boolean", short: "h" } },
     strict: true,
   });
   if (values.help === true) {
     process.stdout.write(USAGE);
     return 0;
   }
+  const engine = values.engine ?? ENGINE;
+  if (!isCaseEngine(engine)) {
+    process.stderr.write(`unknown engine: ${engine} (${CASE_ENGINES.join(", ")})\n`);
+    return 64;
+  }
+  const dir = casesDir(engine, "import");
+  const cases = casesFor(engine);
   const only = values.only === undefined ? null : new Set(values.only.split(",").map((s) => s.trim()));
   if (only !== null) {
-    const unknown = [...only].filter((id) => !IMPORT_CASES.some((c) => c.id === id));
+    const unknown = [...only].filter((id) => !cases.some((c) => c.id === id));
     if (unknown.length > 0) {
       process.stderr.write(`unknown case: ${unknown.join(", ")}\n`);
       return 64;
     }
   }
-  const chosen = IMPORT_CASES.filter((c) => only === null || only.has(c.id));
+  const chosen = cases.filter((c) => only === null || only.has(c.id));
   if (values.list === true) {
-    for (const c of chosen) process.stdout.write(`${c.id}${existsSync(join(CASES_DIR, c.id, "case.json")) ? "" : "  (not recorded)"}\n`);
+    for (const c of chosen) process.stdout.write(`${c.id}${existsSync(join(dir, c.id, "case.json")) ? "" : "  (not recorded)"}\n`);
     return 0;
   }
 
   if (values["readme-only"] === true) {
     for (const c of chosen) {
-      const dir = join(CASES_DIR, c.id);
-      if (!existsSync(join(dir, "case.json"))) continue;
-      const old = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as CaseFile;
-      const file = caseFile(c, old.steps.map((s) => s.result), old.deleted);
-      writeFileSync(join(dir, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
-      writeFileSync(join(dir, "README.md"), caseReadme(file));
+      const caseDir = join(dir, c.id);
+      if (!existsSync(join(caseDir, "case.json"))) continue;
+      const old = JSON.parse(readFileSync(join(caseDir, "case.json"), "utf8")) as CaseFile;
+      const file = caseFile(c, old.steps.map((s) => s.result), old.deleted, engine);
+      writeFileSync(join(caseDir, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
+      writeFileSync(join(caseDir, "README.md"), caseReadme(file));
     }
-    writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
+    writeFileSync(join(dir, "README.md"), indexReadme(recordedCases(engine), engine));
     return 0;
   }
 
@@ -371,17 +382,17 @@ async function main(argv: readonly string[]): Promise<number> {
   const failures: string[] = [];
   try {
     for (const c of chosen) {
-      if (values.force !== true && existsSync(join(CASES_DIR, c.id, "case.json"))) {
+      if (values.force !== true && existsSync(join(dir, c.id, "case.json"))) {
         process.stdout.write(`${c.id}: already recorded\n`);
         continue;
       }
       process.stdout.write(`${c.id}: recording ${c.steps.length} step${c.steps.length === 1 ? "" : "s"}\n`);
-      const recorded = await runCase(c, password, work);
+      const recorded = await runCase(engine, c, password, work);
       if (recorded === null) {
         failures.push(c.id);
         continue;
       }
-      install(c, work, recorded);
+      install(engine, c, work, recorded);
       process.stdout.write(`${c.id}: ${recorded.results.map((r) => r.calls ?? "?").join("+")} calls, ${recorded.deleted.length} deleted\n`);
     }
   } finally {
@@ -389,11 +400,11 @@ async function main(argv: readonly string[]): Promise<number> {
     if (failures.length === 0) rmSync(work, { recursive: true, force: true });
     else process.stderr.write(`work folder kept at ${resolve(work)}\n`);
   }
-  mkdirSync(CASES_DIR, { recursive: true });
-  const everything = recordedCases();
-  const pruned = pruneBlobs(everything);
+  mkdirSync(dir, { recursive: true });
+  const everything = recordedCases(engine);
+  const pruned = pruneBlobs(everything, engine);
   if (pruned.length > 0) process.stdout.write(`removed ${pruned.length} unused blob${pruned.length === 1 ? "" : "s"}\n`);
-  writeFileSync(join(CASES_DIR, "README.md"), indexReadme(everything));
+  writeFileSync(join(dir, "README.md"), indexReadme(everything, engine));
   if (failures.length > 0) {
     process.stderr.write(`not as expected: ${failures.join(", ")}\n`);
     return 1;

@@ -1,0 +1,163 @@
+{
+  "id": "p5-ref-both-on",
+  "engine": "12.0",
+  "catalogue": [
+    "P5",
+    "S2",
+    "referenced items on"
+  ],
+  "title": "The package and its dependency exported together, referenced items on",
+  "exercises": "A dependency exported in the same run as the package that refers to its elements (the Hashtable lists the dependency first), with referenced items on.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-REFDEP",
+      "items": [
+        {
+          "type": "List",
+          "keyedName": "LIBSJS-SCRATCH-REFDEP-List_1",
+          "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+        }
+      ]
+    },
+    {
+      "name": "LIBSJS-SCRATCH-REF",
+      "items": [
+        {
+          "type": "Variable",
+          "keyedName": "LIBSJS-SCRATCH-REF-Var_1",
+          "id": "6A880A1FAC02A374F97FFF2376246C91"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "exportReferencedItems": true
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 23,
+    "error": null
+  },
+  "seed": {
+    "group": "s2-ref",
+    "steps": [
+      {
+        "name": "import both",
+        "packages": [
+          "LIBSJS-SCRATCH-REF",
+          "LIBSJS-SCRATCH-REFDEP"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "AE21394A7597482DB76C9EF9465B2D9D"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "50DC3ED835A148E0861519AE7861D23F"
+          },
+          {
+            "type": "List",
+            "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "25F7573E05E2420F8947511580F258FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BDB03253BBAA40F5A4F2949DB44F8FB5"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "E449B7287CDE4A8990C3FD5DDA4CEE29"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "EAF6535738A149F1A2D2A49990A62134"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "8D8BE1C325E445B796045AA8BA766545"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "0B6E1B56C9D7494E93C313B8BAF6185F"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "F9B8343D77B54CAFB9FE9E5B947998C6"
+          },
+          {
+            "type": "Variable",
+            "id": "6A880A1FAC02A374F97FFF2376246C91"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "C8E1FF6977284F14B39D37C2580329B7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "15E2558493BC4A6595132AA0C5C44D77"
+          }
+        ]
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "15E2558493BC4A6595132AA0C5C44D77"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C8E1FF6977284F14B39D37C2580329B7"
+      },
+      {
+        "type": "Variable",
+        "id": "6A880A1FAC02A374F97FFF2376246C91"
+      },
+      {
+        "type": "PackageReferencedElement",
+        "id": "F9B8343D77B54CAFB9FE9E5B947998C6"
+      },
+      {
+        "type": "PackageReferencedElement",
+        "id": "0B6E1B56C9D7494E93C313B8BAF6185F"
+      },
+      {
+        "type": "PackageDependsOn",
+        "id": "8D8BE1C325E445B796045AA8BA766545"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "EAF6535738A149F1A2D2A49990A62134"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "E449B7287CDE4A8990C3FD5DDA4CEE29"
+      },
+      {
+        "type": "PackageElement",
+        "id": "BDB03253BBAA40F5A4F2949DB44F8FB5"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "25F7573E05E2420F8947511580F258FA"
+      },
+      {
+        "type": "List",
+        "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "50DC3ED835A148E0861519AE7861D23F"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "AE21394A7597482DB76C9EF9465B2D9D"
+      }
+    ]
+  }
+}

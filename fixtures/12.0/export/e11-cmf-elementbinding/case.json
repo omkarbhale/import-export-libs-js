@@ -1,0 +1,28 @@
+{
+  "id": "e11-cmf-elementbinding",
+  "engine": "12.0",
+  "catalogue": [
+    "E11"
+  ],
+  "title": "RelationshipType: dependency level 1 (cmf_ElementBinding)",
+  "exercises": "dependencyLevel 1.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "RelationshipType",
+          "id": "ED1D38253F4C41A1BD1CA45FE30F691B",
+          "keyedName": "cmf_ElementBinding"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 26,
+    "error": null
+  }
+}

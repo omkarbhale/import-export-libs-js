@@ -2,9 +2,10 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } 
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { IMPORT_CASES, hostOptions } from "./import-cases.js";
+import { CASE_ENGINES, blobsDir, casesDir, type CaseEngine } from "./case-engine.js";
+import { IMPORT_CASES, casesFor, expectedOutcome, hostOptions } from "./import-cases.js";
 import { exportBytes, manifestText, sid, writePackages, type ScratchPackage } from "./import-packages.js";
-import { BLOBS_DIR, CASES_DIR, caseFile, caseReadme, indexReadme, outcomeMatches, returnedValue, type CaseFile } from "./record-import-cases.js";
+import { caseFile, caseReadme, indexReadme, outcomeMatches, returnedValue, type CaseFile } from "./record-import-cases.js";
 import { manifestPackageNames } from "./record.js";
 import { blobMatchesName } from "./transcript.js";
 
@@ -35,6 +36,24 @@ describe("the 14.0.7 import case list", () => {
       expect(c.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
       expect(c.steps.length, c.id).toBeGreaterThan(0);
     }
+  });
+
+  it("records a case on every engine unless it names its engines, and the 12.0-only cases pin one variant rule each", () => {
+    const only12 = IMPORT_CASES.filter((c) => c.engines !== undefined);
+    expect(only12.map((c) => c.id)).toEqual(["r11-ac-attribute-actions", "r15-latin1-file", "r15-utf16-no-bom"]);
+    for (const c of only12) {
+      expect(c.engines, c.id).toEqual(["12.0"]);
+      expect(c.id, c.id).toMatch(/^r\d+-/);
+      expect(casesFor("14.0.7").map((x) => x.id), c.id).not.toContain(c.id);
+      expect(casesFor("12.0").map((x) => x.id), c.id).toContain(c.id);
+    }
+    expect(casesFor("14.0.7")).toHaveLength(IMPORT_CASES.length - only12.length);
+  });
+
+  it("takes a step's expected outcome per engine", () => {
+    expect(expectedOutcome({ expect: "success" }, "12.0")).toBe("success");
+    expect(expectedOutcome({ expect: "success", expectOn: { "12.0": "engine-failure" } }, "12.0")).toBe("engine-failure");
+    expect(expectedOutcome({ expect: "success", expectOn: { "12.0": "engine-failure" } }, "14.0.7")).toBe("success");
   });
 
   it("imports scratch packages only: every package, file and top-level item name carries the scratch prefix", () => {
@@ -156,19 +175,21 @@ describe("outcomes", () => {
   });
 });
 
-describe("the recorded 14.0.7 import fixtures", () => {
-  const recorded = IMPORT_CASES.filter((c) => existsSync(join(CASES_DIR, c.id, "case.json")));
+describe.each(CASE_ENGINES)("the recorded %s import fixtures", (engine: CaseEngine) => {
+  const CASES_DIR = casesDir(engine, "import");
+  const BLOBS_DIR = blobsDir(engine, "import");
+  const recorded = casesFor(engine).filter((c) => existsSync(join(CASES_DIR, c.id, "case.json")));
   const read = (id: string) => JSON.parse(readFileSync(join(CASES_DIR, id, "case.json"), "utf8")) as CaseFile;
 
   it("covers every case in the list", () => {
-    expect(recorded.map((c) => c.id)).toEqual(IMPORT_CASES.map((c) => c.id));
+    expect(recorded.map((c) => c.id)).toEqual(casesFor(engine).map((c) => c.id));
   });
 
   it.each(recorded.map((c) => [c.id, c] as const))("%s: ran as its case says and cleaned up", (id, c) => {
     const file = read(id);
     expect(file.steps).toHaveLength(c.steps.length);
     file.steps.forEach((s, i) => {
-      expect(outcomeMatches(c.steps[i]!.expect, s.result), `${id} step ${i + 1}`).toBe(true);
+      expect(outcomeMatches(expectedOutcome(c.steps[i]!, engine), s.result), `${id} step ${i + 1}`).toBe(true);
       expect(existsSync(join(CASES_DIR, id, `step-${i + 1}`, "transcript.jsonl"))).toBe(true);
       expect(existsSync(join(CASES_DIR, id, `step-${i + 1}`, "input", "imports.mf"))).toBe(true);
     });
@@ -180,7 +201,7 @@ describe("the recorded 14.0.7 import fixtures", () => {
 
   it.each(recorded.map((c) => [c.id, c] as const))("%s: the README and case.json are what the case list and the run records generate", (id, c) => {
     const file = read(id);
-    const again = caseFile(c, file.steps.map((s) => s.result), file.deleted);
+    const again = caseFile(c, file.steps.map((s) => s.result), file.deleted, engine);
     expect(file).toEqual(again);
     expect(readFileSync(join(CASES_DIR, id, "README.md"), "utf8")).toBe(caseReadme(again));
   });
@@ -199,7 +220,7 @@ describe("the recorded 14.0.7 import fixtures", () => {
 
   it("indexes every recorded case", () => {
     if (recorded.length === 0) return;
-    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recorded.map((c) => read(c.id))));
+    expect(readFileSync(join(CASES_DIR, "README.md"), "utf8")).toBe(indexReadme(recorded.map((c) => read(c.id)), engine));
   });
 
   it("names each blob by the sha256 of its content, and every blob is used", () => {

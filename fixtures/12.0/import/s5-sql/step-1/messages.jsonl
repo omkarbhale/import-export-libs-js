@@ -1,0 +1,6 @@
+{"event":9,"seq":1,"thread":16,"ticks":812067685223,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":812068309415,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-SQL","answer":null}
+{"event":13,"seq":3,"thread":16,"ticks":812068630956,"channel":"status","text":"Item 1 of 1: SQL - LIBSJS-SCRATCH-V1","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":812070797600,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":25,"seq":5,"thread":16,"ticks":812070803860,"channel":"status","text":"completed","answer":null}
+{"event":30,"seq":6,"thread":16,"ticks":812071475003,"channel":"status","text":"completed","answer":null}

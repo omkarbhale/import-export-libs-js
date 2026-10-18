@@ -1,0 +1,28 @@
+{
+  "id": "e05-affected-item",
+  "engine": "12.0",
+  "catalogue": [
+    "E05"
+  ],
+  "title": "ItemType: foreign Properties (Affected Item)",
+  "exercises": "The foreign Properties affected_rev and new_item_rev become data_source and foreign_property subqueries.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "BFAAB0F6838D4F80BF12CB328FF5B097",
+          "keyedName": "Affected Item"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 60,
+    "error": null
+  }
+}

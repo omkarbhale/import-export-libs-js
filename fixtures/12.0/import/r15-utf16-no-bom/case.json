@@ -1,0 +1,69 @@
+{
+  "id": "r15-utf16-no-bom",
+  "engine": "12.0",
+  "catalogue": [
+    "R15"
+  ],
+  "title": "A UTF-16LE item file with no byte-order mark",
+  "exercises": "XmlDocument.Load recognises UTF-16 without a mark when the file starts with '<', so the item is imported; 14.0.7 fails the load.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-FSUTF16NOBOM"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 23,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "91F1489A3DAA4A4CA5A2C253AE48C2A4"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "0977F1DFB92049AD96C6E66177D54A5A"
+          },
+          {
+            "type": "Variable",
+            "id": "DF49D631DA2FC3854888CFC00FD37AD6"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "36E2804F339247B7984943F5E88BD41F"
+          },
+          {
+            "type": "PackageElement",
+            "id": "B95D9A3B9F7C484B8C2E1EC42B3C780D"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "B95D9A3B9F7C484B8C2E1EC42B3C780D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "36E2804F339247B7984943F5E88BD41F"
+    },
+    {
+      "type": "Variable",
+      "id": "DF49D631DA2FC3854888CFC00FD37AD6"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "0977F1DFB92049AD96C6E66177D54A5A"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "91F1489A3DAA4A4CA5A2C253AE48C2A4"
+    }
+  ]
+}

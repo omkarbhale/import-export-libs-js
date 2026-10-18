@@ -1015,6 +1015,49 @@ export function fsXmlDeclaration(): ScratchPackage {
   };
 }
 
+/**
+ * 12.0 only (R15, XmlDocument.Load honouring the file's encoding): a file in
+ * Latin-1 with no declaration. 12.0's reader rejects the byte; 14.0.7 turns it
+ * into U+FFFD and imports the item.
+ */
+export function fsLatin1(): ScratchPackage {
+  const name = "LIBSJS-SCRATCH-FsLatin1_Var_1";
+  const text = `<AML>\n${item("Variable", sid(`FS:${name}`), "add", ["<default_value>caf\u00e9</default_value>", `<name>${name}</name>`])}\n</AML>`;
+  return { name: "LIBSJS-SCRATCH-FSLATIN1", files: [{ dir: "Variable", file: `${name}.xml`, content: Buffer.from(text, "latin1") }] };
+}
+
+/** 12.0 only (R15): a UTF-16LE file with no byte-order mark. 12.0's reader recognises it; 14.0.7 fails the load. */
+export function fsUtf16NoBom(): ScratchPackage {
+  const name = "LIBSJS-SCRATCH-FsU16Nb_Var_1";
+  return { name: "LIBSJS-SCRATCH-FSUTF16NOBOM", files: [{ dir: "Variable", file: `${name}.xml`, content: Buffer.from(fsVar(name, 5), "utf16le") }] };
+}
+
+/**
+ * 12.0 only (R11): `ac_PolicyAccessItemAttribute` is not in 12.0's build.xsl
+ * lists, so every action of it lands in the last bucket. Two actions that 14.0.7
+ * drops (delete and purge) on ids that exist nowhere, after a Variable add that
+ * the earlier bucket imports first.
+ */
+export function acActions(): ScratchPackage {
+  const var1 = "LIBSJS-SCRATCH-AcAct_Var_1";
+  return {
+    name: "LIBSJS-SCRATCH-ACACT",
+    files: [
+      aml(
+        "Variable",
+        `${var1}.xml`,
+        item("Variable", sid("ACACT:var"), "add", ["<default_value>1</default_value>", `<name>${var1}</name>`]),
+      ),
+      aml(
+        "ac_PolicyAccessItemAttribute",
+        "LIBSJS-SCRATCH-AcAct_Attribute.xml",
+        item("ac_PolicyAccessItemAttribute", sid("ACACT:missing-delete"), "delete", []),
+        item("ac_PolicyAccessItemAttribute", sid("ACACT:missing-purge"), "purge", []),
+      ),
+    ],
+  };
+}
+
 /** Ids of BASE's and INST's items, for the cases that version or delete them. */
 export const baseId = (name: string): string => b(name);
 export const instanceId = (name: string): string => inst(name);

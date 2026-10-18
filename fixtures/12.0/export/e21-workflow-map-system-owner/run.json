@@ -1,0 +1,45 @@
+{
+  "engine": "12.0",
+  "command": "export",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "com.aras.innovator.solution.PLM\tWorkflow Map\t3473F755D9D74B33BFF93D32164FABB7\tPE_Deviation"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:49:25.292Z",
+  "finishedAt": "2026-10-18T21:49:27.918Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 33,
+    "messages": 4,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9",
+    "timeoutAfterRun": 600000,
+    "result": "exported",
+    "error": null
+  },
+  "scrubbed": {}
+}

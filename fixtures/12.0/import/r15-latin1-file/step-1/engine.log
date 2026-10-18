@@ -1,0 +1,9 @@
+Start of importing packages
+
+		****ErrorMessage****
+
+Import package LIBSJS-SCRATCH-FSLATIN1 failed with message:
+
+Invalid character in the given encoding. Line 3, position 21.
+Updating LIBSJS-SCRATCH-FSLATIN1 to failed release status
+		********************

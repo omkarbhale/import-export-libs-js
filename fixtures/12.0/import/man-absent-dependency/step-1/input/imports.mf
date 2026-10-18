@@ -1,0 +1,5 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-ABSENTDEP" path="LIBSJS-SCRATCH-ABSENTDEP\Import">
+    <dependson name="LIBSJS-SCRATCH-NOSUCHPACKAGE" />
+  </package>
+</imports>

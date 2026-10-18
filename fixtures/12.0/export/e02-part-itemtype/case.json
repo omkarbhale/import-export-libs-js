@@ -1,0 +1,28 @@
+{
+  "id": "e02-part-itemtype",
+  "engine": "12.0",
+  "catalogue": [
+    "E02"
+  ],
+  "title": "ItemType: Part (versionable table, Grid Event on a system Property)",
+  "exercises": "Versionable table ItemType. A Grid Event on the system Property major_rev, so the Grid Event source_id becomes a get subquery. DiscussionTemplate and FeedTemplate relationships. RelationshipType relationships dropped. Permission default-match removal.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 87,
+    "error": null
+  }
+}

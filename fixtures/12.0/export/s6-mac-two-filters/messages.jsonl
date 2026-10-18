@@ -1,0 +1,4 @@
+{"event":8,"seq":1,"thread":16,"ticks":807284401937,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-SPECIAL","answer":null}
+{"event":9,"seq":2,"thread":16,"ticks":807284427848,"channel":"status","text":"Item 1 of 1: mp_MacPolicy - LIBSJS-SCRATCH-SPECIAL-MacPolicy_1","answer":null}
+{"event":17,"seq":3,"thread":16,"ticks":807286202422,"channel":"status","text":"completed","answer":null}
+{"event":18,"seq":4,"thread":16,"ticks":807286202658,"channel":"currentPackage","text":"","answer":null}

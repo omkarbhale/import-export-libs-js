@@ -1,0 +1,10 @@
+{"event":9,"seq":1,"thread":17,"ticks":806565880660,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":10,"seq":2,"thread":17,"ticks":806565897056,"channel":"status","text":"Item 1 of 1: Form - Activity Template","answer":null}
+{"event":40,"seq":3,"thread":17,"ticks":806573782772,"channel":"status","text":"completed","answer":null}
+{"event":42,"seq":4,"thread":17,"ticks":806574217215,"channel":"currentPackage","text":"Exporting package com.aras.innovator.admin","answer":null}
+{"event":43,"seq":5,"thread":17,"ticks":806574218849,"channel":"status","text":"Item 1 of 1: Item Report - 128C30A645F04E5380F8B4709A3BD1A1","answer":null}
+{"event":48,"seq":6,"thread":17,"ticks":806575170956,"channel":"status","text":"completed","answer":null}
+{"event":51,"seq":7,"thread":17,"ticks":806575716621,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cui","answer":null}
+{"event":52,"seq":8,"thread":17,"ticks":806575717968,"channel":"status","text":"Item 1 of 1: ItemType - PresentableItems","answer":null}
+{"event":86,"seq":9,"thread":17,"ticks":806585361399,"channel":"status","text":"completed","answer":null}
+{"event":87,"seq":10,"thread":17,"ticks":806585361702,"channel":"currentPackage","text":"","answer":null}

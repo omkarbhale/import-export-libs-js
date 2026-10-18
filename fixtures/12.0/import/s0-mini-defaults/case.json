@@ -1,0 +1,166 @@
+{
+  "id": "s0-mini-defaults",
+  "engine": "12.0",
+  "catalogue": [
+    "S0",
+    "release/description unset"
+  ],
+  "title": "Six small items, every option at the engine default",
+  "exercises": "Package registration (PackageDefinition, one PackageGroup per type label, one PackageElement per item named by its file), the DatabaseUpgrade row (in progress, then success) with a null Release and Description, the per-type definition checks and their cache, and the plain add path with merge off.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 54,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "1A8E3838F7A946AF95101523ACB2A6E0"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "AD2170FC24FA43DBA103BE81A331F5F7"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "1B4770DE9F19419F9ABC4F7AEA0D612E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "46BCBC5D5C0647508CD37D2A4204AC54"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6101521AF17E41D6A1886E09D09BC027"
+          },
+          {
+            "type": "Sequence",
+            "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B73E7F45C09245249460ED5869EB2586"
+          },
+          {
+            "type": "PackageElement",
+            "id": "496FDAA50A9840E28113A0C72665ABA5"
+          },
+          {
+            "type": "Variable",
+            "id": "C64257819194D0C9B4C3BDF82D642D78"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B979BBB816104B2FA6D61E729A750372"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BA14A85BE3E44684BAE69F8C83398981"
+          },
+          {
+            "type": "Variable",
+            "id": "6E6B61827EA6F5DB6F735218645E60F3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "DFB77A6AF6DB4900834FB475F70E27B2"
+          },
+          {
+            "type": "Variable",
+            "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "CDEF6611230D4A0BA91A414092237854"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "CDEF6611230D4A0BA91A414092237854"
+    },
+    {
+      "type": "Variable",
+      "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "DFB77A6AF6DB4900834FB475F70E27B2"
+    },
+    {
+      "type": "Variable",
+      "id": "6E6B61827EA6F5DB6F735218645E60F3"
+    },
+    {
+      "type": "PackageElement",
+      "id": "BA14A85BE3E44684BAE69F8C83398981"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B979BBB816104B2FA6D61E729A750372"
+    },
+    {
+      "type": "Variable",
+      "id": "C64257819194D0C9B4C3BDF82D642D78"
+    },
+    {
+      "type": "PackageElement",
+      "id": "496FDAA50A9840E28113A0C72665ABA5"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B73E7F45C09245249460ED5869EB2586"
+    },
+    {
+      "type": "Sequence",
+      "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "6101521AF17E41D6A1886E09D09BC027"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "46BCBC5D5C0647508CD37D2A4204AC54"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "1B4770DE9F19419F9ABC4F7AEA0D612E"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "AD2170FC24FA43DBA103BE81A331F5F7"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "1A8E3838F7A946AF95101523ACB2A6E0"
+    }
+  ]
+}

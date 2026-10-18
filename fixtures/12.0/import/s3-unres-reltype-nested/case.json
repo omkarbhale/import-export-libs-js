@@ -1,0 +1,45 @@
+{
+  "id": "s3-unres-reltype-nested",
+  "engine": "12.0",
+  "catalogue": [
+    "S3"
+  ],
+  "title": "A RelationshipType whose source and related ItemTypes are nested gets that find nothing",
+  "exercises": "Codes 10002 and 10003 are logged only; nothing is queued, the item is imported as it is, and the server rejects it.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-UNRESRT"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 20,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "EE383071252641008E5CFE9EE839740A"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "21EEBA3BFF2B4F1CB2CF72CAC8B2F830"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "21EEBA3BFF2B4F1CB2CF72CAC8B2F830"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "EE383071252641008E5CFE9EE839740A"
+    }
+  ]
+}

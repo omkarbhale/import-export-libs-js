@@ -1,0 +1,46 @@
+{
+  "engine": "12.0",
+  "command": "export",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "com.aras.innovator.core\tList\tF8CDB96400C445879DA9E6FCA53889A2\tTrue/False",
+      "com.aras.innovator.core\tList\t9FEC936F59F14FECAA3621F726FBAAF2\tYes/No"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:51:05.337Z",
+  "finishedAt": "2026-10-18T21:51:07.635Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 16,
+    "messages": 5,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9",
+    "timeoutAfterRun": 600000,
+    "result": "exported",
+    "error": null
+  },
+  "scrubbed": {}
+}

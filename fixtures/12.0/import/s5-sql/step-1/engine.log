@@ -1,0 +1,14 @@
+Start of importing packages
+start of execution : 10/19/2026 03:30:27
+Updating LIBSJS-SCRATCH-SQL to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-SQL****
+Processing (add)   id : D9E85E9C05E70116CB38C132B3F44A7A    keyed_name : LIBSJS-SCRATCH-V1    type : SQL  
+##### Delete SQL Items of the package 'LIBSJS-SCRATCH-SQL' from the database #####
+##### Done deleting SQL Items of the package 'LIBSJS-SCRATCH-SQL' from the database #####
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>SQL</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : D9E85E9C05E70116CB38C132B3F44A7A    keyed_name : LIBSJS-SCRATCH-V1    type : SQL  
+Adding item into PackageDefinition with id = D9E85E9C05E70116CB38C132B3F44A7A and type = SQL
+Item successfully added in packdef

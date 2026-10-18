@@ -1,0 +1,29 @@
+Start of importing packages
+There is a circular dependency on package 'LIBSJS-SCRATCH-CYC1'
+start of execution : 10/19/2026 03:30:53
+Updating LIBSJS-SCRATCH-CYC2 to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-CYC2****
+Processing (add)   id : 54B3935B1919800C6EA7B49DDBBABC3E    keyed_name : LIBSJS-SCRATCH-Cyc_2    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 54B3935B1919800C6EA7B49DDBBABC3E    keyed_name : LIBSJS-SCRATCH-Cyc_2    type : Variable  
+Adding item into PackageDefinition with id = 54B3935B1919800C6EA7B49DDBBABC3E and type = Variable
+Item successfully added in packdefinition  id  54B3935B1919800C6EA7B49DDBBABC3E type Variable
+completed
+Updating LIBSJS-SCRATCH-CYC2 to success release status
+end of execution : start of execution : 10/19/2026 03:30:53
+Updating LIBSJS-SCRATCH-CYC1 to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-CYC1****
+Processing (add)   id : D72B4CA103EA4FFB0DD7E8F4EC95995C    keyed_name : LIBSJS-SCRATCH-Cyc_1    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : D72B4CA103EA4FFB0DD7E8F4EC95995C    keyed_name : LIBSJS-SCRATCH-Cyc_1    type : Variable  
+Adding item into PackageDefinition with id = D72B4CA103EA4FFB0DD7E8F4EC95995C and type = Variable
+Item successfully added in packdefinition  id  D72B4CA103EA4FFB0DD7E8F4EC95995C type Variable
+completed
+Updating LIBSJS-SCRATCH-CYC1 to success release status
+end of execution : 1

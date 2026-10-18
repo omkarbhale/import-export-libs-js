@@ -1,0 +1,505 @@
+{
+  "id": "s4-del",
+  "engine": "12.0",
+  "catalogue": [
+    "S4"
+  ],
+  "title": "Delete actions against items an earlier import created",
+  "exercises": "The build.xsl drop bug: List, ItemType and Identity deletes are dropped silently (their types are listed, but only for adds and edits); Form delete (its own bucket), Field delete (any action) and Value delete (an unlisted type, last bucket) are kept. The plan the import prints is the engine's answer to which ones ran.",
+  "steps": [
+    {
+      "name": "import BASE",
+      "packages": [
+        "LIBSJS-SCRATCH-BASE"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 245,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "1939BF1E9DB64FA9A41D494F7E121D3C"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "9759E9CADD6141618C71EC596C96A4F0"
+          },
+          {
+            "type": "List",
+            "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "1E2012ECB3204D6CB3BE792C59130C5A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "1AEB73CB1F0D409DA80F80397CF6A30B"
+          },
+          {
+            "type": "Sequence",
+            "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "652523EC19104483A4E2DDEB29F2D799"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F8D2617B1CF4432C9B29C61080B413C8"
+          },
+          {
+            "type": "Variable",
+            "id": "9DFD42E0D1D332A37468535A17E9E071"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "47230E76CF8C47EE93DEB9E41E786399"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F1905E56DD8345868743E7614D3E189E"
+          },
+          {
+            "type": "Identity",
+            "id": "8D1FA15B385BD9268D12CDB127520F9C"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "323587DB7F45480B9166C9E8F2B8F733"
+          },
+          {
+            "type": "PackageElement",
+            "id": "7AB087CAF9BC483E9CA6C6052326C09A"
+          },
+          {
+            "type": "Member",
+            "id": "0FD85985D9C574513CB9B6D231B177B4"
+          },
+          {
+            "type": "Permission",
+            "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "E1D6189350744720A62BAE4EF9ADE63E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A66FE4755D7A42D78214F8C25FB81AF3"
+          },
+          {
+            "type": "Method",
+            "id": "5E0832E42849900FA499343A85F8A1D0"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B39F16DC22F44EBDA07F6E17CD40192B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BA7F4086BF1545F6B45BD834E8F5CAC5"
+          },
+          {
+            "type": "Action",
+            "id": "6E1629D001235406CBAF1C1BC71F19E1"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "E8B7A89BE42B4406B637403431ADB367"
+          },
+          {
+            "type": "PackageElement",
+            "id": "CC1D8364E939439EB183CA5D7C3FD19D"
+          },
+          {
+            "type": "Report",
+            "id": "13E641DA215894EBC9281A99B5BA656B"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "011B915989BE41D88A6C20AA679834D4"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6F82E7B1D93D4241BD33DE219E017CB1"
+          },
+          {
+            "type": "Form",
+            "id": "80C1916ED13FB91AABE8B59712B5B25D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "5BE162EC628644EE913F3602A8754749"
+          },
+          {
+            "type": "PackageElement",
+            "id": "FED0B0A937BF4969B2B40EA1D346D0BE"
+          },
+          {
+            "type": "Workflow Map",
+            "id": "97036156528C7C8959E5E0D9E2B89E1D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D15A2C0F49CB416DBD0C196EE0B07BA9"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E41B8FAF1B5B45E6AA6F414934FEC68E"
+          },
+          {
+            "type": "Life Cycle Map",
+            "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "6033584DCC0D4E998E1796F9DE3EF41E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C1F4DEC81BA94901BDB36F70B22B1B9A"
+          },
+          {
+            "type": "Grid",
+            "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "A475DC75141942EC80E94393BF1ADB7D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "7CD433561156477992F66D633151C088"
+          },
+          {
+            "type": "ItemType",
+            "id": "E0FAE5389340631DC4962AE25970C7BB"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "7737CA53F3DC492CB68FFC5785267EC8"
+          },
+          {
+            "type": "PackageElement",
+            "id": "07576EB1DB4540CBB4C1A9D538866869"
+          },
+          {
+            "type": "ItemType",
+            "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F72B792757374AA89DCBEF8F832F730A"
+          },
+          {
+            "type": "ItemType",
+            "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8BA76102C6CD472D9905BD1E051FDAF5"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "2E86BE71406A024A7610EBE387CA19FA"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "5BBE0D8CE70E45A9995CDFD0A150FC09"
+          },
+          {
+            "type": "PackageElement",
+            "id": "9E4DB95783F14FAEAF2437D525EBC77D"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "2CAA9483C5AF745CE43A9975AB133C39"
+          },
+          {
+            "type": "PackageElement",
+            "id": "B9F37CCFC01D49478B6D6D177F5F8185"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "B1728187A78D330129D6FC48530DD38F"
+          },
+          {
+            "type": "PackageElement",
+            "id": "CBB65110E4CE41DA9E2EFC10CD7AE2B1"
+          },
+          {
+            "type": "UserMessage",
+            "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "EB7E99CC017749E29E65AD83F8E1BB44"
+          },
+          {
+            "type": "PackageElement",
+            "id": "4491927FB783493D83C7CDF3908DF789"
+          }
+        ]
+      }
+    },
+    {
+      "name": "import DEL",
+      "packages": [
+        "LIBSJS-SCRATCH-DEL"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 20,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "A77D8AA5568F40628F139E2BAE7E0470"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "0932D0F081424A01AA5FA357586C5887"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "0932D0F081424A01AA5FA357586C5887"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "A77D8AA5568F40628F139E2BAE7E0470"
+    },
+    {
+      "type": "PackageElement",
+      "id": "4491927FB783493D83C7CDF3908DF789"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "EB7E99CC017749E29E65AD83F8E1BB44"
+    },
+    {
+      "type": "UserMessage",
+      "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+    },
+    {
+      "type": "PackageElement",
+      "id": "CBB65110E4CE41DA9E2EFC10CD7AE2B1"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "B1728187A78D330129D6FC48530DD38F"
+    },
+    {
+      "type": "PackageElement",
+      "id": "B9F37CCFC01D49478B6D6D177F5F8185"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "2CAA9483C5AF745CE43A9975AB133C39"
+    },
+    {
+      "type": "PackageElement",
+      "id": "9E4DB95783F14FAEAF2437D525EBC77D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "5BBE0D8CE70E45A9995CDFD0A150FC09"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "2E86BE71406A024A7610EBE387CA19FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8BA76102C6CD472D9905BD1E051FDAF5"
+    },
+    {
+      "type": "ItemType",
+      "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F72B792757374AA89DCBEF8F832F730A"
+    },
+    {
+      "type": "ItemType",
+      "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+    },
+    {
+      "type": "PackageElement",
+      "id": "07576EB1DB4540CBB4C1A9D538866869"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "7737CA53F3DC492CB68FFC5785267EC8"
+    },
+    {
+      "type": "ItemType",
+      "id": "E0FAE5389340631DC4962AE25970C7BB"
+    },
+    {
+      "type": "PackageElement",
+      "id": "7CD433561156477992F66D633151C088"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "A475DC75141942EC80E94393BF1ADB7D"
+    },
+    {
+      "type": "Grid",
+      "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+    },
+    {
+      "type": "PackageElement",
+      "id": "C1F4DEC81BA94901BDB36F70B22B1B9A"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "6033584DCC0D4E998E1796F9DE3EF41E"
+    },
+    {
+      "type": "Life Cycle Map",
+      "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E41B8FAF1B5B45E6AA6F414934FEC68E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "D15A2C0F49CB416DBD0C196EE0B07BA9"
+    },
+    {
+      "type": "Workflow Map",
+      "id": "97036156528C7C8959E5E0D9E2B89E1D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "5BE162EC628644EE913F3602A8754749"
+    },
+    {
+      "type": "PackageElement",
+      "id": "6F82E7B1D93D4241BD33DE219E017CB1"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "011B915989BE41D88A6C20AA679834D4"
+    },
+    {
+      "type": "Report",
+      "id": "13E641DA215894EBC9281A99B5BA656B"
+    },
+    {
+      "type": "PackageElement",
+      "id": "CC1D8364E939439EB183CA5D7C3FD19D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "E8B7A89BE42B4406B637403431ADB367"
+    },
+    {
+      "type": "Action",
+      "id": "6E1629D001235406CBAF1C1BC71F19E1"
+    },
+    {
+      "type": "PackageElement",
+      "id": "BA7F4086BF1545F6B45BD834E8F5CAC5"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B39F16DC22F44EBDA07F6E17CD40192B"
+    },
+    {
+      "type": "Method",
+      "id": "5E0832E42849900FA499343A85F8A1D0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "A66FE4755D7A42D78214F8C25FB81AF3"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "E1D6189350744720A62BAE4EF9ADE63E"
+    },
+    {
+      "type": "Permission",
+      "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+    },
+    {
+      "type": "Member",
+      "id": "0FD85985D9C574513CB9B6D231B177B4"
+    },
+    {
+      "type": "PackageElement",
+      "id": "7AB087CAF9BC483E9CA6C6052326C09A"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "323587DB7F45480B9166C9E8F2B8F733"
+    },
+    {
+      "type": "Identity",
+      "id": "8D1FA15B385BD9268D12CDB127520F9C"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F1905E56DD8345868743E7614D3E189E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "47230E76CF8C47EE93DEB9E41E786399"
+    },
+    {
+      "type": "Variable",
+      "id": "9DFD42E0D1D332A37468535A17E9E071"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F8D2617B1CF4432C9B29C61080B413C8"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "652523EC19104483A4E2DDEB29F2D799"
+    },
+    {
+      "type": "Sequence",
+      "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "1AEB73CB1F0D409DA80F80397CF6A30B"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "1E2012ECB3204D6CB3BE792C59130C5A"
+    },
+    {
+      "type": "List",
+      "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "9759E9CADD6141618C71EC596C96A4F0"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "1939BF1E9DB64FA9A41D494F7E121D3C"
+    }
+  ]
+}

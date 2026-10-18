@@ -1,0 +1,23 @@
+Start of importing packages
+start of execution : 10/19/2026 03:25:48
+Updating LIBSJS-SCRATCH-MINI to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-MINI****
+Processing (add)   id : C6018EE6DD2187000216C39E55D07AAE    keyed_name : LIBSJS-SCRATCH-MINI-List_1    type : List  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : C6018EE6DD2187000216C39E55D07AAE    keyed_name : LIBSJS-SCRATCH-MINI-List_1    type : List  
+Adding item into PackageDefinition with id = C6018EE6DD2187000216C39E55D07AAE and type = List
+Item successfully added in packdefinition  id  C6018EE6DD2187000216C39E55D07AAE type List
+Processing (add)   id : E182B4D73FB907759D5E1BA11441412D    keyed_name : LIBSJS-SCRATCH-MINI-List_2    type : List  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E182B4D73FB907759D5E1BA11441412D    keyed_name : LIBSJS-SCRATCH-MINI-List_2    type : List  
+Adding item into PackageDefinition with i

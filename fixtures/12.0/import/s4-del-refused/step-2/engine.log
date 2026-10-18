@@ -1,0 +1,9 @@
+Start of importing packages
+
+		****ErrorMessage****
+
+Import package LIBSJS-SCRATCH-DELREFUSED failed with message:
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>SOAP-ENV:Server.DeleteItem.ItemIsUsed</faultcode><faultstring><![CDATA[Life Cycle State cannot be deleted. It is used in Life Cycle Transition to_state 7762C3A48F36C97052FBEBD1845E55E2.]]></faultstring><detail><af:legacy_detail><![CDATA[Life Cycle State cannot be deleted. It is used in Life Cycle Transition to_state 7762C3A48F36C97052FBEBD1845E55E2.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[ItemMethods: PurgeItemEx2: Life Cycle State cannot be deleted. It is used in Life Cycle Transition.to_state 7762C3A48F36C97052FBEBD1845E55E2]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-DELREFUSED to failed release status
+		********************

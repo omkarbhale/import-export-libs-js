@@ -1,0 +1,28 @@
+Start of importing packages
+start of execution : 10/19/2026 03:30:35
+Updating LIBSJS-SCRATCH-A.Coll to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-A.Coll****
+Processing (add)   id : B884DA4086B47D93861052CA33041D07    keyed_name : LIBSJS-SCRATCH-Coll_A    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : B884DA4086B47D93861052CA33041D07    keyed_name : LIBSJS-SCRATCH-Coll_A    type : Variable  
+Adding item into PackageDefinition with id = B884DA4086B47D93861052CA33041D07 and type = Variable
+Item successfully added in packdefinition  id  B884DA4086B47D93861052CA33041D07 type Variable
+completed
+Updating LIBSJS-SCRATCH-A.Coll to success release status
+end of execstart of execution : 10/19/2026 03:30:36
+Updating LIBSJS-SCRATCH-B.Coll to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-B.Coll****
+Processing (add)   id : EB4A3D180B43F8CE6B393C6484D3F650    keyed_name : LIBSJS-SCRATCH-Coll_B    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : EB4A3D180B43F8CE6B393C6484D3F650    keyed_name : LIBSJS-SCRATCH-Coll_B    type : Variable  
+Adding item into PackageDefinition with id = EB4A3D180B43F8CE6B393C6484D3F650 and type = Variable
+Item successfully added in packdefinition  id  EB4A3D180B43F8CE6B393C6484D3F650 type Variable
+completed
+Updating LIBSJS-SCRATCH-B.Coll to success release status
+end of execu

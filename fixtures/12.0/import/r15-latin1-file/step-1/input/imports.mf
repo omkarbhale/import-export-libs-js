@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-FSLATIN1" path="LIBSJS-SCRATCH-FSLATIN1\Import" />
+</imports>

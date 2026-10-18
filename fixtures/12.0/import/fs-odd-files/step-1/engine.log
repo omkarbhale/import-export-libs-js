@@ -1,0 +1,22 @@
+Start of importing packages
+start of execution : 10/19/2026 03:31:05
+Updating LIBSJS-SCRATCH-FS to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-FS****
+WARNING: File 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220102-12.0-import-f3d34e\input\LIBSJS-SCRATCH-FS\Import\Variable\LIBSJS-SCRATCH-Fs_NoItem.xml' doesn't have root tag 'AML/Item'. File is skipped.
+Processing (add)   id : 44402126489F68289C53980576DE1D39    keyed_name : LIBSJS-SCRATCH-Fs_Plain    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 44402126489F68289C53980576DE1D39    keyed_name : LIBSJS-SCRATCH-Fs_Plain    type : Variable  
+Adding item into PackageDefinition with id = 44402126489F68289C53980576DE1D39 and type = Variable
+Item successfully added in packdefinition  id  44402126489F68289C53980576DE1D39 type Variable
+Processing (add)   id : DC08FF9FF82BB32E36FCD3B99C380DC8    keyed_name : LIBSJS-SCRATCH-Fs_Utf16    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : DC08FF9FF82BB32E36FCD3B99C380DC8    keyed_name : LIBSJS-SCRATCH-Fs_Utf16    type : Variable  
+Adding item into PackageDefinition with id = DC08FF9FF82BB32E36FCD3B99C380DC8 and type = Variable
+Item successfully added in packdefinition  id  DC08FF9FF82BB32E36FCD3B99C380DC8 type Variable
+Processing (add)   id : EE37B579701D1BE8841859BE8ACECBA5    keyed_name : LIB

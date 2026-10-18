@@ -1,0 +1,23 @@
+Start of importing packages
+start of execution : 10/19/2026 03:29:00
+Updating LIBSJS-SCRATCH-REFDEP to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-REFDEP****
+Processing (add)   id : ADFEE419D8DB444BF5EDED7C490E4BA2    keyed_name : LIBSJS-SCRATCH-REFDEP-List_1    type : List  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : ADFEE419D8DB444BF5EDED7C490E4BA2    keyed_name : LIBSJS-SCRATCH-REFDEP-List_1    type : List  
+Adding item into PackageDefinitstart of execution : 10/19/2026 03:29:01
+Updating LIBSJS-SCRATCH-REF to 'inprogress' release status
+      ****Import   LIBSJS-SCRATCH-REF****
+WARNING (importing 'LIBSJS-SCRATCH-REF' package): Item of type 'List' with id '17122DC1E922ACFFD59DB017AD0C4FFC' is not added as a referenced element for package 'LIBSJS-SCRATCH-REF' because the item was not found in the target database
+Processing (add)   id : 6A880A1FAC02A374F97FFF2376246C91    keyed_name : LIBSJS-SCRATCH-REF-Var_1    type : Variable  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 6A880A1FAC02A374F97FFF2376246C91    keyed_name : LIBSJS-SCRATCH-REF-Var_1    type : Variable  
+Adding item into PackageDefinition w

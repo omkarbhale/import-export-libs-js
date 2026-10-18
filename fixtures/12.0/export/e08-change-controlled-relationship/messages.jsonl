@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":805056878629,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":805056885660,"channel":"status","text":"Item 1 of 1: ItemType - Change Controlled Relationship","answer":null}
+{"event":46,"seq":3,"thread":16,"ticks":805063801679,"channel":"status","text":"completed","answer":null}
+{"event":47,"seq":4,"thread":16,"ticks":805063802113,"channel":"currentPackage","text":"","answer":null}

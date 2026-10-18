@@ -1,0 +1,601 @@
+{
+  "id": "s1-instances-versionable",
+  "engine": "12.0",
+  "catalogue": [
+    "S1",
+    "ProcessVersionableItem"
+  ],
+  "title": "Instances of a versionable ItemType with a relationship, re-imported",
+  "exercises": "ProcessVersionableItem: a versionable root with a relationship that has a related_id is matched by source and related id (ExistRelItemInCurVer) and becomes an edit with a `where`, or an add. The last step gives the root a second generation first, so the root and its relationship's source_id move to the current generation.",
+  "steps": [
+    {
+      "name": "ItemTypes",
+      "packages": [
+        "LIBSJS-SCRATCH-BASE"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 245,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "F740AF5F3CE747519D3EED183E03289C"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "00D85A3DC8C6408891DC2E4A24F22E72"
+          },
+          {
+            "type": "List",
+            "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "6271A3E6A7144D2FAA9FA246D30157C5"
+          },
+          {
+            "type": "PackageElement",
+            "id": "54FCA4E0F8464381BF8DF7FFE6CFC561"
+          },
+          {
+            "type": "Sequence",
+            "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D69BB8DA97A14E1DB71F764C4DA2F625"
+          },
+          {
+            "type": "PackageElement",
+            "id": "2A62EF39B4C04B60B8B0F47D916748B2"
+          },
+          {
+            "type": "Variable",
+            "id": "9DFD42E0D1D332A37468535A17E9E071"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "C7C7EB69DF3D43B9B00D308BD7759A27"
+          },
+          {
+            "type": "PackageElement",
+            "id": "72B5FA884B964C5585D2394098841765"
+          },
+          {
+            "type": "Identity",
+            "id": "8D1FA15B385BD9268D12CDB127520F9C"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "396C4205F4F943F0859DAE6463F2B414"
+          },
+          {
+            "type": "PackageElement",
+            "id": "0A681E2DBBA34EB89F21C8FC39BDA55D"
+          },
+          {
+            "type": "Member",
+            "id": "0FD85985D9C574513CB9B6D231B177B4"
+          },
+          {
+            "type": "Permission",
+            "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "30F931BFE3DF447F8FE8BDA217AA6A4D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A2235BE8BFB34AD2846AEB7248439AE9"
+          },
+          {
+            "type": "Method",
+            "id": "5E0832E42849900FA499343A85F8A1D0"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "016A43540DBD450492978381A44D3EDD"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D0B26A2C8AF64F0ABF587732363643E9"
+          },
+          {
+            "type": "Action",
+            "id": "6E1629D001235406CBAF1C1BC71F19E1"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B149DA5BEDC9462F91BE994740BE56E3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "56E1B96D15344E1D810518640927C657"
+          },
+          {
+            "type": "Report",
+            "id": "13E641DA215894EBC9281A99B5BA656B"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "0C38AD6BF884467C85A0CCF78C560B88"
+          },
+          {
+            "type": "PackageElement",
+            "id": "3D2B5A56ABFA427C8851FE7EA03C4E60"
+          },
+          {
+            "type": "Form",
+            "id": "80C1916ED13FB91AABE8B59712B5B25D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "098E81C151DD44EB99355E12F6241FEF"
+          },
+          {
+            "type": "PackageElement",
+            "id": "379EF9745CB14F478CA12D5EF0F5FA57"
+          },
+          {
+            "type": "Workflow Map",
+            "id": "97036156528C7C8959E5E0D9E2B89E1D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "ABCEC7E53979479FA90A20A4F454F89C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "0D8780AE443B450EAC156A2D64E9D044"
+          },
+          {
+            "type": "Life Cycle Map",
+            "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B93133BFBCF7475096D078257306360C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D19074C843024161B92C9E0362CEEA6B"
+          },
+          {
+            "type": "Grid",
+            "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "C29A14045839470CAF3EEE858A3C2C6D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "707BDEFEC64D42B6A232BC1A0E7B3B55"
+          },
+          {
+            "type": "ItemType",
+            "id": "E0FAE5389340631DC4962AE25970C7BB"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "1252BAEEA21E4B8EB64D7945F59C03A1"
+          },
+          {
+            "type": "PackageElement",
+            "id": "743C8A776D9A401BA406DB3E6F668CD2"
+          },
+          {
+            "type": "ItemType",
+            "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+          },
+          {
+            "type": "PackageElement",
+            "id": "05380090261949D99A26FA413BB03B32"
+          },
+          {
+            "type": "ItemType",
+            "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8E7B18A7D0954DF39BC66236EEB2B608"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "2E86BE71406A024A7610EBE387CA19FA"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "C36A4CB4D02942428EE14119C820F8AA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "0081381D8AA14101A6CAEE4D9677999E"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "2CAA9483C5AF745CE43A9975AB133C39"
+          },
+          {
+            "type": "PackageElement",
+            "id": "97D77DD37C0A4DAB8ED17649709DB0AF"
+          },
+          {
+            "type": "RelationshipType",
+            "id": "B1728187A78D330129D6FC48530DD38F"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8717EDC975A840B49D58D7355B56F08F"
+          },
+          {
+            "type": "UserMessage",
+            "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "A10F1A6BF70F47A99D4BE1A2DF236E6D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "DAC23125D49148B5B8B6495EB4F7045E"
+          }
+        ]
+      }
+    },
+    {
+      "name": "instances, fresh",
+      "packages": [
+        "LIBSJS-SCRATCH-INST"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "04BFA96269BF4FD29AF67AB946904D29"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "88F13D6C2A5042D8AB566D95810E873A"
+          },
+          {
+            "type": "LIBSJS_SCRATCH_IT_A",
+            "id": "4747CF811D4EFD42FA073ACA3A1BF1BE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "234C86FB236F4A5A851845DF58297ED7"
+          },
+          {
+            "type": "PackageElement",
+            "id": "3C74226D31504F63A3C362ADF092C6EB"
+          },
+          {
+            "type": "LIBSJS_SCRATCH_IT_V",
+            "id": "CFC67070B8926819B48BC0B108536FF2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "CA92ACFC349D43A3A024256AD7C8A5ED"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BB38874844B54BE59497B0F3736FBD54"
+          }
+        ]
+      }
+    },
+    {
+      "name": "instances, merge on",
+      "packages": [
+        "LIBSJS-SCRATCH-INST"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    },
+    {
+      "name": "instances, merge on, after versioning the root",
+      "packages": [
+        "LIBSJS-SCRATCH-INST"
+      ],
+      "options": {
+        "merge": true,
+        "versionBefore": [
+          {
+            "type": "LIBSJS_SCRATCH_IT_V",
+            "id": "CFC67070B8926819B48BC0B108536FF2"
+          }
+        ]
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 40,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "LIBSJS_SCRATCH_IT_V",
+            "id": "0DC6DC3DD52E4750A826E40BE450B8BE"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "LIBSJS_SCRATCH_IT_V",
+      "id": "0DC6DC3DD52E4750A826E40BE450B8BE"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "CA92ACFC349D43A3A024256AD7C8A5ED"
+    },
+    {
+      "type": "PackageElement",
+      "id": "3C74226D31504F63A3C362ADF092C6EB"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "234C86FB236F4A5A851845DF58297ED7"
+    },
+    {
+      "type": "LIBSJS_SCRATCH_IT_A",
+      "id": "4747CF811D4EFD42FA073ACA3A1BF1BE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "88F13D6C2A5042D8AB566D95810E873A"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "04BFA96269BF4FD29AF67AB946904D29"
+    },
+    {
+      "type": "PackageElement",
+      "id": "DAC23125D49148B5B8B6495EB4F7045E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "A10F1A6BF70F47A99D4BE1A2DF236E6D"
+    },
+    {
+      "type": "UserMessage",
+      "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8717EDC975A840B49D58D7355B56F08F"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "B1728187A78D330129D6FC48530DD38F"
+    },
+    {
+      "type": "PackageElement",
+      "id": "97D77DD37C0A4DAB8ED17649709DB0AF"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "2CAA9483C5AF745CE43A9975AB133C39"
+    },
+    {
+      "type": "PackageElement",
+      "id": "0081381D8AA14101A6CAEE4D9677999E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "C36A4CB4D02942428EE14119C820F8AA"
+    },
+    {
+      "type": "RelationshipType",
+      "id": "2E86BE71406A024A7610EBE387CA19FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8E7B18A7D0954DF39BC66236EEB2B608"
+    },
+    {
+      "type": "ItemType",
+      "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+    },
+    {
+      "type": "PackageElement",
+      "id": "05380090261949D99A26FA413BB03B32"
+    },
+    {
+      "type": "ItemType",
+      "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+    },
+    {
+      "type": "PackageElement",
+      "id": "743C8A776D9A401BA406DB3E6F668CD2"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "1252BAEEA21E4B8EB64D7945F59C03A1"
+    },
+    {
+      "type": "ItemType",
+      "id": "E0FAE5389340631DC4962AE25970C7BB"
+    },
+    {
+      "type": "PackageElement",
+      "id": "707BDEFEC64D42B6A232BC1A0E7B3B55"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "C29A14045839470CAF3EEE858A3C2C6D"
+    },
+    {
+      "type": "Grid",
+      "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+    },
+    {
+      "type": "PackageElement",
+      "id": "D19074C843024161B92C9E0362CEEA6B"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B93133BFBCF7475096D078257306360C"
+    },
+    {
+      "type": "Life Cycle Map",
+      "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+    },
+    {
+      "type": "PackageElement",
+      "id": "0D8780AE443B450EAC156A2D64E9D044"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "ABCEC7E53979479FA90A20A4F454F89C"
+    },
+    {
+      "type": "Workflow Map",
+      "id": "97036156528C7C8959E5E0D9E2B89E1D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "379EF9745CB14F478CA12D5EF0F5FA57"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "098E81C151DD44EB99355E12F6241FEF"
+    },
+    {
+      "type": "Form",
+      "id": "80C1916ED13FB91AABE8B59712B5B25D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "3D2B5A56ABFA427C8851FE7EA03C4E60"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "0C38AD6BF884467C85A0CCF78C560B88"
+    },
+    {
+      "type": "Report",
+      "id": "13E641DA215894EBC9281A99B5BA656B"
+    },
+    {
+      "type": "PackageElement",
+      "id": "56E1B96D15344E1D810518640927C657"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "B149DA5BEDC9462F91BE994740BE56E3"
+    },
+    {
+      "type": "Action",
+      "id": "6E1629D001235406CBAF1C1BC71F19E1"
+    },
+    {
+      "type": "PackageElement",
+      "id": "D0B26A2C8AF64F0ABF587732363643E9"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "016A43540DBD450492978381A44D3EDD"
+    },
+    {
+      "type": "Method",
+      "id": "5E0832E42849900FA499343A85F8A1D0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "A2235BE8BFB34AD2846AEB7248439AE9"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "30F931BFE3DF447F8FE8BDA217AA6A4D"
+    },
+    {
+      "type": "Permission",
+      "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+    },
+    {
+      "type": "Member",
+      "id": "0FD85985D9C574513CB9B6D231B177B4"
+    },
+    {
+      "type": "PackageElement",
+      "id": "0A681E2DBBA34EB89F21C8FC39BDA55D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "396C4205F4F943F0859DAE6463F2B414"
+    },
+    {
+      "type": "Identity",
+      "id": "8D1FA15B385BD9268D12CDB127520F9C"
+    },
+    {
+      "type": "PackageElement",
+      "id": "72B5FA884B964C5585D2394098841765"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "C7C7EB69DF3D43B9B00D308BD7759A27"
+    },
+    {
+      "type": "Variable",
+      "id": "9DFD42E0D1D332A37468535A17E9E071"
+    },
+    {
+      "type": "PackageElement",
+      "id": "2A62EF39B4C04B60B8B0F47D916748B2"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "D69BB8DA97A14E1DB71F764C4DA2F625"
+    },
+    {
+      "type": "Sequence",
+      "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "54FCA4E0F8464381BF8DF7FFE6CFC561"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "6271A3E6A7144D2FAA9FA246D30157C5"
+    },
+    {
+      "type": "List",
+      "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "00D85A3DC8C6408891DC2E4A24F22E72"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "F740AF5F3CE747519D3EED183E03289C"
+    }
+  ]
+}

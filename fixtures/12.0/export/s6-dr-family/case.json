@@ -1,0 +1,393 @@
+{
+  "id": "s6-dr-family",
+  "engine": "12.0",
+  "catalogue": [
+    "E47",
+    "S6",
+    "R6"
+  ],
+  "title": "dr_RelationshipFamily with a non-empty implementation_query and an event handler that has event_data",
+  "exercises": "EXP-117 and EXP-121 on a family with a dr_FamilyElement whose dr_Relationship is embedded and has a multi-line implementation_query (re-indented through XDocument, R10), and a dr_FamilyEventHandler whose event_data is written as CDATA (R6).",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-SPECIAL",
+      "items": [
+        {
+          "type": "dr_RelationshipFamily",
+          "keyedName": "LIBSJS-SCRATCH-DrFamily",
+          "id": "62210B831C5192B63D8391421B5EFA39"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 26,
+    "error": null
+  },
+  "seed": {
+    "group": "s6-special",
+    "steps": [
+      {
+        "name": "mac policy, derived relationships, ItemType with content type",
+        "packages": [
+          "LIBSJS-SCRATCH-SPECIAL"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "634016C0941445629A99E1B1C809FAD6"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "BCD9B4EC167A43AF91939C84938192CC"
+          },
+          {
+            "type": "Permission",
+            "id": "2B85D7A515561536323E44F6B7938EA9"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "2DD3897ED5DB4B9C8BA5E74D01CD3892"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A4E02E160AB944FC9F084D210AFD805E"
+          },
+          {
+            "type": "Method",
+            "id": "0B6A1FFC63E810D4E2C077D5CFB2CD20"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "B7529127EBB34415ABCA4EB9F17B45FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "1AD4408D35A94C5BA22C71FF7FD349C8"
+          },
+          {
+            "type": "ItemType",
+            "id": "DF1A99C67C94E5A77568B841ACFE24D1"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "53E55DC17E7F41948162C329C791E19F"
+          },
+          {
+            "type": "PackageElement",
+            "id": "99D56C16E0FB450089CE8BFD8FBE7145"
+          },
+          {
+            "type": "mp_MacPolicy",
+            "id": "01C454B820C6CF5A776842AC7136C210"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "0EE0874D54864575A740A98E14678A5C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "80354E3DE9244E308B96F01E48D145F6"
+          },
+          {
+            "type": "qry_QueryDefinition",
+            "id": "6FA2920AD941FB19DA3B0B22EAB5B08B"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "066331469E35449A97A6C3F33764DEBF"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C5280AD2FE64487A802D63A1CC5776E2"
+          },
+          {
+            "type": "dr_RelationshipFamily",
+            "id": "62210B831C5192B63D8391421B5EFA39"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "F4508BD50482487CA167C8842AFEEECE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "EC0A70C878984B8D9E6BCA577B4E7694"
+          },
+          {
+            "type": "cmf_ContentType",
+            "id": "F3CA127F4A444F45CA7154BE94D4C168"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "4766F3180B784A3FB197D45B88469E4A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "2DC3B49C9C21440A9DAD4DA9EC94CD4D"
+          }
+        ]
+      },
+      {
+        "name": "access control and tabular view",
+        "packages": [
+          "LIBSJS-SCRATCH-ACCESS",
+          "LIBSJS-SCRATCH-CMFVIEW"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "1009654252D242F48A9DAF2727D5026C"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "37B940503C65406E99906FDEB6FEC123"
+          },
+          {
+            "type": "Permission",
+            "id": "63F701C424AE914C5C687C6640CE7A5B"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "96FD1742E64E4987931846312C553D1A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "633ABEE15070402C99AFF41C4E944C04"
+          },
+          {
+            "type": "dac_DomainDefinition",
+            "id": "FCEC8D70CA84F92ED21FD3F682F09B7E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D8080B7195214C2BAD4B8BA0319DEFC9"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6BE99D26A7EC4FFEA233AC26735672B0"
+          },
+          {
+            "type": "ac_PolicyAccessItemAttribute",
+            "id": "5806F8B08494E753C5EFF0647C48002D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "82F85D2C12CB4F7A83B7063A3F3950EB"
+          },
+          {
+            "type": "PackageElement",
+            "id": "0479CA5345264ECB89698DEF3ACCE480"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "12411D5E77FA46D5B9003031F4A49241"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "BD1F340A6AA04EACA0C56BBEA138E4FD"
+          },
+          {
+            "type": "cmf_TabularView",
+            "id": "A7EA68DE5B387AD8587599484295B2DF"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "99B6D345CE2F46EFB7DB61C3550ED6D1"
+          },
+          {
+            "type": "PackageElement",
+            "id": "9A22ED82DC7F409280F5FD44DF8FACE0"
+          }
+        ]
+      },
+      {
+        "name": "implementation query",
+        "packages": [
+          "LIBSJS-SCRATCH-DRIMPL"
+        ],
+        "options": {},
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "548AE3EB3E8E499E91A40D3F10ADBFB4"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "60201536247F4F47AFE7AF79A9C096CB"
+          }
+        ]
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageDefinition",
+        "id": "60201536247F4F47AFE7AF79A9C096CB"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "548AE3EB3E8E499E91A40D3F10ADBFB4"
+      },
+      {
+        "type": "PackageElement",
+        "id": "9A22ED82DC7F409280F5FD44DF8FACE0"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "99B6D345CE2F46EFB7DB61C3550ED6D1"
+      },
+      {
+        "type": "cmf_TabularView",
+        "id": "A7EA68DE5B387AD8587599484295B2DF"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "BD1F340A6AA04EACA0C56BBEA138E4FD"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "12411D5E77FA46D5B9003031F4A49241"
+      },
+      {
+        "type": "PackageElement",
+        "id": "0479CA5345264ECB89698DEF3ACCE480"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "82F85D2C12CB4F7A83B7063A3F3950EB"
+      },
+      {
+        "type": "ac_PolicyAccessItemAttribute",
+        "id": "5806F8B08494E753C5EFF0647C48002D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "6BE99D26A7EC4FFEA233AC26735672B0"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D8080B7195214C2BAD4B8BA0319DEFC9"
+      },
+      {
+        "type": "dac_DomainDefinition",
+        "id": "FCEC8D70CA84F92ED21FD3F682F09B7E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "633ABEE15070402C99AFF41C4E944C04"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "96FD1742E64E4987931846312C553D1A"
+      },
+      {
+        "type": "Permission",
+        "id": "63F701C424AE914C5C687C6640CE7A5B"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "37B940503C65406E99906FDEB6FEC123"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "1009654252D242F48A9DAF2727D5026C"
+      },
+      {
+        "type": "PackageElement",
+        "id": "2DC3B49C9C21440A9DAD4DA9EC94CD4D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "4766F3180B784A3FB197D45B88469E4A"
+      },
+      {
+        "type": "cmf_ContentType",
+        "id": "F3CA127F4A444F45CA7154BE94D4C168"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EC0A70C878984B8D9E6BCA577B4E7694"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "F4508BD50482487CA167C8842AFEEECE"
+      },
+      {
+        "type": "dr_RelationshipFamily",
+        "id": "62210B831C5192B63D8391421B5EFA39"
+      },
+      {
+        "type": "PackageElement",
+        "id": "C5280AD2FE64487A802D63A1CC5776E2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "066331469E35449A97A6C3F33764DEBF"
+      },
+      {
+        "type": "qry_QueryDefinition",
+        "id": "6FA2920AD941FB19DA3B0B22EAB5B08B"
+      },
+      {
+        "type": "PackageElement",
+        "id": "80354E3DE9244E308B96F01E48D145F6"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "0EE0874D54864575A740A98E14678A5C"
+      },
+      {
+        "type": "mp_MacPolicy",
+        "id": "01C454B820C6CF5A776842AC7136C210"
+      },
+      {
+        "type": "PackageElement",
+        "id": "99D56C16E0FB450089CE8BFD8FBE7145"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "53E55DC17E7F41948162C329C791E19F"
+      },
+      {
+        "type": "ItemType",
+        "id": "DF1A99C67C94E5A77568B841ACFE24D1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "1AD4408D35A94C5BA22C71FF7FD349C8"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "B7529127EBB34415ABCA4EB9F17B45FA"
+      },
+      {
+        "type": "Method",
+        "id": "0B6A1FFC63E810D4E2C077D5CFB2CD20"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A4E02E160AB944FC9F084D210AFD805E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "2DD3897ED5DB4B9C8BA5E74D01CD3892"
+      },
+      {
+        "type": "Permission",
+        "id": "2B85D7A515561536323E44F6B7938EA9"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "BCD9B4EC167A43AF91939C84938192CC"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "634016C0941445629A99E1B1C809FAD6"
+      }
+    ]
+  }
+}

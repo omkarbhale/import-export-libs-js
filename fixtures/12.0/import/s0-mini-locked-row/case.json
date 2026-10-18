@@ -1,0 +1,186 @@
+{
+  "id": "s0-mini-locked-row",
+  "engine": "12.0",
+  "catalogue": [
+    "S0",
+    "DatabaseUpgrade row locked"
+  ],
+  "title": "A re-import when the package's DatabaseUpgrade row is locked",
+  "exercises": "WriteReleaseData's unlock path: the lock check (`locked_by_id`), the unlock, then the edit. The host locks the row between the steps, outside the recording.",
+  "steps": [
+    {
+      "name": "first import",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 57,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "22837A3B983F43F595DAFCD13071762A"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "E6BDC6E7859C4E699CD4BC3E0E2AFF3F"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "4E397A4BD29E431DA9A2793BF193334C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "C0A24AE83D18487BA061C9F8FD8490D6"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F012C4327BB645C4BB7CD46DCFF3081C"
+          },
+          {
+            "type": "Sequence",
+            "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "EA52D1A7EA164546929732724BDA4EE2"
+          },
+          {
+            "type": "PackageElement",
+            "id": "39670C5C897341B395BE7C0ACBEA0847"
+          },
+          {
+            "type": "Variable",
+            "id": "C64257819194D0C9B4C3BDF82D642D78"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "27F04066C3A34D1B9CA707BE048C6FA2"
+          },
+          {
+            "type": "PackageElement",
+            "id": "959A2CB548DD4A7FBDB3EBC9C7196BC7"
+          },
+          {
+            "type": "Variable",
+            "id": "6E6B61827EA6F5DB6F735218645E60F3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F829C2B32CC1488FA5F64B9162243A67"
+          },
+          {
+            "type": "Variable",
+            "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "697E185D2F934289851149B9EAECD2E5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "import with the row locked",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "merge": true,
+        "lockUpgradeRows": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 49,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "697E185D2F934289851149B9EAECD2E5"
+    },
+    {
+      "type": "Variable",
+      "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F829C2B32CC1488FA5F64B9162243A67"
+    },
+    {
+      "type": "Variable",
+      "id": "6E6B61827EA6F5DB6F735218645E60F3"
+    },
+    {
+      "type": "PackageElement",
+      "id": "959A2CB548DD4A7FBDB3EBC9C7196BC7"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "27F04066C3A34D1B9CA707BE048C6FA2"
+    },
+    {
+      "type": "Variable",
+      "id": "C64257819194D0C9B4C3BDF82D642D78"
+    },
+    {
+      "type": "PackageElement",
+      "id": "39670C5C897341B395BE7C0ACBEA0847"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "EA52D1A7EA164546929732724BDA4EE2"
+    },
+    {
+      "type": "Sequence",
+      "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F012C4327BB645C4BB7CD46DCFF3081C"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "C0A24AE83D18487BA061C9F8FD8490D6"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "4E397A4BD29E431DA9A2793BF193334C"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "E6BDC6E7859C4E699CD4BC3E0E2AFF3F"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "22837A3B983F43F595DAFCD13071762A"
+    }
+  ]
+}

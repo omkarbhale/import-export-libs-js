@@ -1,0 +1,376 @@
+{
+  "engine": "12.0",
+  "command": "import",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Merge": true,
+    "VersionBefore": [
+      "LIBSJS_SCRATCH_IT_V\tCFC67070B8926819B48BC0B108536FF2"
+    ],
+    "PriorCreated": [
+      "DatabaseUpgrade\tF740AF5F3CE747519D3EED183E03289C\t0",
+      "PackageDefinition\t00D85A3DC8C6408891DC2E4A24F22E72\t0",
+      "List\t02FC1773E9FCF8E024A3FE0C37D824D2\t0",
+      "PackageGroup\t6271A3E6A7144D2FAA9FA246D30157C5\t0",
+      "PackageElement\t54FCA4E0F8464381BF8DF7FFE6CFC561\t0",
+      "Sequence\t67CBD9B47C02D5104BC5C97C25A2483E\t0",
+      "PackageGroup\tD69BB8DA97A14E1DB71F764C4DA2F625\t0",
+      "PackageElement\t2A62EF39B4C04B60B8B0F47D916748B2\t0",
+      "Variable\t9DFD42E0D1D332A37468535A17E9E071\t0",
+      "PackageGroup\tC7C7EB69DF3D43B9B00D308BD7759A27\t0",
+      "PackageElement\t72B5FA884B964C5585D2394098841765\t0",
+      "Identity\t8D1FA15B385BD9268D12CDB127520F9C\t0",
+      "PackageGroup\t396C4205F4F943F0859DAE6463F2B414\t0",
+      "PackageElement\t0A681E2DBBA34EB89F21C8FC39BDA55D\t0",
+      "Member\t0FD85985D9C574513CB9B6D231B177B4\t0",
+      "Permission\t51F2FDF85AB07DF3C25F71CA50B4FF4C\t0",
+      "PackageGroup\t30F931BFE3DF447F8FE8BDA217AA6A4D\t0",
+      "PackageElement\tA2235BE8BFB34AD2846AEB7248439AE9\t0",
+      "Method\t5E0832E42849900FA499343A85F8A1D0\t0",
+      "PackageGroup\t016A43540DBD450492978381A44D3EDD\t0",
+      "PackageElement\tD0B26A2C8AF64F0ABF587732363643E9\t0",
+      "Action\t6E1629D001235406CBAF1C1BC71F19E1\t0",
+      "PackageGroup\tB149DA5BEDC9462F91BE994740BE56E3\t0",
+      "PackageElement\t56E1B96D15344E1D810518640927C657\t0",
+      "Report\t13E641DA215894EBC9281A99B5BA656B\t0",
+      "PackageGroup\t0C38AD6BF884467C85A0CCF78C560B88\t0",
+      "PackageElement\t3D2B5A56ABFA427C8851FE7EA03C4E60\t0",
+      "Form\t80C1916ED13FB91AABE8B59712B5B25D\t0",
+      "PackageGroup\t098E81C151DD44EB99355E12F6241FEF\t0",
+      "PackageElement\t379EF9745CB14F478CA12D5EF0F5FA57\t0",
+      "Workflow Map\t97036156528C7C8959E5E0D9E2B89E1D\t0",
+      "PackageGroup\tABCEC7E53979479FA90A20A4F454F89C\t0",
+      "PackageElement\t0D8780AE443B450EAC156A2D64E9D044\t0",
+      "Life Cycle Map\t8B5690F5CDA03F7F570CFF04DF20BA30\t0",
+      "PackageGroup\tB93133BFBCF7475096D078257306360C\t0",
+      "PackageElement\tD19074C843024161B92C9E0362CEEA6B\t0",
+      "Grid\tDBEA5052DEBB3FE9304F72623D0E0489\t0",
+      "PackageGroup\tC29A14045839470CAF3EEE858A3C2C6D\t0",
+      "PackageElement\t707BDEFEC64D42B6A232BC1A0E7B3B55\t0",
+      "ItemType\tE0FAE5389340631DC4962AE25970C7BB\t0",
+      "PackageGroup\t1252BAEEA21E4B8EB64D7945F59C03A1\t0",
+      "PackageElement\t743C8A776D9A401BA406DB3E6F668CD2\t0",
+      "ItemType\t0B033B1E3B6425C1276A61E3F5E5F283\t0",
+      "PackageElement\t05380090261949D99A26FA413BB03B32\t0",
+      "ItemType\tE2855368158C72AE7E4BF3B6E8D1D337\t0",
+      "PackageElement\t8E7B18A7D0954DF39BC66236EEB2B608\t0",
+      "RelationshipType\t2E86BE71406A024A7610EBE387CA19FA\t0",
+      "PackageGroup\tC36A4CB4D02942428EE14119C820F8AA\t0",
+      "PackageElement\t0081381D8AA14101A6CAEE4D9677999E\t0",
+      "RelationshipType\t2CAA9483C5AF745CE43A9975AB133C39\t0",
+      "PackageElement\t97D77DD37C0A4DAB8ED17649709DB0AF\t0",
+      "RelationshipType\tB1728187A78D330129D6FC48530DD38F\t0",
+      "PackageElement\t8717EDC975A840B49D58D7355B56F08F\t0",
+      "UserMessage\t48CC1F963C2BD3526D145E6EF7622AE1\t0",
+      "PackageGroup\tA10F1A6BF70F47A99D4BE1A2DF236E6D\t0",
+      "PackageElement\tDAC23125D49148B5B8B6495EB4F7045E\t0",
+      "DatabaseUpgrade\t04BFA96269BF4FD29AF67AB946904D29\t0",
+      "PackageDefinition\t88F13D6C2A5042D8AB566D95810E873A\t0",
+      "LIBSJS_SCRATCH_IT_A\t4747CF811D4EFD42FA073ACA3A1BF1BE\t0",
+      "PackageGroup\t234C86FB236F4A5A851845DF58297ED7\t0",
+      "PackageElement\t3C74226D31504F63A3C362ADF092C6EB\t0",
+      "LIBSJS_SCRATCH_IT_V\tCFC67070B8926819B48BC0B108536FF2\t0",
+      "PackageGroup\tCA92ACFC349D43A3A024256AD7C8A5ED\t0",
+      "PackageElement\tBB38874844B54BE59497B0F3736FBD54\t0"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:58:39.492Z",
+  "finishedAt": "2026-10-18T21:58:56.409Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 40,
+    "messages": 7,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "LIBSJS_SCRATCH_IT_V",
+        "id": "0DC6DC3DD52E4750A826E40BE450B8BE"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "LIBSJS_SCRATCH_IT_V",
+        "id": "0DC6DC3DD52E4750A826E40BE450B8BE"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "CA92ACFC349D43A3A024256AD7C8A5ED"
+      },
+      {
+        "type": "PackageElement",
+        "id": "3C74226D31504F63A3C362ADF092C6EB"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "234C86FB236F4A5A851845DF58297ED7"
+      },
+      {
+        "type": "LIBSJS_SCRATCH_IT_A",
+        "id": "4747CF811D4EFD42FA073ACA3A1BF1BE"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "88F13D6C2A5042D8AB566D95810E873A"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "04BFA96269BF4FD29AF67AB946904D29"
+      },
+      {
+        "type": "PackageElement",
+        "id": "DAC23125D49148B5B8B6495EB4F7045E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "A10F1A6BF70F47A99D4BE1A2DF236E6D"
+      },
+      {
+        "type": "UserMessage",
+        "id": "48CC1F963C2BD3526D145E6EF7622AE1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "8717EDC975A840B49D58D7355B56F08F"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "B1728187A78D330129D6FC48530DD38F"
+      },
+      {
+        "type": "PackageElement",
+        "id": "97D77DD37C0A4DAB8ED17649709DB0AF"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2CAA9483C5AF745CE43A9975AB133C39"
+      },
+      {
+        "type": "PackageElement",
+        "id": "0081381D8AA14101A6CAEE4D9677999E"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C36A4CB4D02942428EE14119C820F8AA"
+      },
+      {
+        "type": "RelationshipType",
+        "id": "2E86BE71406A024A7610EBE387CA19FA"
+      },
+      {
+        "type": "PackageElement",
+        "id": "8E7B18A7D0954DF39BC66236EEB2B608"
+      },
+      {
+        "type": "ItemType",
+        "id": "E2855368158C72AE7E4BF3B6E8D1D337"
+      },
+      {
+        "type": "PackageElement",
+        "id": "05380090261949D99A26FA413BB03B32"
+      },
+      {
+        "type": "ItemType",
+        "id": "0B033B1E3B6425C1276A61E3F5E5F283"
+      },
+      {
+        "type": "PackageElement",
+        "id": "743C8A776D9A401BA406DB3E6F668CD2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "1252BAEEA21E4B8EB64D7945F59C03A1"
+      },
+      {
+        "type": "ItemType",
+        "id": "E0FAE5389340631DC4962AE25970C7BB"
+      },
+      {
+        "type": "PackageElement",
+        "id": "707BDEFEC64D42B6A232BC1A0E7B3B55"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C29A14045839470CAF3EEE858A3C2C6D"
+      },
+      {
+        "type": "Grid",
+        "id": "DBEA5052DEBB3FE9304F72623D0E0489"
+      },
+      {
+        "type": "PackageElement",
+        "id": "D19074C843024161B92C9E0362CEEA6B"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "B93133BFBCF7475096D078257306360C"
+      },
+      {
+        "type": "Life Cycle Map",
+        "id": "8B5690F5CDA03F7F570CFF04DF20BA30"
+      },
+      {
+        "type": "PackageElement",
+        "id": "0D8780AE443B450EAC156A2D64E9D044"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "ABCEC7E53979479FA90A20A4F454F89C"
+      },
+      {
+        "type": "Workflow Map",
+        "id": "97036156528C7C8959E5E0D9E2B89E1D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "379EF9745CB14F478CA12D5EF0F5FA57"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "098E81C151DD44EB99355E12F6241FEF"
+      },
+      {
+        "type": "Form",
+        "id": "80C1916ED13FB91AABE8B59712B5B25D"
+      },
+      {
+        "type": "PackageElement",
+        "id": "3D2B5A56ABFA427C8851FE7EA03C4E60"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "0C38AD6BF884467C85A0CCF78C560B88"
+      },
+      {
+        "type": "Report",
+        "id": "13E641DA215894EBC9281A99B5BA656B"
+      },
+      {
+        "type": "PackageElement",
+        "id": "56E1B96D15344E1D810518640927C657"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "B149DA5BEDC9462F91BE994740BE56E3"
+      },
+      {
+        "type": "Action",
+        "id": "6E1629D001235406CBAF1C1BC71F19E1"
+      },
+      {
+        "type": "PackageElement",
+        "id": "D0B26A2C8AF64F0ABF587732363643E9"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "016A43540DBD450492978381A44D3EDD"
+      },
+      {
+        "type": "Method",
+        "id": "5E0832E42849900FA499343A85F8A1D0"
+      },
+      {
+        "type": "PackageElement",
+        "id": "A2235BE8BFB34AD2846AEB7248439AE9"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "30F931BFE3DF447F8FE8BDA217AA6A4D"
+      },
+      {
+        "type": "Permission",
+        "id": "51F2FDF85AB07DF3C25F71CA50B4FF4C"
+      },
+      {
+        "type": "Member",
+        "id": "0FD85985D9C574513CB9B6D231B177B4"
+      },
+      {
+        "type": "PackageElement",
+        "id": "0A681E2DBBA34EB89F21C8FC39BDA55D"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "396C4205F4F943F0859DAE6463F2B414"
+      },
+      {
+        "type": "Identity",
+        "id": "8D1FA15B385BD9268D12CDB127520F9C"
+      },
+      {
+        "type": "PackageElement",
+        "id": "72B5FA884B964C5585D2394098841765"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "C7C7EB69DF3D43B9B00D308BD7759A27"
+      },
+      {
+        "type": "Variable",
+        "id": "9DFD42E0D1D332A37468535A17E9E071"
+      },
+      {
+        "type": "PackageElement",
+        "id": "2A62EF39B4C04B60B8B0F47D916748B2"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "D69BB8DA97A14E1DB71F764C4DA2F625"
+      },
+      {
+        "type": "Sequence",
+        "id": "67CBD9B47C02D5104BC5C97C25A2483E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "54FCA4E0F8464381BF8DF7FFE6CFC561"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "6271A3E6A7144D2FAA9FA246D30157C5"
+      },
+      {
+        "type": "List",
+        "id": "02FC1773E9FCF8E024A3FE0C37D824D2"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "00D85A3DC8C6408891DC2E4A24F22E72"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "F740AF5F3CE747519D3EED183E03289C"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

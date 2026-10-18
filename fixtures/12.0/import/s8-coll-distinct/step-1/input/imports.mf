@@ -1,0 +1,4 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-A.Coll" path="LIBSJS-SCRATCH-A\Coll" />
+  <package name="LIBSJS-SCRATCH-B.Coll" path="LIBSJS-SCRATCH-B\Coll" />
+</imports>

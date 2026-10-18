@@ -1,0 +1,31 @@
+{
+  "id": "p2-part-referenced-items",
+  "engine": "12.0",
+  "catalogue": [
+    "ReferencedItems"
+  ],
+  "title": "Package with dependencies, referenced items on (Part)",
+  "exercises": "bExportReferencedItems on for a package that depends on others. Compare with e02-part-itemtype, which has it off.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "exportReferencedItems": true
+  },
+  "expectsError": false,
+  "note": "Referenced elements (P5) need scratch package S2; ticket 67.",
+  "result": {
+    "hostExit": 0,
+    "calls": 87,
+    "error": null
+  }
+}

@@ -4,7 +4,7 @@ An mp_PromoteItem action on an mp_MacPolicy. Engine 14.0.7, import, recorded on 
 
 ## Exercises
 
-build.xsl selects mp_* items with any action in 14.x (12.0 drops this one), so the engine sends it; the policy does not exist, so the server's answer ends the package.
+build.xsl selects mp_* items with any action in 14.x, so the engine sends it; the policy does not exist, so the server's answer ends the package. 12.0 drops mp_PromoteItem (R12): nothing is sent and the package succeeds.
 
 ## Not covered here
 

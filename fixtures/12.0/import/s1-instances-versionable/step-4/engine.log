@@ -1,0 +1,23 @@
+Start of importing packages
+start of execution : 10/19/2026 03:28:42
+Updating LIBSJS-SCRATCH-INST to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-INST****
+Processing (add)   id : 4747CF811D4EFD42FA073ACA3A1BF1BE    keyed_name : LIBSJS-SCRATCH-Inst_A1    type : LIBSJS_SCRATCH_IT_A  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_IT_A</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 4747CF811D4EFD42FA073ACA3A1BF1BE    keyed_name : LIBSJS-SCRATCH-Inst_A1    type : LIBSJS_SCRATCH_IT_A  
+Adding item into PackageDefinition with id = 4747CF811D4EFD42FA073ACA3A1BF1BE and type = LIBSJS_SCRATCH_IT_A
+Item already exist in packdefinition  id  4747CF811D4EFD42FA073ACA3A1BF1BE type LIBSJS_SCRATCH_IT_A
+Processing (add)   id : CFC67070B8926819B48BC0B108536FF2    keyed_name : LIBSJS-SCRATCH-Inst_V1    type : LIBSJS_SCRATCH_IT_V  
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_IT_V</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_REL_V</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='LIBSJS_SCRATCH_IT_A' action='get' levels='0'><id>4747CF811D4EFD42FA073ACA3A1BF1BE</id></Item>
+   was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : CFC67070B8926819B48BC0B108536FF2    keyed_name : LIBSJS-SCRATCH-Inst_V1    type : LIBSJS_S

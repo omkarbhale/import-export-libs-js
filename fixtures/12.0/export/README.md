@@ -1,0 +1,101 @@
+# 12.0 export fixtures
+
+Recorded from engine 12.0.0.13341 on the dev instance, read-only, from ticket 05's catalogue and option matrix. One folder per case; each README says what the case exercises, its input (the `Hashtable` insertion order included) and the spec rules that pin it.
+
+- Cases are small: one item, or one small package, per branch, plus multi-package cases for ordering (`p1-*`).
+- A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript; every case begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` puts them back.
+- Cases that need scratch state on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by `npm run oracle:export-scratch-cases -- --engine 12.0` (ticket 48). Each imports `LIBSJS-SCRATCH-*` packages, exports, and deletes what it created; its README lists the ids created and deleted.
+- The dev state a case ran against can change. `run.json` carries the time of the run.
+- Re-record with `ARAS_PASSWORD=… npm run oracle:export-cases -- --engine 12.0` (see `npm run oracle:export-cases -- --engine 12.0 --help`).
+
+| Case | Catalogue | What | Calls |
+|---|---|---|---|
+| [e01-change-controlled-item](e01-change-controlled-item/README.md) | E01 | ItemType: polymorphic and versionable (Change Controlled Item) | 48 |
+| [e02-part-itemtype](e02-part-itemtype/README.md) | E02 | ItemType: Part (versionable table, Grid Event on a system Property) | 87 |
+| [e03-cad-itemtype](e03-cad-itemtype/README.md) | E03 | ItemType: CAD (reference holding XML markup) | 72 |
+| [e04-design-to-goal](e04-design-to-goal/README.md) | E04 | ItemType: no View (Design To Goal) | 27 |
+| [e05-affected-item](e05-affected-item/README.md) | E05 | ItemType: foreign Properties (Affected Item) | 60 |
+| [e06-scopecachedependency-donotremove](e06-scopecachedependency-donotremove/README.md) | E06 | ItemType: reference to an unknown package, DoNotRemove (ScopeCacheDependency) | 48 |
+| [e06-scopecachedependency-removesilently](e06-scopecachedependency-removesilently/README.md) | E06 | ItemType: reference to an unknown package, RemoveSilently (ScopeCacheDependency) | 91 |
+| [e06-scopecachedependency-removewithwarning](e06-scopecachedependency-removewithwarning/README.md) | E06 | ItemType: reference to an unknown package, RemoveWithWarning (ScopeCacheDependency) | 91 |
+| [e02-part-removewithwarning](e02-part-removewithwarning/README.md) | E02 | ItemType: RemoveWithWarning control (Part) | 140 |
+| [e07-form-itemtype](e07-form-itemtype/README.md) | E07 | Form: ItemType (Form Event that is a package element elsewhere) | 38 |
+| [e08-change-controlled-relationship](e08-change-controlled-relationship/README.md) | E08 | ItemType: Change Controlled Relationship | 43 |
+| [e09-presentableitems](e09-presentableitems/README.md) | E09 | ItemType: polymorphic with a Morphae that is a package element (PresentableItems) | 43 |
+| [e10-activity-assignment](e10-activity-assignment/README.md) | E10 | RelationshipType: dependency level 0 (Activity Assignment) | 36 |
+| [e11-cmf-elementbinding](e11-cmf-elementbinding/README.md) | E11 | RelationshipType: dependency level 1 (cmf_ElementBinding) | 26 |
+| [e12-field-event](e12-field-event/README.md) | E12 | RelationshipType: dependency level 2 (Field Event) | 39 |
+| [e13-cmf-computedpropertydependency](e13-cmf-computedpropertydependency/README.md) | E13 | RelationshipType: dependency level 3 (cmf_ComputedPropertyDependency) | 30 |
+| [e14-list](e14-list/README.md) | E14 | List: levels 1 (cmf_DocumentPropertyDataType) | 15 |
+| [e15-sequence](e15-sequence/README.md) | E15 | Sequence: Default Part | 13 |
+| [e16-method-by-config-id](e16-method-by-config-id/README.md) | E16 | Method: exported by its config_id, not the current generation (Add Alias Identity) | 16 |
+| [e17-method-middle-generation](e17-method-middle-generation/README.md) | E17 | Method: exported by a middle generation (onChange Action) | 16 |
+| [e18-form-system-fields](e18-form-system-fields/README.md) | E18 | Form: Fields on six system properties (Part) | 31 |
+| [e19-form-one-system-field](e19-form-one-system-field/README.md) | E19 | Form: one Field on a system property (Activity Template) | 37 |
+| [e20-workflow-map-ecn](e20-workflow-map-ecn/README.md) | E20 | Workflow Map: non-system process_owner (ECN) | 40 |
+| [e21-workflow-map-system-owner](e21-workflow-map-system-owner/README.md) | E21 | Workflow Map: system process_owner (PE_Deviation) | 33 |
+| [e22-life-cycle-map-creator](e22-life-cycle-map-creator/README.md) | E22 | Life Cycle Map: role Creator, pre_action Method (FileExchangePackageUpload) | 24 |
+| [e23-life-cycle-map-owner](e23-life-cycle-map-owner/README.md) | E23 | Life Cycle Map: role Owner with a pre_action (Part) | 24 |
+| [e24-grid](e24-grid/README.md) | E24 | Grid: History_whereTemplateUsed | 20 |
+| [e25-identity-non-system](e25-identity-non-system/README.md) | E25 | Identity: non-system Identity as the root (Conversion Manager) | 14 |
+| [e26-identity-system-no-package](e26-identity-system-no-package/README.md) | E26 | Identity: system Identity in no package, under core (World) | 13 |
+| [e27-permission](e27-permission/README.md) | E27 | Permission: rb_TreeGridView | 14 |
+| [e28-action](e28-action/README.md) | E28 | Action: method and on_complete (PE_AddToChange) | 16 |
+| [e29-action-colon-keyed-name](e29-action-colon-keyed-name/README.md) | E29 | Action: keyed name with a colon (PE: rollup all parts in DB) | 15 |
+| [e30-report-method](e30-report-method/README.md) | E30 | Report: method (BOM Costing Report) | 15 |
+| [e31-report-cdata](e31-report-cdata/README.md) | E31 | Report: report_query and xsl_stylesheet as CDATA (ECN Report) | 14 |
+| [e32-item-report](e32-item-report/README.md) | E32 | Item Report: levels 0, related_expand 0, element name = id | 12 |
+| [e33-user](e33-user/README.md) | E33 | User: levels 2 (ES Admin) | 19 |
+| [e34-preference](e34-preference/README.md) | E34 | Preference: levels 2, element name = id | 30 |
+| [e35-variable-value-equals-default](e35-variable-value-equals-default/README.md) | E35 | Variable: value equals default_value (CAD Angular Units) | 13 |
+| [e36-variable-both-empty](e36-variable-both-empty/README.md) | E36 | Variable: both values empty (ES_SolrUrl) | 16 |
+| [e37-variable-differ](e37-variable-differ/README.md) | E37 | Variable: values differ (Application Core) | 12 |
+| [e38-variable-empty-value](e38-variable-empty-value/README.md) | E38 | Variable: empty value, non-empty default (sg_powerplay_repo_url) | 12 |
+| [e39-usermessage](e39-usermessage/README.md) | E39 | UserMessage: levels 1 (effs_ItemTypeWithOtherName) | 15 |
+| [e40-workflow-promotion-error-no](e40-workflow-promotion-error-no/README.md) | E40, ErrorQuestion | Workflow Promotion (absent on 12 SP9): server fault, ErrorQuestion answered no | 23 |
+| [e40-workflow-promotion-error-yes](e40-workflow-promotion-error-yes/README.md) | E40, ErrorQuestion | Workflow Promotion (absent on 12 SP9): server fault, ErrorQuestion answered yes | 50 |
+| [e43-xclassificationtree](e43-xclassificationtree/README.md) | E43 | xClassificationTree: ES_ComponentClassification | 50 |
+| [e44-xpropertydefinition](e44-xpropertydefinition/README.md) | E44 | xPropertyDefinition: xp-es_batch_size (default-type branch) | 17 |
+| [e47-dr-relationshipfamily](e47-dr-relationshipfamily/README.md) | E47 | dr_RelationshipFamily: User Identities (empty implementation_query) | 23 |
+| [e48-qry-querydefinition](e48-qry-querydefinition/README.md) | E48 | qry_QueryDefinition: UserIdentities | 24 |
+| [e49-rb-treegridviewdefinition](e49-rb-treegridviewdefinition/README.md) | E49 | rb_TreeGridViewDefinition: PE_BomStructure | 57 |
+| [e50-mp-macpolicy](e50-mp-macpolicy/README.md) | E50 | mp_MacPolicy: one filter_xml (User Visibility Policy) | 26 |
+| [e51-sql](e51-sql/README.md) | E51 | SQL: ConvertFromLocal | 13 |
+| [e52-float-item-property](e52-float-item-property/README.md) | E52 | CommandBarButton: float item property to a re-generated Method (sg_powerplay_relationshipgrid) | 14 |
+| [e53-level-default](e53-level-default/README.md) | E53 | CommandBarSection: sLevel not set (Language_TOC_Content) | 23 |
+| [e53-level-empty](e53-level-empty/README.md) | E53 | CommandBarSection: sLevel empty string | 23 |
+| [e53-level-1](e53-level-1/README.md) | E53 | CommandBarSection: sLevel 1 | 23 |
+| [e53-level-2](e53-level-2/README.md) | E53 | CommandBarSection: sLevel 2 | 23 |
+| [e53-level-3](e53-level-3/README.md) | E53 | CommandBarSection: sLevel 3 | 23 |
+| [e14-level-2-ignored](e14-level-2-ignored/README.md) | E14 | List: sLevel 2 is ignored by a fixed-depth type | 15 |
+| [e54-list-no-package](e54-list-no-package/README.md) | E54 | List: item in no package, keyed name that is not a file name (True/False) | 14 |
+| [e55-lists-no-package-pair](e55-lists-no-package-pair/README.md) | E54, E55 | Lists: two items in no package under one package (True/False, Yes/No) | 16 |
+| [e56-tp-xmlschemaelement](e56-tp-xmlschemaelement/README.md) | E56 | tp_XmlSchemaElement: content_generator Method, element name = id | 17 |
+| [p1-order-admin-core-cui](p1-order-admin-core-cui/README.md) | P1 | Three packages, inserted admin, core, cui | 77 |
+| [p1-order-cui-core-admin](p1-order-cui-core-admin/README.md) | P1 | Three packages, inserted cui, core, admin | 77 |
+| [p1-order-six-forward](p1-order-six-forward/README.md) | P1 | Six packages, inserted admin, core, cui, history, es, conversion | 103 |
+| [p1-order-six-reverse](p1-order-six-reverse/README.md) | P1 | Six packages, inserted conversion, es, history, cui, core, admin | 103 |
+| [p2-cui-default-missing-dependencies](p2-cui-default-missing-dependencies/README.md) | P2 | Package whose dependencies are not on dev (cui_default), referenced items off | 17 |
+| [p2-cui-default-referenced-items](p2-cui-default-referenced-items/README.md) | P2, ReferencedItems | Package whose dependencies are not on dev (cui_default), referenced items on | 17 |
+| [p2-part-referenced-items](p2-part-referenced-items/README.md) | ReferencedItems | Package with dependencies, referenced items on (Part) | 87 |
+| [p3-absent-package](p3-absent-package/README.md) | P3 | A Hashtable key naming a package absent from the DB | 7 |
+| [p4-folder-mapping](p4-folder-mapping/README.md) | P4 | Standard and non-standard package folder mapping | 62 |
+| [opt-use-import](opt-use-import/README.md) | UseImport | Option: UseImport on | 20 |
+| [opt-timeout-default](opt-timeout-default/README.md) | Timeout | Option: Timeout at the host default | 20 |
+| [opt-timeout-minus-1](opt-timeout-minus-1/README.md) | Timeout | Option: Timeout -1 | 20 |
+| [opt-timeout-30000](opt-timeout-30000/README.md) | Timeout | Option: Timeout 30000 | 20 |
+| [opt-verbose](opt-verbose/README.md) | Verbose | Option: Verbose (SolutionUpgradeContext.Verbose) on | 20 |
+| [s6-mac-two-filters](s6-mac-two-filters/README.md) | E50, S6, R9 | mp_MacPolicy whose condition holds two filter_xml blocks | 14 |
+| [s6-dr-family](s6-dr-family/README.md) | E47, S6, R6 | dr_RelationshipFamily with a non-empty implementation_query and an event handler that has event_data | 26 |
+| [s6-ac-attribute](s6-ac-attribute/README.md) | E46, S6, R11 | ac_PolicyAccessItemAttribute with an attribute definition | 13 |
+| [s6-dac-domain](s6-dac-domain/README.md) | E45, S6, R4 | dac_DomainDefinition with a sub-domain permission whose condition holds non-ASCII text | 19 |
+| [s6-cmf-content-type](s6-cmf-content-type/README.md) | E41, S6 | cmf_ContentType with an element type and a property type | 20 |
+| [s6-cmf-itemtype](s6-cmf-itemtype/README.md) | E41, S6 | ItemType that has a cmf_ContentType linked to it | 30 |
+| [s6-cmf-tabular-view](s6-cmf-tabular-view/README.md) | E42, S6 | cmf_TabularView with a column | 18 |
+| [p5-ref-off](p5-ref-off/README.md) | P5, S2, referenced items off | A package that depends on another with three referenced elements, referenced items off | 13 |
+| [p5-ref-on](p5-ref-on/README.md) | P5, S2, referenced items on | The same package with referenced items on | 20 |
+| [p5-ref-both-on](p5-ref-both-on/README.md) | P5, S2, referenced items on | The package and its dependency exported together, referenced items on | 23 |
+| [s8-coll-ab](s8-coll-ab/README.md) | S8, P4 | Two packages whose names end in the same segment, A.Coll inserted first | 15 |
+| [s8-coll-ba](s8-coll-ba/README.md) | S8, P4 | The same two packages, B.Coll inserted first | 15 |
+| [s7-xp-values](s7-xp-values/README.md) | E44, S7, xp-* values | Classified instance of an ItemType with two extended properties (xp-* elements) | 16 |
+| [s7-xp-empty](s7-xp-empty/README.md) | E44, S7, xp-* values | Unclassified instance of an ItemType whose class has extended properties | 12 |

@@ -1,0 +1,134 @@
+{
+  "id": "s2-ref-both",
+  "engine": "12.0",
+  "catalogue": [
+    "S2"
+  ],
+  "title": "A package and the package it depends on, imported together",
+  "exercises": "Package ordering (the dependency is imported first although the manifest lists it second), PackageDependsOn, and the three kinds of referenced element: one in the dependency, a stock List, and an id that exists nowhere (the 'not added' warning).",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-REF",
+        "LIBSJS-SCRATCH-REFDEP"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 50,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "D28F8F8EE2644DEFB80D7A112B908D7B"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "E0D27B6F71634F81B5A5FC2AFF448134"
+          },
+          {
+            "type": "List",
+            "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "136181277529471DAFCABFFFA8933809"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E9797894B513486BABFD42E412BB3598"
+          },
+          {
+            "type": "DatabaseUpgrade",
+            "id": "95C28846C84C49268E48A0FCE7CBDA32"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "7909BB931B2B435484A27DFA84155B58"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "508D021F687646C1B8FF06A30DCADB03"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "8D8082D49A1B4BE48258FC3DDC982FF6"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "519F6482C9B441ECBB2EB518F71DB68E"
+          },
+          {
+            "type": "Variable",
+            "id": "6A880A1FAC02A374F97FFF2376246C91"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "2A50924A62234423BCCAC15F06CBD7E3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "14EDFD87CC18413599EE080ED1F45E7E"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "14EDFD87CC18413599EE080ED1F45E7E"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "2A50924A62234423BCCAC15F06CBD7E3"
+    },
+    {
+      "type": "Variable",
+      "id": "6A880A1FAC02A374F97FFF2376246C91"
+    },
+    {
+      "type": "PackageReferencedElement",
+      "id": "519F6482C9B441ECBB2EB518F71DB68E"
+    },
+    {
+      "type": "PackageReferencedElement",
+      "id": "8D8082D49A1B4BE48258FC3DDC982FF6"
+    },
+    {
+      "type": "PackageDependsOn",
+      "id": "508D021F687646C1B8FF06A30DCADB03"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "7909BB931B2B435484A27DFA84155B58"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "95C28846C84C49268E48A0FCE7CBDA32"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E9797894B513486BABFD42E412BB3598"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "136181277529471DAFCABFFFA8933809"
+    },
+    {
+      "type": "List",
+      "id": "ADFEE419D8DB444BF5EDED7C490E4BA2"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "E0D27B6F71634F81B5A5FC2AFF448134"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "D28F8F8EE2644DEFB80D7A112B908D7B"
+    }
+  ]
+}

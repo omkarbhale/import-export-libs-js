@@ -1,0 +1,2 @@
+{"event":9,"seq":1,"thread":16,"ticks":812545666924,"channel":"status","text":"Building  solution","answer":null}
+{"event":14,"seq":2,"thread":16,"ticks":812546243037,"channel":"error","text":"\t\t****ErrorMessage****\n\nImport package LIBSJS-SCRATCH-FSLATIN1 failed with message:\n\nInvalid character in the given encoding. Line 3, position 21.\nUpdating LIBSJS-SCRATCH-FSLATIN1 to failed release status\n\t\t**********************","answer":null}

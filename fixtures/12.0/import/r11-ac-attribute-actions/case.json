@@ -1,0 +1,69 @@
+{
+  "id": "r11-ac-attribute-actions",
+  "engine": "12.0",
+  "catalogue": [
+    "R11"
+  ],
+  "title": "Delete and purge of an ac_PolicyAccessItemAttribute",
+  "exercises": "build.xsl for ac_PolicyAccessItemAttribute: 12.0 lists it in neither the edit list nor the unlisted-types list, so every action of it goes to the last bucket, after the Variable add. 14.0.7 would drop the delete and the purge. The ids exist nowhere.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-ACACT"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 27,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "B279961B81364E1AA33DDC4054541144"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "6EF2CECDEE1B428C91D2043007596E53"
+          },
+          {
+            "type": "Variable",
+            "id": "4811409318570F0FC3A8096F18B1E8BD"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "00E6B49C63DB44CD82B719C1473FEFC2"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F80401FC4E524183AA0033C05F3DB8D1"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "F80401FC4E524183AA0033C05F3DB8D1"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "00E6B49C63DB44CD82B719C1473FEFC2"
+    },
+    {
+      "type": "Variable",
+      "id": "4811409318570F0FC3A8096F18B1E8BD"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "6EF2CECDEE1B428C91D2043007596E53"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "B279961B81364E1AA33DDC4054541144"
+    }
+  ]
+}

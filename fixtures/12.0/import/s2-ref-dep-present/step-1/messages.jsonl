@@ -1,0 +1,6 @@
+{"event":9,"seq":1,"thread":16,"ticks":811277387742,"channel":"status","text":"Building  solution","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":811278016651,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-REFDEP","answer":null}
+{"event":13,"seq":3,"thread":16,"ticks":811278356932,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-REFDEP-List_1","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":811280126079,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":25,"seq":5,"thread":16,"ticks":811280134697,"channel":"status","text":"completed","answer":null}
+{"event":30,"seq":6,"thread":16,"ticks":811280828757,"channel":"status","text":"completed","answer":null}

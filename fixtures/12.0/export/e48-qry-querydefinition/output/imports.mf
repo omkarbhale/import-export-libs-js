@@ -1,0 +1,5 @@
+<imports>
+  <package name="com.aras.innovator.derivedrelationships_default" path=".\">
+    <dependson name="com.aras.innovator.derivedrelationships" />
+  </package>
+</imports>

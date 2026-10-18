@@ -1,0 +1,45 @@
+{
+  "id": "s5-sql-id-child",
+  "engine": "12.0",
+  "catalogue": [
+    "S5"
+  ],
+  "title": "A SQL item whose id is only a child element",
+  "exercises": "DeleteSqlItems reads the id from the attribute only and sends id='' (the empty-id bug); the server's 'empty id or type' error ends the package before the item is added.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-SQLCHILD"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 14,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "11C7D49A9B8F41B5A0D8FCFE774AD848"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "4789E7B645B64FCA8F82AEA45608AE0C"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "4789E7B645B64FCA8F82AEA45608AE0C"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "11C7D49A9B8F41B5A0D8FCFE774AD848"
+    }
+  ]
+}

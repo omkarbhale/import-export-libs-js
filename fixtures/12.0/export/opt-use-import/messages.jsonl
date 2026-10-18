@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":16,"ticks":806859761356,"channel":"currentPackage","text":"Exporting package com.aras.innovator.history","answer":null}
+{"event":10,"seq":2,"thread":16,"ticks":806859765459,"channel":"status","text":"Item 1 of 1: Grid - History_whereTemplateUsed","answer":null}
+{"event":23,"seq":3,"thread":16,"ticks":806862408090,"channel":"status","text":"completed","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":806862408583,"channel":"currentPackage","text":"","answer":null}

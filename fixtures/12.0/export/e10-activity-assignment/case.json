@@ -1,0 +1,28 @@
+{
+  "id": "e10-activity-assignment",
+  "engine": "12.0",
+  "catalogue": [
+    "E10"
+  ],
+  "title": "RelationshipType: dependency level 0 (Activity Assignment)",
+  "exercises": "dependencyLevel 0: the source Activity is not a relationship. ProcessRelationshipType; getDepencyLevel stops at once.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "RelationshipType",
+          "id": "C92F589A534241B09EBD4FE0ECD903E2",
+          "keyedName": "Activity Assignment"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 36,
+    "error": null
+  }
+}

@@ -1,0 +1,85 @@
+﻿<AML>
+ <Item type="ItemType" id="E0FAE5389340631DC4962AE25970C7BB" action="add">
+  <allow_private_permission>1</allow_private_permission>
+  <auto_search>1</auto_search>
+  <enforce_discovery>1</enforce_discovery>
+  <hide_where_used>0</hide_where_used>
+  <implementation_type>table</implementation_type>
+  <instance_data>LIBSJS_SCRATCH_IT_A</instance_data>
+  <is_dependent>0</is_dependent>
+  <is_relationship>0</is_relationship>
+  <is_versionable>0</is_versionable>
+  <label xml:lang="en">LIBSJS_SCRATCH_IT_A</label>
+  <show_parameters_tab>1</show_parameters_tab>
+  <structure_view>tabs off</structure_view>
+  <unlock_on_logout>0</unlock_on_logout>
+  <use_src_access>0</use_src_access>
+  <name>LIBSJS_SCRATCH_IT_A</name>
+  <Relationships>
+   <Item type="Allowed Permission" id="3D8183E028B06CB5FE54917D0B89BD45" action="add">
+    <is_default>1</is_default>
+    <related_id keyed_name="LIBSJS-SCRATCH-Perm_1" type="Permission">51F2FDF85AB07DF3C25F71CA50B4FF4C</related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_IT_A" type="ItemType">E0FAE5389340631DC4962AE25970C7BB</source_id>
+   </Item>
+   <Item type="Property" id="7CC50B33AE82B9FB19E95FF18858A3FA" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>string</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>1</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">name</label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>64</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_IT_A" type="ItemType">E0FAE5389340631DC4962AE25970C7BB</source_id>
+    <stored_length>64</stored_length>
+    <track_history>0</track_history>
+    <name>name</name>
+   </Item>
+   <Item type="Property" id="CCAE56CFB36891A5F60058245ECE1C90" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>string</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>0</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">title</label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_IT_A" type="ItemType">E0FAE5389340631DC4962AE25970C7BB</source_id>
+    <stored_length>64</stored_length>
+    <track_history>0</track_history>
+    <name>title</name>
+   </Item>
+   <Item type="Property" id="81B25695A348F595B9D724E65414B2CF" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>list</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>0</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">kind</label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>256</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_IT_A" type="ItemType">E0FAE5389340631DC4962AE25970C7BB</source_id>
+    <track_history>0</track_history>
+    <data_source keyed_name="LIBSJS-SCRATCH-List_1" type="List">02FC1773E9FCF8E024A3FE0C37D824D2</data_source>
+    <name>kind</name>
+   </Item>
+  </Relationships>
+ </Item>
+ <Item type="View" action="delete" where="source_id='E0FAE5389340631DC4962AE25970C7BB'">
+ </Item>
+ <Item type="Form" action="delete" where="name='LIBSJS_SCRATCH_IT_A'">
+ </Item>
+</AML>

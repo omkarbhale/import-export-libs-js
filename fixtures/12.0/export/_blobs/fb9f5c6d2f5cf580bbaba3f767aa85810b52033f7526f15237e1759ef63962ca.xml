@@ -1,0 +1,1257 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="BFAAB0F6838D4F80BF12CB328FF5B097"><allow_private_permission>1</allow_private_permission><auto_search>1</auto_search><close_icon>../images/AffectedItem.svg</close_icon><config_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><default_page_size>25</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="Affected Item" type="ItemType">BFAAB0F6838D4F80BF12CB328FF5B097</id><implementation_type>table</implementation_type><instance_data>AFFECTED_ITEM</instance_data><is_current>1</is_current><is_dependent>1</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>0</is_versionable><keyed_name>Affected Item</keyed_name><label xml:lang="en">Affected Item</label><label_plural xml:lang="en">Affected Items</label_plural><large_icon>../images/AffectedItem.svg</large_icon><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:15</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/AffectedItem.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>1</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Affected Item</name><Relationships><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="0B5961440D414B70A0D576593A0A98CB"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>70</column_width><config_id keyed_name="action" type="Property">0B5961440D414B70A0D576593A0A98CB</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Affected Item Actions">5C72C69E1762447FAB17F8AD2B3F5DFC</data_source><data_type>list</data_type><generation>1</generation><id keyed_name="action" type="Property">0B5961440D414B70A0D576593A0A98CB</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>action</keyed_name><label xml:lang="en">Action</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>256</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>64</stored_length><track_history>0</track_history><name>action</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="6FF6F2FD5A1340CEB591C42F67420A62"><behavior>float</behavior><config_id keyed_name="6FF6F2FD5A1340CEB591C42F67420A62" type="Grid Event">6FF6F2FD5A1340CEB591C42F67420A62</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>6FF6F2FD5A1340CEB591C42F67420A62</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="action" type="Property">0B5961440D414B70A0D576593A0A98CB</source_id><id keyed_name="6FF6F2FD5A1340CEB591C42F67420A62" type="Grid Event">6FF6F2FD5A1340CEB591C42F67420A62</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="E673F552428B49E2A36944803C2D943C"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>100</column_width><config_id keyed_name="affected_id" type="Property">E673F552428B49E2A36944803C2D943C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Change Controlled Item" type="ItemType" name="Change Controlled Item">198BF0BCCC364EE29F56434D803D5F1E</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="affected_id" type="Property">E673F552428B49E2A36944803C2D943C</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>1</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>fixed</item_behavior><keyed_name>affected_id</keyed_name><label xml:lang="en">Old Number</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:14</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>384</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>32</stored_length><track_history>0</track_history><name>affected_id</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="74DCFF022CC5439682F8BDEDDDF072F9"><behavior>float</behavior><config_id keyed_name="74DCFF022CC5439682F8BDEDDDF072F9" type="Grid Event">74DCFF022CC5439682F8BDEDDDF072F9</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>74DCFF022CC5439682F8BDEDDDF072F9</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="checkAffectedType" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="990F4536F402411B8957B1F719DE98F6"><config_id keyed_name="checkAffectedType" type="Method">990F4536F402411B8957B1F719DE98F6</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:58</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="checkAffectedType" type="Method">990F4536F402411B8957B1F719DE98F6</id><is_current>1</is_current><is_released>0</is_released><keyed_name>checkAffectedType</keyed_name><major_rev>A</major_rev><method_code>var affectedId = getRelatedItemProperty(relationshipID, 'affected_id');
+var newItemId = getRelatedItemProperty(relationshipID, 'new_item_id');
+if(!affectedId || !newItemId) return;
+
+function getType(id)
+{
+  var qryXml = "&lt;Item type='Change Controlled Item' id='" + id + "' action='get' select='id'/&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  if(result.isError()) { aras.AlertError(aras.getResource("plm", "checkaffectedtype.can_not_get", id)); return null; }
+  return result.getAttribute("type");
+}
+
+var affectedIdType = getType(affectedId);
+if(!affectedIdType) return;
+var newItemIdType = getType(newItemId);
+if(!newItemIdType) return;
+
+if(affectedIdType != newItemIdType)
+{
+  aras.AlertError(aras.getResource("plm", "checkaffectedtype.same_affected_superseding_numbers", affectedIdType, newItemIdType));
+  setRelatedItemProperty(relationshipID, 'affected_type','&lt;img src="../images/Delete.svg"&gt;');
+}
+else
+{
+  var qryXml = "&lt;Item type='ItemType' action='get' select='open_icon'&gt;&lt;name&gt;" + affectedIdType + "&lt;/name&gt;&lt;/Item&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  var icon = result.getProperty("open_icon");
+  setRelatedItemProperty(relationshipID, 'affected_type','&lt;img src="' + icon + '"&gt;');
+}</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:58</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>checkAffectedType</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="affected_id" type="Property">E673F552428B49E2A36944803C2D943C</source_id><id keyed_name="74DCFF022CC5439682F8BDEDDDF072F9" type="Grid Event">74DCFF022CC5439682F8BDEDDDF072F9</id></Item><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="B55A401058514A68BC71BDCAC05DF5EC"><behavior>float</behavior><config_id keyed_name="B55A401058514A68BC71BDCAC05DF5EC" type="Grid Event">B55A401058514A68BC71BDCAC05DF5EC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>B55A401058514A68BC71BDCAC05DF5EC</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="restrictAffectedType" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="D11B637DBC9940D6ADA97EA2EFAE45DB"><config_id keyed_name="restrictAffectedType" type="Method">D11B637DBC9940D6ADA97EA2EFAE45DB</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:05</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="restrictAffectedType" type="Method">D11B637DBC9940D6ADA97EA2EFAE45DB</id><is_current>1</is_current><is_released>0</is_released><keyed_name>restrictAffectedType</keyed_name><major_rev>A</major_rev><method_code>if(propertyName != "affected_id" &amp;&amp; propertyName != "new_item_id")
+{
+  alert("Error: Use this method for affected_id or new_item_id properties");
+  return;
+}
+
+var relationshipType = item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "']");
+if(!relationshipType)
+{
+  aras.AlertError(aras.getResource("", "ui_methods_ex.failed_to_get_item", "RelationshipType with id " + relationshipID));   
+  return; 
+}
+
+var relationshipTypeName = relationshipType.getAttribute('type');
+
+if(relationshipTypeName != "Express ECO Affected Item" &amp;&amp; relationshipTypeName != "Express DCO Affected Item")
+{
+  //Nothing doing if unknown relationship.
+  return; 
+}
+
+var propertyValue = getRelatedItemProperty(relationshipID, propertyName);
+
+if(!propertyValue)
+{
+	//If property value is empty, then do nothing.
+  return;
+}
+
+var propertyValueType = getType(propertyValue);
+
+if(!propertyValueType)
+{
+  //If property value is empty, then do nothing.
+  return;
+}
+
+if(!ValidatePropertyValue())
+{
+  //Reset invalid value in DOM and Grid
+  gridApplet.GetSelectedCell().SetValue("");
+  setRelatedItemProperty(relationshipID, propertyName, "");  
+  aras.AlertError(aras.getResource("plm", "affecteditem.invaliditemtype_for_relationshipitem", relationshipTypeName, propertyValueType)); 
+  return;
+}
+  
+// --------functions Implementation---------
+function ValidatePropertyValue()
+{      
+  if(!propertyValueType)
+  {
+    return false;
+  }
+    
+  if(relationshipTypeName == "Express ECO Affected Item" &amp;&amp; propertyValueType == "Part")
+  {
+    return true; 
+  }
+    
+  if(relationshipTypeName == "Express DCO Affected Item" &amp;&amp; (propertyValueType == "Document" || propertyValueType == "CAD"))
+  {
+    return true;
+  }
+    
+  return false;
+}
+      
+function getType(id)
+{
+  var qryXml = "&lt;Item type='Change Controlled Item' id='" + id + "' action='get' select='id'/&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  if(result.isError()) 
+  { 
+    aras.AlertError(aras.getResource("plm", "checkaffectedtype.can_not_get", id)); 
+    return null; 
+  }
+  return result.getAttribute("type");
+}
+</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:05</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>restrictAffectedType</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>512</sort_order><source_id keyed_name="affected_id" type="Property">E673F552428B49E2A36944803C2D943C</source_id><id keyed_name="B55A401058514A68BC71BDCAC05DF5EC" type="Grid Event">B55A401058514A68BC71BDCAC05DF5EC</id></Item><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="1614FCE51809425D90D168DD6CBECFE9"><behavior>float</behavior><config_id keyed_name="1614FCE51809425D90D168DD6CBECFE9" type="Grid Event">1614FCE51809425D90D168DD6CBECFE9</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>oneditstart</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>1614FCE51809425D90D168DD6CBECFE9</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>256</sort_order><source_id keyed_name="affected_id" type="Property">E673F552428B49E2A36944803C2D943C</source_id><id keyed_name="1614FCE51809425D90D168DD6CBECFE9" type="Grid Event">1614FCE51809425D90D168DD6CBECFE9</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="5B6FED3F6EE842ECA85EA48293E4BA9C"><behavior>float</behavior><column_alignment>center</column_alignment><column_width>70</column_width><config_id keyed_name="affected_rev" type="Property">5B6FED3F6EE842ECA85EA48293E4BA9C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="affected_id">E673F552428B49E2A36944803C2D943C</data_source><data_type>foreign</data_type><foreign_property keyed_name="major_rev" type="Property">BE3A1AFDB241414BBC6FB27977EC36E5</foreign_property><generation>1</generation><id keyed_name="affected_rev" type="Property">5B6FED3F6EE842ECA85EA48293E4BA9C</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>affected_rev</keyed_name><label xml:lang="en">Old Revision</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:12</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>512</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>affected_rev</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="AC171595E70F4FD0BD801FCB5005B7C0"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>40</column_width><config_id keyed_name="affected_type" type="Property">AC171595E70F4FD0BD801FCB5005B7C0</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>federated</data_type><generation>1</generation><id keyed_name="affected_type" type="Property">AC171595E70F4FD0BD801FCB5005B7C0</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>affected_type</keyed_name><label xml:lang="en">Type</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>affected_type</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="5708B8C9FBFC4ACCBC92F9E2B8E81CCC"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="classification" type="Property">5708B8C9FBFC4ACCBC92F9E2B8E81CCC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>string</data_type><generation>1</generation><id keyed_name="classification" type="Property">5708B8C9FBFC4ACCBC92F9E2B8E81CCC</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>classification</keyed_name><label xml:lang="en">Classification</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>512</stored_length><track_history>0</track_history><name>classification</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="26DB1DA88C864FD7BDAE3BDC87C6EC44"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="config_id" type="Property">26DB1DA88C864FD7BDAE3BDC87C6EC44</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="config_id" type="Property">26DB1DA88C864FD7BDAE3BDC87C6EC44</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>config_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2688</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>config_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="627311DB82B74452AE040AB45E37C98B"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="created_by_id" type="Property">627311DB82B74452AE040AB45E37C98B</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="created_by_id" type="Property">627311DB82B74452AE040AB45E37C98B</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>created_by_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>640</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>created_by_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F7D0C1FD461648BD9CB3BF974AF08C54"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="created_on" type="Property">F7D0C1FD461648BD9CB3BF974AF08C54</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>date</data_type><generation>1</generation><id keyed_name="created_on" type="Property">F7D0C1FD461648BD9CB3BF974AF08C54</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>created_on</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>512</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>created_on</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="AC9EEF917C724F4D8BC16500993C0571"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="css" type="Property">AC9EEF917C724F4D8BC16500993C0571</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>text</data_type><generation>1</generation><id keyed_name="css" type="Property">AC9EEF917C724F4D8BC16500993C0571</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>css</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>2304</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>css</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="41B26CB2DA074A8998AC21EF5EF06D61"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="current_state" type="Property">41B26CB2DA074A8998AC21EF5EF06D61</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Life Cycle State" type="ItemType" name="Life Cycle State">5EFB53D35BAE468B851CD388BEA46B30</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="current_state" type="Property">41B26CB2DA074A8998AC21EF5EF06D61</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>current_state</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1280</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>current_state</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="B913EA9B5C2F470D83C15C093F8B0F16"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="generation" type="Property">B913EA9B5C2F470D83C15C093F8B0F16</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>integer</data_type><generation>1</generation><id keyed_name="generation" type="Property">B913EA9B5C2F470D83C15C093F8B0F16</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>generation</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2432</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>generation</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="28A12850FF2641B5999B1F9AFB8D3BE1"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>70</column_width><config_id keyed_name="grouping" type="Property">28A12850FF2641B5999B1F9AFB8D3BE1</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="EDR_Grouping">22B85C282B034719BFCA625D143AEDDB</data_source><data_type>list</data_type><generation>1</generation><id keyed_name="grouping" type="Property">28A12850FF2641B5999B1F9AFB8D3BE1</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>grouping</keyed_name><label xml:lang="en">EDR Grouping</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>3072</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>256</stored_length><track_history>0</track_history><name>grouping</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="3AA1CCD81BE94B85BD47211C4E513450"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="id" type="Property">3AA1CCD81BE94B85BD47211C4E513450</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="id" type="Property">3AA1CCD81BE94B85BD47211C4E513450</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>384</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="C9752E16B19E4A029BB90917C74E1BCF"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>90</column_width><config_id keyed_name="in_build_disposition" type="Property">C9752E16B19E4A029BB90917C74E1BCF</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Affected Item Disposition">4F0EABD6883348A5BF3CD4C6AAA2873D</data_source><data_type>list</data_type><generation>1</generation><id keyed_name="in_build_disposition" type="Property">C9752E16B19E4A029BB90917C74E1BCF</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>in_build_disposition</keyed_name><label xml:lang="en">In Build</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1024</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>64</stored_length><track_history>0</track_history><name>in_build_disposition</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="5ABBB55CD56B4F67BD6E71582346F8F9"><behavior>float</behavior><config_id keyed_name="5ABBB55CD56B4F67BD6E71582346F8F9" type="Grid Event">5ABBB55CD56B4F67BD6E71582346F8F9</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>oneditstart</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>5ABBB55CD56B4F67BD6E71582346F8F9</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="in_build_disposition" type="Property">C9752E16B19E4A029BB90917C74E1BCF</source_id><id keyed_name="5ABBB55CD56B4F67BD6E71582346F8F9" type="Grid Event">5ABBB55CD56B4F67BD6E71582346F8F9</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="0EF6B03DCBDD4E7697AC452CA40E7F11"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>90</column_width><config_id keyed_name="in_service_disposition" type="Property">0EF6B03DCBDD4E7697AC452CA40E7F11</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Affected Item Disposition">4F0EABD6883348A5BF3CD4C6AAA2873D</data_source><data_type>list</data_type><generation>1</generation><id keyed_name="in_service_disposition" type="Property">0EF6B03DCBDD4E7697AC452CA40E7F11</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>in_service_disposition</keyed_name><label xml:lang="en">In Service</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1152</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>64</stored_length><track_history>0</track_history><name>in_service_disposition</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="EF225E4D110142F2B3E248DB46FF182D"><behavior>float</behavior><config_id keyed_name="EF225E4D110142F2B3E248DB46FF182D" type="Grid Event">EF225E4D110142F2B3E248DB46FF182D</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>oneditstart</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>EF225E4D110142F2B3E248DB46FF182D</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="in_service_disposition" type="Property">0EF6B03DCBDD4E7697AC452CA40E7F11</source_id><id keyed_name="EF225E4D110142F2B3E248DB46FF182D" type="Grid Event">EF225E4D110142F2B3E248DB46FF182D</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="309CB6C09A3542F49E77BC5E13C20C16"><behavior>float</behavior><column_alignment>center</column_alignment><column_width>90</column_width><config_id keyed_name="interchangeable" type="Property">309CB6C09A3542F49E77BC5E13C20C16</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>boolean</data_type><generation>1</generation><id keyed_name="interchangeable" type="Property">309CB6C09A3542F49E77BC5E13C20C16</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>interchangeable</keyed_name><label xml:lang="en">Interchangeable</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>640</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>interchangeable</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="ABF35636188F4223AAB60C87F639646D"><behavior>float</behavior><config_id keyed_name="ABF35636188F4223AAB60C87F639646D" type="Grid Event">ABF35636188F4223AAB60C87F639646D</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>oneditstart</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>ABF35636188F4223AAB60C87F639646D</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="interchangeable" type="Property">309CB6C09A3542F49E77BC5E13C20C16</source_id><id keyed_name="ABF35636188F4223AAB60C87F639646D" type="Grid Event">ABF35636188F4223AAB60C87F639646D</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6D86F636B0834917A46440C9DBB55B5E"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="is_condition" type="Property">6D86F636B0834917A46440C9DBB55B5E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>text</data_type><generation>1</generation><id keyed_name="is_condition" type="Property">6D86F636B0834917A46440C9DBB55B5E</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>is_condition</keyed_name><label xml:lang="en">Is</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1408</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>is_condition</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="59665C4F2D68441BB02A8F3E82660F9E"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="is_current" type="Property">59665C4F2D68441BB02A8F3E82660F9E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>boolean</data_type><generation>1</generation><id keyed_name="is_current" type="Property">59665C4F2D68441BB02A8F3E82660F9E</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>is_current</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1664</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>is_current</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="CD8403F3353E4D20A3447B26D21339B8"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="is_released" type="Property">CD8403F3353E4D20A3447B26D21339B8</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>boolean</data_type><generation>1</generation><id keyed_name="is_released" type="Property">CD8403F3353E4D20A3447B26D21339B8</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>is_released</keyed_name><label xml:lang="en">Released</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2048</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>is_released</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="0191884D116244CA8F71133AB63290DF"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="item_action" type="Property">0191884D116244CA8F71133AB63290DF</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Extended Affected Item Actions">50AB0A69063D4AFBA7E4CADFDD444C8A</data_source><data_type>list</data_type><generation>1</generation><id keyed_name="item_action" type="Property">0191884D116244CA8F71133AB63290DF</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>item_action</keyed_name><label xml:lang="en">Item Action</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>257</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>64</stored_length><track_history>0</track_history><name>item_action</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="5FDF0116156744C1BA3F198FA57E0F38"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="keyed_name" type="Property">5FDF0116156744C1BA3F198FA57E0F38</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>string</data_type><generation>1</generation><id keyed_name="keyed_name" type="Property">5FDF0116156744C1BA3F198FA57E0F38</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>1</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>keyed_name</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>256</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>128</stored_length><track_history>0</track_history><name>keyed_name</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="10ACE097C02B48F5AB3DD509A79DD262"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="locked_by_id" type="Property">10ACE097C02B48F5AB3DD509A79DD262</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="locked_by_id" type="Property">10ACE097C02B48F5AB3DD509A79DD262</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>locked_by_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1536</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>locked_by_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="0ACAF30C2B4545DB9619B1C8A789DAFB"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="major_rev" type="Property">0ACAF30C2B4545DB9619B1C8A789DAFB</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>string</data_type><generation>1</generation><id keyed_name="major_rev" type="Property">0ACAF30C2B4545DB9619B1C8A789DAFB</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>major_rev</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1792</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>8</stored_length><track_history>0</track_history><name>major_rev</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="8A1B67BB57684AF2B29F913F0A2B2868"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="managed_by_id" type="Property">8A1B67BB57684AF2B29F913F0A2B2868</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="managed_by_id" type="Property">8A1B67BB57684AF2B29F913F0A2B2868</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>managed_by_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>896</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>managed_by_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="96000E83AF47423988CAEC4FFEB8B589"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="minor_rev" type="Property">96000E83AF47423988CAEC4FFEB8B589</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>string</data_type><generation>1</generation><id keyed_name="minor_rev" type="Property">96000E83AF47423988CAEC4FFEB8B589</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>minor_rev</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1920</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>8</stored_length><track_history>0</track_history><name>minor_rev</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="C9F80273277546749FF228C1D6F75F04"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="modified_by_id" type="Property">C9F80273277546749FF228C1D6F75F04</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="modified_by_id" type="Property">C9F80273277546749FF228C1D6F75F04</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>modified_by_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1152</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>modified_by_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="2493A996C6B44F71902EAC8F6DE16121"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="modified_on" type="Property">2493A996C6B44F71902EAC8F6DE16121</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>date</data_type><generation>1</generation><id keyed_name="modified_on" type="Property">2493A996C6B44F71902EAC8F6DE16121</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>modified_on</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1024</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>modified_on</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="B0C0850295AF4552BE828B932A0A4D8E"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>100</column_width><config_id keyed_name="new_item_id" type="Property">B0C0850295AF4552BE828B932A0A4D8E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Change Controlled Item" type="ItemType" name="Change Controlled Item">198BF0BCCC364EE29F56434D803D5F1E</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="new_item_id" type="Property">B0C0850295AF4552BE828B932A0A4D8E</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>1</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>fixed</item_behavior><keyed_name>new_item_id</keyed_name><label xml:lang="en">New Number</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:15</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>768</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>new_item_id</name><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="F6B9EF2DB7FF465BB91C060593D99C37"><behavior>float</behavior><config_id keyed_name="F6B9EF2DB7FF465BB91C060593D99C37" type="Grid Event">F6B9EF2DB7FF465BB91C060593D99C37</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>F6B9EF2DB7FF465BB91C060593D99C37</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="checkAffectedType" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="990F4536F402411B8957B1F719DE98F6"><config_id keyed_name="checkAffectedType" type="Method">990F4536F402411B8957B1F719DE98F6</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:58</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="checkAffectedType" type="Method">990F4536F402411B8957B1F719DE98F6</id><is_current>1</is_current><is_released>0</is_released><keyed_name>checkAffectedType</keyed_name><major_rev>A</major_rev><method_code>var affectedId = getRelatedItemProperty(relationshipID, 'affected_id');
+var newItemId = getRelatedItemProperty(relationshipID, 'new_item_id');
+if(!affectedId || !newItemId) return;
+
+function getType(id)
+{
+  var qryXml = "&lt;Item type='Change Controlled Item' id='" + id + "' action='get' select='id'/&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  if(result.isError()) { aras.AlertError(aras.getResource("plm", "checkaffectedtype.can_not_get", id)); return null; }
+  return result.getAttribute("type");
+}
+
+var affectedIdType = getType(affectedId);
+if(!affectedIdType) return;
+var newItemIdType = getType(newItemId);
+if(!newItemIdType) return;
+
+if(affectedIdType != newItemIdType)
+{
+  aras.AlertError(aras.getResource("plm", "checkaffectedtype.same_affected_superseding_numbers", affectedIdType, newItemIdType));
+  setRelatedItemProperty(relationshipID, 'affected_type','&lt;img src="../images/Delete.svg"&gt;');
+}
+else
+{
+  var qryXml = "&lt;Item type='ItemType' action='get' select='open_icon'&gt;&lt;name&gt;" + affectedIdType + "&lt;/name&gt;&lt;/Item&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  var icon = result.getProperty("open_icon");
+  setRelatedItemProperty(relationshipID, 'affected_type','&lt;img src="' + icon + '"&gt;');
+}</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:58</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>checkAffectedType</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>128</sort_order><source_id keyed_name="new_item_id" type="Property">B0C0850295AF4552BE828B932A0A4D8E</source_id><id keyed_name="F6B9EF2DB7FF465BB91C060593D99C37" type="Grid Event">F6B9EF2DB7FF465BB91C060593D99C37</id></Item><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="BECA25883E384FC0A6C0516A25B34BC4"><behavior>float</behavior><config_id keyed_name="BECA25883E384FC0A6C0516A25B34BC4" type="Grid Event">BECA25883E384FC0A6C0516A25B34BC4</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>BECA25883E384FC0A6C0516A25B34BC4</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_AffectedItemGridHandler" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="8E288C5BF8CB45C8B355BFBD5D87DB41"><config_id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemGridHandler" type="Method">8E288C5BF8CB45C8B355BFBD5D87DB41</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemGridHandler</keyed_name><major_rev>A</major_rev><method_code>  // Sets the editability to assist in editing the grid
+
+  if (!parent.isEditMode) return;
+  var relshipNd = parent.item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "' and related_id/Item]");
+  if (!relshipNd) return;
+  var relatedNd = relshipNd.selectSingleNode("related_id/Item");
+
+  //+++++ Get the values
+  var isPart = false;
+  var new_item_id = relatedNd.selectSingleNode("new_item_id/Item");
+  if (new_item_id)
+    isPart = (new_item_id.getAttribute("type") == "Part")
+  else
+  {
+    var icon = aras.getItemProperty(relatedNd, "affected_type", undefined);
+    isPart = (icon != undefined &amp;&amp; icon.indexOf("Part") &gt; 0);
+  }
+  
+  var action = aras.getItemProperty(relatedNd, "action", undefined);
+  var isInter = (aras.getItemProperty(relatedNd, "interchangeable") == "1");
+  var isAdd = (action == "Add");
+  var isChange = (action == "Change");
+  var isDelete = (action == "Delete");
+  //----- Get the values
+
+  if (propertyName == "action")
+  {
+    var doUpdateRow = false;
+    if (isAdd)
+    {
+      // Old Number, Old Rev should be empty
+      clearItemPropVal(relatedNd, "affected_id");
+      clearItemPropVal(relatedNd, "affected_rev");
+      clearItemPropVal(relatedNd, "in_build_disposition");
+      clearItemPropVal(relatedNd, "in_service_disposition");
+      doUpdateRow = true;
+    }
+    else if (isDelete)
+    {
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev")
+      doUpdateRow = true;
+    }
+    
+    if (isAdd || (isChange &amp;&amp; !isInter))
+    {
+      // New Number, New Rev should be empty
+      clearItemPropVal(relatedNd, "new_item_id");
+      clearItemPropVal(relatedNd, "new_item_rev");
+      clearItemPropVal(relatedNd, "affected_type");
+      doUpdateRow = true;
+    }
+    if (doUpdateRow) updateRow(relshipNd, relatedNd);
+  }
+  else
+  {
+    var hash = { affected_id: !isAdd, interchangeable: isChange, new_item_id: (isAdd || (isChange &amp;&amp; !isInter)), in_build_disposition: (isPart &amp;&amp; !isAdd), in_service_disposition: (isPart &amp;&amp; !isAdd) };
+    if (hash[propertyName] !== undefined)
+    {
+      return hash[propertyName];
+    }
+  }
+
+  function clearItemPropVal(itm, propNm)
+  {
+    var propNd = itm.selectSingleNode(propNm);
+    if (propNd)
+    {
+      itm.removeChild(propNd);
+      itm.appendChild(itm.ownerDocument.createElement(propNm));
+    }
+  }</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemGridHandler</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>256</sort_order><source_id keyed_name="new_item_id" type="Property">B0C0850295AF4552BE828B932A0A4D8E</source_id><id keyed_name="BECA25883E384FC0A6C0516A25B34BC4" type="Grid Event">BECA25883E384FC0A6C0516A25B34BC4</id></Item><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="EAF66276510447CC9A1F11BD8555FBA3"><behavior>float</behavior><config_id keyed_name="EAF66276510447CC9A1F11BD8555FBA3" type="Grid Event">EAF66276510447CC9A1F11BD8555FBA3</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><grid_event>onchangecell</grid_event><is_current>1</is_current><is_released>0</is_released><keyed_name>EAF66276510447CC9A1F11BD8555FBA3</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="restrictAffectedType" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="D11B637DBC9940D6ADA97EA2EFAE45DB"><config_id keyed_name="restrictAffectedType" type="Method">D11B637DBC9940D6ADA97EA2EFAE45DB</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:05</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="restrictAffectedType" type="Method">D11B637DBC9940D6ADA97EA2EFAE45DB</id><is_current>1</is_current><is_released>0</is_released><keyed_name>restrictAffectedType</keyed_name><major_rev>A</major_rev><method_code>if(propertyName != "affected_id" &amp;&amp; propertyName != "new_item_id")
+{
+  alert("Error: Use this method for affected_id or new_item_id properties");
+  return;
+}
+
+var relationshipType = item.selectSingleNode("Relationships/Item[@id='" + relationshipID + "']");
+if(!relationshipType)
+{
+  aras.AlertError(aras.getResource("", "ui_methods_ex.failed_to_get_item", "RelationshipType with id " + relationshipID));   
+  return; 
+}
+
+var relationshipTypeName = relationshipType.getAttribute('type');
+
+if(relationshipTypeName != "Express ECO Affected Item" &amp;&amp; relationshipTypeName != "Express DCO Affected Item")
+{
+  //Nothing doing if unknown relationship.
+  return; 
+}
+
+var propertyValue = getRelatedItemProperty(relationshipID, propertyName);
+
+if(!propertyValue)
+{
+	//If property value is empty, then do nothing.
+  return;
+}
+
+var propertyValueType = getType(propertyValue);
+
+if(!propertyValueType)
+{
+  //If property value is empty, then do nothing.
+  return;
+}
+
+if(!ValidatePropertyValue())
+{
+  //Reset invalid value in DOM and Grid
+  gridApplet.GetSelectedCell().SetValue("");
+  setRelatedItemProperty(relationshipID, propertyName, "");  
+  aras.AlertError(aras.getResource("plm", "affecteditem.invaliditemtype_for_relationshipitem", relationshipTypeName, propertyValueType)); 
+  return;
+}
+  
+// --------functions Implementation---------
+function ValidatePropertyValue()
+{      
+  if(!propertyValueType)
+  {
+    return false;
+  }
+    
+  if(relationshipTypeName == "Express ECO Affected Item" &amp;&amp; propertyValueType == "Part")
+  {
+    return true; 
+  }
+    
+  if(relationshipTypeName == "Express DCO Affected Item" &amp;&amp; (propertyValueType == "Document" || propertyValueType == "CAD"))
+  {
+    return true;
+  }
+    
+  return false;
+}
+      
+function getType(id)
+{
+  var qryXml = "&lt;Item type='Change Controlled Item' id='" + id + "' action='get' select='id'/&gt;";
+  var qry = new Item();
+  qry.loadAML(qryXml);
+  var result = qry.apply();
+  if(result.isError()) 
+  { 
+    aras.AlertError(aras.getResource("plm", "checkaffectedtype.can_not_get", id)); 
+    return null; 
+  }
+  return result.getAttribute("type");
+}
+</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:05</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>restrictAffectedType</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><sort_order>512</sort_order><source_id keyed_name="new_item_id" type="Property">B0C0850295AF4552BE828B932A0A4D8E</source_id><id keyed_name="EAF66276510447CC9A1F11BD8555FBA3" type="Grid Event">EAF66276510447CC9A1F11BD8555FBA3</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="98163F17A1E949ECAF48FA38CEEEE222"><behavior>float</behavior><column_alignment>center</column_alignment><column_width>75</column_width><config_id keyed_name="new_item_rev" type="Property">98163F17A1E949ECAF48FA38CEEEE222</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="new_item_id">B0C0850295AF4552BE828B932A0A4D8E</data_source><data_type>foreign</data_type><foreign_property keyed_name="major_rev" type="Property">BE3A1AFDB241414BBC6FB27977EC36E5</foreign_property><generation>1</generation><id keyed_name="new_item_rev" type="Property">98163F17A1E949ECAF48FA38CEEEE222</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>new_item_rev</keyed_name><label xml:lang="en">New Revision</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:14</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>896</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>new_item_rev</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="49E074D30F6342C5886538FD2ABB7888"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="new_version" type="Property">49E074D30F6342C5886538FD2ABB7888</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>boolean</data_type><generation>1</generation><id keyed_name="new_version" type="Property">49E074D30F6342C5886538FD2ABB7888</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>new_version</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2560</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>new_version</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="9DCAD65BFA9342948D4D08A14CA63889"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="not_lockable" type="Property">9DCAD65BFA9342948D4D08A14CA63889</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>boolean</data_type><generation>1</generation><id keyed_name="not_lockable" type="Property">9DCAD65BFA9342948D4D08A14CA63889</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>not_lockable</keyed_name><label xml:lang="en">Not Lockable</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2176</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>not_lockable</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="990545D74BBA4FF3942C2A8EF83C728C"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="owned_by_id" type="Property">990545D74BBA4FF3942C2A8EF83C728C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="owned_by_id" type="Property">990545D74BBA4FF3942C2A8EF83C728C</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>owned_by_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>768</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>owned_by_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="994722993E4F4971BE50BF16918ADA32"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="permission_id" type="Property">994722993E4F4971BE50BF16918ADA32</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Permission" type="ItemType" name="Permission">C6A89FDE1294451497801DF78341B473</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="permission_id" type="Property">994722993E4F4971BE50BF16918ADA32</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>permission_id</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2816</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>permission_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6D6CADE8687C486A89EF4D3733979B3E"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="relationshiptype" type="Property">6D6CADE8687C486A89EF4D3733979B3E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="RelationshipType" type="ItemType" name="RelationshipType">471932C33B604C3099070F4106EE5024</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="relationshiptype" type="Property">6D6CADE8687C486A89EF4D3733979B3E</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>relationshiptype</keyed_name><label xml:lang="en">RelationshipType</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>384</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>relationshiptype</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="C71AEE2578D242899D3822493FD57551"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="state" type="Property">C71AEE2578D242899D3822493FD57551</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>string</data_type><generation>1</generation><id keyed_name="state" type="Property">C71AEE2578D242899D3822493FD57551</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>state</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1408</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><stored_length>32</stored_length><track_history>0</track_history><name>state</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="54671CBD2718443B94FA5B543B093459"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="team_id" type="Property">54671CBD2718443B94FA5B543B093459</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_source keyed_name="Team" type="ItemType" name="Team">CC23F9130F574E7D99DF9659F27590A6</data_source><data_type>item</data_type><generation>1</generation><id keyed_name="team_id" type="Property">54671CBD2718443B94FA5B543B093459</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>team_id</keyed_name><label xml:lang="en">Team</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>2944</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>team_id</name></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="113B5BEE95F74C278451DCFFF9AA27DE"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="was_condition" type="Property">113B5BEE95F74C278451DCFFF9AA27DE</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><data_type>text</data_type><generation>1</generation><id keyed_name="was_condition" type="Property">113B5BEE95F74C278451DCFFF9AA27DE</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>was_condition</keyed_name><label xml:lang="en">Was</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1280</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><track_history>0</track_history><name>was_condition</name></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="833C0037D08E405B8A28EF74E53E9475"><auto_search>1</auto_search><behavior>float</behavior><config_id keyed_name="Affected Item Property" type="RelationshipType">833C0037D08E405B8A28EF74E53E9475</config_id><copy_permissions>0</copy_permissions><core>0</core><create_related>0</create_related><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:58:14</created_on><generation>1</generation><hide_in_all>0</hide_in_all><id keyed_name="Affected Item Property" type="RelationshipType">833C0037D08E405B8A28EF74E53E9475</id><inc_rel_key_name>1</inc_rel_key_name><inc_related_key_name>1</inc_related_key_name><is_current>1</is_current><is_list_type>0</is_list_type><is_released>0</is_released><keyed_name>Affected Item Property</keyed_name><label xml:lang="en">Affected Item Properties</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:58:14</modified_on><new_show_related>0</new_show_related><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="RelationshipType" type="Permission">5E288B5D095747598621C86230BCC16A</permission_id><related_notnull>0</related_notnull><related_option>2</related_option><relationship_id keyed_name="Affected Item Property" type="ItemType" name="Affected Item Property">2E0E4A152F3443509E5EEB774AC8AB5C</relationship_id><sort_order>64</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><name>Affected Item Property</name></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="B0DB929ED5F34994944ADEDA81B9EA15"><auto_search>1</auto_search><behavior>float</behavior><config_id keyed_name="Affected Item Relationship" type="RelationshipType">B0DB929ED5F34994944ADEDA81B9EA15</config_id><copy_permissions>0</copy_permissions><core>0</core><create_related>0</create_related><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:58:15</created_on><generation>1</generation><hide_in_all>0</hide_in_all><id keyed_name="Affected Item Relationship" type="RelationshipType">B0DB929ED5F34994944ADEDA81B9EA15</id><inc_rel_key_name>1</inc_rel_key_name><inc_related_key_name>1</inc_related_key_name><is_current>1</is_current><is_list_type>0</is_list_type><is_released>0</is_released><keyed_name>Affected Item Relationship</keyed_name><label xml:lang="en">Affected Relationships</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:58:15</modified_on><new_show_related>0</new_show_related><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="RelationshipType" type="Permission">5E288B5D095747598621C86230BCC16A</permission_id><related_id keyed_name="Affected Relationship" type="ItemType" name="Affected Relationship"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="27A5389D190B4600B1751B4203EF458D"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><config_id keyed_name="Affected Relationship" type="ItemType" name="Affected Relationship">27A5389D190B4600B1751B4203EF458D</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><enforce_discovery>1</enforce_discovery><generation>1</generation><hide_where_used>0</hide_where_used><id keyed_name="Affected Relationship" type="ItemType">27A5389D190B4600B1751B4203EF458D</id><implementation_type>table</implementation_type><instance_data>AFFECTED_RELATIONSHIP</instance_data><is_current>1</is_current><is_dependent>1</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>0</is_versionable><keyed_name>Affected Relationship</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:16</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>1</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Affected Relationship</name></Item></related_id><related_notnull>0</related_notnull><related_option>2</related_option><relationship_id keyed_name="Affected Item Relationship" type="ItemType" name="Affected Item Relationship">364CD6F5F6D74207AABA25715EABF06F</relationship_id><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><name>Affected Item Relationship</name></Item><Item type="View" typeId="8EFCE40BCB74478B8254CEB594CE8774" id="5669686649C844BBAFAC2FA2B5C0E5FC"><behavior>float</behavior><client>js</client><config_id keyed_name="default" type="View">5669686649C844BBAFAC2FA2B5C0E5FC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><id keyed_name="default" type="View">5669686649C844BBAFAC2FA2B5C0E5FC</id><is_current>1</is_current><is_released>0</is_released><keyed_name>default</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="Affected Item" type="Form"><Item type="Form" typeId="47573682FB7549F59ADECD4BFE04F1DE" id="B1364B03CD9A4E89A1D1D9B674F5CEEB"><category_form>0</category_form><config_id keyed_name="Affected Item" type="Form">B1364B03CD9A4E89A1D1D9B674F5CEEB</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:07</created_on><generation>1</generation><height>385</height><id keyed_name="Affected Item" type="Form">B1364B03CD9A4E89A1D1D9B674F5CEEB</id><is_current>1</is_current><is_released>0</is_released><keyed_name>Affected Item</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:07</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Form" type="Permission">A665AB9CAF4F46D98323D20818344F87</permission_id><stylesheet>../styles/default.css</stylesheet><width>684</width><name>Affected Item</name><Relationships><Item type="Body" typeId="BF60433C7E924BE6B78D901809F8FEF6" id="FA5DF0A67EBC4B42A0D4CB01C767D1CD"><behavior>float</behavior><bg_color>#FFFFFF</bg_color><config_id keyed_name="FA5DF0A67EBC4B42A0D4CB01C767D1CD" type="Body">FA5DF0A67EBC4B42A0D4CB01C767D1CD</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:07</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>FA5DF0A67EBC4B42A0D4CB01C767D1CD</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:07</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Form" type="Permission">A665AB9CAF4F46D98323D20818344F87</permission_id><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="Form">B1364B03CD9A4E89A1D1D9B674F5CEEB</source_id><id keyed_name="FA5DF0A67EBC4B42A0D4CB01C767D1CD" type="Body">FA5DF0A67EBC4B42A0D4CB01C767D1CD</id></Item></Relationships></Item></related_id><role keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</role><show_ssvc>0</show_ssvc><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><type>default</type></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="32DF0F88DD514AA999969296070EF0CA"><behavior>float</behavior><config_id keyed_name="32DF0F88DD514AA999969296070EF0CA" type="Server Event">32DF0F88DD514AA999969296070EF0CA</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>32DF0F88DD514AA999969296070EF0CA</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_ChangeItemFloatNewItem" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="B74AECD2D2414D38B8D967B897E59CB7"><config_id keyed_name="PE_ChangeItemFloatNewItem" type="Method">B74AECD2D2414D38B8D967B897E59CB7</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="PE_ChangeItemFloatNewItem" type="Method">B74AECD2D2414D38B8D967B897E59CB7</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_ChangeItemFloatNewItem</keyed_name><major_rev>A</major_rev><method_code>string new_item_id = this.getProperty("new_item_id");
+if(string.IsNullOrEmpty(new_item_id))
+{
+  return this;
+}
+
+string versionedItemId;
+Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+string itemTypeDbName = CCO.DB.GenerateTableName("Change Controlled Item");
+
+Aras.Server.Core.Utilities.IsIdValid(new_item_id, true);
+
+string sqlQuery = "SELECT TOP(1) last_version.ID FROM " + itemTypeDbName + " cur_version INNER JOIN " + itemTypeDbName + " last_version ON cur_version.id = '" + conn.QuoteValue(new_item_id) + "' and cur_version.config_id = last_version.config_id and last_version.is_current = '1'";
+
+Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+
+if (result.RowsNumber &lt;= 0)
+{
+	const string errorString = "Item last version is not found.";
+	const string errorDetail = "config_id = '{0}'";
+	Item errorItem = this.getInnovator().newError(errorString);
+	errorItem.setErrorDetail(string.Format(errorDetail,new_item_id));
+	return errorItem;
+}
+
+versionedItemId = result["id"].ToString();
+
+if(versionedItemId == new_item_id)
+{
+  return this;
+}
+
+Item callframe = this.newItem("SQL","SQL PROCESS");
+callframe.setProperty("name","affectedItemFloatNewItem");
+callframe.setProperty("PROCESS","CALL");
+callframe.setProperty("ARG1", this.getID());
+callframe.setProperty("ARG2", versionedItemId);
+callframe = callframe.apply();
+  
+return callframe;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_ChangeItemFloatNewItem</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onAfterAdd</server_event><sort_order>1</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="32DF0F88DD514AA999969296070EF0CA" type="Server Event">32DF0F88DD514AA999969296070EF0CA</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="2DE4BD132B0A4789BE1131C9A669DDF3"><behavior>float</behavior><config_id keyed_name="2DE4BD132B0A4789BE1131C9A669DDF3" type="Server Event">2DE4BD132B0A4789BE1131C9A669DDF3</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>2DE4BD132B0A4789BE1131C9A669DDF3</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_update_has_change_pending" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="DB6A7506779F42F596433298E0855FD1"><config_id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_update_has_change_pending</keyed_name><major_rev>A</major_rev><method_code>Aras.Server.Security.Identity plmIdentity = Aras.Server.Security.Identity.GetByName("Aras PLM");
+bool PermissionWasSet  = Aras.Server.Security.Permissions.GrantIdentity(plmIdentity);
+
+try
+{
+	Action&lt;string,IEnumerable&lt;string&gt;,string&gt; execUpdateFlag = (itemType,idList,ignoredAffItemID) =&gt; 
+			{
+				String itemTypeDbName = String.Empty;
+
+				if (!String.IsNullOrEmpty(itemType))
+				{
+					itemTypeDbName = CCO.DB.GenerateTableName(itemType);
+				}
+
+				Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+
+				foreach (String itemID in idList)
+				{
+					string sqlQueryFormat = "exec update_has_change_pending_flag '" + itemTypeDbName + "','" + itemID + "','" + ignoredAffItemID + "'";
+					conn.ExecuteSQL(sqlQueryFormat);
+				}
+			};
+
+  string thisType = this.getType();
+	List&lt;String&gt; itemIDs = new List&lt;String&gt;();
+	string itemTypeName = String.Empty;
+  string ignoredAffectedItemID = String.Empty;
+  
+  Item affectedItem = null;
+
+  switch(thisType)
+  {
+    case "Part":
+    case "Document":
+    case "CAD":
+		var nonUserInputTableName = new Dictionary&lt;string, string&gt;()
+		{
+			{"PART", "Part"}, {"DOCUMENT", "Document"},{"CAD", "CAD"}
+		};
+		string thisTypeTable = nonUserInputTableName[thisType.ToUpperInvariant()];
+	    string tableName = CCO.DB.GenerateTableName(thisTypeTable);
+	    Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+	    string configId = this.getProperty("config_id");
+
+	    Aras.Server.Core.Utilities.IsIdValid(configId, true);
+
+	    string sqlQuery = "SELECT TOP(1) id FROM " + tableName + " WHERE IS_CURRENT = '1' AND config_id = '" + conn.QuoteValue(configId) + "'";
+	    Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+	    if (result.RowsNumber == 0)
+	    {
+	    	const string errorString = "Item last version is not found.";
+	    	const string errorDetail = "config_id = '{0}'";
+	    	Item errorItem = this.getInnovator().newError(errorString);
+	    	errorItem.setErrorDetail(string.Format(errorDetail,this.getProperty("config_id")));
+	    	return errorItem;
+	    }
+	    itemIDs.Add(result["id"].ToString());
+	
+		itemTypeName = thisType;
+		break;
+    case "Affected Item":
+      affectedItem = this;
+    break;
+    case "Express ECO Affected Item":
+    case "Express DCO Affected Item":
+    case "ECN Affected Item":
+    case "Simple ECO Affected Item":
+    {
+		  // test that related item has all needed properties
+      affectedItem = this.getItemsByXPath("/Item/related_id/Item[@type='Affected Item' and new_item_id and affected_id]");
+  	  if(affectedItem.node == null)
+  	  {  
+  	    if(this.getAction() != "delete")
+  	    {
+  	      
+		  	Aras.Server.Core.InnovatorDatabase dbconn = CCO.Variables.InnDatabase;
+		  	string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+		  	string affectedItemId = this.getProperty("related_id");
+
+		  	Aras.Server.Core.Utilities.IsIdValid(affectedItemId, true);
+
+			string sqlQuerySelect = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + dbconn.QuoteValue(affectedItemId) + "'";
+
+			Aras.Server.Core.InnovatorDataSet rs = dbconn.ExecuteSelect(sqlQuerySelect);
+			if (rs.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,affectedItemId));
+				return errorItem;
+			}
+
+			affectedItem = this.newItem("Affected Item","");
+			affectedItem.setID(affectedItemId);
+			affectedItem.setProperty("affected_id",rs["affected_id"].ToString());
+			affectedItem.setProperty("new_item_id",rs["new_item_id"].ToString());
+  	    }
+  	    else
+  	    {
+  	  	  affectedItem = this.getRelatedItem();
+  	    }
+  	  }
+  	  break;
+    }
+    case "Simple MCO Part":
+    {
+			itemIDs.Add(this.getProperty("related_id", ""));
+			itemTypeName = "Part";
+  	  break;
+    }
+    case "Express ECO":
+    case "Express DCO":
+    case "ECN":
+    case "Simple ECO":
+    {			
+      Dictionary&lt;string, string&gt; relationships = new Dictionary&lt;string, string&gt;()
+      {
+        {"Express ECO", "Express ECO Affected Item"},
+        {"Express DCO", "Express DCO Affected Item"},
+        {"ECN", "ECN Affected Item"},
+        {"Simple ECO", "Simple ECO Affected Item"}
+      };
+    
+      string relshipType = relationships[thisType];
+    
+      Item relshipItemList = this.newItem(relshipType, "get");
+      relshipItemList.setProperty("source_id", this.getID());
+      relshipItemList = relshipItemList.apply();
+
+      int relshipItemCount = relshipItemList.getItemCount();
+
+      if(relshipItemCount &lt; 0)
+      {
+        //TODO ERROR: Have to return error item!!!!
+        return relshipItemList;
+      }
+
+      for(int i = 0; i &lt; relshipItemCount; i++)
+      {
+        Item relshipItem = relshipItemList.getItemByIndex(i);
+        relshipItem.setAction("PE_update_has_change_pending");
+        relshipItem = relshipItem.apply();
+      }
+
+      return this;
+    }
+  }
+
+  if(affectedItem != null)
+  { 
+  	string idlistAttr = affectedItem.getAttribute("idlist","");
+  	string[] idlist;
+  	if (string.IsNullOrEmpty(idlistAttr))
+  	{
+  		idlist = new string[]{affectedItem.getID()};
+  	}
+  	else
+  	{
+  		idlist = idlistAttr.Split(',');
+  	}
+
+	string execute_action = affectedItem.getAttribute("action", "");
+	if(execute_action == "edit" || execute_action == "update" || execute_action == "delete")
+	{
+		foreach(string id in idlist)
+		{
+			List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+
+			Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+			string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+
+			Aras.Server.Core.Utilities.IsIdValid(id, true);
+
+			string sqlQuery = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + conn.QuoteValue(id) + "'";
+
+			Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+			if (result.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,id));
+				return errorItem;
+			}
+
+			itemIdList.Add(result["affected_id"].ToString());
+			itemIdList.Add(result["new_item_id"].ToString());
+			ignoredAffectedItemID = id;
+			execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+		}
+	}
+	else
+	{
+		List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+		itemIdList.Add(affectedItem.getProperty("affected_id",""));
+		itemIdList.Add(affectedItem.getProperty("new_item_id",""));
+		ignoredAffectedItemID = "";
+		execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+	}
+  }
+
+  if(itemIDs.Count != 0)
+  {
+	execUpdateFlag(itemTypeName,itemIDs,ignoredAffectedItemID);
+    return this; 
+  }
+}	
+finally
+{
+  if (PermissionWasSet) Aras.Server.Security.Permissions.RevokeIdentity(plmIdentity);
+}
+
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_update_has_change_pending</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onAfterUpdate</server_event><sort_order>1</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="2DE4BD132B0A4789BE1131C9A669DDF3" type="Server Event">2DE4BD132B0A4789BE1131C9A669DDF3</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="D5047D9A4C004BC4B2C186A3CB85F646"><behavior>float</behavior><config_id keyed_name="D5047D9A4C004BC4B2C186A3CB85F646" type="Server Event">D5047D9A4C004BC4B2C186A3CB85F646</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>D5047D9A4C004BC4B2C186A3CB85F646</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_ChangeItemFloatNewItem" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="B74AECD2D2414D38B8D967B897E59CB7"><config_id keyed_name="PE_ChangeItemFloatNewItem" type="Method">B74AECD2D2414D38B8D967B897E59CB7</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="PE_ChangeItemFloatNewItem" type="Method">B74AECD2D2414D38B8D967B897E59CB7</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_ChangeItemFloatNewItem</keyed_name><major_rev>A</major_rev><method_code>string new_item_id = this.getProperty("new_item_id");
+if(string.IsNullOrEmpty(new_item_id))
+{
+  return this;
+}
+
+string versionedItemId;
+Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+string itemTypeDbName = CCO.DB.GenerateTableName("Change Controlled Item");
+
+Aras.Server.Core.Utilities.IsIdValid(new_item_id, true);
+
+string sqlQuery = "SELECT TOP(1) last_version.ID FROM " + itemTypeDbName + " cur_version INNER JOIN " + itemTypeDbName + " last_version ON cur_version.id = '" + conn.QuoteValue(new_item_id) + "' and cur_version.config_id = last_version.config_id and last_version.is_current = '1'";
+
+Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+
+if (result.RowsNumber &lt;= 0)
+{
+	const string errorString = "Item last version is not found.";
+	const string errorDetail = "config_id = '{0}'";
+	Item errorItem = this.getInnovator().newError(errorString);
+	errorItem.setErrorDetail(string.Format(errorDetail,new_item_id));
+	return errorItem;
+}
+
+versionedItemId = result["id"].ToString();
+
+if(versionedItemId == new_item_id)
+{
+  return this;
+}
+
+Item callframe = this.newItem("SQL","SQL PROCESS");
+callframe.setProperty("name","affectedItemFloatNewItem");
+callframe.setProperty("PROCESS","CALL");
+callframe.setProperty("ARG1", this.getID());
+callframe.setProperty("ARG2", versionedItemId);
+callframe = callframe.apply();
+  
+return callframe;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_ChangeItemFloatNewItem</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onAfterUpdate</server_event><sort_order>2</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="D5047D9A4C004BC4B2C186A3CB85F646" type="Server Event">D5047D9A4C004BC4B2C186A3CB85F646</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="4EC13D2179824343941ACCBA4A15B1B2"><behavior>float</behavior><config_id keyed_name="4EC13D2179824343941ACCBA4A15B1B2" type="Server Event">4EC13D2179824343941ACCBA4A15B1B2</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>4EC13D2179824343941ACCBA4A15B1B2</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="checkAffectedTypeOnServer" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="69D756E46FCA4F5AB6BE4384A325C32B"><config_id keyed_name="checkAffectedTypeOnServer" type="Method">69D756E46FCA4F5AB6BE4384A325C32B</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:59</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="checkAffectedTypeOnServer" type="Method">69D756E46FCA4F5AB6BE4384A325C32B</id><is_current>1</is_current><is_released>0</is_released><keyed_name>checkAffectedTypeOnServer</keyed_name><major_rev>A</major_rev><method_code>' name: checkAffectedTypeOnServer
+' purpose: PLM. Checks in onBeforeAdd and onBeforeUpdate server events type of affected_id and new_item_id properties.
+' created: 12-AUG-2005 Yuri Delyamba
+' (c) Copyright by Aras Corporation, 2005-2007.
+' MethodTemplateName=VBMain;
+
+Dim innovator As Innovator = Me.getInnovator()
+
+Function Main() As Item
+
+	Dim affectedId As String = Me.getProperty("affected_id", "")
+	Dim supersedingId As String = Me.getProperty("new_item_id", "")
+
+	If String.IsNullOrEmpty(affectedId) OrElse String.IsNullOrEmpty(supersedingId) Then Exit Function
+
+	Dim affectedItems As Item = GetAffectedItems(affectedId, supersedingId)
+	If affectedItems.isError() Then
+
+		Return affectedItems
+	End If
+
+	Dim affectedItem As Item = GetAffectedItem(affectedItems, affectedId)
+	If (affectedItem.isError()) Then Return affectedItem
+
+	Dim supersedingItem As Item = GetAffectedItem(affectedItems, supersedingId)
+	If (supersedingItem.isError()) Then Return supersedingItem
+
+	If Not String.Equals(affectedItem.getProperty("itemtype"), supersedingItem.getProperty("itemtype"), StringComparison.Ordinal) Then
+
+		Return innovator.newError("Affected type should be the same at affected_id and new_item_id properties")
+	End If
+End Function
+
+Private Function GetAffectedItems(ByVal affected_id As String, ByVal new_item_id As String) As Item
+
+	Dim qry As Item = Me.newItem("Change Controlled Item", "get")
+	qry.setAttribute("select", "id, itemtype")
+	qry.setAttribute("idlist", affected_id &amp; "," &amp; new_item_id)
+	Return qry.apply()
+End Function
+
+Private Function GetAffectedItem(ByVal affectedItems As Item, ByVal id As String) As Item
+
+	Dim affectedItem As Item = affectedItems.getItemsByXPath("descendant-or-self::Item[@id='" &amp; id &amp; "']")
+	If (affectedItem.node Is Nothing) Then
+		Dim qry As Item = Me.newItem("Change Controlled Item", "get")
+		qry.setAttribute("select", "id, itemtype")
+		qry.setID(id)
+		affectedItem = qry.apply()
+	End If
+	Return affectedItem
+End Function</method_code><method_type>VB</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:59</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>checkAffectedTypeOnServer</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onBeforeAdd</server_event><sort_order>1</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="4EC13D2179824343941ACCBA4A15B1B2" type="Server Event">4EC13D2179824343941ACCBA4A15B1B2</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="CA8D4AF4FA074371BA9310C5A08B0ABA"><behavior>float</behavior><config_id keyed_name="CA8D4AF4FA074371BA9310C5A08B0ABA" type="Server Event">CA8D4AF4FA074371BA9310C5A08B0ABA</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>CA8D4AF4FA074371BA9310C5A08B0ABA</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="checkAffectedTypeOnServer" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="69D756E46FCA4F5AB6BE4384A325C32B"><config_id keyed_name="checkAffectedTypeOnServer" type="Method">69D756E46FCA4F5AB6BE4384A325C32B</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:59</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="checkAffectedTypeOnServer" type="Method">69D756E46FCA4F5AB6BE4384A325C32B</id><is_current>1</is_current><is_released>0</is_released><keyed_name>checkAffectedTypeOnServer</keyed_name><major_rev>A</major_rev><method_code>' name: checkAffectedTypeOnServer
+' purpose: PLM. Checks in onBeforeAdd and onBeforeUpdate server events type of affected_id and new_item_id properties.
+' created: 12-AUG-2005 Yuri Delyamba
+' (c) Copyright by Aras Corporation, 2005-2007.
+' MethodTemplateName=VBMain;
+
+Dim innovator As Innovator = Me.getInnovator()
+
+Function Main() As Item
+
+	Dim affectedId As String = Me.getProperty("affected_id", "")
+	Dim supersedingId As String = Me.getProperty("new_item_id", "")
+
+	If String.IsNullOrEmpty(affectedId) OrElse String.IsNullOrEmpty(supersedingId) Then Exit Function
+
+	Dim affectedItems As Item = GetAffectedItems(affectedId, supersedingId)
+	If affectedItems.isError() Then
+
+		Return affectedItems
+	End If
+
+	Dim affectedItem As Item = GetAffectedItem(affectedItems, affectedId)
+	If (affectedItem.isError()) Then Return affectedItem
+
+	Dim supersedingItem As Item = GetAffectedItem(affectedItems, supersedingId)
+	If (supersedingItem.isError()) Then Return supersedingItem
+
+	If Not String.Equals(affectedItem.getProperty("itemtype"), supersedingItem.getProperty("itemtype"), StringComparison.Ordinal) Then
+
+		Return innovator.newError("Affected type should be the same at affected_id and new_item_id properties")
+	End If
+End Function
+
+Private Function GetAffectedItems(ByVal affected_id As String, ByVal new_item_id As String) As Item
+
+	Dim qry As Item = Me.newItem("Change Controlled Item", "get")
+	qry.setAttribute("select", "id, itemtype")
+	qry.setAttribute("idlist", affected_id &amp; "," &amp; new_item_id)
+	Return qry.apply()
+End Function
+
+Private Function GetAffectedItem(ByVal affectedItems As Item, ByVal id As String) As Item
+
+	Dim affectedItem As Item = affectedItems.getItemsByXPath("descendant-or-self::Item[@id='" &amp; id &amp; "']")
+	If (affectedItem.node Is Nothing) Then
+		Dim qry As Item = Me.newItem("Change Controlled Item", "get")
+		qry.setAttribute("select", "id, itemtype")
+		qry.setID(id)
+		affectedItem = qry.apply()
+	End If
+	Return affectedItem
+End Function</method_code><method_type>VB</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:59</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>checkAffectedTypeOnServer</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onBeforeUpdate</server_event><sort_order>1</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="CA8D4AF4FA074371BA9310C5A08B0ABA" type="Server Event">CA8D4AF4FA074371BA9310C5A08B0ABA</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="C8C32FD5F1B341D6B41B3C38DFA307AD"><behavior>float</behavior><config_id keyed_name="C8C32FD5F1B341D6B41B3C38DFA307AD" type="Server Event">C8C32FD5F1B341D6B41B3C38DFA307AD</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><event_version>version_1</event_version><generation>1</generation><is_current>1</is_current><is_released>0</is_released><is_required>0</is_required><keyed_name>C8C32FD5F1B341D6B41B3C38DFA307AD</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="PE_update_has_change_pending" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="DB6A7506779F42F596433298E0855FD1"><config_id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_update_has_change_pending</keyed_name><major_rev>A</major_rev><method_code>Aras.Server.Security.Identity plmIdentity = Aras.Server.Security.Identity.GetByName("Aras PLM");
+bool PermissionWasSet  = Aras.Server.Security.Permissions.GrantIdentity(plmIdentity);
+
+try
+{
+	Action&lt;string,IEnumerable&lt;string&gt;,string&gt; execUpdateFlag = (itemType,idList,ignoredAffItemID) =&gt; 
+			{
+				String itemTypeDbName = String.Empty;
+
+				if (!String.IsNullOrEmpty(itemType))
+				{
+					itemTypeDbName = CCO.DB.GenerateTableName(itemType);
+				}
+
+				Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+
+				foreach (String itemID in idList)
+				{
+					string sqlQueryFormat = "exec update_has_change_pending_flag '" + itemTypeDbName + "','" + itemID + "','" + ignoredAffItemID + "'";
+					conn.ExecuteSQL(sqlQueryFormat);
+				}
+			};
+
+  string thisType = this.getType();
+	List&lt;String&gt; itemIDs = new List&lt;String&gt;();
+	string itemTypeName = String.Empty;
+  string ignoredAffectedItemID = String.Empty;
+  
+  Item affectedItem = null;
+
+  switch(thisType)
+  {
+    case "Part":
+    case "Document":
+    case "CAD":
+		var nonUserInputTableName = new Dictionary&lt;string, string&gt;()
+		{
+			{"PART", "Part"}, {"DOCUMENT", "Document"},{"CAD", "CAD"}
+		};
+		string thisTypeTable = nonUserInputTableName[thisType.ToUpperInvariant()];
+	    string tableName = CCO.DB.GenerateTableName(thisTypeTable);
+	    Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+	    string configId = this.getProperty("config_id");
+
+	    Aras.Server.Core.Utilities.IsIdValid(configId, true);
+
+	    string sqlQuery = "SELECT TOP(1) id FROM " + tableName + " WHERE IS_CURRENT = '1' AND config_id = '" + conn.QuoteValue(configId) + "'";
+	    Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+	    if (result.RowsNumber == 0)
+	    {
+	    	const string errorString = "Item last version is not found.";
+	    	const string errorDetail = "config_id = '{0}'";
+	    	Item errorItem = this.getInnovator().newError(errorString);
+	    	errorItem.setErrorDetail(string.Format(errorDetail,this.getProperty("config_id")));
+	    	return errorItem;
+	    }
+	    itemIDs.Add(result["id"].ToString());
+	
+		itemTypeName = thisType;
+		break;
+    case "Affected Item":
+      affectedItem = this;
+    break;
+    case "Express ECO Affected Item":
+    case "Express DCO Affected Item":
+    case "ECN Affected Item":
+    case "Simple ECO Affected Item":
+    {
+		  // test that related item has all needed properties
+      affectedItem = this.getItemsByXPath("/Item/related_id/Item[@type='Affected Item' and new_item_id and affected_id]");
+  	  if(affectedItem.node == null)
+  	  {  
+  	    if(this.getAction() != "delete")
+  	    {
+  	      
+		  	Aras.Server.Core.InnovatorDatabase dbconn = CCO.Variables.InnDatabase;
+		  	string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+		  	string affectedItemId = this.getProperty("related_id");
+
+		  	Aras.Server.Core.Utilities.IsIdValid(affectedItemId, true);
+
+			string sqlQuerySelect = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + dbconn.QuoteValue(affectedItemId) + "'";
+
+			Aras.Server.Core.InnovatorDataSet rs = dbconn.ExecuteSelect(sqlQuerySelect);
+			if (rs.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,affectedItemId));
+				return errorItem;
+			}
+
+			affectedItem = this.newItem("Affected Item","");
+			affectedItem.setID(affectedItemId);
+			affectedItem.setProperty("affected_id",rs["affected_id"].ToString());
+			affectedItem.setProperty("new_item_id",rs["new_item_id"].ToString());
+  	    }
+  	    else
+  	    {
+  	  	  affectedItem = this.getRelatedItem();
+  	    }
+  	  }
+  	  break;
+    }
+    case "Simple MCO Part":
+    {
+			itemIDs.Add(this.getProperty("related_id", ""));
+			itemTypeName = "Part";
+  	  break;
+    }
+    case "Express ECO":
+    case "Express DCO":
+    case "ECN":
+    case "Simple ECO":
+    {			
+      Dictionary&lt;string, string&gt; relationships = new Dictionary&lt;string, string&gt;()
+      {
+        {"Express ECO", "Express ECO Affected Item"},
+        {"Express DCO", "Express DCO Affected Item"},
+        {"ECN", "ECN Affected Item"},
+        {"Simple ECO", "Simple ECO Affected Item"}
+      };
+    
+      string relshipType = relationships[thisType];
+    
+      Item relshipItemList = this.newItem(relshipType, "get");
+      relshipItemList.setProperty("source_id", this.getID());
+      relshipItemList = relshipItemList.apply();
+
+      int relshipItemCount = relshipItemList.getItemCount();
+
+      if(relshipItemCount &lt; 0)
+      {
+        //TODO ERROR: Have to return error item!!!!
+        return relshipItemList;
+      }
+
+      for(int i = 0; i &lt; relshipItemCount; i++)
+      {
+        Item relshipItem = relshipItemList.getItemByIndex(i);
+        relshipItem.setAction("PE_update_has_change_pending");
+        relshipItem = relshipItem.apply();
+      }
+
+      return this;
+    }
+  }
+
+  if(affectedItem != null)
+  { 
+  	string idlistAttr = affectedItem.getAttribute("idlist","");
+  	string[] idlist;
+  	if (string.IsNullOrEmpty(idlistAttr))
+  	{
+  		idlist = new string[]{affectedItem.getID()};
+  	}
+  	else
+  	{
+  		idlist = idlistAttr.Split(',');
+  	}
+
+	string execute_action = affectedItem.getAttribute("action", "");
+	if(execute_action == "edit" || execute_action == "update" || execute_action == "delete")
+	{
+		foreach(string id in idlist)
+		{
+			List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+
+			Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+			string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+
+			Aras.Server.Core.Utilities.IsIdValid(id, true);
+
+			string sqlQuery = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + conn.QuoteValue(id) + "'";
+
+			Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+			if (result.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,id));
+				return errorItem;
+			}
+
+			itemIdList.Add(result["affected_id"].ToString());
+			itemIdList.Add(result["new_item_id"].ToString());
+			ignoredAffectedItemID = id;
+			execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+		}
+	}
+	else
+	{
+		List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+		itemIdList.Add(affectedItem.getProperty("affected_id",""));
+		itemIdList.Add(affectedItem.getProperty("new_item_id",""));
+		ignoredAffectedItemID = "";
+		execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+	}
+  }
+
+  if(itemIDs.Count != 0)
+  {
+	execUpdateFlag(itemTypeName,itemIDs,ignoredAffectedItemID);
+    return this; 
+  }
+}	
+finally
+{
+  if (PermissionWasSet) Aras.Server.Security.Permissions.RevokeIdentity(plmIdentity);
+}
+
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_update_has_change_pending</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><server_event>onBeforeUpdate</server_event><sort_order>2</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id><id keyed_name="C8C32FD5F1B341D6B41B3C38DFA307AD" type="Server Event">C8C32FD5F1B341D6B41B3C38DFA307AD</id></Item><Item type="ItemType Life Cycle" typeId="A2294A4CD0B14DE4912C1B530218AB57" id="EDC06A18B09D4E7F87EE1107F0A29004"><behavior>float</behavior><config_id keyed_name="EDC06A18B09D4E7F87EE1107F0A29004" type="ItemType Life Cycle">EDC06A18B09D4E7F87EE1107F0A29004</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><id keyed_name="EDC06A18B09D4E7F87EE1107F0A29004" type="ItemType Life Cycle">EDC06A18B09D4E7F87EE1107F0A29004</id><is_current>1</is_current><is_released>0</is_released><keyed_name>EDC06A18B09D4E7F87EE1107F0A29004</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="Default" type="Life Cycle Map"><Item type="Life Cycle Map" typeId="AC32527D85604A4D9FC9107C516AEF47" id="2F3B75E17C4E4F2D9599579A965BFA64"><config_id keyed_name="Default" type="Life Cycle Map">2F3B75E17C4E4F2D9599579A965BFA64</config_id><created_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</created_by_id><created_on>2002-05-08T06:40:16</created_on><description>Default Life Cycle</description><generation>1</generation><id keyed_name="Default" type="Life Cycle Map">2F3B75E17C4E4F2D9599579A965BFA64</id><is_current>1</is_current><is_released>0</is_released><keyed_name>Default</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2002-09-19T08:49:55</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="C0515F8C211E4A7A94150A7BA2DD4F6E" type="Permission">C0515F8C211E4A7A94150A7BA2DD4F6E</permission_id><start_state keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</start_state><name>Default</name></Item></related_id><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id></Item><Item type="Can Add" typeId="3A65F41FF1FC42518A702FDA164AF420" id="D1120FD2C7AE4E3D8A9C23D66DE33DF1"><behavior>float</behavior><can_add>1</can_add><config_id keyed_name="D1120FD2C7AE4E3D8A9C23D66DE33DF1" type="Can Add">D1120FD2C7AE4E3D8A9C23D66DE33DF1</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><id keyed_name="D1120FD2C7AE4E3D8A9C23D66DE33DF1" type="Can Add">D1120FD2C7AE4E3D8A9C23D66DE33DF1</id><is_current>1</is_current><is_released>0</is_released><keyed_name>D1120FD2C7AE4E3D8A9C23D66DE33DF1</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="World" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="A73B655731924CD0B027E4F4D5FCC0A9"><config_id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2002-04-24T19:16:11</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description>All users are automatically members of the World.</description><generation>1</generation><id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>World</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2003-06-01T03:15:42</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="9A7C03AFA5E5453AAAC94FDB9006720B" type="Permission">9A7C03AFA5E5453AAAC94FDB9006720B</permission_id><state>Released</state><name>World</name></Item></related_id><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id></Item><Item type="Allowed Permission" typeId="DB54505FA3E9419DA3C1E1AFB7A48C1C" id="5B28DBDBA81248109F0750DC08A10103"><behavior>float</behavior><config_id keyed_name="5B28DBDBA81248109F0750DC08A10103" type="Allowed Permission">5B28DBDBA81248109F0750DC08A10103</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:24</created_on><generation>1</generation><id keyed_name="5B28DBDBA81248109F0750DC08A10103" type="Allowed Permission">5B28DBDBA81248109F0750DC08A10103</id><is_current>1</is_current><is_default>1</is_default><is_released>0</is_released><keyed_name>5B28DBDBA81248109F0750DC08A10103</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:24</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><related_id keyed_name="New Affected Item" type="Permission"><Item type="Permission" typeId="C6A89FDE1294451497801DF78341B473" id="1712BEEB88234763B5E431015F9CFD2D"><config_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</id><is_current>1</is_current><is_private>0</is_private><is_released>0</is_released><keyed_name>New Affected Item</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><name>New Affected Item</name><Relationships><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="346B4C52BE7F4026A557A40BFEED4D26"><behavior>float</behavior><can_change_access>1</can_change_access><can_delete>1</can_delete><can_discover>1</can_discover><can_get>1</can_get><can_update>1</can_update><config_id keyed_name="346B4C52BE7F4026A557A40BFEED4D26" type="Access">346B4C52BE7F4026A557A40BFEED4D26</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>346B4C52BE7F4026A557A40BFEED4D26</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><related_id keyed_name="CM" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="F6624E9AE5504958A84E4B6A5831298B"><config_id keyed_name="CM" type="Identity">F6624E9AE5504958A84E4B6A5831298B</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:54</created_on><description>Configuration Management group</description><generation>1</generation><id keyed_name="CM" type="Identity">F6624E9AE5504958A84E4B6A5831298B</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>CM</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:54</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Identity" type="Permission">761D6A3E3CA146138B47393D29FF6824</permission_id><name>CM</name></Item></related_id><show_permissions_warning>0</show_permissions_warning><sort_order>256</sort_order><source_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</source_id><id keyed_name="346B4C52BE7F4026A557A40BFEED4D26" type="Access">346B4C52BE7F4026A557A40BFEED4D26</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="8E383AC857DA4E0AAB5911779AE856F0"><behavior>float</behavior><can_change_access>1</can_change_access><can_delete>1</can_delete><can_discover>1</can_discover><can_get>1</can_get><can_update>1</can_update><config_id keyed_name="8E383AC857DA4E0AAB5911779AE856F0" type="Access">8E383AC857DA4E0AAB5911779AE856F0</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>8E383AC857DA4E0AAB5911779AE856F0</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><related_id keyed_name="Aras PLM" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="56A96DA9E981481688563E2D14D5D878"><config_id keyed_name="Aras PLM" type="Identity">56A96DA9E981481688563E2D14D5D878</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:54</created_on><description>Internal identity for Aras PLM</description><generation>1</generation><id keyed_name="Aras PLM" type="Identity">56A96DA9E981481688563E2D14D5D878</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Aras PLM</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:54</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Identity" type="Permission">761D6A3E3CA146138B47393D29FF6824</permission_id><name>Aras PLM</name></Item></related_id><show_permissions_warning>0</show_permissions_warning><sort_order>640</sort_order><source_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</source_id><id keyed_name="8E383AC857DA4E0AAB5911779AE856F0" type="Access">8E383AC857DA4E0AAB5911779AE856F0</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="91591A8C28FF4D33B8C8BDD038140150"><behavior>float</behavior><can_change_access>0</can_change_access><can_delete>0</can_delete><can_discover>1</can_discover><can_get>1</can_get><can_update>1</can_update><config_id keyed_name="91591A8C28FF4D33B8C8BDD038140150" type="Access">91591A8C28FF4D33B8C8BDD038140150</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>91591A8C28FF4D33B8C8BDD038140150</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><related_id keyed_name="Owner" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="538B300BB2A347F396C436E9EEE1976C"><classification>System</classification><config_id keyed_name="Owner" type="Identity">538B300BB2A347F396C436E9EEE1976C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2004-08-05T02:48:18</created_on><generation>1</generation><id keyed_name="Owner" type="Identity">538B300BB2A347F396C436E9EEE1976C</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Owner</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:41:17</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="System Item" type="Permission">E902B143591F448F868487447D926B25</permission_id><name>Owner</name></Item></related_id><show_permissions_warning>0</show_permissions_warning><sort_order>512</sort_order><source_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</source_id><id keyed_name="91591A8C28FF4D33B8C8BDD038140150" type="Access">91591A8C28FF4D33B8C8BDD038140150</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="BF3B10EF7CAD43C7BF738FB41C3A10B7"><behavior>float</behavior><can_change_access>0</can_change_access><can_delete>0</can_delete><can_discover>1</can_discover><can_get>1</can_get><can_update>0</can_update><config_id keyed_name="BF3B10EF7CAD43C7BF738FB41C3A10B7" type="Access">BF3B10EF7CAD43C7BF738FB41C3A10B7</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>BF3B10EF7CAD43C7BF738FB41C3A10B7</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><related_id keyed_name="All Employees" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="B32BD81D1AD04207BF1E61E39A4E0E13"><config_id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:53</created_on><description>Main Organizational User Group</description><generation>1</generation><id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>All Employees</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:53</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Identity" type="Permission">761D6A3E3CA146138B47393D29FF6824</permission_id><name>All Employees</name></Item></related_id><show_permissions_warning>0</show_permissions_warning><sort_order>384</sort_order><source_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</source_id><id keyed_name="BF3B10EF7CAD43C7BF738FB41C3A10B7" type="Access">BF3B10EF7CAD43C7BF738FB41C3A10B7</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="FD746AB88F3E40D1961163068BF8A1DD"><behavior>float</behavior><can_change_access>0</can_change_access><can_delete>1</can_delete><can_discover>1</can_discover><can_get>1</can_get><can_update>1</can_update><config_id keyed_name="FD746AB88F3E40D1961163068BF8A1DD" type="Access">FD746AB88F3E40D1961163068BF8A1DD</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:56</created_on><generation>1</generation><is_current>1</is_current><is_released>0</is_released><keyed_name>FD746AB88F3E40D1961163068BF8A1DD</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:56</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Permission" type="Permission">BBBFCF1164514B7B92C8BCA944498142</permission_id><related_id keyed_name="Creator" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="8FE5430B42014D94AE83246F299D9CC4"><classification>System</classification><config_id keyed_name="Creator" type="Identity">8FE5430B42014D94AE83246F299D9CC4</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2003-11-06T22:25:08</created_on><description>The User who created the Item</description><generation>1</generation><id keyed_name="Creator" type="Identity">8FE5430B42014D94AE83246F299D9CC4</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Creator</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:41:16</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="System Item" type="Permission">E902B143591F448F868487447D926B25</permission_id><name>Creator</name></Item></related_id><show_permissions_warning>0</show_permissions_warning><sort_order>128</sort_order><source_id keyed_name="New Affected Item" type="Permission">1712BEEB88234763B5E431015F9CFD2D</source_id><id keyed_name="FD746AB88F3E40D1961163068BF8A1DD" type="Access">FD746AB88F3E40D1961163068BF8A1DD</id></Item></Relationships></Item></related_id><sort_order>128</sort_order><source_id keyed_name="Affected Item" type="ItemType" name="Affected Item">BFAAB0F6838D4F80BF12CB328FF5B097</source_id></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

@@ -1,0 +1,48 @@
+{
+  "engine": "12.0",
+  "command": "export",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "com.aras.innovator.core\tForm\tF288A3345225407EACBC936191097BCD\tActivity Template",
+      "com.aras.defaults.filerepresentations\tfr_RepresentationType\t16039DDADB33459A9F6B344B9DD8C735\tCATIA Assembly SCS Representation",
+      "com.aras.innovator.solution.PLM\tVariable\t968471EC23804034A3B7B2B5C78601E7\tCAD Angular Units",
+      "com.steepgraph.pagex\tCommandBarButton\t0DD3CB20F7224E3FB3D5CA87E100A04A\tcom.steepgraph.pagex.builder.button"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T21:51:41.125Z",
+  "finishedAt": "2026-10-18T21:51:44.173Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 62,
+    "messages": 13,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9",
+    "timeoutAfterRun": 600000,
+    "result": "exported",
+    "error": null
+  },
+  "scrubbed": {}
+}

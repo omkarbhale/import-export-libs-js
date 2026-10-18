@@ -1,0 +1,13 @@
+﻿<AML>
+ <Item type="List" id="C6018EE6DD2187000216C39E55D07AAE" action="add">
+  <name>LIBSJS-SCRATCH-MINI-List_1</name>
+  <Relationships>
+   <Item type="Value" id="7BBB9C86410E5371679A0F41A20881E4" action="add">
+    <label xml:lang="en">Scratch 1</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-MINI-List_1" type="List">C6018EE6DD2187000216C39E55D07AAE</source_id>
+    <value>scratch1</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>
