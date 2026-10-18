@@ -4354,9 +4354,12 @@
             "bodySha256": "a5999b3c1830ac9e362568d1fafef2b5470faca332d59c4af0ea0cc71f777595",
             "textSha256": "9968e9d44f00aa20ab0a30050809deb5fc9d75c6f2959ed5a3073792244afeb0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-300"
+          ],
+          "symbols": [
+            "src/import/import-items.ts#ImportItems"
           ]
         },
         {
@@ -4369,9 +4372,12 @@
             "bodySha256": "8f798e13812983b22b232167d551a206b8b28df4250965e15328670042e96ff2",
             "textSha256": "2c945d297a2e293dbcb14af9b67a6a7a1c733888e00d7c5efb9dfc280ab05a0a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-312"
+          ],
+          "symbols": [
+            "src/import/import-items.ts#ImportItems.getItems"
           ]
         },
         {
@@ -4384,7 +4390,7 @@
             "bodySha256": "1ce47e57af44f6e3b64354ccf88ff6c8aed4711541b44da20f44bf83970e6739",
             "textSha256": "3003873fd2ee0d1e6aec8886df623a4b999d504ecfca65e8c57a9e9f907f7538"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-040",
             "IMP-300",
@@ -4399,6 +4405,9 @@
             "IMP-314",
             "IMP-317",
             "IMP-340"
+          ],
+          "symbols": [
+            "src/import/import-items.ts#ImportItems.import"
           ]
         },
         {
@@ -4411,12 +4420,15 @@
             "bodySha256": "06d4ed486029dd4eb1cc5ea13fb14a42c447bb7003b139183e57aa1d731e63ab",
             "textSha256": "6863c1ea7dd4b22b42e6e94b7c60becaa4529114176c4c5b7d6c6d11cab5f89e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-330",
             "IMP-331",
             "IMP-332",
             "IMP-333"
+          ],
+          "symbols": [
+            "src/import/import-items.ts#ImportItems.processVersionableItem"
           ]
         },
         {
@@ -4429,10 +4441,13 @@
             "bodySha256": "ec093fbb6dd20eb723af84155bfca9ea774bf713ddfb0171f465ba73b32540af",
             "textSha256": "84f66b37bb48d05c7bdeec708fc8927d78bcff0cc24473e321d0d6d42b5f95f9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-315",
             "IMP-316"
+          ],
+          "symbols": [
+            "src/import/import-items.ts#ImportItems.removeSystemPropertyForPolyType"
           ]
         },
         {
@@ -4817,10 +4832,13 @@
             "bodySha256": "d7cf9a01c5aef08116c32efb409207bec3981574666c526be682336b3773ab72",
             "textSha256": "68cea2a0989756cdfc910a40ef817bec5c2861a3837c5fae9ef91ed8dfe3b748"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-350",
             "IMP-351"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.doesItemAlreadyExist"
           ]
         },
         {
@@ -4833,10 +4851,13 @@
             "bodySha256": "d7f9801d58d14115fc308e17fa7dc955f1f50c30df5911172b3e5763eb8bd4d1",
             "textSha256": "cdec4cf9679f6b1e503cd6aa12a826c5093a208fb375464369f9cefc4888decf"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-332",
             "IMP-334"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.existRelItemInCurVer"
           ]
         },
         {
@@ -5350,11 +5371,14 @@
             "bodySha256": "937531fa412363134fdf4b6ba20dbcf3f072a1fe0baf1ec750aa6fd1f561080f",
             "textSha256": "6cfe4bfab9f4b596146449731250d207090d774338c4e1202d826516f78b73a2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-352",
             "IMP-443",
             "IMP-448"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.itemExistById"
           ]
         },
         {
@@ -5549,10 +5573,13 @@
             "bodySha256": "81817b545bece89830ff24214507943b10befddfcdb648d7cdd8efd145919bea",
             "textSha256": "b192dfbf8ffa875849546db63676e9dc8a1133e855dfd2a940d1eca29fdb24cd"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-311",
             "IMP-320"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.setItemIdToLastGeneration"
           ]
         },
         {
@@ -5565,12 +5592,15 @@
             "bodySha256": "d0d81b0dbd7dd72a465244c283c013558ca29e667607c4ee48c458bc1dca8d42",
             "textSha256": "3a44cc9b5870c34f0b5be9f8f8447cf58e4d10ee409628ba5192c285378b4265"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-313",
             "IMP-322",
             "IMP-448",
             "IMP-451"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.unlock"
           ]
         },
         {
@@ -5648,9 +5678,12 @@
             "bodySha256": "59e626e78c82707203e18271a44382c330726b1da20352550f34ecae62f0eeee",
             "textSha256": "e98243675d1de75b057a50b312e3c63766bb08568f824a8a420fb82d7285f402"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-300"
+          ],
+          "symbols": [
+            "src/import/import-lookups.ts#ImportLookups.doImport"
           ]
         },
         {
