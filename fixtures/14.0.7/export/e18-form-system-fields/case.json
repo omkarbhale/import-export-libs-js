@@ -1,0 +1,28 @@
+{
+  "id": "e18-form-system-fields",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E18"
+  ],
+  "title": "Form: Fields on six system properties (Part)",
+  "exercises": "Levels 3. Fields on the system properties state, owned_by_id, managed_by_id, major_rev, classification and effective_date: ProcessForm, the propertytype_id drop and the Field action=edit fix items with the comment.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Form",
+          "id": "CAF99D0A8E6E44E9A681C38015FACE91",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 44,
+    "error": null
+  }
+}

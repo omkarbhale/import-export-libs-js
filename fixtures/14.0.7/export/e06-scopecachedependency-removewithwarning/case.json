@@ -1,0 +1,30 @@
+{
+  "id": "e06-scopecachedependency-removewithwarning",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E06"
+  ],
+  "title": "ItemType: reference to an unknown package, RemoveWithWarning (ScopeCacheDependency)",
+  "exercises": "The same item as e06-scopecachedependency-donotremove: the references are removed, the REMOVED REFERENCE log block is written and the warning is sent.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.configurator",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "A22EC0C6A1B940FB94654AB060F21459",
+          "keyedName": "ScopeCacheDependency"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "refToUnknownPacks": "RemoveWithWarning"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 94,
+    "error": null
+  }
+}

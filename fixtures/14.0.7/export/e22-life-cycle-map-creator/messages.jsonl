@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":728258369046,"channel":"currentPackage","text":"Exporting package com.aras.innovator.exchange","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":728258416665,"channel":"status","text":"Item 1 of 1: Life Cycle Map - FileExchangePackageUpload","answer":null}
+{"event":28,"seq":3,"thread":16,"ticks":728264467317,"channel":"status","text":"completed","answer":null}
+{"event":29,"seq":4,"thread":16,"ticks":728264467797,"channel":"currentPackage","text":"","answer":null}

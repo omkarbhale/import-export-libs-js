@@ -1,0 +1,13 @@
+{"event":10,"seq":1,"thread":16,"ticks":729881511747,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":729881518003,"channel":"status","text":"Item 1 of 1: Form - Activity Template","answer":null}
+{"event":52,"seq":3,"thread":16,"ticks":729892864675,"channel":"status","text":"completed","answer":null}
+{"event":55,"seq":4,"thread":16,"ticks":729893346347,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":56,"seq":5,"thread":16,"ticks":729893348065,"channel":"status","text":"Item 1 of 1: Variable - CAD Angular Units","answer":null}
+{"event":61,"seq":6,"thread":16,"ticks":729894291280,"channel":"status","text":"completed","answer":null}
+{"event":65,"seq":7,"thread":16,"ticks":729895047860,"channel":"currentPackage","text":"Exporting package com.aras.defaults.filerepresentations","answer":null}
+{"event":66,"seq":8,"thread":16,"ticks":729895048411,"channel":"status","text":"Item 1 of 1: fr_RepresentationType - CATIA Assembly SCS Representation","answer":null}
+{"event":78,"seq":9,"thread":16,"ticks":729899814818,"channel":"status","text":"completed","answer":null}
+{"event":80,"seq":10,"thread":16,"ticks":729900110942,"channel":"currentPackage","text":"Exporting package com.steepgraph.pagex","answer":null}
+{"event":81,"seq":11,"thread":16,"ticks":729900111266,"channel":"status","text":"Item 1 of 1: CommandBarButton - com.steepgraph.pagex.builder.button","answer":null}
+{"event":88,"seq":12,"thread":16,"ticks":729902177302,"channel":"status","text":"completed","answer":null}
+{"event":89,"seq":13,"thread":16,"ticks":729902177505,"channel":"currentPackage","text":"","answer":null}

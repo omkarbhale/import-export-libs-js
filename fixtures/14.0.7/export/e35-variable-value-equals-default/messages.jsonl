@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":728720659875,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":728720667261,"channel":"status","text":"Item 1 of 1: Variable - CAD Angular Units","answer":null}
+{"event":17,"seq":3,"thread":16,"ticks":728722213182,"channel":"status","text":"completed","answer":null}
+{"event":18,"seq":4,"thread":16,"ticks":728722213374,"channel":"currentPackage","text":"","answer":null}

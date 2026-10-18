@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":18,"ticks":727877533897,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":18,"ticks":727877538015,"channel":"status","text":"Item 1 of 1: RelationshipType - Field Event","answer":null}
+{"event":66,"seq":3,"thread":18,"ticks":727903519706,"channel":"status","text":"completed","answer":null}
+{"event":67,"seq":4,"thread":18,"ticks":727903520092,"channel":"currentPackage","text":"","answer":null}

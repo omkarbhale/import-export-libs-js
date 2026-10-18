@@ -1,0 +1,4 @@
+{"event":13,"seq":1,"thread":18,"ticks":728603843922,"channel":"currentPackage","text":"Exporting package com.aras.innovator.es","answer":null}
+{"event":14,"seq":2,"thread":18,"ticks":728603850160,"channel":"status","text":"Item 1 of 1: User - ES Admin","answer":null}
+{"event":24,"seq":3,"thread":18,"ticks":728608921682,"channel":"status","text":"completed","answer":null}
+{"event":25,"seq":4,"thread":18,"ticks":728608921909,"channel":"currentPackage","text":"","answer":null}

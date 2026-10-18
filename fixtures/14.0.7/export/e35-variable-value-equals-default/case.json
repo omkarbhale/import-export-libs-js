@@ -1,0 +1,28 @@
+{
+  "id": "e35-variable-value-equals-default",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E35"
+  ],
+  "title": "Variable: value equals default_value (CAD Angular Units)",
+  "exercises": "value and default_value are both 'RAD', so value is dropped.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Variable",
+          "id": "968471EC23804034A3B7B2B5C78601E7",
+          "keyedName": "CAD Angular Units"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 14,
+    "error": null
+  }
+}

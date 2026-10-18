@@ -1,0 +1,28 @@
+{
+  "id": "e33-user",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E33"
+  ],
+  "title": "User: levels 2 (ES Admin)",
+  "exercises": "The User ItemType has pwd_is_set_on (R7), so the bytes show it.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.es",
+      "items": [
+        {
+          "type": "User",
+          "id": "1B88CFE00D91445E97FF345C3DF14BE4",
+          "keyedName": "ES Admin"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "error": null
+  }
+}

@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":17,"ticks":727710776697,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cui","answer":null}
+{"event":11,"seq":2,"thread":17,"ticks":727710782561,"channel":"status","text":"Item 1 of 1: ItemType - PresentableItems","answer":null}
+{"event":51,"seq":3,"thread":17,"ticks":727719443513,"channel":"status","text":"completed","answer":null}
+{"event":52,"seq":4,"thread":17,"ticks":727719444174,"channel":"currentPackage","text":"","answer":null}

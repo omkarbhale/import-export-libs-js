@@ -1,0 +1,29 @@
+{
+  "id": "e50-mp-macpolicy",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E50"
+  ],
+  "title": "mp_MacPolicy: one filter_xml (User Visibility Policy)",
+  "exercises": "Versionable. Condition A4A96F3303CD4288A1C2ABFB590C8598 has condition_xml with exactly one filter_xml CDATA, so CdataFilterXml runs. The two-or-more case (R9) needs scratch state.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.access.uservisibilitypolicy",
+      "items": [
+        {
+          "type": "mp_MacPolicy",
+          "id": "28DF1660D422498D89E5DA5D9A5BBA8A",
+          "keyedName": "User Visibility Policy"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "note": "Two or more filter_xml (R9) need scratch package S6; ticket 67.",
+  "result": {
+    "hostExit": 0,
+    "calls": 35,
+    "error": null
+  }
+}

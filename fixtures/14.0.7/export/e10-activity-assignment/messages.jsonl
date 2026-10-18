@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":18,"ticks":727757365880,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":18,"ticks":727757373849,"channel":"status","text":"Item 1 of 1: RelationshipType - Activity Assignment","answer":null}
+{"event":79,"seq":3,"thread":18,"ticks":727777775980,"channel":"status","text":"completed","answer":null}
+{"event":80,"seq":4,"thread":18,"ticks":727777776460,"channel":"currentPackage","text":"","answer":null}

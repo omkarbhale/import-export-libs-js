@@ -1,0 +1,4 @@
+{"event":12,"seq":1,"thread":16,"ticks":729745507682,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cui_default","answer":null}
+{"event":13,"seq":2,"thread":16,"ticks":729745531417,"channel":"status","text":"Item 1 of 1: Method - CadToPdfMenuInitHandler","answer":null}
+{"event":21,"seq":3,"thread":16,"ticks":729747377519,"channel":"status","text":"completed","answer":null}
+{"event":22,"seq":4,"thread":16,"ticks":729747378097,"channel":"currentPackage","text":"","answer":null}

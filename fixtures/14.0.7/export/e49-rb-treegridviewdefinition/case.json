@@ -1,0 +1,28 @@
+{
+  "id": "e49-rb-treegridviewdefinition",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E49"
+  ],
+  "title": "rb_TreeGridViewDefinition: PE_BomStructure",
+  "exercises": "Levels 2.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "rb_TreeGridViewDefinition",
+          "id": "005102D88C68467C9378686CCF08AC3D",
+          "keyedName": "PE_BomStructure"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 58,
+    "error": null
+  }
+}

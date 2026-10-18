@@ -1,0 +1,4 @@
+{"event":13,"seq":1,"thread":17,"ticks":728747203942,"channel":"currentPackage","text":"Exporting package com.aras.innovator.es","answer":null}
+{"event":14,"seq":2,"thread":17,"ticks":728747207317,"channel":"status","text":"Item 1 of 1: Variable - ES_SolrUrl","answer":null}
+{"event":20,"seq":3,"thread":17,"ticks":728748482842,"channel":"status","text":"completed","answer":null}
+{"event":21,"seq":4,"thread":17,"ticks":728748483041,"channel":"currentPackage","text":"","answer":null}

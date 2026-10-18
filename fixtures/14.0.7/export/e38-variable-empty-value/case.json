@@ -1,0 +1,28 @@
+{
+  "id": "e38-variable-empty-value",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E38"
+  ],
+  "title": "Variable: empty value, non-empty default (sg_powerplay_repo_url)",
+  "exercises": "An empty value with a non-empty default.",
+  "packages": [
+    {
+      "name": "com.steepgraph.powerplay",
+      "items": [
+        {
+          "type": "Variable",
+          "id": "44C4B025909E4F83897BAA5084B7B03F",
+          "keyedName": "sg_powerplay_repo_url"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 13,
+    "error": null
+  }
+}

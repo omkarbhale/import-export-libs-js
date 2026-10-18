@@ -1,0 +1,7 @@
+<imports>
+  <package name="com.aras.innovator.tdf" path=".\">
+    <dependson name="com.aras.innovator.cui" />
+    <dependson name="com.aras.innovator.cui_default" />
+    <dependson name="com.aras.innovator.conversion" />
+  </package>
+</imports>

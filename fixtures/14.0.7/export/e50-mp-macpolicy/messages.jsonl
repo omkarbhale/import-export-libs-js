@@ -1,0 +1,4 @@
+{"event":13,"seq":1,"thread":16,"ticks":729173918656,"channel":"currentPackage","text":"Exporting package com.aras.innovator.access.uservisibilitypolicy","answer":null}
+{"event":14,"seq":2,"thread":16,"ticks":729173925414,"channel":"status","text":"Item 1 of 1: mp_MacPolicy - User Visibility Policy","answer":null}
+{"event":38,"seq":3,"thread":16,"ticks":729182316670,"channel":"status","text":"completed","answer":null}
+{"event":39,"seq":4,"thread":16,"ticks":729182317016,"channel":"currentPackage","text":"","answer":null}

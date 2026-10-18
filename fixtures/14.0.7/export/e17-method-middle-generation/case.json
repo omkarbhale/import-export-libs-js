@@ -1,0 +1,28 @@
+{
+  "id": "e17-method-middle-generation",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E17"
+  ],
+  "title": "Method: exported by a middle generation (onChange Action)",
+  "exercises": "A versionable Method exported by a middle generation (gen 2 of 3). The config is EC0D87C174814CB7BA574593456113F7 and the current id is 319C9E8D8526410594970EAFB3138485.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Method",
+          "id": "9C4E2E1AB17F48699B9BC8F8789D173C",
+          "keyedName": "onChange Action"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 17,
+    "error": null
+  }
+}
