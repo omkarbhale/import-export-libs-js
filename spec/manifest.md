@@ -52,9 +52,9 @@ The engine is not validating: a manifest with another root name loads. Reads the
 
 [14.0.7] `new ManifestFile(path)` takes the path through the file-system normalisation (MAN-004), reads the whole file with `File.ReadAllText`, and loads the text into a new `XmlDocument` with `LoadXml`. The reading rules are the XML core's, which are fixed by the .NET behaviour:
 
-- the encoding is chosen by byte-order mark: UTF-8, UTF-16 (either order) and UTF-32 little-endian marks are detected and dropped, and no mark means UTF-8. The `encoding=` declaration is ignored for decoding. Bytes that are not valid UTF-8 become U+FFFD without an error;
-- whitespace-only text nodes are dropped (the document does not preserve whitespace);
-- a raw control character other than tab, CR and LF makes `LoadXml` throw `System.Xml.XmlException`; a malformed document throws one too.
+- the encoding is chosen by byte-order mark: UTF-8, UTF-16 and UTF-32 marks (either order) are detected and dropped, and no mark means UTF-8. The `encoding=` declaration is ignored for decoding. Bytes that are not valid UTF-8 become U+FFFD without an error (IMP-007 gives the count per sequence);
+- whitespace-only text nodes are dropped (the document does not preserve whitespace), as IMP-018 says;
+- a raw control character other than tab, CR and LF makes `LoadXml` throw `System.Xml.XmlException`; a malformed document throws one too, with the message and position of IMP-017.
 
 A leading XML declaration or DOCTYPE in the manifest is accepted (nothing concatenates the text, unlike a package item file).
 
@@ -107,7 +107,9 @@ Reading or saving then fails with `System.IO.DirectoryNotFoundException`, `Could
 
 The vectors for these rules are the XML core's (a name with `&`, quotes, a line break and a non-ASCII character in `descr`). Reading a manifest the engine wrote and saving it again gives the same bytes.
 
-If the document was loaded from a file that began with an XML declaration, `Save` keeps the declaration, writes the declared encoding with a byte-order mark (`utf-8` gives `EF BB BF`, `utf-16` gives `FF FE` and UTF-16LE text), and replaces a tab indentation with the two-space one. No engine path loads a manifest and saves it again, so this is reachable only by a host that does so.
+If the document was loaded from a file that began with an XML declaration, `Save` keeps the declaration, writes the declared encoding with a byte-order mark (`utf-8` gives `EF BB BF`, `utf-16` gives `FF FE` and UTF-16LE text), and replaces a tab indentation with the two-space one. The declaration is written as it was read: `encoding="UTF-8"` keeps its case, `standalone` stays, and one without `encoding` is written without it and leaves the file in UTF-8 without a byte-order mark. `windows-1252`, `iso-8859-1` and `us-ascii` (any case) give single-byte text without a mark, with `?` for a character the code page lacks; the port refuses any other encoding name with `NotSupportedException`. No engine path loads a manifest and saves it again, so this is reachable only by a host that does so.
+
+The legacy writer treats content that an engine manifest never holds as follows (probed, `fixtures/xml-core/vectors.json`, cases `2.*`): a comment or processing instruction is indented like an element; text, CDATA and white space are written as they are, with no indentation in their element and in everything below it, and `</x>` follows them directly; an element that holds no text is closed on a line of its own, so `<e></e>` is `<e>` and `</e>` on two lines at the indentation of `e`; a white space node of a document that preserves white space is written as it is, with no indentation added at all; a DOCTYPE is `<!DOCTYPE name[]>` and the root follows on the next line; a CDATA section that contains `]]>` throws `ArgumentException`.
 
 Failures are the .NET exceptions of the file system, observed: a missing folder is `System.IO.DirectoryNotFoundException`, an empty path `System.ArgumentException` (`Empty path name is not legal.`), a null path `System.ArgumentNullException` (`Path cannot be null.\r\nParameter name: path`).
 
@@ -176,7 +178,7 @@ The element is identified by the id only: an id of `''` is an element like any o
 - a name can also be valid XPath with another meaning. `a' and 'b` is the condition `@name='a' and 'b'`, which matches nothing, so `AddPackage` adds a package named `a' and 'b`. `x' or @name='My.Pkg`, `x' or ''='`, `x' or 1=1 or '` and `x'] | //package[@name='My.Pkg` match the first package (or, for the last, the first of the union in document order), so `AddPackage` returns an existing package and adds nothing. A dependency named `a' or @name='a` is found as the first `dependson` that makes the condition true;
 - `"` and every other character, including `]`, `&` and `<`, are not special and work.
 
-The port evaluates these expressions with an XPath 1.0 engine, not a string-equality shortcut, so that injection and failures behave alike, and throws `XPathException` with the messages above for those expressions. For an invalid expression that is not in the observed list it throws the same exception with the `has an invalid token` form unless the expression ends inside a string literal, which gives `This is an unclosed string.`. This extension of the observed rule is inferred, not observed. Registered in `bugs.md`.
+The port evaluates these expressions with an XPath 1.0 engine, not a string-equality shortcut, so that injection and failures behave alike, and throws `XPathException` with the messages above for those expressions. Which message an invalid expression gets depends on where .NET's parser gives up, so the port runs a parser that follows `XPathParser` (a token that cannot continue the expression is `has an invalid token`; a step or a predicate that cannot start is `Expression must evaluate to a node-set.`; a literal that never ends is `This is an unclosed string.` only if the parser scans that far; `Function 'f' in '<expression>' has an invalid number of arguments.`; `Namespace prefix 'p' is not defined.`; `'a:' has an invalid qualified name.`; `XsltContext is needed for this query because of an unknown function.` for an unknown function or a variable) before it evaluates the expression. It was measured on 60 names in each of the four shapes of the table (`xp.name*` in `fixtures/xml-core/vectors.json`) and on about 150 other expressions that do not parse, and agrees on all of them. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
 
