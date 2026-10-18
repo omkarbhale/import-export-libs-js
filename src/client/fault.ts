@@ -187,6 +187,9 @@ const DEFAULT_MESSAGE = "Exception of type 'Aras.Tools.SolutionUpgrade.CItemExce
  * @spec WIRE-051 WIRE-052
  */
 export class CItemException extends Error {
+  /** True for an error made from another exception, false for one made from a server response. */
+  bInnError = true;
+
   /**
    * The engine's own errors: an explicit code, text, detail and cause. The
    * detail is the message; with none, the message is .NET's default text.
@@ -215,6 +218,7 @@ export class CItemException extends Error {
   private static fromFault(text: string, response: ResponseDocument): CItemException {
     const exception = new CItemException(tryParseInt32(response.errorCode) ?? 1, text, response.errorDetail);
     exception.message = text;
+    exception.bInnError = false;
     return exception;
   }
 }

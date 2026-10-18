@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest";
 
 /**
  * Replays the recorded .NET evidence in fixtures/import-load/ against the reference
- * algorithms that spec/import-load.md writes down (IMP-004, IMP-030). The build ticket
- * for import loading implements the same algorithms in src/ and replays the same files.
+ * algorithms that spec/import-load.md writes down (IMP-004, IMP-030). src/import/ordering.test.ts
+ * replays the same files against the library's implementation of them.
  */
 
 const DIR = fileURLToPath(new URL("../fixtures/import-load/", import.meta.url));

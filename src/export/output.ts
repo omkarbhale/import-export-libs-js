@@ -47,6 +47,9 @@ interface OpenElement {
 }
 
 export class OutputWriter {
+  /** `cdataElements` is the stylesheet's `cdata-section-elements`; `build.xsl` has fewer than `export.xsl` (IMP-014). */
+  constructor(private readonly cdataElements: readonly string[] = CDATA_SECTION_ELEMENTS) {}
+
   private out = "";
   private readonly stack: OpenElement[] = [];
   /** Text written since the last element event; adjacent text nodes join, and null means none. */
@@ -80,7 +83,7 @@ export class OutputWriter {
       attributes: [],
       declarations,
       scope,
-      cdata: !namespaceUri && CDATA_SECTION_ELEMENTS.includes(name),
+      cdata: !namespaceUri && this.cdataElements.includes(name),
       tagOpen: true,
       hasContent: false,
     });

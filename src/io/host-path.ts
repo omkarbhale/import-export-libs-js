@@ -99,7 +99,7 @@ export function toHostPath(path: string | null, environment: PathEnvironment = {
 const EMPTY_PATH = "Empty path name is not legal.";
 
 /** Turns a Node file-system failure into the exception .NET raises for the same failure. */
-function translateFileError(error: unknown, hostPath: string, forWrite: boolean): unknown {
+export function translateFileError(error: unknown, hostPath: string, forWrite: boolean): unknown {
   const code = (error as NodeJS.ErrnoException | undefined)?.code;
   const full = resolve(hostPath);
   switch (code) {

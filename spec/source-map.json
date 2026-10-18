@@ -6249,12 +6249,16 @@
             "bodySha256": "fc63975ecdc73a9eb66e58a3defe89a26d1c8c62fba66ad5f1f25622d857ef0b",
             "textSha256": "97735533e078fa63da1749649136bcd8b11b68376258d3825367591ea5f0727b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-002",
             "IMP-004",
             "IMP-005",
             "IMP-006"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#directoryGetDirectories",
+            "src/import/ntfs-order.ts#compareNtfsNames"
           ]
         },
         {
@@ -6267,13 +6271,16 @@
             "bodySha256": "80e470855155d643f9aff73171194fb911b3d24c78fdea3a6af24de288302590",
             "textSha256": "431fb84e2f935ff41782f82c292bf1bd8bcc41ea4772d3c91ae4a3d9c2d523b2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-003",
             "IMP-004",
             "IMP-005",
             "IMP-006",
             "LP-020"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#directoryGetXmlFiles"
           ]
         },
         {
@@ -6332,10 +6339,13 @@
             "bodySha256": "141562b591cfec4902a77eb78e38d6a8fa92025de9e7759df9c79a2e472bfe29",
             "textSha256": "aa24fa2e1d56871ddb710e033b61816ecbb82f4787a67edfd2fecfa39ebc1b9c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-005",
             "IMP-009"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#newFileInfo"
           ]
         },
         {
@@ -6734,9 +6744,12 @@
             "bodySha256": "e102783af26a2fc28470b38e0fade8fb4e8bba4537b4c822d9cf79f6457f7a8d",
             "textSha256": "fa9cda188f08d200cbbd55f4cad1f2b0a2450f31b201c0c9e9e7202c01acadcb"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-015"
+          ],
+          "symbols": [
+            "src/import/items.ts#getItemsFromPackageDom"
           ]
         },
         {
@@ -6864,7 +6877,7 @@
             "bodySha256": "b3c27718741633046ec97b5a4cd82516024089b15f753903764acf0c85e31337",
             "textSha256": "06a64b16621cbfef16f282175e04bb40838ee4f5590b238ca9a765585c572b86"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-001",
             "IMP-002",
@@ -6894,6 +6907,14 @@
             "IMP-031",
             "IMP-032",
             "IMP-033"
+          ],
+          "symbols": [
+            "src/import/load-package-dom.ts#loadPackageDom",
+            "src/import/load-package-dom.ts#loadPackage",
+            "src/import/build-order.ts#planBuildOrder",
+            "src/import/build-output.ts#applyBuildXsl",
+            "src/import/build-output.ts#renderBuildOutput",
+            "src/import/plan.ts#planPackage"
           ]
         },
         {
@@ -8661,9 +8682,12 @@
             "bodySha256": "9b5cee84ed94f56a8d1c98e49acf177049912674eeef6543282b7a7b8a39e2ff",
             "textSha256": "129e8f9337f84c018f1d8b460477fe196b16898bb69648592c79707465f5045d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-009"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#FileInfo"
           ]
         },
         {
@@ -8676,9 +8700,12 @@
             "bodySha256": "20f856902692c8278906bdd77746e96212b7406e34e959ceb5a59388166a03f6",
             "textSha256": "95f92347484717ff8c73f50b636126677804836962e396b4bfd11ca588d41be3"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-009"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#FileInfo"
           ]
         },
         {
@@ -8691,9 +8718,12 @@
             "bodySha256": "5ba3bee907783e624dd411ad6669cce0277db3a6b497aee2f7334a5a70597943",
             "textSha256": "d7ee59e7d2e99f0cfaeb93fc8fd2d3b6a2a96d5f7154f08da5830d7f6d3e0f98"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-009"
+          ],
+          "symbols": [
+            "src/import/package-files.ts#FileInfo"
           ]
         }
       ]

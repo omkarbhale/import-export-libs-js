@@ -16,3 +16,5 @@ Recorded on Windows PowerShell 5.1 (.NET Framework 4.8, CLR 4.0.30319.42000), NT
 | `probe/` | The PowerShell that recorded the files above. `lpd.ps1 -Native <staged Import folder> -CasesFile load-package-dom.cases.json -Out <file>` runs the first group; `probe.ps1 -Xsl <build.xsl> -CasesFile build-xsl.cases.json -Out <file>` the second. Run them from a Windows folder (not `\\wsl.localhost`), staging the DLLs as `oracle/README.md` describes. `lpd.ps1` appends `2` to a case folder that already exists (two cases are both named `longpath`). |
 
 `spec/import-load.test.ts` replays `nls-word-sort.json`, `invariant-upper.json` and `listing-order.json` against the reference algorithms written in the spec.
+
+`src/import/ordering.test.ts` replays the same three files against the library's own NTFS order and NLS sort. `src/import/build-xsl.test.ts` replays `build-xsl.cases.json` and `build-xsl-cui.cases.json` (the 14.0.7 output) through the library's `build.xsl` ordering, and `src/import/load-package-dom.test.ts` replays `load-package-dom.cases.json` on package folders built in a temporary folder (not the three cases that need Windows: `hidden`, `locked`, `unc`).
