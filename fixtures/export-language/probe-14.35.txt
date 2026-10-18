@@ -1,0 +1,1037 @@
+# engine 14.35.0.43890, CLR 4.0.30319.42000
+# ---- C: constructor
+## C01-only-de  action=ExportLanguageResourcesOnly  in=[en,de] (2)
+result: constructed; context.Languages = ["de"] (1)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C02-meta-de  action=ExportMetadataWithLanguageResources  in=[en,de] (2)
+result: constructed; context.Languages = ["de"] (1)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C03-star-only  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: constructed; context.Languages = ["de","fr"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C04-star-meta  action=ExportMetadataWithLanguageResources  in=[*] (1)
+result: constructed; context.Languages = ["de","fr"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C05-star-en-only  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: constructed; context.Languages = [] (0)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C06-star-server-case  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: constructed; context.Languages = ["de","fr"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C07-star-server-error  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: constructed; context.Languages = [] (0)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C08-star-no-languages  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: constructed; context.Languages = [] (0)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C09-null-only  action=ExportLanguageResourcesOnly  in=<null>
+result: System.ArgumentNullException: Value cannot be null.\r\nParameter name: source
+  context.Languages afterwards = <null>
+language requests: 0 of 0
+## C10-null-export  action=Export  in=<null>
+result: constructed; context.Languages = <null>
+language requests: 0 of 0
+## C11-empty-only  action=ExportLanguageResourcesOnly  in=[] (0)
+result: constructed; context.Languages = [] (0)
+language requests: 0 of 0
+## C12-upper-case-code  action=ExportLanguageResourcesOnly  in=[en,DE] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: DE.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["DE"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C13-upper-case-en  action=ExportLanguageResourcesOnly  in=[EN,de] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: EN.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["EN","de"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C14-not-installed  action=ExportLanguageResourcesOnly  in=[en,xx,de,yy,xx] (5)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: xx,yy.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["xx","de","yy","xx"] (4)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C15-not-installed-one  action=ExportMetadataWithLanguageResources  in=[zz] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: zz.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["zz"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C16-star-and-code  action=ExportLanguageResourcesOnly  in=[*,de] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["*","de"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C17-star-twice  action=ExportLanguageResourcesOnly  in=[*,*] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["*","*"] (2)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C18-only-en  action=ExportLanguageResourcesOnly  in=[en] (1)
+result: constructed; context.Languages = [] (0)
+language requests: 0 of 0
+## C19-export-plain-de  action=Export  in=[en,de] (2)
+result: constructed; context.Languages = ["en","de"] (2)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C20-export-plain-not-installed  action=Export  in=[fr] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: fr.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["fr"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C21-export-plain-star  action=Export  in=[*] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: *.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["*"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C22-lpimport-not-installed  action=LPImport  in=[fr] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: fr.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["fr"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C23-server-null-code  action=ExportLanguageResourcesOnly  in=[de] (1)
+result: System.NullReferenceException: Object reference not set to an instance of an object.
+  context.Languages afterwards = ["de"] (1)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C24-star-null-code  action=ExportLanguageResourcesOnly  in=[*] (1)
+result: System.NullReferenceException: Object reference not set to an instance of an object.
+  context.Languages afterwards = ["*"] (1)
+language requests: 1 of 1
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C25-check-server-fault  action=ExportLanguageResourcesOnly  in=[de] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["de"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C26-check-no-languages  action=ExportLanguageResourcesOnly  in=[de] (1)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["de"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C27-empty-element-order  action=ExportLanguageResourcesOnly  in=[b,a,b,c] (4)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: b,a,c.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = ["b","a","b","c"] (4)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C28-space-code  action=ExportLanguageResourcesOnly  in=[en, de] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator:  de.\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = [" de"] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+## C29-empty-string-code  action=ExportLanguageResourcesOnly  in=[en,] (2)
+result: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: .\r\nPlease, install missing languages or remove them from import package before proceeding.
+  context.Languages afterwards = [""] (1)
+language requests: 2 of 2
+  1 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+  2 <Item isNew="1" isTemp="1" type="Language" action="get" select="code,name" />
+# ---- R: requests
+## R01-TA-level1-only  type=TA level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,related_id" /><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R02-TA-level2-only  type=TA level="2" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  6 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TB</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  7 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TB</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  8 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TB</name></Item></source_id></Item>
+  9 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R3</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  10 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  11 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>R1</name></Item></source_id></Item>
+  12 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  13 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  14 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  15 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>R2</name></Item></source_id></Item>
+  16 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  17 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,config_id,relationship_id,related_id"><related_id><Item isNew="1" isTemp="1" type="TB" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R3" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  18 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R03-TA-level1-meta  type=TA level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,*[is_not_null()],xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,*[is_not_null()]" /><Item isNew="1" isTemp="1" type="R2" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  9 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R04-TA-level2-meta  type=TA level="2" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  6 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TB</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  7 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TB</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  8 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TB</name></Item></source_id></Item>
+  9 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R3</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  10 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  11 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>R1</name></Item></source_id></Item>
+  12 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  13 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  14 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  15 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>R2</name></Item></source_id></Item>
+  16 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  17 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,*[is_not_null()],xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,*[is_not_null()]"><related_id><Item isNew="1" isTemp="1" type="TB" action="get" select="label,label_de,label_fr,*[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R3" action="get" /></Relationships></Item></related_id></Item><Item isNew="1" isTemp="1" type="R2" action="get" select="*[is_not_null()]" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  18 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  19 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R05-TA-level0-only  type=TA level="0" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  2 <Item isNew="1" isTemp="1" type="TA" action="get"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  3 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R06-TA-level0-meta  type=TA level="0" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  2 <Item isNew="1" isTemp="1" type="TA" action="get" select=",xp-*($value, @explicit, @permission_id), *[is_not_null()]"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  3 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  4 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R07-TA-level1-export  type=TA level="1" action=Export languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  3 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  4 <Item isNew="1" isTemp="1" type="TA" action="get" select=",xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" /><Item isNew="1" isTemp="1" type="R2" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  5 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  6 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R08-TA-level1-only-no-languages  type=TA level="1" action=ExportLanguageResourcesOnly languages=[]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,related_id" /><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R09-TA-level1-only-en-in-list  type=TA level="1" action=ExportLanguageResourcesOnly languages=[en,de,EN]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_EN,description_de,description_EN,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_EN,related_id" /><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R10-TA-level1-only-null-languages  type=TA level="1" action=ExportLanguageResourcesOnly languages=<null>
+thrown: System.NullReferenceException: Object reference not set to an instance of an object.
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R11-TA-level1-meta-null-languages  type=TA level="1" action=ExportMetadataWithLanguageResources languages=<null>
+thrown: System.NullReferenceException: Object reference not set to an instance of an object.
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R12-TC-no-ml-only  type=TC level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TC</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>TC</name></Item>
+  6 <Item isNew="1" isTemp="1" type="TC" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>TC</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R13-TC-no-ml-meta  type=TC level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TC</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>TC</name></Item>
+  6 <Item isNew="1" isTemp="1" type="TC" action="get" select="*[is_not_null()],xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R2" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>TC</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  8 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R14-TC-ml-answers-item-only  type=TC level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: System.Exception: Not a single item
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R15-TC-ml-answers-fault1-only  type=TC level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: System.Exception: Not a single item
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R16-TC-ml-answers-item-meta  type=TC level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: System.Exception: Not a single item
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R17-TA-ml-fault-only  type=TA level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: System.Exception: Not a single item
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+## R18-Property-rel-only  type=TA level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>Property</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>ItemType</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="label,help_tooltip,label_de,label_fr,help_tooltip_de,help_tooltip_fr,*[is_not_null()]" /><Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_de,label_fr,related_id,name,is_versionable" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R19-Property-rel-meta  type=TA level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>Property</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>ItemType</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,label_de,label_fr,*[is_not_null()],xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="label,help_tooltip,label_de,label_fr,help_tooltip_de,help_tooltip_fr,*[is_not_null()]" /><Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_de,label_fr,*[is_not_null()]" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  9 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R20-Property-rel-no-ml-only  type=TA level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>Property</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  6 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R21-Item-Report-only  type=Item Report level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item type="ItemType" select="is_versionable" action="get"><name>Item Report</name></Item>
+  2 <Item isNew="1" isTemp="1" type="Item Report" action="get" related_expand="0"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  3 <Item type="ItemType" action="get" levels="1" select="id"><name>Item Report</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R22-Item-Report-meta  type=Item Report level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item type="ItemType" select="is_versionable" action="get"><name>Item Report</name></Item>
+  2 <Item isNew="1" isTemp="1" type="Item Report" action="get" related_expand="0"><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  3 <Item type="ItemType" action="get" levels="1" select="id"><name>Item Report</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  4 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R23-List-only  type=List level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>List</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>List</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>List</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>Value</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>List</name></Item>
+  6 <Item isNew="1" isTemp="1" type="List" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="Value" action="get" select="label,label_de,label_fr,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>List</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R24-List-meta  type=List level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>List</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>List</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>List</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>Value</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>List</name></Item>
+  6 <Item isNew="1" isTemp="1" type="List" action="get" select="label,label_de,label_fr,*[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="Value" action="get" select="label,label_de,label_fr,*[is_not_null()]" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>List</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  8 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R25-ItemType-body-only  type=ItemType level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,config_id,relationship_id,related_id,name,is_versionable">\r\n  <Relationships>\r\n    <Item type="DiscussionTemplate" action="get" select="id,config_id,relationship_id,related_id">\r\n      <Relationships>\r\n        <Item type="FeedTemplate" action="get" select="id,config_id,relationship_id,related_id">\r\n          <Relationships>\r\n            <Item type="FileSelectorTemplate" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </Relationships>\r\n        </Item>\r\n        <Item type="DiscussionTemplateView" action="get" select="id,config_id,relationship_id,related_id">\r\n          <related_id>\r\n            <Item type="SSVCPresentationConfiguration" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </related_id>\r\n        </Item>\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="ITPresentationConfiguration" action="get" related_expand="0" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Property" action="get" select="label,help_tooltip,default_value,label_de,label_fr,help_tooltip_de,help_tooltip_fr,default_value_de,default_value_fr,*[is_not_null()]">\r\n      <Relationships>\r\n        <Item type="Grid Event" action="get" select="id,config_id,relationship_id,related_id" />\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="RelationshipType" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="View" action="get" select="id,config_id,relationship_id,related_id">\r\n      <related_id>\r\n        <Item type="Form" action="get" select="id,config_id,relationship_id,related_id">\r\n          <Relationships>\r\n            <Item type="Body" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Server Event" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Item Action" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="ItemType Life Cycle" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Allowed Workflow" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="TOC Access" action="get" select="id,config_id,relationship_id,related_id">\r\n      <related_id>\r\n        <Item type="Identity" action="get" select="id,config_id,relationship_id,related_id">\r\n          <Relationships>\r\n            <Item type="Member" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="TOC View" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Client Event" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Can Add" action="get" select="id,config_id,relationship_id,related_id">\r\n      <related_id>\r\n        <Item type="Identity" action="get" select="id,config_id,relationship_id,related_id">\r\n          <Relationships>\r\n            <Item type="Member" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Allowed Permission" action="get" select="id,config_id,relationship_id,related_id">\r\n      <related_id>\r\n        <Item type="Permission" action="get" select="id,config_id,relationship_id,related_id">\r\n          <Relationships>\r\n            <Item type="Access" action="get" select="id,config_id,relationship_id,related_id" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Item Report" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="Morphae" action="get" select="id,config_id,relationship_id,related_id" />\r\n    <Item type="ItemType_xPropertyDefinition" action="get" select="id,config_id,relationship_id,related_id" />\r\n  </Relationships>\r\n  <id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>
+  1 ItemType select="id"
+  2 ItemType select="id"
+  3 ItemType select="id"
+  4 ItemType select="id"
+  5 ItemType select="id"
+  6 ItemType select="id"
+  7 ItemType select="id"
+  8 ItemType select="id"
+  9 ItemType select="id"
+  10 ItemType select="id"
+  11 ItemType select="id"
+  12 ItemType select="id"
+  13 ItemType select="id"
+  14 ItemType select="id"
+  15 ItemType select="id"
+  16 ItemType select="id"
+  17 ItemType select="id"
+  18 ItemType select="id"
+  19 ItemType select="id"
+  20 ItemType select="id"
+  21 ItemType select="id"
+  22 ItemType select="id"
+  23 ItemType select="id"
+  24 ItemType select="id"
+  25 ItemType select="id"
+  26 ItemType select="id"
+  27 ItemType select="id"
+  28 ItemType select="id"
+  29 ItemType select="id"
+  30 ItemType select="id"
+  31 ItemType select="id"
+  32 ItemType select="is_versionable"
+  33 ItemType select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,config_id,relationship_id,related_id,name,is_versionable"
+    <Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,config_id,relationship_id,related_id,name,is_versionable"><Relationships><Item type="DiscussionTemplate" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="FeedTemplate" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="FileSelectorTemplate" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item><Item type="DiscussionTemplateView" action="get" select="id,config_id,relationship_id,related_id"><related_id><Item type="SSVCPresentationConfiguration" action="get" select="id,config_id,relationship_id,related_id" /></related_id></Item></Relationships></Item><Item type="ITPresentationConfiguration" action="get" related_expand="0" select="id,config_id,relationship_id,related_id" /><Item type="Property" action="get" select="label,help_tooltip,default_value,label_de,label_fr,help_tooltip_de,help_tooltip_fr,default_value_de,default_value_fr,*[is_not_null()]"><Relationships><Item type="Grid Event" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item><Item type="RelationshipType" action="get" select="id,config_id,relationship_id,related_id" /><Item type="View" action="get" select="id,config_id,relationship_id,related_id"><related_id><Item type="Form" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="Body" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item type="Server Event" action="get" select="id,config_id,relationship_id,related_id" /><Item type="Item Action" action="get" select="id,config_id,relationship_id,related_id" /><Item type="ItemType Life Cycle" action="get" select="id,config_id,relationship_id,related_id" /><Item type="Allowed Workflow" action="get" select="id,config_id,relationship_id,related_id" /><Item type="TOC Access" action="get" select="id,config_id,relationship_id,related_id"><related_id><Item type="Identity" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="Member" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item type="TOC View" action="get" select="id,config_id,relationship_id,related_id" /><Item type="Client Event" action="get" select="id,config_id,relationship_id,related_id" /><Item type="Can Add" action="get" select="id,config_id,relationship_id,related_id"><related_id><Item type="Identity" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="Member" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item type="Allowed Permission" action="get" select="id,config_id,relationship_id,related_id"><related_id><Item type="Permission" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="Access" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item type="Item Report" action="get" select="id,config_id,relationship_id,related_id" /><Item type="Morphae" action="get" select="id,config_id,relationship_id,related_id" /><Item type="ItemType_xPropertyDefinition" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+--
+## R26-ItemType-body-meta  type=ItemType level="1" action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,*[is_not_null()]">\r\n  <Relationships>\r\n    <Item type="DiscussionTemplate" action="get">\r\n      <Relationships>\r\n        <Item type="FeedTemplate" action="get">\r\n          <Relationships>\r\n            <Item type="FileSelectorTemplate" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n        <Item type="DiscussionTemplateView" action="get">\r\n          <related_id>\r\n            <Item type="SSVCPresentationConfiguration" action="get" />\r\n          </related_id>\r\n        </Item>\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="ITPresentationConfiguration" action="get" related_expand="0" />\r\n    <Item type="Property" action="get" select="label,help_tooltip,default_value,label_de,label_fr,help_tooltip_de,help_tooltip_fr,default_value_de,default_value_fr,*[is_not_null()]">\r\n      <Relationships>\r\n        <Item type="Grid Event" action="get" />\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="RelationshipType" action="get" />\r\n    <Item type="View" action="get">\r\n      <related_id>\r\n        <Item type="Form" action="get">\r\n          <Relationships>\r\n            <Item type="Body" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Server Event" action="get" />\r\n    <Item type="Item Action" action="get" />\r\n    <Item type="ItemType Life Cycle" action="get" />\r\n    <Item type="Allowed Workflow" action="get" />\r\n    <Item type="TOC Access" action="get">\r\n      <related_id>\r\n        <Item type="Identity" action="get">\r\n          <Relationships>\r\n            <Item type="Member" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="TOC View" action="get" />\r\n    <Item type="Client Event" action="get" />\r\n    <Item type="Can Add" action="get">\r\n      <related_id>\r\n        <Item type="Identity" action="get">\r\n          <Relationships>\r\n            <Item type="Member" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Allowed Permission" action="get">\r\n      <related_id>\r\n        <Item type="Permission" action="get">\r\n          <Relationships>\r\n            <Item type="Access" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Item Report" action="get" />\r\n    <Item type="Morphae" action="get" />\r\n    <Item type="ItemType_xPropertyDefinition" action="get" />\r\n  </Relationships>\r\n  <id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>
+  1 ItemType select="id"
+  2 ItemType select="id"
+  3 ItemType select="id"
+  4 ItemType select="id"
+  5 ItemType select="id"
+  6 ItemType select="id"
+  7 ItemType select="id"
+  8 ItemType select="id"
+  9 ItemType select="id"
+  10 ItemType select="id"
+  11 ItemType select="id"
+  12 ItemType select="id"
+  13 ItemType select="id"
+  14 ItemType select="id"
+  15 ItemType select="id"
+  16 ItemType select="id"
+  17 ItemType select="id"
+  18 ItemType select="id"
+  19 ItemType select="id"
+  20 ItemType select="id"
+  21 ItemType select="id"
+  22 ItemType select="id"
+  23 ItemType select="id"
+  24 ItemType select="id"
+  25 ItemType select="id"
+  26 ItemType select="id"
+  27 ItemType select="id"
+  28 ItemType select="id"
+  29 ItemType select="id"
+  30 ItemType select="id"
+  31 ItemType select="id"
+  32 ItemType select="is_versionable"
+  33 ItemType select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,*[is_not_null()]"
+    <Item isNew="1" isTemp="1" type="ItemType" action="get" select="label,label_plural,label_de,label_fr,label_plural_de,label_plural_fr,*[is_not_null()]"><Relationships><Item type="DiscussionTemplate" action="get"><Relationships><Item type="FeedTemplate" action="get"><Relationships><Item type="FileSelectorTemplate" action="get" /></Relationships></Item><Item type="DiscussionTemplateView" action="get"><related_id><Item type="SSVCPresentationConfiguration" action="get" /></related_id></Item></Relationships></Item><Item type="ITPresentationConfiguration" action="get" related_expand="0" /><Item type="Property" action="get" select="label,help_tooltip,default_value,label_de,label_fr,help_tooltip_de,help_tooltip_fr,default_value_de,default_value_fr,*[is_not_null()]"><Relationships><Item type="Grid Event" action="get" /></Relationships></Item><Item type="RelationshipType" action="get" /><Item type="View" action="get"><related_id><Item type="Form" action="get"><Relationships><Item type="Body" action="get" /></Relationships></Item></related_id></Item><Item type="Server Event" action="get" /><Item type="Item Action" action="get" /><Item type="ItemType Life Cycle" action="get" /><Item type="Allowed Workflow" action="get" /><Item type="TOC Access" action="get"><related_id><Item type="Identity" action="get"><Relationships><Item type="Member" action="get" /></Relationships></Item></related_id></Item><Item type="TOC View" action="get" /><Item type="Client Event" action="get" /><Item type="Can Add" action="get"><related_id><Item type="Identity" action="get"><Relationships><Item type="Member" action="get" /></Relationships></Item></related_id></Item><Item type="Allowed Permission" action="get"><related_id><Item type="Permission" action="get"><Relationships><Item type="Access" action="get" /></Relationships></Item></related_id></Item><Item type="Item Report" action="get" /><Item type="Morphae" action="get" /><Item type="ItemType_xPropertyDefinition" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+--
+## R27-ItemType-body-export  type=ItemType level="1" action=Export languages=[de,fr]
+thrown: Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item isNew="1" isTemp="1" type="ItemType" action="get">\r\n  <Relationships>\r\n    <Item type="DiscussionTemplate" action="get">\r\n      <Relationships>\r\n        <Item type="FeedTemplate" action="get">\r\n          <Relationships>\r\n            <Item type="FileSelectorTemplate" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n        <Item type="DiscussionTemplateView" action="get">\r\n          <related_id>\r\n            <Item type="SSVCPresentationConfiguration" action="get" />\r\n          </related_id>\r\n        </Item>\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="ITPresentationConfiguration" action="get" related_expand="0" />\r\n    <Item type="Property" action="get">\r\n      <Relationships>\r\n        <Item type="Grid Event" action="get" />\r\n      </Relationships>\r\n    </Item>\r\n    <Item type="RelationshipType" action="get" />\r\n    <Item type="View" action="get">\r\n      <related_id>\r\n        <Item type="Form" action="get">\r\n          <Relationships>\r\n            <Item type="Body" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Server Event" action="get" />\r\n    <Item type="Item Action" action="get" />\r\n    <Item type="ItemType Life Cycle" action="get" />\r\n    <Item type="Allowed Workflow" action="get" />\r\n    <Item type="TOC Access" action="get">\r\n      <related_id>\r\n        <Item type="Identity" action="get">\r\n          <Relationships>\r\n            <Item type="Member" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="TOC View" action="get" />\r\n    <Item type="Client Event" action="get" />\r\n    <Item type="Can Add" action="get">\r\n      <related_id>\r\n        <Item type="Identity" action="get">\r\n          <Relationships>\r\n            <Item type="Member" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Allowed Permission" action="get">\r\n      <related_id>\r\n        <Item type="Permission" action="get">\r\n          <Relationships>\r\n            <Item type="Access" action="get" />\r\n          </Relationships>\r\n        </Item>\r\n      </related_id>\r\n    </Item>\r\n    <Item type="Item Report" action="get" />\r\n    <Item type="Morphae" action="get" />\r\n    <Item type="ItemType_xPropertyDefinition" action="get" />\r\n  </Relationships>\r\n  <id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>
+  1 ItemType select="is_versionable"
+  2 ItemType select=<none>
+    <Item isNew="1" isTemp="1" type="ItemType" action="get"><Relationships><Item type="DiscussionTemplate" action="get"><Relationships><Item type="FeedTemplate" action="get"><Relationships><Item type="FileSelectorTemplate" action="get" /></Relationships></Item><Item type="DiscussionTemplateView" action="get"><related_id><Item type="SSVCPresentationConfiguration" action="get" /></related_id></Item></Relationships></Item><Item type="ITPresentationConfiguration" action="get" related_expand="0" /><Item type="Property" action="get"><Relationships><Item type="Grid Event" action="get" /></Relationships></Item><Item type="RelationshipType" action="get" /><Item type="View" action="get"><related_id><Item type="Form" action="get"><Relationships><Item type="Body" action="get" /></Relationships></Item></related_id></Item><Item type="Server Event" action="get" /><Item type="Item Action" action="get" /><Item type="ItemType Life Cycle" action="get" /><Item type="Allowed Workflow" action="get" /><Item type="TOC Access" action="get"><related_id><Item type="Identity" action="get"><Relationships><Item type="Member" action="get" /></Relationships></Item></related_id></Item><Item type="TOC View" action="get" /><Item type="Client Event" action="get" /><Item type="Can Add" action="get"><related_id><Item type="Identity" action="get"><Relationships><Item type="Member" action="get" /></Relationships></Item></related_id></Item><Item type="Allowed Permission" action="get"><related_id><Item type="Permission" action="get"><Relationships><Item type="Access" action="get" /></Relationships></Item></related_id></Item><Item type="Item Report" action="get" /><Item type="Morphae" action="get" /><Item type="ItemType_xPropertyDefinition" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+--
+## R28-cmf_ContentType-only  type=cmf_ContentType level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 ItemType select="id"
+  2 ItemType select="id"
+  3 ItemType select="id"
+  4 ItemType select="id"
+  5 ItemType select="id"
+  6 ItemType select="id"
+  7 ItemType select="id"
+  8 ItemType select="id"
+  9 ItemType select="id"
+  10 ItemType select="id"
+  11 ItemType select="id"
+  12 ItemType select="is_versionable"
+  13 cmf_ContentType select="id,config_id,relationship_id,related_id"
+    <Item isNew="1" isTemp="1" type="cmf_ContentType" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="cmf_ContentTypeView" action="get" select="id,config_id,relationship_id,related_id" /><Item type="cmf_ElementType" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="cmf_ElementAllowedPermission" action="get" select="id,config_id,relationship_id,related_id" /><Item type="cmf_ElementBinding" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="cmf_PropertyBinding" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item><Item type="cmf_PropertyType" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item type="cmf_ComputedProperty" action="get" select="id,config_id,relationship_id,related_id" /><Item type="cmf_PropertyAllowedPermission" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></Relationships></Item><Item type="cmf_ContentTypeExportRel" action="get" select="id,config_id,relationship_id,related_id" /><Item type="cmf_DocumentLifeCycleState" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  14 ItemType select="id"
+--
+## R29-RelationshipType-only  type=RelationshipType level="1" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id">\r\n  <Relationships>\r\n    <Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" />\r\n  </Relationships>\r\n  <id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type RelationshipType found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type RelationshipType found.]]></af:legacy_detail>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>RelationshipType</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>RelationshipType</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>RelationshipType</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>RelationshipType</name></Item>
+  6 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+--
+## R30-TA-level-blank-only  type=TA level="" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,related_id" /><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R31-TA-level3-only-brief  type=TA level="3" action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+  1 ItemType select="id"
+  2 ItemType select="id"
+  3 RelationshipType select="name"
+  4 ItemType select="id"
+  5 ItemType select="id"
+  6 ItemType select="id"
+  7 ItemType select="id"
+  8 RelationshipType select="name"
+  9 ItemType select="id"
+  10 ItemType select="id"
+  11 ItemType select="id"
+  12 RelationshipType select="name"
+  13 ItemType select="id"
+  14 RelationshipType select="name"
+  15 ItemType select="id"
+  16 ItemType select="id"
+  17 ItemType select="id"
+  18 RelationshipType select="name"
+  19 ItemType select="is_versionable"
+  20 TA select="label,description,label_de,label_fr,description_de,description_fr,config_id,relationship_id,related_id"
+    <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,label_fr,description_de,description_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,title_fr,config_id,relationship_id,related_id"><related_id><Item isNew="1" isTemp="1" type="TB" action="get" select="label,label_de,label_fr,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R3" action="get" select="id,config_id,relationship_id,related_id" /></Relationships></Item></related_id></Item><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  21 ItemType select="id"
+--
+## R32-TA-ml-lookup-text-only-meta  type=TA level="1" action=ExportMetadataWithLanguageResources languages=[de]
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TA</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TA</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  6 <Item type="ItemType" select="is_versionable" action="get"><name>TA</name></Item>
+  7 <Item isNew="1" isTemp="1" type="TA" action="get" select="label,description,label_de,description_de,*[is_not_null()],xp-*($value, @explicit, @permission_id), *[is_not_null()]"><Relationships><Item isNew="1" isTemp="1" type="R1" action="get" select="title,title_de,*[is_not_null()]" /><Item isNew="1" isTemp="1" type="R2" action="get" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  8 <Item type="ItemType" action="get" levels="1" select="id"><name>TA</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+  9 <Item type="ItemType" action="get" select="name"><implementation_type>polymorphic</implementation_type></Item>
+--
+## R33-ml-fault-remembered  two items of TA, one dictionary, the ml lookup of TA answers faultcode 1
+item 1: System.Exception: Not a single item
+  requests sent for item 1: 2
+item 2: System.Exception: Not a single item
+  requests sent for item 2: 0
+--
+## R34-TC-no-ml-null-languages-only  type=TC level="1" action=ExportLanguageResourcesOnly languages=<null>
+thrown: <none>
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TC</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R2</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  5 <Item type="ItemType" select="is_versionable" action="get"><name>TC</name></Item>
+  6 <Item isNew="1" isTemp="1" type="TC" action="get" select="id,config_id,relationship_id,related_id"><Relationships><Item isNew="1" isTemp="1" type="R2" action="get" select="id,config_id,relationship_id,related_id" /></Relationships><id>A1B2C3D4E5F60718293A4B5C6D7E8F90</id></Item>
+  7 <Item type="ItemType" action="get" levels="1" select="id"><name>TC</name><Relationships><Item type="Property" select="name, data_type, data_source" action="get"><data_type>item</data_type><item_behavior>float</item_behavior><name condition="not like">config_id</name><name condition="not like">created_by_id</name><name condition="not like">source_id</name><name condition="not like">related_id</name><name condition="not like">locked_by_id</name><name condition="not like">modified_by_id</name><name condition="not like">created_by_id</name><name condition="not like">permission_id</name><name condition="not like">managed_by_id</name><name condition="not like">owned_by_id</name><name condition="not like">history_id</name><name condition="not like">id</name><name condition="not like">current_state</name><name condition="not like">team_id</name></Item></Relationships></Item>
+--
+## R35-TA-rel-ml-null-languages-only  type=TC level="1" action=ExportLanguageResourcesOnly languages=<null>
+thrown: System.NullReferenceException: Object reference not set to an instance of an object.
+  1 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="data_source"><name>related_id</name></Item></Relationships></Item>
+  2 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>TC</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+  3 <Item isNew="1" isTemp="1" type="RelationshipType" action="get" select="name"><source_id><Item isNew="1" isTemp="1" type="ItemType" action="get"><name>TC</name></Item></source_id></Item>
+  4 <Item isNew="1" isTemp="1" type="ItemType" action="get" select="id"><name>R1</name><Relationships><Item isNew="1" isTemp="1" type="Property" action="get" select="name"><data_type>ml_string</data_type></Item></Relationships></Item>
+--
+# ---- MK: MarkPropertiesWithTranslationsIfNeeded
+MK01 action=ExportLanguageResourcesOnly
+MK01 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><name>label</name><label xml:lang="en">a</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">Beschriftung</i18n:label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK01 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <name>label</name>\r\n    <label xml:lang="en">a</label>\r\n    <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">Beschriftung</i18n:label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK02 action=ExportLanguageResourcesOnly
+MK02 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><name>label</name><label xml:lang="en">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK02 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <name>label</name>\r\n    <label xml:lang="en">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK03 action=ExportLanguageResourcesOnly
+MK03 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de"></label><label xml:lang="fr" /></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK03 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <label xml:lang="de"></label>\r\n    <label xml:lang="fr" />\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK04 action=ExportLanguageResourcesOnly
+MK04 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="EN">a</label><help xml:lang="En">b</help></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK04 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <label xml:lang="EN">a</label>\r\n    <help xml:lang="En">b</help>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK05 action=ExportLanguageResourcesOnly
+MK05 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK05 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <label xml:lang="">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK06 action=ExportLanguageResourcesOnly
+MK06 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Method" id="1"><label xml:lang="de">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK06 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Method" id="1">\r\n    <label xml:lang="de">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK07 action=ExportLanguageResourcesOnly
+MK07 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="ItemType" id="1"><name>T</name><Relationships><Item type="Property" id="2"><label xml:lang="de">a</label></Item><Item type="Property" id="3"><label xml:lang="en">b</label></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK07 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="ItemType" id="1">\r\n    <name>T</name>\r\n    <Relationships>\r\n     <Item type="Property" id="2" export_has_translations="1">\r\n      <label xml:lang="de">a</label>\r\n     </Item>\r\n     <Item type="Property" id="3">\r\n      <label xml:lang="en">b</label>\r\n     </Item>\r\n    </Relationships>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK08 action=ExportLanguageResourcesOnly
+MK08 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1" export_has_translations="0"><label xml:lang="de">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK08 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <label xml:lang="de">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK09 action=ExportLanguageResourcesOnly
+MK09 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1" export_has_translations="0" other="x"><label xml:lang="en">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK09 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="0" other="x">\r\n    <label xml:lang="en">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK10 action=ExportMetadataWithLanguageResources
+MK10 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK10 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <label xml:lang="de">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK11 action=Export
+MK11 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK11 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <label xml:lang="de">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK12 action=ExportLanguageResourcesOnly
+MK12 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><x><label xml:lang="de">a</label></x></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK12 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <x>\r\n     <label xml:lang="de">a</label>\r\n    </x>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK13 action=ExportLanguageResourcesOnly
+MK13 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de"> </label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK13 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <label xml:lang="de"> </label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK14 action=ExportLanguageResourcesOnly
+MK14 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de"><b>x</b></label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK14 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <label xml:lang="de">\r\n     <b>x</b>\r\n    </label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK15 action=ExportLanguageResourcesOnly
+MK15 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de"><b/></label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK15 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1">\r\n    <label xml:lang="de">\r\n     <b />\r\n    </label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK16 action=ExportLanguageResourcesOnly
+MK16 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1" xml:lang="de"><label>a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK16 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" xml:lang="de">\r\n    <label>a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK17 action=ExportLanguageResourcesOnly
+MK17 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><name>n</name><label xml:lang="de-DE">a</label></Item><Item type="Property" id="2"><label xml:lang="en">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK17 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <name>n</name>\r\n    <label xml:lang="de-DE">a</label>\r\n   </Item>\r\n   <Item type="Property" id="2">\r\n    <label xml:lang="en">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK18 action=ExportLanguageResourcesOnly
+MK18 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="property" id="1"><label xml:lang="de">a</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK18 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="property" id="1">\r\n    <label xml:lang="de">a</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+MK19 action=ExportLanguageResourcesOnly
+MK19 in : <AML><Item type="Property" id="1"><label xml:lang="de">a</label></Item></AML>
+MK19 out: [BOM]"<AML>\r\n <Item type="Property" id="1" export_has_translations="1">\r\n  <label xml:lang="de">a</label>\r\n </Item>\r\n</AML>"
+MK20 action=ExportLanguageResourcesOnly
+MK20 in : <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><Result><Item type="Property" id="1"><label xml:lang="de">a</label><label xml:lang="fr">b</label></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
+MK20 out: [BOM]"<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">\r\n <SOAP-ENV:Body>\r\n  <Result>\r\n   <Item type="Property" id="1" export_has_translations="1">\r\n    <label xml:lang="de">a</label>\r\n    <label xml:lang="fr">b</label>\r\n   </Item>\r\n  </Result>\r\n </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>"
+# ---- RM: RemoveNotLocalizedProperties (the document is the output of export.xsl: AML at the root)
+RM01
+RM01 in : <AML><Item type="List" id="1" action="add"><name>n</name><label xml:lang="en">Colors</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">Beschriftung</i18n:label><description>d</description></Item></AML>
+RM01 out: [BOM]"<AML>\r\n <Item type="List" id="1" action="add">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">Beschriftung</i18n:label>\r\n </Item>\r\n</AML>" (same document)
+RM02
+RM02 in : <AML><Item type="List" id="1" action="add"><name>n</name><description>d</description></Item></AML>
+RM02 out: <null returned>
+RM02 doc: [BOM]"<AML>\r\n <Item type="List" id="1" action="add">\r\n  <name>n</name>\r\n  <description>d</description>\r\n </Item>\r\n</AML>"
+RM03
+RM03 in : <AML><Item type="List" id="1"><name>n</name><Relationships><Item type="Value" id="2"><value>v</value><label xml:lang="de">Rot</label></Item><Item type="Value" id="3"><value>w</value></Item></Relationships></Item></AML>
+RM03 out: [BOM]"<AML>\r\n <Item type="List" id="1">\r\n  <Relationships>\r\n   <Item type="Value" id="2">\r\n    <label xml:lang="de">Rot</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>" (same document)
+RM04
+RM04 in : <AML><Item type="Value" id="2"><source_id keyed_name="k" type="List">S1</source_id><related_id>R</related_id><label xml:lang="de">Rot</label><value>v</value></Item></AML>
+RM04 out: [BOM]"<AML>\r\n <Item type="Value" id="2">\r\n  <source_id keyed_name="k" type="List">S1</source_id>\r\n  <label xml:lang="de">Rot</label>\r\n </Item>\r\n</AML>" (same document)
+RM05
+RM05 in : <AML><Item type="Value" id="2"><source_id>S1</source_id><value>v</value></Item></AML>
+RM05 out: <null returned>
+RM05 doc: [BOM]"<AML>\r\n <Item type="Value" id="2">\r\n  <source_id>S1</source_id>\r\n  <value>v</value>\r\n </Item>\r\n</AML>"
+RM06
+RM06 in : <AML><Item type="Value" id="2"><label xml:lang="de"><b>x</b>t<c y="1"/></label></Item></AML>
+RM06 out: [BOM]"<AML>\r\n <Item type="Value" id="2">\r\n  <label xml:lang="de">t</label>\r\n </Item>\r\n</AML>" (same document)
+RM07
+RM07 in : <AML><Item type="Value" id="2"><label xml:lang="">a</label><value>v</value></Item></AML>
+RM07 out: <null returned>
+RM07 doc: [BOM]"<AML>\r\n <Item type="Value" id="2">\r\n  <label xml:lang="">a</label>\r\n  <value>v</value>\r\n </Item>\r\n</AML>"
+RM08
+RM08 in : <AML><Item type="Value" id="2" xml:lang="de"><value>v</value></Item></AML>
+RM08 out: <null returned>
+RM08 doc: [BOM]"<AML>\r\n <Item type="Value" id="2" xml:lang="de">\r\n  <value>v</value>\r\n </Item>\r\n</AML>"
+RM09
+RM09 in : <AML><Item type="A" id="1"><name>n</name><related_id><Item type="B" id="2"><name>m</name><label xml:lang="de">x</label></Item></related_id></Item></AML>
+RM09 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <related_id>\r\n   <Item type="B" id="2">\r\n    <label xml:lang="de">x</label>\r\n   </Item>\r\n  </related_id>\r\n </Item>\r\n</AML>" (same document)
+RM10
+RM10 in : <AML><Item type="A" id="1"><label xml:lang="de">x</label><Relationships><Item type="B" id="2"><name>m</name></Item></Relationships></Item></AML>
+RM10 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM11
+RM11 in : <AML><Item type="A" id="1"><label xml:lang="de">x</label></Item><Item type="A" id="2"><name>q</name></Item></AML>
+RM11 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM12
+RM12 in : <AML>\r\n  <Item type="A" id="1">\r\n    <name>n</name>\r\n    <label xml:lang="de">a &amp; b &lt; c &gt; "q" 'p'</label>\r\n    <!-- note -->\r\n  </Item>\r\n</AML>
+RM12 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">a &amp; b &lt; c &gt; "q" 'p'</label>\r\n  <!-- note -->\r\n </Item>\r\n</AML>" (same document)
+RM13
+RM13 in : <AML><Item type="A" id="1"><label xml:lang="de"><![CDATA[a <b> & c]]></label></Item></AML>
+RM13 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de"><![CDATA[a <b> & c]]></label>\r\n </Item>\r\n</AML>" (same document)
+RM14
+RM14 in : <AML><Item type="A" id="1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N" action="add"><label xml:lang="en">x</label></Item></AML>
+RM14 out: [BOM]"<AML>\r\n <Item type="A" id="1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N" action="add">\r\n  <label xml:lang="en">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM15
+RM15 in : <AML><Item type="A" id="1"><label xml:lang="de">tab\there</label><x xml:lang="de">cr&#13;lf&#10;</x></Item></AML>
+RM15 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">tab\there</label>\r\n  <x xml:lang="de">cr\r\nlf\r\n</x>\r\n </Item>\r\n</AML>" (same document)
+RM16
+RM16 in : <AML><Item type="A" id="1"><name>n</name><label xml:lang="de">x</label></Item></AML>
+RM16 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM17
+RM17 in : <AML><Item type="A" id="1"><name>n</name><label xml:lang="de">x</label></Item></AML>
+RM17 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM18
+RM18 in : <AML><Item type="A" id="1"><source_id>S</source_id><name>n</name><label xml:lang="de">x</label></Item><Item type="B" id="2"><source_id>S2</source_id><name>n</name></Item></AML>
+RM18 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <source_id>S</source_id>\r\n  <label xml:lang="de">x</label>\r\n </Item>\r\n</AML>" (same document)
+RM19
+RM19 in : <AML><Item type="A" id="1"><label xml:lang="de">x</label><Relationships><Item type="B" id="2"><name>m</name><Relationships><Item type="C" id="3"><name>deep</name><label xml:lang="fr">y</label></Item></Relationships></Item></Relationships></Item></AML>
+RM19 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n  <Relationships>\r\n   <Item type="B" id="2">\r\n    <Relationships>\r\n     <Item type="C" id="3">\r\n      <label xml:lang="fr">y</label>\r\n     </Item>\r\n    </Relationships>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>" (same document)
+RM20
+RM20 in : <AML />
+RM20 out: <null returned>
+RM20 doc: [BOM]"<AML />"
+RM21
+RM21 in : <AML><Item type="A" id="1"><label xml:lang="de">&#233;&#8364;</label></Item></AML>
+RM21 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">\u00E9\u20AC</label>\r\n </Item>\r\n</AML>" (same document)
+RM22
+RM22 in : <AML><Item type="A" id="1"><label xml:lang="de">x</label><label xml:lang="en">y</label><label>no lang</label></Item></AML>
+RM22 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="de">x</label>\r\n  <label xml:lang="en">y</label>\r\n </Item>\r\n</AML>" (same document)
+RM23
+RM23 in : <AML><Item type="A" id="1"><source_id>S</source_id><i18n:source_id xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">x</i18n:source_id></Item></AML>
+RM23 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <source_id>S</source_id>\r\n  <i18n:source_id xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">x</i18n:source_id>\r\n </Item>\r\n</AML>" (same document)
+RM24
+RM24 in : <AML><other><Item type="A" id="1"><label xml:lang="de">x</label></Item></other><Item type="A" id="2"><name>n</name></Item></AML>
+RM24 out: [BOM]"<AML>\r\n <other>\r\n  <Item type="A" id="1">\r\n   <label xml:lang="de">x</label>\r\n  </Item>\r\n </other>\r\n</AML>" (same document)
+# ---- ORD: OrderPropertiesWithTranslations
+ORD01 action=ExportLanguageResourcesOnly
+ORD01 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label></Item></AML>
+ORD01 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD02 action=ExportLanguageResourcesOnly
+ORD02 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label></Item></AML>
+ORD02 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD03 action=ExportLanguageResourcesOnly
+ORD03 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><label xml:lang="en">E</label></Item></AML>
+ORD03 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD04 action=ExportLanguageResourcesOnly
+ORD04 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label><label xml:lang="en">E</label></Item></AML>
+ORD04 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD05 action=ExportLanguageResourcesOnly
+ORD05 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><name>n</name></Item></AML>
+ORD05 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+ORD06 action=ExportLanguageResourcesOnly
+ORD06 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><name>n</name><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label></Item></AML>
+ORD06 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+ORD07 action=ExportLanguageResourcesOnly
+ORD07 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><description xml:lang="en">DE</description><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:description xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">DD</i18n:description></Item></AML>
+ORD07 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <description xml:lang="en">DE</description>\r\n  <i18n:description xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">DD</i18n:description>\r\n </Item>\r\n</AML>"
+ORD08 action=ExportLanguageResourcesOnly
+ORD08 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><label xml:lang="en">E2</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label></Item></AML>
+ORD08 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <label xml:lang="en">E2</label>\r\n </Item>\r\n</AML>"
+ORD09 action=ExportLanguageResourcesOnly
+ORD09 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><i18n:label xmlns:i18n="http://www.aras.com/I18N">no lang</i18n:label></Item></AML>
+ORD09 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xmlns:i18n="http://www.aras.com/I18N">no lang</i18n:label>\r\n </Item>\r\n</AML>"
+ORD10 action=ExportLanguageResourcesOnly
+ORD10 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><label>no lang</label></Item></AML>
+ORD10 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <label>no lang</label>\r\n </Item>\r\n</AML>"
+ORD11 action=ExportLanguageResourcesOnly
+ORD11 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><foo:label xml:lang="de" xmlns:foo="http://www.aras.com/I18N">D</foo:label></Item></AML>
+ORD11 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <foo:label xml:lang="de" xmlns:foo="http://www.aras.com/I18N">D</foo:label>\r\n </Item>\r\n</AML>"
+ORD12 action=ExportLanguageResourcesOnly
+ORD12 in : <AML><Item type="A" id="1"><Relationships><Item type="B" id="2"><label xml:lang="en">E</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label></Item><Item type="B" id="3"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D2</i18n:label><label xml:lang="en">E</label></Item></Relationships></Item></AML>
+ORD12 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <Relationships>\r\n   <Item type="B" id="2">\r\n    <label xml:lang="en">E</label>\r\n    <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n    <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n   </Item>\r\n   <Item type="B" id="3">\r\n    <label xml:lang="en">E</label>\r\n    <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D2</i18n:label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+ORD13 action=ExportMetadataWithLanguageResources
+ORD13 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label></Item></AML>
+ORD13 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD14 action=Export
+ORD14 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><label xml:lang="en">E</label></Item></AML>
+ORD14 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <label xml:lang="en">E</label>\r\n </Item>\r\n</AML>"
+ORD15 action=ExportLanguageResourcesOnly
+ORD15 in : <AML><Item type="A" id="1"><i18n:Label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:Label><label xml:lang="en">E</label></Item></AML>
+ORD15 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <i18n:Label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:Label>\r\n  <label xml:lang="en">E</label>\r\n </Item>\r\n</AML>"
+ORD16 action=ExportLanguageResourcesOnly
+ORD16 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><x><label xml:lang="en">E</label></x></Item></AML>
+ORD16 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <x>\r\n   <label xml:lang="en">E</label>\r\n  </x>\r\n </Item>\r\n</AML>"
+ORD17 action=ExportLanguageResourcesOnly
+ORD17 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><!-- c --><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label></Item></AML>
+ORD17 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <!-- c -->  </Item>\r\n</AML>"
+ORD18 action=ExportLanguageResourcesOnly
+ORD18 in : <AML><Item type="A" id="1"><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label><i18n:label xml:lang="it" xmlns:i18n="http://www.aras.com/I18N">I</i18n:label><label xml:lang="en">E</label></Item></AML>
+ORD18 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="it" xmlns:i18n="http://www.aras.com/I18N">I</i18n:label>\r\n  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD19 action=ExportLanguageResourcesOnly
+ORD19 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label><i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label><i18n:label xml:lang="it" xmlns:i18n="http://www.aras.com/I18N">I</i18n:label></Item></AML>
+ORD19 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="it" xmlns:i18n="http://www.aras.com/I18N">I</i18n:label>\r\n  <i18n:label xml:lang="fr" xmlns:i18n="http://www.aras.com/I18N">F</i18n:label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n </Item>\r\n</AML>"
+ORD20 action=ExportLanguageResourcesOnly
+ORD20 in : <AML><Item type="A" id="1"><label xml:lang="en">E</label><label_x xml:lang="de">q</label_x><i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label></Item></AML>
+ORD20 out: [BOM]"<AML>\r\n <Item type="A" id="1">\r\n  <label xml:lang="en">E</label>\r\n  <i18n:label xml:lang="de" xmlns:i18n="http://www.aras.com/I18N">D</i18n:label>\r\n  <label_x xml:lang="de">q</label_x>\r\n </Item>\r\n</AML>"
+# ---- ADD: AddI18NNamespaceToAllRootItems
+ADD01 action=ExportLanguageResourcesOnly
+ADD01 in : <AML><Item type="A" id="1" action="add"><name>n</name></Item></AML>
+ADD01 out: [BOM]"<AML>\r\n <Item type="A" id="1" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n</name>\r\n </Item>\r\n</AML>"
+ADD02 action=ExportLanguageResourcesOnly
+ADD02 in : <AML><Item type="A" xmlns:i18n="http://www.aras.com/I18N" id="1" action="add" /></AML>
+ADD02 out: [BOM]"<AML>\r\n <Item type="A" id="1" action="add" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+ADD03 action=ExportLanguageResourcesOnly
+ADD03 in : <AML><Item type="A" id="1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N" action="add" /></AML>
+ADD03 out: [BOM]"<AML>\r\n <Item type="A" id="1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" action="add" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+ADD04 action=ExportLanguageResourcesOnly
+ADD04 in : <AML><Item type="A" id="1" xmlns:i18n="urn:other" action="add" /></AML>
+ADD04 out: [BOM]"<AML>\r\n <Item type="A" id="1" action="add" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+ADD05 action=ExportMetadataWithLanguageResources
+ADD05 in : <AML><Item type="A" id="1"><Relationships><Item type="B" id="2" /></Relationships></Item><Item type="A" id="3" /></AML>
+ADD05 out: [BOM]"<AML>\r\n <Item type="A" id="1" xmlns:i18n="http://www.aras.com/I18N">\r\n  <Relationships>\r\n   <Item type="B" id="2" />\r\n  </Relationships>\r\n </Item>\r\n <Item type="A" id="3" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+ADD06 action=Export
+ADD06 in : <AML><Item type="A" id="1" /></AML>
+ADD06 out: [BOM]"<AML>\r\n <Item type="A" id="1" />\r\n</AML>"
+ADD07 action=ExportLanguageResourcesOnly
+ADD07 in : <Item type="A" id="1" />
+ADD07 out: [BOM]"<Item type="A" id="1" />"
+ADD08 action=ExportLanguageResourcesOnly
+ADD08 in : <Other><AML><Item type="A" id="1" /></AML></Other>
+ADD08 out: [BOM]"<Other>\r\n <AML>\r\n  <Item type="A" id="1" xmlns:i18n="http://www.aras.com/I18N" />\r\n </AML>\r\n</Other>"
+ADD09 action=ExportLanguageResourcesOnly
+ADD09 in : <AML><Other><Item type="A" id="1" /></Other></AML>
+ADD09 out: [BOM]"<AML>\r\n <Other>\r\n  <Item type="A" id="1" />\r\n </Other>\r\n</AML>"
+ADD10 action=ExportLanguageResourcesOnly
+ADD10 in : <AML />
+ADD10 out: [BOM]"<AML />"
+ADD11 action=ExportMetadataWithLanguageResources
+ADD11 in : <AML><Item type="A" id="1" /><!-- c --><Item type="B" id="2" xmlns:i18n="http://www.aras.com/I18N" /></AML>
+ADD11 out: [BOM]"<AML>\r\n <Item type="A" id="1" xmlns:i18n="http://www.aras.com/I18N" />\r\n <!-- c -->\r\n <Item type="B" id="2" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+# ---- E: one item through Export
+## E01-list-only  type=List action=ExportLanguageResourcesOnly languages=[de,fr]
+thrown: <none>
+file <WD>\E01-list-only\List\k-E01.xml: [BOM]"<AML>\r\n <Item type="List" id="E01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="fr">Couleurs</i18n:label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n  <Relationships>\r\n   <Item type="Value" id="V1" action="add">\r\n    <label xml:lang="en">Red</label>\r\n    <i18n:label xml:lang="de">Rot</i18n:label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+--
+## E02-list-meta  type=List action=ExportMetadataWithLanguageResources languages=[de,fr]
+thrown: <none>
+file <WD>\E02-list-meta\List\k-E02.xml: [BOM]"<AML>\r\n <Item type="List" id="E02" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-E02</name>\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="fr">Couleurs</i18n:label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n  <Relationships>\r\n   <Item type="Value" id="V1" action="add">\r\n    <value>red</value>\r\n    <label xml:lang="en">Red</label>\r\n    <i18n:label xml:lang="de">Rot</i18n:label>\r\n   </Item>\r\n   <Item type="Value" id="V2" action="add">\r\n    <value>plain</value>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+--
+## E03-list-plain  type=List action=Export languages=[]
+thrown: <none>
+file <WD>\E03-list-plain\List\k-E03.xml: [BOM]"<AML>\r\n <Item type="List" id="E03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-E03</name>\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n  <i18n:label xml:lang="fr">Couleurs</i18n:label>\r\n  <Relationships>\r\n   <Item type="Value" id="V1" action="add">\r\n    <value>red</value>\r\n    <label xml:lang="en">Red</label>\r\n    <i18n:label xml:lang="de">Rot</i18n:label>\r\n   </Item>\r\n   <Item type="Value" id="V2" action="add">\r\n    <value>plain</value>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+--
+## E04-list-only-nothing-to-keep  type=List action=ExportLanguageResourcesOnly languages=[de]
+thrown: <none>
+files: <none>
+--
+## E05-list-only-en-only  type=List action=ExportLanguageResourcesOnly languages=[de]
+thrown: <none>
+file <WD>\E05-list-only-en-only\List\k-E05.xml: [BOM]"<AML>\r\n <Item type="List" id="E05" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n </Item>\r\n</AML>"
+--
+## E06-list-meta-no-translations  type=List action=ExportMetadataWithLanguageResources languages=[de]
+thrown: <none>
+file <WD>\E06-list-meta-no-translations\List\k-E06.xml: [BOM]"<AML>\r\n <Item type="List" id="E06" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-E06</name>\r\n  <label xml:lang="en">Colors</label>\r\n  <description>plain</description>\r\n </Item>\r\n</AML>"
+--
+## E07-list-only-no-ml-type  type=List action=ExportLanguageResourcesOnly languages=[de]
+thrown: <none>
+file <WD>\E07-list-only-no-ml-type\List\k-E07.xml: [BOM]"<AML>\r\n <Item type="List" id="E07" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n </Item>\r\n</AML>"
+--
+## E08-itemtype-only  type=ItemType action=ExportLanguageResourcesOnly languages=[de]
+thrown: <none>
+file <WD>\E08-itemtype-only\ItemType\k-IT1.xml: [BOM]"<AML>\r\n <Item type="ItemType" id="IT1" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">My Type</label>\r\n  <i18n:label xml:lang="de">Mein Typ</i18n:label>\r\n  <Relationships>\r\n   <Item type="Property" id="P2" action="add">\r\n    <label xml:lang="en">Title</label>\r\n    <i18n:label xml:lang="de">Titel</i18n:label>\r\n   </Item>\r\n   <Item type="Property" id="P3" action="add">\r\n    <label xml:lang="en">Plain</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n <Item type="ItemType" id="IT1" action="edit" xmlns:i18n="http://www.aras.com/I18N">\r\n  <Relationships>\r\n   <Item type="Property" action="edit" where="source_id='' and name='behavior'">\r\n    <label xml:lang="en">Behavior</label>\r\n    <i18n:label xml:lang="de">Verhalten</i18n:label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+--
+## E09-itemtype-meta  type=ItemType action=ExportMetadataWithLanguageResources languages=[de]
+thrown: <none>
+file <WD>\E09-itemtype-meta\ItemType\k-IT1.xml: [BOM]"<AML>\r\n <Item type="ItemType" id="IT1" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>MyType</name>\r\n  <is_versionable>0</is_versionable>\r\n  <label xml:lang="en">My Type</label>\r\n  <i18n:label xml:lang="de">Mein Typ</i18n:label>\r\n  <Relationships>\r\n   <Item type="Property" id="P2" action="add">\r\n    <name>title</name>\r\n    <data_type>string</data_type>\r\n    <label xml:lang="en">Title</label>\r\n    <i18n:label xml:lang="de">Titel</i18n:label>\r\n   </Item>\r\n   <Item type="Property" id="P3" action="add">\r\n    <name>plain_prop</name>\r\n    <data_type>string</data_type>\r\n    <label xml:lang="en">Plain</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n <Item type="ItemType" id="IT1" action="edit" xmlns:i18n="http://www.aras.com/I18N">\r\n  <Relationships>\r\n   <Item type="Property" action="edit" where="source_id='' and name='behavior'">\r\n    <name>behavior</name>\r\n    <label xml:lang="en">Behavior</label>\r\n    <i18n:label xml:lang="de">Verhalten</i18n:label>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name="Behavior" type="List">L1</data_source>\r\n    <stored_length>64</stored_length>\r\n    <column_alignment>left</column_alignment>\r\n    <is_hidden>1</is_hidden>\r\n    <is_hidden2>1</is_hidden2>\r\n    <readonly>0</readonly>\r\n    <is_keyed>0</is_keyed>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n <Item type="View" action="delete" where="source_id='IT1'" xmlns:i18n="http://www.aras.com/I18N" />\r\n <Item type="Form" action="delete" where="name='MyType'" xmlns:i18n="http://www.aras.com/I18N" />\r\n</AML>"
+--
+## E10-itemtype-plain  type=ItemType action=Export languages=[]
+thrown: <none>
+file <WD>\E10-itemtype-plain\ItemType\k-IT1.xml: [BOM]"<AML>\r\n <Item type="ItemType" id="IT1" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>MyType</name>\r\n  <is_versionable>0</is_versionable>\r\n  <label xml:lang="en">My Type</label>\r\n  <i18n:label xml:lang="de">Mein Typ</i18n:label>\r\n  <Relationships>\r\n   <Item type="Property" id="P2" action="add">\r\n    <name>title</name>\r\n    <data_type>string</data_type>\r\n    <label xml:lang="en">Title</label>\r\n    <i18n:label xml:lang="de">Titel</i18n:label>\r\n   </Item>\r\n   <Item type="Property" id="P3" action="add">\r\n    <name>plain_prop</name>\r\n    <data_type>string</data_type>\r\n    <label xml:lang="en">Plain</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n <Item type="ItemType" id="IT1" action="edit" xmlns:i18n="http://www.aras.com/I18N">\r\n  <Relationships>\r\n   <Item type="Property" action="edit" where="source_id='' and name='behavior'">\r\n    <name>behavior</name>\r\n    <label xml:lang="en">Behavior</label>\r\n    <i18n:label xml:lang="de">Verhalten</i18n:label>\r\n    <data_type>list</data_type>\r\n    <data_source keyed_name="Behavior" type="List">L1</data_source>\r\n    <stored_length>64</stored_length>\r\n    <column_alignment>left</column_alignment>\r\n    <is_hidden>1</is_hidden>\r\n    <is_hidden2>1</is_hidden2>\r\n    <readonly>0</readonly>\r\n    <is_keyed>0</is_keyed>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n <Item type="View" action="delete" where="source_id='IT1'" />\r\n <Item type="Form" action="delete" where="name='MyType'" />\r\n</AML>"
+--
+# ---- X: ExportSolutions
+## X01-only  action=ExportLanguageResourcesOnly languages=[en,de]
+constructed; languages = ["de"] (1)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|
+  currentPackage|Exporting package pkg.a
+  status|completed
+log (once each, sorted):
+  |          ****Export pkg.a****
+  | Action: ExportLanguageResourcesOnly
+  | Database: db
+  | end of execution : <T>
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X01-only\engine.log
+  | Manifest file: 
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X01-only
+file <WD>\X01-only\a\Import\List\k-A01.xml: [BOM]"<AML>\r\n <Item type="List" id="A01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X01-only\a\Import\List\k-A03.xml: [BOM]"<AML>\r\n <Item type="List" id="A03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X01-only\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+--
+## X02-meta  action=ExportMetadataWithLanguageResources languages=[en,de]
+constructed; languages = ["de"] (1)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|
+  currentPackage|Exporting package pkg.a
+  status|completed
+log (once each, sorted):
+  |          ****Export pkg.a****
+  | Action: ExportMetadataWithLanguageResources
+  | Database: db
+  | end of execution : <T>
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X02-meta\engine.log
+  | Manifest file: 
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X02-meta
+file <WD>\X02-meta\a\Import\List\k-A01.xml: [BOM]"<AML>\r\n <Item type="List" id="A01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-A01</name>\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X02-meta\a\Import\List\k-A02.xml: [BOM]"<AML>\r\n <Item type="List" id="A02" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-A02</name>\r\n </Item>\r\n</AML>"
+file <WD>\X02-meta\a\Import\List\k-A03.xml: [BOM]"<AML>\r\n <Item type="List" id="A03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <name>n-A03</name>\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X02-meta\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+--
+## X03-only-star  action=ExportLanguageResourcesOnly languages=[*]
+constructed; languages = ["de","fr"] (2)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|
+  currentPackage|Exporting package pkg.a
+  status|completed
+log (once each, sorted):
+  |          ****Export pkg.a****
+  | Action: ExportLanguageResourcesOnly
+  | Database: db
+  | end of execution : <T>
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X03-only-star\engine.log
+  | Manifest file: 
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X03-only-star
+file <WD>\X03-only-star\a\Import\List\k-A01.xml: [BOM]"<AML>\r\n <Item type="List" id="A01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X03-only-star\a\Import\List\k-A03.xml: [BOM]"<AML>\r\n <Item type="List" id="A03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X03-only-star\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+--
+## X04-only-not-installed  action=ExportLanguageResourcesOnly languages=[en,xx]
+constructor: Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: xx.\r\nPlease, install missing languages or remove them from import package before proceeding.
+--
+## X05-only-en-only  action=ExportLanguageResourcesOnly languages=[en]
+constructed; languages = [] (0)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|
+  currentPackage|Exporting package pkg.a
+  status|completed
+log (once each, sorted):
+  |          ****Export pkg.a****
+  | Action: ExportLanguageResourcesOnly
+  | Database: db
+  | end of execution : <T>
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X05-only-en-only\engine.log
+  | Manifest file: 
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X05-only-en-only
+file <WD>\X05-only-en-only\a\Import\List\k-A01.xml: [BOM]"<AML>\r\n <Item type="List" id="A01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X05-only-en-only\a\Import\List\k-A03.xml: [BOM]"<AML>\r\n <Item type="List" id="A03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X05-only-en-only\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+--
+## X06-only-ml-lookup-fails  action=ExportLanguageResourcesOnly languages=[en,de]
+constructed; languages = ["de"] (1)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|Exporting package pkg.a
+  warning|\t\t****ErrorMessage****\r\nNot a single item
+log (once each, sorted):
+  |          ****Export pkg.a****
+  | \t\t****ErrorMessage****
+  | Action: ExportLanguageResourcesOnly
+  | Database: db
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X06-only-ml-lookup-fails\engine.log
+  | Manifest file: 
+  | Not a single item
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X06-only-ml-lookup-fails
+file <WD>\X06-only-ml-lookup-fails\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+--
+## X07-only-two-packages  action=ExportLanguageResourcesOnly languages=[en,de]
+constructed; languages = ["de"] (1)
+thrown: <none>
+messages (without status lines, once each, sorted):
+  currentPackage|
+  currentPackage|Exporting package pkg.a
+  currentPackage|Exporting package pkg.b
+  status|completed
+log (once each, sorted):
+  |          ****Export pkg.a****
+  |          ****Export pkg.b****
+  | Action: ExportLanguageResourcesOnly
+  | Database: db
+  | end of execution : <T>
+  | Export level: 1
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export using import structure: False
+  | Innovator version: 12.0 SP9 Build 1
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :B01  keyed_name : k-B01   type : List successfully exported
+  | Language pack name: 
+  | Language pack: 
+  | Log file: <WD>\X07-only-two-packages\engine.log
+  | Manifest file: 
+  | start of execution : <T>
+  | Tool version: 14.35.0.43890
+  | URL: http://stub/
+  | User: u
+  | Working directory: <WD>\X07-only-two-packages
+file <WD>\X07-only-two-packages\a\Import\List\k-A01.xml: [BOM]"<AML>\r\n <Item type="List" id="A01" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X07-only-two-packages\b\Import\List\k-A03.xml: [BOM]"<AML>\r\n <Item type="List" id="A03" action="add" xmlns:i18n="http://www.aras.com/I18N">\r\n  <label xml:lang="en">Colors</label>\r\n  <i18n:label xml:lang="de">Farben</i18n:label>\r\n </Item>\r\n</AML>"
+file <WD>\X07-only-two-packages\imports.mf: "<imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n  <package name="pkg.b" path="b\Import" />\r\n</imports>"
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n  <package name="pkg.b" path="b\Import" />\r\n</imports>
+--
+# ---- done through R

@@ -1,0 +1,6 @@
+# 14.35 language-resource export evidence
+
+Evidence for `spec/language-export.md` (`LP-100` to `LP-199`), recorded for wayfinder ticket 54. Neither file is a recorded export run.
+
+- **`probe-14.35.txt`**: the output of `oracle/language-export-probe/probe.ps1` run against the vendored 14.35 `Libs.dll` and IOM 15. No server, user or password is involved: every request is answered by a script, so nothing depends on dev and nothing needed scrubbing. Sections `C` (constructor), `R` (requests), `MK`, `RM`, `ORD`, `ADD` (the four steps) and `E`, `X` (whole exports); the spec cites a case by its label. Five runs gave identical output; the `X` sections leave out the lines that race (`EXP-573`) and print the others once, sorted. `<WD>` stands for the work folder, `<T>` for a timestamp. Exceptions show their .NET message; stack traces are not recorded. To re-record, see the probe's README.
+- **`server-reactions.json`**: read-only gets sent to the dev instance (profile `dev`, database `12sp9`) on 2026-10-19 through the dev MCP client. Nothing was written. It records what the server answers to the engine's Language request and ml_string lookup, and that a suffixed name for a language the database lacks is dropped without a fault. It cannot show a translated value, because dev has one language; see its `notShown`.
