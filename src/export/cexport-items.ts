@@ -1,10 +1,13 @@
 import type { ResponseDocument } from "../client/fault.js";
+import type { XmlDocument } from "../xml/dom.js";
 import type { CItemHelper } from "../client/item-helper.js";
+import { responseDom } from "../client/answer.js";
 import { element } from "../client/request-text.js";
 import { guardExport } from "./export-errors.js";
 import { type ExportItem, exportFileName } from "./export-item.js";
 import { mainFetchRequest, serverMajorOf } from "./main-fetch.js";
 import { itemTypeBody } from "./request-bodies.js";
+import { ExportRewrites } from "./rewrites.js";
 
 /** What the first three requests of an item's export (EXP-001 rows 1 to 3) found. */
 export interface ItemFetch {
@@ -28,7 +31,27 @@ export interface ItemFetch {
  * @spec EXP-001
  */
 export class CExportItems {
-  constructor(private readonly helper: CItemHelper) {}
+  /** Steps 5 to 12 of EXP-100, which {@link CExportItems.rewrite} runs. */
+  readonly rewrites: ExportRewrites;
+
+  constructor(private readonly helper: CItemHelper) {
+    this.rewrites = new ExportRewrites(helper, this);
+  }
+
+  /**
+   * Steps 5 to 12 of `Export` (EXP-100): the rewrites of the answer to the main fetch, on the answer's DOM, which the
+   * transform reads next. They run inside the one `try` of EXP-054, so a failure that is an `XmlException`, a
+   * `NullReferenceException` or an `XPathException` leaves as a `CItemException`.
+   *
+   * @spec EXP-100 EXP-101 EXP-054
+   */
+  rewrite(item: ExportItem, fetched: ItemFetch): Promise<XmlDocument> {
+    return guardExport(async () => {
+      const doc = responseDom(fetched.response);
+      await this.rewrites.rewrite(doc, item.typeName ?? "", fetched.versionable);
+      return doc;
+    });
+  }
 
   /**
    * Rows 1 to 3 of EXP-001: the is_versionable lookup, the current-id lookups for a versionable type, and the main

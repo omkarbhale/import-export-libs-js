@@ -831,3 +831,10 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the real error is lost in the first case, and wrong errors are reported in the second.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportPackage`.
 - **Versions:** 14.35.
+
+## EXP-109: a cycle in the relationship-type chain recurses until the stack overflows
+
+- **Behaviour:** `getDepencyLevel` follows the `source_id` of a RelationshipType to the RelationshipType whose `relationship_id` it is, one fetch per step, and calls itself for each. When the chain is a cycle (a RelationshipType above itself) the calls never end and .NET dies of a stack overflow, a process death no `catch` can handle. The port stops with a `StackOverflowException` (`Process is terminated due to StackOverflowException.`) when a call would be at a depth of 100,000, so it fails catchably where the engine dies.
+- **Why it is a bug:** the walk has no guard against a chain that returns to a type it has already visited.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::getDepencyLevel`.
+- **Versions:** 12.0, 14.0.7, 14.35.

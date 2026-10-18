@@ -3,6 +3,7 @@ import { HttpConnectorExtension, HttpServerConnection } from "./connection.js";
 import { CItemException, type ResponseDocument } from "./fault.js";
 import { Innovator, type ServerConnection } from "./innovator.js";
 import { ItemLookups } from "./item-lookups.js";
+import { ItemReferences } from "./item-references.js";
 import { probeServerVersion } from "./probe.js";
 import { type ArasVersion, VersionRefusal, engineAcceptsServer, enginesAcceptingServer } from "./version.js";
 
@@ -49,6 +50,8 @@ export class CItemHelper {
   versionGate: VersionGate | undefined;
   /** The export-side lookups and their cache, one per helper (EXP-030). */
   readonly lookups: ItemLookups = new ItemLookups(this);
+  /** The rewrites of an answer's references (EXP-113 to EXP-116) and the id of a related item (EXP-114). */
+  readonly references: ItemReferences = new ItemReferences(this);
 
   private readonly skipVersionCheck: boolean;
 

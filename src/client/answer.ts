@@ -1,3 +1,5 @@
+import type { XmlDocument as Dom } from "../xml/dom.js";
+import { loadXml as loadDom } from "../xml/parser.js";
 import type { ResponseDocument } from "./fault.js";
 import { type XmlElement, childElements, descendantElements, innerText, localName, namespaceUri } from "./mini-xml.js";
 
@@ -37,4 +39,13 @@ export function relationshipRows(response: ResponseDocument): XmlElement[] {
 /** Every element called `name` under `root`, in document order (`//name`). */
 export function descendantsNamed(root: XmlElement, name: string): XmlElement[] {
   return [root, ...descendantElements(root)].filter((element) => element.name === name);
+}
+
+/**
+ * The answer as the XML core's document, which the export's rewrites edit in place: IOM loads the answer into an `XmlDocument`
+ * with `PreserveWhitespace` on, so the whitespace the server sent stays (EXP-100). It is read from the text of the answer when
+ * there is one, and from the answer's outer XML otherwise.
+ */
+export function responseDom(response: ResponseDocument): Dom {
+  return loadDom(response.sourceText ?? response.outerXml, { preserveWhitespace: true });
 }

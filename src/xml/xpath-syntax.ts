@@ -174,7 +174,7 @@ class Parser {
   }
 
   private isOperatorName(operator: string): boolean {
-    return this.kind === "name" && this.prefix === "" && this.name === operator && !this.canBeFunction;
+    return this.kind === "name" && this.prefix === "" && this.name === operator;
   }
 
   // ---------------------------------------------------------------- grammar

@@ -150,6 +150,24 @@ export function insertBefore<T extends XmlNode>(parent: XmlNode, child: T, refer
   return child;
 }
 
+/**
+ * `XmlDocument.ImportNode(node, true)`: a deep copy owned by `doc`. Elements keep their `IsEmpty` flag, and an unresolved
+ * entity reference stays one.
+ */
+export function importNode<T extends XmlNode>(doc: XmlDocument, node: T): T {
+  const copy = doc.importNode(node, true) as T;
+  copyMarks(node, copy);
+  return copy;
+}
+
+/** Carries what is recorded beside the nodes (`IsEmpty`, entity references) from a node to its copy, child by child. */
+function copyMarks(from: XmlNode, to: XmlNode): void {
+  if (from.nodeType === ELEMENT_NODE && emptyElements.has(from as XmlElement)) emptyElements.add(to as XmlElement);
+  const entity = entityReferences.get(from);
+  if (entity !== undefined) entityReferences.set(to, entity);
+  for (let a = from.firstChild, b = to.firstChild; a && b; a = a.nextSibling, b = b.nextSibling) copyMarks(a, b);
+}
+
 /** `XmlNode.RemoveChild`. The parent keeps its `IsEmpty` flag, so a parent that had content becomes `<x></x>`. */
 export function removeChild<T extends XmlNode>(parent: XmlNode, child: T): T {
   parent.removeChild(child);

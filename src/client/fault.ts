@@ -44,10 +44,14 @@ function textOf(element: XmlElement | undefined): string {
  * @spec WIRE-052 WIRE-053
  */
 export class ResponseDocument {
-  constructor(readonly document: XmlDocument) {}
+  /** `sourceText` is the text the document was read from, when it was read from text. */
+  constructor(
+    readonly document: XmlDocument,
+    readonly sourceText?: string,
+  ) {}
 
   static parse(text: string): ResponseDocument {
-    return new ResponseDocument(loadXml(text));
+    return new ResponseDocument(loadXml(text), text);
   }
 
   /** The whole document's outer XML, envelope included, with its whitespace. */
