@@ -28,8 +28,13 @@ export class NullReferenceException extends Error {
   }
 }
 
+/** `System.IO.IOException`: the base of the file-system failures the engine catches (IMP-011). */
+export class IOException extends Error {
+  override name = "IOException";
+}
+
 /** `System.IO.FileNotFoundException`. */
-export class FileNotFoundException extends Error {
+export class FileNotFoundException extends IOException {
   override name = "FileNotFoundException";
 
   constructor(readonly fileName: string) {
@@ -38,7 +43,7 @@ export class FileNotFoundException extends Error {
 }
 
 /** `System.IO.DirectoryNotFoundException`. */
-export class DirectoryNotFoundException extends Error {
+export class DirectoryNotFoundException extends IOException {
   override name = "DirectoryNotFoundException";
 
   constructor(readonly path: string) {

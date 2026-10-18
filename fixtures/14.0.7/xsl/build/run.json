@@ -22,8 +22,8 @@
   "preserveWhitespace": false,
   "culture": "en-IN",
   "clr": "4.0.30319.42000",
-  "startedAt": "2026-10-18T19:38:58.742Z",
-  "finishedAt": "2026-10-18T19:39:00.139Z",
+  "startedAt": "2026-10-18T21:24:10.847Z",
+  "finishedAt": "2026-10-18T21:24:11.613Z",
   "cases": [
     {
       "name": "cdata-and-empty",
@@ -38,6 +38,13 @@
       "transform": "transform.xml",
       "applied": "applied.xml",
       "source": "empty-aml.xml"
+    },
+    {
+      "name": "empty-cdata-runs",
+      "inputSha256": "5ca543c2408755ada1eb57f4fd1d40ecf7b7d5cf92fa5a6c6ac682de72598645",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "empty-cdata-runs.xml"
     },
     {
       "name": "invalid-char-ref",
@@ -57,11 +64,32 @@
       "source": "invalid-char-ref.xml"
     },
     {
+      "name": "item-order-misc",
+      "inputSha256": "fb4bdf840de611b77a5619964a6969aaf18b499ada0af1f40eab8b5f1c9d9919",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "item-order-misc.xml"
+    },
+    {
+      "name": "namespace-default-and-nested",
+      "inputSha256": "232cde7186f0f663170a93c19d9c14da2e1a7e0b537262e34874d309e548c574",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "namespace-default-and-nested.xml"
+    },
+    {
       "name": "namespaces",
       "inputSha256": "2628b1ab60be9a97169ce20440b900edfd6cdda50dadf879898a9dcaed25bcd7",
       "transform": "transform.xml",
       "applied": "applied.xml",
       "source": "namespaces.xml"
+    },
+    {
+      "name": "nested-copy-namespaces",
+      "inputSha256": "0fbe8e494c6a233c9f094542e99eec3f2ec315ef586172fb56b13639e7402fd6",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "nested-copy-namespaces.xml"
     },
     {
       "name": "nested-items",
@@ -104,6 +132,13 @@
       "transform": "transform.xml",
       "applied": "applied.xml",
       "source": "sort-type-names.xml"
+    },
+    {
+      "name": "text-and-attribute-escapes",
+      "inputSha256": "d8510bf2a1749c1d79f5ee2712e2f32602221d7305824818734aaeb38173326a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "text-and-attribute-escapes.xml"
     }
   ],
   "scrubbed": {}

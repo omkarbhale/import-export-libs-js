@@ -1,0 +1,1 @@
+<AML>x<AML><Item type='List' action='add' id='1' tempKeyName='k1' tempFullName='f1'/>text<!--c--><Item type='List' action='add' id='2'/><?pi t?></AML><AML><Foo><Item type='List' action='add' id='nested'/></Foo><Item type='Zeta' id='noaction' tempKeyName='k2' tempFullName='f2'/><Item action='add' id='notype'/></AML></AML>

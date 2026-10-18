@@ -1,0 +1,7 @@
+<AML><Item type="Method" action="add" id="m" a="x&#xD;&#xA;y&#x9;z&#xD;w&#xA;v" b="&lt;&amp;&gt;&quot;'" tempKeyName="k1" tempFullName="f1"><name>a
+b
+c
+d &lt;&amp;&gt; ]]&gt; "'</name><method_code><![CDATA[l1
+l2
+l3
+l4 ]]]]><![CDATA[> &]]></method_code><sp xml:space="preserve">  </sp><nb xml:lang="en">   </nb></Item></AML>
