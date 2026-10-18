@@ -8,7 +8,7 @@ passes ARAS_PASSWORD through WSLENV.
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidateSet('export','import','lpimport','cleanup')][string] $Command,
+    [Parameter(Mandatory)][ValidateSet('export','import','lpimport','cleanup','dbpatch')][string] $Command,
     [Parameter(Mandatory)][string] $ToolsetDir,
     [Parameter(Mandatory)][string] $OutDir,
     [Parameter(Mandatory)][string] $WorkDir,
@@ -39,6 +39,14 @@ param(
     [switch] $LockUpgradeRows,
     # import: "type<TAB>id" per scratch item to give a new generation before the run.
     [string[]] $VersionBefore,
+    # dbpatch: ApplyDBUpdateManifest's DBUpdateConfig, and the digests of the committed test patch files.
+    [string] $DbManifest,
+    [string] $DbPatchesFolder,
+    [string] $DbToolName,
+    [string] $ExpectedDbManifestSha256,
+    [string] $ExpectedDbPatchSha256,
+    # cleanup: delete DB patch items (the test patch's three), not import items.
+    [switch] $DbPatchCleanup,
 
     # ---- Engine options ----
     [switch] $ContextVerbose,

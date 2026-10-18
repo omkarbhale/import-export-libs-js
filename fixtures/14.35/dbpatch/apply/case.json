@@ -1,0 +1,79 @@
+{
+  "id": "apply",
+  "engine": "14.35",
+  "title": "The no-op test patch, applied and applied again",
+  "exercises": "The success path of `ApplyDBUpdateManifest` with the committed no-op patch (DBP-070) as `root`: `ValidateRootUser`'s four requests, the new `DatabaseUpgrade` row, `ApplyUpdate`, the `DatabaseUpgradePatch` link and the row's status edit. Step 2 runs the same patch again before the cleanup: the row now exists (the edit path of DBP-030) and the server refuses `ApplyUpdate` with a fault, because the number was already applied (DBP-042). That is an `error` message and a failed run, not an exception, and the row ends with status 2 (DBP-044).",
+  "rules": [
+    "DBP-002",
+    "DBP-011",
+    "DBP-012",
+    "DBP-020",
+    "DBP-021",
+    "DBP-022",
+    "DBP-030",
+    "DBP-040",
+    "DBP-041",
+    "DBP-042",
+    "DBP-043",
+    "DBP-044",
+    "DBP-060",
+    "DBP-061"
+  ],
+  "steps": [
+    {
+      "name": "first run",
+      "user": "root",
+      "expect": {
+        "kind": "applied"
+      },
+      "result": {
+        "hostExit": 0,
+        "calls": 16,
+        "error": null,
+        "errorMessages": 0,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "86667168B1724130BA501C7AC81906B3"
+          },
+          {
+            "type": "Applied Updates",
+            "id": "17DB84D6D4C64E06A499D610C5F250D0"
+          },
+          {
+            "type": "DatabaseUpgradePatch",
+            "id": "619AFE978CE94A19BCFDEA07327A916A"
+          }
+        ]
+      }
+    },
+    {
+      "name": "second run, same patch",
+      "user": "root",
+      "expect": {
+        "kind": "patch-failed"
+      },
+      "result": {
+        "hostExit": 1,
+        "calls": 15,
+        "error": null,
+        "errorMessages": 1,
+        "created": []
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "DatabaseUpgradePatch",
+      "id": "619AFE978CE94A19BCFDEA07327A916A"
+    },
+    {
+      "type": "Applied Updates",
+      "id": "17DB84D6D4C64E06A499D610C5F250D0"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "86667168B1724130BA501C7AC81906B3"
+    }
+  ]
+}

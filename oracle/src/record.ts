@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative } from "node:path";
 import type { Engine } from "../../src/engines.js";
+import { MANIFEST_SHA256, PATCH_FILE, PATCH_SHA256, assertTestPatch } from "./dbpatch.js";
 import { listFiles, readManifest, toolsetDigest } from "./manifest.js";
 import { findSecrets, scrub, secretForms } from "./scrub.js";
 import { stageHost, stageToolset, oracleWindowsRoot } from "./stage.js";
@@ -15,7 +16,7 @@ export type HostValue = string | number | boolean | readonly string[];
 
 export interface RecordRequest {
   engine: Engine;
-  command: "export" | "import" | "lpimport" | "cleanup";
+  command: "export" | "import" | "lpimport" | "cleanup" | "dbpatch";
   url: string;
   database: string;
   user: string;
@@ -31,6 +32,8 @@ export interface RecordRequest {
   /** lpimport: the language pack folder and its config file inside it. */
   lpDir?: string;
   lpConfig?: string;
+  /** dbpatch (14.35): the manifest, the folder of patch files and the `ToolName`; only the committed test patch passes. */
+  dbpatch?: { manifest: string; folder: string; toolName: string };
   log?: (text: string) => void;
 }
 
@@ -57,7 +60,7 @@ export interface RecordResult {
   hostExit: number;
   calls: number | null;
   error: string | null;
-  /** import/lpimport: null when the host did not report a cleanup. */
+  /** import/lpimport/dbpatch: null when the host did not report a cleanup. */
   cleanup: CleanupReport | null;
   remainingSecrets: string[];
 }
@@ -86,6 +89,18 @@ export function launcherScript(hostScript: string, params: Record<string, HostVa
     "exit $LASTEXITCODE",
     "",
   ].join("\r\n");
+}
+
+/** The dbpatch host's parameters: the run's `input/` folder holds the manifest and the patch, and the host re-checks both against the committed digests. */
+export function dbpatchHostParams(dbpatch: { manifest: string; toolName: string }, winRun: string): Record<string, HostValue> {
+  return {
+    WorkDir: winJoin(winRun, "input"),
+    DbManifest: winJoin(winRun, "input", basename(dbpatch.manifest)),
+    DbPatchesFolder: winJoin(winRun, "input"),
+    DbToolName: dbpatch.toolName,
+    ExpectedDbManifestSha256: MANIFEST_SHA256,
+    ExpectedDbPatchSha256: PATCH_SHA256,
+  };
 }
 
 export function assertDevUrl(url: string): void {
@@ -139,6 +154,12 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   const log = req.log ?? ((t: string) => process.stderr.write(t));
   assertDevUrl(req.url);
   if (existsSync(req.out) && readdirSync(req.out).length > 0) throw new Error(`${req.out} already exists and is not empty`);
+  let dbpatch: { manifest: string; folder: string } | undefined;
+  if (req.command === "dbpatch") {
+    if (req.engine !== "14.35") throw new Error(`dbpatch needs engine 14.35: ${req.engine} has no ApplyDBUpdateManifest (DBP-001)`);
+    if (req.dbpatch === undefined) throw new Error("dbpatch needs a manifest, a patches folder and a tool name");
+    dbpatch = assertTestPatch(req.dbpatch.manifest, req.dbpatch.folder, req.dbpatch.toolName);
+  }
   if (req.command === "import" || req.command === "lpimport") {
     if (req.inputDir === undefined) throw new Error(`${req.command} needs a package folder`);
     assertScratchPackages(importedPackageNames(req));
@@ -175,6 +196,12 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
     params.WorkDir = winJoin(winRun, "output");
   } else if (req.command === "cleanup") {
     params.WorkDir = winRun;
+  } else if (req.command === "dbpatch") {
+    // The committed manifest and patch, copied beside the run so the fixture holds the exact inputs.
+    mkdirSync(join(wslRun, "input"));
+    cpSync(dbpatch!.manifest, join(wslRun, "input", basename(dbpatch!.manifest)));
+    cpSync(join(dbpatch!.folder, PATCH_FILE), join(wslRun, "input", PATCH_FILE));
+    Object.assign(params, dbpatchHostParams(req.dbpatch!, winRun));
   } else {
     cpSync(req.inputDir!, join(wslRun, "input"), { recursive: true });
     params.WorkDir = winJoin(winRun, "input");
@@ -214,7 +241,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   const cleanup = (hostInfo?.cleanup as CleanupReport | undefined) ?? null;
   if (hostInfo !== null) delete hostInfo.cleanup;
   const recordedParams = Object.fromEntries(
-    Object.entries(params).filter(([k]) => !/^(ToolsetDir|OutDir|WorkDir|ImportManifest|LPPath)$|^Expected/.test(k)),
+    Object.entries(params).filter(([k]) => !/^(ToolsetDir|OutDir|WorkDir|ImportManifest|LPPath|DbManifest|DbPatchesFolder)$|^Expected/.test(k)),
   );
   const run = {
     engine: req.engine,

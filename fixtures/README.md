@@ -12,6 +12,8 @@ Fixture tickets add one folder per engine version and fixture family. `wire/` ho
 
 `14.0.7/import/` holds the 14.0.7 import cases (ticket 25), one folder per case with a `step-<n>/` folder per oracle run (see its `README.md`). A step folder has the run record (with the cleanup report), `transcript.jsonl`, `messages.jsonl`, `engine.log`, `host.log` and `input/`, the package folder the engine read. Each case README lists the `LIBSJS-SCRATCH-*` ids created and deleted. Large transcript responses are in `14.0.7/import/_blobs/`.
 
+`14.35/dbpatch/` holds the 14.35 DB patch cases (ticket 72), one folder per case with a `step-<n>/` folder per oracle `dbpatch` run (see its `README.md`): the `admin` login that the engine refuses, and the committed no-op patch applied as `root` and again. A step folder has the run record (with the cleanup report), `transcript.jsonl`, `messages.jsonl`, `engine.log`, `host.log` and `input/`, the manifest and patch file the engine read. Each case README lists the ids created and deleted.
+
 Rules for this folder:
 
 - **Bytes are exact.** Files keep the engine's BOM, CRLF line endings and indentation. `.gitattributes` turns off line-ending conversion here, so never re-save these files with an editor.

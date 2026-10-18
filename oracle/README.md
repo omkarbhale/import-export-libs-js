@@ -21,6 +21,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 - **`native/manifest.json`**: for each engine, the source folder, every file's size and sha256, the Libs and IOM version and MVID, and the excluded entries. `npm test` checks the vendored folders against it on any OS, reading MVIDs straight from PE metadata (`src/pe.ts`).
 - **`host/`**: the Windows side. `engine-<version>.ps1` is one host per engine. Each exposes that engine's `SolutionUpgradeContext`, `SUExportContext` and `SUImportContext` options as parameters, so an option a build lacks cannot be passed. They share `common.ps1` and `OracleHost.cs`, the recorder, which `Add-Type` compiles against the staged DLLs.
 - **`src/`**: the WSL side (`npm run oracle`): manifest checks, staging, the launcher, collection and scrubbing.
+- **`dbpatch/`**: the one DB patch the oracle will apply (DBP-070): `manifest.xml` with one entry, and the patch file `LIBSJS-SCRATCH-noop.xml`, a no-op server method. They are byte-exact and committed with their sha256 in `src/dbpatch.ts`.
 - **`xsl-cases/`**: this repo's own synthetic inputs for the `xsl` command (`export/`, `export-items/` and `build/`), one XML file per case. `export-items/` is the probe set of the export transform's part 1 (`spec/export-transform.md`), recorded with `npm run oracle -- --engine 14.0.7 xsl --xsl export.xsl oracle/xsl-cases/export-items --out fixtures/14.0.7/xsl/export-items`. They are byte-exact (some hold CRLF), so editors must not re-save them.
 - **`export-write-probe/`**: offline probes of the export write path (post-XSL steps, output layout, file-system rules), for `spec/export-write.md`. `probe.ps1` is 14.0.7's and `probe-12.0.ps1` covers the 12.0 steps that differ. How to re-run is in its README.
 - **`wire-capture/`**: a one-off recording of an engine's reference host below the AML, for the wire fixtures in `fixtures/wire/`. `ReferenceHost.cs` (14.0.7), `ReferenceHost-12.0.cs` and `ReferenceHost-14.35.cs` connect as each version's ConsoleUpgrade does, `proxy.mjs` records every HTTP exchange (with timings, connections, and an optional delay to provoke a client timeout), and `fixture.ts` scrubs the recording. How to re-record is in each fixture's README.
@@ -48,7 +49,7 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 
    - `xsl` runs no engine action and needs no server or password; see "The XSL probe".
 
-   Running 14.35's `ImportDPPatch` / `ApplyDBUpdateManifest` is not wired yet (ticket 72).
+   - `dbpatch <manifest.xml>` (14.35 only) calls `ImportExportManager.ApplyDBUpdateManifest` with a `DBUpdateConfig` built from the manifest, `--patches-folder` (default the manifest's folder) and `--tool-name` (default `Libs`), with `Action = ImportDPPatch` as Aras Update sets it (DBP-002). See "The DB patch command".
 6. **Import steps.** An `import` can act around the recorded run (none of it reaches the transcript):
    - `--cancel-after-status <n>` presses Cancel (`ImportExportManager.Cancel()`) once the n-th status message has been delivered, which is where the GUI's button acts: the loop reads the flag before its next item.
    - `--lock-upgrade-rows` locks the packages' `DatabaseUpgrade` rows first (the engine's unlock path), `--version-before <type>:<id>,...` gives scratch items a new generation first (the merge's current-generation path). Both refuse anything without a scratch name (step 7) and are made through a connection of their own.
@@ -59,6 +60,24 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 ## Export fixture cases
 
 `npm run oracle:export-cases` records ticket 05's 14.0.7 export catalogue (`src/export-cases.ts`) into `fixtures/14.0.7/export/<case>/`, one oracle export per case, read-only on dev. `--only <id>,…` picks cases, `--force` re-records, `--list` shows what is recorded, `--readme-only` rewrites the READMEs and index from the case list without running the engine. Each case lists its packages and items in the order the host inserts them into the engine's `Hashtable`; the multi-package ordering cases (`p1-*`) rely on that. The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
+
+## The DB patch command
+
+```sh
+ARAS_PASSWORD=… npm run oracle -- --engine 14.35 dbpatch oracle/dbpatch/manifest.xml
+ARAS_PASSWORD=… npm run oracle -- --engine 14.35 dbpatch oracle/dbpatch/manifest.xml --user admin   # the non-root refusal
+```
+
+`dbpatch` records the engine's `ApplyDBUpdateManifest` the way `import` records an import: the recording connection captures every `CallAction`, including the raw `ValidateUser`, `GetItem` and `ApplyUpdate` calls that go through the engine's own helper, and all five message channels, and the engine's log. The login defaults to `root` like every command, because the engine accepts that name only (DBP-010). `--keep-created` skips the cleanup for a later run (the recorder uses it for the second run of `apply`); `cleanup --db-patch --from-runs <run.json>` deletes what such a run kept.
+
+**Only one patch runs.** A DB patch is server code that runs as the Super User, so the oracle applies the committed no-op of DBP-070 and nothing else:
+
+- The WSL side refuses, before it stages anything, a manifest that is not named `manifest.xml` or not byte-identical to `oracle/dbpatch/manifest.xml`, a patch file `LIBSJS-SCRATCH-noop.xml` in the patches folder that is not byte-identical to the committed one, and any `--tool-name` but `Libs`. The host checks the same two digests again on the staged copies, right before the engine runs.
+- Before the run, with no recording, the host reads that no `DatabaseUpgrade` row of type 0 for release `99.99` and no "Applied Updates" item numbered `LIBSJS-SCRATCH-001` exists, so the run only adds: a `DatabaseUpgrade` row, an "Applied Updates" item and the `DatabaseUpgradePatch` that links them. If either exists, it stops.
+- The cleanup deletes those three items by the ids the recorded calls show, newest first, and only when each still matches the test patch (the row by name, release and type, the update by its number, the link by its update's number). A read-back must then find nothing of the release or the number. The report is the import cleanup's (`created`, `deleted`, `kept`, `unverified`); anything kept exits 1.
+- A patch that the server refuses is an `error` message, not an exception (DBP-050): the host exits 1 for any text on the `error` channel, and 2 when the engine throws (the non-root refusal). `run.json` `host.errorMessages` counts the texts.
+
+`npm run oracle:dbpatch-cases` records the fixture, `fixtures/14.35/dbpatch/<case>/step-<n>/`, with the same layout as an import step: `non-root` (the `admin` login) and `apply` (the patch as `root`, then the same patch again, which the server refuses as already applied). `--only <id>,…`, `--force`, `--list` and `--readme-only` work as for `oracle:import-cases`. It writes to dev, but only the three items above, and deletes them (a failed case is cleaned up too). The password arrives through `ARAS_PASSWORD` or stdin like any oracle run.
 
 ## The XSL probe
 
@@ -106,7 +125,7 @@ The transcript holds the AML exchanged, not the request bytes. IOM adds the SOAP
 
 ## Rules
 
-- **Dev only.** `xsl` contacts no server. The other commands: the oracle refuses any server but the dev instance (`http://localhost/12sp9` from Windows, or `172.19.0.1` from WSL). `import` and `lpimport` refuse any package or item not named `LIBSJS-SCRATCH-*` (step 6). Each one deletes what it created (step 7) and prints the created, deleted, kept and unverified ids. A run that keeps anything, leaves anything unverified, or whose host reports no cleanup, exits 1.
+- **Dev only.** `xsl` contacts no server. The other commands: the oracle refuses any server but the dev instance (`http://localhost/12sp9` from Windows, or `172.19.0.1` from WSL). `import` and `lpimport` refuse any package or item not named `LIBSJS-SCRATCH-*` (step 6). `dbpatch` applies the committed no-op patch only (see "The DB patch command"). Each one deletes what it created (step 7) and prints the created, deleted, kept and unverified ids. A run that keeps anything, leaves anything unverified, or whose host reports no cleanup, exits 1.
 - **The scratch guard catches mistakes; it does not resolve targets.** It checks names: package names, item file names, `name` and `keyed_name`. The engine picks the item it changes by `id` or `where`, and the guard never looks those up. So feed the oracle only this repo's own `LIBSJS-SCRATCH-*` fixture packages. Never feed it a foreign package or language pack whose items carry real ids, a package with `edit`, `merge` or `delete` post-actions, or `--merge` against non-scratch items.
 - **The password** arrives only through `ARAS_PASSWORD` or stdin. It reaches PowerShell through `WSLENV` and never through a command line or a file. 14.35's host sends IOM the MD5 hex, because IOM 15 would otherwise send the plain password first. 12.0 and 14.0.7 send it plain.
 - **Scrubbing** (`src/scrub.ts`) runs over every collected file. It replaces password elements and fields, `Authorization` headers, bearer tokens, OAuth token fields, JWTs, and the run password's MD5 and SHA-256 forms. A file with nothing to scrub keeps its exact bytes. A run fails if credential-shaped text survives. `npm test` fails if any file under `fixtures/` contains it.
