@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><sql_body>a&lt;b&gt;&amp;c</sql_body></Item></AML>

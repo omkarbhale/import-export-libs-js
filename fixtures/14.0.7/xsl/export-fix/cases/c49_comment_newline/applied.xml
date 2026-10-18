@@ -1,0 +1,4 @@
+<AML><Item type="Field" id="FL1" action="add" /><Item type="Field" id="FL1" action="edit"><!-- Please note: this AML depends on the "a
+b
+c
+d" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name>id</name><source_id type="ItemType" keyed_name="a&#xA;b&#xD;&#xA;c&#xD;d">I1</source_id></Item></propertytype_id></Item></AML>

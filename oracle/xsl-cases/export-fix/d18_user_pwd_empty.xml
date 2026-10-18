@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="User" id="U1"><pwd_is_set_on is_null="1"/><pwd_is_set_on/></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

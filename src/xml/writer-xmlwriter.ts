@@ -225,7 +225,8 @@ export function invalidCharacterMessage(value: string): string | undefined {
     if (unit >= 0xdc00 && unit <= 0xdfff) {
       return `Invalid high surrogate character (${hexValue(unit)}). A high surrogate character must have a value from range (0xD800 - 0xDBFF).`;
     }
-    return `'${String.fromCharCode(unit)}', hexadecimal value ${hexValue(unit)}, is an invalid character.`;
+    // the exception names a NUL character as a full stop
+    return `'${unit === 0 ? "." : String.fromCharCode(unit)}', hexadecimal value ${hexValue(unit)}, is an invalid character.`;
   }
   return undefined;
 }
