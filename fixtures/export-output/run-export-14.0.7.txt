@@ -1,0 +1,942 @@
+# engine 14.0.7.35492, 14 logical processors, CLR 4.0.30319.42000
+## S1-basic
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 4: List - k-A04
+  3|16|status|Item 2 of 4: List - k-A03
+  4|16|status|Item 3 of 4: List - k-A02
+  5|16|status|Item 4 of 4: List - k-A01
+  6|16|status|completed
+  7|16|currentPackage|
+status texts: 4 sent, 4 distinct keyed names, 0 of 4 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A04  keyed_name : k-A04   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\a\Import\List\k-A04.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 4, max in flight: 1
+fetch completion order (id@thread):
+  A04@16
+  A03@16
+  A02@16
+  A01@16
+--
+## S3-fail-yes
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 12: List - k-A09
+  3|16|status|Item 2 of 12: List - k-A08
+  4|16|status|Item 3 of 12: List - k-A10
+  5|16|status|Item 4 of 12: List - k-A12
+  6|16|status|Item 5 of 12: List - k-A03
+  7|16|status|Item 6 of 12: List - k-A02
+  8|16|status|Item 7 of 12: List - k-A01
+  9|16|status|Item 8 of 12: List - k-A07
+  10|16|status|Item 9 of 12: List - k-A06
+  11|16|status|Item 10 of 12: List - k-A05
+  12|16|status|Error of exporting Item id :A05  keyed_name : k-A05    type : List
+  13|16|errorQuestion|          ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type="List" action="get" levels="1"><id>A05</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for A05]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for A05]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :scripted failure for A05\r\nfaultcode: 1\r\n          *******************\r\n\r\n  Abort current export of pkg.a ?
+  14|16|status|completed
+  15|16|currentPackage|
+status texts: 10 sent, 10 distinct keyed names, 2 of 12 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A09  keyed_name : k-A09   type : List successfully exported
+  | Item id :A08  keyed_name : k-A08   type : List successfully exported
+  | Item id :A10  keyed_name : k-A10   type : List successfully exported
+  | Item id :A12  keyed_name : k-A12   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A07  keyed_name : k-A07   type : List successfully exported
+  | Item id :A06  keyed_name : k-A06   type : List successfully exported
+  | Error of exporting Item id :A05  keyed_name : k-A05    type : List
+  |       ******Error message******
+  | faultstring: Server error
+  | 
+  | Request: <Item type="List" action="get" levels="1"><id>A05</id></Item>
+  | 
+  | Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for A05]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for A05]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+  | faultdetail: scripted failure for A05
+  | faultcode:   1
+  |      **********************
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\a\Import\List\k-A06.xml
+  <WD>\a\Import\List\k-A07.xml
+  <WD>\a\Import\List\k-A08.xml
+  <WD>\a\Import\List\k-A09.xml
+  <WD>\a\Import\List\k-A10.xml
+  <WD>\a\Import\List\k-A12.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 10, max in flight: 1
+fetch completion order (id@thread):
+  A09@16
+  A08@16
+  A10@16
+  A12@16
+  A03@16
+  A02@16
+  A01@16
+  A07@16
+  A06@16
+  A05@16
+--
+## S4-fail-no
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 12: List - k-A09
+  3|16|status|Item 2 of 12: List - k-A08
+  4|16|status|Item 3 of 12: List - k-A10
+  5|16|status|Item 4 of 12: List - k-A12
+  6|16|status|Item 5 of 12: List - k-A03
+  7|16|status|Item 6 of 12: List - k-A02
+  8|16|status|Item 7 of 12: List - k-A01
+  9|16|status|Item 8 of 12: List - k-A07
+  10|16|status|Item 9 of 12: List - k-A06
+  11|16|status|Item 10 of 12: List - k-A05
+  12|16|status|Error of exporting Item id :A05  keyed_name : k-A05    type : List
+  13|16|errorQuestion|          ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type="List" action="get" levels="1"><id>A05</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for A05]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for A05]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :scripted failure for A05\r\nfaultcode: 1\r\n          *******************\r\n\r\n  Abort current export of pkg.a ?
+  14|16|status|Item 11 of 12: List - k-A04
+  15|16|status|Item 12 of 12: List - k-A11
+  16|16|status|completed
+  17|16|currentPackage|
+status texts: 12 sent, 12 distinct keyed names, 0 of 12 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A09  keyed_name : k-A09   type : List successfully exported
+  | Item id :A08  keyed_name : k-A08   type : List successfully exported
+  | Item id :A10  keyed_name : k-A10   type : List successfully exported
+  | Item id :A12  keyed_name : k-A12   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A07  keyed_name : k-A07   type : List successfully exported
+  | Item id :A06  keyed_name : k-A06   type : List successfully exported
+  | Error of exporting Item id :A05  keyed_name : k-A05    type : List
+  |       ******Error message******
+  | faultstring: Server error
+  | 
+  | Request: <Item type="List" action="get" levels="1"><id>A05</id></Item>
+  | 
+  | Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for A05]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for A05]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+  | faultdetail: scripted failure for A05
+  | faultcode:   1
+  |      **********************
+  | Item id :A04  keyed_name : k-A04   type : List successfully exported
+  | Item id :A11  keyed_name : k-A11   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\a\Import\List\k-A04.xml
+  <WD>\a\Import\List\k-A06.xml
+  <WD>\a\Import\List\k-A07.xml
+  <WD>\a\Import\List\k-A08.xml
+  <WD>\a\Import\List\k-A09.xml
+  <WD>\a\Import\List\k-A10.xml
+  <WD>\a\Import\List\k-A11.xml
+  <WD>\a\Import\List\k-A12.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 12, max in flight: 1
+fetch completion order (id@thread):
+  A09@16
+  A08@16
+  A10@16
+  A12@16
+  A03@16
+  A02@16
+  A01@16
+  A07@16
+  A06@16
+  A05@16
+  A04@16
+  A11@16
+--
+## S5-fail-multi-package
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.c
+  2|16|status|Item 1 of 6: List - k-C06
+  3|16|status|Item 2 of 6: List - k-C01
+  4|16|status|Item 3 of 6: List - k-C03
+  5|16|status|Item 4 of 6: List - k-C02
+  6|16|status|Error of exporting Item id :C02  keyed_name : k-C02    type : List
+  7|16|errorQuestion|          ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type="List" action="get" levels="1"><id>C02</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for C02]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for C02]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :scripted failure for C02\r\nfaultcode: 1\r\n          *******************\r\n\r\n  Abort current export of pkg.c ?
+  8|16|status|completed
+  9|16|currentPackage|Exporting package pkg.b
+  10|16|status|Item 1 of 3: List - k-B01
+  11|16|status|Item 2 of 3: List - k-B02
+  12|16|status|Item 3 of 3: List - k-B03
+  13|16|status|completed
+  14|16|currentPackage|Exporting package pkg.a
+  15|16|status|Item 1 of 3: List - k-A03
+  16|16|status|Item 2 of 3: List - k-A02
+  17|16|status|Item 3 of 3: List - k-A01
+  18|16|status|completed
+  19|16|currentPackage|Exporting referenced items from 'dep.x'
+  20|16|status|Item 1 of 1: List - ref one
+  21|16|status|completed
+  22|16|currentPackage|
+status texts: 11 sent, 11 distinct keyed names, 2 of 12 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: True
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.c****
+  | start of execution : <T>
+  | Item id :C06  keyed_name : k-C06   type : List successfully exported
+  | Item id :C01  keyed_name : k-C01   type : List successfully exported
+  | Item id :C03  keyed_name : k-C03   type : List successfully exported
+  | Error of exporting Item id :C02  keyed_name : k-C02    type : List
+  |       ******Error message******
+  | faultstring: Server error
+  | 
+  | Request: <Item type="List" action="get" levels="1"><id>C02</id></Item>
+  | 
+  | Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for C02]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for C02]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+  | faultdetail: scripted failure for C02
+  | faultcode:   1
+  |      **********************
+  | end of execution : <T>
+  |          ****Export pkg.b****
+  | start of execution : <T>
+  | Item id :B01  keyed_name : k-B01   type : List successfully exported
+  | Item id :B02  keyed_name : k-B02   type : List successfully exported
+  | Item id :B03  keyed_name : k-B03   type : List successfully exported
+  | end of execution : <T>
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  |          ****Export dep.x****
+  | start of execution : <T>
+  | Item id :RF01  keyed_name : ref one   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\b [dir]
+  <WD>\b\Import [dir]
+  <WD>\b\Import\List [dir]
+  <WD>\b\Import\List\k-B01.xml
+  <WD>\b\Import\List\k-B02.xml
+  <WD>\b\Import\List\k-B03.xml
+  <WD>\c [dir]
+  <WD>\c\Import [dir]
+  <WD>\c\Import\List [dir]
+  <WD>\c\Import\List\k-C01.xml
+  <WD>\c\Import\List\k-C03.xml
+  <WD>\c\Import\List\k-C06.xml
+  <WD>\imports.mf
+  <WD>\x [dir]
+  <WD>\x\Import [dir]
+  <WD>\x\Import\List [dir]
+  <WD>\x\Import\List\ref one.xml
+imports.mf: <imports>\r\n  <package name="pkg.c" path="c\Import">\r\n    <dependson name="dep.x">\r\n      <referenced_element id="RF01" type="List" descr="ref one" />\r\n    </dependson>\r\n  </package>\r\n  <package name="pkg.b" path="b\Import">\r\n    <dependson name="dep.x">\r\n      <referenced_element id="RF01" type="List" descr="ref one" />\r\n    </dependson>\r\n  </package>\r\n  <package name="pkg.a" path="a\Import">\r\n    <dependson name="dep.x">\r\n      <referenced_element id="RF01" type="List" descr="ref one" />\r\n    </dependson>\r\n  </package>\r\n</imports>
+main fetches: 11, max in flight: 1
+fetch completion order (id@thread):
+  C06@16
+  C01@16
+  C03@16
+  C02@16
+  B01@16
+  B02@16
+  B03@16
+  A03@16
+  A02@16
+  A01@16
+  RF01@16
+--
+## S6-referenced-ok
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 3: List - k-A03
+  3|16|status|Item 2 of 3: List - k-A02
+  4|16|status|Item 3 of 3: List - k-A01
+  5|16|status|completed
+  6|16|currentPackage|Exporting referenced items from 'dep.x'
+  7|16|status|Item 1 of 1: List - ref one
+  8|16|status|completed
+  9|16|currentPackage|
+status texts: 4 sent, 4 distinct keyed names, 0 of 3 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: True
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  |          ****Export dep.x****
+  | start of execution : <T>
+  | Item id :RF01  keyed_name : ref one   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\imports.mf
+  <WD>\x [dir]
+  <WD>\x\Import [dir]
+  <WD>\x\Import\List [dir]
+  <WD>\x\Import\List\ref one.xml
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import">\r\n    <dependson name="dep.x">\r\n      <referenced_element id="RF01" type="List" descr="ref one" />\r\n    </dependson>\r\n  </package>\r\n</imports>
+main fetches: 4, max in flight: 1
+fetch completion order (id@thread):
+  A03@16
+  A02@16
+  A01@16
+  RF01@16
+--
+## S7-null-packages
+thrown: <none>
+messages:
+  1|16|warning|The database contains no package definitions. Please select another database and try again
+  2|16|warning|          ****ErrorMessage****\r\n       Object reference not set to an instance of an object.
+status texts: 0 sent, 0 distinct keyed names, 2 of 2 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |           ****ErrorMessage****
+  |        Object reference not set to an instance of an object.
+  | 
+files:
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 0, max in flight: 0
+fetch completion order (id@thread):
+--
+## S7b-null-packages-empty-table
+thrown: <none>
+messages:
+  1|16|warning|The database contains no package definitions. Please select another database and try again
+  2|16|currentPackage|
+status texts: 0 sent, 0 distinct keyed names, 0 of 0 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  | 
+files:
+  <WD>\imports.mf
+imports.mf: <imports />
+main fetches: 0, max in flight: 0
+fetch completion order (id@thread):
+--
+## S8-throw
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 12: List - k-A09
+  3|16|status|Item 2 of 12: List - k-A08
+  4|16|status|Item 3 of 12: List - k-A10
+  5|16|status|Item 4 of 12: List - k-A12
+  6|16|status|Item 5 of 12: List - k-A03
+  7|16|status|Item 6 of 12: List - k-A02
+  8|16|status|Item 7 of 12: List - k-A01
+  9|16|status|Item 8 of 12: List - k-A07
+  10|16|status|Item 9 of 12: List - k-A06
+  11|16|status|Item 10 of 12: List - k-A05
+  12|16|status|Item 11 of 12: List - k-A04
+  13|16|warning|          ****ErrorMessage****\r\n       scripted failure for A04
+status texts: 11 sent, 11 distinct keyed names, 1 of 12 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A09  keyed_name : k-A09   type : List successfully exported
+  | Item id :A08  keyed_name : k-A08   type : List successfully exported
+  | Item id :A10  keyed_name : k-A10   type : List successfully exported
+  | Item id :A12  keyed_name : k-A12   type : List successfully exported
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A07  keyed_name : k-A07   type : List successfully exported
+  | Item id :A06  keyed_name : k-A06   type : List successfully exported
+  | Item id :A05  keyed_name : k-A05   type : List successfully exported
+  |           ****ErrorMessage****
+  |        scripted failure for A04
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\a\Import\List\k-A05.xml
+  <WD>\a\Import\List\k-A06.xml
+  <WD>\a\Import\List\k-A07.xml
+  <WD>\a\Import\List\k-A08.xml
+  <WD>\a\Import\List\k-A09.xml
+  <WD>\a\Import\List\k-A10.xml
+  <WD>\a\Import\List\k-A12.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 11, max in flight: 1
+fetch completion order (id@thread):
+  A09@16
+  A08@16
+  A10@16
+  A12@16
+  A03@16
+  A02@16
+  A01@16
+  A07@16
+  A06@16
+  A05@16
+--
+## S13-fail-referenced
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 2: List - k-A01
+  3|16|status|Item 2 of 2: List - k-A02
+  4|16|status|completed
+  5|16|currentPackage|Exporting referenced items from 'dep.x'
+  6|16|status|Item 1 of 1: List - ref one
+  7|16|status|Error of exporting Item id :RF01  keyed_name : ref one    type : List
+  8|16|errorQuestion|          ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type="List" action="get" levels="1"><id>RF01</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for RF01]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for RF01]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :scripted failure for RF01\r\nfaultcode: 1\r\n          *******************\r\n\r\n  Abort current export of dep.x ?
+  9|16|status|completed
+  10|16|currentPackage|
+status texts: 3 sent, 3 distinct keyed names, 0 of 2 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: True
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | end of execution : <T>
+  |          ****Export dep.x****
+  | start of execution : <T>
+  | Error of exporting Item id :RF01  keyed_name : ref one    type : List
+  |       ******Error message******
+  | faultstring: Server error
+  | 
+  | Request: <Item type="List" action="get" levels="1"><id>RF01</id></Item>
+  | 
+  | Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault"><faultcode>1</faultcode><faultstring><![CDATA[scripted failure for RF01]]></faultstring><detail><af:legacy_detail><![CDATA[scripted failure for RF01]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+  | faultdetail: scripted failure for RF01
+  | faultcode:   1
+  |      **********************
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\imports.mf
+  <WD>\x [dir]
+  <WD>\x\Import [dir]
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import">\r\n    <dependson name="dep.x">\r\n      <referenced_element id="RF01" type="List" descr="ref one" />\r\n    </dependson>\r\n  </package>\r\n</imports>
+main fetches: 3, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+  A02@16
+  RF01@16
+--
+## S15-type-invalid-char
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 2: Li|st - k-A01
+  3|16|warning|          ****ErrorMessage****\r\n       Illegal characters in path.
+status texts: 1 sent, 1 distinct keyed names, 1 of 2 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  |           ****ErrorMessage****
+  |        Illegal characters in path.
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 1, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+--
+## S16-type-rooted
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 2: <WD>\escape - k-A01
+  3|16|warning|          ****ErrorMessage****\r\n       The given path's format is not supported.
+status texts: 1 sent, 1 distinct keyed names, 1 of 2 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  |           ****ErrorMessage****
+  |        The given path's format is not supported.
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 1, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+file escape\k-A01.xml:
+  <absent>
+file a\Import\List\k-A02.xml:
+  <absent>
+--
+## S17-separately-exported
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 1: List - k-A01
+  3|16|status|completed
+  4|16|currentPackage|
+status texts: 1 sent, 1 distinct keyed names, 0 of 1 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 1, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+file a\Import\List\k-A01.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A01" action="add">\r\n  <name>n-A01</name>\r\n  <Relationships>\r\n   <Item type="Value" id="V1" action="add">\r\n    <label>one</label>\r\n   </Item>\r\n   <Item type="Value" id="V2" action="add">\r\n    <label>two</label>\r\n   </Item>\r\n   <Item type="Other" id="V1" action="add">\r\n    <label>other</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A02.xml:
+  <absent>
+file a\Import\List\k-A03.xml:
+  <absent>
+file a\Import\List\k-A04.xml:
+  <absent>
+file a\Import\List\k-A05.xml:
+  <absent>
+file a\Import\List\k-A06.xml:
+  <absent>
+file a\Import\List\k-A07.xml:
+  <absent>
+file a\Import\List\k-A08.xml:
+  <absent>
+--
+## S18-not-separately-exported
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 1: List - k-A01
+  3|16|status|completed
+  4|16|currentPackage|
+status texts: 1 sent, 1 distinct keyed names, 0 of 1 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 1, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+file a\Import\List\k-A01.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A01" action="add">\r\n  <name>n-A01</name>\r\n  <Relationships>\r\n   <Item type="Value" id="V1" action="add">\r\n    <label>one</label>\r\n   </Item>\r\n   <Item type="Value" id="V2" action="add">\r\n    <label>two</label>\r\n   </Item>\r\n   <Item type="Other" id="V1" action="add">\r\n    <label>other</label>\r\n   </Item>\r\n  </Relationships>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A02.xml:
+  <absent>
+file a\Import\List\k-A03.xml:
+  <absent>
+file a\Import\List\k-A04.xml:
+  <absent>
+file a\Import\List\k-A05.xml:
+  <absent>
+file a\Import\List\k-A06.xml:
+  <absent>
+file a\Import\List\k-A07.xml:
+  <absent>
+file a\Import\List\k-A08.xml:
+  <absent>
+--
+## S19-wd-trailing-backslash
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 1: List - k-A01
+  3|16|status|completed
+  4|16|currentPackage|
+status texts: 1 sent, 1 distinct keyed names, 0 of 1 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>\
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 1, max in flight: 1
+fetch completion order (id@thread):
+  A01@16
+file a\Import\List\k-A01.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A01" action="add">\r\n  <name>n-A01</name>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A02.xml:
+  <absent>
+file a\Import\List\k-A03.xml:
+  <absent>
+file a\Import\List\k-A04.xml:
+  <absent>
+file a\Import\List\k-A05.xml:
+  <absent>
+file a\Import\List\k-A06.xml:
+  <absent>
+file a\Import\List\k-A07.xml:
+  <absent>
+file a\Import\List\k-A08.xml:
+  <absent>
+--
+## S23-permission-lookup-fails-once
+thrown: <none>
+messages:
+  1|16|currentPackage|Exporting package pkg.a
+  2|16|status|Item 1 of 6: List - k-A03
+  3|16|status|Item 2 of 6: List - k-A02
+  4|16|status|Item 3 of 6: List - k-A01
+  5|16|status|Item 4 of 6: List - k-A06
+  6|16|status|Item 5 of 6: List - k-A05
+  7|16|status|Item 6 of 6: List - k-A04
+  8|16|status|completed
+  9|16|currentPackage|
+status texts: 6 sent, 6 distinct keyed names, 0 of 6 keyed names never named
+log:
+  | Tool version: 14.0.7.35492
+  | Action: Export
+  | Manifest file: 
+  | Log file: <WD>\engine.log
+  | Working directory: <WD>
+  | URL: http://stub/
+  | Database: db
+  | User: u
+  | Innovator version: 14.0.7.1
+  | Language pack: 
+  | Language pack name: 
+  | Export referenced items: False
+  | Export unknown packages action: DoNotRemove
+  | Export level: 1
+  | Export using import structure: False
+  | 
+  |          ****Export pkg.a****
+  | start of execution : <T>
+  | Item id :A03  keyed_name : k-A03   type : List successfully exported
+  | Item id :A02  keyed_name : k-A02   type : List successfully exported
+  | Item id :A01  keyed_name : k-A01   type : List successfully exported
+  | Item id :A06  keyed_name : k-A06   type : List successfully exported
+  | Item id :A05  keyed_name : k-A05   type : List successfully exported
+  | Item id :A04  keyed_name : k-A04   type : List successfully exported
+  | end of execution : <T>
+  | 
+files:
+  <WD>\a [dir]
+  <WD>\a\Import [dir]
+  <WD>\a\Import\List [dir]
+  <WD>\a\Import\List\k-A01.xml
+  <WD>\a\Import\List\k-A02.xml
+  <WD>\a\Import\List\k-A03.xml
+  <WD>\a\Import\List\k-A04.xml
+  <WD>\a\Import\List\k-A05.xml
+  <WD>\a\Import\List\k-A06.xml
+  <WD>\imports.mf
+imports.mf: <imports>\r\n  <package name="pkg.a" path="a\Import" />\r\n</imports>
+main fetches: 6, max in flight: 1
+fetch completion order (id@thread):
+  A03@16
+  A02@16
+  A01@16
+  A06@16
+  A05@16
+  A04@16
+file a\Import\List\k-A01.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A01" action="add">\r\n  <name>n-A01</name>\r\n  <permission_id keyed_name="p" type="Permission">PERMX</permission_id>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A02.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A02" action="add">\r\n  <name>n-A02</name>\r\n  <permission_id keyed_name="p" type="Permission">PERMX</permission_id>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A03.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A03" action="add">\r\n  <name>n-A03</name>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A04.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A04" action="add">\r\n  <name>n-A04</name>\r\n  <permission_id keyed_name="p" type="Permission">PERMX</permission_id>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A05.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A05" action="add">\r\n  <name>n-A05</name>\r\n  <permission_id keyed_name="p" type="Permission">PERMX</permission_id>\r\n </Item>\r\n</AML>"
+file a\Import\List\k-A06.xml:
+  [BOM]"<AML>\r\n <Item type="List" id="A06" action="add">\r\n  <name>n-A06</name>\r\n  <permission_id keyed_name="p" type="Permission">PERMX</permission_id>\r\n </Item>\r\n</AML>"
+--

@@ -21,6 +21,8 @@ Rules for this folder:
 
 `export-write/` is evidence for `spec/export-write.md`, not an engine run: the output of `oracle/export-write-probe/` (offline calls of the 14.0.7 post-XSL, file-layout and file-system code, and `probe-12.0.txt` for the 12.0 steps that differ) and the NTFS case-collision table it measured.
 
+`export-output/` is evidence for the 14.35 export rules (`spec/export-transform.md`, `spec/export-prexsl.md`, `spec/export-write.md`, `spec/export-run.md`), not a server run: the output of `oracle/export-output-probe/`. `run-export-14.35.txt` is one recorded run of the real 14.35 `ExportSolutions` against a scripted connection (scenarios `S1` to `S23`; thread numbers, message order and the race cases differ from run to run, so it is read by the set rules of `EXP-558`). `run-export-14.0.7.txt` runs the scenarios that do not depend on parallelism against 14.0.7. `probe-14.35.txt` and `probe-14.0.7.txt` are the offline method probes. `export-write/probe-14.35.txt` is the existing `export-write` probe run against 14.35, to be read beside `probe-14.0.7.txt`; the rows that print the length of the run folder differ with the folder.
+
 `import-load/` is evidence for `spec/import-load.md`, not an engine run: probes of the 14.0.7 package loader and `build.xsl`. Its own README lists the files.
 
 `import-merge/` is evidence for `spec/import-merge.md`, not an engine run: the output of `oracle/merge-probe/` (offline calls of the 14.0.7 import merge, validation and versionable code against stubs). Its own README says how to re-record.

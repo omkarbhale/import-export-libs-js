@@ -9,6 +9,9 @@ Sources:
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `CItemHelper::ApplyXsl`, `GetXslTransform` and `GetManifestResourceStream`, and the stylesheet resource `Aras.Tools.SolutionUpgrade.export.xsl` that ILSpy extracts next to the project. Rules cite the stylesheet by template, not by quoting it, and give its line numbers as `export.xsl:N`.
 - probes of that stylesheet, run under `XslCompiledTransform` on Windows PowerShell 5.1 with the same loading and invocation as `ApplyXsl` (EXP-200, EXP-201), on hand-written response documents. The worked examples below are reduced from those runs and show the transform's raw output. Part 2 rests on over a thousand such cases, among them a sweep of every cell of the system-property comparison table (EXP-323: each of the 11 compared fields of each of the 32 system properties, changed and removed). Wayfinder ticket 68 turns such probes into recorded fixtures, and tickets 31 and 32 replay them.
 - `data/libsjs-06/report.md` (rules X1 to X7 for `XslCompiledTransform`) and `data/libsjs-08/report.md` (finding F6, the empty-text correction to X6).
+- for 14.35: the stylesheet resource of the 14.35 decompile (`.decomp/14.35/`, never committed), compared with 14.0.7's line by line, and the same probes run against the 14.35 `Libs.dll` (`oracle/export-output-probe/probe.ps1`, sections `AX`, `AXF` and `RNN`, recorded in `fixtures/export-output/probe-14.35.txt` with the 14.0.7 run beside it in `probe-14.0.7.txt`).
+
+**Engine 14.35.** The 14.35 stylesheet is 14.0.7's with two changes, and nothing else: the comparisons of the modified system Properties gain one alternative (EXP-381), and one template is added (EXP-380). Every rule of this document therefore holds for 14.35 as written, unless the rule has a `[14.35]` variant. Line numbers cited as `export.xsl:N` are 14.0.7's; in 14.35 every line from 454 on is one higher.
 
 The `[12.0]` variants come from the 12.0 stylesheet (`.decomp/12.0/`), compared with 14.0.7's line by line: it differs in exactly three places (EXP-315, EXP-324, EXP-360, and the line mapping in EXP-200). Every other rule says `Same as 14.0.7.`; the worked examples and the 14.0.7 probes of the stylesheet hold for 12.0 outside those places, since the template text is identical.
 
@@ -29,6 +32,8 @@ The `[12.0]` variants come from the 12.0 stylesheet (`.decomp/12.0/`), compared 
 The library reads the stylesheet from the vendored `Libs.dll` only at oracle time. The port never embeds or interprets it.
 
 [12.0] Loaded the same way. The stylesheet is the 12.0 build's own resource, which has 453 lines and differs from 14.0.7's in three places: the `cdata-section-elements` list (EXP-360), a template for `User/pwd_is_set_on` that does not exist (EXP-315), and the Change Controlled Relationship arm of the Property fix (EXP-324). A line number `export.xsl:N` in this document is a line of 14.0.7's stylesheet. In 12.0's it is line N up to 101, N−2 for 104 to 408 (the template for `User/pwd_is_set_on` is 14.0.7's lines 102 and 103), N−3 for 410 to 412 and N−7 from 417 (14.0.7's lines 409 and 413 to 416 are the added variable and arm). The rest of the stylesheet is identical, and so is `ApplyXsl`.
+
+[14.35] The same resource name, compiled the same way. The cache is a `ConcurrentDictionary` filled with `GetOrAdd`, so two items that reach it together may both compile the stylesheet and one result is kept. This is not observable. The stylesheet itself is the 14.35 build's own resource, which differs from 14.0.7's as the introduction says.
 
 ### EXP-201: Input and output of the transform
 
@@ -55,6 +60,8 @@ In default mode the stylesheet has, for elements:
 So a specific template always beats the plain `Item` template and the catch-all, by priority and not by order. No two templates of different behaviour tie in 14.0.7 (EXP-260). The root Item is not matched in default mode at all: the `mode="first"` template handles it (EXP-212).
 
 [12.0] Same as 14.0.7.
+
+[14.35] One more template is in default mode, with priority 0.5 (it has predicates): the `is_null` drop of EXP-380, which is the last template of the stylesheet but one (`export.xsl:454`, only `*` follows it). It matches elements only. The table above is otherwise unchanged. Because it comes after every other 0.5 template, it wins every tie at 0.5 (EXP-260).
 
 ### EXP-203: Nodes no template handles
 
@@ -148,6 +155,8 @@ Every other attribute (`keyed_name`, `is_null`, `typeId`, anything) is dropped. 
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same. The `is_null` drop (EXP-380) is a default-mode template and never applies to the root Item, whose `is_null` attribute is dropped here with every other attribute (probes `AX5`, `AX9`). The root's children are tested.
+
 ### EXP-213: The root Item is exempt from the nested-Item templates
 
 [14.0.7] The templates for nested Items (EXP-220 and the Identity, Method, Member/Morphae, Item Action, RelationshipType and ItemType families below) are never applied to the root Item, because the root is handled by its own template and its children are visited, not the root itself. A root Identity, Method, Member, Morphae, Item Action or RelationshipType is therefore exported in full, as an ordinary item with `action="add"`.
@@ -185,11 +194,15 @@ Members and Morphae are dropped from their place in the relationship list (EXP-2
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same for every nested Item that is not marked `is_null="1"`. One that is marked is dropped with its subtree (EXP-380, probe `AX4`) and never reaches this template.
+
 ### EXP-221: Every other element
 
 [14.0.7] An element no template matches (the catch-all `*`, priority -0.5) is copied with all its attributes, including `is_null`, `keyed_name`, `type`, `xml:lang` and prefixed attributes, and its children are handled in default mode. Part 2's drop templates beat this rule for the system elements and the empty `Relationships`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same, except that an element with `is_null="1"` (and a name that does not start with `xp-`) is dropped (EXP-380) instead of being copied with its attribute. An `xp-*` element keeps `is_null="1"` as in 14.0.7.
 
 ## Identities
 
@@ -230,6 +243,8 @@ The element is copied with all its attributes. Its content is replaced by the Id
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same, except that an Identity-valued property marked `is_null="1"` is dropped (EXP-380). The Identity Item nested in it, if any, goes with it (probes `AX6`, `AX16`: a marked `role` with the `keyed_name` `World`, which 14.0.7 rewrites to the system Identity `get`, is dropped). A property without `is_null="1"` is rewritten as before.
+
 ## Methods
 
 ### EXP-235: A nested Method Item
@@ -257,6 +272,8 @@ An element with no `keyed_name`, such as `<method is_null="1"/>`, still gets a `
 ```
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same, except that a Method-valued property marked `is_null="1"` is dropped (EXP-380; probes `AX14`, `AX15`, `AX16`: a marked `method` is dropped whether or not it has a `keyed_name`). A null Method-valued property therefore no longer exports as a `get` with an empty name (EXP-272). One that has no `keyed_name` and no `is_null="1"` still does.
 
 ## Dropped Items
 
@@ -340,6 +357,8 @@ The Field itself stays in the AML either way. The fix pass of part 2 selects Fie
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same, except that a `propertytype_id` marked `is_null="1"` is dropped (EXP-380) instead of being written as `<propertytype_id is_null="1"></propertytype_id>` (probe `AX10`).
+
 ### EXP-253: The source_id of a Grid Event on a system property
 
 [14.0.7] For a `source_id` that is a child of an `Item` of type `Grid Event` that is a child of the `Relationships` of an `Item` of type `Property`, let NAME be the string-value of that Property's first `name` child:
@@ -385,6 +404,8 @@ A mode never falls back to another mode's templates: the default-mode templates 
 
 [12.0] Same as 14.0.7.
 
+[14.35] The statement that no two part 1 templates of the same priority match one node no longer holds. The `is_null` drop (EXP-380, priority 0.5) matches every element marked `is_null="1"`, so it ties with the 0.5 templates of part 1 that match such an element, and wins by coming last (EXP-202): the Identity and Method Item templates, the Identity- and Method-valued properties, the Field `propertytype_id`, the Grid Event `source_id`, the foreign-property references and the FileSelectorTemplate `reference`. It also outranks the plain `Item` template (0) and the catch-all (-0.5). The result is the same for all of them: nothing is written. The port tests `is_null` before it looks at any of those templates, in default mode.
+
 ## Reproduced bugs
 
 ### EXP-270: A `]]>` in a FileSelectorTemplate reference fails the whole item
@@ -404,6 +425,8 @@ A mode never falls back to another mode's templates: the default-mode templates 
 [14.0.7] A Method-valued property (EXP-236) without a `keyed_name` attribute, including a null one such as `<method is_null="1"/>`, is exported as a `get` of a Method with an empty `name`. That reference cannot be resolved at import. It is reproduced. See `bugs.md`; ticket 06 (X3) found that 14.35's `is_null` drop removes these elements instead, and the 14.35 variant records it.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Reduced. A Method-valued property marked `is_null="1"` is dropped (EXP-380, EXP-236), so `<method is_null="1"/>` no longer exports as a `get` of a Method with an empty name. A property that has no `keyed_name` attribute and is not marked still does, and the bug stands for it (`bugs.md`, 14.35 added to the versions).
 
 ## Template index, part 1
 
@@ -427,6 +450,8 @@ Every part 1 template of `export.xsl`, in stylesheet order, with the rule that s
 | 194–201 | plain `Item` | EXP-220 |
 | 258–287 | foreign `data_source`, `foreign_property` | EXP-250, EXP-251 |
 | 455–460 | catch-all `*` | EXP-221 |
+
+In 14.35 the stylesheet has one more row, `| 454 | `is_null` drop | EXP-380 |`, between the Morphae fix and the catch-all, and the catch-all is at lines 456–461.
 
 ## Part 2: the model
 
@@ -618,6 +643,8 @@ Several `name` children are possible only in a hand-made document, but they deci
 
 [12.0] Same as 14.0.7.
 
+[14.35] Selection (a) has one more alternative: a Property in PROPS whose name is one of the 32 and whose own `export_has_translations` attribute is exactly `1` is selected whatever its values are (EXP-381). Selection (b) is unchanged.
+
 ### EXP-323: The stock values
 
 [14.0.7] The comparison of EXP-322 (a), per system property. The columns `column_alignment` (stock `left`), `is_hidden` and `is_hidden2` (stock `1` and `1`), `column_width` (empty), `is_keyed` (`0`) and `order_by` (empty) are the same for every row except where the last column says otherwise. `null` in the label column means a null label (EXP-322).
@@ -686,6 +713,8 @@ The children are then handled in **default mode**: every drop rule applies (a Pr
 3. None of these: no further attribute.
 
 The children are handled as in 14.0.7. Observed on dev (the ItemType `Change Controlled Relationship`): the 12.0 file has `<Item type="Property" action="edit" where="source_id='2A5BB1A93BDC436B824B9FFE6DB89553' and name='related_id'">`, and likewise for `sort_order` and `source_id`, where the 14.0.7 file has `<Item type="Property" id="…" action="add">` for the same three Properties, and nothing else differs.
+
+[14.35] Same selection and attributes. The children are handled in default mode (above), where the `is_null` drop of EXP-380 now applies: a `label` or `default_value` child marked `is_null="1"` is no longer written. Both are written in 14.0.7 as `<label is_null="1" />` and `<default_value is_null="1" />`. The loss is a bug (EXP-395).
 
 ### EXP-325: Which ItemTypes get the edit
 
@@ -866,6 +895,47 @@ The port can therefore evaluate part 2's templates in any order. A later engine 
 
 [12.0] Same as 14.0.7.
 
+[14.35] The statement that "no two templates of equal priority with different results match one node" holds for part 2's own templates, and the `is_null` drop is a later engine's template that outranks part 1 templates (EXP-260). It ties with part 2's 0.5 drop templates too, and wins by order; since both write nothing, no result changes.
+
+## 14.35 additions
+
+### EXP-380: Elements marked `is_null="1"` are dropped
+
+[14.0.7] There is no such rule. An element marked `is_null="1"` is copied by the catch-all (EXP-221) or rewritten by the template that names it, and reaches the file as, for example, `<label is_null="1" />`.
+
+[14.35] The stylesheet has one more template, `export.xsl:454`, in default mode, between the Morphae fix and the catch-all. Its pattern is `node()[@is_null='1'][not(starts-with(name(), 'xp-'))]` and its content is empty. It writes nothing for any element whose `is_null` attribute is exactly the string `1`, unless the element's qualified name starts with the lowercase text `xp-`. The element goes with its attributes, text and descendants (probes `AX1` to `AX12`, with 14.0.7's output beside them).
+
+- **The test.** `is_null` must equal `1` as a string. `0`, `1 ` (trailing space), ` 1` and an empty value do not match, and the element is handled as before (`AX2`). A child's attribute is not looked at: only the element's own. An element that has `is_null="1"` and also text or children loses them (`AX2`: `<label is_null="1">text under null</label>` is dropped).
+- **The name exception.** The test is on the qualified name, case-sensitive: `xp-foo` and `xp-bar` stay, with their `is_null="1"`, and so does their text; `XP-baz` and `xpfoo` are dropped (`AX3`). `starts-with` is a prefix test on the name as written, including any namespace prefix.
+- **Where it applies.** Wherever default-mode templates run: properties (`label`, `comments`, `method_type`, `classification`), nested Items (an `Item` that is itself marked disappears with its whole subtree, `AX4`), reference properties (a marked `owned_by_id` with its nested Identity, `AX6`; `related_id`, `AX8`), a Field's `propertytype_id` (`AX10`) and, through the default-mode handling of their children, the Property items of the ItemType edit (EXP-324, EXP-395).
+- **Not the root Item.** The root Item is handled in `mode="first"` (EXP-212): its attributes are rebuilt, `is_null` is not copied, and the template is not applied to it (`AX5`, `AX9`). The `xsl:copy` Items of part 2 (the ItemType edit, Member and Morphae fixes) are in `mode="fix"` and are not tested either; their children are (`AXF2`, `AXF4`, `AXF8`).
+- **Priority.** The template has priority 0.5. It beats the plain `Item` template (0) and the catch-all `*` (-0.5) and ties with every other 0.5 template, where the last one in the stylesheet wins (EXP-202): this one. So it also beats the Identity and Method Item templates, the Identity- and Method-valued properties, the Field `propertytype_id`, the Grid Event `source_id`, the foreign-property references and the `reference` rewrite for a marked element (EXP-260). It does not matter for part 2's drop templates, which write nothing either.
+- **What is left.** Nothing, not even an empty text node. A parent whose element children were all dropped has no content from the transform: a `Relationships` that held only dropped Items is written `<Relationships />` (EXP-244). Whitespace text around a dropped element stays (EXP-203).
+
+The server marks a null column `is_null="1"` in a response whose request did not exclude nulls: the ItemType export with its relationships and the items fetched by the explicit relationship trees of the 14.35 requests (`EXP-020` to `EXP-025`). Items fetched with the default select (`*[is_not_null()]`, EXP-023) do not carry such elements. A package exported by 14.35 therefore holds no explicit null where 14.0.7's held one. On import an absent element leaves the column alone, while `is_null="1"` sets it to null. *Which dev items carry the marks is recorded with the 14.35 fixtures (ticket 57); the rule rests on the stylesheet and the probes.*
+
+```xml
+<!-- source -->  <Item type="List" id="L1"><name>n</name><label is_null="1"/><comments is_null="1"></comments><xp-foo is_null="1"/><Relationships><Item type="Value" id="V1"><label is_null="1"/><value>v</value></Item><Item type="Value" id="V2" is_null="1"><value>w</value></Item></Relationships></Item>
+<!-- 14.0.7 -->  <AML><Item type="List" id="L1" action="add"><name>n</name><label is_null="1" /><comments is_null="1" /><xp-foo is_null="1" /><Relationships><Item type="Value" id="V1" action="add"><label is_null="1" /><value>v</value></Item><Item type="Value" id="V2" action="add"><value>w</value></Item></Relationships></Item></AML>
+<!-- 14.35 -->   <AML><Item type="List" id="L1" action="add"><name>n</name><xp-foo is_null="1" /><Relationships><Item type="Value" id="V1" action="add"><value>v</value></Item></Relationships></Item></AML>
+```
+
+This is probe `AX17`. Its outputs are shown after the namespace handling of `EXP-400` to `EXP-499`, leaving out the `xmlns:i18n` attribute that 14.35 keeps on the root Item (EXP-410).
+
+### EXP-381: A Property flagged `export_has_translations` counts as modified
+
+[14.0.7] The selection of EXP-322 (a) looks only at the values of the Property's children. Its attributes are not read.
+
+[14.35] Each of the 32 name-and-values selections of EXP-322 (a) gains a last alternative: the Property is selected when its own `export_has_translations` attribute is exactly `1`, whatever its values are. The attribute is on the Property `Item` element, not on a child. Only those 32 selections change. The by-content selection (b), the keyed set K (EXP-321) and the last selection of the template (system names with a non-empty `Relationships`) are as before. Probes:
+
+- a stock `behavior` row has no edit (`AXF1`); the same row with `export_has_translations="1"` gets the ItemType edit, with the row's stock values as the Property edit of EXP-324 (`AXF2`: `where="source_id='' and name='behavior'"`);
+- `export_has_translations="0"`, or any other value, leaves the row stock (`AXF3`);
+- a flagged system Property whose values deviate is written once, as before (`AXF5`: `team_id`, whose label `Team` is its stock label, flagged, is written as an edit);
+- a flagged Property that is not one of the 32 names is an ordinary Property of the ItemType and is not selected (`AXF6`);
+- the three dated names (`effective_date`, `release_date`, `superseded_date`) keep their extra condition (the ItemType is versionable) in front of the alternatives, so the flag alone does not select them in a non-versionable ItemType. *From the template; not probed.*
+
+Only the language-resource export sets the attribute: `MarkPropertiesWithTranslationsIfNeeded` adds `export_has_translations="1"` to a Property that has a non-`en` translation, and it does so only when the engine action is `ExportLanguageResourcesOnly` (language-export rules, ticket 54). With the plain export the alternative is never true, so the stylesheet behaves as in 14.0.7.
+
 ## Reproduced bugs, part 2
 
 ### EXP-390: Interpolated where clauses are not escaped
@@ -903,6 +973,10 @@ It is reproduced. See `bugs.md` and EXP-271.
 [14.0.7] The drop template removes every nested Member and Morphae (EXP-240), but the fix pass re-emits only those that are children of the root Item's own `Relationships` (EXP-350, EXP-351). A Member or Morphae anywhere else, such as in the `Relationships` of the ItemType embedded in a RelationshipType's `relationship_id`, or in a nested Item, is written nowhere. It is reproduced. See `bugs.md`.
 
 [12.0] Same as 14.0.7.
+
+### EXP-395: The edit of a modified system Property loses its null label and null default value (bug)
+
+[14.35] The Property items of the ItemType edit are handled in default mode (EXP-300), so the `is_null` drop (EXP-380) removes their `label` and `default_value` children when those are marked `is_null="1"`. A system Property whose label was cleared, for example `team_id` (stock label `Team`) with `<label is_null="1"/>`, deviates from its stock row and is selected (EXP-322 (a)), but its edit says nothing about the label: in 14.0.7 it carried `<label is_null="1" />`, in 14.35 it does not (probe `AXF8`). The same happens to a cleared `default_value`, and to the null label and null default of a keyed Property written with `action="add"` (EXP-321, probe `AXF7`). An import of the package therefore leaves the target's label and default as they are, where the 14.0.7 package would clear them. It is reproduced. See `bugs.md`.
 
 ## Template index, part 2
 

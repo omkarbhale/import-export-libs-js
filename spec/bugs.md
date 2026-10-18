@@ -69,56 +69,56 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the transform writes a FileSelectorTemplate's `reference` raw between `<![CDATA[` and `]]>`. A value that contains `]]>` ends the CDATA early, the output is malformed, the reload throws `XmlException` (`']]>' is not allowed in character data.`), and the item fails with that message followed by ` Can't export item.`
 - **Why it is a bug:** a correct engine would split the section (`]]]]><![CDATA[>`), as it does for the other CDATA elements, so the item exports.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs), failing at the reload that follows.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-271: identity and system-property tests are substring tests
 
 - **Behaviour:** the system Identity test and the system property tests look `|name|` up inside one long `|`-delimited string, so a name that contains `|` can match as a run of entries. A `keyed_name` of `World|Creator` exports as a system Identity `get` named `World|Creator`, and a Field whose property is named `state|itemtype` is treated as a system property.
 - **Why it is a bug:** a correct engine would compare against the entries one at a time.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-272: a Method-valued property without a keyed name exports as a Method `get` with an empty name
 
 - **Behaviour:** `method`, `pre_action`, `post_action`, `on_complete` and `content_generator` on their Items are rewritten from the element's `keyed_name` attribute. Without one, including a null element such as `<method is_null="1"/>`, the output is a `get` of a Method with an empty `name`.
 - **Why it is a bug:** the reference cannot be resolved on import, and a null property should stay null or be left out.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7 (14.35's `is_null` drop template changes this).
+- **Versions:** 12.0, 14.0.7, 14.35 (14.35's `is_null` drop removes a Method-valued property that is marked `is_null="1"`; a property with no `keyed_name` and no mark still exports with the empty name).
 
 ## EXP-540: packages exported in the referenced pass are missing from the manifest
 
 - **Behaviour:** the referenced-items pass exports each referenced package into its own directory and log section, but `imports.mf` has no `package` entry for it, only the `dependson` entries under the main package.
 - **Why it is a bug:** an import from the manifest skips packages the export produced, because the manifest lists a dependency but not the package that holds its items.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportReferencedElements`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-541: a package-definition query that fails inside an export crashes on the log file
 
 - **Behaviour:** `GetSolutions2Xml` opens a second writer on the log file to record its error while `ExportSolutions` still holds the file, so the open fails with an `IOException` that escapes `ExportSolutions` before its `try` block. No manifest is saved.
 - **Why it is a bug:** the real error (the failed query) is replaced by a file-sharing error, and the run leaves no manifest.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutions2Xml`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## EXP-542: a missing package definition aborts the whole export
 
 - **Behaviour:** a `CItemException` from the package-definition lookup, the dependency query or a referenced element without id or type is not a `SystemException`, so it escapes `ExportSolutions` after the manifest is saved. Later packages and the referenced pass never run, and no warning is sent.
 - **Why it is a bug:** the top-level handler reports other failures as a warning and ends cleanly, but these escape it, and one bad package stops every package after it.
 - **C# location:** `Aras.Tools.SolutionUpgrade.PackageDefinitionManager::InitSolution`, `Aras.Tools.SolutionUpgrade.PackageDefinitionManager::FindReferencedElements`, `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-543: a cancel during the main loop still runs the referenced pass
 
 - **Behaviour:** after a cancel, the referenced pass still wipes and recreates the first referenced package's directory, sends its `currentPackage` message and writes its log header, and the cancel is noticed only at that package's first item.
 - **Why it is a bug:** a cancelled export should stop. The wipe can delete a finished main package's output when the dependency shares its directory.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions`, `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportReferencedElements`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35 (in 14.35 a failed item sets the same flag, so the pass is entered after a failure too).
 
 ## EXP-544: package and dependency names are interpolated unescaped into XPath and AML
 
 - **Behaviour:** a package or dependency name with an apostrophe makes the manifest or dependency XPath malformed, and the run ends with the XPath error as a warning (`'imports/package[@name='X'Y']' has an invalid token.`). A name that closes the literal and adds a predicate selects other nodes.
 - **Why it is a bug:** a legal package name cannot be exported, and a crafted one changes which nodes the engine reads.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportSolutions`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddPackage`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddDependsOn`, `Aras.Tools.SolutionUpgrade.ManifestFile::AddReferencedElement`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## IMP-006: a leading backslash is trimmed from every path, so UNC package folders fail
 
@@ -209,56 +209,56 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** after the transform, `ApplyXsl` removes every occurrence of `xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"` from the serialized output, so the same text is also removed from element text and CDATA: a method whose code contains it exports without it, and a `comments` element holding only that text exports as `<comments></comments>`.
 - **Why it is a bug:** the strip is meant to drop the namespace declaration the transform copies onto each `Item`. A correct engine would remove the declaration nodes, not text.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-404: a type with incomplete default permission data fails the item with a NullReferenceException
 
 - **Behaviour:** when the ItemType answer lacks `is_relationship` or `use_src_access`, or neither of them is `1` and the type has no default Allowed Permission, the item fails with `Object reference not set to an instance of an object. Can't export item.`
 - **Why it is a bug:** a missing default permission is a normal state (it means the permission is kept), and a missing flag could be read as `0`. A correct engine would keep the `permission_id` instead of failing the export of the item.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::RemovePermissionIdWhenItMatchesToDefaultPermission`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-406: CdataFilterXml decodes entity-like text inside CDATA and fails on a bare ampersand
 
 - **Behaviour:** the step sets the element's markup to the HTML-decoded markup, so text inside a CDATA section is decoded too (`&amp;nbsp;` becomes `&nbsp;`, `&lt;b&gt;` becomes `<b>`), and plain text holding `&amp;` becomes a bare `&` that cannot be loaded, which fails the item.
 - **Why it is a bug:** CDATA content is literal text and must come out as it went in, and a decoded document must still be well formed.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::CdataFilterXml` (12.0: `CdataFilterXmlInMacCondition`, for `mp_MacPolicy` only).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-411: RemoveNamespaceNodes tests for a null prefix that never occurs
 
 - **Behaviour:** the condition "prefix is null or prefix is not empty" can only act through its second half, because .NET reports the prefix of an unprefixed attribute as the empty string. Only prefixed attributes of non-namespaced `Item` elements are removed.
 - **Why it is a bug:** the first half is dead code, written for a null that never happens. Its intent cannot be told from the code; the library reproduces the effect (prefixed attributes go, plain attributes and `xmlns=""` stay).
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::RemoveNamespaceNodes`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-416: packages with the same last segment wipe each other's output folder
 
 - **Behaviour:** a non-standard package is exported into `<last segment>\Import`, and the folder is deleted recursively and recreated before each package. Two packages with the same last segment, and a referenced package whose last segment equals a main package's, delete each other's files; packages with an empty last segment (a trailing dot) share `Import`.
 - **Why it is a bug:** an export deletes the output of another package of the same run, without a warning, and the manifest still lists it.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::CreateOutputDir`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-419: two items with the same file name overwrite each other
 
 - **Behaviour:** the file name is the keyed name (case-insensitively on Windows), nothing checks for an existing file, and the export reports every item as successful. Only the last item of a name keeps its file.
 - **Why it is a bug:** items are lost from the exported package silently. A correct engine would detect the collision, or name the file by id.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::Export`, writing through `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35 (in 14.35 the items are written concurrently, so the overwrite is a race that can also fail with a sharing violation).
 
 ## EXP-422: NormalizeLongPath turns a UNC path into a relative path
 
 - **Behaviour:** `NormalizeLongPath` removes all leading `\` and `?` characters, so `\\server\share\dir` becomes `server\share\dir` and is then resolved against the process's current directory. A working directory, manifest or log given as a UNC path is read from or written to the wrong place or fails.
 - **Why it is a bug:** the trim is meant to drop a `\\?\` prefix. A correct engine would remove only that prefix. The same code returns the trimmed path, not the full path, when it is shorter than 255 characters.
 - **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::NormalizeLongPath`.
-- **Versions:** 14.0.7.
+- **Versions:** 14.0.7, 14.35.
 
 ## EXP-428: a failed write leaves a partial item file
 
 - **Behaviour:** the file is created before serialization, so a serialization failure (a character reference to a lone surrogate, for example) leaves the file with the BOM and the text written so far, and the exception is not turned into a per-item error.
 - **Why it is a bug:** a truncated file looks like an export result. A correct engine would serialize before writing, or delete the file on failure.
 - **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## IMP-111: a DiscussionTemplate relationship is rewritten only the first time its id is checked
 
@@ -362,35 +362,35 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the View and Form delete items and the Property edit items write the ItemType id and name, and the Property's `source_id` and name, between apostrophes in a `where` attribute with only the attribute's XML escaping. A name that contains `'` ends the string early: `O'Neil` gives `where="name='O'Neil'"`.
 - **Why it is a bug:** a correct engine would double the apostrophe (or send the value as a parameter), so the delete or edit finds the item it was written for. As it is, the clause is malformed or matches another item.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-391: is_current is compared without order_by
 
 - **Behaviour:** the stock comparison that decides whether a system property is exported as modified tests `order_by` for every system property except `is_current`. A changed `order_by` on `is_current` alone is never exported, while the same change on `id` is.
 - **Why it is a bug:** the `is_current` test is the only one of 32 that lacks the `order_by` condition, which looks like an omission.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-392: content in a Relationships selects a stock system property
 
 - **Behaviour:** a system property is also exported as an edit when it has a `Relationships` child with any child node, counting whitespace, text, comments and processing instructions. A stock `id` property whose `Relationships` holds a line feed is written as an edit that changes nothing. The `Relationships` itself is dropped as empty.
 - **Why it is a bug:** the test is meant to find system properties that carry relationships (Grid Events and the like) and counts nodes that are not relationships.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-393: system-name tests in the fix passes are substring tests
 
 - **Behaviour:** the keyed, modified and Field fix selections, and the Change Controlled Relationship choice, look `|name|` up inside a `|`-delimited string. A custom property named `state|itemtype` is not seen as keyed, is exported as an edit of that name when it has `Relationships` content, and is lost when it is also keyed (the main pass drops it and no fix selects it). A Field whose `propertytype_id` is named `state|itemtype` gets a fix with empty names. A property named `related_id|sort_order` is treated as one of the three Change Controlled Relationship names.
 - **Why it is a bug:** a correct engine would compare against the entries one at a time (see EXP-271).
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-394: Members and Morphae below the root's own relationships are lost
 
 - **Behaviour:** every nested Member and Morphae is dropped in place, but only those in the root Item's own `Relationships` are written again at the end. One in the embedded ItemType of a RelationshipType's `relationship_id`, or in any nested Item, is written nowhere.
 - **Why it is a bug:** the drop exists so the Members and Morphae come after the Identities and ItemTypes they refer to, not to lose them.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## IMP-303: the edit test of the id-or-where check reads a child element, so an edit with no id or where passes
 
@@ -515,3 +515,52 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** a correct engine would remove the folder it made before it lets the exception out.
 - **C# location:** `Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::.ctor` (and the host's `ConsoleUpgrade::Main`).
 - **Versions:** 14.0.7.
+
+## EXP-395: the edit of a modified system property loses its null label and null default value
+
+- **Behaviour:** the Property items of the ItemType edit are handled by the default-mode templates, so the `is_null` drop removes a `label` or `default_value` marked `is_null="1"`. 14.0.7 wrote `<label is_null="1" />` and `<default_value is_null="1" />` there. A system property whose label was cleared is still selected as modified, and its edit says nothing about the label. The same holds for the null label and default value of a keyed Property written with `action="add"`.
+- **Why it is a bug:** the edit exists to carry what differs from the stock row, and the dropped element is the difference. An import leaves the target's label and default as they are.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl` (the stylesheet it runs).
+- **Versions:** 14.35.
+
+## EXP-570: the progress logger loses the lines of items that finish after an error or a cancel
+
+- **Behaviour:** the per-item "successfully exported" lines are queued on a `ProgressStreamLogger`. The failed-item handler and the cancel branch call its `Complete()`, which forgets its task and cannot be undone, while other items are still running. Lines queued afterwards are never written, although those items' files are. In a run with twelve items, a failure after four had finished leaves four success lines in the log and eleven files on disk.
+- **Why it is a bug:** a log that says nothing about files that were written cannot be used to tell what the export produced. A correct logger would keep writing until the loop has ended.
+- **C# location:** `Aras.Tools.SolutionUpgrade.Log.ProgressStreamLogger::Complete`, `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc`.
+- **Versions:** 14.35.
+
+## EXP-571: the host's answer to the error question is ignored
+
+- **Behaviour:** after a failed item the engine sends the abort question and does not read the answer. The whole export stops whether the host answers `true` or `false`.
+- **Why it is a bug:** the question offers a choice that has no effect. In 14.0.7 the same answer decided whether the package went on.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc`.
+- **Versions:** 14.35.
+
+## EXP-572: a stop does not stop what is running, and later failures are silent
+
+- **Behaviour:** after a failed item or a cancel, items that are already running finish and write their files. A second failed item, or a failure after a `Cancel()`, is dropped without a message or a log line, so only the first failure of a run is reported.
+- **Why it is a bug:** an export that reports that it stopped is still writing files, and a failure that is not reported is invisible.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc`.
+- **Versions:** 14.35.
+
+## EXP-573: the item numbers and the status texts race
+
+- **Behaviour:** the item index is a variable shared by all workers, read once at the start of an item and incremented without a lock after a success, and the status text is set and sent through one message object shared by all workers. Items that start together show the same number, a status text can be sent twice while another is never sent, and an increment can be lost.
+- **Why it is a bug:** the index does not number the items, and a host can show the wrong item. A correct export would number items atomically and give each worker its own message.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ExportProc`.
+- **Versions:** 14.35.
+
+## EXP-575: the progress logger keeps a processor busy (deviation, not reproduced)
+
+- **Behaviour:** the task of `ProgressStreamLogger` repeats "take a line from the queue, write it" with no wait while the export loop runs, so it uses a full processor until `Complete()`.
+- **Why it is a bug:** a log writer should wait for a line. The load has no observable effect on the output, so the port does not reproduce it: its writer waits for the next line.
+- **C# location:** `Aras.Tools.SolutionUpgrade.Log.ProgressStreamLogger::Start`.
+- **Versions:** 14.35.
+
+## EXP-461: items processed while the poly-type names are being fetched are exported unconverted
+
+- **Behaviour:** the list of polymorphic ItemType names is a shared static that the first worker assigns empty before it requests the names and fills. A worker that runs `ReplaceReferencesToPolyLists` in that window reads an empty or partly filled list and converts no list Property whose data source is polymorphic. With the request held for three seconds, one of eight items was converted and seven were not.
+- **Why it is a bug:** the output of an item depends on whether another item happened to ask first. A correct engine would wait for the names or fetch them before the loop.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames`, `Aras.Tools.SolutionUpgrade.CItemHelper::ReplaceReferencesToPolyLists`.
+- **Versions:** 14.35.

@@ -13,7 +13,10 @@ $cih = $libs.GetType($T + 'CItemHelper')
 $cei = $libs.GetType($T + 'CExportItems')
 $iow = New-Object ($libs.GetType($T + 'IOWrapper'))
 $helper = [Runtime.Serialization.FormatterServices]::GetUninitializedObject($cih)
-$cih.GetField('_requestedItems', $flags).SetValue($helper, (New-Object 'System.Collections.Generic.Dictionary[string,System.Xml.XmlDocument]'))
+# 14.0.7 caches fetched documents in a Dictionary; 14.35 in a ConcurrentDictionary of Lazy values.
+$lazyCache = $cih.GetField('_requestedItems', $flags).FieldType.Name -like 'ConcurrentDictionary*'
+function NewCache { if ($lazyCache) { New-Object 'System.Collections.Concurrent.ConcurrentDictionary[string,System.Lazy[System.Xml.XmlDocument]]' } else { New-Object 'System.Collections.Generic.Dictionary[string,System.Xml.XmlDocument]' } }
+$cih.GetField('_requestedItems', $flags).SetValue($helper, (NewCache))
 
 function Esc([string]$s) { if ($null -eq $s) { return '<null>' }; $sb = New-Object Text.StringBuilder; foreach ($c in $s.ToCharArray()) { $n = [int]$c; if ($c -eq "`r") { [void]$sb.Append('\r') } elseif ($c -eq "`n") { [void]$sb.Append('\n') } elseif ($c -eq "`t") { [void]$sb.Append('\t') } elseif ($c -eq '"') { [void]$sb.Append('\"') } elseif ($n -lt 32 -or $n -gt 126) { [void]$sb.Append(('\u{0:X4}' -f $n)) } else { [void]$sb.Append($c) } }; $sb.ToString() }
 function Abbr([string]$s) { $e = Esc $s; if ($e.Length -gt 90) { $e.Substring(0, 40) + '...(' + $s.Length + ' chars)...' + $e.Substring($e.Length - 12) } else { $e } }
@@ -98,8 +101,11 @@ function ItDoc($isRel, $useSrc, $perm) {
   if ($perm -ne $null) { $r += '<Relationships><Item type="Allowed Permission" id="AP1"><related_id><Item type="Permission" id="' + $perm + '"><id>' + $perm + '</id></Item></related_id></Item></Relationships>' }
   $r + '</Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>'
 }
-function Seed($name, $xml) { $dd = New-Object System.Xml.XmlDocument; $dd.PreserveWhitespace = $true; $dd.LoadXml($xml); $dict = $cih.GetField('_requestedItems', $flags).GetValue($helper); $dict[(ItReq $name)] = $dd }
-function Reset { $cih.GetField('_requestedItems', $flags).SetValue($helper, (New-Object 'System.Collections.Generic.Dictionary[string,System.Xml.XmlDocument]')) }
+function Seed($name, $xml) { $dd = New-Object System.Xml.XmlDocument; $dd.PreserveWhitespace = $true; $dd.LoadXml($xml); $dict = $cih.GetField('_requestedItems', $flags).GetValue($helper); if ($lazyCache) { $dict[(ItReq $name)] = New-Object 'System.Lazy[System.Xml.XmlDocument]' -ArgumentList ([Func[System.Xml.XmlDocument]]({ $dd }.GetNewClosure())) } else { $dict[(ItReq $name)] = $dd } }
+function Reset { # 14.0.7 caches fetched documents in a Dictionary; 14.35 in a ConcurrentDictionary of Lazy values.
+$lazyCache = $cih.GetField('_requestedItems', $flags).FieldType.Name -like 'ConcurrentDictionary*'
+function NewCache { if ($lazyCache) { New-Object 'System.Collections.Concurrent.ConcurrentDictionary[string,System.Lazy[System.Xml.XmlDocument]]' } else { New-Object 'System.Collections.Generic.Dictionary[string,System.Xml.XmlDocument]' } }
+$cih.GetField('_requestedItems', $flags).SetValue($helper, (NewCache)) }
 $pi = '<AML><Item type="TypeA" id="1" action="add"><name>n</name><permission_id keyed_name="p" type="Permission">PERM1</permission_id></Item></AML>'
 Reset; Seed 'TypeA' (ItDoc '0' '0' 'PERM1'); Run 'RPM1' $pi { param($d) Call $mRPM $exp @($d) }
 Reset; Seed 'TypeA' (ItDoc '0' '0' 'PERM2'); Run 'RPM2' $pi { param($d) Call $mRPM $exp @($d) }
