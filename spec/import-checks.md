@@ -2,7 +2,7 @@
 
 Before an item is imported, the engine checks that every item it refers to exists on the server, and queues the references that do not for delayed resolution (`IMP-200` to `IMP-299`). This document specifies the checking: `DoChecking`, `RecurseCheck` and the checks it runs, the metadata lookups they share, `IsVersionable` and `GetCurrentIdOfVersion`.
 
-Sources: the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed) and `evidence/libs-import-spec.md` §2 "RecurseCheck", checked against the dev server for the response shapes the checks read. For the `[14.35]` lines, the 14.35 decompile (`.decomp/14.35/`) compared with it, and the probes `n01` to `n03`, `n09` of `fixtures/import-run/` (`probe-14.35.txt`, run against the real 14.35 `Libs.dll`): the checks are the same code in both builds except for how they use the request cache (`IMP-102`).
+Sources: the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed) and `evidence/libs-import-spec.md` §2 "RecurseCheck", checked against the dev server for the response shapes the checks read. For the `[14.35]` lines, the 14.35 decompile (`.decomp/14.35/`) compared with it, and the probes `n01` to `n03`, `n09` of `fixtures/import-run/` (`probe-14.35.txt`, run against the real 14.35 `Libs.dll`): the checks are the same code in both builds except for how they use the request cache (`IMP-102`). For the `[12.0]` lines, the 12.0 decompile (`.decomp/12.0/`, never committed) compared method by method with the 14.0.7 one, and the 12.0 probes (`fixtures/import-load/*.12.0*`, `fixtures/import-run/probe-12.0.txt`, `fixtures/import-merge/12.0-probe/results.json`).
 
 Conventions:
 

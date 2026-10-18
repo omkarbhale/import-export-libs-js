@@ -7,6 +7,7 @@ Sources:
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `ImportExportManager::LoadPackageDom`, `GetItemsFromPackageDom`, `IOWrapper`, `CItemHelper::ApplyXsl` and the embedded `build.xsl`;
 - the probes in `fixtures/import-load/` (see its README). The real engine's `LoadPackageDom` and the engine's own `build.xsl` were run on .NET Framework 4.8 over the cases listed there. Rule text cites a case by its `name`;
 - for the `[14.35]` lines: the 14.35 decompile (`.decomp/14.35/`, never committed) compared with the 14.0.7 one for every method these rules map, and the same probes run against the vendored 14.35 `Libs.dll` (`load-package-dom.out.14.35.txt`, `build-xsl.out.14.35.txt`, and the `build-xsl-cui` cases for the two types 14.35 adds). `LoadPackageDom` and `ApplyXsl` are the same code in both builds; only `build.xsl` differs.
+- for the `[12.0]` lines: the 12.0 decompile (`.decomp/12.0/`, never committed) compared method by method with the 14.0.7 one, and the 12.0 probes (`fixtures/import-load/*.12.0*`, `fixtures/import-run/probe-12.0.txt`, `fixtures/import-merge/12.0-probe/results.json`).
 
 The stylesheet is not reproduced. Its logic is written below as ordering rules, and the library implements those rules (AGENTS.md rule 5). `plan import` (round 2, Q4) reports the model of IMP-033, so the same rules decide what is reported and what is imported.
 
