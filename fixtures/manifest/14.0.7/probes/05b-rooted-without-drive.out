@@ -1,0 +1,3 @@
+rooted (no drive) path => %PROBE%\tmp5\rooted.mf
+Save rooted-no-drive => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%PROBE%\\tmp5%PROBE%\\tmp5\\rooted.mf'."
+Load rooted-no-drive existing file => System.IO.DirectoryNotFoundException: "Could not find a part of the path '%PROBE%\\tmp5%PROBE%\\tmp5\\exists.mf'."
