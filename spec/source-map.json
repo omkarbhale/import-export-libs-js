@@ -774,7 +774,12 @@
             "bodySha256": "a08881c6ddf5bf61d2db0301990a0307c3a449df3a6d96451055f5ddd1565dfb",
             "textSha256": "fcfe003bd692373158b50dad218a014da6055b65c0fadf12e45661b9c20b0a69"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-102",
+            "IMP-103",
+            "IMP-140"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckGetItems",
@@ -786,7 +791,12 @@
             "bodySha256": "dd82ca23a34408c2e2728a383aa8c0597d1b5d8d1a75585e6f5436a403fe529d",
             "textSha256": "910f9ece2c8322bc1510440eb258fa45dc2bae58d85c64fd6c70dcf43a946ce9"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-102",
+            "IMP-103",
+            "IMP-120"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckPropertiesAndRelationshipTypes",
@@ -798,7 +808,11 @@
             "bodySha256": "edb66b714176d830df5fe6b2ab9433bc8f5a03e39ef272d06ed06da25b07248d",
             "textSha256": "2662dc364ea0239e3b12d45e009cf352d123cc9e6af57e3286a5e841130c1db3"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-130",
+            "IMP-131"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckRelatedItems",
@@ -810,7 +824,12 @@
             "bodySha256": "94dde976aa05b75b8b793f65022608438d9dd035bbfdc30005a20ffc89ccff22",
             "textSha256": "8f1bfd27f86a045727eb9380c13056da094b773155680d104591b7b36c95378d"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-102",
+            "IMP-103",
+            "IMP-150"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckRelationshipItems",
@@ -822,7 +841,13 @@
             "bodySha256": "99301f39e3b33ed025f48c007519c0e35d2c8eea43c491b2679dab782390046a",
             "textSha256": "623d0a902858ead475007f036bcf0403d065ab2f15606299ee87ae38aa326f6a"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-102",
+            "IMP-103",
+            "IMP-110",
+            "IMP-111"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CreateNewXmlDocument",
@@ -858,7 +883,11 @@
             "bodySha256": "76b6c7d6d7574f5891a9b8fea2c2bfa618b7846d0400257bee449dcc23c3aafc",
             "textSha256": "d0b775b9986057a8fc0e3a84515dcfe0b070b8b349f39a22ee75e9fab87855c2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-100",
+            "IMP-103"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::DoesItemAlreadyExist",
@@ -937,7 +966,10 @@
             "bodySha256": "448743a69cf13ff455a8d431f49960f0f1b8da0d7a302b8f827b59ee20e33a43",
             "textSha256": "0c0743d95e4602af83856ccac1c03ee1c2424bad5e5bd02e87f5c6702499bdf2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-151"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetCurrentUtilityVersion",
@@ -1023,7 +1055,11 @@
             "bodySha256": "95b6effd9819cd43abfd65620670cc7942d2f9d21e7799fe7b96177bd118820e",
             "textSha256": "d452996987053d2b923694ce2dbb4b3d979b5c228ed67822bc1db5d2f630f7da"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-132",
+            "IMP-170"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetLabelOfItemType",
@@ -1062,7 +1098,10 @@
             "bodySha256": "468255d5aebedda009c68dd5301ffb45ccbde4ddbf74b35709d3564bb7164e16",
             "textSha256": "284c55eda8ccc14176c020228f203468d26f2bd8b2627489028bdd72316cbbd6"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-132"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetNonCorePackageNames",
@@ -1149,7 +1188,11 @@
             "bodySha256": "7191efc6032ce47883b0c4ea7b00030db7265e4bda4207d842122c29fe4b89ac",
             "textSha256": "32ba87e474d78ffc5f9e8e0ed4602814a8f26f5a8a78cd8720011cf855db99dd"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-132",
+            "IMP-150"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetSolutionNames",
@@ -1173,7 +1216,12 @@
             "bodySha256": "118f619e382a95ea2eb86b767820a0d1f170895878410cfcfca045589fee8eae",
             "textSha256": "7061d7f33c4737288ec92e407adc6a0d12675d2c16d88fdc9be585383c75896d"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-102",
+            "IMP-132",
+            "IMP-180"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetUniqueProperties",
@@ -1230,7 +1278,10 @@
             "bodySha256": "a0273840e77cd313b6f0fdd7d5a2e8e05145020ce3c6470c7775fda05f0f05a3",
             "textSha256": "cffe79f862af4e11e3eb5af88d377daf82d676819f7240bf9bd2669a54ea32dc"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-170"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::Islocked",
@@ -1319,7 +1370,14 @@
             "bodySha256": "de7210274744f7a4ae765d28dc8645f861b6fd909b1f680800091f81d683985e",
             "textSha256": "19424118ffd3f9b48de933b57995110fb00c702df7e8da813c85ca165a09ee05"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-101",
+            "IMP-104",
+            "IMP-160",
+            "IMP-161",
+            "IMP-180"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveEmptyRelationships",
