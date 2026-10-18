@@ -17,6 +17,7 @@ import { XmlException } from "../xml/errors.js";
 import { loadXml } from "../xml/parser.js";
 import { selectNodes, selectSingleNode } from "../xml/xpath.js";
 import { outerXml } from "../xml/writer-legacy.js";
+import { RESULT_PATH } from "./answer-path.js";
 import type { LogWriter } from "./load-package-dom.js";
 
 /**
@@ -50,12 +51,6 @@ const RELATIONSHIP_TYPES_FOR_CHECKING_ON_DELAYED_RESOLUTION = ["DiscussionTempla
 
 /** The built-in discussion template (IMP-110): its `FeedTemplate` children are edited, not merged. */
 const BUILT_IN_DISCUSSION_TEMPLATE = "9D257D4D16AC480493571BBF816D13BE";
-
-/** The path of `Result` below the envelope that every read of a type definition starts with (IMP-130). */
-const RESULT_PATH =
-  "*[local-name()='Envelope' and (namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' or namespace-uri()='')]" +
-  "/*[local-name()='Body' and (namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' or namespace-uri()='')]" +
-  "/*[local-name()='Result' and (namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' or namespace-uri()='')]";
 
 const asElements = (nodes: XmlNode[]): XmlElement[] => nodes as XmlElement[];
 
