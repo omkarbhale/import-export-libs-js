@@ -6388,7 +6388,7 @@
             "bodySha256": "e5ec592773301280068ca9b351c9b53f603845e2539843ae90bb837e67b68cbd",
             "textSha256": "f3429167f62bd03711688e0379ae9561339c3d1a4ef9d2f69762105a10e63012"
           },
-          "status": "mapped",
+          "status": "unmapped",
           "rules": [
             "IMP-007",
             "IMP-016",
@@ -6398,9 +6398,6 @@
             "LP-022",
             "MAN-003",
             "MAN-004"
-          ],
-          "symbols": [
-            "src/xml/read-text.ts#xmlDocumentLoad"
           ]
         },
         {
@@ -6413,12 +6410,10 @@
             "bodySha256": "f9577b9b40d05d74d0a1eab9f0140acd43fe4f81918f4144a97823d7a6711b2b",
             "textSha256": "4823217719d2e5747a989df2dc031340179c6888aff95f0362e86758fd9b51cd"
           },
-          "status": "mapped",
+          "status": "unmapped",
           "rules": [
+            "MAN-004",
             "MAN-006"
-          ],
-          "symbols": [
-            "src/xml/save.ts#xmlDocumentSave"
           ]
         },
         {
@@ -6431,7 +6426,7 @@
             "bodySha256": "23d28350b8917f6dbf0de92a7f3a56242fa96ed08fc40d4afb10c698d960f20b",
             "textSha256": "08a413cb637d224b352f7e18c76d8b6aefee90cb60dd10b23cf692e08940c88a"
           },
-          "status": "mapped",
+          "status": "unmapped",
           "rules": [
             "EXP-423",
             "EXP-424",
@@ -6439,9 +6434,6 @@
             "EXP-426",
             "EXP-427",
             "EXP-428"
-          ],
-          "symbols": [
-            "src/xml/save.ts#xmlDocumentSaveWithSettings"
           ]
         },
         {

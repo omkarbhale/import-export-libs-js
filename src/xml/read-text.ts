@@ -131,7 +131,9 @@ function decodeUtf32(bytes: Uint8Array, start: number, bigEndian: boolean): stri
 
 /**
  * `IOWrapper.XmlDocumentLoad` without the path normalisation: reads the file with {@link readAllText} and loads the
- * text into a new document that drops white space. The caller applies the engine's path rules first (MAN-004).
+ * text into a new document that drops white space. The caller applies the engine's path rules first (MAN-004). The
+ * source-map entry stays unmapped until the path ticket (the build ticket that implements NormalizeLongPath, EXP-421;
+ * wayfinder tickets 28 and 33 call these wrappers) makes this wrapper apply the path rules.
  * @spec IMP-007 MAN-003
  */
 export function xmlDocumentLoad(path: string): XmlDocument {
