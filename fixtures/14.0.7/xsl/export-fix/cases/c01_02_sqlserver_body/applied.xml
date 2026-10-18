@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><sqlserver_body><![CDATA[a<b>&c]]></sqlserver_body></Item></AML>

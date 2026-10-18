@@ -2,7 +2,7 @@
  * The names the stylesheet looks up inside one `|`-delimited string. The test is a substring test, so a name that itself contains
  * `|` can match as a run of several entries (EXP-271).
  *
- * @spec EXP-271 EXP-301
+ * @spec EXP-271 EXP-301 EXP-393
  */
 
 /** The 32 system property names (`export.xsl:4`), delimited by `|`. */

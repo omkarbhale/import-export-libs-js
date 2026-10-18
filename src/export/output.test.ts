@@ -113,3 +113,20 @@ describe("transformExport", () => {
     expect(transformExport(doc, "14.0.7")).toBe('<AML><Item type="A" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" /></AML>');
   });
 });
+
+describe("OutputWriter comments", () => {
+  it("writes line breaks as \\r\\n and a hyphen after a hyphen with a space between (EXP-361)", () => {
+    expect(
+      write((w) => {
+        w.startElement("r");
+        w.comment("a--b---c----d\ne&<\"");
+        w.endElement();
+      }),
+    ).toBe('<r><!--a- -b- - -c- - - -d\r\ne&<"--></r>');
+  });
+
+  it("fails on a character XML cannot hold, and names a NUL as a full stop (EXP-361)", () => {
+    expect(() => write((w) => { w.startElement("r"); w.comment("a\u0001"); w.endElement(); })).toThrow(ArgumentException);
+    expect(() => write((w) => { w.startElement("r"); w.text("\u0000"); w.endElement(); })).toThrow("'.', hexadecimal value 0x00, is an invalid character.");
+  });
+});

@@ -106,6 +106,17 @@ export class OutputWriter {
     this.out += normalizeLineBreaks(value);
   }
 
+  /**
+   * `xsl:comment`. Line breaks are written `\r\n`, and a hyphen that follows a hyphen gets a space before it, as `XmlWriter` does.
+   * @spec EXP-361
+   */
+  comment(value: string): void {
+    this.flushText();
+    this.fail(invalidCharacterMessage(value));
+    this.openContent();
+    this.out += `<!--${normalizeLineBreaks(value).replace(/-(?=-)/g, "- ")}-->`;
+  }
+
   endElement(): void {
     this.flushText();
     const element = this.stack.pop();

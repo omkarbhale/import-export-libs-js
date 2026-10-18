@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><filter>a&lt;b&gt;&amp;c</filter></Item></AML>

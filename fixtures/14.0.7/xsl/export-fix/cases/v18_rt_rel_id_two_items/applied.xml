@@ -1,0 +1,1 @@
+<AML><Item type="RelationshipType" id="RT1" action="add"><relationship_id><Item type="ItemType" id="A" action="add"><name>A</name></Item><Item type="ItemType" id="B" action="add"><name>B</name></Item></relationship_id></Item><Item type="View" action="delete" where="source_id='A'" /><Item type="Form" action="delete" where="name='A'" /></AML>

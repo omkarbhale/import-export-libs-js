@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><query><![CDATA[a<b>&c]]></query></Item></AML>

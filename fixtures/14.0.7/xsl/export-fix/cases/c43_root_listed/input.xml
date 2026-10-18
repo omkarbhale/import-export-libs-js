@@ -1,0 +1,2 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><Relationships><Item type="Method" id="M1"><method_code>if (a &lt; b) {}
+x</method_code><comments>c &amp; d</comments></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

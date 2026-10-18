@@ -3,6 +3,17 @@ import { CItemException } from "../client/fault.js";
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import { CDATA_SECTION_NODE, ELEMENT_NODE, TEXT_NODE, innerText } from "../xml/index.js";
 import type { XmlDocument, XmlElement, XmlNode } from "../xml/index.js";
+import { isDroppedElement, isDroppedProperty } from "./drops.js";
+import {
+  fieldFix,
+  fieldsToFix,
+  fixedItemTypes,
+  keyedProperties,
+  modifiedSystemProperties,
+  propertyFixAttributes,
+  relationshipItems,
+  viewFormDeletes,
+} from "./fix-items.js";
 import { OutputWriter } from "./output.js";
 import {
   attributeOf,
@@ -19,15 +30,15 @@ import {
 import { SYSTEM_IDENTITIES, SYSTEM_PROPERTIES, containsEntry } from "./system-names.js";
 
 /**
- * The export transform: `export.xsl`, re-expressed as code. `ApplyXsl` runs the stylesheet over the response document; this module is
- * its part 1, the root wrapper, the Items and the reference rewrites. Each function below is a template of the stylesheet (or a
- * named template), tested in the order of the rules in spec/export-transform.md. The templates of the other half, the
- * system-element drops and the follow-up items after the root Item, are not here yet.
+ * The export transform: `export.xsl`, re-expressed as code. `ApplyXsl` runs the stylesheet over the response document. Each
+ * function below is a template of the stylesheet (or a named template), tested in the order of the rules in
+ * spec/export-transform.md: the root wrapper, the Items and the reference rewrites (part 1), then the drops (drops.ts) and the
+ * `mode="fix"` items that follow the root Item (part 2). What those templates select in the source is read in fix-items.ts.
  *
- * The stylesheet's template selection is by priority (EXP-202). No two templates of this module can match one node, so they are
- * tested in any order.
+ * The stylesheet's template selection is by priority (EXP-202). No two templates of this module can match one node with a
+ * different result (EXP-370), so they are tested in any order.
  *
- * @spec EXP-200 EXP-201 EXP-202 EXP-203 EXP-260
+ * @spec EXP-200 EXP-201 EXP-202 EXP-203 EXP-260 EXP-300 EXP-370
  */
 
 /** The engines whose export transform is built; the rest wait for their variant slices. */
@@ -88,9 +99,12 @@ export function applyExportTransform(doc: XmlDocument, engine: Engine = DEFAULT_
 
 class ExportTransform {
   readonly output = new OutputWriter();
+  /** The document being transformed: the Field fixes select Items anywhere in it (EXP-340). */
+  private doc!: XmlDocument;
 
   /** The template for `/`: only the Envelope children are visited (EXP-210). */
   documentNode(doc: XmlDocument): void {
+    this.doc = doc;
     for (let child = doc.firstChild; child; child = child.nextSibling) {
       if (child.nodeType === ELEMENT_NODE && (child as XmlElement).localName === "Envelope") this.envelope(child as XmlElement);
     }
@@ -118,7 +132,7 @@ class ExportTransform {
 
   /**
    * The root Item, in its own `<AML>` wrapper, with attributes rebuilt and then its children (EXP-211, EXP-212).
-   * @spec EXP-211 EXP-212 EXP-213
+   * @spec EXP-211 EXP-212 EXP-213 EXP-214
    */
   private rootItem(item: XmlElement): void {
     const out = this.output;
@@ -133,7 +147,7 @@ class ExportTransform {
     if (dependencyLevel !== undefined) out.attribute("dependencyLevel", dependencyLevel);
     this.applyTemplates(item);
     out.endElement();
-    // the items that EXP-214 lists after the root Item copy belong to part 2
+    this.followUpItems(item);
     out.endElement();
   }
 
@@ -156,13 +170,14 @@ class ExportTransform {
 
   /**
    * The template chosen for an element in default mode (EXP-202). A property template needs the Item above the element to be of its type.
-   * @spec EXP-202 EXP-260
+   * @spec EXP-202 EXP-260 EXP-311 EXP-312 EXP-313 EXP-314 EXP-315 EXP-316
    */
   private element(element: XmlElement): void {
     if (element.localName === "Envelope") return this.envelope(element);
     if (element.localName === "Body") return this.body(element);
     if (isNamed(element, "Result")) return this.result(element);
     if (isNamed(element, "Item")) return this.item(element);
+    if (isDroppedElement(element)) return;
 
     const parent = parentElement(element);
     const owner = parent && isNamed(parent, "Item") ? parent : null;
@@ -202,7 +217,7 @@ class ExportTransform {
 
   /**
    * An `Item` in default mode: the specific templates, else the plain Item template. A dropped Item leaves its container in place (EXP-244).
-   * @spec EXP-230 EXP-235 EXP-240 EXP-241 EXP-242 EXP-243 EXP-244
+   * @spec EXP-230 EXP-235 EXP-240 EXP-241 EXP-242 EXP-243 EXP-244 EXP-310
    */
   private item(item: XmlElement): void {
     const type = attributeOf(item, "type");
@@ -222,6 +237,7 @@ class ExportTransform {
       this.output.text(attributeText(item, "id"));
       return;
     }
+    if (type === "Property" && isDroppedProperty(item)) return;
     this.plainItem(item);
   }
 
@@ -461,6 +477,142 @@ class ExportTransform {
     out.rawText("<![CDATA[");
     out.rawText(innerText(reference));
     out.rawText("]]>");
+    out.endElement();
+  }
+
+  // ---------------------------------------------------------------- the items after the root Item
+
+  /**
+   * What the root template writes after the root Item copy, in the order of EXP-352: the ItemType edits, the View and Form
+   * deletes, the Field fixes, then the Members and the Morphae of the root's own relationships.
+   * @spec EXP-214 EXP-352 EXP-394
+   */
+  private followUpItems(root: XmlElement): void {
+    for (const itemType of fixedItemTypes(root)) this.itemTypeEdit(itemType);
+    for (const { id, name } of viewFormDeletes(root)) this.viewFormDelete(id, name);
+    for (const field of fieldsToFix(this.doc)) this.fieldFix(field);
+    for (const member of relationshipItems(root, "Member")) this.memberFix(member);
+    for (const morphae of relationshipItems(root, "Morphae")) this.morphaeFix(root, morphae);
+  }
+
+  /**
+   * A copy of an Item with the attributes `type`, `id` if it has one, and `action` (the fix templates' `xsl:copy`). It carries the
+   * namespace declarations of its source, which its literal wrappers do not (EXP-362).
+   * @spec EXP-362
+   */
+  private startFixCopy(item: XmlElement, action: string): void {
+    this.startCopy(item);
+    for (const name of ["type", "id"]) {
+      const value = attributeOf(item, name);
+      if (value !== undefined) this.output.attribute(name, value);
+    }
+    this.output.attribute("action", action);
+  }
+
+  /**
+   * The second ItemType, which carries the keyed Properties and the modified system Properties the main pass dropped.
+   * @spec EXP-320 EXP-321 EXP-322
+   */
+  private itemTypeEdit(itemType: XmlElement): void {
+    const properties = [...keyedProperties(itemType), ...modifiedSystemProperties(itemType)];
+    if (properties.length === 0) return;
+    this.startFixCopy(itemType, "edit");
+    this.output.startElement("Relationships");
+    for (const property of properties) this.propertyFix(property);
+    this.output.endElement();
+    this.output.endElement();
+  }
+
+  /**
+   * A Property of the ItemType edit: added with its id, or edited by its source and name (EXP-324). Its children are handled in
+   * default mode, so the drops and the reference rewrites apply inside it.
+   * @spec EXP-324 EXP-390
+   */
+  private propertyFix(property: XmlElement): void {
+    const out = this.output;
+    const attributes = propertyFixAttributes(property);
+    this.startCopy(property);
+    const type = attributeOf(property, "type");
+    if (type !== undefined) out.attribute("type", type);
+    const id = attributeOf(property, "id");
+    if (attributes.id && id !== undefined) out.attribute("id", id);
+    if (attributes.action) out.attribute("action", attributes.action);
+    if (attributes.where !== undefined) out.attribute("where", attributes.where);
+    this.applyTemplates(property);
+    out.endElement();
+  }
+
+  /**
+   * The pair of delete items for the View and Form the server generates. The id and the name are put into the clause as they are.
+   * @spec EXP-330 EXP-390
+   */
+  private viewFormDelete(id: string, name: string): void {
+    const out = this.output;
+    out.startElement("Item");
+    out.attribute("type", "View");
+    out.attribute("action", "delete");
+    out.attribute("where", `source_id='${id}'`);
+    out.endElement();
+    out.startElement("Item");
+    out.attribute("type", "Form");
+    out.attribute("action", "delete");
+    out.attribute("where", `name='${name}'`);
+    out.endElement();
+  }
+
+  /**
+   * A Field whose data source is a system property: an edit that names the property again, behind a comment. The elements are
+   * built from `value-of`, so an empty value is written as `<x></x>` (EXP-363).
+   * @spec EXP-340 EXP-361 EXP-363
+   */
+  private fieldFix(field: XmlElement): void {
+    const out = this.output;
+    const fix = fieldFix(field);
+    this.startFixCopy(field, "edit");
+    out.comment(` Please note: this AML depends on the "${fix.keyedName}" ItemType. Please make sure it exists before running this. `);
+    out.startElement("propertytype_id");
+    out.startElement("Item");
+    out.attribute("type", "Property");
+    out.attribute("action", "get");
+    out.attribute("select", "id");
+    out.startElement("name");
+    out.text(fix.name);
+    out.endElement();
+    out.startElement("source_id");
+    out.attribute("type", fix.type);
+    out.attribute("keyed_name", fix.keyedName);
+    out.text(fix.source);
+    out.endElement();
+    out.endElement();
+    out.endElement();
+    out.endElement();
+  }
+
+  /**
+   * A Member of the root, written again at the end so the Identities exist first.
+   * @spec EXP-350
+   */
+  private memberFix(member: XmlElement): void {
+    this.startFixCopy(member, "add");
+    this.applyTemplates(member);
+    this.output.endElement();
+  }
+
+  /**
+   * A Morphae of the root, in an edit of the root's id whose type is always ItemType.
+   * @spec EXP-351
+   */
+  private morphaeFix(root: XmlElement, morphae: XmlElement): void {
+    const out = this.output;
+    out.startElement("Item");
+    out.attribute("type", "ItemType");
+    out.attribute("id", attributeText(root, "id"));
+    out.attribute("action", "edit");
+    out.startElement("Relationships");
+    this.startFixCopy(morphae, "add");
+    this.applyTemplates(morphae);
+    out.endElement();
+    out.endElement();
     out.endElement();
   }
 }
