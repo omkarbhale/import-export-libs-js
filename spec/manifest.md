@@ -76,7 +76,7 @@ The failures of a missing file or folder, an empty file, an empty path and a nul
 [14.0.7] `IOWrapper.NormalizeLongPath(path)` is applied to the path of every file-system operation the engine makes: reading and saving the manifest, reading package folders, creating and deleting folders, opening the log and writing item files. For a null or empty path it returns the path as is. Otherwise:
 
 1. it removes from the start of the path every leading character that is `\` or `?` (it calls `TrimStart` with the characters of `\\?\`, not with that string as a prefix);
-2. it computes the full path of the result against the process's current directory (`Path.GetFullPath`), which throws for a path with a character below U+0020, or `"`, `<`, `>`, `|` or `?` (`System.ArgumentException`, `Illegal characters in path.`), for a path that is only whitespace (`The path is not of a legal form.`) and for a `:` anywhere but a drive prefix (`System.NotSupportedException`, `The given path's format is not supported.`);
+2. it computes the full path of the result against the process's current directory (`Path.GetFullPath`), which throws for a path that is empty or only white space, tab included (`System.ArgumentException`, `The path is not of a legal form.`), for a path with a character below U+0020, or `"`, `<`, `>`, `|`, `?` or `*` (`System.ArgumentException`, `Illegal characters in path.`), and for a `:` anywhere but as the second character after a drive letter (`System.NotSupportedException`, `The given path's format is not supported.`). The full path folds `/` into `\`, resolves `.` and `..`, turns `X:rest` into the current directory of drive `X` (the root of `X` with the letter in upper case when `X` is not the current drive), and drops trailing dots and spaces of the whole path and trailing dots of a segment (probed, `GetFullPath` on the oracle host: `C:\a.\b` is `C:\a\b`, `C:\a \b` is unchanged);
 3. when the full path is 255 characters or longer it returns `\\?\` followed by the full path; otherwise it returns the trimmed path from step 1, not the full path.
 
 Observed: paths of 240 to 256 characters save and read; `?` and `\\?\` prefixes before a drive path are stripped and work; a relative path resolves against the current directory.
@@ -235,7 +235,7 @@ Observed key orders (the table is built from `dependson` names `a` to `h`, in fo
 - To remove, walk the probe sequence from the key's start while the visited bucket has its collision flag set; at the bucket holding the key, if its flag is set it becomes a deleted bucket that keeps the flag, otherwise it becomes never-used. `count` goes down by one.
 - **Enumeration** visits the buckets from the last index down to index 0 and yields each live entry.
 
-Verified against the real engine on these 14.0.7 vectors: the key orders in MAN-016 (four sets, 2 to 12 keys), and, from the earlier research of the same algorithm, 1,200 random operation sequences (up to 3,273 operations, with removes, overwrites and non-BMP, lone-surrogate and NUL keys), 200 host-shaped nested tables, 102 tables built from 5,050 real item ids in 55 packages, and 430,786 string hashes.
+The emulation is `src/manifest/netfx-hashtable.ts`. Verified against the real engine on these 14.0.7 vectors (`fixtures/manifest/14.0.7/hashtable/`, where the generator and the digest of the real output are): the key orders in MAN-016 (four sets, 2 to 12 keys), and, from the earlier research of the same algorithm, 1,200 random operation sequences (up to 3,273 operations, with removes, overwrites and non-BMP, lone-surrogate and NUL keys), 200 host-shaped nested tables, 102 tables built from 5,050 real item ids in 55 packages, and 430,786 string hashes.
 
 [12.0] Same as 14.0.7.
 
@@ -322,7 +322,7 @@ The database test is `//Item[@type='PackageDefinition' and name='{pkg}']` evalua
 
 The depth at which the stack runs out depends on the host's thread stack size. A chain of 12,000 dependencies (`P0>P1>…>P11999`, importing `P0` to `P11999`) is ordered without trouble on the oracle host, so ordinary manifests never reach it.
 
-The port counts the nesting depth of `MoveToOrderedList` and, at a depth of 100,000, stops with an error whose message is `Process is terminated due to StackOverflowException.` (the engine's own text), without returning a partial order. The library therefore fails where the engine dies, but as a catchable error: the one deviation that cannot be avoided (round 5, line 9). A chain deeper than the bound but within what a host's stack can take would fail in the port and succeed in the engine; no real manifest is that deep. Registered in `bugs.md`.
+The port counts the nesting depth of `MoveToOrderedList` (the call made by the ordering is at depth 1) and, when a call would be at a depth of 100,000, stops with an error whose message is `Process is terminated due to StackOverflowException.` (the engine's own text), without returning a partial order. The library therefore fails where the engine dies, but as a catchable error: the one deviation that cannot be avoided (round 5, line 9). A chain deeper than the bound but within what a host's stack can take would fail in the port and succeed in the engine; no real manifest is that deep. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
 
@@ -380,7 +380,7 @@ The culture-sensitive comparison is not ordinal. Its observable differences, ide
 
 - the code points in `ignorable` (the soft hyphen U+00AD, U+034F, variation selectors, and the many code points .NET's tables leave unassigned) are skipped wherever they occur, inside the prefix, before it or in front of the dot that ends it: `com.aras.innovator\u00AD.x` and `\u00ADcom.aras.innovator.x` are core;
 - U+2024 (one dot leader) counts as `.`;
-- U+3031, U+3033, U+3035, U+309D, U+30FC, U+30FD and U+FF70 right after the first `n` of `innovator` count as a repeated `n`;
+- U+3031, U+3033, U+3035, U+309D, U+30FC, U+30FD and U+FF70 right after the first `n` of `innovator` count as the second `n` (`com.aras.in` + U+3031 + `ovator.x` is core, `com.aras.inn` + U+3031 + `ovator.x` is not; probed on the oracle host);
 - a code point in `afterPrefixBreaks` (combining marks) directly after the final `.` of a prefix attaches to it, so the text no longer starts with that prefix: `com.aras.innovator.\u0301x` is not core, and `com.aras.innovator.solution.\u0301x` does not start with the `solution.` prefix and is core;
 - every other code point is compared by code unit, so `ı` (U+0131), the zero-width space U+200B and full-width letters do not match the letters they resemble.
 

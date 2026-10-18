@@ -1,4 +1,5 @@
-import { writeFileSync } from "node:fs";
+import { writeFileBytes } from "../io/host-path.js";
+import type { PathEnvironment } from "../io/host-path.js";
 import type { XmlDocument } from "./dom.js";
 import { ArgumentException } from "./errors.js";
 import { ITEM_FILE_SETTINGS, writeDocument } from "./writer-xmlwriter.js";
@@ -17,31 +18,29 @@ export function encodeItemFile(doc: XmlDocument): Buffer {
 }
 
 /**
- * `IOWrapper.XmlDocumentSaveWithSettings(doc, path)` without the path normalisation: creates or truncates the file and
- * writes the item file. A document that cannot be written leaves the byte-order mark and the text before the failing
- * node in the file, and the exception goes on to the caller. The caller applies the engine's path rules first (EXP-421).
- * The source-map entry stays unmapped until the path ticket (the build ticket that implements NormalizeLongPath,
- * EXP-421; wayfinder tickets 28 and 33 call these wrappers) makes this wrapper apply the path rules.
+ * `IOWrapper.XmlDocumentSaveWithSettings(doc, path)`: the path goes through the engine's path rules (EXP-421, MAN-033),
+ * and the file is created or truncated and the item file written. A document that cannot be written leaves the
+ * byte-order mark and the text before the failing node in the file, and the exception goes on to the caller.
  * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427 EXP-428
  */
-export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string): void {
+export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string | null, environment: PathEnvironment = {}): void {
+  let bytes: Buffer;
   try {
-    writeFileSync(path, encodeItemFile(doc));
+    bytes = encodeItemFile(doc);
   } catch (error) {
     if (error instanceof ArgumentException && error.partialOutput !== undefined) {
-      writeFileSync(path, Buffer.concat([BOM, Buffer.from(error.partialOutput, "utf8")]));
+      writeFileBytes(path, Buffer.concat([BOM, Buffer.from(error.partialOutput, "utf8")]), environment);
     }
     throw error;
   }
+  writeFileBytes(path, bytes, environment);
 }
 
 /**
- * `IOWrapper.XmlDocumentSave(doc, path)` without the path normalisation: `XmlDocument.Save(path)`, which is how the
- * manifest is written. The caller applies the engine's path rules first (MAN-004). The source-map entry stays
- * unmapped until the path ticket (the build ticket that implements NormalizeLongPath, EXP-421; wayfinder tickets 28
- * and 33 call these wrappers) makes this wrapper apply the path rules.
- * @spec MAN-006
+ * `IOWrapper.XmlDocumentSave(doc, path)`: the path goes through the engine's path rules (MAN-004, MAN-033), then
+ * `XmlDocument.Save(path)` overwrites the file, which is how the manifest is written (MAN-006).
+ * @spec MAN-004 MAN-006
  */
-export function xmlDocumentSave(doc: XmlDocument, path: string): void {
-  writeFileSync(path, saveBytes(doc));
+export function xmlDocumentSave(doc: XmlDocument, path: string | null, environment: PathEnvironment = {}): void {
+  writeFileBytes(path, saveBytes(doc), environment);
 }
