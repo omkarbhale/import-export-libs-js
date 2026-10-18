@@ -8,6 +8,10 @@ Sources:
 - probes run on .NET Framework 4.8 (CLR 4.0.30319, Windows PowerShell 5.1) for every .NET behaviour that decides bytes: `XmlDocument` attribute and `InnerText` handling, `XmlWriter` indentation, `WebUtility.HtmlDecode`/`HtmlEncode` and `XDocument.ToString`;
 - read-only queries on the dev server (Aras 12.0 SP9) for the item types involved, and the recorded wire request in `fixtures/wire/14.0.7-reference-host/capture.jsonl` for the float-property query (EXP-116).
 
+- for 14.35: the 14.35 decompile (`.decomp/14.35/`, never committed), compared with 14.0.7's, and offline probes of the 14.35 `Libs.dll` for the one step it adds (`oracle/export-output-probe/probe.ps1`, section `RSER`, recorded in `fixtures/export-output/probe-14.35.txt`) and for the run around it (`run-export.ps1`, scenarios `S17` and `S18`, `fixtures/export-output/run-export-14.35.txt`).
+
+**Engine 14.35.** `CExportItems.Export` runs steps 5 to 12 in the same order with the same code. One step is added in front of them (EXP-170). What changed in the requests those steps send, and in the lookups they share, belongs to the request rules (`spec/export-requests.md`, ticket 51), not to this document. The four language-export steps that 14.35 adds to `Export` (`MarkPropertiesWithTranslationsIfNeeded`, `RemoveNotLocalizedProperties`, `OrderPropertiesWithTranslations`, `AddI18NNamespaceToAllRootItems`) test the engine's action first and do nothing unless it is a language-resource export (EXP-401, language-export rules, ticket 54).
+
 Rules that say "not probed live" come from the IOM source alone: they need server state that dev does not have until the scratch fixtures (wayfinder ticket 67) are recorded.
 
 The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`) compared method by method with 14.0.7's and from live exports of the vendored 12.0 engine against dev. The two builds differ here in the float-property recursion (EXP-116) and in the `dr_RelationshipFamily` and `ac_PolicyAccessItemAttribute` steps (EXP-117, EXP-118, EXP-121); every other rule says `Same as 14.0.7.`
@@ -43,6 +47,8 @@ The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`) compared me
 The item type tested is the type name of the item being exported (`ExportItem.typeName`), compared exactly (ordinal, case-sensitive). Steps 8 are mutually exclusive. Steps 13 onward (the XSL and the post-processing) are other documents.
 
 [12.0] Same steps and order, except: there is no row for `ac_PolicyAccessItemAttribute` in step 11 (nothing runs for it), step 10 recurses as EXP-116 says, and step 11 for `dr_RelationshipFamily` is EXP-117 without the re-indent.
+
+[14.35] One step runs before step 5: step 4a, `RemoveSeparatelyExportedRelationships` (EXP-170), always, on every item. Steps 5 to 12 follow in the table's order, unchanged. After step 12 the engine marks translated Properties and the XSL follows (steps 13 onward); outside the language-resource exports the marking does nothing (EXP-401).
 
 ## EXP-101: Which exceptions the steps raise, and which are wrapped
 
@@ -310,3 +316,24 @@ Probed examples (`\r\n` is CR LF):
 [14.0.7] EXP-117 replaces an `implementation_query` text by `XDocument.Parse(text).ToString()`. The parse keeps no whitespace-only text nodes (so existing indentation is discarded); the output is indented by two spaces per level, with CR LF between lines, no XML declaration and no trailing newline, and empty elements as `<x />` (probed on Windows). Text-only and mixed content stays on its own line, comments and CDATA sections are kept, and a document type declaration is written as `<!DOCTYPE a []>`. A DOM line feed inside an attribute value is written as a space. Text that is empty, blank, has several roots or is not XML at all raises `XmlException` (`Root element is missing.`, `There are multiple root elements.`, `Data at the root level is invalid.`), wrapped by EXP-101.
 
 [12.0] Not used. The 12.0 engine never calls `XDocument.ToString` (EXP-117 has no step 3), so this behaviour is not needed for 12.0.
+
+## 14.35: relationships that are package elements
+
+### EXP-170: Relationships that are package elements are removed
+
+[14.0.7] There is no such step. A relationship Item is written inside its parent's file whether or not it is also an element of a package.
+
+[14.35] Between the main fetch and step 5, `Export` calls `RemoveSeparatelyExportedRelationships(response, packageElements)`. `packageElements` is the map of EXP-550: for every `element_type` that occurs in the database's package definitions, the set of the `element_id` values of its PackageElements, over all packages, not only the exported ones. The step runs for every item and sends no request.
+
+It selects, once, `//Result/Item/Relationships/Item` on the response document and removes every selected Item whose `type` attribute is a key of the map and whose `id` attribute is in that key's set. The details, from probe `RSER` (`RS1` to `RS17`):
+
+- **Which Items.** Only the relationship Items of a root Item: an `Item` whose parent is a `Relationships` element whose parent is an `Item` whose parent is an element named `Result` that has no prefix and no namespace. Several root Items, and several `Relationships` elements in one Item, are all handled (`RS8`, `RS12`). A response whose `Result` is prefixed or in a namespace, and an AML document without `Result`, are left as they are (`RS7`, `RS13`, `RS14`). Responses of the server have an unprefixed `Result`.
+- **Which Items not.** A relationship Item nested deeper (the `Relationships` of a relationship Item, `RS4`), an Item inside a `related_id` (`RS5`) and the root Item itself (`RS6`) are never removed, whatever the map holds.
+- **The comparison.** `type` and `id` are compared with the map's strings exactly: ordinal, case-sensitive, untrimmed (`RS3`: `b` and `2 ` do not match `B` and `2`). The same pair must match: `id` `V1` of type `Other` stays when only `Value`/`V1` is a package element. A missing `type` or `id` attribute reads as the empty string, like an empty one, and matches an empty key or id of the map (`RS9`, `RS10`).
+- **The removal.** The selected Items are a snapshot (the convention above), so every match goes. Each is removed from its parent and nothing else: the whitespace text around it stays (`RS11`), and the `Relationships` element stays even when it is empty (`RS2`). The transform then drops a `Relationships` with no element children (EXP-316). An empty map removes nothing (`RS15`).
+- **The id that is compared** is the relationship Item's own `id` as the server sent it. The step runs before step 7 (EXP-107), which rewrites ids of versionable items to their config ids. A PackageElement of a versionable item holds the item's config id (EXP-607), so a relationship Item of a versionable type matches only while its `id` equals its config id, which is the first generation. *Inferred from EXP-607; dev holds no such case.*
+- **A null response or map.** A null response document throws `NullReferenceException`, and a null map throws it too when a relationship Item exists (`RS16`, `RS17`). Neither can happen: the response is the main fetch, and `ExportSolutions` never passes a null map (EXP-550). Both are mapped by EXP-400 if they did.
+
+The effect is that an element which a package lists on its own is not also written inside its parent's file: an ItemType's `Property` relationships that are PackageElements of type `Property`, for instance, stay out of the ItemType's file.
+
+*Observed* (`S17`, `S18`): item `A01` of type `List` whose response holds the relationships `Value`/`V1`, `Value`/`V2` and `Other`/`V1`. With no package element, the file holds the three. With `Value`/`V1` a PackageElement of the first package, the file holds `Value`/`V2` and `Other`/`V1` only.

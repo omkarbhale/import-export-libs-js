@@ -5,7 +5,8 @@ This document specifies everything the engine sends to the Aras server and how. 
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`), and of `IOM.dll` 14.0.7.35492 and Aras's `ConsoleUpgrade.exe` 14.0.7 (decompiled locally with the same `ilspycmd`, never committed);
-- the proxy capture of the reference host against dev, `fixtures/wire/14.0.7-reference-host/` (WIRE-002). Request headers and bodies quoted below are from that capture.
+- the proxy capture of the reference host against dev, `fixtures/wire/14.0.7-reference-host/` (WIRE-002). Request headers and bodies quoted below are from that capture;
+- for the one 14.35 variant here (WIRE-051): the 14.35 decompile of `CItemException` (`.decomp/14.35/`, never committed) and a run of the real 14.35 `Libs.dll` against a scripted connection (`oracle/export-output-probe/`, `fixtures/export-output/run-export-14.35.txt`). The other wire rules of 14.35 are the 14.35 import and DB patch tickets'.
 
 IOM 14.0.7 targets .NET Framework 4.7.2. Its SOAP calls go through `HttpWebRequest` and its OAuth calls through `HttpClient`, so some wire details (header order, `Expect: 100-continue`) come from the framework rather than from IOM's code. The capture pins them.
 
@@ -370,6 +371,39 @@ The server itself returns faults with HTTP 200 (the capture's "No items" faults)
 The engine's own errors use the four-part constructor: an explicit faultcode, faultstring, detail and inner exception, with the detail as the message. A null detail leaves the exception without a message, so its `Message` is .NET's default text (WIRE-023).
 
 [12.0] `CItemException` has the constructors of 14.0.7 except the one that takes a request and a response. Built from a fault response (`CItemException(item)`): `faultcode` is the response's `faultcode` text parsed as an integer, or `1` when it does not parse; `faultdetail` is the concatenated text of the whole `detail` element, or empty; `faultstring` and the message are the whole response document's outer XML. `applyAML` uses this form (WIRE-006), so every engine error that comes from a failed request carries the response only. The four-part constructor is as in 14.0.7.
+
+[14.35] The same fields from the same parts of a fault. The texts that carry the response, and the request when there is one, are pretty-printed:
+
+- built from the response alone, `faultstring` and the message are `GetPrettyXml` of the response document;
+- built from a request and its response, `faultstring` and the message are `Server error\r\n\r\nRequest (formatted):\r\n{GetPrettyXml(request AML)}\r\n\r\nResponse (formatted):\r\n{GetPrettyXml(response)}`. The spelling `Responce` is corrected.
+
+`GetPrettyXml(text)` is the empty string for a null text. Otherwise it loads the text into a new `XmlDocument` (whitespace-only text nodes of the input are dropped, because that document does not preserve whitespace) and writes the document to a string with an `XmlWriter` that has `Indent = true`, two spaces of indent, `\r\n` line ends, `NewLineOnAttributes = false` and `OmitXmlDeclaration = true`. The result has no line end after the last tag. An element with only text, CDATA or no content is written on one line; the escaping of text and attributes is that of EXP-424. A text that is not well-formed XML throws `XmlException` from the exception's constructor, so the caller sees that instead of the fault. The request is a document the engine has just parsed (`loadAML`) and the response is a document IOM built, so this does not happen in practice.
+
+*Observed* (`S3` in `fixtures/export-output/run-export-14.35.txt`, a scripted fault with faultcode 1): the `faultstring` of the logged block is
+
+```text
+Server error
+
+Request (formatted):
+<Item isNew="1" isTemp="1" type="List" action="get">
+  <id>A05</id>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>1</faultcode>
+      <faultstring><![CDATA[scripted failure for A05]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[scripted failure for A05]]></af:legacy_detail>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+
+and the log block reads `faultdetail: scripted failure for A05` and `faultcode:   1` after it.
 
 ### WIRE-052: Faultcode 0 means "no items"
 

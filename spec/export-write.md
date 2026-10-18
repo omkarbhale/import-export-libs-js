@@ -1,12 +1,15 @@
 # Export post-processing, serialization and file layout
 
-This document specifies what the export does after the XSL transform has produced an item's AML, and how that AML reaches the disk: the post-XSL steps, the output folders and file names, the file-system rules they run into, and the exact bytes of an item file. The rules are `EXP-400` to `EXP-428`.
+This document specifies what the export does after the XSL transform has produced an item's AML, and how that AML reaches the disk: the post-XSL steps, the output folders and file names, the file-system rules they run into, and the exact bytes of an item file. The rules are `EXP-400` to `EXP-428`, and `EXP-460` to `EXP-469` for engine 14.35 (the paths, and a bug of its concurrent run).
 
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `CExportItems.Export` and its helpers, `CItemHelper.ApplyXsl` and the DOM helpers, `ImportExportManager.CreateOutputDir`, `ExportImportBase` and `IOWrapper`;
 - offline probes of the vendored 14.0.7 DLL, which call the engine's own methods on small documents and write real files on NTFS: `oracle/export-write-probe/`, recorded in `fixtures/export-write/probe-14.0.7.txt` (probe ids such as `RPM3` below point into it) and `fixtures/export-write/ntfs-upcase-bmp.txt`;
-- the .NET XML byte rules measured on .NET Framework 4.8.1 (ticket 06; the writer rules `W1` to `W12` and the transform rules `X1` to `X6` it names are restated here where the export needs them).
+- the .NET XML byte rules measured on .NET Framework 4.8.1 (ticket 06; the writer rules `W1` to `W12` and the transform rules `X1` to `X6` it names are restated here where the export needs them);
+- for 14.35: the 14.35 decompile (`.decomp/14.35/`, never committed) compared with 14.0.7's method by method, the same offline probe run against the 14.35 `Libs.dll` (`fixtures/export-write/probe-14.35.txt`, next to `probe-14.0.7.txt`), and `oracle/export-output-probe/` (offline, no server): `probe.ps1` for the namespace step and the path rules (`RNN`, `PC`, `IPR`, `COD`) and `run-export.ps1` for whole exports against a scripted connection (scenarios `S1` and `S15` to `S20`), recorded in `fixtures/export-output/`.
+
+**Engine 14.35.** The post-XSL steps, the file writer and the file-system wrapper are the same code as 14.0.7's, apart from refactoring. The offline probe of this document gives the same output on both builds, line for line, except the `COD` and `COD2` rows (EXP-414) and the rows that print the length of the run folder. So every rule below holds for 14.35 as written unless it has a `[14.35]` variant. The differences are: the namespace step keeps `xmlns:i18n` (EXP-410), the paths are built with `Path.Combine` (EXP-460), items are written by concurrent workers (EXP-419), and the two lookups that steps 2 and 4 depend on are cached differently and shared by the workers (EXP-403, EXP-408). The pre-XSL step that removes relationships which are package elements is in `spec/export-prexsl.md` (EXP-170); the two changes to the transform are in `spec/export-transform.md` (EXP-380, EXP-381).
 
 Other engines' variants are added by the variant tickets. What happens before the transform is specified elsewhere (fetch requests, pre-XSL rewrites, `export.xsl` itself); the removal of references to unknown packages, which runs between `EXP-407` and `EXP-410`, and the per-item and per-package orchestration, log and messages are specified in their own areas.
 
@@ -34,6 +37,8 @@ Every step works on the same DOM object, which is IOM's `PreserveWhitespace = tr
 
 [12.0] The same sequence, with these differences. Step 3 runs only `CdataFilterXmlInMacCondition` and only when the exported item's type is `mp_MacPolicy` (EXP-405); there is no pass for `dr_RelationshipFamily`. In step 7 the type folder and the file are made without path normalisation (EXP-421), and the file is written by `CommonMethods.SaveToFile` (EXP-423). Failures are mapped as in 14.0.7.
 
+[14.35] The seven steps and the failure mapping are the same. The steps that 14.35 adds to `Export` are around them and do nothing outside the language-resource exports: `RemoveSeparatelyExportedRelationships` runs first (EXP-170); `MarkPropertiesWithTranslationsIfNeeded` runs just before step 1 and `RemoveNotLocalizedProperties` just after it, each only when the engine action is `ExportLanguageResourcesOnly`; `OrderPropertiesWithTranslations` and `AddI18NNamespaceToAllRootItems` run after step 6, before the type folder is created, each only for the two language actions. With the action `Export`, `Import` or `LPImport` all four return at once, and the item reaches the file as this rule says (language-resource exports: ticket 54). The path of the item file is computed before the first request of the item (EXP-417).
+
 ## ApplyXsl
 
 ### EXP-401: The transform output is stripped of one namespace declaration and reloaded into the same DOM
@@ -51,6 +56,8 @@ Failures:
 The compiled transform is cached for the process. This is not observable.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same. The text removed is still only the SOAP-ENV declaration. `xmlns:i18n` stays on the top-level `Item`, and EXP-410 now keeps it there for good.
 
 ### EXP-402: The namespace strip also deletes that text from element content
 
@@ -75,6 +82,8 @@ A `permission_id` that does not match the default stays, with its attributes (pr
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same steps, with one change in step 1. The lookup is shared by the workers and its cache keeps a failed answer (EXP-045, EXP-064 in `export-requests.md` say how the lookup works); this step sees the result. A `CItemException` of any faultcode returns null as before, but the null is **remembered** for the rest of the process. So after one failed lookup for a type, step 2 removes the `permission_id` of every later item of that type without asking again, where 14.0.7 asked again each time and kept the permissions of the items whose lookup succeeded. Scenario `S23` (the first lookup fails, six `List` items with `PERMX`, the type's default is `PERM1`): 14.0.7 removed the permission of the first item only, 14.35 of all six. The bug is EXP-064 (`export-requests.md`). With the lookups made concurrently, the first of several workers that ask together makes the request and the others share its answer.
+
 ### EXP-404: A type without default permission data throws a NullReferenceException
 
 [14.0.7] When the lookup of EXP-403 succeeds but the data is incomplete, the step throws `NullReferenceException` (message `Object reference not set to an instance of an object.`), which EXP-400 maps to a per-item failure:
@@ -85,6 +94,8 @@ A `permission_id` that does not match the default stays, with its attributes (pr
 A relationship type with `is_relationship` and `use_src_access` both `1` never reaches the default-permission comparison, so it passes without a default (probe `RPM5`).
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same, on the result of the lookup of EXP-403.
 
 ## CdataFilterXml
 
@@ -141,11 +152,15 @@ The new nodes carry no whitespace. In a document with whitespace nodes (EXP-425)
 
 [12.0] Same as 14.0.7.
 
+[14.35] The names are fetched by the first worker that reaches the step, and the others do not wait for them. The list is a static field: the first worker that finds it null assigns a new, empty list, sends the request, and adds the names to the list one by one. A worker that reaches the step while the request is in flight finds a non-null list and reads it as it is, empty or holding the names added so far, so it converts only the data sources that list names. Items that are processed together at the start of a run are therefore exported with their references to polymorphic ItemTypes unconverted, and the items that come later are converted (EXP-461). The request itself and the failed-fetch latch are as in 14.0.7.
+
 ### EXP-409: After a failed fetch this step converts nothing for the rest of the process
 
 [14.0.7] The latched empty list of EXP-047 makes every later call of this step find no poly-type names, so no `data_source` is replaced (EXP-407, step 2) and the items are exported with their references to polymorphic types unconverted. The bug is registered once, as EXP-047.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same. A fetch that fails with a faultcode other than `0` leaves the list empty for the rest of the process, and the exception reaches only the item whose worker made the request.
 
 ## RemoveNamespaceNodes
 
@@ -159,11 +174,22 @@ In practice this removes the `xmlns:i18n` declaration that the transform copied 
 
 [12.0] Same as 14.0.7.
 
+[14.35] An attribute is removed when its prefix is null or not blank, **and** its local name is not `i18n`, **and** its value is not `http://www.aras.com/I18N`. The attributes that meet either exception stay. Probes `RNN1` to `RNN11` (14.0.7's output is in `fixtures/export-output/probe-14.0.7.txt`):
+
+- `xmlns:i18n="…"` stays whatever its value (`RNN1`, and `RNN3` with `urn:other`: the local name decides). A declaration of another prefix for the I18N URL stays too (`xmlns:foo="http://www.aras.com/I18N"`, `RNN2`), and so does a second one (`RNN10`).
+- A prefixed attribute whose local name is `i18n` stays (`p:i18n`, `RNN4`), and so does one whose value is the URL (`p:z="http://www.aras.com/I18N"`, `RNN5`). The attribute `i18n:x`, whose local name is `x`, goes (`RNN10`).
+- The comparisons are ordinal and exact. `HTTP://www.aras.com/i18n` and a URL with a trailing space do not meet the second exception (`RNN7`: the first stays only through its local name `i18n`).
+- Everything else is as in 14.0.7: `xmlns:SOAP-ENV`, `xml:lang`, `xml:space` and any other prefixed attribute go (`RNN1`); plain and `xmlns="…"` attributes stay; an `Item` in a namespace is not matched (`RNN8`) and the attributes of other elements are not touched (`RNN9`); the order of the attributes that stay is unchanged.
+
+The server's response envelope declares `xmlns:i18n="http://www.aras.com/I18N"`. The transform copies the declaration onto each Item it writes by `xsl:copy` straight below `AML` (EXP-205, EXP-362), EXP-401 leaves it, and 14.35 keeps it. So in an item file the root Item, the ItemType edit, the Field fixes and the Member and Morphae fixes each carry `xmlns:i18n="http://www.aras.com/I18N"` as their last attribute, for example `<Item type="List" id="…" action="add" xmlns:i18n="http://www.aras.com/I18N">` (probes `AX1` to `AX17`, scenario `S1`). 14.0.7 removed it. The View and Form `delete` items, which are literal elements, carry no declaration (`AXF1`). A nested Item does not repeat it, because it is in scope from its ancestor. A language-resource export adds the same declaration itself (`AddI18NNamespaceToAllRootItems`, ticket 54).
+
 ### EXP-411: The test for "no prefix" is dead code
 
 [14.0.7] The removal condition is "the prefix is null, or the prefix trimmed is not empty". .NET reports an unprefixed attribute's prefix as the empty string, never null, so the first half is never true, and only the second half acts. The effect is the rule of EXP-410: namespace declarations with a prefix go, `xmlns=""` and plain attributes stay. The port reproduces the effect, and does not strip unprefixed attributes.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same. The first half of the condition (a null prefix) is still never true, so the condition acts through its second half and the two exceptions of EXP-410.
 
 ## RemoveEmptyRelationships
 
@@ -203,6 +229,16 @@ The result is the folder the package's items are written into: it becomes the he
 
 [12.0] Same names. `CreateOutputDir` makes the folder with `Directory.Exists`, `Directory.Delete` and `Directory.CreateDirectory` on the path as built, with no normalisation (EXP-421).
 
+[14.35] `CreateOutputDir` builds the folder with `Path.Combine` (EXP-460): `Combine(WorkingDirectory, relative)`, where `relative` is, for a standard package, the name with every `.` replaced by `Path.DirectorySeparatorChar` (the port uses `\`), and, for any other package, `Combine(last segment, "Import")`. The last segment and the standard-package test are as in 14.0.7. The wipe and the creation that follow are EXP-415. The results differ from 14.0.7's only where the separator logic or the rooted-path rule shows (probes `COD` and `COD2` in `fixtures/export-write/probe-14.35.txt`, and `COD` in `fixtures/export-output/probe-14.35.txt`):
+
+- A working directory that ends in `\` gives one separator, not two: `…\wd\` with `PLM\Import` is `…\wd\PLM\Import` (14.0.7: `…\wd\\PLM\Import`). One that ends in `/` gets no separator added: `…\wd/` gives `…\wd/PLM\Import` (14.0.7: `…\wd/\PLM\Import`).
+- An empty last segment (a name that ends in `.`, or an empty name) gives `Combine("", "Import")`, which is `Import`: the folder is `<working directory>\Import`, not `<working directory>\\Import`.
+- An empty working directory gives a relative folder, `PLM\Import`, which is resolved against the process's current directory. 14.0.7 gave `\PLM\Import`, the root of the current drive. A null working directory throws `ArgumentNullException` (parameter `path1`); `ExportSolutions` has already failed on it (EXP-511).
+- A last segment that is rooted replaces the working directory. Rooted means that it starts with `\` or `/`, or that its second character is `:`. The name `x.C:` gives the segment `C:`, `Combine("C:", "Import")` is `C:Import` (no separator after a colon), and that is rooted, so the folder is `C:Import`: a folder `Import` in the current directory of drive `C:`, wiped and created like any other (EXP-415). 14.0.7 failed this name with `NotSupportedException`. A segment that starts with two backslashes gives `\\y\Import`, which EXP-422 turns into the relative `y\Import`.
+- A `"`, `<`, `>`, `|` or control character in the working directory or the last segment throws `ArgumentException` (`Illegal characters in path.`) from the `Combine` call. 14.0.7 threw the same exception from the first file-system call.
+
+Package names are dotted identifiers and working directories are ordinary paths, so a real export does not reach these cases. They matter to the port because it reproduces the string result, not the file-system outcome.
+
 ### EXP-415: An existing package folder is deleted recursively before it is created again
 
 [14.0.7] If the folder of EXP-414 exists (a case-insensitive match, EXP-420), it is deleted with all its content, recursively and without any check of what it holds, and then created empty. A folder with other files, subfolders or a manifest in it loses them (probe `COD`, `-- wipe test`). The folder's name is then spelled as the new request spells it: wiping `…\Core` for `com.aras.innovator.core` leaves `…\core` (probe `case-insensitive wipe`). Only the leaf folder is deleted; its parents and siblings stay.
@@ -211,11 +247,15 @@ A read-only file in the folder makes `Directory.Delete` throw `UnauthorizedAcces
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same (probe `COD`, wipe tests). The folder is wiped and created by the thread that runs `ExportSolutions` before the package's items start (EXP-513), so the concurrent workers of EXP-551 never see a half-wiped folder.
+
 ### EXP-416: Packages with the same last segment wipe each other's output
 
 [14.0.7] Because EXP-414 reduces every non-standard package to its last segment, two packages such as `com.x.PLM` and `org.y.PLM` share the folder `PLM\Import`. The folder is created, wiped and recreated for each package in turn (EXP-415), so the second package's export deletes the first package's files. The same happens for standard packages that differ only in case, and between a referenced package's export and a main package of the same last segment. Nothing warns of it, and the manifest still lists both packages. The port reproduces this.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same. The wipe still happens once per package, before its items run. Two packages with the same last segment still share a folder, and the second package's wipe deletes the first one's files: the packages run one after the other, and only the items of one package run together.
 
 ### EXP-417: Item files go into a folder named by the item's type
 
@@ -233,11 +273,20 @@ Real ItemType names are identifiers, possibly with spaces. The exceptions are `I
 
 [12.0] Same as 14.0.7.
 
+[14.35] The type folder and the file are `Combine(Folder, typeName)` and `Combine(thatFolder, fileName)` (EXP-460). Both are computed as the first thing `Export` does after its argument checks, before the item's first request. The folder is created when `DirectoryExists` says it is missing, with `CreateDirectory`, as before; two workers that both find it missing both call `CreateDirectory`, and the second call does nothing. Where `Combine` gives another string than concatenation did (probes `S15`, `S16`, `PC`):
+
+- A type name that `Combine` rejects, one with `"`, `<`, `>`, `|` or a control character (`Li|st`), throws `ArgumentException` (`Illegal characters in path.`) **before any request** for the item: nothing is fetched and nothing is written (`S15`: one request in all, for the other item). The exception is not mapped by EXP-400, so it ends the run through the aggregate handler (EXP-556). In 14.0.7 the same type failed at the first file-system call, after the item had been fetched and transformed, with the same exception.
+- A rooted type name replaces the package folder: `\x`, `/x`, `D:x`, `D:\y`, `C:\work\escape` and `a:b` (second character `:`). The file is written to `Combine(typeName, fileName)`, outside the package folder. In scenario `S16` the type `<working directory>\escape` wrote `<working directory>\escape\k-A01.xml`, and the file's `type` attribute is still the type name. 14.0.7 joined the two strings, which nested a name with a leading separator under the package folder and failed a name with `:` with `NotSupportedException`.
+- An empty type name gives `Combine(Folder, "")`, which is `Folder`: the files go straight into the package folder, as in 14.0.7. `.` and `..` are not resolved by `Combine` and behave as before at the file system. `/` and `\` inside the name nest folders as before.
+- Everything else of EXP-417 holds for the string that results: the case of an existing folder is kept, a trailing space or dot is handled by the file system (EXP-420), and `NUL` cannot be written to.
+
 ### EXP-418: The file name is the keyed name, or the requested id when the keyed name cannot be a file name
 
 [14.0.7] The file name is `<name>.xml`. `<name>` is the item's keyed name, except that it is the item's id name (the id the item was requested with, before any config id or current-version resolution) when the keyed name is null or empty, or contains any character of `Path.GetInvalidFileNameChars()`: `"`, `<`, `>`, `|`, the characters U+0000 to U+001F, `:`, `*`, `?`, `\` and `/`. A keyed name made of spaces, or with leading or trailing spaces or dots, is valid as it stands (` .xml`, `..xml`). The id name is used without any check. Because `.xml` always ends the name, the file name never ends in a space or dot, so the stripping of trailing spaces and dots of EXP-420 does not apply to files.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same test (`IndexOfAny` on `Path.GetInvalidFileNameChars()`, which gives the result of the old per-character loop) and the same name. The name is joined to the type folder with `Combine`. A keyed name never contains `\`, `/` or `:` (they are invalid file-name characters), so it is never rooted. The id name is used without a check and would replace the folder if it were rooted; an Aras id is 32 hexadecimal characters. *Inferred from the code.*
 
 ## Duplicates and the Windows file-system model
 
@@ -246,6 +295,8 @@ Real ItemType names are identifiers, possibly with spaces. The exceptions are `I
 [14.0.7] The engine never checks whether the file exists. The writer truncates and rewrites it (EXP-423), so when two items of one type and package have the same file name, the later one replaces the earlier one, and only its file remains. Names collide under EXP-420, which compares case-insensitively: `y.XML`, `y.Xml` and `Y.xml` are one file, which keeps the spelling of its first creation (`y.XML`) and the content of the last write (probe `T1`). Items with the same keyed name and different ids are typical, such as items with the same name of different configurations. The export reports each as successfully exported. The port reproduces this.
 
 [12.0] Same as 14.0.7.
+
+[14.35] The items of one package are written by concurrent workers (EXP-551), so two items with the same file name no longer give a deterministic "last write wins". Each write opens the file for writing with read sharing only, so a worker that opens `dup.xml` while another worker still has it open fails with `IOException` (`The process cannot access the file '<path>' because it is being used by another process.`). That is not a `CItemException`: it ends the run through the aggregate handler (EXP-556) once the items already running have finished. Whether a collision happens depends on timing. Scenario `S20` (40 items with one keyed name, their fetches released together) failed in five runs out of five, with 8 to 13 of the 40 items failing and the others logged as exported. When the writes do not overlap, the later one replaces the earlier one as in 14.0.7, and "later" is in completion order, not table order. The port does not have to reproduce the timing, but when two writes of one file overlap in its own schedule it produces the failure.
 
 ### EXP-420: The port applies Windows file-system rules on every OS
 
@@ -279,11 +330,15 @@ A path written `\\?\C:\a\b` or `\?\C:\a` is returned as `C:\a\b` and `C:\a`.
 
 [12.0] Not present. 12.0 has no `IOWrapper` and no `NormalizeLongPath`: `Directory.Exists`, `Directory.Delete`, `Directory.CreateDirectory`, the item-file writer, the manifest, the log and the manifest reader all take the path exactly as the engine built it. Nothing is trimmed from its start, no `\\?\` prefix is added, and a relative path is resolved by the file functions against the current directory.
 
+[14.35] Same. `IOWrapper.NormalizeLongPath` is unchanged, and the item path now comes from `Combine` (EXP-460) before it is normalized.
+
 ### EXP-422: A UNC path loses its leading backslashes and becomes relative
 
 [14.0.7] Step 2 of EXP-421 removes the two leading backslashes of a UNC path, so `\\server\share\dir\f.xml` is returned as `server\share\dir\f.xml`, a relative path. The engine then opens it against the process's current directory, so an output folder or manifest given as a UNC path is read from or written to `<current directory>\server\share\…` instead (probes `NLP`, `NLPU`, `UNCW`: the write fails or lands in the wrong place). `\\?\UNC\server\share\f.xml` becomes `UNC\server\share\f.xml` the same way. When the full path (after resolving against the current directory) is 255 characters or longer, the prefixed result is built from that resolved path. The port reproduces this on Windows-style paths: a path that starts with `\\` is resolved relative to the working directory.
 
 [12.0] Not present. With no normalisation a UNC path such as `\\server\share\dir` is handed to the file functions as it is, and works. The 14.0.7 bug does not exist in 12.0.
+
+[14.35] Same: the two leading backslashes of a UNC path are still removed by `NormalizeLongPath`. A rooted type name or package segment that `Combine` leaves as a UNC path loses them in the same way.
 
 ## The item file
 
@@ -351,3 +406,40 @@ Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in p
 [14.0.7] The file is created before the document is serialized, and the writer is disposed in a `finally`, so a serialization failure keeps what was written until then. A character reference to a lone surrogate (`&#xD800;`) loads fine, and when the file is written it throws `ArgumentException` (`The surrogate pair (0xD800, 0x79) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).`, the second number being the following character): the file then holds the BOM and the text written before the failing node, here `<AML>\r\n <Item type="a">\r\n  <name>` (36 bytes, probe `SUR`). The exception is not a `CItemException`, so EXP-400 does not map it; it leaves `Export`.
 
 [12.0] Same: a failed write leaves the partial file, since the writer is opened first and the document is saved into it, as in 14.0.7. Registered in `bugs.md`.
+
+[14.35] Same. The file is created and written by one worker, so a failure leaves the partial file as before. An exception that is not a `CItemException` ends the run through the aggregate handler (EXP-556).
+
+## 14.35: paths built with Path.Combine
+
+### EXP-460: The output paths of 14.35 are built with Path.Combine
+
+[14.0.7] Every path is concatenated with a literal `\`: `WorkingDirectory + "\" + relative` (EXP-414), `Folder + "\" + typeName + "\"` followed by the file name (EXP-417), and `WorkingDirectory + "\imports.mf"` (EXP-511). No part is tested or normalized.
+
+[14.35] The same four paths are built with `System.IO.Path.Combine(first, second)` of .NET Framework 4.8, and the relative part of a standard package with `Path.DirectorySeparatorChar`:
+
+| Path | Built as | Rule |
+|---|---|---|
+| package folder | `Combine(WorkingDirectory, relative)`; `relative` is the package name with `.` replaced by `\` (standard) or `Combine(last segment, "Import")` | EXP-414 |
+| type folder | `Combine(Folder, typeName)` | EXP-417 |
+| item file | `Combine(type folder, fileName)` | EXP-417 |
+| manifest | `Combine(WorkingDirectory, "imports.mf")` | EXP-511 |
+
+`Combine(a, b)` does this, in order (probe `PC`, `fixtures/export-output/probe-14.35.txt`):
+
+1. `a` null throws `ArgumentNullException` (parameter `path1`), `b` null the same with `path2`.
+2. A `"`, `<`, `>`, `|` or a character below U+0020 in `a` or in `b` throws `ArgumentException` (`Illegal characters in path.`). `*` and `?` are accepted here and fail later at the file system (EXP-420).
+3. An empty `b` gives `a`. Otherwise an empty `a` gives `b`.
+4. A rooted `b` gives `b`, whatever `a` is. A path is rooted when its first character is `\` or `/`, or its second character is `:`. So `\x`, `/x`, `D:x`, `D:\y`, `a:b` and `\\server\share\x` are rooted, and `x`, `.\x`, `..\x` and `a\b` are not.
+5. Otherwise the result is `a + b`, with a `\` between them unless `a` ends in `\`, `/` or `:`. So `C:\wd` and `a\Import` give `C:\wd\a\Import`; `C:\wd\` gives the same; `C:\wd/` gives `C:\wd/a\Import`; `C:` and `x` give `C:x`.
+
+Nothing is normalized: `/` stays `/`, `.` and `..` stay, doubled separators inside an argument stay (`C:\wd` and `a\\b` give `C:\wd\a\\b`), and spaces and trailing dots stay. The strings are then resolved by the file-system model of EXP-420 and by `NormalizeLongPath` (EXP-421), which is where `/` becomes `\` and `.` and `..` are resolved.
+
+The port runs `Combine` as written, whatever its own operating system, because it models a Windows run (EXP-420). On Windows `Path.DirectorySeparatorChar` is the same `\`. For ordinary package and type names, which have no separators, colons or invalid characters, the paths are the same strings as 14.0.7's, with one difference: a working directory that ends in a separator no longer produces a doubled one.
+
+The import side of 14.35 also uses `Combine` (the package path, `ExportImportBase.GetPackagePath`). It is specified with the manifest rules (`MAN-030`) in the 14.35 import ticket, not here.
+
+## Reproduced bugs, 14.35
+
+### EXP-461: Items processed while the poly-type names are being fetched are exported unconverted (bug)
+
+[14.35] The poly-type list is assigned empty before it is filled, and the workers share it without a lock (EXP-408). A worker that runs `ReplaceReferencesToPolyLists` in that window converts nothing for its item. In scenario `S22` the request for the names was held for three seconds while eight `List` items, each with a list Property whose data source is the polymorphic `PolyT`, reached the step together. One was converted (`<data_source keyed_name="PolyT">` holding a `get` of the List) and seven were not (`<data_source keyed_name="PolyT" type="List">L1</data_source>`), in each of three runs of a fresh process. In a process that had exported before, all eight were converted in the run made: which workers fall into the window depends on when they reach the step, which the probe does not control. With the usual answer time of a server the window is shorter, but the first wave of items, up to `--parallelism` of them, can still be exported unconverted, so the bytes of an item file depend on timing. The port reproduces this: the first worker to reach the step starts the fetch, the others go on with the list as it is. It is reproduced. See `bugs.md`.

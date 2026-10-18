@@ -5,7 +5,10 @@ This document specifies what `ImportExportManager.ExportSolutions` does around t
 Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`) and of Aras's three hosts, `ConsoleUpgrade.exe`, `export.exe` and `import.exe` (decompiled locally, never committed);
-- live runs of the vendored 14.0.7 engine against dev through the oracle (`oracle/README.md`), on the 12 SP9 server. Where a rule says *observed*, it quotes such a run. Where it says *inferred*, the behaviour comes from the code and .NET Framework semantics and no run exercised it. Dev holds no `PackageReferencedElement` rows, so the referenced-items pass and the `referenced_element` entries are inferred until ticket 67 seeds them.
+- live runs of the vendored 14.0.7 engine against dev through the oracle (`oracle/README.md`), on the 12 SP9 server. Where a rule says *observed*, it quotes such a run. Where it says *inferred*, the behaviour comes from the code and .NET Framework semantics and no run exercised it. Dev holds no `PackageReferencedElement` rows, so the referenced-items pass and the `referenced_element` entries are inferred until ticket 67 seeds them;
+- for 14.35: the 14.35 decompile (`.decomp/14.35/`, never committed), compared with 14.0.7's, and runs of the real 14.35 `Libs.dll` against a scripted connection that answers the requests an export makes and never touches a network (`oracle/export-output-probe/run-export.ps1`; scenarios `S1` to `S21`, recorded in `fixtures/export-output/run-export-14.35.txt`). No server and no credential was involved. A rule that says *observed* with a scenario id quotes such a run; the same scenario can differ in its timing from run to run, so a rule quotes only what held in every run it was repeated in, and says *seen in some runs* otherwise.
+
+**Engine 14.35.** The package loop, the definition and dependency lookups, the manifest and the referenced-items pass are 14.0.7's code. What changed is how `ExportProc` runs the items of one package (concurrently, with a logger of its own), what a failed item does (it stops the whole export), the null package list, the paths (`EXP-460`) and the message texts. Every rule below holds for 14.35 as written unless it has a `[14.35]` variant, and `EXP-550` to `EXP-558` are the rules new in 14.35. The engine's sources of nondeterminism are listed once, in EXP-551, and the way to compare two 14.35 runs is EXP-558.
 
 Conventions used below:
 
@@ -32,6 +35,8 @@ The library takes the two tables as ordered sequences of `(key, value)` insertio
 
 [12.0] Same inputs and the same argument checks (`exportContext`, then `selItemsTable`). One consequence differs: `ExportSolutions` does not read `InnovatorVersion` up front, because there is no log header (EXP-506). A host that skipped the login does not fail at the start. Only an item whose request needs the server version fails, and only that item: each `Export` of a type with the default row or of an `ItemType` (EXP-023, EXP-024) ends with the `NullReferenceException` of EXP-054, as `Can't export item.` The other types export. With the exact-type login of WIRE-017, a host that built a plain `HttpServerConnection` is such a host.
 
+[14.35] Same inputs and the same two `ArgumentNullException` checks, before anything else. The log is opened through `TextWriter.Synchronized` (EXP-505). The table of packages is walked in the same way (EXP-508). The context also has the language settings of EXP-501, which a plain export leaves unset.
+
 ### EXP-501: The export and upgrade contexts
 
 [14.0.7] `SUExportContext` holds four settings, all plain properties with no validation:
@@ -57,6 +62,8 @@ Export never reads `Password` (only the host does, to log in), `Verbose` or `LPD
 
 [12.0] `SUExportContext` is the same four settings. `SolutionUpgradeContext` has the properties `Action`, `Url`, `Password`, `DataBase`, `UserName`, `WorkingDirectory`, `Verbose`, `LogFilePath`, `ManifestFile` and `Timeout`; it has no `LPPath`, `LPPackage` or `LPDebug` and no certificate settings. The `ImportExport` enum has `Import` and `Export` only. Export reads `ManifestFile`, `LogFilePath`, `WorkingDirectory` and `Timeout`, with the effects of 14.0.7, and `Action` only in the constructor, to tell an import from an export. Nothing is logged from the settings, as there is no header.
 
+[14.35] Same four export settings and the same defaults. `SolutionUpgradeContext` has one more property, `Languages` (a string array, null by default), and `Action` has three more values: `ExportLanguageResourcesOnly`, `ExportMetadataWithLanguageResources` and `ImportDPPatch` (ticket 54 and the DB patch ticket). `ExportProc` passes the context's `Action` and `Languages` to every `PackageItem` call, and the constructor works on `Languages` only for imports and the language exports (EXP-502). With `Action = Export` and no languages, which is what a plain export sets, nothing of them changes a result (EXP-400).
+
 ### EXP-502: The manager is built around a helper, a context and a message factory
 
 [14.0.7] `ImportExportManager(context, messagesFactory, itemHelper)` throws `ArgumentNullException` for a null `itemHelper` (checked first) or a null `context`. For an export it then:
@@ -69,6 +76,8 @@ Export never reads `Password` (only the host does, to log in), `Verbose` or `LPD
 The helper, the loaded manifest and the engine's `IOWrapper` are read through the properties `ItemHelper`, `ManifestFile` and `iOWrapper`. They have no behaviour of their own.
 
 [12.0] Same checks, in the same order, and the same timeout and manifest loading, with the differences of the older code: the manager has no `IOWrapper`, so `File.Exists(ManifestFile)` and the load go to the path as given (no normalisation, EXP-421), and the manifest is read with `XmlDocument.Load(path)` (MAN-003), which honours the encoding declaration and throws on invalid bytes, where 14.0.7 reads text and calls `LoadXml`.
+
+[14.35] Same for an export with `Action = Export` and no languages. The constructor does more only for an import (it scans every package of the manifest for language codes, ticket 53) and for the language exports, which resolve the language list through the server (ticket 54). It ends with a check of the selected languages that does nothing when there are none. `ExportSolutions` itself reads `ItemHelper`, the context and the message factory as before.
 
 ## Messages and the log
 
@@ -93,6 +102,15 @@ The reference hosts answer as follows. `ConsoleUpgrade.exe` prints `currentPacka
 *Observed:* run `r1` sent `currentPackage` "Exporting package com.aras.innovator.servicereporting", `status` "Item 1 of 1: List - Report Format Types", `status` "completed" and `currentPackage` "".
 
 [12.0] Same as 14.0.7.
+
+[14.35] The same five channels and the same use of them, with these differences:
+
+- the answer to `errorQuestion` is not read at all (EXP-555): the question is sent, and the export stops whatever the host answers;
+- `GetStatusMessage` is still called once per `ExportProc` call, but the one `status` object is now used by every worker of the package at the same time (EXP-553), and by the thread that runs `ExportProc` too;
+- `warning` is also used by the aggregate handler of EXP-556, with the new `ErrorMessageMessage` text;
+- the messages are sent from worker threads, so a host's `Execute` is called concurrently. A host that is not thread-safe is the host's problem; the engine adds no lock around `Execute`, except that the failed-item handler and the cancel branch run under locks (EXP-555, EXP-557).
+
+*Observed* (`S1`): `currentPackage` "Exporting package pkg.a", four `status` messages "Item 1 of 4: List - k-A0x", `status` "completed" and `currentPackage` "".
 
 ### EXP-504: Message texts come from a fixed catalogue, filled with the invariant culture
 
@@ -139,6 +157,15 @@ The other templates in the catalogue belong to the import and the item-level rul
 
 Every other text of the table, and the `{0}` and `{1}` arguments, are the same.
 
+[14.35] The same catalogue with these export-relevant changes:
+
+| Key | Template in 14.35 |
+|---|---|
+| `ErrorMessageMessage` | `\t\t****ErrorMessage****\r\n{0}` (two tabs, then the message on its own line) |
+| `ServerErrorRequestResponse` | `Server error\r\n\r\nRequest (formatted):\r\n{0}\r\n\r\nResponse (formatted):\r\n{1}` (WIRE-051) |
+
+Every other row of the table above is unchanged. The text `ErrorMessageMessageEnd` (`\r\n\t\t****ErrorMessage****\r\n{0}\r\n\t\t********************`) is changed too, but an export never reaches it. The catalogue also gains the texts of the DB patches, the AML batch mode and the language selection (tickets 53, 55, 56), and corrects two typos (`dependency`, `PackageDefinition`), none of which an export sends.
+
 ### EXP-505: The log is an append-only UTF-8 file written with CRLF
 
 [14.0.7] `ExportSolutions` opens the log first, through `IOWrapper.NewStreamWriter(LogFilePath, append: true)`, before anything else is sent or created, and keeps one writer for the whole run:
@@ -156,6 +183,8 @@ A date-time written to the log is `DateTime.Now.ToString(CultureInfo.InvariantCu
 [12.0] The log is opened later and without normalisation. `ExportSolutions` opens it with `new StreamWriter(LogFilePath, append: true)`, after the argument checks and after `GetSolutions2Xml` (EXP-507), and keeps one writer for the rest of the run. The path is not normalised (EXP-421). The file, the encoding (UTF-8 without a BOM), the append, the CRLF line ends, the missing buffer flush and the read-sharing are as in 14.0.7; a missing directory fails with `DirectoryNotFoundException` and an empty path with `ArgumentException`, both after the first request has been sent, and both escape `ExportSolutions`.
 
 **Date-times.** The three date-times that the code concatenates (`start of execution : ` at the head of each package or referenced package, and `end of execution : ` after a cancel and after an abort) are `DateTime.Now.ToString()` of the **current culture**: its general date and time pattern (short date, long time). Only the last `end of execution : ` of a package is formatted with the invariant culture (`MM/dd/yyyy HH:mm:ss`, as in 14.0.7). Observed on the oracle machine, whose culture is en-IN: `start of execution : 19-10-2026 01:17:50`, then at the end `end of execution : 10/19/2026 01:17:51`. The port formats the host's local time with the general pattern of a culture the host names (the build ticket defines the option; the default is the process locale) and carries these patterns (probed with .NET Framework 4.8 on Windows): invariant `MM/dd/yyyy HH:mm:ss`, `en-US` `M/d/yyyy h:mm:ss tt`, `en-GB` and `fr-FR` `dd/MM/yyyy HH:mm:ss`, `en-IN` `dd-MM-yyyy HH:mm:ss`, `de-DE` `dd.MM.yyyy HH:mm:ss`. For another culture it uses the invariant pattern, which differs from the engine's there. The `faultcode` that the log and the abort question concatenate is also written with the current culture; for the cultures above it is the same as the invariant text.
+
+[14.35] Same file, same encoding and the same CRLF. The `StreamWriter` is opened as before and wrapped in `TextWriter.Synchronized`, so each `WriteLine` call, from any thread, writes its whole text before another call begins. Lines are therefore never cut in two, but the lines of different workers interleave (EXP-551), and a text that is written as several calls is not atomic (the removed-reference block of EXP-517 is four calls). The per-item success lines do not go through this writer directly (EXP-554). Disposing the wrapper at the end of `ExportSolutions` flushes and closes the file.
 
 ### EXP-506: The log opens with a header block
 
@@ -186,6 +215,8 @@ Export using import structure: {UseImport}
 *Observed* (`r1`, `r6`): the block above, with `Innovator version: 12.0 SP9 Build 24090`, `Manifest file: ` and both language-pack lines empty, and the empty line after `Export using import structure: False`.
 
 [12.0] Not present. 12.0 writes no header: nothing is written to the log when it is opened, and the first line is the first package's `         ****Export {package}****` (EXP-513). There is no `Tool version`, `Innovator version` or other line, and no blank line. The input parameters are not logged, and `ExportSolutions` does not read the server version for the log.
+
+[14.35] Same block, with `Tool version: 14.35.0.43890`. The language-resource export shows its action in `Action:`; the DB patch lines belong to the DB patch log.
 
 ## The run
 
@@ -226,6 +257,8 @@ The response document is the envelope, with the package definitions as `Item[@ty
 
 Called on its own, as the console modes of ticket 66 do, it behaves the same.
 
+[14.35] Same request, same two messages and the same handling of a fault. A null result no longer lets the run go on: EXP-550. The second log writer of the error branch is still opened on the file that the run holds open (EXP-541).
+
 ### EXP-508: The package loop visits non-empty tables in table order
 
 [14.0.7] After the log header, `ExportSolutions` calls `GetSolutions2Xml` (EXP-507), creates its `currentPackage` message and an empty `ManifestFile` document (EXP-511), and enters a `try` block (EXP-520) that sets the progress state to *in progress* (EXP-518). It then walks `selItemsTable` in table order. For each `(package, items)`:
@@ -239,6 +272,8 @@ After the loop, when the referenced-elements table has any package, EXP-519 runs
 The order of the outer table decides the order of packages in the log, in the messages and in `imports.mf`. The order of an inner table decides the order of the items.
 
 [12.0] Same loop. The sequence before it differs: after the argument checks `GetSolutions2Xml` runs first, then the log is opened, with no header (EXP-505, EXP-506), then the `currentPackage` message and the empty manifest document are created and the `try` block (EXP-520) is entered.
+
+[14.35] Same walk of the packages, in the same order and with the same steps, and the same final `currentPackage` message. Two additions: the package-element map is built right after `GetSolutions2Xml`, before the manifest document (EXP-550), and the *cancelled* state that ends the loop is now also set by a failed item (EXP-555), and is checked after each package's `ExportProc` in the same place.
 
 ### EXP-509: A package definition must exist: PackageDefinitionManager with doCreate false
 
@@ -258,6 +293,8 @@ The order of the outer table decides the order of packages in the log, in the me
 *Observed* (`r2`, a package that does not exist): the manifest holds the package's entry, the run stops with the `CItemException` of WIRE-051 whose request is the AML above and whose faultcode is `0`, no message was sent, and the log holds the header only.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same (`PackageDefinitionManager` is unchanged).
 
 ### EXP-510: Each dependency of a package contributes referenced elements
 
@@ -297,6 +334,8 @@ The elements found so far are dropped when one node fails. The error handling:
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same (the dependency query, `FindReferencedElements` and the error handling are unchanged).
+
 ### EXP-511: The manifest document gets one entry per package, dependency and referenced element
 
 [14.0.7] `ExportSolutions` builds a new `ManifestFile`, whose document is `<imports/>`, and fills it as the loop goes. Each add finds an existing entry with an XPath that interpolates the name unescaped (EXP-544) and creates the entry only when none exists:
@@ -318,6 +357,8 @@ The manifest is saved by `ManifestFile.Save` to `WorkingDirectory + "\imports.mf
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same entries and attributes. The manifest is saved to `Combine(WorkingDirectory, "imports.mf")` (EXP-460). The path is computed after the package-element map (EXP-550) and before the `try` block, so a null working directory throws `ArgumentNullException` (parameter `path1`) from `ExportSolutions` before anything is exported or saved. The `path` attribute of a package entry is still written with literal backslashes (`.\` or `{last segment}\Import`), not with `Combine`.
+
 ### EXP-512: refsToExport collects referenced elements by dependency, by insertion order
 
 [14.0.7] When `bExportReferencedItems` is set, `ExportSolutions` fills a `Hashtable refsToExport` from package name (the dependency's name, not the exporting package's) to an inner `Hashtable` from `idName` to `ExportItem`. `AddToRefsForExport(refs, dep, item)` does, in this order:
@@ -330,6 +371,8 @@ So the first element with an id wins, and a later one with the same id (from ano
 With the setting off the table stays empty, so there is no second pass.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same. `refsToExport` is built by the thread that runs `ExportSolutions`, before any worker starts, so its order does not depend on timing.
 
 ### EXP-513: A package is exported into its own directory, with a per-package log header
 
@@ -355,6 +398,8 @@ and then:
 
 [12.0] Same, except that the `start of execution : {now}` line uses the current culture (EXP-505). Observed on the oracle machine: `start of execution : 19-10-2026 01:17:50`.
 
+[14.35] Same package folder (EXP-414, built with `Combine`), message and log header. `ExportProc` then also creates the progress logger and starts it (EXP-554), and the item index `i` becomes the shared counter of EXP-552. The folder is wiped and created before the workers start and nothing else touches it while they run.
+
 ### EXP-514: Items are exported one at a time, in table order
 
 [14.0.7] `ExportProc` walks the inner table in table order. For each item:
@@ -372,6 +417,8 @@ and then:
 
 [12.0] Same as 14.0.7.
 
+[14.35] The items run concurrently, not one at a time: EXP-551 (the model and the sources of nondeterminism), EXP-552 (the index `i`), EXP-553 (the status message) and EXP-554 (the logger). The table order of the items still decides the order in which items start. The check for *cancelled* is made at the start of each item (EXP-557).
+
 ### EXP-515: A successful item is logged
 
 [14.0.7] `PackageItem` builds a `CExportItems` for the helper and calls its `Export(item, package, sLevel, excludedRefs)`, which does the whole item (the other `EXP-` documents). When that returns, `ExportProc` writes to the log:
@@ -385,6 +432,8 @@ Nothing is sent as a message. `PackageItem` and the `Folder` property of the hel
 *Observed* (`r1`): `Item id :1854A8A75F5940A78369146966674FA6  keyed_name : Report Format Types   type : List successfully exported`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] The success line is not written by the worker: it is queued on the progress logger (EXP-554) after `PackageItem` returns, and the logger writes it. Its text is the same. Nothing is sent as a message. The line of an item that finishes after a failure or a cancel is lost (EXP-570).
 
 ### EXP-516: A failed item asks the host whether to abort the package
 
@@ -439,6 +488,8 @@ faultcode:   0
 
 With the answer `yes` the log gets `end of execution : {now}` in the current culture (EXP-505).
 
+[14.35] Replaced by EXP-555: a failed item stops the whole export and the host's answer is not read. Steps 1 to 4 (the status text, the log text, the fault block and the question) are the same, and the fault block now holds the pretty-printed request and response of WIRE-051. Steps 5 and later are not.
+
 ### EXP-517: A package ends with its removed references, a warning and a completion
 
 [14.0.7] When the loop of EXP-514 ends without a cancel or an abort, `ExportProc`:
@@ -463,6 +514,8 @@ An empty inner table cannot reach here from `ExportSolutions` (EXP-508 skips it)
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same blocks, warning, `end of execution` and `completed`, written by the thread that runs `ExportProc` after the loop, so after the final drain of the logger has put every success line in the log (EXP-554). They are reached only when no item failed and no cancel was seen. The blocks follow `excludedRefs.Values` in the table's order, which depends on the insertion sequence; the workers insert in the order their items finish, so the order of the blocks is not that of the table (EXP-551). Each block is four separate `WriteLine` calls, so blocks of a package are written by one thread in sequence and are not mixed with other lines, as the workers have finished.
+
 ### EXP-518: Cancel is a flag that two places look at
 
 [14.0.7] `Cancel()` sets the manager's progress state to *cancelled*. `ExportSolutions` sets it to *in progress* when its `try` block starts and to *idle* in `finally` (EXP-520). So:
@@ -477,6 +530,8 @@ After a cancel the run still passes the referenced pass (EXP-543), sends the emp
 
 [12.0] Same, and the two `end of execution : {now}` lines that this and EXP-516 write after a cancel or an abort use the current culture (EXP-505).
 
+[14.35] Replaced by EXP-557 for the item loop: the flag is looked at at the start of every worker's turn and the cancel text can be written several times. `ExportSolutions` looks at the flag after each package's `ExportProc` as before, and the referenced pass is entered after a cancel as before (EXP-543).
+
 ### EXP-519: Referenced elements are exported in a second pass
 
 [14.0.7] After the package loop (and also after a cancel, EXP-543), when `refsToExport` has any package, `ExportReferencedElements(exportContext, refsToExport, log)` walks `refsToExport.Keys` in table order. For each dependency package `dep`:
@@ -489,6 +544,8 @@ After a cancel the run still passes the referenced pass (EXP-543), sends the emp
 The items are the referenced elements of EXP-510, exported as ordinary items with the keyed name from `element_description`. `AddPackage` is never called for `dep`, so the second pass does not appear in `imports.mf` (EXP-540). Referenced elements are collected only when `bExportReferencedItems` is set, and the pass never runs otherwise.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same pass, with the same wipe and the same messages. It is also entered after a failed item, because the flag that the failure sets ends only the package loop (EXP-555); it then does no export work. Each referenced package runs the concurrent `ExportProc` of EXP-551.
 
 ### EXP-520: Errors of the run, and what always happens at the end
 
@@ -506,6 +563,148 @@ Failures before the block (EXP-500, the header, EXP-507's log sharing) save no m
 
 [12.0] The same structure. The warning and the log text of a `SystemException` is the 12.0 text of `ErrorMessageMessage` (EXP-504), with its closing line: `          ****ErrorMessage****\r\n       {message}\r\n          *******************`. The `finally` block saves the manifest through `ManifestFile.Save` with the raw path (MAN-006).
 
+[14.35] The block has one more `catch`, for `AggregateException`, in front of the `SystemException` one (EXP-556). Everything else is as written: a thread abort is swallowed, the `finally` block resets the state and saves the manifest, and the writer is disposed on every exit. A `CItemException` raised outside the workers still escapes (EXP-542). The text of the warning is the new `ErrorMessageMessage` (EXP-504). The failures before the block save no manifest, and the null package list is one of them (EXP-550).
+
+## 14.35: the parallel run
+
+### EXP-550: The package-element map is built first, and a missing package list ends the run
+
+[14.0.7] `ExportSolutions` reads only the dependencies from the package-definition document (EXP-510). With no package definitions (a null document, EXP-507) the run went on, and failed only when the first package with items needed the document: a `NullReferenceException` inside the `try` block, reported by EXP-520, with the manifest saved.
+
+[14.35] Right after `GetSolutions2Xml` (EXP-507) and before the manifest document, the manifest path (EXP-511) and the `try` block, `ExportSolutions` builds a map from `element_type` to the set of `element_id` for every PackageElement of the document: `GetPackageElementIdsByElementTypeMap(document)`. It selects `//Item[@type='PackageElement']` anywhere in the document, so it covers every package definition of the database and not only the exported ones, and for each Item, in document order:
+
+1. the key is the text of its first `element_type` child. A missing child gives a null key, and `Dictionary.ContainsKey(null)` throws `ArgumentNullException` (`Value cannot be null.\r\nParameter name: key`) (`GP3`);
+2. the value set of that key (created on first use) gets the text of its first `element_id` child. A missing child adds a null (`GP4`);
+3. strings are compared exactly, untrimmed and case-sensitive; duplicates collapse (`GP1`, `GP5`).
+
+The map is handed to every `PackageItem` call of the run, read by EXP-170, and never changed afterwards.
+
+A null document, which is the `GetSolutions2Xml` result when the database holds no package definitions (EXP-507, whose `warning` has been sent), makes the call throw `ArgumentNullException` with the message `Value cannot be null.\r\nParameter name: dom`. The call is outside the `try` block, so the exception leaves `ExportSolutions` at once. What the run did before it stays: the log file exists and holds the header of EXP-506, the `warning` was sent, nothing else was sent, no directory was created and **no manifest is saved**, not even `<imports />`. It does not depend on what the host asked to export: an empty selection fails too (`S7`, `S7b`; `GP7` for the call itself). The exception is not a `CItemException`, and the host sees it.
+
+*Observed* (`S7`, `S7b`): `warning` "The database contains no package definitions. Please select another database and try again", the exception above, the log holding the header only, and no `imports.mf`.
+
+### EXP-551: The items of a package run concurrently
+
+[14.0.7] One at a time, in table order (EXP-514).
+
+[14.35] `ExportProc` hands the items of the package to `Parallel.ForEach` over the values of its inner table, in table order, with no `ParallelOptions`. Each iteration is one whole `PackageItem` call: the item's requests, its transform and post-processing, and its file write. The loop returns when every iteration that started has ended. Before the first iteration the thread has opened the package (EXP-513), and after the last it continues with EXP-517, so packages are still exported one after another.
+
+- **How many at once.** The engine sets no bound. .NET runs the iterations on thread-pool threads and on the calling thread, starting about as many workers as there are logical processors (the calling thread included) at once and adding more only slowly, about one per half second, while all are blocked. On the machine of the probes (14 logical processors), runs of 12 to 100 items had up to 12 to 15 items in flight at the same time (`S3`, `S10`; `S2` and `S20` hold 6 and 14 in flight by design). The port starts items in table order and runs at most `P` of them at a time, where `P` is `--parallelism`, default the number of logical processors of the host (round 4 Q2, as confirmed in round 5). `--parallelism 1` runs them one at a time.
+- **What the order is.** Items start roughly in table order, but the engine hands them to workers in chunks, so the start order is not exactly the table order, and the finish order is whatever the timing gives (`S2`: fetches finished as `A07, A06, A05, …`). Nothing in the output is guaranteed to follow the table: not the log lines, not the messages, not the order of the entries of `excludedRefs`.
+- **What is shared.** The helper (`CItemHelper`) and its caches; the per-run table of main requests, keyed by type; the log writer; the `status` message object (EXP-553); the item index (EXP-552); the progress logger (EXP-554); the progress state flag; the table `excludedRefs` of EXP-517, which every worker writes with an `Add` behind a `ContainsKey` and no lock, so the insertion order is the order the adds happen and two adds of one key at once can fail (`ArgumentException`, *inferred, not seen*); the package-element map (read only, EXP-550); and the file system (EXP-419).
+- **The caches** are filled once per key even when several workers ask together (the request rules, ticket 51). A lookup that fails is not kept.
+- **Server load.** The workers share one IOM connection and call the server at the same time. The scripted connection of the probes accepts that; whether a real IOM connection does is not known (nothing in the engine serializes the calls). The port keeps one client and issues the requests of its workers on it.
+
+Every rule that names a log line, a message or a file therefore names a set, not a sequence, for 14.35. EXP-558 says how two runs are compared.
+
+### EXP-552: The item index is a shared counter
+
+[14.0.7] `i` starts at 1 and grows after each item that was exported or failed without aborting (EXP-514).
+
+[14.35] `i` is one variable shared by all workers of the package. A worker reads it once, when its item starts, and uses the value in `Item {i} of {n}` (EXP-514); `n` is the entry count of the table, fixed at the start. After `PackageItem` returns and the success line is queued, the worker does `i++`. An item that fails does not increment, and neither does one that is cancelled. The increment is not atomic, so two workers that finish together can write the same value back and one increment is lost (*inferred; not seen in the runs of the probe*).
+
+So `i` is "1 + the number of items that had finished when this one started", not an index: items that start together say the same number, and a number can be missing or repeated. In `S2` (24 items, six in flight at least) thirteen items started before the first one finished and all said `Item 1 of 24`, then the numbers went `2, 3, 3, 4, …`. The port keeps one shared counter, reads it when an item starts and increments it when an item succeeds, and need not reproduce a lost increment.
+
+### EXP-553: The status message object is shared
+
+[14.0.7] `GetStatusMessage` is called once per `ExportProc` call, and the single object is reused for every text (EXP-503).
+
+[14.35] The same single object is used by every worker, and by the thread that runs `ExportProc`, at the same time. A worker sets `Text` and then calls `Execute`, and nothing joins the two. When two workers interleave, `Execute` can send the text that the other worker has just set. The host then receives a text twice and another one never. This was seen in some runs: the first run of `S1` sent `Item 1 of 4: List - k-A01` twice and never named `k-A04`, and one of three runs of `S2` sent 24 texts that named 23 of its 24 items. The `completed` text that the failed-item handler (EXP-555) and the end of `ExportProc` set goes through the same object.
+
+The port sends each worker's own text. A comparison of the messages accepts a text that is missing or repeated (EXP-558).
+
+### EXP-554: The progress logger writes the success lines
+
+[14.0.7] There is none: the worker writes the success line itself (EXP-515).
+
+[14.35] `ExportProc` creates a `ProgressStreamLogger` on the log writer, after the package header (EXP-513) and before the loop, and starts it. It is created and disposed once per `ExportProc` call. Its life:
+
+- `WriteLine(text)` puts the text on a concurrent queue and returns. It never blocks and never fails.
+- `Start()` does nothing if a task already exists; otherwise it starts a task that repeats, until its cancellation token is cancelled: take one line from the queue, if there is one, and write it to the log with `WriteLine`. There is no wait, so the task keeps one processor busy while the loop runs (EXP-575).
+- `Complete()` does nothing when there is no task. Otherwise it cancels the token, forgets the task, and then takes every line left in the queue and writes it, on the thread that called it. It never starts the task again.
+- `Dispose()` only disposes the cancellation token source. A text queued afterwards is accepted and never written.
+
+Only the success line of EXP-515 goes through the logger. The header, the error block, the cancel text and the end lines are written to the log directly, by the thread that has them, so they can come between the logger's lines.
+
+`Complete()` is called: in the `finally` after the loop (all workers have finished, so every queued line is written before the lines that follow, `end of execution` or the removed-reference blocks); in the failed-item handler before it writes anything (EXP-555); and in the cancel branch before it writes anything (EXP-557). The three can overlap, and the first one to run takes the task, so the others drain what is queued and do not restart it.
+
+The lines of the successes are in the log in the order the logger took them off the queue, which is the order the workers queued them, which is the order their items finished. Right after a `Complete()` the task may still be writing the line it had taken, so two lines can swap places (*inferred*).
+
+### EXP-555: The first failed item stops the whole export
+
+[14.0.7] A failed item asks the host whether to abort its package. Only the answer `true` stops that package, and the other packages and the referenced pass go on (EXP-516).
+
+[14.35] A `CItemException` out of `PackageItem` is handled under one lock that every worker of the process shares. Inside it:
+
+- when the progress state is *cancelled* already (an earlier failure or a `Cancel()`), the handler does nothing at all: no message, no log line, no counter (`S9`: the second of two failing items is not mentioned anywhere);
+- otherwise, in this order: `progressLogger.Complete()` (EXP-554); `status` `Error of exporting Item id :{idName}  keyed_name : {keyedName}    type : {typeName}` and the same text in the log; the fault block of EXP-516 step 3 in the log (its `faultstring` is the pretty-printed text of WIRE-051); `errorQuestion` with the abort question of EXP-516 step 4, **whose answer is not read** (`S3` answers `yes` and `S4` answers `no`, with the same outcome); the progress state is set to *cancelled*, the same flag `Cancel()` sets; `end of execution : {now}` in the log; `status` `completed`; `loop.Stop()`.
+
+The effects, from `S3`, `S4`, `S5`, `S9`, `S11` and `S13`:
+
+- **No new item starts** in this package. Items that had not started never run. Items that were running go on to the end: they fetch, transform and **write their files**, and their success lines are not logged (EXP-570). The failing item writes no file.
+- **The package ends at once.** `ExportProc` returns right after the loop, because the state is *cancelled*: no removed-reference blocks, no warning, no second `end of execution` and no `completed` (the handler has written them).
+- **The remaining packages are skipped.** `ExportSolutions` leaves its package loop after this package (EXP-508). They get no manifest entry, no definition lookup, no directory, no message and no log line. The packages before it, and the failing one with its dependencies and referenced elements, are in the manifest.
+- **The referenced pass is entered,** if `refsToExport` has any package, and does the little that EXP-543 describes.
+- **The run ends normally.** `ExportSolutions` sends `currentPackage` with an empty text, sets the state to idle and saves the manifest (`imports.mf` with the packages visited so far). No exception reaches the host, which has only the messages to tell it. The host's answer to `errorQuestion` is lost (EXP-571).
+
+The library's `--on-item-error` option therefore has no effect on 14.35: the question is sent and the export stops (EXP-571). Which message the host sees after it is `completed`, then, from the pass if there is one, `currentPackage` and `Export was canceled by user`, and the final empty `currentPackage`.
+
+### EXP-556: Other exceptions end the run through the aggregate handler
+
+[14.0.7] A `SystemException` anywhere in the block ends the run with the warning and the log text of EXP-520.
+
+[14.35] A worker's exception that is not a `CItemException` (and is not one of the three that `Export` converts, EXP-400) escapes the iteration: an `IOException`, an `ArgumentException` from `Path.Combine` (EXP-417), an `UnauthorizedAccessException`, an `InvalidCastException`. The handler of EXP-555 is not involved: no question, no fault block, no counter, no `completed`. `Parallel.ForEach` stops starting iterations, waits for the running ones, and throws one `AggregateException` that holds every exception that escaped, in the order they were recorded (not the table order). Then:
+
+- `ExportProc` leaves through its `finally`, which calls `Complete()` on the progress logger (the lines of the items that finished are written) and disposes it. No `end of execution`, no `completed`, no removed-reference blocks, and the state is not *cancelled*;
+- `ExportSolutions` has a `catch` for `AggregateException` in front of the one for `SystemException`. It flattens the exception, joins the messages of the inner exceptions with a line end (`\r\n`), formats them with `ErrorMessageMessage` (EXP-504), sends that as `warning` and writes the same text to the log;
+- the remaining packages **and the referenced pass are skipped** (unlike EXP-555: the exception jumps over them), and the empty `currentPackage` is not sent. The manifest is saved as it stands (EXP-520's `finally`).
+
+Items that were running finish and write their files; those that never started do not. Examples: `S8` (one exception), `S14` (two: the warning holds both messages, in the order they were recorded), `S15` (an invalid character in a type name, no request made for it), `S20` (file-sharing violations).
+
+### EXP-557: A cancel is looked at by every worker
+
+[14.0.7] The flag is looked at at the start of each item's turn; the first that sees it writes the cancel text, `end of execution`, and returns (EXP-518).
+
+[14.35] `Cancel()` stores the flag as before, from any thread. Every worker looks at it at the start of its iteration. A worker that finds it set takes a lock of its own (not the one of EXP-555), and inside it: calls `Complete()` on the progress logger, calls `loop.Stop()`, sends `status` `Export was canceled by user`, writes the same text and then `end of execution : {now}` to the log, and returns. It sends no `completed`.
+
+Stopping the loop does not stop the iterations that have been handed to workers already, and each of those that starts after the flag does the same, so **the pair of lines can appear more than once**: between three and ten times in the runs of `S10`. Items that were running go on and write their files, and their success lines are not logged (EXP-570). After the loop `ExportProc` returns at once (the state is *cancelled*), so there are no removed-reference blocks and no `completed`. `ExportSolutions` ends its package loop and enters the referenced pass if there is one (EXP-543, `S12`), sends the empty `currentPackage`, resets the state and saves the manifest. A `Cancel()` after the last item has started is not seen by the loop: the run ends normally, and the state is reset in the `finally` block, so a `Cancel()` before the `try` block starts is overwritten, as in 14.0.7.
+
+The port writes the pair once for the first worker that sees the flag, and starts no item after it. A comparison accepts any positive number of pairs (EXP-558).
+
+### EXP-558: How two runs of 14.35 are compared
+
+[14.35] Two exports of the same items, whether by the engine or the port, give logs, messages and files that agree in these parts and in no others. This is the comparison that the 14.35 fixtures and the live parity use (round 4 Q2; the fixture rule of `fixtures/README.md`).
+
+1. **Fixed.** The log header (EXP-506); every `****Export {package}****` line and its `start of execution` line, in the order of the packages; the `currentPackage` messages in order; the manifest bytes; the exception that leaves `ExportSolutions`, if any; the set of packages visited and the directories created or wiped.
+2. **A set, within a package.** The lines between `start of execution` and `end of execution`: the success lines (as a multiset of lines, EXP-515), the removed-reference blocks (as a multiset of blocks, EXP-517), the error block and the cancel pair. Their order is not compared. A success line may be missing when its item finished after a failure or a cancel (EXP-570). The cancel pair counts as present once or more.
+3. **Messages.** The `status` texts `Item {i} of {n}: {type} - {name}` are compared by item, ignoring `{i}`, and a text may be missing or repeated (EXP-552, EXP-553). The messages of the other channels are compared as sequences, with the failed-item messages of EXP-555 once.
+4. **Files.** The files of items that finished before any failure or cancel are present with the same bytes. A run with a failure or cancel may hold files of items that were in flight, and the set of those is not fixed. An item that failed has no file.
+5. **A failed or cancelled run** has the shape of EXP-555 or EXP-557: no second package, the referenced pass entered or not, the closing messages.
+
+The rule gives nothing for the timing: the engine's own runs differ from each other in these parts, and the fixtures record several runs where it matters.
+
+## Reproduced bugs, 14.35
+
+### EXP-570: The progress logger loses the lines of items that finish after an error or a cancel (bug)
+
+[14.35] `Complete()` forgets the task and nothing starts it again (EXP-554), and the failed-item handler and the cancel branch call it while other items are still running. The success lines of those items are queued afterwards and never written, although their files are. In `S11` (twelve items; the failing one delayed so that four had finished before it and seven after) the log holds the success lines of the four items done before the error and none of the seven done after, and all eleven files exist. In `S3`, where all twelve were in flight when the error came, the log holds no success line at all. It is reproduced. See `bugs.md`.
+
+### EXP-571: The host's answer to the error question is ignored (bug)
+
+[14.35] The failed-item handler sends the abort question (EXP-555) and never reads the answer. `true` and `false` both stop the whole export (`S3`, `S4`). A host cannot choose to continue past a failed item, and the library's `--on-item-error` has nothing to act on. It is reproduced. See `bugs.md`.
+
+### EXP-572: A stop does not stop what is running, and later failures are silent (bug)
+
+[14.35] After a failed item or a cancel, items that are already running finish and write their files, while the export reports that it stopped (EXP-555, EXP-557). A second failed item, or a failure after a `Cancel()`, finds the state *cancelled* and is dropped without a message or a log line, so only the first failure of a run is reported (`S9`). The files of the items in flight are not in the log (EXP-570). It is reproduced. See `bugs.md`.
+
+### EXP-573: The item numbers and the status texts race (bug)
+
+[14.35] The index `i` is a shared variable that is read and incremented without a lock (EXP-552), and the status text is set and sent through one shared object without a lock (EXP-553). Items that start together show the same number, a text can be sent twice while another is never sent, and an increment can be lost. It is reproduced as far as the comparison of EXP-558 needs: shared counter, shared message, no lock. See `bugs.md`.
+
+### EXP-575: The progress logger keeps a processor busy (deviation, not reproduced)
+
+[14.35] The task of `ProgressStreamLogger` repeats "take a line, write it" with no wait while the loop runs (EXP-554), so it uses a full processor until `Complete()`. The only observable effect is the load, and the port's loop waits for the next line instead. It is a deviation. See `bugs.md`.
+
 ## Reproduced bugs
 
 ### EXP-540: Packages exported in the referenced pass are missing from the manifest (bug)
@@ -514,11 +713,15 @@ Failures before the block (EXP-500, the header, EXP-507's log sharing) save no m
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same.
+
 ### EXP-541: A package-definition query that fails inside an export crashes on the log file (bug)
 
 [14.0.7] `GetSolutions2Xml` writes its error to the log through a second writer on `LogFilePath` (EXP-507). When `ExportSolutions` calls it, its own writer (EXP-505) still holds the file open for writing with read sharing only, so the second open fails with `IOException`, `The process cannot access the file '{path}' because it is being used by another process.` The exception comes from `GetSolutions2Xml`, which `ExportSolutions` calls before its `try` block, so it escapes: the `error` message was already sent, the header is flushed when the writer is disposed, the first request fails, no manifest is saved and nothing else is created. The second open uses the raw `LogFilePath`, not the normalised path of EXP-505. *The sharing failure is proven with a .NET Framework probe of two `StreamWriter(path, true)` on one file; the faultcode ≠ 0 response was not provoked on dev.*
 
 [12.0] Not present. `GetSolutions2Xml` runs before the engine opens its own log writer, so its second writer succeeds (EXP-507). The bug is 14.0.7's only.
+
+[14.35] Same. The writer that `ExportSolutions` holds is a `StreamWriter` inside a synchronized wrapper; the second `StreamWriter` of `GetSolutions2Xml` fails to open the file for the same reason. *Inferred from the code; the faultcode ≠ 0 response was not provoked.*
 
 ### EXP-542: A missing package definition aborts the whole export (bug)
 
@@ -526,14 +729,20 @@ Failures before the block (EXP-500, the header, EXP-507's log sharing) save no m
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same. The `CItemException` of the package-definition lookups is raised on the thread that runs `ExportSolutions`, outside the workers, and the aggregate handler does not take it.
+
 ### EXP-543: A cancel during the main loop still runs the referenced pass (bug)
 
 [14.0.7] The main loop stops on *cancelled* (EXP-518), but the referenced pass that follows it is conditional only on `refsToExport` being non-empty. After a cancel it still wipes and recreates the first referenced package's directory, sends `currentPackage`, writes that package's log header and then, at its first item, the cancel text and `end of execution` (EXP-518), and stops after that one package. A table with no items never sees the flag. The directory of a dependency that is also a main package is wiped (EXP-519), so a cancelled run can delete output it had finished. *Inferred from the code.*
 
 [12.0] Same as 14.0.7.
 
+[14.35] Wider. The referenced pass is entered after a cancel as before, and also after a failed item (EXP-555), because both leave the flag *cancelled* and the pass tests only `refsToExport`. It wipes and recreates the first referenced package's directory, sends `currentPackage` `Exporting referenced items from '{dep}'`, and `ExportProc` writes `****Export {dep}****` and `start of execution`, then, at its first item, `Export was canceled by user` as `status` and in the log, and `end of execution`. No item of it is fetched, and the pass stops after that package. After a failed item the text `Export was canceled by user` is therefore misleading. Observed in `S5` (a failure in the first package) and `S12` (a cancel). A failed item inside the pass stops the export in the same way (`S13`).
+
 ### EXP-544: Package and dependency names are interpolated unescaped into XPath and AML (bug)
 
 [14.0.7] The package name goes unescaped into the XPath of EXP-510, the manifest XPaths of EXP-511 and the AML of EXP-509, and the dependency name into the manifest XPath, the AML of EXP-510 and the lookups of the second pass. A name with an apostrophe makes the XPath malformed, which is a `SystemException` (`XPathException`), so the whole run ends with the warning and log text of EXP-520, with the manifest saved as it stood. For the manifest's `package` XPath the text is `'imports/package[@name='{name}']' has an invalid token.`, as the `.NET` XPath compiler words it; other malformed names give other `.NET` wordings. A name that closes the literal and adds a valid predicate is accepted and selects other nodes. The port interpolates exactly and reports the `.NET` message of the same defect. *Observed* (`r5`).
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same (`ManifestFile` and the XPath expressions are unchanged).
