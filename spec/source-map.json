@@ -684,7 +684,40 @@
             "bodySha256": "60f14b972677be0cbfb1bd8ed3afad708af5e4afa0d6d6b47cb8340ded721b21",
             "textSha256": "1593ef17bd78bc74bc8c8a6cc3f5cf0f71df95fae61dab4ae11bf97a5c779467"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-200",
+            "EXP-201",
+            "EXP-202",
+            "EXP-203",
+            "EXP-204",
+            "EXP-205",
+            "EXP-210",
+            "EXP-211",
+            "EXP-212",
+            "EXP-213",
+            "EXP-214",
+            "EXP-220",
+            "EXP-221",
+            "EXP-230",
+            "EXP-231",
+            "EXP-235",
+            "EXP-236",
+            "EXP-240",
+            "EXP-241",
+            "EXP-242",
+            "EXP-243",
+            "EXP-244",
+            "EXP-250",
+            "EXP-251",
+            "EXP-252",
+            "EXP-253",
+            "EXP-254",
+            "EXP-260",
+            "EXP-270",
+            "EXP-271",
+            "EXP-272"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::CheckDataSourceReferences",
@@ -960,7 +993,10 @@
             "bodySha256": "6898f2c9ff76941360d2b82957ded1b790d3ddf0fd38b90cde7f2497f9ba50d0",
             "textSha256": "1625a0d5bb399864617021f0039c631bc94b84b96869da8ceed7ef423ad642d5"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-200"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetMetaDataInfo",
@@ -1104,7 +1140,10 @@
             "bodySha256": "9b39d7741c699ce2a0f88d31bc71c284e1d49df90a9ec37b631e83ef6d2e40c6",
             "textSha256": "211664665c10aa1c2473b52f5f5ab64b5fb1cda28fedbc6d34bf3cda197f5510"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "EXP-200"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::IsValueId",
