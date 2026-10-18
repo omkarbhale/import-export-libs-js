@@ -1,4 +1,4 @@
-import { Node as DomNode } from "@xmldom/xmldom";
+import { DOMImplementation, Node as DomNode } from "@xmldom/xmldom";
 import * as xpath from "xpath";
 import { XMLNS_NS, XML_NS } from "./chars.js";
 import { ATTRIBUTE_NODE, DOCUMENT_NODE, isXmlDocument } from "./dom.js";
@@ -89,6 +89,11 @@ DomNode.prototype.compareDocumentPosition = function compareDocumentPosition(thi
 };
 
 // ---------------------------------------------------------------- evaluation
+
+// `xpath` takes a DOM for an HTML one, and then matches element and attribute names without regard to case, when
+// `implementation.hasFeature("HTML", "2.0")` is true, and xmldom answers true for every feature. .NET's XPath compares names
+// exactly (MAN-001), so the answer is false; src/xml/xml-core.test.ts fails if a name matches in another case.
+(DOMImplementation.prototype as unknown as { hasFeature(): boolean }).hasFeature = () => false;
 
 const select = xpath.useNamespaces({ xml: XML_NS });
 

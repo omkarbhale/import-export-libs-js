@@ -38,3 +38,5 @@ Rules for this folder:
 `export-requests/` is evidence for `spec/export-requests.md`, not an engine run: `14.0.7-probe/` and `14.35-probe/` hold the requests the engine's own export classes build against a stub connection (`oracle/request-probe/`), and `14.35-probe/server-reactions.json` holds read-only dev gets that compare 14.0.7's and 14.35's request shapes. Each folder's README says how it was recorded.
 
 `xml-core/` is evidence for the XML core (`src/xml/`), not an engine run: `vectors.json` holds about thirteen hundred inputs of .NET Framework's `System.Xml`, `WebUtility`, `File.ReadAllText` and XPath, each with the result .NET gave. The test `src/xml/vectors.test.ts` replays it, and `oracle/xml-core-probe/` records it.
+
+`manifest/14.0.7/` is evidence for `spec/manifest.md`, not an engine run: probes of 14.0.7's `ManifestFile`, `GetPackagePath`, `NormalizeLongPath` and the package ordering (`probes/`, with the output next to each script), `nls-startswith.json`, and `hashtable/`, the probe and digest of the `Hashtable` order. The tests `src/manifest/*.test.ts` and `src/io/host-path.test.ts` replay them. Its own README lists the files.

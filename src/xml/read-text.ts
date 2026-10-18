@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { readFileBytes } from "../io/host-path.js";
+import type { PathEnvironment } from "../io/host-path.js";
 import { loadXml } from "./parser.js";
 import type { XmlDocument } from "./dom.js";
 
@@ -130,12 +131,11 @@ function decodeUtf32(bytes: Uint8Array, start: number, bigEndian: boolean): stri
 }
 
 /**
- * `IOWrapper.XmlDocumentLoad` without the path normalisation: reads the file with {@link readAllText} and loads the
- * text into a new document that drops white space. The caller applies the engine's path rules first (MAN-004). The
- * source-map entry stays unmapped until the path ticket (the build ticket that implements NormalizeLongPath, EXP-421;
- * wayfinder tickets 28 and 33 call these wrappers) makes this wrapper apply the path rules.
- * @spec IMP-007 MAN-003
+ * `IOWrapper.XmlDocumentLoad(path)`: the path goes through the engine's path rules (MAN-004, MAN-033), the file is read
+ * with {@link readAllText}, and the text is loaded into a new document that drops white space. A missing file, folder
+ * or illegal path fails with the exceptions of .NET (MAN-003).
+ * @spec IMP-007 IMP-016 IMP-017 IMP-018 LP-010 LP-022 MAN-003 MAN-004
  */
-export function xmlDocumentLoad(path: string): XmlDocument {
-  return loadXml(readAllText(readFileSync(path)), { preserveWhitespace: false });
+export function xmlDocumentLoad(path: string | null, environment: PathEnvironment = {}): XmlDocument {
+  return loadXml(readAllText(readFileBytes(path, environment)), { preserveWhitespace: false });
 }

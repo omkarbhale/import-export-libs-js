@@ -15,6 +15,8 @@ Evidence for `spec/manifest.md` (rules `MAN-`). Each probe script drives the ven
 | `09-nls-startswith` | writes `nls-startswith.json`: how the culture-sensitive `StartsWith` in `IsCorePackage` compares (MAN-031) |
 | `10-combining-after-solution` | a combining mark after `solution.` (MAN-031) |
 
+`hashtable/` holds the probe and the digest of the `Hashtable` enumeration-order cases (`MAN-017`, `MAN-018`); its own README says how they were generated and re-run.
+
 `nls-startswith.json` holds inclusive code point ranges: `ignorable` (skipped wherever they occur), `afterPrefixBreaks` (a code point directly after the prefix's last `.` that makes the prefix not match), `equalsDot` (counts as `.`) and `equalsNAfterN` (counts as a repeated `n`). The result was identical under en-IN, en-US, sv-SE, tr-TR and the invariant culture.
 
 ## Re-running

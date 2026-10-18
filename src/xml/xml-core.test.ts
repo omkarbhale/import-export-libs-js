@@ -123,6 +123,14 @@ describe("ReadAllText", () => {
 });
 
 describe("XPath", () => {
+  it("compares element and attribute names exactly, as .NET does", () => {
+    const doc = load('<Root><Item NAME="a"/><item name="b"/></Root>');
+    expect(selectNodes("Root/Item", doc).length).toBe(1);
+    expect(selectNodes("root/item", doc).length).toBe(0);
+    expect(selectNodes("Root/item[@name='b']", doc).length).toBe(1);
+    expect(selectNodes("Root/item[@NAME='b']", doc).length).toBe(0);
+  });
+
   it("keeps the document order of a union after the document changes", () => {
     const doc = load("<r><a/><b/><c/></r>");
     const names = () => selectNodes("//c | //a | //b", doc).map((node) => node.nodeName).join("");
