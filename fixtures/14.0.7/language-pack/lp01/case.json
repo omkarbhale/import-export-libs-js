@@ -1,0 +1,18 @@
+{
+  "case": "lp01",
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "",
+    "propertiesList": "label"
+  },
+  "lpDebug": false,
+  "calls": 20,
+  "expect": "Fixes/Forum.xml has two `edit` items, each with `de` then `fr` labels (server order: de, en, fr).",
+  "rules": "LP-011, LP-014, LP-015, LP-023 to LP-027, LP-029, LP-032, LP-034"
+}

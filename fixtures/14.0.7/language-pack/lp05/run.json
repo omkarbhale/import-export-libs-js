@@ -1,0 +1,67 @@
+{
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "toolset": {
+    "digest": "19573a97899a",
+    "source": "Desktop\\ImportExport\\23\\Import",
+    "libs": {
+      "version": "14.0.7.35492",
+      "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1"
+    },
+    "iom": {
+      "version": "14.0.7.35492",
+      "mvid": "d9d22f5f-38c8-4bdc-a9a7-e95fabbec9f0"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "lpimport",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "LPPackage": "LIBSJS-SCRATCH-LP"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T20:17:15.302Z",
+  "finishedAt": "2026-10-18T20:17:17.961Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 16,
+    "messages": 5,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "481647C9EF674E0C8E8F71AB5AE5F8A0"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "9C39850D7EB241A9821AB47CA83B7328"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageDefinition",
+        "id": "9C39850D7EB241A9821AB47CA83B7328"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "481647C9EF674E0C8E8F71AB5AE5F8A0"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

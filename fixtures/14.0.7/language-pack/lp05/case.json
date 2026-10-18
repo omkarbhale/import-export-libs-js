@@ -1,0 +1,18 @@
+{
+  "case": "lp05",
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "xx",
+    "propertiesList": "label"
+  },
+  "lpDebug": false,
+  "calls": 16,
+  "expect": "Nothing qualifies, so no row produces a translation, no Fixes file is written and the import runs on an empty package and succeeds (LP-011). The Language get is still sent. No ItemType lookup or `edit` call follows.",
+  "rules": "LP-011, LP-014, LP-026"
+}

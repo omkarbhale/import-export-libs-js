@@ -1,0 +1,17 @@
+{
+  "note": "Read back from dev with a get whose criterion is the i18n element, right after the run (and, for lp01, last). count is the number of Forum items that matched.",
+  "checks": [
+    {
+      "lang": "de",
+      "forum": "11B5C0DE00000000000000000000D001",
+      "label": "LIBSJS Test-Forum (lp02)",
+      "matches": 1
+    },
+    {
+      "lang": "fr",
+      "forum": "11B5C0DE00000000000000000000D001",
+      "label": "Forum de test LIBSJS (lp02)",
+      "matches": 0
+    }
+  ]
+}

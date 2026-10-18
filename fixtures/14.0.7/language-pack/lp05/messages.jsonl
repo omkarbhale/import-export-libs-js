@@ -1,0 +1,5 @@
+{"event":11,"seq":1,"thread":15,"ticks":750169885688,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":15,"ticks":750170735431,"channel":"status","text":"Adding PackageDefinintion for LIBSJS-SCRATCH-LP","answer":null}
+{"event":15,"seq":3,"thread":15,"ticks":750171055320,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":16,"seq":4,"thread":15,"ticks":750171060645,"channel":"status","text":"completed","answer":null}
+{"event":21,"seq":5,"thread":15,"ticks":750171736900,"channel":"status","text":"completed","answer":null}

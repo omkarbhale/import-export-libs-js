@@ -1,0 +1,18 @@
+{
+  "case": "lp03",
+  "engine": "14.0.7",
+  "command": "lpimport",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de, fr",
+    "propertiesList": "label"
+  },
+  "lpDebug": false,
+  "calls": 20,
+  "expect": "Both languages are generated (LP-013 trims each part). The `name` property in the pack is dropped by the `label` property list (LP-023, step 2).",
+  "rules": "LP-011, LP-012, LP-013, LP-023"
+}
