@@ -173,6 +173,7 @@ class Parser {
     this.nextLex();
   }
 
+  /** .NET's `TestOp`: a name in operator position is the operator even when a parenthesis follows (`a and (b)`). */
   private isOperatorName(operator: string): boolean {
     return this.kind === "name" && this.prefix === "" && this.name === operator;
   }
