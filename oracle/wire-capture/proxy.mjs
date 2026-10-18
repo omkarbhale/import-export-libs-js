@@ -11,6 +11,13 @@
 // recorded too; the record keeps the server's original body, and
 // `clientBody` holds what the client received.
 //
+// Each record also carries `startedMs` and `endedMs` (milliseconds since the
+// proxy started, request headers read to response sent) and `connection` (the
+// client's TCP source port), so overlapping requests and connection reuse show.
+//
+// PROXY_DELAY_MS=<path substring>=<ms> holds the matching requests that long
+// before forwarding them, so a client's own timeout can be provoked (ticket 69).
+//
 // Usage: node proxy.mjs <listenPort> <upstreamHost:port> <out.jsonl>
 import http from "node:http";
 import fs from "node:fs";
@@ -20,6 +27,8 @@ const [port, upstream, out] = process.argv.slice(2);
 if (!port || !upstream || !out) throw new Error("usage: node proxy.mjs <listenPort> <upstreamHost:port> <out.jsonl>");
 const [upHost, upPort = "80"] = upstream.split(":");
 let seq = 0;
+const started = Date.now();
+const [delayPath, delayMs] = (process.env.PROXY_DELAY_MS ?? "").split(/=(?=\d+$)/);
 
 function text(buf, encoding) {
   try {
@@ -33,11 +42,21 @@ function text(buf, encoding) {
 
 http
   .createServer((req, res) => {
+    const startedMs = Date.now() - started;
     const chunks = [];
     req.on("data", (c) => chunks.push(c));
-    req.on("end", () => {
+    req.on("end", async () => {
       const body = Buffer.concat(chunks);
+      let aborted = false;
       const n = ++seq;
+      // A client that gives up before the answer is sent leaves a record with `aborted` and no response.
+      res.on("close", () => {
+        if (res.writableEnded) return;
+        const request = { method: req.method, url: req.url, httpVersion: req.httpVersion, rawHeaders: req.rawHeaders, body: body.toString("utf8") };
+        fs.appendFileSync(out, JSON.stringify({ seq: n, startedMs, endedMs: Date.now() - started, connection: req.socket.remotePort, aborted: true, request }) + "\n");
+        aborted = true;
+      });
+      if (delayPath && req.url.includes(delayPath)) await new Promise((r) => setTimeout(r, Number(delayMs)));
       const fwd = http.request(
         { host: upHost, port: Number(upPort), method: req.method, path: req.url, headers: req.headers },
         (up) => {
@@ -53,6 +72,9 @@ http
             }
             const record = {
               seq: n,
+              startedMs,
+              endedMs: Date.now() - started,
+              connection: req.socket.remotePort,
               request: {
                 method: req.method,
                 url: req.url,
@@ -74,6 +96,7 @@ http
               if (headers[i].toLowerCase() === "content-length") headers[i + 1] = String(rbody.length);
             }
             fs.appendFileSync(out, JSON.stringify(record) + "\n");
+            if (aborted || res.destroyed) return;
             res.writeHead(up.statusCode, headers);
             res.end(rbody);
           });

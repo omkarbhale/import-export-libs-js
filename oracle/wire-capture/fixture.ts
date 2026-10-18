@@ -37,13 +37,18 @@ for (const line of readFileSync(input, "utf8").split("\n")) {
   const r = JSON.parse(line);
   const record = {
     seq: r.seq,
+    ...(r.startedMs !== undefined ? { startedMs: r.startedMs, endedMs: r.endedMs, connection: r.connection } : {}),
     request: { ...r.request, rawHeaders: undefined, headers: pairs(r.request.rawHeaders) },
-    response: {
-      status: r.response.status,
-      headers: pairs(r.response.rawHeaders),
-      body: body(r.response.body),
-      ...(r.response.clientBody !== undefined ? { clientBody: r.response.clientBody } : {}),
-    },
+    ...(r.aborted
+      ? { aborted: true }
+      : {
+          response: {
+            status: r.response.status,
+            headers: pairs(r.response.rawHeaders),
+            body: body(r.response.body),
+            ...(r.response.clientBody !== undefined ? { clientBody: r.response.clientBody } : {}),
+          },
+        }),
   };
   let text = JSON.stringify(record);
   text = text.replace(/(ASP\.NET_SessionId=)[a-z0-9]+/gi, `$1${SCRUBBED}`);

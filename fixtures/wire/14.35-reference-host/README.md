@@ -1,0 +1,24 @@
+# 14.35 reference-host wire captures
+
+What engine 14.35's reference host, Aras's `ConsoleUpgrade.exe` 14.35 (`spec/wire.md`, WIRE-002), sends below the AML through IOM 15, recorded against dev for ticket 69. The oracle transcripts hold only the AML given to `CallAction` and the response envelope, so these captures are the evidence for the request framing, headers, OAuth discovery and token exchange, the rehash retry, concurrency and logoff (WIRE-003 to WIRE-060).
+
+- **Run:** `oracle/wire-capture/ReferenceHost-14.35.cs` (driven by `capture-14.35.ps1`) connects as ConsoleUpgrade does, with the vendored 14.35 `Libs.dll` and IOM 15 (`IOM.dll` 15.0.0.0 and its folder), and `oracle/wire-capture/proxy.mjs` records every exchange between it and the dev server (a proxy on the client machine forwarding to dev, database `12sp9`, user `admin`). The real `ConsoleUpgrade.exe` was not run: it exports whole packages, and a one-item export is enough for the wire.
+- **Format:** one exchange per line, in order: `seq`, `startedMs` and `endedMs` (milliseconds since the proxy started), `connection` (the client's TCP source port), `request` (`method`, `url`, `httpVersion`, `headers` as `[name, value]` pairs in wire order, `body`) and `response` (`status`, `headers`, `body`). An exchange the client gave up on has `aborted: true` and no `response`.
+- **Password.** The host hands IOM the MD5 hex of the dev password, as the oracle does (`oracle/README.md`, Rules): IOM 15 sends a password as given, and the dev password must not go over the wire in the clear. `capture-rejected-login.jsonl` is the one run that sends a password as given, and it uses a user that does not exist and a password that is not one (`libsjs-no-such-user`, `libsjs-not-a-password`).
+
+| File | Run | Exchanges |
+|---|---|---|
+| `capture.jsonl` | one-item export (`com.aras.innovator.servicereporting`, `List` "Report Format Types") | 1 to 3 discovery, OpenID configuration and key set; 4 the password grant; 5 `ValidateUser`; 6 IOM's user record read; 7 to 10 the version probe; 11 to 36 the export's requests; 37 `Logoff`. Exchanges 1 to 10 and 37 have the same request headers (names and order) and bodies as the 14.0.7 capture's (`../14.0.7-reference-host/`), apart from the proxy's port in `Host` |
+| `capture-parallel.jsonl` | three-item export (`List`, `Method`, `UserMessage`), the proxy on `localhost` | the items are fetched concurrently: up to 3 requests in flight on 3 TCP connections |
+| `capture-parallel-remote.jsonl` | four-item export (adds a `RelationshipType`), the proxy reached through a non-loopback address | up to 2 requests in flight on 2 TCP connections |
+| `capture-rejected-login.jsonl` | login as a user that does not exist, with a password given as it is | 1 to 3 discovery; 4 the password grant with the password as given, answered 400 `incompatible_hash_use_md5`; 5 the same request with the MD5 digest, answered 400 `invalid_grant`. No `ValidateUser` follows |
+| `capture-cancelled-login.jsonl` | the proxy holds the discovery request for 105 s (`PROXY_DELAY_MS=OAuthServerDiscovery=105000`) | one `aborted` exchange: the client's own 100 s limit expires and `Login()` returns without an error |
+
+- **Edits made to the recordings:**
+  - Scrubbed: the password digest or password in every token request, the access token in its response and in every `Authorization` header (`SCRUBBED`, `SCRUBBED_TOKEN`), and the `ASP.NET_SessionId` cookie value.
+  - The discovery response's `uri` points at the OAuth server's host without the proxy's port. The proxy rewrote it to its own origin, so the token exchange went through it. `body` is what the server sent; `clientBody` is what the host received.
+  - Response bodies above 16 KiB are replaced by `{ "length", "sha256" }`. They are export data, which the transcript fixtures carry. Request bodies are complete.
+- **Host output.** `login returned: IsConnected=True InnovatorVersion=12.0 SP9 Build 24090` for the export runs; for the rejected login `login failed: CItemException faultcode=-100`; for the cancelled one `login returned: IsConnected=False InnovatorVersion=null`, then `unexpected System.NullReferenceException: Object reference not set to an instance of an object.` from the export, then `logout done: IsConnected=False` with nothing sent.
+- **Differences from ConsoleUpgrade.exe** (none of them below the AML): the host catches a failing `Login()` and prints it, where ConsoleUpgrade lets it escape as an unhandled exception; it runs inside Windows PowerShell 5.1 with binding redirects supplied by an assembly-resolve handler rather than `ConsoleUpgrade.exe.config`.
+
+To re-record, stage the 14.35 toolset (`npm run oracle -- verify`), then run `oracle/wire-capture/proxy.mjs` and `capture-14.35.ps1` as the header of the script says, and scrub with `ARAS_PASSWORD=… npx tsx oracle/wire-capture/fixture.ts <raw.jsonl> <out.jsonl>`.

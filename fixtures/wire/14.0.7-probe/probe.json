@@ -1,0 +1,935 @@
+{
+  "engine": "14.0.7",
+  "assemblyVersion": "14.0.7.35492",
+  "iomVersion": "14.0.7.35492",
+  "scenarios": {
+    "A.probe": {
+      "dev-12.0-SP9": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP9",
+          "VersionBuild": "24090",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 9,
+          "build": 24090,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP9 Build 24090"
+        }
+      },
+      "14.35.0.1234": {
+        "vars": {
+          "VersionMajor": "14",
+          "VersionMinor": "35",
+          "VersionServicePack": null,
+          "VersionBuild": "1234",
+          "VersionServiceUpdate": "3"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 14,
+          "minor": 35,
+          "servicePack": 0,
+          "build": 1234,
+          "serviceUpdate": 3,
+          "fullString": "14.35.3.1234"
+        }
+      },
+      "sp-with-su": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP9 SU1",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 0,
+          "build": 1,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP0 Build 1"
+        }
+      },
+      "sp-empty-value": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 0,
+          "build": 1,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP0 Build 1"
+        }
+      },
+      "sp-fault0": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "FAULT0",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 0,
+          "build": 1,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP0 Build 1"
+        }
+      },
+      "sp-fault500": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "FAULT500",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 500,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "boom",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "build-fault0": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP1",
+          "VersionBuild": "FAULT0",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 1,
+          "build": 0,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP1 Build 0"
+        }
+      },
+      "build-not-integer": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP1",
+          "VersionBuild": "x",
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "System.FormatException",
+          "message": "Input string was not in a correct format."
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "build-no-value": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP1",
+          "VersionBuild": null,
+          "VersionServiceUpdate": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "System.FormatException",
+          "message": "Input string was not in a correct format."
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "su-fault0": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP1",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "FAULT0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 1,
+          "build": 1,
+          "serviceUpdate": 0,
+          "fullString": "12.0 SP1 Build 1"
+        }
+      },
+      "su-fault500": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP1",
+          "VersionBuild": "1",
+          "VersionServiceUpdate": "FAULT500"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 500,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "boom",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "only-major-row": {
+        "vars": {
+          "VersionMajor": "12"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "System.IndexOutOfRangeException",
+          "message": "IndexOutOfRangeException"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "only-minor-row": {
+        "vars": {
+          "VersionMinor": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "System.IndexOutOfRangeException",
+          "message": "IndexOutOfRangeException"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "no-rows-fault0": {
+        "vars": {},
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type Variable found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type Variable found.]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "No items of type Variable found.",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type Variable found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type Variable found.]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "major-fault500": {
+        "vars": {
+          "VersionMajor": "FAULT500",
+          "VersionMinor": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 500,
+          "faultstring": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "boom",
+          "message": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>500</faultcode><faultstring><![CDATA[boom]]></faultstring><detail><af:legacy_detail><![CDATA[boom]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "major-no-value": {
+        "vars": {
+          "VersionMajor": null,
+          "VersionMinor": "0"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "System.FormatException",
+          "message": "Input string was not in a correct format."
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      }
+    },
+    "B.gate": {
+      "9.4": {
+        "vars": {
+          "VersionMajor": "9",
+          "VersionMinor": "4",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 9,
+          "minor": 4,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "9.4 SP2 Build 77"
+        }
+      },
+      "9.0": {
+        "vars": {
+          "VersionMajor": "9",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 9,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "9.0 SP2 Build 77"
+        }
+      },
+      "10.0": {
+        "vars": {
+          "VersionMajor": "10",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 10,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "10.0 SP2 Build 77"
+        }
+      },
+      "11.12": {
+        "vars": {
+          "VersionMajor": "11",
+          "VersionMinor": "12",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 11,
+          "minor": 12,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "11.12 SP2 Build 77"
+        }
+      },
+      "12.0": {
+        "vars": {
+          "VersionMajor": "12",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 12,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "12.0 SP2 Build 77"
+        }
+      },
+      "13.0": {
+        "vars": {
+          "VersionMajor": "13",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 13,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "13.0 SP2 Build 77"
+        }
+      },
+      "14.0": {
+        "vars": {
+          "VersionMajor": "14",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 14,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "14.0.5.77"
+        }
+      },
+      "14.35": {
+        "vars": {
+          "VersionMajor": "14",
+          "VersionMinor": "35",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": null,
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 14,
+          "minor": 35,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "14.35.5.77"
+        }
+      },
+      "15.0": {
+        "vars": {
+          "VersionMajor": "15",
+          "VersionMinor": "0",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 15,
+          "minor": 0,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "15.0.5.77"
+        }
+      },
+      "16.2": {
+        "vars": {
+          "VersionMajor": "16",
+          "VersionMinor": "2",
+          "VersionServicePack": "SP2",
+          "VersionBuild": "77",
+          "VersionServiceUpdate": "5"
+        },
+        "requests": [
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMajor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionMinor</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServicePack</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionBuild</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>",
+          "\r\n\t\t\t<AML>\r\n\t\t\t\t<Item type=\"Variable\" action=\"get\" select=\"name, value\">\r\n\t\t\t\t\t<name>VersionServiceUpdate</name>\r\n\t\t\t\t</Item>\r\n\t\t\t</AML>"
+        ],
+        "actions": [
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML",
+          "ApplyAML"
+        ],
+        "logins": 1,
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.",
+          "faultdetail": "",
+          "message": "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown."
+        },
+        "isConnected": true,
+        "innovatorVersion": {
+          "major": 16,
+          "minor": 2,
+          "servicePack": 2,
+          "build": 77,
+          "serviceUpdate": 5,
+          "fullString": "16.2.5.77"
+        }
+      }
+    },
+    "C.loginFaults": {
+      "oauth-invalid-grant": {
+        "fault": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>invalid_grant</faultcode>\r\n\t<faultstring>Authentication failed for u</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -100,
+          "faultstring": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>invalid_grant</faultcode>\r\n\t<faultstring>Authentication failed for u</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>invalid_grant</faultcode>\r\n\t<faultstring>Authentication failed for u</faultstring>\r\n\t<faultactor",
+          "message": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>invalid_grant</faultcode>\r\n\t<faultstring>Authentication failed for u</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "io-999-transport": {
+        "fault": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Net.WebException: The operation has timed out</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -100,
+          "faultstring": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Net.WebException: The operation has timed out</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Net.WebException: The operation has timed out</faultstring",
+          "message": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Net.WebException: The operation has timed out</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "cancelled-task": {
+        "fault": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Threading.Tasks.TaskCanceledException: A task was canceled.</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -100,
+          "faultstring": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Threading.Tasks.TaskCanceledException: A task was canceled.</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Threading.Tasks.TaskCanceledException: A task was canceled",
+          "message": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>System.Threading.Tasks.TaskCanceledException: A task was canceled.</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "cancelled-text-elsewhere": {
+        "fault": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>x System.Threading.Tasks.TaskCanceledException y</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -100,
+          "faultstring": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>x System.Threading.Tasks.TaskCanceledException y</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>x System.Threading.Tasks.TaskCanceledException y</faultstring>\r\n\t",
+          "message": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>x System.Threading.Tasks.TaskCanceledException y</faultstring>\r\n\t<faultactor>OAuthServer</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      },
+      "cancelled-lowercase": {
+        "fault": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>system.threading.tasks.taskcanceledexception</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+        "requests": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": -100,
+          "faultstring": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>system.threading.tasks.taskcanceledexception</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>system.threading.tasks.taskcanceledexception</faultstring>\r\n\t<fau",
+          "message": "Failed login to Innovator; original error: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:i18n=\"http://www.aras.com/I18N\"><SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t<faultcode>999</faultcode>\r\n\t<faultstring>system.threading.tasks.taskcanceledexception</faultstring>\r\n\t<faultactor>HttpServerConnection</faultactor>\r\n\t<detail>unknown error</detail>\r\n</SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        },
+        "isConnected": true,
+        "innovatorVersion": null
+      }
+    },
+    "D.applyAML": {
+      "fault-0": {
+        "aml": "<Item type='Part' action='get'><id>X</id></Item>",
+        "requests": [],
+        "actions": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 0,
+          "faultstring": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><id>X</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type Part found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type Part found.]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "No items of type Part found.",
+          "message": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><id>X</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type Part found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type Part found.]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        }
+      },
+      "fault-999": {
+        "aml": "<Item type='Part' action='get'><id>X</id></Item>",
+        "requests": [],
+        "actions": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 1,
+          "faultstring": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><id>X</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>SOAP-ENV:Server</faultcode><faultstring><![CDATA[boom & <b>]]></faultstring><detail><af:legacy_detail><![CDATA[boom & <b>]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "boom & <b>",
+          "message": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><id>X</id></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>SOAP-ENV:Server</faultcode><faultstring><![CDATA[boom & <b>]]></faultstring><detail><af:legacy_detail><![CDATA[boom & <b>]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        }
+      },
+      "fault-attr-and-text": {
+        "aml": "<Item type='Part' action='get'><name>a &amp; b</name><desc>text</desc></Item>",
+        "requests": [],
+        "actions": [],
+        "thrown": {
+          "type": "Aras.Tools.SolutionUpgrade.CItemException",
+          "faultcode": 1,
+          "faultstring": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><name>a &amp; b</name><desc>text</desc></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>1</faultcode><faultstring><![CDATA[Plain text fault]]></faultstring><detail><af:legacy_detail><![CDATA[Plain text fault]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "faultdetail": "Plain text fault",
+          "message": "Server error\r\n\r\nRequest: <Item type='Part' action='get'><name>a &amp; b</name><desc>text</desc></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>1</faultcode><faultstring><![CDATA[Plain text fault]]></faultstring><detail><af:legacy_detail><![CDATA[Plain text fault]]></af:legacy_detail></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+        }
+      },
+      "not-a-single-item": {
+        "aml": "<AML><Item type=\"Part\" action=\"get\" /></AML>",
+        "requests": [],
+        "actions": [],
+        "returned": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><Result></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>"
+      },
+      "malformed-request": {
+        "aml": "<Item type='Part' action='get'>",
+        "requests": [],
+        "actions": [],
+        "thrown": {
+          "type": "System.Xml.XmlException",
+          "message": "Unexpected end of file has occurred. The following elements are not closed: Item. Line 1, position 32."
+        }
+      }
+    },
+    "E.logout": {
+      "stub-connection": {
+        "isConnectedBefore": true,
+        "isConnectedAfter": true,
+        "requests": [],
+        "secondLogoutThrows": false
+      },
+      "http-connector-extension-unreachable": {
+        "thrown": null,
+        "isConnectedAfter": true
+      }
+    }
+  }
+}

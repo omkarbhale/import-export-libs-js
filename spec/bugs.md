@@ -20,21 +20,28 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** when the server's major version is outside the engine's window, `CItemHelper.Login()` throws with faultcode `0`, and its text reads `You are trying to use incompatible utility of version Aras.Tools.SolutionUpgrade.ArasVersion with innovator version Aras.Tools.SolutionUpgrade.ArasVersion.`
 - **Why it is a bug:** faultcode `0` means "no items found" everywhere else in the engine, so the refusal can be taken for an empty result. The version type has no text form, so neither version reaches the message.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::Login`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, and 14.35 for the faultcode only: 14.35's text names both versions (`…utility of version 14.35.0.0 with innovator version 15.0.5.77.`).
 
 ## WIRE-054: the version probe crashes when only one of VersionMajor and VersionMinor exists
 
 - **Behaviour:** when the first probe request returns exactly one Variable, the probe throws `System.IndexOutOfRangeException`, even for the Variable that exists, and the error escapes login.
 - **Why it is a bug:** the engine looks the Variables up from the envelope down, but IOM has narrowed a single-item result to that item. A correct engine would read the Variable that exists and report the missing one.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetInnovatorServerVersion`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## WIRE-055: non-ASCII password characters hash as `?`
 
 - **Behaviour:** IOM hashes the ASCII bytes of the password, so each non-ASCII character becomes `?` before the MD5 or SHA-256 digest is taken.
 - **Why it is a bug:** the server receives the digest of a different password, and passwords that differ only in non-ASCII characters are interchangeable. A correct client would hash the UTF-8 bytes.
 - **C# location:** IOM's password hashing, reached from `Aras.Tools.SolutionUpgrade.CItemHelper::Login`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, and 14.35 where the digest is taken: the rehash after `incompatible_hash_use_md5` or `incompatible_hash_use_sha256`, and the legacy header login (the first token request carries the password as given).
+
+## WIRE-056: a cancelled login returns without error and the run goes on with no connection
+
+- **Behaviour:** when the login fault's faultstring contains `System.Threading.Tasks.TaskCanceledException`, which a password login produces when an OAuth request exceeds its 100-second limit, `CItemHelper.Login()` sets its connection to null and returns without error. The host carries on and fails later with an unhandled `System.NullReferenceException` (`Object reference not set to an instance of an object.`). No version probe and no logoff are sent.
+- **Why it is a bug:** a timed-out login is reported as a completed one. The check appears meant for an interactive browser login that the user cancels (IOM 15 has one), which a password login does not have. A correct engine would fail the login with its usual error. The test also matches a server fault that merely quotes the exception name.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::Login` and `Aras.Tools.SolutionUpgrade.CItemHelper::HasCancelledResult`.
+- **Versions:** 14.35.
 
 ## EXP-104: the ItemType auto-generated relationship removal acts on a copy
 
