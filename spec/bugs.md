@@ -237,3 +237,24 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** a truncated file looks like an export result. A correct engine would serialize before writing, or delete the file on failure.
 - **C# location:** `Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSaveWithSettings`.
 - **Versions:** 14.0.7.
+
+## IMP-111: a DiscussionTemplate relationship is rewritten only the first time its id is checked
+
+- **Behaviour:** `CheckRelationshipItems` converts an existing DiscussionTemplate relationship that has nested items to `edit`, and its nested `add` items to `merge` (or `edit`), only when its existence request is a cache miss. A later relationship element with the same `id` in the run is left as it is and is not queued.
+- **Why it is a bug:** the cache is keyed by the request, so it records that the template exists, and the rewrite is tied to that first request. A correct engine would rewrite each element.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::CheckRelationshipItems`.
+- **Versions:** 14.0.7.
+
+## IMP-131: the property check compares the element name with itself and never fires
+
+- **Behaviour:** `CheckPropertiesAndRelationshipTypes` runs its property check only for a child element named `Property`, and then looks for a property named `Property`. The properties of an item are never checked against its ItemType.
+- **Why it is a bug:** it should look up the name of each property element in the ItemType's properties. The request for the properties is made and never used.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::CheckPropertiesAndRelationshipTypes`.
+- **Versions:** 14.0.7.
+
+## IMP-180: the detail texts the checks attach to a fault never reach the error
+
+- **Behaviour:** the type-definition lookup and the RelationshipType and grid checks set `faultdetail` on a not-found fault, but `RecurseCheck` builds its error from the exception's `Message`, which does not change, so the intended texts (`Bad Grid …`, `Bad RelationshipType …`) are never shown. The type-definition text also names `System.Xml.XmlAttribute` instead of the type.
+- **Why it is a bug:** the detail was meant to say which reference failed, and what is shown is the raw request and response.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::RecurseCheck` and `Aras.Tools.SolutionUpgrade.CItemHelper::GetTypeAmlInner`.
+- **Versions:** 14.0.7.
