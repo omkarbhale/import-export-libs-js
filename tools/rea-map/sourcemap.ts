@@ -30,6 +30,8 @@ export interface ReachableSet {
   generator: { rea: string; ilspycmd: string };
   /** The host executables whose references seeded the walk. */
   hosts: { file: string; sha256: string }[];
+  /** Library entry points (`Type::Method`) that seeded the walk besides the hosts; absent when there were none. */
+  entries?: string[];
   methods: ReachableMethod[];
 }
 

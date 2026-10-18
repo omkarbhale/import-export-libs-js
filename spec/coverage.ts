@@ -69,6 +69,7 @@ interface SourceMap {
 }
 
 interface ReachableSet extends Identity {
+  entries?: string[];
   methods: { fullName: string; signature: string; lock: object }[];
 }
 
@@ -105,6 +106,10 @@ export function checkCoverage(input: CoverageInput): string[] {
     const set = file.data as ReachableSet;
     if (file.path !== `spec/reachable/${set.engine}.json`) problems.push(`${file.path} holds engine ${set.engine}`);
     reachableSets.set(set.engine, set);
+    for (const entry of set.entries ?? []) {
+      const member = `::${entry.split("::")[1]}`;
+      if (!set.methods.some((m) => m.fullName.endsWith(member))) problems.push(`${file.path}: entry ${entry} reaches no method`);
+    }
   }
 
   const definitions = input.areaDocs.flatMap(parseRules);

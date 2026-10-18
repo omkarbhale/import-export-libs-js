@@ -23,7 +23,19 @@ npm run rea-map -- build 14.0.7 \
   --host <toolset>/ConsoleUpgrade/ConsoleUpgrade.exe
 ```
 
+14.35 also needs a library entry, because none of its hosts calls DB patch application:
+
+```sh
+npm run rea-map -- build 14.35 \
+  --dll oracle/native/14.35/Libs.dll \
+  --host <toolset>/Import/import.exe \
+  --host <toolset>/Export/export.exe \
+  --host <toolset>/ConsoleUpgrade/ConsoleUpgrade.exe \
+  --entry 'IImportExportManager::ApplyDBUpdateManifest'
+```
+
 - `--dll` is the build. `oracle/native/<engine>/` vendors only each toolset's `Import/` folder (see `oracle/README.md`), so the `Export/` and `ConsoleUpgrade/` hosts still come from the captain's machine (WSL: `/mnt/c/Users/omkarb/Desktop/ImportExport/23/` for 14.0.7, `…/12/` for 12.0, `…/Delete me/PackageImportExportUtilities35/` for 14.35). The coverage test fails if the build's sha256 differs from the vendored `Libs.dll`.
+- `--entry` names a library method, `Type::Method` (the type with or without its namespace), as an extra root; it may be repeated. It is a scoped library API, not a host reference: it exists for an operation in scope that no shipped host calls. 14.35's `ConsoleUpgrade.exe` reaches only `ProcessExport`, `ProcessImport` and `ProcessExportImport`, so without `--entry 'IImportExportManager::ApplyDBUpdateManifest'` the DB patch application (and `ValidateRootUser`) would be missing from the set and the `DBP-` rules would not be checked. Every overload of the named method is rooted, and an unknown or ambiguous name fails the build. An interface member resolves, as in a host's interface call, to the implementations of the types the walk instantiates; the entry method itself has no body to list. The entries are recorded in `entries` in the reachable set, and the coverage test fails if one reaches no method.
 - `--ref` is the folder ILSpy resolves references from (IOM and friends). It defaults to the DLL's folder.
 - `--host` names an executable whose references to `Libs` seed the walk. Use the three hosts of the import, export and language-pack operations: `import.exe`, `export.exe` and `ConsoleUpgrade.exe`, the language-pack host. `PackageDefinition.exe` is a separate tool and stays out.
 
@@ -31,7 +43,7 @@ Steps:
 
 1. **Decompile.** `ilspycmd -p` writes the project into `.decomp/<engine>/`, and `ilspycmd -genpdb` writes a portable PDB into `.decomp/.work/<engine>/`. The PDB embeds the same text with one header line, which the tool checks file by file, so its sequence points give exact line numbers in the project.
 2. **Inventory.** `rea inspect-managed-members` gives identity, digests and call edges. A small ECMA-335 reader (`metadata.ts`, `names.ts`) adds what REA leaves out: nested type parents, type names behind references, and generic signatures. Method names (`Outer/Inner::Member`) and signatures do not depend on tokens, so they match across builds.
-3. **Reachability** (`reachability.ts`). The roots are the host executables' member references into `Libs`, and the types they construct. The walk follows `call`, `callvirt`, `newobj` and `ldftn` edges, and also:
+3. **Reachability** (`reachability.ts`). The roots are the host executables' member references into `Libs`, the types they construct, and any `--entry` methods. The walk follows `call`, `callvirt`, `newobj` and `ldftn` edges, and also:
    - dispatches virtual and interface calls, by name and signature, to the types it has seen instantiated;
    - runs a type's static constructor when the type is touched;
    - marks every virtual method of a touched compiler-generated type (async and iterator state machines, which the runtime drives), and framework overrides of instantiated types.

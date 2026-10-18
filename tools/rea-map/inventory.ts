@@ -142,3 +142,24 @@ export function hostRoots(host: Metadata, inventory: Inventory): Root[] {
   });
   return roots;
 }
+
+/**
+ * Roots from library entry points named `Type::Method` (the type with or
+ * without its namespace): every method of that name on the type. A scoped
+ * library API that no host executable calls, so the host walk would miss it.
+ * An interface member resolves, in the walk, to the implementations of the
+ * types it instantiates.
+ */
+export function entryRoots(inventory: Pick<Inventory, "methods">, entries: readonly string[]): Root[] {
+  return entries.flatMap((entry) => {
+    const [type, name, ...extra] = entry.split("::");
+    if (!type || !name || extra.length > 0) throw new Error(`entry ${entry} is not Type::Method`);
+    const found = inventory.methods.filter(
+      (m) => m.name === name && (m.declaringType === type || m.declaringType.endsWith(`.${type}`) || m.declaringType.endsWith(`/${type}`)),
+    );
+    if (found.length === 0) throw new Error(`entry ${entry}: the build has no such method`);
+    const types = new Set(found.map((m) => m.declaringType));
+    if (types.size > 1) throw new Error(`entry ${entry} is ambiguous: ${[...types].sort().join(", ")}`);
+    return found.map((m): Root => ({ token: m.token }));
+  });
+}

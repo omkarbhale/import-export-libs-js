@@ -147,6 +147,16 @@ describe("spec coverage", () => {
     expect(problems.some((p) => p.startsWith("spec/reachable/x.json: must have required property"))).toBe(true);
   });
 
+  it("fails on a library entry point that reaches no method", () => {
+    const [set] = reachableOf({ builds: [build([mapped()])] });
+    const withEntries = (entries: string[]) => [{ path: "spec/reachable/14.0.7.json", data: { ...(set?.data as object), entries } }];
+    expect(checkCoverage(input({ reachable: withEntries(["ICItemHelper::applyAML"]) }))).toEqual([]);
+    expect(checkCoverage(input({ reachable: withEntries(["IManager::Apply"]) }))).toEqual([
+      "spec/reachable/14.0.7.json: entry IManager::Apply reaches no method",
+    ]);
+    expect(checkCoverage(input({ reachable: withEntries([]) })).some((p) => p.includes("/entries"))).toBe(true);
+  });
+
   it("fails on a mapped symbol whose file is missing", () => {
     expect(checkCoverage(input({ srcFiles: [] }))).toEqual([
       "[14.0.7] Aras.Tools.SolutionUpgrade.CItemHelper::applyAML maps to src/import/apply.ts#applyAml, but src/import/apply.ts does not exist",

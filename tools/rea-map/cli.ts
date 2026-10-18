@@ -4,7 +4,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { ENGINE_ASSEMBLY_VERSIONS, isEngine } from "../../src/engines.js";
-import { buildInventory, hostRoots, type ReaMembers } from "./inventory.js";
+import { buildInventory, entryRoots, hostRoots, type ReaMembers } from "./inventory.js";
 import { readAssembly, readPortablePdb } from "./metadata.js";
 import { embeddedSources, methodLines } from "./pdb.js";
 import { reachable } from "./reachability.js";
@@ -16,12 +16,13 @@ const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const SOURCE_MAP = join(ROOT, "spec", "source-map.json");
 
 const USAGE = `Usage:
-  npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe> [--host <exe>...] [--ref <dir>]
+  npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe> [--host <exe>...] [--entry <Type::Method>...] [--ref <dir>]
   npm run rea-map -- diff <old Libs.dll> <new Libs.dll>
 
 build  decompiles the DLL into .decomp/<engine>/, walks the methods its hosts
-       can reach, locks each with REA, writes spec/reachable/<engine>.json and
-       merges the build into spec/source-map.json (new methods as unmapped).
+       can reach (plus the library entry points named by --entry), locks each
+       with REA, writes spec/reachable/<engine>.json and merges the build into
+       spec/source-map.json (new methods as unmapped).
 diff   lists the methods of the old build, already in spec/source-map.json, whose
        locks break in the new build, and the rule ids to re-verify.`;
 
@@ -29,7 +30,7 @@ const sha256File = (path: string) => createHash("sha256").update(readFileSync(pa
 const writeJson = (path: string, value: unknown) => writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
 const lines = (text: string) => text.replace(/^﻿/, "").split(/\r?\n/);
 
-function build(engine: string, dllArg: string, hostArgs: string[], refArg: string | undefined): void {
+function build(engine: string, dllArg: string, hostArgs: string[], entries: string[], refArg: string | undefined): void {
   if (!isEngine(engine)) throw new Error(`unknown engine ${engine}; expected 12.0, 14.0.7 or 14.35`);
   if (hostArgs.length === 0) throw new Error("at least one --host executable is required to seed the walk");
   const dll = resolve(dllArg);
@@ -54,7 +55,8 @@ function build(engine: string, dllArg: string, hostArgs: string[], refArg: strin
     throw new Error(`${dll} is Libs ${inventory.assemblyVersion}; engine ${engine} is ${ENGINE_ASSEMBLY_VERSIONS[engine]}`);
   }
 
-  const roots = hostArgs.flatMap((host) => hostRoots(readAssembly(readFileSync(resolve(host))), inventory));
+  const hostSeeds = hostArgs.flatMap((host) => hostRoots(readAssembly(readFileSync(resolve(host))), inventory));
+  const roots = [...hostSeeds, ...entryRoots(inventory, entries)];
   const seen = reachable(inventory.graph, roots);
   const methods = inventory.methods.filter((m) => seen.has(m.token) && m.hasBody);
   const missingIl = methods.filter((m) => !m.ilSha256 || !m.bodySha256);
@@ -132,6 +134,7 @@ function build(engine: string, dllArg: string, hostArgs: string[], refArg: strin
     mvid: inventory.mvid,
     generator: { rea: REA_VERSION, ilspycmd: ILSPY_VERSION },
     hosts: hostArgs.map((host) => ({ file: basename(host), sha256: sha256File(resolve(host)) })),
+    ...(entries.length > 0 ? { entries } : {}),
     methods: methods
       .map((m): ReachableMethod => {
         const lock = locked.get(m.token);
@@ -158,7 +161,7 @@ function build(engine: string, dllArg: string, hostArgs: string[], refArg: strin
   const report = mergeBuild(map, set);
   writeJson(SOURCE_MAP, map);
 
-  console.log(`${engine}: ${set.methods.length} reachable methods (${decomp.size} bound to C#) from ${roots.length} host references`);
+  console.log(`${engine}: ${set.methods.length} reachable methods (${decomp.size} bound to C#) from ${hostSeeds.length} host references and ${entries.length} entry points`);
   console.log(`source-map.json: ${report.added.length} added as unmapped, ${report.removed.length} removed, ${report.relocked.length} relocked`);
   for (const name of report.relocked) console.log(`  relocked (back to unmapped): ${name}`);
   for (const name of report.removed) console.log(`  removed: ${name}`);
@@ -195,6 +198,7 @@ function main(argv: string[]): number {
     options: {
       dll: { type: "string" },
       host: { type: "string", multiple: true },
+      entry: { type: "string", multiple: true },
       ref: { type: "string" },
       help: { type: "boolean", short: "h" },
     },
@@ -205,7 +209,7 @@ function main(argv: string[]): number {
     return values.help ? 0 : 64;
   }
   if (command === "build" && rest.length === 1 && values.dll) {
-    build(rest[0] as string, values.dll, values.host ?? [], values.ref);
+    build(rest[0] as string, values.dll, values.host ?? [], values.entry ?? [], values.ref);
     return 0;
   }
   if (command === "diff" && rest.length === 2) {
