@@ -1,0 +1,40 @@
+{
+  "id": "lang-star-not-installed",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages *",
+    "Languages not installed"
+  ],
+  "title": "Languages = * over a package that uses a language the server lacks",
+  "exercises": "`*` expands to en and de, and the installed check refuses de.",
+  "rules": [
+    "IMP-620",
+    "IMP-621"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGSTARDE"
+      ],
+      "options": {
+        "languages": [
+          "*"
+        ]
+      },
+      "expect": "refused",
+      "result": {
+        "hostExit": 2,
+        "calls": 8,
+        "returned": null,
+        "error": "Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: de.\r\nPlease, install missing languages or remove them from import package before proceeding.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ThrowIfNoSelectedLanguagesInDatabase(String[] languages)\r\n   at LibsJsOracle.Host.Run(HostRequest r)",
+        "created": []
+      }
+    }
+  ],
+  "deleted": []
+}

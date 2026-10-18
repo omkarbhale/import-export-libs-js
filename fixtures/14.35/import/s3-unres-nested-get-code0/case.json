@@ -1,0 +1,45 @@
+{
+  "id": "s3-unres-nested-get-code0",
+  "engine": "14.35",
+  "catalogue": [
+    "S3"
+  ],
+  "title": "A nested get that finds nothing, under an unlisted parent",
+  "exercises": "CheckGetItems records code 0 (logged only, nothing is rewritten); the item is imported as it is, and the server then rejects the nested get, which fails the package.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-UNRES0"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 20,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "F4B290ED98AE46778CA92DB5A5894B34"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "FDFD2B84BCCA4D6F9E0C161D64A7601C"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "FDFD2B84BCCA4D6F9E0C161D64A7601C"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "F4B290ED98AE46778CA92DB5A5894B34"
+    }
+  ]
+}

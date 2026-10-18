@@ -1,0 +1,48 @@
+{
+  "engine": "14.35",
+  "command": "import",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:08:50.554Z",
+  "finishedAt": "2026-10-18T22:08:52.238Z",
+  "hostExit": 2,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 6,
+    "messages": 0,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 0,
+    "result": null,
+    "error": "System.AggregateException: One or more errors occurred. ---> System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.\r\n   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseRootLevelWhitespace()\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.IOWrapper.XmlDocumentLoad(String path)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.<>c__DisplayClass5_0.<ExtractLanguageCodesFromPackages>b__0(String path)\r\n   at System.Threading.Tasks.Parallel.<>c__DisplayClass17_0`1.<ForWorker>b__1()\r\n   at System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)\r\n   at System.Threading.Tasks.Task.<>c__DisplayClass176_0.<ExecuteSelfReplicating>b__0(Object <p0>)\r\n   --- End of inner exception stack trace ---\r\n   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)\r\n   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)\r\n   at System.Threading.Tasks.Parallel.ForWorker[TLocal](Int32 fromInclusive, Int32 toExclusive, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Func`4 bodyWithLocal, Func`1 localInit, Action`1 localFinally)\r\n   at System.Threading.Tasks.Parallel.ForEachWorker[TSource,TLocal](IEnumerable`1 source, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Action`3 bodyWithStateAndIndex, Func`4 bodyWithStateAndLocal, Func`5 bodyWithEverything, Func`1 localInit, Action`1 localFinally)\r\n   at System.Threading.Tasks.Parallel.ForEach[TSource](IEnumerable`1 source, Action`1 body)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.ExtractLanguageCodesFromPackages(IEnumerable`1 packages)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager..ctor(ISolutionUpgradeContext context, IMessagesFactory messagesFactory, ICItemHelper itemHelper)\r\n   at LibsJsOracle.Host.Run(HostRequest r)\r\n---> (Inner Exception #0) System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.\r\n   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseRootLevelWhitespace()\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.IOWrapper.XmlDocumentLoad(String path)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.<>c__DisplayClass5_0.<ExtractLanguageCodesFromPackages>b__0(String path)\r\n   at System.Threading.Tasks.Parallel.<>c__DisplayClass17_0`1.<ForWorker>b__1()\r\n   at System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)\r\n   at System.Threading.Tasks.Task.<>c__DisplayClass176_0.<ExecuteSelfReplicating>b__0(Object <p0>)<---\r\n"
+  },
+  "cleanup": {
+    "created": [],
+    "deleted": [],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

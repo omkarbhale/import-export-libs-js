@@ -1,0 +1,7 @@
+{"event":10,"seq":1,"thread":16,"ticks":816888322268,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":816888843343,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-DELAYPROP","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":816889182350,"channel":"status","text":"Item 1 of 2: ItemType - LIBSJS-SCRATCH-DELAY_X","answer":null}
+{"event":26,"seq":4,"thread":16,"ticks":816895907450,"channel":"status","text":"Item 2 of 2: ItemType - LIBSJS-SCRATCH-DELAY_Y","answer":null}
+{"event":31,"seq":5,"thread":16,"ticks":816900773211,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":33,"seq":6,"thread":16,"ticks":816906048491,"channel":"status","text":"completed","answer":null}
+{"event":38,"seq":7,"thread":16,"ticks":816906821758,"channel":"status","text":"completed","answer":null}

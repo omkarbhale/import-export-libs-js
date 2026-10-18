@@ -1,0 +1,8 @@
+﻿<AML>
+ <Item type="Sequence" id="67CBD9B47C02D5104BC5C97C25A2483E" action="add">
+  <initial_value>100</initial_value>
+  <step>1</step>
+  <suffix>-001</suffix>
+  <name>LIBSJS-SCRATCH-Seq_1</name>
+ </Item>
+</AML>

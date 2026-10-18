@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-LANGAPOS" path="LIBSJS-SCRATCH-LANGAPOS\Import" />
+</imports>

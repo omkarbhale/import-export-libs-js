@@ -1,0 +1,37 @@
+{"event":11,"seq":1,"thread":16,"ticks":808349003195,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":808349879931,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-BASE","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":808350018529,"channel":"status","text":"Item 1 of 19: List - LIBSJS-SCRATCH-List_1","answer":null}
+{"event":20,"seq":4,"thread":16,"ticks":808350718337,"channel":"status","text":"Item 2 of 19: Sequence - LIBSJS-SCRATCH-Seq_1","answer":null}
+{"event":26,"seq":5,"thread":16,"ticks":808351358261,"channel":"status","text":"Item 3 of 19: Variable - LIBSJS-SCRATCH-Var_1","answer":null}
+{"event":32,"seq":6,"thread":16,"ticks":808352037864,"channel":"status","text":"Item 4 of 19: Identity - LIBSJS-SCRATCH-Identity_1","answer":null}
+{"event":38,"seq":7,"thread":16,"ticks":808352739128,"channel":"status","text":"Post actions","answer":null}
+{"event":41,"seq":8,"thread":16,"ticks":808353058147,"channel":"status","text":"Item 5 of 19: Permission - LIBSJS-SCRATCH-Perm_1","answer":null}
+{"event":47,"seq":9,"thread":16,"ticks":808353800286,"channel":"status","text":"Item 6 of 19: Method - LIBSJS-SCRATCH-Method_1","answer":null}
+{"event":54,"seq":10,"thread":16,"ticks":808354769638,"channel":"status","text":"Item 7 of 19: Action - LIBSJS-SCRATCH-Action_1","answer":null}
+{"event":60,"seq":11,"thread":16,"ticks":808355548558,"channel":"status","text":"Item 8 of 19: Report - LIBSJS-SCRATCH-Report_1","answer":null}
+{"event":66,"seq":12,"thread":16,"ticks":808356236606,"channel":"status","text":"Item 9 of 19: Form - LIBSJS-SCRATCH-Form_1","answer":null}
+{"event":72,"seq":13,"thread":16,"ticks":808356991411,"channel":"status","text":"Item 10 of 19: Workflow Map - LIBSJS-SCRATCH-WFM_1","answer":null}
+{"event":79,"seq":14,"thread":16,"ticks":808357958838,"channel":"status","text":"Item 11 of 19: Life Cycle Map - LIBSJS-SCRATCH-LCM_1","answer":null}
+{"event":85,"seq":15,"thread":16,"ticks":808358710212,"channel":"status","text":"Item 12 of 19: Grid - LIBSJS-SCRATCH-Grid_1","answer":null}
+{"event":91,"seq":16,"thread":16,"ticks":808359426014,"channel":"status","text":"Item 13 of 19: ItemType - LIBSJS-SCRATCH-IT_A","answer":null}
+{"event":97,"seq":17,"thread":16,"ticks":808360162616,"channel":"status","text":"Item 14 of 19: ItemType - LIBSJS-SCRATCH-IT_V","answer":null}
+{"event":100,"seq":18,"thread":16,"ticks":808360466311,"channel":"status","text":"Item 15 of 19: ItemType - LIBSJS-SCRATCH-IT_P","answer":null}
+{"event":103,"seq":19,"thread":16,"ticks":808360771966,"channel":"status","text":"Item 16 of 19: RelationshipType - LIBSJS-SCRATCH-REL_A","answer":null}
+{"event":109,"seq":20,"thread":16,"ticks":808361476497,"channel":"status","text":"Item 17 of 19: RelationshipType - LIBSJS-SCRATCH-REL_V","answer":null}
+{"event":112,"seq":21,"thread":16,"ticks":808361805059,"channel":"status","text":"Item 18 of 19: RelationshipType - LIBSJS-SCRATCH-REL_B","answer":null}
+{"event":115,"seq":22,"thread":16,"ticks":808362054737,"channel":"status","text":"Post actions","answer":null}
+{"event":118,"seq":23,"thread":16,"ticks":808362313145,"channel":"status","text":"Post actions","answer":null}
+{"event":120,"seq":24,"thread":16,"ticks":808362468874,"channel":"status","text":"Post actions","answer":null}
+{"event":122,"seq":25,"thread":16,"ticks":808362618967,"channel":"status","text":"Post actions","answer":null}
+{"event":124,"seq":26,"thread":16,"ticks":808362743856,"channel":"status","text":"Post actions","answer":null}
+{"event":126,"seq":27,"thread":16,"ticks":808362860241,"channel":"status","text":"Post actions","answer":null}
+{"event":128,"seq":28,"thread":16,"ticks":808363020725,"channel":"status","text":"Post actions","answer":null}
+{"event":130,"seq":29,"thread":16,"ticks":808363151067,"channel":"status","text":"Post actions","answer":null}
+{"event":132,"seq":30,"thread":16,"ticks":808363285073,"channel":"status","text":"Post actions","answer":null}
+{"event":134,"seq":31,"thread":16,"ticks":808363398818,"channel":"status","text":"Post actions","answer":null}
+{"event":136,"seq":32,"thread":16,"ticks":808363526765,"channel":"status","text":"Post actions","answer":null}
+{"event":138,"seq":33,"thread":16,"ticks":808363659005,"channel":"status","text":"Post actions","answer":null}
+{"event":140,"seq":34,"thread":16,"ticks":808363771599,"channel":"status","text":"Item 19 of 19: UserMessage - LIBSJS-SCRATCH-Msg_1","answer":null}
+{"event":146,"seq":35,"thread":16,"ticks":808364441871,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":147,"seq":36,"thread":16,"ticks":808364442516,"channel":"status","text":"completed","answer":null}
+{"event":152,"seq":37,"thread":16,"ticks":808365054512,"channel":"status","text":"completed","answer":null}

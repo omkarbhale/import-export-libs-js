@@ -1,0 +1,217 @@
+{
+  "id": "s0-mini-release-upsert",
+  "engine": "14.35",
+  "catalogue": [
+    "S0",
+    "DatabaseUpgrade upsert"
+  ],
+  "title": "The same release run twice, then a new release",
+  "exercises": "WriteReleaseData's upsert per (release, name, type 1): the second run finds the row, checks its lock and edits it; a third run with another release adds a row and edits the is_latest flag of the others. Merge is on, so the re-imports are edits.",
+  "steps": [
+    {
+      "name": "release R1, description D1",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "merge": true,
+        "release": "LIBSJS-SCRATCH-R1",
+        "description": "first"
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 58,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "41E427AB7EE8497DB350B80E9CF847BA"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "EAFBCD27F39649678FBA42425283C097"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "621CDCF27E8F42A7AC566FEF4C89B7DD"
+          },
+          {
+            "type": "PackageElement",
+            "id": "4710DC7D83C140EA94834CBE8B6B5D32"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "FFDACAA3E6924B57A67F5131AA42A9CA"
+          },
+          {
+            "type": "Sequence",
+            "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "9B12253F11454B04BE9BEA050CFC765D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D0FAC1615F0148088A0D9B4601A3D8EB"
+          },
+          {
+            "type": "Variable",
+            "id": "C64257819194D0C9B4C3BDF82D642D78"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D622C6877B5A4CB78EF7B39C34CDAB8A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "3A8837E47DB743FA8B9986DB81484FE7"
+          },
+          {
+            "type": "Variable",
+            "id": "6E6B61827EA6F5DB6F735218645E60F3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "7446C65627A0430EA0ECBC1D7743C64E"
+          },
+          {
+            "type": "Variable",
+            "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "335EE81A43AF48E5B6EE60BAC458AA48"
+          }
+        ]
+      }
+    },
+    {
+      "name": "release R1, description D2",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "merge": true,
+        "release": "LIBSJS-SCRATCH-R1",
+        "description": "second"
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 49,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    },
+    {
+      "name": "release R2",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "merge": true,
+        "release": "LIBSJS-SCRATCH-R2",
+        "description": "third"
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 48,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "594C3ECD75B547DEA27BC451A57F42C7"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "DatabaseUpgrade",
+      "id": "594C3ECD75B547DEA27BC451A57F42C7"
+    },
+    {
+      "type": "PackageElement",
+      "id": "335EE81A43AF48E5B6EE60BAC458AA48"
+    },
+    {
+      "type": "Variable",
+      "id": "DFF8CFAAEDCFDEAAB1DDB1DAB96BC23D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "7446C65627A0430EA0ECBC1D7743C64E"
+    },
+    {
+      "type": "Variable",
+      "id": "6E6B61827EA6F5DB6F735218645E60F3"
+    },
+    {
+      "type": "PackageElement",
+      "id": "3A8837E47DB743FA8B9986DB81484FE7"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "D622C6877B5A4CB78EF7B39C34CDAB8A"
+    },
+    {
+      "type": "Variable",
+      "id": "C64257819194D0C9B4C3BDF82D642D78"
+    },
+    {
+      "type": "PackageElement",
+      "id": "D0FAC1615F0148088A0D9B4601A3D8EB"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "9B12253F11454B04BE9BEA050CFC765D"
+    },
+    {
+      "type": "Sequence",
+      "id": "39AADEEB61E0B66B7E4EFAC25E18229E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "FFDACAA3E6924B57A67F5131AA42A9CA"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "4710DC7D83C140EA94834CBE8B6B5D32"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "621CDCF27E8F42A7AC566FEF4C89B7DD"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "EAFBCD27F39649678FBA42425283C097"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "41E427AB7EE8497DB350B80E9CF847BA"
+    }
+  ]
+}

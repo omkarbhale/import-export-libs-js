@@ -1,0 +1,46 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215536-14.35-import-966149\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215536-14.35-import-966149\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215536-14.35-import-966149\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: True
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:25:39
+Updating 'LIBSJS-SCRATCH-INST' package to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-INST****
+Processing (add)   id : 4747CF811D4EFD42FA073ACA3A1BF1BE    keyed_name : LIBSJS-SCRATCH-Inst_A1    type : LIBSJS_SCRATCH_IT_A  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215536-14.35-import-966149\input\LIBSJS-SCRATCH-INST\Import\LIBSJS_SCRATCH_IT_A\LIBSJS-SCRATCH-Inst_A1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_IT_A</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 4747CF811D4EFD42FA073ACA3A1BF1BE    keyed_name : LIBSJS-SCRATCH-Inst_A1    type : LIBSJS_SCRATCH_IT_A  
+Adding item into PackageDefinition with id = 4747CF811D4EFD42FA073ACA3A1BF1BE and type = LIBSJS_SCRATCH_IT_A
+Item already exist in packdefinition  id  4747CF811D4EFD42FA073ACA3A1BF1BE type LIBSJS_SCRATCH_IT_A
+Processing (add)   id : CFC67070B8926819B48BC0B108536FF2    keyed_name : LIBSJS-SCRATCH-Inst_V1    type : LIBSJS_SCRATCH_IT_V  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215536-14.35-import-966149\input\LIBSJS-SCRATCH-INST\Import\LIBSJS_SCRATCH_IT_V\LIBSJS-SCRATCH-Inst_V1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_IT_V</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_REL_V</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking for related items
+<Item type='LIBSJS_SCRATCH_IT_A' action='get' levels='0'><id>4747CF811D4EFD42FA073ACA3A1BF1BE</id></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : CFC67070B8926819B48BC0B108536FF2    keyed_name : LIBSJS-SCRATCH-Inst_V1    type : LIBSJS_SCRATCH_IT_V  
+Adding item into PackageDefinition with id = 6BE170C6F48047EF8293899794E583AF and type = LIBSJS_SCRATCH_IT_V
+Getting config_id  of versionable item  id  6BE170C6F48047EF8293899794E583AF type LIBSJS_SCRATCH_IT_V
+Item already exist in packdefinition  id  CFC67070B8926819B48BC0B108536FF2 type LIBSJS_SCRATCH_IT_V
+completed
+Updating 'LIBSJS-SCRATCH-INST' package to success release status
+end of execution : 10/19/2026 03:25:39

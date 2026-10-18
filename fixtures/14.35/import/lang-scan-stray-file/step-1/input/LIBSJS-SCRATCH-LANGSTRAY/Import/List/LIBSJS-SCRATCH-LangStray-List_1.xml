@@ -1,0 +1,19 @@
+﻿<AML>
+ <Item type="List" id="33427E19074290AAD0C4081E69B89BC8" action="add">
+  <name>LIBSJS-SCRATCH-LangStray-List_1</name>
+  <Relationships>
+   <Item type="Value" id="E5365A2426001311A7796C7FABD06C33" action="add">
+    <label xml:lang="en">Value 1 (en)</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LangStray-List_1" type="List">33427E19074290AAD0C4081E69B89BC8</source_id>
+    <value>lang1</value>
+   </Item>
+   <Item type="Value" id="1C749F417D13EDD9FD409FECCB0B748D" action="add">
+    <label xml:lang="en">Value 2 (en)</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-LangStray-List_1" type="List">33427E19074290AAD0C4081E69B89BC8</source_id>
+    <value>lang2</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

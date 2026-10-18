@@ -1,0 +1,110 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:39:05
+Updating 'LIBSJS-SCRATCH-BATCHZERO' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHZERO****
+Processing (add)   id : BC338FE1C8279B43005D1C1FD78D4339    keyed_name : LIBSJS-SCRATCH-BatchZero_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = BC338FE1C8279B43005D1C1FD78D4339 and type = Variable
+Item successfully added in packdefinition  id  BC338FE1C8279B43005D1C1FD78D4339 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0171430
+   Resolve dependencies time: 00:00:00.0689051
+Processing (add)   id : CBAEF42461D7229C4613953564F8FF5D    keyed_name : LIBSJS-SCRATCH-BatchZero_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = CBAEF42461D7229C4613953564F8FF5D and type = Variable
+Item successfully added in packdefinition  id  CBAEF42461D7229C4613953564F8FF5D type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0137824
+   Resolve dependencies time: 00:00:00.0342637
+Processing (add)   id : 6B5D9B8872F614B8765179AB8C5F040C    keyed_name : LIBSJS-SCRATCH-BatchZero_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = 6B5D9B8872F614B8765179AB8C5F040C and type = Variable
+Item successfully added in packdefinition  id  6B5D9B8872F614B8765179AB8C5F040C type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0106726
+   Resolve dependencies time: 00:00:00.0344134
+Processing (add)   id : 7E4454896BAA84B50B939DE15878D1CD    keyed_name : LIBSJS-SCRATCH-BatchZero_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = 7E4454896BAA84B50B939DE15878D1CD and type = Variable
+Item successfully added in packdefinition  id  7E4454896BAA84B50B939DE15878D1CD type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0155018
+   Resolve dependencies time: 00:00:00.0377065
+Processing (add)   id : A91B57844F07C4334FC37BD97AC1A4CD    keyed_name : LIBSJS-SCRATCH-BatchZero_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = A91B57844F07C4334FC37BD97AC1A4CD and type = Variable
+Item successfully added in packdefinition  id  A91B57844F07C4334FC37BD97AC1A4CD type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0216763
+   Resolve dependencies time: 00:00:00.0376775
+Processing (add)   id : BEC8821E6D8D7DF50F9B39AA58ECE107    keyed_name : LIBSJS-SCRATCH-BatchZero_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = BEC8821E6D8D7DF50F9B39AA58ECE107 and type = Variable
+Item successfully added in packdefinition  id  BEC8821E6D8D7DF50F9B39AA58ECE107 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0124615
+   Resolve dependencies time: 00:00:00.0279607
+Processing (add)   id : 808014C3FB4D5E556A1431E5813A8572    keyed_name : LIBSJS-SCRATCH-BatchZero_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220903-14.35-import-a63152\input\LIBSJS-SCRATCH-BATCHZERO\Import\Variable\LIBSJS-SCRATCH-BatchZero_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = 808014C3FB4D5E556A1431E5813A8572 and type = Variable
+Item successfully added in packdefinition  id  808014C3FB4D5E556A1431E5813A8572 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0144364
+   Resolve dependencies time: 00:00:00.0359616
+Try to execute AMLs in AML batch mode...
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0131064
+   Resolve dependencies time: 00:00:00.0000013
+completed
+Updating 'LIBSJS-SCRATCH-BATCHZERO' package to success release status
+end of execution : 10/19/2026 03:39:06

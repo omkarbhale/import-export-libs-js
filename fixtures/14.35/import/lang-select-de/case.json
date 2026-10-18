@@ -1,0 +1,84 @@
+{
+  "id": "lang-select-de",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages one code"
+  ],
+  "title": "Languages = de over a package with en, de and fr labels",
+  "exercises": "The skip set is en and fr (a selection only removes): each item is sent with its de labels only.",
+  "rules": [
+    "IMP-621",
+    "IMP-630",
+    "IMP-631"
+  ],
+  "devLanguages": [
+    "en",
+    "de",
+    "fr"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGDE"
+      ],
+      "options": {
+        "languages": [
+          "de"
+        ]
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 26,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "6D223E699E074DA4A72692EE52D036D0"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1E2478A6BC9541CA82F3ACDC633EB1FD"
+          },
+          {
+            "type": "List",
+            "id": "DFD3660B9570E6FA78309B0D17E1589D"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "6CCA61BBC0824331B7DD3E1F2F39C167"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6F8518D4076B4E8A923E5969B40BC2C8"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "6F8518D4076B4E8A923E5969B40BC2C8"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "6CCA61BBC0824331B7DD3E1F2F39C167"
+    },
+    {
+      "type": "List",
+      "id": "DFD3660B9570E6FA78309B0D17E1589D"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "1E2478A6BC9541CA82F3ACDC633EB1FD"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "6D223E699E074DA4A72692EE52D036D0"
+    }
+  ]
+}

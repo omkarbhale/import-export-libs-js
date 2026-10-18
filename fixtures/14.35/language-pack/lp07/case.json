@@ -1,0 +1,51 @@
+{
+  "case": "lp07",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`Languages` = `*` over a pack that translates `de` and `fr`",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de, fr"
+  },
+  "languages": [
+    "*"
+  ],
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "`*` expands to the languages the generated package uses, `de` and `fr` (never `en`, which the preprocessor leaves out); both are installed, so nothing is deleted.",
+  "rules": [
+    "IMP-620",
+    "IMP-621",
+    "IMP-640"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "8F0A1658B2F348C1A17DB8E70A51E6C4"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "4E36C5BC41814B3BA053942EC0287BD3"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "4E36C5BC41814B3BA053942EC0287BD3"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "8F0A1658B2F348C1A17DB8E70A51E6C4"
+    }
+  ]
+}

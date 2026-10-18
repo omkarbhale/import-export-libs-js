@@ -1,0 +1,115 @@
+{
+  "id": "batch-collect-fallback",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch",
+    "collected errors"
+  ],
+  "title": "A refused batch with collection on",
+  "exercises": "The fallback's failure at the fourth item is collected and the package ends with the items after it dropped (IMP-517, IMP-551).",
+  "rules": [
+    "IMP-517",
+    "IMP-551"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHSRV"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 10
+        },
+        "collectErrors": {
+          "maxCount": 5
+        }
+      },
+      "expect": "returned:1",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "9667D3D06A9443B49B54975C92FFFA48"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1E3A478CAC2545338917795633DA6089"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "303783BBA3974198A6B75F99ADD78BA6"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BA656AA812124C5D9363D5EB85215E5D"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "50F64DF46C7F45BD84934360F67E81B6"
+          },
+          {
+            "type": "Variable",
+            "id": "E85E5A09574812188E8060248C111FE0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "7F363F46336C4BDF90010EC0DF5A73E6"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "7F363F46336C4BDF90010EC0DF5A73E6"
+    },
+    {
+      "type": "Variable",
+      "id": "E85E5A09574812188E8060248C111FE0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "50F64DF46C7F45BD84934360F67E81B6"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "BA656AA812124C5D9363D5EB85215E5D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "303783BBA3974198A6B75F99ADD78BA6"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "1E3A478CAC2545338917795633DA6089"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "9667D3D06A9443B49B54975C92FFFA48"
+    }
+  ]
+}

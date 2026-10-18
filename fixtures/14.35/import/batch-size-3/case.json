@@ -1,0 +1,175 @@
+{
+  "id": "batch-size-3",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "Seven items in batches of three",
+  "exercises": "Items without Relationships are queued and sent in one <AML> when the queue holds three: seven items go out as three requests of 3, 3 and 1 items (the last by the forced flush after the final item), each followed by the registration of its items.",
+  "rules": [
+    "IMP-511",
+    "IMP-513"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHOK"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 3
+        }
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 44,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "64873F14F83D45F9A2334BB3DCF949CB"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "527F8FA20692459ABCA3E1C43C42CF36"
+          },
+          {
+            "type": "Variable",
+            "id": "EC9C96329D100ED9B0BB4B7590302693"
+          },
+          {
+            "type": "Variable",
+            "id": "C2A69A431F0840A38D2E9FC5A7C01ACC"
+          },
+          {
+            "type": "Variable",
+            "id": "A7C806DF304D74743EAB427379553808"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "20BBA3B0281A4A91B52290D643D82FB2"
+          },
+          {
+            "type": "PackageElement",
+            "id": "2288310B90AD44D3B5CD4E22CC5CA18F"
+          },
+          {
+            "type": "PackageElement",
+            "id": "F5350E581B8E438B996AE7A0ABA0D4AC"
+          },
+          {
+            "type": "PackageElement",
+            "id": "483669A8C5214124ACEBC5100D5E010A"
+          },
+          {
+            "type": "Variable",
+            "id": "8888207582506FBFB67F6AB6A472A05B"
+          },
+          {
+            "type": "Variable",
+            "id": "6D9FA121673E93157E5D86A494DA9D05"
+          },
+          {
+            "type": "Variable",
+            "id": "9B930A30C15A0D0A576D9AF813500285"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A94361CCA476470C8A8F8D515AFBCA67"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E6EE62943490437A83283FE11A9D347C"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6EE4736B12F146B5B5447D53BAF1AFAC"
+          },
+          {
+            "type": "Variable",
+            "id": "D6CA50C7258E75AC49C2FE5C51CAAF65"
+          },
+          {
+            "type": "PackageElement",
+            "id": "BC68FAA57AF542FAAF93D0E3E98A2183"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "BC68FAA57AF542FAAF93D0E3E98A2183"
+    },
+    {
+      "type": "Variable",
+      "id": "D6CA50C7258E75AC49C2FE5C51CAAF65"
+    },
+    {
+      "type": "PackageElement",
+      "id": "6EE4736B12F146B5B5447D53BAF1AFAC"
+    },
+    {
+      "type": "PackageElement",
+      "id": "E6EE62943490437A83283FE11A9D347C"
+    },
+    {
+      "type": "PackageElement",
+      "id": "A94361CCA476470C8A8F8D515AFBCA67"
+    },
+    {
+      "type": "Variable",
+      "id": "9B930A30C15A0D0A576D9AF813500285"
+    },
+    {
+      "type": "Variable",
+      "id": "6D9FA121673E93157E5D86A494DA9D05"
+    },
+    {
+      "type": "Variable",
+      "id": "8888207582506FBFB67F6AB6A472A05B"
+    },
+    {
+      "type": "PackageElement",
+      "id": "483669A8C5214124ACEBC5100D5E010A"
+    },
+    {
+      "type": "PackageElement",
+      "id": "F5350E581B8E438B996AE7A0ABA0D4AC"
+    },
+    {
+      "type": "PackageElement",
+      "id": "2288310B90AD44D3B5CD4E22CC5CA18F"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "20BBA3B0281A4A91B52290D643D82FB2"
+    },
+    {
+      "type": "Variable",
+      "id": "A7C806DF304D74743EAB427379553808"
+    },
+    {
+      "type": "Variable",
+      "id": "C2A69A431F0840A38D2E9FC5A7C01ACC"
+    },
+    {
+      "type": "Variable",
+      "id": "EC9C96329D100ED9B0BB4B7590302693"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "527F8FA20692459ABCA3E1C43C42CF36"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "64873F14F83D45F9A2334BB3DCF949CB"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "id": "collect-server-failure",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "collected errors"
+  ],
+  "title": "One item the server refuses, errors collected up to 5",
+  "exercises": "The failure of the fourth item is collected (an error message, the log block), the loop goes on and the last three items are imported; the failed add is registered in the package definition (IMP-544); the package ends failed and the run returns the count, 1.",
+  "rules": [
+    "IMP-541",
+    "IMP-542",
+    "IMP-544",
+    "IMP-545",
+    "IMP-546"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-COLLSRV"
+      ],
+      "options": {
+        "collectErrors": {
+          "maxCount": 5
+        }
+      },
+      "expect": "returned:1",
+      "result": {
+        "hostExit": 0,
+        "calls": 48,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "9828B394E42A43E7ADA7FAFB6B3055F2"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "4758FB88B91B4D399D35FD8E3A479584"
+          },
+          {
+            "type": "Variable",
+            "id": "869121B98673CF8382BB252B0F44B0D9"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "87D2A7F43E804C8B8226E45200FF765B"
+          },
+          {
+            "type": "PackageElement",
+            "id": "747A609F04444DB3A3182FF1B58D8ABB"
+          },
+          {
+            "type": "Variable",
+            "id": "18C5C0CB315799C40E1184280CD8BEC3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "2B19D0CC4CA74B6ABABF55407243ABDD"
+          },
+          {
+            "type": "Variable",
+            "id": "C329C9235B5763279D3C75E23EBF6028"
+          },
+          {
+            "type": "PackageElement",
+            "id": "1DA1CB72187144F2803AE50E22799BEC"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5FEB13A622B147DBA3EE3044A1CCA27C"
+          },
+          {
+            "type": "Variable",
+            "id": "AD33EF5E743449F63FDC6B7DB05C6B23"
+          },
+          {
+            "type": "PackageElement",
+            "id": "AF6A8F97835F4D608EBB008F3D093C15"
+          },
+          {
+            "type": "Variable",
+            "id": "479809B62ACCB26658B591F3A25A9EB8"
+          },
+          {
+            "type": "PackageElement",
+            "id": "319DED3E4F364839ABFAF16224A7FB8A"
+          },
+          {
+            "type": "Variable",
+            "id": "F7E293E47DE805A94819FB94A97F51E6"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8F9F217B6FD340DB805C1DB8787AE6A5"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "8F9F217B6FD340DB805C1DB8787AE6A5"
+    },
+    {
+      "type": "Variable",
+      "id": "F7E293E47DE805A94819FB94A97F51E6"
+    },
+    {
+      "type": "PackageElement",
+      "id": "319DED3E4F364839ABFAF16224A7FB8A"
+    },
+    {
+      "type": "Variable",
+      "id": "479809B62ACCB26658B591F3A25A9EB8"
+    },
+    {
+      "type": "PackageElement",
+      "id": "AF6A8F97835F4D608EBB008F3D093C15"
+    },
+    {
+      "type": "Variable",
+      "id": "AD33EF5E743449F63FDC6B7DB05C6B23"
+    },
+    {
+      "type": "PackageElement",
+      "id": "5FEB13A622B147DBA3EE3044A1CCA27C"
+    },
+    {
+      "type": "PackageElement",
+      "id": "1DA1CB72187144F2803AE50E22799BEC"
+    },
+    {
+      "type": "Variable",
+      "id": "C329C9235B5763279D3C75E23EBF6028"
+    },
+    {
+      "type": "PackageElement",
+      "id": "2B19D0CC4CA74B6ABABF55407243ABDD"
+    },
+    {
+      "type": "Variable",
+      "id": "18C5C0CB315799C40E1184280CD8BEC3"
+    },
+    {
+      "type": "PackageElement",
+      "id": "747A609F04444DB3A3182FF1B58D8ABB"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "87D2A7F43E804C8B8226E45200FF765B"
+    },
+    {
+      "type": "Variable",
+      "id": "869121B98673CF8382BB252B0F44B0D9"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "4758FB88B91B4D399D35FD8E3A479584"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "9828B394E42A43E7ADA7FAFB6B3055F2"
+    }
+  ]
+}

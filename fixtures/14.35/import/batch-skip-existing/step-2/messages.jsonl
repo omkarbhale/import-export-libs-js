@@ -1,0 +1,12 @@
+{"event":11,"seq":1,"thread":16,"ticks":817481882290,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":817482902851,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-BATCHSKP","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":817483050401,"channel":"status","text":"Item 1 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_1","answer":null}
+{"event":17,"seq":4,"thread":16,"ticks":817483321947,"channel":"status","text":"Item 2 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_2","answer":null}
+{"event":19,"seq":5,"thread":16,"ticks":817483468689,"channel":"status","text":"Item 3 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_3","answer":null}
+{"event":21,"seq":6,"thread":16,"ticks":817483615199,"channel":"status","text":"Item 4 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_4","answer":null}
+{"event":23,"seq":7,"thread":16,"ticks":817483744684,"channel":"status","text":"Item 5 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_5","answer":null}
+{"event":25,"seq":8,"thread":16,"ticks":817483888509,"channel":"status","text":"Item 6 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_6","answer":null}
+{"event":27,"seq":9,"thread":16,"ticks":817484023667,"channel":"status","text":"Item 7 of 7: Variable - LIBSJS-SCRATCH-BatchSkp_7","answer":null}
+{"event":30,"seq":10,"thread":16,"ticks":817484342863,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":31,"seq":11,"thread":16,"ticks":817484343821,"channel":"status","text":"completed","answer":null}
+{"event":36,"seq":12,"thread":16,"ticks":817485028098,"channel":"status","text":"completed","answer":null}

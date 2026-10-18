@@ -1,0 +1,77 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:28:18
+Updating 'LIBSJS-SCRATCH-BATCHREL' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHREL****
+Processing (add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\input\LIBSJS-SCRATCH-BATCHREL\Import\Variable\LIBSJS-SCRATCH-Batch_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 58760E04551E59833BC3B0DD0A8C48DC    keyed_name : LIBSJS-SCRATCH-Batch_1    type : Variable  
+Adding item into PackageDefinition with id = 58760E04551E59833BC3B0DD0A8C48DC and type = Variable
+Item successfully added in packdefinition  id  58760E04551E59833BC3B0DD0A8C48DC type Variable
+Processing (add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\input\LIBSJS-SCRATCH-BATCHREL\Import\Variable\LIBSJS-SCRATCH-Batch_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 3172ED4C9B7DC0304F67A4238F7739FA    keyed_name : LIBSJS-SCRATCH-Batch_2    type : Variable  
+Adding item into PackageDefinition with id = 3172ED4C9B7DC0304F67A4238F7739FA and type = Variable
+Item successfully added in packdefinition  id  3172ED4C9B7DC0304F67A4238F7739FA type Variable
+Processing (add)   id : D70E8FEDA51E31A7EC94B73C002AEBC9    keyed_name : LIBSJS-SCRATCH-BATCH_REL    type : RelationshipType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215815-14.35-import-705320\input\LIBSJS-SCRATCH-BATCHREL\Import\RelationshipType\LIBSJS-SCRATCH-BATCH_REL.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>RelationshipType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking RelationshipType's source_id,related_id
+<Item levels='0' action='get' type='ItemType'><id>FBDF7110E44E84DE265C93E6F9B4CFA3</id></Item>
+  was obtained from server
+Updating 'LIBSJS-SCRATCH-BATCHREL' package to failed release status
+end of execution : 10/19/2026 03:28:18
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-BATCHREL' failed with message:
+
+Server error
+
+Request (formatted):
+<Item levels="0" action="get" type="ItemType">
+  <id>FBDF7110E44E84DE265C93E6F9B4CFA3</id>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>0</faultcode>
+      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: 
+<Item levels="0" action="get" type="ItemType"><id>FBDF7110E44E84DE265C93E6F9B4CFA3</id></Item>
+]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope> Recurse check has failed.
+Updating LIBSJS-SCRATCH-BATCHREL to failed release status
+
+		********************

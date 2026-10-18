@@ -1,0 +1,78 @@
+{
+  "id": "man-absent-dependency",
+  "engine": "14.35",
+  "catalogue": [
+    "manifest",
+    "P2"
+  ],
+  "title": "A dependency on a package that exists nowhere",
+  "exercises": "The ordering warning for a dependency that is neither imported nor on the server; the package is imported anyway.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-ABSENTDEP"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 26,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "5FFF1E1CBEF14EE0A41F79CD6F2751B1"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "990B34D02E814F75908B8C82235D593D"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "6D56AFFAA803440394C184FE35639E3B"
+          },
+          {
+            "type": "Variable",
+            "id": "7A8237B13A212728BB97D815613C98E6"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "4242B607909C43B098A3BA57E183C254"
+          },
+          {
+            "type": "PackageElement",
+            "id": "A904083B06364F00A4DD7123CD782F29"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "A904083B06364F00A4DD7123CD782F29"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "4242B607909C43B098A3BA57E183C254"
+    },
+    {
+      "type": "Variable",
+      "id": "7A8237B13A212728BB97D815613C98E6"
+    },
+    {
+      "type": "PackageDependsOn",
+      "id": "6D56AFFAA803440394C184FE35639E3B"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "990B34D02E814F75908B8C82235D593D"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "5FFF1E1CBEF14EE0A41F79CD6F2751B1"
+    }
+  ]
+}

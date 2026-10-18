@@ -1,0 +1,94 @@
+{
+  "id": "batch-fatal-reltype",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "A RelationshipType whose source ItemType does not exist, in batch mode",
+  "exercises": "The fatal check of IMP-160 in batch mode: the queued items are sent by the forced flush of IMP-518, then the package fails.",
+  "rules": [
+    "IMP-518"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHREL"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 3
+        }
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 32,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "FF73648C66254A66B1E130606C35D297"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "F9AF4C9C2B6A41CFB720732E56A8917E"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "61D839F8EF954E98B78CA78DA5DBEF3E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "9928CC2FF15648EAA9DCDEDDB82CE8C9"
+          },
+          {
+            "type": "PackageElement",
+            "id": "6F4A54C1B5BC4A48B3B926497A7D4F7F"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "6F4A54C1B5BC4A48B3B926497A7D4F7F"
+    },
+    {
+      "type": "PackageElement",
+      "id": "9928CC2FF15648EAA9DCDEDDB82CE8C9"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "61D839F8EF954E98B78CA78DA5DBEF3E"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "F9AF4C9C2B6A41CFB720732E56A8917E"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "FF73648C66254A66B1E130606C35D297"
+    }
+  ]
+}

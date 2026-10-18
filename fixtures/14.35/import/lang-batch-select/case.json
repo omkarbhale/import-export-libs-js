@@ -1,0 +1,86 @@
+{
+  "id": "lang-batch-select",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages one code",
+    "AML batch"
+  ],
+  "title": "Languages = de in AML batch mode",
+  "exercises": "The skipped labels are deleted before an item is queued, so the one <AML> holds de labels only.",
+  "rules": [
+    "IMP-632"
+  ],
+  "devLanguages": [
+    "en",
+    "de",
+    "fr"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGBATCH"
+      ],
+      "options": {
+        "languages": [
+          "de"
+        ],
+        "amlBatch": {
+          "maxSize": 2
+        }
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 27,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "C5643B2823754291823432B55CB1A102"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "9C701FD2D3984C17A231F548FA2AADDA"
+          },
+          {
+            "type": "List",
+            "id": "E63EE0981BA0755AC7448D6F89920D71"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "314AF3A87B554FA7AB105336236DA0E3"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E238A9480BCC4099AC4BCFA71DE72052"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "E238A9480BCC4099AC4BCFA71DE72052"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "314AF3A87B554FA7AB105336236DA0E3"
+    },
+    {
+      "type": "List",
+      "id": "E63EE0981BA0755AC7448D6F89920D71"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "9C701FD2D3984C17A231F548FA2AADDA"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "C5643B2823754291823432B55CB1A102"
+    }
+  ]
+}

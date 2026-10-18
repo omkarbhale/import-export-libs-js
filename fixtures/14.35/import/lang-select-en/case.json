@@ -1,0 +1,82 @@
+{
+  "id": "lang-select-en",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages one code"
+  ],
+  "title": "Languages = en over a package with en and de labels",
+  "exercises": "The skip set is de: the constructor checks that en is installed (one Language get), and each item is sent without its de labels.",
+  "rules": [
+    "IMP-621",
+    "IMP-630",
+    "IMP-631"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGEN"
+      ],
+      "options": {
+        "languages": [
+          "en"
+        ]
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 26,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "4A767728B61247599ECA8869A7B34A67"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "2E2E938A8ECE451D825F80942E6BD936"
+          },
+          {
+            "type": "List",
+            "id": "BEFE09BC85FE6275E0379C31519BC445"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "597A0A637B9E4D5DA24E6F0CB3EC340E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "EB24E2D801EB4E7FAC3DDCC446E9BA95"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "EB24E2D801EB4E7FAC3DDCC446E9BA95"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "597A0A637B9E4D5DA24E6F0CB3EC340E"
+    },
+    {
+      "type": "List",
+      "id": "BEFE09BC85FE6275E0379C31519BC445"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "2E2E938A8ECE451D825F80942E6BD936"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "4A767728B61247599ECA8869A7B34A67"
+    }
+  ]
+}

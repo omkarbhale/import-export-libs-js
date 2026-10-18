@@ -1,0 +1,90 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:39:01
+Updating 'LIBSJS-SCRATCH-BATCHOK' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHOK****
+Processing (add)   id : EC9C96329D100ED9B0BB4B7590302693    keyed_name : LIBSJS-SCRATCH-BatchOk_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Processing (add)   id : C2A69A431F0840A38D2E9FC5A7C01ACC    keyed_name : LIBSJS-SCRATCH-BatchOk_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : A7C806DF304D74743EAB427379553808    keyed_name : LIBSJS-SCRATCH-BatchOk_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = EC9C96329D100ED9B0BB4B7590302693 and type = Variable
+Item successfully added in packdefinition  id  EC9C96329D100ED9B0BB4B7590302693 type Variable
+Adding item into PackageDefinition with id = C2A69A431F0840A38D2E9FC5A7C01ACC and type = Variable
+Item successfully added in packdefinition  id  C2A69A431F0840A38D2E9FC5A7C01ACC type Variable
+Adding item into PackageDefinition with id = A7C806DF304D74743EAB427379553808 and type = Variable
+Item successfully added in packdefinition  id  A7C806DF304D74743EAB427379553808 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0237003
+   Resolve dependencies time: 00:00:00.1516407
+Processing (add)   id : 8888207582506FBFB67F6AB6A472A05B    keyed_name : LIBSJS-SCRATCH-BatchOk_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 6D9FA121673E93157E5D86A494DA9D05    keyed_name : LIBSJS-SCRATCH-BatchOk_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Processing (add)   id : 9B930A30C15A0D0A576D9AF813500285    keyed_name : LIBSJS-SCRATCH-BatchOk_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = 8888207582506FBFB67F6AB6A472A05B and type = Variable
+Item successfully added in packdefinition  id  8888207582506FBFB67F6AB6A472A05B type Variable
+Adding item into PackageDefinition with id = 6D9FA121673E93157E5D86A494DA9D05 and type = Variable
+Item successfully added in packdefinition  id  6D9FA121673E93157E5D86A494DA9D05 type Variable
+Adding item into PackageDefinition with id = 9B930A30C15A0D0A576D9AF813500285 and type = Variable
+Item successfully added in packdefinition  id  9B930A30C15A0D0A576D9AF813500285 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0206098
+   Resolve dependencies time: 00:00:00.0942369
+Processing (add)   id : D6CA50C7258E75AC49C2FE5C51CAAF65    keyed_name : LIBSJS-SCRATCH-BatchOk_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220859-14.35-import-ad0cce\input\LIBSJS-SCRATCH-BATCHOK\Import\Variable\LIBSJS-SCRATCH-BatchOk_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Try to execute AMLs in AML batch mode...
+Adding item into PackageDefinition with id = D6CA50C7258E75AC49C2FE5C51CAAF65 and type = Variable
+Item successfully added in packdefinition  id  D6CA50C7258E75AC49C2FE5C51CAAF65 type Variable
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0149677
+   Resolve dependencies time: 00:00:00.0318878
+completed
+Updating 'LIBSJS-SCRATCH-BATCHOK' package to success release status
+end of execution : 10/19/2026 03:39:01

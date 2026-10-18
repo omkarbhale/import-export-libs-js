@@ -1,0 +1,49 @@
+{
+  "engine": "14.35",
+  "command": "lpimport",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "lpimport",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "LPPackage": "LIBSJS-SCRATCH-LP.Dot"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:23:14.964Z",
+  "finishedAt": "2026-10-18T22:23:16.521Z",
+  "hostExit": 2,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 7,
+    "messages": 0,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 0,
+    "result": null,
+    "error": "System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\\Users\\omkarb\\AppData\\Local\\Temp\\LanguagePack_gu3a3hu0.2sw\\Dot\\Import'.\r\n   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)\r\n   at System.IO.FileSystemEnumerableIterator`1.CommonInit()\r\n   at System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)\r\n   at System.IO.Directory.GetFiles(String path, String searchPattern, SearchOption searchOption)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.ExtractLanguageCodesFromPackages(IEnumerable`1 packages)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager..ctor(ISolutionUpgradeContext context, IMessagesFactory messagesFactory, ICItemHelper itemHelper)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  },
+  "cleanup": {
+    "created": [],
+    "deleted": [],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

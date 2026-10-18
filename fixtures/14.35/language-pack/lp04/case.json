@@ -1,0 +1,49 @@
+{
+  "case": "lp04",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`--lp-debug`: the temp package is kept",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": ""
+  },
+  "lpDebug": true,
+  "expect": "success",
+  "exercises": "The same import as lp01 with `LPDebug`: the preprocessor keeps its temp package, which the host copies off the Windows temp folder into `temp-package/`.",
+  "rules": [
+    "LP-030",
+    "LP-031",
+    "LP-032",
+    "LP-034"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "36E1A25524B24420A343B7E07CCD0263"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "C7D6487E15C349B3806C330498527D20"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "C7D6487E15C349B3806C330498527D20"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "36E1A25524B24420A343B7E07CCD0263"
+    }
+  ]
+}

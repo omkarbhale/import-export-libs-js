@@ -1,0 +1,55 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220750-14.35-import-4257a9\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220750-14.35-import-4257a9\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220750-14.35-import-4257a9\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: True
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:37:52
+Updating 'LIBSJS-SCRATCH-DELREFUSED' package to 'inprogress' release status
+       ****Import with merge option LIBSJS-SCRATCH-DELREFUSED****
+Processing (delete)   id : E0C2F2ADDAFF2F4F698B796266BE0F1D    keyed_name : LIBSJS-SCRATCH-DelRefused_State    type : Life Cycle State  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220750-14.35-import-4257a9\input\LIBSJS-SCRATCH-DELREFUSED\Import\Life Cycle State\LIBSJS-SCRATCH-DelRefused_State.xml'
+********** Start of reference checking ************
+************* End of reference checking ************
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Life Cycle State</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-DELREFUSED' package to failed release status
+end of execution : 10/19/2026 03:37:54
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-DELREFUSED' failed with message:
+
+Server error
+
+Request (formatted):
+<Item type="Life Cycle State" id="E0C2F2ADDAFF2F4F698B796266BE0F1D" action="delete" doGetItem="0" />
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.DeleteItem.ItemIsUsed</faultcode>
+      <faultstring><![CDATA[Life Cycle State cannot be deleted. It is used in Life Cycle Transition to_state 7762C3A48F36C97052FBEBD1845E55E2.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Life Cycle State cannot be deleted. It is used in Life Cycle Transition to_state 7762C3A48F36C97052FBEBD1845E55E2.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[ItemMethods: PurgeItemEx2: Life Cycle State cannot be deleted. It is used in Life Cycle Transition.to_state 7762C3A48F36C97052FBEBD1845E55E2]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-DELREFUSED to failed release status
+
+		********************

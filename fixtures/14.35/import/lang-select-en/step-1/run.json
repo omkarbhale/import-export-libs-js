@@ -1,0 +1,93 @@
+{
+  "engine": "14.35",
+  "command": "import",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "import",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Languages": [
+      "en"
+    ]
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:08:37.813Z",
+  "finishedAt": "2026-10-18T22:08:41.019Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 26,
+    "messages": 6,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "ImportSolutions returned 0",
+    "error": null
+  },
+  "cleanup": {
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "4A767728B61247599ECA8869A7B34A67"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "2E2E938A8ECE451D825F80942E6BD936"
+      },
+      {
+        "type": "List",
+        "id": "BEFE09BC85FE6275E0379C31519BC445"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "597A0A637B9E4D5DA24E6F0CB3EC340E"
+      },
+      {
+        "type": "PackageElement",
+        "id": "EB24E2D801EB4E7FAC3DDCC446E9BA95"
+      }
+    ],
+    "deleted": [
+      {
+        "type": "PackageElement",
+        "id": "EB24E2D801EB4E7FAC3DDCC446E9BA95"
+      },
+      {
+        "type": "PackageGroup",
+        "id": "597A0A637B9E4D5DA24E6F0CB3EC340E"
+      },
+      {
+        "type": "List",
+        "id": "BEFE09BC85FE6275E0379C31519BC445"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "2E2E938A8ECE451D825F80942E6BD936"
+      },
+      {
+        "type": "DatabaseUpgrade",
+        "id": "4A767728B61247599ECA8869A7B34A67"
+      }
+    ],
+    "kept": [],
+    "unverified": []
+  },
+  "scrubbed": {}
+}

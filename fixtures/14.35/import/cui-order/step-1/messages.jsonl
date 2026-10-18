@@ -1,0 +1,13 @@
+{"event":10,"seq":1,"thread":16,"ticks":824118301141,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":824119166690,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-CUI","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":824119536979,"channel":"status","text":"Item 1 of 8: List - LIBSJS-SCRATCH-Cui_List_1","answer":null}
+{"event":24,"seq":4,"thread":16,"ticks":824121230652,"channel":"status","text":"Item 2 of 8: Variable - LIBSJS-SCRATCH-Cui_Var_1","answer":null}
+{"event":34,"seq":5,"thread":16,"ticks":824122516196,"channel":"status","text":"Item 3 of 8: Report - LIBSJS-SCRATCH-Cui_Report_1","answer":null}
+{"event":44,"seq":6,"thread":16,"ticks":824124102665,"channel":"status","text":"Item 4 of 8: cui_Control - LIBSJS-SCRATCH-Cui_Control_1","answer":null}
+{"event":54,"seq":7,"thread":16,"ticks":824125514447,"channel":"status","text":"Item 5 of 8: cui_Control - LIBSJS-SCRATCH-Cui_Control_2","answer":null}
+{"event":59,"seq":8,"thread":16,"ticks":824126233053,"channel":"status","text":"Item 6 of 8: cui_WindowSection - LIBSJS-SCRATCH-Cui_WindowSection_1","answer":null}
+{"event":69,"seq":9,"thread":16,"ticks":824127587913,"channel":"status","text":"Item 7 of 8: cui_WindowSection - LIBSJS-SCRATCH-Cui_WindowSection_2","answer":null}
+{"event":74,"seq":10,"thread":16,"ticks":824128173387,"channel":"status","text":"Item 8 of 8: Form - LIBSJS-SCRATCH-Cui_Form_1","answer":null}
+{"event":84,"seq":11,"thread":16,"ticks":824129905644,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":85,"seq":12,"thread":16,"ticks":824129917089,"channel":"status","text":"completed","answer":null}
+{"event":90,"seq":13,"thread":16,"ticks":824130588868,"channel":"status","text":"completed","answer":null}

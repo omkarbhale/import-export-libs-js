@@ -1,0 +1,64 @@
+{
+  "id": "s4-del",
+  "engine": "14.35",
+  "catalogue": [
+    "S4"
+  ],
+  "title": "Delete actions against items an earlier import created",
+  "exercises": "The build.xsl drop bug: List, ItemType and Identity deletes are dropped silently (their types are listed, but only for adds and edits); Form delete (its own bucket), Field delete (any action) and Value delete (an unlisted type, last bucket) are kept. The plan the import prints is the engine's answer to which ones ran.",
+  "steps": [
+    {
+      "name": "import BASE",
+      "packages": [
+        "LIBSJS-SCRATCH-BASE"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 206,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    },
+    {
+      "name": "import DEL",
+      "packages": [
+        "LIBSJS-SCRATCH-DEL"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 21,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "CACC85D19B5A4A01BD7932F540EC5B35"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "5997109D1FFE4B67A78D2575271329F4"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "5997109D1FFE4B67A78D2575271329F4"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "CACC85D19B5A4A01BD7932F540EC5B35"
+    }
+  ]
+}

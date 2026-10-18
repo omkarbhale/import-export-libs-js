@@ -1,0 +1,40 @@
+{
+  "id": "man-unknown-package",
+  "engine": "14.35",
+  "catalogue": [
+    "manifest"
+  ],
+  "title": "A requested package that the manifest does not list",
+  "exercises": "What the ordering does with a name the manifest has no node for.",
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "only": [
+        "LIBSJS-SCRATCH-NOTLISTED"
+      ],
+      "options": {},
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 13,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "D2BD7DA754E1420EBF89B5A4B5AD392C"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "DatabaseUpgrade",
+      "id": "D2BD7DA754E1420EBF89B5A4B5AD392C"
+    }
+  ]
+}

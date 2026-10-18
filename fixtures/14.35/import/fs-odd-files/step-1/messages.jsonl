@@ -1,0 +1,8 @@
+{"event":10,"seq":1,"thread":17,"ticks":811039191010,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":17,"ticks":811039981986,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-FS","answer":null}
+{"event":14,"seq":3,"thread":17,"ticks":811040328441,"channel":"status","text":"Item 1 of 3: Variable - LIBSJS-SCRATCH-Fs_Plain","answer":null}
+{"event":24,"seq":4,"thread":17,"ticks":811042355913,"channel":"status","text":"Item 2 of 3: Variable - LIBSJS-SCRATCH-Fs_Utf16","answer":null}
+{"event":29,"seq":5,"thread":17,"ticks":811042966055,"channel":"status","text":"Item 3 of 3: Variable - LIBSJS-SCRATCH-Fs_Backup","answer":null}
+{"event":34,"seq":6,"thread":17,"ticks":811048225877,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":35,"seq":7,"thread":17,"ticks":811048235029,"channel":"status","text":"completed","answer":null}
+{"event":40,"seq":8,"thread":17,"ticks":811048974646,"channel":"status","text":"completed","answer":null}

@@ -1,4 +1,16 @@
 import {
+  batchGood,
+  batchOneServerFailure,
+  batchBadCheck,
+  batchTwoServerFailures,
+  cuiOrder,
+  delayedDuplicate,
+  delayedPropertyWhere,
+  langOnItemElement,
+  langPackage,
+  strayBrokenFile,
+} from "./import-packages-14.35.js";
+import {
   BASE,
   INST,
   absentDependency,
@@ -31,7 +43,7 @@ import {
   unresRelType,
   type ScratchPackage,
 } from "./import-packages.js";
-import { CASE_ENGINES, type CaseEngine } from "./case-engine.js";
+import { IMPORT_ENGINES, type ImportEngine } from "./case-engine.js";
 import type { HostValue } from "./record.js";
 
 /**
@@ -61,6 +73,12 @@ export interface ImportOptions {
   lockUpgradeRows?: true;
   /** Give these scratch items a new generation before the run (the merge's current-generation path). */
   versionBefore?: { type: string; id: string }[];
+  /** 14.35: the `Languages` selection (`SolutionUpgradeContext.Languages`); unset leaves the property null. */
+  languages?: string[];
+  /** 14.35: `AmlBatchMode` with its `AmlBatchMaxSize`. */
+  amlBatch?: { maxSize: number };
+  /** 14.35: `CollectImportErrors` with its `CollectImportErrorsMaxCount`. */
+  collectErrors?: { maxCount: number };
 }
 
 /** What a step is expected to end with, so a recording that drifts is refused. */
@@ -68,7 +86,11 @@ export type StepOutcome =
   /** `ImportSolutions` returned 0. */
   | "success"
   /** `ImportSolutions` returned 1: the engine logged the error and gave up. */
-  | "engine-failure";
+  | "engine-failure"
+  /** 14.35, collected errors: `ImportSolutions` returned this count of collected errors (IMP-546). */
+  | `returned:${number}`
+  /** The `ImportExportManager` constructor threw (the language scan or check): the host ended with its exception and no return value. */
+  | "refused";
 
 export interface ImportStep {
   name: string;
@@ -79,11 +101,11 @@ export interface ImportStep {
   options?: ImportOptions;
   expect: StepOutcome;
   /** Engines on which the step ends otherwise than `expect` says (a variant rule changes the outcome). */
-  expectOn?: Partial<Record<CaseEngine, StepOutcome>>;
+  expectOn?: Partial<Record<ImportEngine, StepOutcome>>;
 }
 
 /** What a step must end with on an engine. */
-export const expectedOutcome = (step: Pick<ImportStep, "expect" | "expectOn">, engine: CaseEngine): StepOutcome => step.expectOn?.[engine] ?? step.expect;
+export const expectedOutcome = (step: Pick<ImportStep, "expect" | "expectOn">, engine: ImportEngine): StepOutcome => step.expectOn?.[engine] ?? step.expect;
 
 export interface ImportCase {
   /** The folder under fixtures/14.0.7/import/. */
@@ -97,11 +119,17 @@ export interface ImportCase {
   /** What the case does not cover, or what it needs from dev. */
   note?: string;
   /** The engines the case is recorded on (default: every one); a case that pins a variant rule of one engine lists only that engine. */
-  engines?: readonly CaseEngine[];
+  engines?: readonly ImportEngine[];
+  /** How the case reads on an engine whose variant rule changes what it shows, where the default text does not fit. */
+  exercisesOn?: Partial<Record<ImportEngine, string>>;
+  /** The spec rules the case pins (shown in its README). */
+  rules?: string[];
+  /** The `Language` items dev must have for the case to give the same result (default: whatever it had, `en` only). */
+  devLanguages?: readonly string[];
 }
 
 /** The cases an engine records, in list order. */
-export const casesFor = (engine: CaseEngine): ImportCase[] => IMPORT_CASES.filter((c) => (c.engines ?? CASE_ENGINES).includes(engine));
+export const casesFor = (engine: ImportEngine): ImportCase[] => IMPORT_CASES.filter((c) => (c.engines ?? IMPORT_ENGINES).includes(engine));
 
 /** Host parameters for a step's options; anything unset keeps the engine's default. */
 export function hostOptions(options: ImportOptions | undefined, only?: readonly string[]): Record<string, HostValue> {
@@ -115,6 +143,15 @@ export function hostOptions(options: ImportOptions | undefined, only?: readonly 
   if (options?.cancelAfterStatus !== undefined) params.CancelAfterStatus = options.cancelAfterStatus;
   if (options?.lockUpgradeRows === true) params.LockUpgradeRows = true;
   if (options?.versionBefore !== undefined) params.VersionBefore = options.versionBefore.map((v) => `${v.type}\t${v.id}`);
+  if (options?.languages !== undefined) params.Languages = [...options.languages];
+  if (options?.amlBatch !== undefined) {
+    params.AmlBatchMode = true;
+    params.AmlBatchMaxSize = options.amlBatch.maxSize;
+  }
+  if (options?.collectErrors !== undefined) {
+    params.CollectImportErrors = true;
+    params.CollectImportErrorsMaxCount = options.collectErrors.maxCount;
+  }
   if (only !== undefined) params.Packages = [...only];
   return params;
 }
@@ -130,6 +167,9 @@ const step = (name: string, packages: ScratchPackage[], expect: StepOutcome, opt
 const one = (p: ScratchPackage): ScratchPackage[] => [p];
 
 const R1 = { release: "LIBSJS-SCRATCH-R1", description: "scratch import run" } as const;
+
+const batch = (maxSize: number): ImportOptions => ({ amlBatch: { maxSize } });
+const collect = (maxCount: number): ImportOptions => ({ collectErrors: { maxCount } });
 
 export const IMPORT_CASES: ImportCase[] = [
   // ---- Option matrix on the small package (S0 MINI) ----
@@ -202,7 +242,11 @@ export const IMPORT_CASES: ImportCase[] = [
     title: "Cancel pressed after the fourth status message",
     exercises:
       "ImportExportManager.Cancel() during a package: the loop checks the flag before each item, writes the cancelled message and returns normally, so the package is recorded as success and the run returns 0. The host presses Cancel from inside the status message, which is where the GUI's button would act.",
-    steps: [step("import, cancelled", one(mini()), "success", { cancelAfterStatus: 4 })],
+    exercisesOn: {
+      "14.35":
+        "ImportExportManager.Cancel() during a package. 14.35 checks the flag before each item and ends the package with an OperationCanceledException, so the package row is written with status 2 (failed) and the run returns 1, where 14.0.7 recorded the package as a success and returned 0. The host presses Cancel from inside the status message, which is where the GUI's button would act.",
+    },
+    steps: [{ ...step("import, cancelled", one(mini()), "success", { cancelAfterStatus: 4 }), expectOn: { "14.35": "engine-failure" } }],
   },
 
   // ---- S1 BASE ----
@@ -476,5 +520,352 @@ export const IMPORT_CASES: ImportCase[] = [
     title: "A UTF-16LE item file with no byte-order mark",
     exercises: "XmlDocument.Load recognises UTF-16 without a mark when the file starts with '<', so the item is imported; 14.0.7 fails the load.",
     steps: [step("import", one(fsUtf16NoBom()), "success")],
+  },
+
+  // ---- 14.35 only (tickets 53, 55 and 73): recorded by ticket 75 ----
+  // ---- Ticket 53: build.xsl and the delayed resolution ----
+  {
+    id: "cui-order",
+    engines: ["14.35"],
+    catalogue: ["14.35", "build.xsl"],
+    title: "cui_Control and cui_WindowSection items among others",
+    exercises:
+      "build.xsl groups G12a and G12b: the cui_Control adds, then the cui_WindowSection adds, come right after the Report group and before the Form (the plan printed in the log reads List, Variable, Report, the two controls, the two window sections, Form), where 14.0.7 imported them at the end sorted by type, after the Form. The files are in an order that differs from the import order. The window sections read a stock cui_Location (ItemView) and nothing else non-scratch; the controls are root ToolbarControls, because the server refuses a tab control without a tab container.",
+    rules: ["IMP-021", "IMP-022", "IMP-029"],
+    steps: [step("import", one(cuiOrder()), "success")],
+  },
+  {
+    id: "delayed-duplicate",
+    engines: ["14.35"],
+    catalogue: ["14.35", "delayed"],
+    title: "The same delayed entry from two files",
+    exercises:
+      "AddDelayedAmlItem drops an entry equal to a queued one: an Identity with a Member to an Identity that a later file adds is in two files, and with merge on the second is an edit, so the check queues the same entry twice and 14.35 keeps one (14.0.7 ran both).",
+    rules: ["IMP-251"],
+    steps: [step("import", one(delayedDuplicate()), "success", { merge: true })],
+  },
+  {
+    id: "delayed-property-where",
+    engines: ["14.35"],
+    catalogue: ["14.35", "delayed"],
+    title: "A Property with no id but a where, whose data_source resolves later",
+    exercises:
+      "The delayed edit of a Property is addressed by the Property's own where when it has no id (14.0.7 wrote id=''). The where is scoped to the scratch ItemType and the property name, so the edit can touch nothing else.",
+    rules: ["IMP-220"],
+    steps: [step("import", one(delayedPropertyWhere()), "success")],
+  },
+
+  // ---- Ticket 73: language selection (dev has only `en`) ----
+  {
+    id: "lang-unset",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages unset"],
+    title: "A package with en and de labels, Languages unset",
+    exercises: "Languages is null: the constructor still scans the package (no Language request), nothing is deleted, and every label is sent.",
+    rules: ["IMP-610", "IMP-635"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en", "de"], { tag: "LangUnset" })), "success")],
+  },
+  {
+    id: "lang-select-en",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages one code"],
+    title: "Languages = en over a package with en and de labels",
+    exercises: "The skip set is de: the constructor checks that en is installed (one Language get), and each item is sent without its de labels.",
+    rules: ["IMP-621", "IMP-630", "IMP-631"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en", "de"], { tag: "LangEn" })), "success", { languages: ["en"] })],
+  },
+  {
+    id: "lang-star-en-only",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages *"],
+    title: "Languages = * over a package that uses en only",
+    exercises: "`*` is replaced by the languages the packages use (en), the installed check passes, and nothing is deleted.",
+    rules: ["IMP-620", "IMP-621", "IMP-635"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en"], { tag: "LangStarEn" })), "success", { languages: ["*"] })],
+  },
+  {
+    id: "lang-not-installed",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages not installed"],
+    title: "Languages = xx, a code the server lacks",
+    exercises:
+      "ThrowIfNoSelectedLanguagesInDatabase: the Language get is sent twice (once for the check, once to write the message), and the constructor throws a CItemException naming xx. The host ends with that exception; no item is read.",
+    rules: ["IMP-621", "IMP-622"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en"], { tag: "LangXx" })), "refused", { languages: ["xx"] })],
+  },
+  {
+    id: "lang-star-not-installed",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages *", "Languages not installed"],
+    title: "Languages = * over a package that uses a language the server lacks",
+    exercises: "`*` expands to en and de, and the installed check refuses de.",
+    rules: ["IMP-620", "IMP-621"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en", "de"], { tag: "LangStarDe" })), "refused", { languages: ["*"] })],
+  },
+  {
+    id: "lang-scan-stray-file",
+    engines: ["14.35"],
+    catalogue: ["14.35", "scan"],
+    title: "A malformed file in the package folder, Languages unset",
+    exercises:
+      "The constructor scans every *.xml under the package folder, including the folder's own files that the import never reads: an AggregateException wrapping the XmlException ends the constructor, although 14.0.7 imports this package.",
+    rules: ["IMP-610", "IMP-611", "IMP-612"],
+    steps: [step("import", one(langPackage(["en"], { tag: "LangStray", extraFiles: [strayBrokenFile()] })), "refused")],
+  },
+  {
+    id: "lang-apostrophe",
+    engines: ["14.35"],
+    catalogue: ["14.35", "bug"],
+    title: "A used language code with an apostrophe",
+    exercises: "The skip code goes into //node()[@xml:lang='…'] unescaped: the XPath is invalid and the package fails (IMP-633).",
+    rules: ["IMP-633"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langPackage(["en", "d'e"], { tag: "LangApos" })), "engine-failure", { languages: ["en"] })],
+  },
+  {
+    id: "lang-on-item-element",
+    engines: ["14.35"],
+    catalogue: ["14.35", "bug"],
+    title: "A skipped language on the Item element itself",
+    exercises: "The selection also matches the root Item when it carries xml:lang of a skipped language, and removing it leaves an empty document (IMP-634).",
+    rules: ["IMP-634"],
+    devLanguages: ["en"],
+    steps: [step("import", one(langOnItemElement()), "engine-failure", { languages: ["en"] })],
+  },
+
+  // ---- Ticket 73 with de and fr installed ----
+  {
+    id: "lang-select-de",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages one code"],
+    title: "Languages = de over a package with en, de and fr labels",
+    exercises: "The skip set is en and fr (a selection only removes): each item is sent with its de labels only.",
+    rules: ["IMP-621", "IMP-630", "IMP-631"],
+    devLanguages: ["en", "de", "fr"],
+    steps: [step("import", one(langPackage(["en", "de", "fr"], { tag: "LangDe" })), "success", { languages: ["de"] })],
+  },
+  {
+    id: "lang-star-installed",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages *"],
+    title: "Languages = * over a package with en, de and fr labels",
+    exercises: "`*` expands to de, en, fr (sorted by the host's culture); all are installed, so nothing is deleted.",
+    rules: ["IMP-615", "IMP-620", "IMP-621", "IMP-635"],
+    devLanguages: ["en", "de", "fr"],
+    steps: [step("import", one(langPackage(["en", "de", "fr"], { tag: "LangStar" })), "success", { languages: ["*"] })],
+  },
+  {
+    id: "lang-unset-installed",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages unset"],
+    title: "A package with en, de and fr labels, Languages unset, all installed",
+    exercises: "Every label is sent, and the server stores the de and fr translations.",
+    rules: ["IMP-635"],
+    devLanguages: ["en", "de", "fr"],
+    steps: [step("import", one(langPackage(["en", "de", "fr"], { tag: "LangAll" })), "success")],
+  },
+  {
+    id: "lang-two-packages",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages one code"],
+    title: "Two packages cut with their own skip sets",
+    exercises: "Languages = en, de over a package that uses en and de and one that uses en and fr: the first loses nothing, the second loses its fr labels (a package's skip set is its own used languages minus the selection).",
+    rules: ["IMP-630"],
+    devLanguages: ["en", "de", "fr"],
+    steps: [
+      step(
+        "import",
+        [langPackage(["en", "de"], { tag: "LangP1" }), langPackage(["en", "fr"], { tag: "LangP2" })],
+        "success",
+        { languages: ["en", "de"] },
+      ),
+    ],
+  },
+  {
+    id: "lang-batch-select",
+    engines: ["14.35"],
+    catalogue: ["14.35", "Languages one code", "AML batch"],
+    title: "Languages = de in AML batch mode",
+    exercises: "The skipped labels are deleted before an item is queued, so the one <AML> holds de labels only.",
+    rules: ["IMP-632"],
+    devLanguages: ["en", "de", "fr"],
+    steps: [step("import", one(langPackage(["en", "de", "fr"], { tag: "LangBatch" })), "success", { languages: ["de"], amlBatch: { maxSize: 2 } })],
+  },
+
+  // ---- Ticket 55: the AML batch mode ----
+  {
+    id: "batch-size-3",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "Seven items in batches of three",
+    exercises: "Items without Relationships are queued and sent in one <AML> when the queue holds three: seven items go out as three requests of 3, 3 and 1 items (the last by the forced flush after the final item), each followed by the registration of its items.",
+    rules: ["IMP-511", "IMP-513"],
+    steps: [step("import", one(batchGood()), "success", batch(3))],
+  },
+  {
+    id: "batch-size-unset",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "AML batch mode with AmlBatchMaxSize left at 0",
+    exercises:
+      "A maximum of 0 flushes after every item: one <AML> request per item, and then, because the last item was already sent by its own flush, the forced flush after the package sends an empty <AML></AML> (IMP-515). Aras accepts it and answers an empty Result, the answer ticket 55 left open.",
+    rules: ["IMP-511", "IMP-515"],
+    steps: [step("import", one(batchGood("BatchZero", "LIBSJS-SCRATCH-BATCHZERO")), "success", batch(0))],
+  },
+  {
+    id: "batch-merge-reimport",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "A batch re-imported with merge on",
+    exercises: "The merge lookups of the items are sent at the flush, one group per item, before the <AML>; the existing adds are edits.",
+    rules: ["IMP-512"],
+    steps: [step("fresh import", one(batchGood("BatchMrg", "LIBSJS-SCRATCH-BATCHMRG")), "success", batch(3)), step("re-import, merge on", one(batchGood("BatchMrg", "LIBSJS-SCRATCH-BATCHMRG")), "success", { merge: true, ...batch(3) })],
+  },
+  {
+    id: "batch-skip-existing",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "A batch re-imported with merge off",
+    exercises: "Existing items are skipped, and in batch mode a skipped item is not registered in the package definition (IMP-522).",
+    rules: ["IMP-522"],
+    steps: [step("fresh import", one(batchGood("BatchSkp", "LIBSJS-SCRATCH-BATCHSKP")), "success"), step("re-import, batch", one(batchGood("BatchSkp", "LIBSJS-SCRATCH-BATCHSKP")), "success", batch(3))],
+  },
+  {
+    id: "batch-relationships",
+    engines: ["14.35"],
+    catalogue: ["S0", "14.35", "AML batch"],
+    title: "Items with Relationships among items without",
+    exercises: "An item with a Relationships child is imported alone after a forced flush of the queue (IMP-519).",
+    rules: ["IMP-519"],
+    steps: [step("import", one(mini()), "success", batch(4))],
+  },
+  {
+    id: "batch-server-failure",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "A batch the server refuses at the fourth item",
+    exercises:
+      "The <AML> of seven items fails on the server (the fourth repeats the first's name) and the server applies none of it (the first three items are then added without complaint, one by one); the fourth fails alone and ends the package, and the items after it are neither checked nor sent (IMP-517).",
+    rules: ["IMP-516", "IMP-517", "IMP-523"],
+    steps: [step("import", one(batchServerFailure()), "engine-failure", batch(10))],
+  },
+  {
+    id: "batch-check-fails",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "The fourth item fails the engine's own check in batch mode",
+    exercises: "A failed check flushes the queue (the three waiting items go out in one <AML> and are registered), restores the item and checks it again; the second failure ends the package (IMP-518), and an empty <AML></AML> is sent too (IMP-515).",
+    rules: ["IMP-518"],
+    steps: [step("import", one(batchBadCheck()), "engine-failure", batch(3))],
+  },
+  {
+    id: "batch-fatal-reltype",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch"],
+    title: "A RelationshipType whose source ItemType does not exist, in batch mode",
+    exercises: "The fatal check of IMP-160 in batch mode: the queued items are sent by the forced flush of IMP-518, then the package fails.",
+    rules: ["IMP-518"],
+    steps: [step("import", one(batchFatalRelType()), "engine-failure", batch(3))],
+  },
+  {
+    id: "batch-cancel",
+    engines: ["14.35"],
+    catalogue: ["S0", "14.35", "AML batch"],
+    title: "Cancel pressed with items waiting in the batch queue",
+    exercises: "The cancel test returns from the loop without flushing: the queued items are never sent (IMP-524) and the run returns 1.",
+    rules: ["IMP-524"],
+    steps: [step("import, cancelled", one(mini()), "engine-failure", { cancelAfterStatus: 4, ...batch(10) })],
+  },
+  {
+    id: "batch-delete-missing",
+    engines: ["14.35"],
+    catalogue: ["S4", "14.35", "AML batch"],
+    title: "A delete of an item that does not exist, in batch mode",
+    exercises: "A delete is suitable for batching and goes into the <AML> (IMP-526); the server answers a delete of an unknown id without an error.",
+    rules: ["IMP-526"],
+    steps: [step("import", one(delMissing()), "success", batch(3))],
+  },
+
+  // ---- Ticket 55: collected errors ----
+  {
+    id: "collect-server-failure",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "One item the server refuses, errors collected up to 5",
+    exercises:
+      "The failure of the fourth item is collected (an error message, the log block), the loop goes on and the last three items are imported; the failed add is registered in the package definition (IMP-544); the package ends failed and the run returns the count, 1.",
+    rules: ["IMP-541", "IMP-542", "IMP-544", "IMP-545", "IMP-546"],
+    steps: [step("import", one(batchOneServerFailure("CollSrv", "LIBSJS-SCRATCH-COLLSRV")), "returned:1", collect(5))],
+  },
+  {
+    id: "collect-max-unset",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "Collected errors with the maximum left at 0",
+    exercises: "A maximum of 0 trips on the first error: the AggregateException ends the package at once, before the failed item is registered, and the last items are never read.",
+    rules: ["IMP-541", "IMP-544"],
+    steps: [step("import", one(batchOneServerFailure("CollZero", "LIBSJS-SCRATCH-COLLZERO")), "returned:1", collect(0))],
+  },
+  {
+    id: "collect-two-errors-max3",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "Two failing items, maximum 3",
+    exercises: "Both errors are collected and the rest of the package is imported; the run returns 2.",
+    rules: ["IMP-541", "IMP-546"],
+    steps: [step("import", one(batchTwoServerFailures()), "returned:2", collect(3))],
+  },
+  {
+    id: "collect-two-errors-max2",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "Two failing items, maximum 2",
+    exercises: "The second error reaches the maximum (the test is >=) and ends the package; the items after the second failure are never read.",
+    rules: ["IMP-541"],
+    steps: [step("import", one(batchTwoServerFailures()), "returned:2", collect(2))],
+  },
+  {
+    id: "collect-two-packages",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "A failing package followed by a good one",
+    exercises: "A package that collected an error ends failed, and the next package starts (IMP-545); the run reports the one error and returns 1.",
+    rules: ["IMP-545", "IMP-546"],
+    steps: [
+      step("import", [batchOneServerFailure("CollPkgA", "LIBSJS-SCRATCH-COLLPKGA"), batchGood("CollPkgB", "LIBSJS-SCRATCH-COLLPKGB")], "returned:1", collect(5)),
+    ],
+  },
+  {
+    id: "collect-bad-check",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "collected errors"],
+    title: "An item whose reference check fails",
+    exercises:
+      "The failed check is collected and the item is sent anyway (IMP-543); the server then refuses the item's Relationships, a second collected error, so the run returns 2.",
+    rules: ["IMP-542", "IMP-543"],
+    steps: [step("import", one(batchBadCheck()), "returned:2", collect(5))],
+  },
+  {
+    id: "collect-cancel",
+    engines: ["14.35"],
+    catalogue: ["S0", "14.35", "collected errors"],
+    title: "Cancel with collection on and nothing collected",
+    exercises: "The cancel becomes an aggregate that is reported as an error, but the count is 0, so the run returns 0 (IMP-547).",
+    rules: ["IMP-545", "IMP-547"],
+    steps: [step("import, cancelled", one(mini()), "success", { cancelAfterStatus: 4, ...collect(5) })],
+  },
+  {
+    id: "batch-collect-fallback",
+    engines: ["14.35"],
+    catalogue: ["S9", "14.35", "AML batch", "collected errors"],
+    title: "A refused batch with collection on",
+    exercises: "The fallback's failure at the fourth item is collected and the package ends with the items after it dropped (IMP-517, IMP-551).",
+    rules: ["IMP-517", "IMP-551"],
+    steps: [step("import", one(batchServerFailure()), "returned:1", { ...batch(10), ...collect(5) })],
   },
 ];

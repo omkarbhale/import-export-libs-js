@@ -1,0 +1,94 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:50:32
+Updating 'LIBSJS-SCRATCH-CUI' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-CUI****
+Processing (add)   id : 67036B55DA6E1228B9095485313908E3    keyed_name : LIBSJS-SCRATCH-Cui_List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\List\LIBSJS-SCRATCH-Cui_List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 67036B55DA6E1228B9095485313908E3    keyed_name : LIBSJS-SCRATCH-Cui_List_1    type : List  
+Adding item into PackageDefinition with id = 67036B55DA6E1228B9095485313908E3 and type = List
+Item successfully added in packdefinition  id  67036B55DA6E1228B9095485313908E3 type List
+Processing (add)   id : 4A3C8FAB2CE704D85CB85B9B9BAA9624    keyed_name : LIBSJS-SCRATCH-Cui_Var_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\Variable\LIBSJS-SCRATCH-Cui_Var_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 4A3C8FAB2CE704D85CB85B9B9BAA9624    keyed_name : LIBSJS-SCRATCH-Cui_Var_1    type : Variable  
+Adding item into PackageDefinition with id = 4A3C8FAB2CE704D85CB85B9B9BAA9624 and type = Variable
+Item successfully added in packdefinition  id  4A3C8FAB2CE704D85CB85B9B9BAA9624 type Variable
+Processing (add)   id : 668C3E10310216638FE69ED249264A6D    keyed_name : LIBSJS-SCRATCH-Cui_Report_1    type : Report  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\Report\LIBSJS-SCRATCH-Cui_Report_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Report</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 668C3E10310216638FE69ED249264A6D    keyed_name : LIBSJS-SCRATCH-Cui_Report_1    type : Report  
+Adding item into PackageDefinition with id = 668C3E10310216638FE69ED249264A6D and type = Report
+Item successfully added in packdefinition  id  668C3E10310216638FE69ED249264A6D type Report
+Processing (add)   id : 3D1E1322934EAE81CD97328D65CF2618    keyed_name : LIBSJS-SCRATCH-Cui_Control_1    type : cui_Control  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\cui_Control\LIBSJS-SCRATCH-Cui_Control_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>cui_Control</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 3D1E1322934EAE81CD97328D65CF2618    keyed_name : LIBSJS-SCRATCH-Cui_Control_1    type : cui_Control  
+Adding item into PackageDefinition with id = 3D1E1322934EAE81CD97328D65CF2618 and type = cui_Control
+Item successfully added in packdefinition  id  3D1E1322934EAE81CD97328D65CF2618 type cui_Control
+Processing (add)   id : BBC126D227BE5DAB4261507B2B08CEC3    keyed_name : LIBSJS-SCRATCH-Cui_Control_2    type : cui_Control  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\cui_Control\LIBSJS-SCRATCH-Cui_Control_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>cui_Control</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : BBC126D227BE5DAB4261507B2B08CEC3    keyed_name : LIBSJS-SCRATCH-Cui_Control_2    type : cui_Control  
+Adding item into PackageDefinition with id = BBC126D227BE5DAB4261507B2B08CEC3 and type = cui_Control
+Item successfully added in packdefinition  id  BBC126D227BE5DAB4261507B2B08CEC3 type cui_Control
+Processing (add)   id : 554644A5E7A915C22265463449AF2C0B    keyed_name : LIBSJS-SCRATCH-Cui_WindowSection_1    type : cui_WindowSection  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\cui_WindowSection\LIBSJS-SCRATCH-Cui_WindowSection_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>cui_WindowSection</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 554644A5E7A915C22265463449AF2C0B    keyed_name : LIBSJS-SCRATCH-Cui_WindowSection_1    type : cui_WindowSection  
+Adding item into PackageDefinition with id = 554644A5E7A915C22265463449AF2C0B and type = cui_WindowSection
+Item successfully added in packdefinition  id  554644A5E7A915C22265463449AF2C0B type cui_WindowSection
+Processing (add)   id : 0C2A4EB392288BCD1393BECE50500C8A    keyed_name : LIBSJS-SCRATCH-Cui_WindowSection_2    type : cui_WindowSection  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\cui_WindowSection\LIBSJS-SCRATCH-Cui_WindowSection_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>cui_WindowSection</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 0C2A4EB392288BCD1393BECE50500C8A    keyed_name : LIBSJS-SCRATCH-Cui_WindowSection_2    type : cui_WindowSection  
+Adding item into PackageDefinition with id = 0C2A4EB392288BCD1393BECE50500C8A and type = cui_WindowSection
+Item successfully added in packdefinition  id  0C2A4EB392288BCD1393BECE50500C8A type cui_WindowSection
+Processing (add)   id : 02833C34E6C47941AEA72A8678405D49    keyed_name : LIBSJS-SCRATCH-Cui_Form_1    type : Form  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222029-14.35-import-5f1f61\input\LIBSJS-SCRATCH-CUI\Import\Form\LIBSJS-SCRATCH-Cui_Form_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Form</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 02833C34E6C47941AEA72A8678405D49    keyed_name : LIBSJS-SCRATCH-Cui_Form_1    type : Form  
+Adding item into PackageDefinition with id = 02833C34E6C47941AEA72A8678405D49 and type = Form
+Item successfully added in packdefinition  id  02833C34E6C47941AEA72A8678405D49 type Form
+completed
+Updating 'LIBSJS-SCRATCH-CUI' package to success release status
+end of execution : 10/19/2026 03:50:33

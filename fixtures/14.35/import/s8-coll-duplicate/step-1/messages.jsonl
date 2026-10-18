@@ -1,0 +1,9 @@
+{"event":10,"seq":1,"thread":17,"ticks":810638995980,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":17,"ticks":810639569270,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-A.Coll","answer":null}
+{"event":14,"seq":3,"thread":17,"ticks":810639911910,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_Same","answer":null}
+{"event":24,"seq":4,"thread":17,"ticks":810646061708,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":25,"seq":5,"thread":17,"ticks":810646073828,"channel":"status","text":"completed","answer":null}
+{"event":32,"seq":6,"thread":17,"ticks":810651342675,"channel":"status","text":"Building  solution","answer":null}
+{"event":33,"seq":7,"thread":17,"ticks":810651349492,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-B.Coll","answer":null}
+{"event":36,"seq":8,"thread":17,"ticks":810651659242,"channel":"status","text":"Item 1 of 1: Variable - LIBSJS-SCRATCH-Coll_Same","answer":null}
+{"event":45,"seq":9,"thread":17,"ticks":810652810141,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\nImport package 'LIBSJS-SCRATCH-B.Coll' failed with message:\n\nThe package 'LIBSJS-SCRATCH-B.Coll' already contains the PackageElement with name='LIBSJS-SCRATCH-Coll_Same' and id='416141614D62782894BB63F6E612448D' but of different type: DB - type='Variable', group_id='B53C71BB2325401DABD3A8CDE5567937';   being imported - type='Variable', group_id='72839CB3ECFC4D20B1246AF607B3407A'\nUpdating LIBSJS-SCRATCH-B.Coll to failed release status\r\n","answer":null}

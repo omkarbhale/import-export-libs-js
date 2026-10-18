@@ -1,0 +1,47 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:39:28
+Updating 'LIBSJS-SCRATCH-BATCHSKP' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHSKP****
+Processing (add)   id : B497BAA0F18D424E345EA7A4B961D2DA    keyed_name : LIBSJS-SCRATCH-BatchSkp_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_1.xml'
+Item successfully skipped   id : B497BAA0F18D424E345EA7A4B961D2DA    keyed_name : LIBSJS-SCRATCH-BatchSkp_1    type : Variable  
+Processing (add)   id : 8832564D54AF13B9D24AF0F483D7A764    keyed_name : LIBSJS-SCRATCH-BatchSkp_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_2.xml'
+Item successfully skipped   id : 8832564D54AF13B9D24AF0F483D7A764    keyed_name : LIBSJS-SCRATCH-BatchSkp_2    type : Variable  
+Processing (add)   id : AF46DB98131A88E9CD0899123123E8A1    keyed_name : LIBSJS-SCRATCH-BatchSkp_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_3.xml'
+Item successfully skipped   id : AF46DB98131A88E9CD0899123123E8A1    keyed_name : LIBSJS-SCRATCH-BatchSkp_3    type : Variable  
+Processing (add)   id : F95A5A6F3D6C939FB6E075743488BB05    keyed_name : LIBSJS-SCRATCH-BatchSkp_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_4.xml'
+Item successfully skipped   id : F95A5A6F3D6C939FB6E075743488BB05    keyed_name : LIBSJS-SCRATCH-BatchSkp_4    type : Variable  
+Processing (add)   id : 20D8072619A339B87A781476BF02C7A0    keyed_name : LIBSJS-SCRATCH-BatchSkp_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_5.xml'
+Item successfully skipped   id : 20D8072619A339B87A781476BF02C7A0    keyed_name : LIBSJS-SCRATCH-BatchSkp_5    type : Variable  
+Processing (add)   id : 756138F0BF60A8BC6DDD86C3754D1A5E    keyed_name : LIBSJS-SCRATCH-BatchSkp_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_6.xml'
+Item successfully skipped   id : 756138F0BF60A8BC6DDD86C3754D1A5E    keyed_name : LIBSJS-SCRATCH-BatchSkp_6    type : Variable  
+Processing (add)   id : AF7B410495BB376497AABBE7B41E58AE    keyed_name : LIBSJS-SCRATCH-BatchSkp_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220925-14.35-import-29bc68\input\LIBSJS-SCRATCH-BATCHSKP\Import\Variable\LIBSJS-SCRATCH-BatchSkp_7.xml'
+Item successfully skipped   id : AF7B410495BB376497AABBE7B41E58AE    keyed_name : LIBSJS-SCRATCH-BatchSkp_7    type : Variable  
+Try to execute AMLs in AML batch mode...
+AML successfully applied in AML batch mode:
+   AML batch time: 00:00:00.0115874
+   Resolve dependencies time: 00:00:00.0006069
+completed
+Updating 'LIBSJS-SCRATCH-BATCHSKP' package to success release status
+end of execution : 10/19/2026 03:39:29

@@ -1,0 +1,89 @@
+{
+  "id": "delayed-property-where",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "delayed"
+  ],
+  "title": "A Property with no id but a where, whose data_source resolves later",
+  "exercises": "The delayed edit of a Property is addressed by the Property's own where when it has no id (14.0.7 wrote id=''). The where is scoped to the scratch ItemType and the property name, so the edit can touch nothing else.",
+  "rules": [
+    "IMP-220"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-DELAYPROP"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 31,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "80FD3AB2F0E445BAAF5925292B70ADE8"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "7A1476DC287640508ED67189649581E4"
+          },
+          {
+            "type": "ItemType",
+            "id": "D4A440B82188A821125EA4F28E0C1771"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "1F801544789441ECB0311E40F4235286"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8FBDA3500A7A4B5E87B507D4FB03C4C5"
+          },
+          {
+            "type": "ItemType",
+            "id": "0C959D62FDAEF1BF0C482A671CAC248A"
+          },
+          {
+            "type": "PackageElement",
+            "id": "E5C52CEB030746E89F888461F01913C2"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "E5C52CEB030746E89F888461F01913C2"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8FBDA3500A7A4B5E87B507D4FB03C4C5"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "1F801544789441ECB0311E40F4235286"
+    },
+    {
+      "type": "ItemType",
+      "id": "D4A440B82188A821125EA4F28E0C1771"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "7A1476DC287640508ED67189649581E4"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "80FD3AB2F0E445BAAF5925292B70ADE8"
+    },
+    {
+      "type": "ItemType",
+      "id": "0C959D62FDAEF1BF0C482A671CAC248A"
+    }
+  ]
+}

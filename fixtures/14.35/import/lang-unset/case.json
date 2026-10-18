@@ -1,0 +1,77 @@
+{
+  "id": "lang-unset",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages unset"
+  ],
+  "title": "A package with en and de labels, Languages unset",
+  "exercises": "Languages is null: the constructor still scans the package (no Language request), nothing is deleted, and every label is sent.",
+  "rules": [
+    "IMP-610",
+    "IMP-635"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGUNSET"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 25,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "2122E8FC89F841E581631BA29CDC95D1"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "8608B07EF0C849D7B184104231534B5D"
+          },
+          {
+            "type": "List",
+            "id": "FD35793BFEF02D5761DCA1A821AF12CA"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "69F505D577F8439C876C6CDCAD977BB4"
+          },
+          {
+            "type": "PackageElement",
+            "id": "EF21B2F65BC34B8FAEBF9CFF103A90BB"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "EF21B2F65BC34B8FAEBF9CFF103A90BB"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "69F505D577F8439C876C6CDCAD977BB4"
+    },
+    {
+      "type": "List",
+      "id": "FD35793BFEF02D5761DCA1A821AF12CA"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "8608B07EF0C849D7B184104231534B5D"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "2122E8FC89F841E581631BA29CDC95D1"
+    }
+  ]
+}

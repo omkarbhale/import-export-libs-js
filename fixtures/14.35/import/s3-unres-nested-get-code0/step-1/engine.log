@@ -1,0 +1,72 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215644-14.35-import-43c6fc\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215644-14.35-import-43c6fc\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215644-14.35-import-43c6fc\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:26:48
+Updating 'LIBSJS-SCRATCH-UNRES0' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-UNRES0****
+Processing (add)   id : 5418FC7EB1F82B9657477A47F0EDF88B    keyed_name : LIBSJS-SCRATCH-UNRES-Action_1    type : Action  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T215644-14.35-import-43c6fc\input\LIBSJS-SCRATCH-UNRES0\Import\Action\LIBSJS-SCRATCH-UNRES-Action_1.xml'
+********** Start of reference checking ************
+checking item with get action:<Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Missing_Method</name></Item>
+-> was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Action</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<method keyed_name="LIBSJS-SCRATCH-Missing_Method" type="Method"><Item type="Method" action="get" select="id"><name>LIBSJS-SCRATCH-Missing_Method</name></Item></method>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Updating 'LIBSJS-SCRATCH-UNRES0' package to failed release status
+end of execution : 10/19/2026 03:26:48
+
+		****ErrorMessage****
+
+Import package 'LIBSJS-SCRATCH-UNRES0' failed with message:
+
+Server error
+
+Request (formatted):
+<Item type="Action" id="5418FC7EB1F82B9657477A47F0EDF88B" action="add" doGetItem="0">
+  <item_query>&lt;Item type="{@type}" id="{@id}" action="get" /&gt;</item_query>
+  <label xml:lang="en">Unresolved</label>
+  <location>server</location>
+  <method keyed_name="LIBSJS-SCRATCH-Missing_Method" type="Method">
+    <Item type="Method" action="get" select="id">
+      <name>LIBSJS-SCRATCH-Missing_Method</name>
+    </Item>
+  </method>
+  <target>none</target>
+  <type>item</type>
+  <name>LIBSJS-SCRATCH-UNRES-Action_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server</faultcode>
+      <faultstring><![CDATA[No items of type Method found.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[No items of type Method found.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[No items of type 'Method' found using the criteria: 
+<Item type="Method" action="get" select="id" doGetItem="0"><name>LIBSJS-SCRATCH-Missing_Method</name></Item>
+]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+Updating LIBSJS-SCRATCH-UNRES0 to failed release status
+
+		********************

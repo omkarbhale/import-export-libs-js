@@ -1,0 +1,85 @@
+{
+  "id": "lang-star-installed",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages *"
+  ],
+  "title": "Languages = * over a package with en, de and fr labels",
+  "exercises": "`*` expands to de, en, fr (sorted by the host's culture); all are installed, so nothing is deleted.",
+  "rules": [
+    "IMP-615",
+    "IMP-620",
+    "IMP-621",
+    "IMP-635"
+  ],
+  "devLanguages": [
+    "en",
+    "de",
+    "fr"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGSTAR"
+      ],
+      "options": {
+        "languages": [
+          "*"
+        ]
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 26,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "F9B7888C854842F78BAA4357E30E5BB5"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1E05B9FCB91C4A069DA82714B1157604"
+          },
+          {
+            "type": "List",
+            "id": "33D9F92F7939295BDE244F33931B420B"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "46C7EE43F83244B4A744C2D47BC264AE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D8F2733C53CC4214AA100201629FF4F8"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "D8F2733C53CC4214AA100201629FF4F8"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "46C7EE43F83244B4A744C2D47BC264AE"
+    },
+    {
+      "type": "List",
+      "id": "33D9F92F7939295BDE244F33931B420B"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "1E05B9FCB91C4A069DA82714B1157604"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "F9B7888C854842F78BAA4357E30E5BB5"
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:49:31
+Updating 'LIBSJS-SCRATCH-BATCHCHK' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-BATCHCHK****
+Processing (add)   id : 25E946F9C36B86F6130E2728ED0BC0C3    keyed_name : LIBSJS-SCRATCH-BatchChk_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 25E946F9C36B86F6130E2728ED0BC0C3    keyed_name : LIBSJS-SCRATCH-BatchChk_1    type : Variable  
+Adding item into PackageDefinition with id = 25E946F9C36B86F6130E2728ED0BC0C3 and type = Variable
+Item successfully added in packdefinition  id  25E946F9C36B86F6130E2728ED0BC0C3 type Variable
+Processing (add)   id : 7516B30075F875318D294298AA8F564C    keyed_name : LIBSJS-SCRATCH-BatchChk_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 7516B30075F875318D294298AA8F564C    keyed_name : LIBSJS-SCRATCH-BatchChk_2    type : Variable  
+Adding item into PackageDefinition with id = 7516B30075F875318D294298AA8F564C and type = Variable
+Item successfully added in packdefinition  id  7516B30075F875318D294298AA8F564C type Variable
+Processing (add)   id : 8F1A31E32A66525D1B457156967AC9BB    keyed_name : LIBSJS-SCRATCH-BatchChk_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 8F1A31E32A66525D1B457156967AC9BB    keyed_name : LIBSJS-SCRATCH-BatchChk_3    type : Variable  
+Adding item into PackageDefinition with id = 8F1A31E32A66525D1B457156967AC9BB and type = Variable
+Item successfully added in packdefinition  id  8F1A31E32A66525D1B457156967AC9BB type Variable
+Processing (add)   id : 4F5A141A6B920F49E4D6F6210A7EE99E    keyed_name : LIBSJS-SCRATCH-BatchChk_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+
+		****ErrorMessage****
+Bad Relation type Property for Variable Recurse check has failed.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="4F5A141A6B920F49E4D6F6210A7EE99E" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-BatchChk_4</name>
+  <Relationships>
+    <Item type="Property" id="DCADE23CD343D95EC141E0C6BFE9EF16" action="add">
+      <name>nope</name>
+    </Item>
+  </Relationships>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server</faultcode>
+      <faultstring><![CDATA[Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.
+The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.
+The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )]]></af:legacy_detail>
+        <af:exception message="Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.&#xD;&#xA;The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )" type="Aras.Server.Core.InnovatorDatabaseException">
+          <af:innerException message="Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+        </af:exception>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************
+Adding item into PackageDefinition with id = 4F5A141A6B920F49E4D6F6210A7EE99E and type = Variable
+Item successfully added in packdefinition  id  4F5A141A6B920F49E4D6F6210A7EE99E type Variable
+Processing (add)   id : 7D4D3C9C74D44266B00E0627216390DF    keyed_name : LIBSJS-SCRATCH-BatchChk_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 7D4D3C9C74D44266B00E0627216390DF    keyed_name : LIBSJS-SCRATCH-BatchChk_5    type : Variable  
+Adding item into PackageDefinition with id = 7D4D3C9C74D44266B00E0627216390DF and type = Variable
+Item successfully added in packdefinition  id  7D4D3C9C74D44266B00E0627216390DF type Variable
+Processing (add)   id : E9E4F4F3CEFD3C5826F6FF612F2BFAF1    keyed_name : LIBSJS-SCRATCH-BatchChk_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E9E4F4F3CEFD3C5826F6FF612F2BFAF1    keyed_name : LIBSJS-SCRATCH-BatchChk_6    type : Variable  
+Adding item into PackageDefinition with id = E9E4F4F3CEFD3C5826F6FF612F2BFAF1 and type = Variable
+Item successfully added in packdefinition  id  E9E4F4F3CEFD3C5826F6FF612F2BFAF1 type Variable
+Processing (add)   id : 28DB1C3DCF951DEF31AB93853D63EE8C    keyed_name : LIBSJS-SCRATCH-BatchChk_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221929-14.35-import-5ab9a3\input\LIBSJS-SCRATCH-BATCHCHK\Import\Variable\LIBSJS-SCRATCH-BatchChk_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 28DB1C3DCF951DEF31AB93853D63EE8C    keyed_name : LIBSJS-SCRATCH-BatchChk_7    type : Variable  
+Adding item into PackageDefinition with id = 28DB1C3DCF951DEF31AB93853D63EE8C and type = Variable
+Item successfully added in packdefinition  id  28DB1C3DCF951DEF31AB93853D63EE8C type Variable
+completed
+Updating 'LIBSJS-SCRATCH-BATCHCHK' package to failed release status
+end of execution : 10/19/2026 03:49:32
+
+		****ErrorMessage****
+One or more errors occurred.
+		********************
+
+		****ErrorMessage****
+Bad Relation type Property for Variable Recurse check has failed.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="4F5A141A6B920F49E4D6F6210A7EE99E" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-BatchChk_4</name>
+  <Relationships>
+    <Item type="Property" id="DCADE23CD343D95EC141E0C6BFE9EF16" action="add">
+      <name>nope</name>
+    </Item>
+  </Relationships>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server</faultcode>
+      <faultstring><![CDATA[Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.
+The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.
+The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )]]></af:legacy_detail>
+        <af:exception message="Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.&#xD;&#xA;The statement has been terminated. in SQL: INSERT INTO [PROPERTY] ( [BEHAVIOR],[CATEGORY_BY],[COLUMN_ALIGNMENT],[COLUMN_WIDTH],[CONFIG_ID],[CREATED_BY_ID],[CREATED_ON],[CURRENT_STATE],[DATA_SOURCE],[DATA_TYPE],[FOREIGN_PROPERTY],[GENERATION],[ID],[IS_CURRENT],[IS_HIDDEN],[IS_HIDDEN2],[IS_INDEXED],[IS_KEYED],[IS_MULTI_VALUED],[IS_RELEASED],[IS_REQUIRED],[ITEM_BEHAVIOR],[KEYED_NAME],[KEYED_NAME_ORDER],[LOCKED_BY_ID],[MAJOR_REV],[MANAGED_BY_ID],[MAX_RANGE],[MIN_RANGE],[MODIFIED_BY_ID],[MODIFIED_ON],[NEW_VERSION],[NOT_LOCKABLE],[ORDER_BY],[OWNED_BY_ID],[PERMISSION_ID],[PREC],[RANGE_INCLUSIVE],[READONLY],[RELATED_ID],[SCALE],[SORT_ORDER],[SOURCE_ID],[STATE],[STORED_LENGTH],[TEAM_ID],[TRACK_HISTORY],[NAME],[LABEL] ) VALUES ( @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21,@p22,@p23,@p24,@p25,@p26,@p27,@p28,@p29,@p30,@p31,@p32,@p33,@p34,@p35,@p36,@p37,@p38,@p39,@p40,@p41,@p42,@p43,@p44,@p45,@p46,@p47,@p48 )" type="Aras.Server.Core.InnovatorDatabaseException">
+          <af:innerException message="Cannot insert the value NULL into column 'DATA_TYPE', table '12sp9.innovator.PROPERTY'; column does not allow nulls. INSERT fails.&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+        </af:exception>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************

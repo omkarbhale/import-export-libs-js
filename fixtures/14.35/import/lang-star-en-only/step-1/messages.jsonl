@@ -1,0 +1,6 @@
+{"event":11,"seq":1,"thread":16,"ticks":817040881307,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":817041662666,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-LANGSTAREN","answer":null}
+{"event":15,"seq":3,"thread":16,"ticks":817041972634,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-LangStarEn-List_1","answer":null}
+{"event":26,"seq":4,"thread":16,"ticks":817043742141,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":27,"seq":5,"thread":16,"ticks":817043743714,"channel":"status","text":"completed","answer":null}
+{"event":32,"seq":6,"thread":16,"ticks":817044429784,"channel":"status","text":"completed","answer":null}

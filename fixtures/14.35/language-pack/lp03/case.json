@@ -1,0 +1,48 @@
+{
+  "case": "lp03",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "`languages list=\"de, fr\"`, and a property the `label` list drops",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": "de, fr"
+  },
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "Both languages are generated (each part is trimmed). The `name` property in the pack is dropped by the `label` property list.",
+  "rules": [
+    "LP-011",
+    "LP-013",
+    "LP-023"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "8199766553224429B0A70CE057DB0817"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "C126F88E951B4BBFBFFC5C6A2966853C"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "C126F88E951B4BBFBFFC5C6A2966853C"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "8199766553224429B0A70CE057DB0817"
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:40:22
+Updating 'LIBSJS-SCRATCH-COLLPKGA' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-COLLPKGA****
+Processing (add)   id : 8E56356C40D26D412D1965EDBF8CA285    keyed_name : LIBSJS-SCRATCH-CollPkgA_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+************* End of reference checking ************
+Item successfully applied(add)   id : 8E56356C40D26D412D1965EDBF8CA285    keyed_name : LIBSJS-SCRATCH-CollPkgA_1    type : Variable  
+Adding item into PackageDefinition with id = 8E56356C40D26D412D1965EDBF8CA285 and type = Variable
+Item successfully added in packdefinition  id  8E56356C40D26D412D1965EDBF8CA285 type Variable
+Processing (add)   id : B5445479B9ACA48E5F805E1E33FFB1DD    keyed_name : LIBSJS-SCRATCH-CollPkgA_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : B5445479B9ACA48E5F805E1E33FFB1DD    keyed_name : LIBSJS-SCRATCH-CollPkgA_2    type : Variable  
+Adding item into PackageDefinition with id = B5445479B9ACA48E5F805E1E33FFB1DD and type = Variable
+Item successfully added in packdefinition  id  B5445479B9ACA48E5F805E1E33FFB1DD type Variable
+Processing (add)   id : 7CC4B562B0A0CEB67B8E95AF5521C6FC    keyed_name : LIBSJS-SCRATCH-CollPkgA_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 7CC4B562B0A0CEB67B8E95AF5521C6FC    keyed_name : LIBSJS-SCRATCH-CollPkgA_3    type : Variable  
+Adding item into PackageDefinition with id = 7CC4B562B0A0CEB67B8E95AF5521C6FC and type = Variable
+Item successfully added in packdefinition  id  7CC4B562B0A0CEB67B8E95AF5521C6FC type Variable
+Processing (add)   id : CBDC2328F2A467D50FA1C7D266749735    keyed_name : LIBSJS-SCRATCH-CollPkgA_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="CBDC2328F2A467D50FA1C7D266749735" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollPkgA_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollPkgA_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="CBDC2328F2A467D50FA1C7D266749735" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollPkgA_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************
+Adding item into PackageDefinition with id = CBDC2328F2A467D50FA1C7D266749735 and type = Variable
+Item successfully added in packdefinition  id  CBDC2328F2A467D50FA1C7D266749735 type Variable
+Processing (add)   id : 1AA8464A44BB23B12494CA033ED00CDF    keyed_name : LIBSJS-SCRATCH-CollPkgA_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 1AA8464A44BB23B12494CA033ED00CDF    keyed_name : LIBSJS-SCRATCH-CollPkgA_5    type : Variable  
+Adding item into PackageDefinition with id = 1AA8464A44BB23B12494CA033ED00CDF and type = Variable
+Item successfully added in packdefinition  id  1AA8464A44BB23B12494CA033ED00CDF type Variable
+Processing (add)   id : 0539FDF4C8EB496A2506DDCDB6752E8B    keyed_name : LIBSJS-SCRATCH-CollPkgA_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 0539FDF4C8EB496A2506DDCDB6752E8B    keyed_name : LIBSJS-SCRATCH-CollPkgA_6    type : Variable  
+Adding item into PackageDefinition with id = 0539FDF4C8EB496A2506DDCDB6752E8B and type = Variable
+Item successfully added in packdefinition  id  0539FDF4C8EB496A2506DDCDB6752E8B type Variable
+Processing (add)   id : 82BC3B746BD7CF01D6550C29E139D59C    keyed_name : LIBSJS-SCRATCH-CollPkgA_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGA\Import\Variable\LIBSJS-SCRATCH-CollPkgA_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 82BC3B746BD7CF01D6550C29E139D59C    keyed_name : LIBSJS-SCRATCH-CollPkgA_7    type : Variable  
+Adding item into PackageDefinition with id = 82BC3B746BD7CF01D6550C29E139D59C and type = Variable
+Item successfully added in packdefinition  id  82BC3B746BD7CF01D6550C29E139D59C type Variable
+completed
+Updating 'LIBSJS-SCRATCH-COLLPKGA' package to failed release status
+end of execution : 10/19/2026 03:40:23
+start of execution : 10/19/2026 03:40:23
+Updating 'LIBSJS-SCRATCH-COLLPKGB' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-COLLPKGB****
+Processing (add)   id : EF06CAEFE11C697DDAEDC80B1F46AB73    keyed_name : LIBSJS-SCRATCH-CollPkgB_1    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : EF06CAEFE11C697DDAEDC80B1F46AB73    keyed_name : LIBSJS-SCRATCH-CollPkgB_1    type : Variable  
+Adding item into PackageDefinition with id = EF06CAEFE11C697DDAEDC80B1F46AB73 and type = Variable
+Item successfully added in packdefinition  id  EF06CAEFE11C697DDAEDC80B1F46AB73 type Variable
+Processing (add)   id : 98ACE235C9FB6FF4BD87D7A5B4A9330B    keyed_name : LIBSJS-SCRATCH-CollPkgB_2    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_2.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 98ACE235C9FB6FF4BD87D7A5B4A9330B    keyed_name : LIBSJS-SCRATCH-CollPkgB_2    type : Variable  
+Adding item into PackageDefinition with id = 98ACE235C9FB6FF4BD87D7A5B4A9330B and type = Variable
+Item successfully added in packdefinition  id  98ACE235C9FB6FF4BD87D7A5B4A9330B type Variable
+Processing (add)   id : 6B5F0B205D3F21929628DE0BEB00A7E6    keyed_name : LIBSJS-SCRATCH-CollPkgB_3    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_3.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 6B5F0B205D3F21929628DE0BEB00A7E6    keyed_name : LIBSJS-SCRATCH-CollPkgB_3    type : Variable  
+Adding item into PackageDefinition with id = 6B5F0B205D3F21929628DE0BEB00A7E6 and type = Variable
+Item successfully added in packdefinition  id  6B5F0B205D3F21929628DE0BEB00A7E6 type Variable
+Processing (add)   id : 3A87B9E7C4496B6F661C4BB9191C4755    keyed_name : LIBSJS-SCRATCH-CollPkgB_4    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_4.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 3A87B9E7C4496B6F661C4BB9191C4755    keyed_name : LIBSJS-SCRATCH-CollPkgB_4    type : Variable  
+Adding item into PackageDefinition with id = 3A87B9E7C4496B6F661C4BB9191C4755 and type = Variable
+Item successfully added in packdefinition  id  3A87B9E7C4496B6F661C4BB9191C4755 type Variable
+Processing (add)   id : E7693F7E9DEF6DBD0C98AD95E4121574    keyed_name : LIBSJS-SCRATCH-CollPkgB_5    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_5.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : E7693F7E9DEF6DBD0C98AD95E4121574    keyed_name : LIBSJS-SCRATCH-CollPkgB_5    type : Variable  
+Adding item into PackageDefinition with id = E7693F7E9DEF6DBD0C98AD95E4121574 and type = Variable
+Item successfully added in packdefinition  id  E7693F7E9DEF6DBD0C98AD95E4121574 type Variable
+Processing (add)   id : CE544F4B2AF846CDDB652A2F43247096    keyed_name : LIBSJS-SCRATCH-CollPkgB_6    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_6.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : CE544F4B2AF846CDDB652A2F43247096    keyed_name : LIBSJS-SCRATCH-CollPkgB_6    type : Variable  
+Adding item into PackageDefinition with id = CE544F4B2AF846CDDB652A2F43247096 and type = Variable
+Item successfully added in packdefinition  id  CE544F4B2AF846CDDB652A2F43247096 type Variable
+Processing (add)   id : 47766A70CF128964EC7F97419EC1DD40    keyed_name : LIBSJS-SCRATCH-CollPkgB_7    type : Variable  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221020-14.35-import-7cf1f3\input\LIBSJS-SCRATCH-COLLPKGB\Import\Variable\LIBSJS-SCRATCH-CollPkgB_7.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>Variable</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 47766A70CF128964EC7F97419EC1DD40    keyed_name : LIBSJS-SCRATCH-CollPkgB_7    type : Variable  
+Adding item into PackageDefinition with id = 47766A70CF128964EC7F97419EC1DD40 and type = Variable
+Item successfully added in packdefinition  id  47766A70CF128964EC7F97419EC1DD40 type Variable
+completed
+Updating 'LIBSJS-SCRATCH-COLLPKGB' package to success release status
+end of execution : 10/19/2026 03:40:23
+
+		****ErrorMessage****
+One or more errors occurred.
+		********************
+
+		****ErrorMessage****
+Server error
+
+Request (formatted):
+<Item type="Variable" id="CBDC2328F2A467D50FA1C7D266749735" action="add" doGetItem="0">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-CollPkgA_1</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>SOAP-ENV:Server.PropertiesAreNotUniqueException</faultcode>
+      <faultstring><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists.]]></af:legacy_detail>
+        <af:exception message="Variable (Variable) with Name 'LIBSJS-SCRATCH-CollPkgA_1' already exists." type="Aras.Server.Core.PropertiesAreNotUniqueException">
+          <af:innerException message="Violation of UNIQUE KEY constraint." type="Aras.Server.Core.DBUniqueConstraintViolationException">
+            <af:innerException message="Violation of UNIQUE KEY constraint 'C136'. Cannot insert duplicate key in object 'innovator.VARIABLE'. The duplicate key value is (LIBSJS-SCRATCH-CollPkgA_1).&#xD;&#xA;The statement has been terminated." type="System.Data.SqlClient.SqlException" />
+          </af:innerException>
+        </af:exception>
+        <af:item type="Variable" id="CBDC2328F2A467D50FA1C7D266749735" xpath="Item">
+          <af:property name="name" value="LIBSJS-SCRATCH-CollPkgA_1" />
+        </af:item>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+		********************

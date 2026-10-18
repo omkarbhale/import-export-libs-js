@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-DELAYPROP" path="LIBSJS-SCRATCH-DELAYPROP\Import" />
+</imports>

@@ -1,0 +1,56 @@
+{
+  "id": "lang-apostrophe",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "bug"
+  ],
+  "title": "A used language code with an apostrophe",
+  "exercises": "The skip code goes into //node()[@xml:lang='…'] unescaped: the XPath is invalid and the package fails (IMP-633).",
+  "rules": [
+    "IMP-633"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGAPOS"
+      ],
+      "options": {
+        "languages": [
+          "en"
+        ]
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 20,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "ACD6FE3EB5CC4960A4AE2F02A5F7A319"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "A26E03DCB9F346C49F3D6C0E53F06E1E"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "A26E03DCB9F346C49F3D6C0E53F06E1E"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "ACD6FE3EB5CC4960A4AE2F02A5F7A319"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222242-14.35-import-e596a7\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222242-14.35-import-e596a7\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222242-14.35-import-e596a7\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:52:46
+Updating 'LIBSJS-SCRATCH-LANGP1' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LANGP1****
+Processing (add)   id : 320FD6E3E906B07CABF7A907D57429A3    keyed_name : LIBSJS-SCRATCH-LangP1-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222242-14.35-import-e596a7\input\LIBSJS-SCRATCH-LANGP1\Import\List\LIBSJS-SCRATCH-LangP1-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 320FD6E3E906B07CABF7A907D57429A3    keyed_name : LIBSJS-SCRATCH-LangP1-List_1    type : List  
+Adding item into PackageDefinition with id = 320FD6E3E906B07CABF7A907D57429A3 and type = List
+Item successfully added in packdefinition  id  320FD6E3E906B07CABF7A907D57429A3 type List
+completed
+Updating 'LIBSJS-SCRATCH-LANGP1' package to success release status
+end of execution : 10/19/2026 03:52:46
+start of execution : 10/19/2026 03:52:46
+Updating 'LIBSJS-SCRATCH-LANGP2' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-LANGP2****
+Processing (add)   id : 9BF3CCDDA050B83D3932C6BAFACE715A    keyed_name : LIBSJS-SCRATCH-LangP2-List_1    type : List  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222242-14.35-import-e596a7\input\LIBSJS-SCRATCH-LANGP2\Import\List\LIBSJS-SCRATCH-LangP2-List_1.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>List</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+<Item type='ItemType' action='get' select='id'><name>Value</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 9BF3CCDDA050B83D3932C6BAFACE715A    keyed_name : LIBSJS-SCRATCH-LangP2-List_1    type : List  
+Adding item into PackageDefinition with id = 9BF3CCDDA050B83D3932C6BAFACE715A and type = List
+Item successfully added in packdefinition  id  9BF3CCDDA050B83D3932C6BAFACE715A type List
+completed
+Updating 'LIBSJS-SCRATCH-LANGP2' package to success release status
+end of execution : 10/19/2026 03:52:46

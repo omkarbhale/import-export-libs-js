@@ -1,0 +1,96 @@
+{
+  "id": "collect-cancel",
+  "engine": "14.35",
+  "catalogue": [
+    "S0",
+    "14.35",
+    "collected errors"
+  ],
+  "title": "Cancel with collection on and nothing collected",
+  "exercises": "The cancel becomes an aggregate that is reported as an error, but the count is 0, so the run returns 0 (IMP-547).",
+  "rules": [
+    "IMP-545",
+    "IMP-547"
+  ],
+  "steps": [
+    {
+      "name": "import, cancelled",
+      "packages": [
+        "LIBSJS-SCRATCH-MINI"
+      ],
+      "options": {
+        "cancelAfterStatus": 4,
+        "collectErrors": {
+          "maxCount": 5
+        }
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 29,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "42AF17ACF4A24B869EC0C445EC624991"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "1C4682583D48430493506FD76252BFCF"
+          },
+          {
+            "type": "List",
+            "id": "C6018EE6DD2187000216C39E55D07AAE"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "13AD3E9AF1A1476D9065E7E831D82A70"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5FF67A191202483DB154AD2D4735CC65"
+          },
+          {
+            "type": "List",
+            "id": "E182B4D73FB907759D5E1BA11441412D"
+          },
+          {
+            "type": "PackageElement",
+            "id": "1A43A32556464728AB17A36D9469209A"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "1A43A32556464728AB17A36D9469209A"
+    },
+    {
+      "type": "List",
+      "id": "E182B4D73FB907759D5E1BA11441412D"
+    },
+    {
+      "type": "PackageElement",
+      "id": "5FF67A191202483DB154AD2D4735CC65"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "13AD3E9AF1A1476D9065E7E831D82A70"
+    },
+    {
+      "type": "List",
+      "id": "C6018EE6DD2187000216C39E55D07AAE"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "1C4682583D48430493506FD76252BFCF"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "42AF17ACF4A24B869EC0C445EC624991"
+    }
+  ]
+}

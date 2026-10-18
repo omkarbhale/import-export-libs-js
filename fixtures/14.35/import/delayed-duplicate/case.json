@@ -1,0 +1,91 @@
+{
+  "id": "delayed-duplicate",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "delayed"
+  ],
+  "title": "The same delayed entry from two files",
+  "exercises": "AddDelayedAmlItem drops an entry equal to a queued one: an Identity with a Member to an Identity that a later file adds is in two files, and with merge on the second is an edit, so the check queues the same entry twice and 14.35 keeps one (14.0.7 ran both).",
+  "rules": [
+    "IMP-251"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-DELAYDUP"
+      ],
+      "options": {
+        "merge": true
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 35,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "0D9BD486A8C543119E2E3B5EA2808A6E"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "184C5F8D843A4B22BD13E7DBA2D52D06"
+          },
+          {
+            "type": "Identity",
+            "id": "C66E97DEE5FF291814F9DC8C29F0C1D5"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "FF62E19EF6894904A470C4A021B3E918"
+          },
+          {
+            "type": "PackageElement",
+            "id": "529550F3198A4CDE94FF7A3A1E8EDE8D"
+          },
+          {
+            "type": "Identity",
+            "id": "AB5102AE39151A20E06BE8F50EDFCF1E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5B1AF5E420834D8AAE3FEEAB4C564D27"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "5B1AF5E420834D8AAE3FEEAB4C564D27"
+    },
+    {
+      "type": "PackageElement",
+      "id": "529550F3198A4CDE94FF7A3A1E8EDE8D"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "FF62E19EF6894904A470C4A021B3E918"
+    },
+    {
+      "type": "Identity",
+      "id": "C66E97DEE5FF291814F9DC8C29F0C1D5"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "184C5F8D843A4B22BD13E7DBA2D52D06"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "0D9BD486A8C543119E2E3B5EA2808A6E"
+    },
+    {
+      "type": "Identity",
+      "id": "AB5102AE39151A20E06BE8F50EDFCF1E"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "id": "s2-ref-only",
+  "engine": "14.35",
+  "catalogue": [
+    "S2"
+  ],
+  "title": "A package imported without the package it depends on",
+  "exercises": "The dependency is neither imported nor on the server: the ordering warning, and every referenced element of it reported as not added.",
+  "steps": [
+    {
+      "name": "import REF only",
+      "packages": [
+        "LIBSJS-SCRATCH-REF",
+        "LIBSJS-SCRATCH-REFDEP"
+      ],
+      "only": [
+        "LIBSJS-SCRATCH-REF"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 31,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "BA3F0069220A4AD090CD953262A1B24C"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "7750A68623DE403695C843113776BB33"
+          },
+          {
+            "type": "PackageDependsOn",
+            "id": "8D1716DE685546BFB0C86351E2DC0CDC"
+          },
+          {
+            "type": "PackageReferencedElement",
+            "id": "6A047882E73C4931880371D19370F24B"
+          },
+          {
+            "type": "Variable",
+            "id": "6A880A1FAC02A374F97FFF2376246C91"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "D29458EAD85E46FEB7FD56A93E81D3DE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "7C9C30E9CC6C4D18BB0F75794A61A5B7"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "7C9C30E9CC6C4D18BB0F75794A61A5B7"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "D29458EAD85E46FEB7FD56A93E81D3DE"
+    },
+    {
+      "type": "Variable",
+      "id": "6A880A1FAC02A374F97FFF2376246C91"
+    },
+    {
+      "type": "PackageReferencedElement",
+      "id": "6A047882E73C4931880371D19370F24B"
+    },
+    {
+      "type": "PackageDependsOn",
+      "id": "8D1716DE685546BFB0C86351E2DC0CDC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "7750A68623DE403695C843113776BB33"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "BA3F0069220A4AD090CD953262A1B24C"
+    }
+  ]
+}

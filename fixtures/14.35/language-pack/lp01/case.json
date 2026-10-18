@@ -1,0 +1,50 @@
+{
+  "case": "lp01",
+  "engine": "14.35",
+  "command": "lpimport",
+  "title": "no language list: every server language but `en`",
+  "lpPackage": "LIBSJS-SCRATCH-LP",
+  "pack": {
+    "config": "lp/ImportConfig.xml",
+    "rows": [
+      "lp/xml/Forum.xml"
+    ],
+    "languagesList": ""
+  },
+  "lpDebug": false,
+  "expect": "success",
+  "exercises": "An empty `languages list` asks for every language the server has but `en`. 14.35 scans the generated package in its constructor (IMP-640) and imports it; `Languages` is not set, so nothing is deleted.",
+  "rules": [
+    "LP-011",
+    "LP-014",
+    "LP-024",
+    "IMP-610",
+    "IMP-640"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "returned": 0,
+    "error": null,
+    "created": [
+      {
+        "type": "DatabaseUpgrade",
+        "id": "B77FA87813984371A3B46352723A9626"
+      },
+      {
+        "type": "PackageDefinition",
+        "id": "680862CD8B4B45A7BE1B1C038CAD07D2"
+      }
+    ]
+  },
+  "deleted": [
+    {
+      "type": "PackageDefinition",
+      "id": "680862CD8B4B45A7BE1B1C038CAD07D2"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "B77FA87813984371A3B46352723A9626"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":818165555565,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":818166820928,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-MINI","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":818167340586,"channel":"status","text":"Item 1 of 6: List - LIBSJS-SCRATCH-MINI-List_1","answer":null}
+{"event":25,"seq":4,"thread":16,"ticks":818169908789,"channel":"status","text":"Item 2 of 6: List - LIBSJS-SCRATCH-MINI-List_2","answer":null}
+{"event":30,"seq":5,"thread":16,"ticks":818170738078,"channel":"status","text":"Import was canceled by user","answer":null}
+{"event":35,"seq":6,"thread":16,"ticks":818171693222,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\n\r\nImport package 'LIBSJS-SCRATCH-MINI' failed with message:\n\nOne or more errors occurred.\nUpdating LIBSJS-SCRATCH-MINI to failed release status\r\n\r\n\r\n\r\nImport was canceled by user\r\n","answer":null}

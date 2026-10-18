@@ -1,0 +1,33 @@
+{
+  "id": "lang-scan-stray-file",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "scan"
+  ],
+  "title": "A malformed file in the package folder, Languages unset",
+  "exercises": "The constructor scans every *.xml under the package folder, including the folder's own files that the import never reads: an AggregateException wrapping the XmlException ends the constructor, although 14.0.7 imports this package.",
+  "rules": [
+    "IMP-610",
+    "IMP-611",
+    "IMP-612"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGSTRAY"
+      ],
+      "options": {},
+      "expect": "refused",
+      "result": {
+        "hostExit": 2,
+        "calls": 6,
+        "returned": null,
+        "error": "System.AggregateException: One or more errors occurred. ---> System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.\r\n   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseRootLevelWhitespace()\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.IOWrapper.XmlDocumentLoad(String path)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.<>c__DisplayClass5_0.<ExtractLanguageCodesFromPackages>b__0(String path)\r\n   at System.Threading.Tasks.Parallel.<>c__DisplayClass17_0`1.<ForWorker>b__1()\r\n   at System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)\r\n   at System.Threading.Tasks.Task.<>c__DisplayClass176_0.<ExecuteSelfReplicating>b__0(Object <p0>)\r\n   --- End of inner exception stack trace ---\r\n   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)\r\n   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)\r\n   at System.Threading.Tasks.Parallel.ForWorker[TLocal](Int32 fromInclusive, Int32 toExclusive, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Func`4 bodyWithLocal, Func`1 localInit, Action`1 localFinally)\r\n   at System.Threading.Tasks.Parallel.ForEachWorker[TSource,TLocal](IEnumerable`1 source, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Action`3 bodyWithStateAndIndex, Func`4 bodyWithStateAndLocal, Func`5 bodyWithEverything, Func`1 localInit, Action`1 localFinally)\r\n   at System.Threading.Tasks.Parallel.ForEach[TSource](IEnumerable`1 source, Action`1 body)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.ExtractLanguageCodesFromPackages(IEnumerable`1 packages)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager..ctor(ISolutionUpgradeContext context, IMessagesFactory messagesFactory, ICItemHelper itemHelper)\r\n   at LibsJsOracle.Host.Run(HostRequest r)\r\n---> (Inner Exception #0) System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.\r\n   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseRootLevelWhitespace()\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.IOWrapper.XmlDocumentLoad(String path)\r\n   at Aras.Tools.SolutionUpgrade.LanguageCodesExtractor.<>c__DisplayClass5_0.<ExtractLanguageCodesFromPackages>b__0(String path)\r\n   at System.Threading.Tasks.Parallel.<>c__DisplayClass17_0`1.<ForWorker>b__1()\r\n   at System.Threading.Tasks.Task.InnerInvokeWithArg(Task childTask)\r\n   at System.Threading.Tasks.Task.<>c__DisplayClass176_0.<ExecuteSelfReplicating>b__0(Object <p0>)<---\r\n",
+        "created": []
+      }
+    }
+  ],
+  "deleted": []
+}

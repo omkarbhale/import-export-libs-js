@@ -1,0 +1,11 @@
+{"event":11,"seq":1,"thread":17,"ticks":807201519592,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":17,"ticks":807201999904,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-MINI","answer":null}
+{"event":14,"seq":3,"thread":17,"ticks":807202140227,"channel":"status","text":"Item 1 of 6: List - LIBSJS-SCRATCH-MINI-List_1","answer":null}
+{"event":25,"seq":4,"thread":17,"ticks":807203784509,"channel":"status","text":"Item 2 of 6: List - LIBSJS-SCRATCH-MINI-List_2","answer":null}
+{"event":30,"seq":5,"thread":17,"ticks":807204363718,"channel":"status","text":"Item 3 of 6: Sequence - LIBSJS-SCRATCH-MINI-Seq_1","answer":null}
+{"event":38,"seq":6,"thread":17,"ticks":807205364713,"channel":"status","text":"Item 4 of 6: Variable - LIBSJS-SCRATCH-MINI-Var_1","answer":null}
+{"event":46,"seq":7,"thread":17,"ticks":807206488003,"channel":"status","text":"Item 5 of 6: Variable - LIBSJS-SCRATCH-MINI-Var_2","answer":null}
+{"event":50,"seq":8,"thread":17,"ticks":807206934959,"channel":"status","text":"Item 6 of 6: Variable - LIBSJS-SCRATCH-MINI-Var_3","answer":null}
+{"event":54,"seq":9,"thread":17,"ticks":807207423024,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":55,"seq":10,"thread":17,"ticks":807207423742,"channel":"status","text":"completed","answer":null}
+{"event":60,"seq":11,"thread":17,"ticks":807208156507,"channel":"status","text":"completed","answer":null}

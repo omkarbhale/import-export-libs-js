@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-CUI" path="LIBSJS-SCRATCH-CUI\Import" />
+</imports>

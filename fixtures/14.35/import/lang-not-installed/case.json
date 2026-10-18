@@ -1,0 +1,39 @@
+{
+  "id": "lang-not-installed",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35",
+    "Languages not installed"
+  ],
+  "title": "Languages = xx, a code the server lacks",
+  "exercises": "ThrowIfNoSelectedLanguagesInDatabase: the Language get is sent twice (once for the check, once to write the message), and the constructor throws a CItemException naming xx. The host ends with that exception; no item is read.",
+  "rules": [
+    "IMP-621",
+    "IMP-622"
+  ],
+  "devLanguages": [
+    "en"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-LANGXX"
+      ],
+      "options": {
+        "languages": [
+          "xx"
+        ]
+      },
+      "expect": "refused",
+      "result": {
+        "hostExit": 2,
+        "calls": 8,
+        "returned": null,
+        "error": "Aras.Tools.SolutionUpgrade.CItemException: Some of the selected languages are not installed for current Aras Innovator: xx.\r\nPlease, install missing languages or remove them from import package before proceeding.\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ThrowIfNoSelectedLanguagesInDatabase(String[] languages)\r\n   at LibsJsOracle.Host.Run(HostRequest r)",
+        "created": []
+      }
+    }
+  ],
+  "deleted": []
+}

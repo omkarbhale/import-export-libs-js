@@ -1,0 +1,189 @@
+{
+  "id": "batch-skip-existing",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "A batch re-imported with merge off",
+  "exercises": "Existing items are skipped, and in batch mode a skipped item is not registered in the package definition (IMP-522).",
+  "rules": [
+    "IMP-522"
+  ],
+  "steps": [
+    {
+      "name": "fresh import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHSKP"
+      ],
+      "options": {},
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 48,
+        "returned": 0,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "871A5E3E2C4744BC821DEE85B18059CE"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "3561F94D2E0843F3967A0E11E785B321"
+          },
+          {
+            "type": "Variable",
+            "id": "B497BAA0F18D424E345EA7A4B961D2DA"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "ECF2448C08DD4DAF8ABAC64E9A24B8C0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "5693A84BB6F54573B277556D68D2864A"
+          },
+          {
+            "type": "Variable",
+            "id": "8832564D54AF13B9D24AF0F483D7A764"
+          },
+          {
+            "type": "PackageElement",
+            "id": "8425C8561F54433EA0ED40ECCE413E87"
+          },
+          {
+            "type": "Variable",
+            "id": "AF46DB98131A88E9CD0899123123E8A1"
+          },
+          {
+            "type": "PackageElement",
+            "id": "07F6435D1532441783B2EFBCBEFFA4DC"
+          },
+          {
+            "type": "Variable",
+            "id": "F95A5A6F3D6C939FB6E075743488BB05"
+          },
+          {
+            "type": "PackageElement",
+            "id": "DB67EB3E672344CEA70BCDB9D6F302DE"
+          },
+          {
+            "type": "Variable",
+            "id": "20D8072619A339B87A781476BF02C7A0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "73BA3E812B9D45D0ABD92AD367D354BF"
+          },
+          {
+            "type": "Variable",
+            "id": "756138F0BF60A8BC6DDD86C3754D1A5E"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D3FAE3A771E8441E8EC3D6073DFE5E45"
+          },
+          {
+            "type": "Variable",
+            "id": "AF7B410495BB376497AABBE7B41E58AE"
+          },
+          {
+            "type": "PackageElement",
+            "id": "FFCBDF3AD6D34A8A8FE011D2B498D0B5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "re-import, batch",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHSKP"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 3
+        }
+      },
+      "expect": "success",
+      "result": {
+        "hostExit": 0,
+        "calls": 24,
+        "returned": 0,
+        "error": null,
+        "created": []
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "FFCBDF3AD6D34A8A8FE011D2B498D0B5"
+    },
+    {
+      "type": "Variable",
+      "id": "AF7B410495BB376497AABBE7B41E58AE"
+    },
+    {
+      "type": "PackageElement",
+      "id": "D3FAE3A771E8441E8EC3D6073DFE5E45"
+    },
+    {
+      "type": "Variable",
+      "id": "756138F0BF60A8BC6DDD86C3754D1A5E"
+    },
+    {
+      "type": "PackageElement",
+      "id": "73BA3E812B9D45D0ABD92AD367D354BF"
+    },
+    {
+      "type": "Variable",
+      "id": "20D8072619A339B87A781476BF02C7A0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "DB67EB3E672344CEA70BCDB9D6F302DE"
+    },
+    {
+      "type": "Variable",
+      "id": "F95A5A6F3D6C939FB6E075743488BB05"
+    },
+    {
+      "type": "PackageElement",
+      "id": "07F6435D1532441783B2EFBCBEFFA4DC"
+    },
+    {
+      "type": "Variable",
+      "id": "AF46DB98131A88E9CD0899123123E8A1"
+    },
+    {
+      "type": "PackageElement",
+      "id": "8425C8561F54433EA0ED40ECCE413E87"
+    },
+    {
+      "type": "Variable",
+      "id": "8832564D54AF13B9D24AF0F483D7A764"
+    },
+    {
+      "type": "PackageElement",
+      "id": "5693A84BB6F54573B277556D68D2864A"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "ECF2448C08DD4DAF8ABAC64E9A24B8C0"
+    },
+    {
+      "type": "Variable",
+      "id": "B497BAA0F18D424E345EA7A4B961D2DA"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "3561F94D2E0843F3967A0E11E785B321"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "871A5E3E2C4744BC821DEE85B18059CE"
+    }
+  ]
+}

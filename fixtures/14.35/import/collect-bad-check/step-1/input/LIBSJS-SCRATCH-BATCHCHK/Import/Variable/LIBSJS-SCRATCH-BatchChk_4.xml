@@ -1,0 +1,11 @@
+﻿<AML>
+ <Item type="Variable" id="4F5A141A6B920F49E4D6F6210A7EE99E" action="add">
+  <default_value>4</default_value>
+  <name>LIBSJS-SCRATCH-BatchChk_4</name>
+  <Relationships>
+   <Item type="Property" id="DCADE23CD343D95EC141E0C6BFE9EF16" action="add">
+    <name>nope</name>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

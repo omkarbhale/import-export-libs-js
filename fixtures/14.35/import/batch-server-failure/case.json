@@ -1,0 +1,112 @@
+{
+  "id": "batch-server-failure",
+  "engine": "14.35",
+  "catalogue": [
+    "S9",
+    "14.35",
+    "AML batch"
+  ],
+  "title": "A batch the server refuses at the fourth item",
+  "exercises": "The <AML> of seven items fails on the server (the fourth repeats the first's name) and the server applies none of it (the first three items are then added without complaint, one by one); the fourth fails alone and ends the package, and the items after it are neither checked nor sent (IMP-517).",
+  "rules": [
+    "IMP-516",
+    "IMP-517",
+    "IMP-523"
+  ],
+  "steps": [
+    {
+      "name": "import",
+      "packages": [
+        "LIBSJS-SCRATCH-BATCHSRV"
+      ],
+      "options": {
+        "amlBatch": {
+          "maxSize": 10
+        }
+      },
+      "expect": "engine-failure",
+      "result": {
+        "hostExit": 0,
+        "calls": 38,
+        "returned": 1,
+        "error": null,
+        "created": [
+          {
+            "type": "DatabaseUpgrade",
+            "id": "844BA758ADD6485D948630A881998685"
+          },
+          {
+            "type": "PackageDefinition",
+            "id": "85FB2D4E2A10485D9948085A49068FE1"
+          },
+          {
+            "type": "Variable",
+            "id": "58760E04551E59833BC3B0DD0A8C48DC"
+          },
+          {
+            "type": "PackageGroup",
+            "id": "6C5D06F4743A4E70B32AA24DB62FC423"
+          },
+          {
+            "type": "PackageElement",
+            "id": "D880ECAC47E24B1E9E743FB2633C439F"
+          },
+          {
+            "type": "Variable",
+            "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+          },
+          {
+            "type": "PackageElement",
+            "id": "3F8800A593CD4A4799EC31D148E3F1F8"
+          },
+          {
+            "type": "Variable",
+            "id": "E85E5A09574812188E8060248C111FE0"
+          },
+          {
+            "type": "PackageElement",
+            "id": "4367FB3CB1C642A08F798E1ADE21612F"
+          }
+        ]
+      }
+    }
+  ],
+  "deleted": [
+    {
+      "type": "PackageElement",
+      "id": "4367FB3CB1C642A08F798E1ADE21612F"
+    },
+    {
+      "type": "Variable",
+      "id": "E85E5A09574812188E8060248C111FE0"
+    },
+    {
+      "type": "PackageElement",
+      "id": "3F8800A593CD4A4799EC31D148E3F1F8"
+    },
+    {
+      "type": "Variable",
+      "id": "3172ED4C9B7DC0304F67A4238F7739FA"
+    },
+    {
+      "type": "PackageElement",
+      "id": "D880ECAC47E24B1E9E743FB2633C439F"
+    },
+    {
+      "type": "PackageGroup",
+      "id": "6C5D06F4743A4E70B32AA24DB62FC423"
+    },
+    {
+      "type": "Variable",
+      "id": "58760E04551E59833BC3B0DD0A8C48DC"
+    },
+    {
+      "type": "PackageDefinition",
+      "id": "85FB2D4E2A10485D9948085A49068FE1"
+    },
+    {
+      "type": "DatabaseUpgrade",
+      "id": "844BA758ADD6485D948630A881998685"
+    }
+  ]
+}

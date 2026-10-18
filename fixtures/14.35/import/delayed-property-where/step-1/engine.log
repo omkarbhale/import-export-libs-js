@@ -1,0 +1,49 @@
+Tool version: 14.35.0.43890
+Action: Import
+Manifest file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220827-14.35-import-6d3be8\input\imports.mf
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220827-14.35-import-6d3be8\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220827-14.35-import-6d3be8\input
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Fast import mode: False
+Merge import mode: False
+Import release: 
+
+Start of importing packages
+start of execution : 10/19/2026 03:38:29
+Updating 'LIBSJS-SCRATCH-DELAYPROP' package to 'inprogress' release status
+       ****Import   LIBSJS-SCRATCH-DELAYPROP****
+Processing (add)   id : D4A440B82188A821125EA4F28E0C1771    keyed_name : LIBSJS-SCRATCH-DELAY_X    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220827-14.35-import-6d3be8\input\LIBSJS-SCRATCH-DELAYPROP\Import\ItemType\LIBSJS-SCRATCH-DELAY_X.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+<Item type='ItemType' action='get' select='id'><name>Property</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from server
+checking <data_source> reference to the ItemType
+<Item type='ItemType' action='get' select='id'><name>LIBSJS_SCRATCH_DELAY_Y</name></Item>
+  was obtained from server
+WARNING: The following portion of the AML 
+<data_source keyed_name="LIBSJS_SCRATCH_DELAY_Y" type="ItemType">0C959D62FDAEF1BF0C482A671CAC248A</data_source>
+contains unresolved reference that will be tried to resolve at the end of the package import
+************* End of reference checking ************
+Item successfully applied(add)   id : D4A440B82188A821125EA4F28E0C1771    keyed_name : LIBSJS-SCRATCH-DELAY_X    type : ItemType  
+Adding item into PackageDefinition with id = D4A440B82188A821125EA4F28E0C1771 and type = ItemType
+Item successfully added in packdefinition  id  D4A440B82188A821125EA4F28E0C1771 type ItemType
+Processing (add)   id : 0C959D62FDAEF1BF0C482A671CAC248A    keyed_name : LIBSJS-SCRATCH-DELAY_Y    type : ItemType  
+File full name 'C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T220827-14.35-import-6d3be8\input\LIBSJS-SCRATCH-DELAYPROP\Import\ItemType\LIBSJS-SCRATCH-DELAY_Y.xml'
+********** Start of reference checking ************
+<Item type='ItemType' action='get' select='id'><name>ItemType</name><Relationships><Item type='Property' action='get' select='name'/><Item type='RelationshipType' action='get' select='name'/></Relationships></Item>
+  was obtained from cache
+************* End of reference checking ************
+Item successfully applied(add)   id : 0C959D62FDAEF1BF0C482A671CAC248A    keyed_name : LIBSJS-SCRATCH-DELAY_Y    type : ItemType  
+Adding item into PackageDefinition with id = 0C959D62FDAEF1BF0C482A671CAC248A and type = ItemType
+Item successfully added in packdefinition  id  0C959D62FDAEF1BF0C482A671CAC248A type ItemType
+DELAYED RESOLUTION: applying AML <Item type='ItemType' id='D4A440B82188A821125EA4F28E0C1771' action='edit' doGetItem='0'><Relationships><Item type='Property' where="[Property].source_id='D4A440B82188A821125EA4F28E0C1771' AND [Property].name='ref'" action='edit'><data_source type='ItemType'><Item type='ItemType' keyed_name='LIBSJS_SCRATCH_DELAY_Y' action='get'><id>0C959D62FDAEF1BF0C482A671CAC248A</id></Item></data_source></Item></Relationships></Item>
+completed
+Updating 'LIBSJS-SCRATCH-DELAYPROP' package to success release status
+end of execution : 10/19/2026 03:38:31

@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-DELPROMOTE" path="LIBSJS-SCRATCH-DELPROMOTE\Import" />
+</imports>

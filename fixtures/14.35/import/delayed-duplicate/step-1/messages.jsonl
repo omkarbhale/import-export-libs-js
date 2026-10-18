@@ -1,0 +1,8 @@
+{"event":10,"seq":1,"thread":16,"ticks":816846906411,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":816847514292,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-DELAYDUP","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":816847916819,"channel":"status","text":"Item 1 of 3: Identity - LIBSJS-SCRATCH-DelayId_A1","answer":null}
+{"event":26,"seq":4,"thread":16,"ticks":816850031966,"channel":"status","text":"Item 2 of 3: Identity - LIBSJS-SCRATCH-DelayId_A2","answer":null}
+{"event":31,"seq":5,"thread":16,"ticks":816850793068,"channel":"status","text":"Item 3 of 3: Identity - LIBSJS-SCRATCH-DelayId_Z","answer":null}
+{"event":36,"seq":6,"thread":16,"ticks":816851454698,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":38,"seq":7,"thread":16,"ticks":816851768023,"channel":"status","text":"completed","answer":null}
+{"event":43,"seq":8,"thread":16,"ticks":816852609750,"channel":"status","text":"completed","answer":null}

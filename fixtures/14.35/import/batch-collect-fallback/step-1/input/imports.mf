@@ -1,0 +1,3 @@
+<imports>
+  <package name="LIBSJS-SCRATCH-BATCHSRV" path="LIBSJS-SCRATCH-BATCHSRV\Import" />
+</imports>

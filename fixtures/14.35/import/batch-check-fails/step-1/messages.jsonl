@@ -1,0 +1,8 @@
+{"event":10,"seq":1,"thread":16,"ticks":817622891494,"channel":"status","text":"Building  solution","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":817624250745,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-BATCHCHK","answer":null}
+{"event":14,"seq":3,"thread":16,"ticks":817624632075,"channel":"status","text":"Item 1 of 7: Variable - LIBSJS-SCRATCH-BatchChk_1","answer":null}
+{"event":18,"seq":4,"thread":16,"ticks":817625286909,"channel":"status","text":"Item 2 of 7: Variable - LIBSJS-SCRATCH-BatchChk_2","answer":null}
+{"event":20,"seq":5,"thread":16,"ticks":817625439875,"channel":"status","text":"Item 3 of 7: Variable - LIBSJS-SCRATCH-BatchChk_3","answer":null}
+{"event":32,"seq":6,"thread":16,"ticks":817627701966,"channel":"status","text":"Item 4 of 7: Variable - LIBSJS-SCRATCH-BatchChk_4","answer":null}
+{"event":35,"seq":7,"thread":16,"ticks":817628114057,"channel":"warning","text":"          ****Warning! Import of an item failed. Trying to resolve the error... ****\r\n       Bad Relation type Property for Variable Recurse check has failed.","answer":null}
+{"event":42,"seq":8,"thread":16,"ticks":817629541995,"channel":"error","text":"\t\t****ErrorMessage****\r\n\r\nImport package 'LIBSJS-SCRATCH-BATCHCHK' failed with message:\n\nBad Relation type Property for Variable Recurse check has failed.\nUpdating LIBSJS-SCRATCH-BATCHCHK to failed release status\r\n","answer":null}

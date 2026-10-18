@@ -1,0 +1,6 @@
+{"event":11,"seq":1,"thread":17,"ticks":825499655268,"channel":"status","text":"Building  solution","answer":null}
+{"event":12,"seq":2,"thread":17,"ticks":825500169996,"channel":"status","text":"Adding PackageDefinition for LIBSJS-SCRATCH-LANGBATCH","answer":null}
+{"event":15,"seq":3,"thread":17,"ticks":825500508214,"channel":"status","text":"Item 1 of 1: List - LIBSJS-SCRATCH-LangBatch-List_1","answer":null}
+{"event":27,"seq":4,"thread":17,"ticks":825502275433,"channel":"status","text":"Delayed resolution of unresolved references ...","answer":null}
+{"event":28,"seq":5,"thread":17,"ticks":825502276105,"channel":"status","text":"completed","answer":null}
+{"event":33,"seq":6,"thread":17,"ticks":825502858330,"channel":"status","text":"completed","answer":null}
