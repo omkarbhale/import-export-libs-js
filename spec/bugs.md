@@ -761,4 +761,73 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** `RemoveNotLocalizedProperties` removes every element outside the kept set, and the children of a kept language element are such elements, but their text nodes are not removed. `<label xml:lang="de"><b>x</b>t</label>` is written as `<label xml:lang="de">t</label>`.
 - **Why it is a bug:** a translation that holds markup is cut apart. A correct engine would keep the whole element or none of it.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CExportItems::RemoveNotLocalizedProperties`.
+
+## IMP-515: an empty batch is sent as `<AML></AML>`
+
+- **Behaviour:** the forced flush after the last item of a package, and the one that a failed check forces, run even when the queue is empty. They send an `ApplyAML` whose body is `<AML></AML>`, log the batch lines, and, if the server refuses it, send the retry warning.
+- **Why it is a bug:** there is nothing to send. A correct engine would return when the queue is empty.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
+## IMP-517: the one-by-one fallback drops the items behind the first one that fails
+
+- **Behaviour:** when a flush fails, the fallback imports the queued items one by one in a loop with no handler of its own. The first failure leaves the loop, the queue is cleared, and the remaining items are never checked, sent or registered. With collected errors on, the run goes on and the dropped items are not reported.
+- **Why it is a bug:** items the file asked for are silently left out of the database and the package definition. A correct engine would handle each item or report the rest as not imported.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
+## IMP-521: the delayed entries of an item imported alone are lost when the next flush fails
+
+- **Behaviour:** an item with Relationships is checked against the batch's delayed-resolution queue and then imported alone. If the next flush fails, the queue is replaced, so the delayed relationships that were taken out of the item are never applied.
+- **Why it is a bug:** the relationships vanish from the import and nothing reports it. A correct engine would hand the entries to the package queue when the item is imported.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`, `TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
+## IMP-522: in the AML batch mode a skipped existing item is not registered
+
+- **Behaviour:** the registration in the package definition is skipped in the batch mode for an item that already exists, so the package definition built by the run lacks it. Outside the batch mode it is registered.
+- **Why it is a bug:** the same package gets a different package definition depending on a performance option.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`.
+- **Versions:** 14.35.
+
+## IMP-523: a failure after a successful batch sends the batch again
+
+- **Behaviour:** the registration of the items runs after the `ApplyAML` succeeded. If it fails, the fallback restores every item and imports it again one by one.
+- **Why it is a bug:** items the server already applied are sent a second time. A correct engine would not retry what was applied.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
+## IMP-525: after a restore the work item's id comes from the detached element
+
+- **Behaviour:** `RestoreOriginalXml` replaces the item document's root, but the work item keeps its old element and reads the id to register, and the Relationships test, from it.
+- **Why it is a bug:** the registered id can differ from the id that was sent when the first attempt had rewritten it.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportWorkItem::RestoreOriginalXml`, `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportSingleWorkItem`, `TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
+## IMP-543: a collected check failure does not stop the item from being imported
+
+- **Behaviour:** with collected errors on, a failed reference check is collected and the item is sent anyway.
+- **Why it is a bug:** the item is sent with references the check would have rewritten or delayed. A correct engine would skip an item whose check failed.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`.
+- **Versions:** 14.35.
+
+## IMP-544: a failed add is registered in the package definition
+
+- **Behaviour:** outside the batch mode the registration runs after every item, in its own guarded block, also when the item's check or send failed and was collected.
+- **Why it is a bug:** the package definition lists an item that does not exist in the database.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`, `PostWorkItem`.
+- **Versions:** 14.35.
+
+## IMP-547: the return value counts only what CollectException saw
+
+- **Behaviour:** with collected errors on, a run returns the number of errors that went through `CollectException`. A package that failed by a cancel, by a refused audit-row write or by an exception that left the item loop adds nothing, so the run can report its error and return `0`.
+- **Why it is a bug:** `0` means success everywhere else in the engine. A correct engine would count every failed package.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportSolutions`, `ImportPackage`.
+- **Versions:** 14.35.
+
+## IMP-548: a refused first audit-row write is a NullReferenceException, and later ones reuse the previous package's errors
+
+- **Behaviour:** the handler for a `CItemException` of the audit-row writes adds it to a list that `ImportProc` creates. Before the first `ImportProc` the list is null, so the handler throws a `NullReferenceException`. For a later package the list is the previous package's, still holding its errors, and they are reported again.
+- **Why it is a bug:** the real error is lost in the first case, and wrong errors are reported in the second.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportPackage`.
 - **Versions:** 14.35.

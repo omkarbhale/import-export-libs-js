@@ -32,7 +32,7 @@ The constructor only creates the empty queue.
 
 [12.0] Same: `ImportProc` creates one manager per package at the same place, the queue has the same life (applied once after the last item; dropped on a cancel or a failure) and the constructor only creates it.
 
-[14.35] As in 14.0.7, except that the queue ignores an entry equal to one it already holds (`IMP-251`). The manager has two further members for the AML batch mode (`IMP-5xx`); the constructor still only creates the empty queue.
+[14.35] As in 14.0.7, except that the queue ignores an entry equal to one it already holds (`IMP-251`). The manager has two further members for the AML batch mode (`IMP-520`); the constructor still only creates the empty queue.
 
 ## Processing the references
 

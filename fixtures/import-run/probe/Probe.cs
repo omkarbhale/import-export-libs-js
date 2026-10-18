@@ -13,12 +13,14 @@ namespace Probe
     public class StubConnection : HttpServerConnection
     {
         public List<string> Requests = new List<string>();
+        public List<string> Actions = new List<string>();
         public Func<string, string> Respond;
         public StubConnection() : base("http://stub/", "db", "u", "p", "en-US", null) { }
         public override void CallAction(string actionName, XmlDocument inDom, XmlDocument outDom)
         {
             string req = inDom.OuterXml;
             Requests.Add(req);
+            Actions.Add(actionName);
             string resp = Respond == null ? null : Respond(req);
             if (resp == null) throw new StopProbe("stop after " + Requests.Count);
             outDom.LoadXml(resp);
