@@ -35,7 +35,7 @@ CItemHelper on each input document and records, per case, the input, the transfo
 and the document after ApplyXsl (applied.xml); an error is recorded instead. A folder's *.xml files are
 cases named after the files; --transcript takes the responses of those calls (seq) of a recorded export
 as cases named recorded-<seq>. Source whitespace is kept for export.xsl and dropped for build.xsl, as the
-engine loads each; override with the two switches. --culture sets the thread culture (xsl:sort uses it).
+engine loads each. --culture sets the thread culture (xsl:sort uses it).
 
 Engine options (passed to the engine's host; an option the engine lacks is an error):
   --verbose, --manifest-file <path>, --level <n>, --export-referenced-items,
