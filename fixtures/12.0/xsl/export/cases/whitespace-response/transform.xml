@@ -1,0 +1,6 @@
+<AML><Item type="List" id="L1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <name>l</name>
+  <Relationships>
+    <Item type="Value" id="V1" action="add"><value>a</value></Item>
+  </Relationships>
+</Item></AML>

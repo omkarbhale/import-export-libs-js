@@ -1,0 +1,2 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Method" id="M1" action="get" keyed_name="m"><name>m</name><method_code>a]]&gt;b &lt;x&gt; &amp;
+line2</method_code><comments/><label></label><config_id>C1</config_id><is_current>1</is_current></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

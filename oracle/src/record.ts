@@ -116,7 +116,7 @@ export function importedPackageNames(req: Pick<RecordRequest, "command" | "param
   return manifestPackageNames(readFileSync(join(req.inputDir!, req.manifestName ?? "imports.mf"), "utf8"));
 }
 
-function runId(engine: Engine, command: string): string {
+export function runId(engine: Engine, command: string): string {
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
   return `${stamp}-${engine}-${command}-${randomBytes(3).toString("hex")}`;
 }
@@ -126,7 +126,7 @@ function runId(engine: Engine, command: string): string {
  * characters one to one, so a file with nothing to scrub keeps its exact
  * bytes (BOM, CRLF, any encoding) and the ASCII patterns still match.
  */
-function scrubFile(path: string, secrets: readonly string[]): Record<string, number> {
+export function scrubFile(path: string, secrets: readonly string[]): Record<string, number> {
   const original = readFileSync(path).toString("latin1");
   const { text, counts } = scrub(original, secrets);
   if (text !== original) writeFileSync(path, Buffer.from(text, "latin1"));

@@ -1,0 +1,1 @@
+<AML><Item type="Method" id="M1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><name>m</name><method_code><![CDATA[var s = '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">';]]></method_code><comments>xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"</comments></Item></AML>

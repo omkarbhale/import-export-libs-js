@@ -6,6 +6,7 @@ import { DEFAULT_ENGINE, ENGINES, isEngine, type Engine } from "../../src/engine
 import { NATIVE_DIR, ORACLE_DIR, readManifest, verifyToolset } from "./manifest.js";
 import { DEV_SERVER, record, type HostValue } from "./record.js";
 import { TOOLSET_SOURCES, vendorToolset } from "./vendor.js";
+import { XSL_NAMES, inputsFromPath, inputsFromTranscript, isXslName, recordXsl, type XslInput } from "./xsl.js";
 import { toWslPath, windowsLocalAppData } from "./windows.js";
 
 const USAGE = `Usage: npm run oracle -- [--engine 12.0|14.0.7|14.35] <command> [options]
@@ -18,6 +19,9 @@ Commands:
   export <type>:<id>:<keyed name>...   --package <name> (required)
   import <package folder>              [--manifest imports.mf] [--packages a,b]
   lpimport <package folder>            --lp-dir <folder> [--lp-config ImportConfig.xml] --lp-package <name>
+  xsl <input.xml|folder>...            --xsl export.xsl|build.xsl (required); no server, no password
+                                       [--transcript <fixture folder> --seq <n>,<n>...] [--culture <name>]
+                                       [--preserve-whitespace | --no-preserve-whitespace]
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
@@ -26,6 +30,13 @@ Connection (dev only): --url (${DEV_SERVER.url}), --database (${DEV_SERVER.datab
   or stdin when it is not a terminal; never from a flag or file. import and lpimport take
   LIBSJS-SCRATCH-* packages and items only, and delete what they created when done.
 Output: --out <folder> (default oracle/out/<engine>-<command>-<time>).
+
+xsl runs the engine's own embedded stylesheet (read from the staged Libs.dll, never extracted) through
+CItemHelper on each input document and records, per case, the input, the transform's text (transform.xml)
+and the document after ApplyXsl (applied.xml); an error is recorded instead. A folder's *.xml files are
+cases named after the files; --transcript takes the responses of those calls (seq) of a recorded export
+as cases named recorded-<seq>. Source whitespace is kept for export.xsl and dropped for build.xsl, as the
+engine loads each; override with the two switches. --culture sets the thread culture (xsl:sort uses it).
 
 Engine options (passed to the engine's host; an option the engine lacks is an error):
   --verbose, --manifest-file <path>, --level <n>, --export-referenced-items,
@@ -76,6 +87,12 @@ const OPTIONS = {
   "lp-dir": { type: "string" },
   "lp-config": { type: "string" },
   from: { type: "string" },
+  xsl: { type: "string" },
+  transcript: { type: "string" },
+  seq: { type: "string" },
+  culture: { type: "string" },
+  "preserve-whitespace": { type: "boolean" },
+  "no-preserve-whitespace": { type: "boolean" },
   help: { type: "boolean", short: "h" },
   ...Object.fromEntries(
     [...Object.keys(STRING_OPTIONS), ...Object.keys(NUMBER_OPTIONS), ...Object.keys(LIST_OPTIONS)].map((k) => [
@@ -167,6 +184,42 @@ export async function main(argv: readonly string[]): Promise<number> {
           toWslPath(`${windowsLocalAppData().replace(/\\AppData\\Local$/i, "")}\\Desktop\\${TOOLSET_SOURCES[engine]}`);
         const entry = vendorToolset(engine, from);
         process.stdout.write(`${engine}: vendored ${entry.files.length} files from ${from}\n`);
+        return 0;
+      }
+      case "xsl": {
+        const xsl = values.xsl;
+        if (typeof xsl !== "string" || !isXslName(xsl)) throw new UsageError(`xsl needs --xsl ${XSL_NAMES.join("|")}`);
+        if (values["preserve-whitespace"] === true && values["no-preserve-whitespace"] === true) {
+          throw new UsageError("--preserve-whitespace and --no-preserve-whitespace exclude each other");
+        }
+        const inputs: XslInput[] = rest.flatMap((path) => inputsFromPath(resolve(path)));
+        if (typeof values.transcript === "string") {
+          if (typeof values.seq !== "string") throw new UsageError("--transcript needs --seq <n>,<n>...");
+          const seqs = values.seq.split(",").map((v) => {
+            if (!/^\d+$/.test(v.trim())) throw new UsageError(`--seq '${v}' is not a call number`);
+            return Number(v);
+          });
+          inputs.push(...inputsFromTranscript(resolve(values.transcript), seqs));
+        } else if (values.seq !== undefined) {
+          throw new UsageError("--seq needs --transcript");
+        }
+        if (inputs.length === 0) throw new UsageError("xsl needs input documents (files, folders or --transcript)");
+        const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
+        const out = resolve((values.out as string | undefined) ?? join(ORACLE_DIR, "out", `${engine}-xsl-${stamp}`));
+        const result = await recordXsl({
+          engine,
+          xsl,
+          inputs,
+          out,
+          ...(values["preserve-whitespace"] === true ? { preserveWhitespace: true } : {}),
+          ...(values["no-preserve-whitespace"] === true ? { preserveWhitespace: false } : {}),
+          ...(typeof values.culture === "string" ? { culture: values.culture } : {}),
+        });
+        process.stdout.write(`${out}\n${result.cases} cases\n`);
+        if (result.remainingSecrets.length > 0) {
+          process.stderr.write(`credential-shaped text survived scrubbing:\n  ${result.remainingSecrets.join("\n  ")}\n`);
+          return 1;
+        }
         return 0;
       }
       case "export":

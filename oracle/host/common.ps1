@@ -52,6 +52,38 @@ function Assert-Loaded([string] $Label, [System.Reflection.Assembly] $Assembly, 
     if ($loadedVersion -ne $Version) { throw "$Label version $loadedVersion does not match the manifest ($Version)" }
 }
 
+# Hash-checks IOM.dll and Libs.dll in a staged toolset, loads both, and asserts they are the
+# manifest's builds loaded from that folder. Returns the two assemblies. The hash check comes
+# before anything is loaded.
+function Import-OracleEngine {
+    param(
+        [Parameter(Mandatory)][string] $Engine,
+        [Parameter(Mandatory)][string] $ToolsetDir,
+        [Parameter(Mandatory)] $Expected
+    )
+    $iomPath = Join-Path $ToolsetDir 'IOM.dll'
+    $libsPath = Join-Path $ToolsetDir 'Libs.dll'
+    Assert-Sha256 'IOM.dll' $iomPath $Expected['ExpectedIomSha256']
+    Assert-Sha256 'Libs.dll' $libsPath $Expected['ExpectedLibsSha256']
+
+    # 14.35 ships binding redirects in import.exe.config; a PowerShell host has
+    # none, so dependencies resolve by simple name from the toolset folder.
+    $script:toolsetDir = $ToolsetDir
+    [AppDomain]::CurrentDomain.add_AssemblyResolve({
+        param($sender, $e)
+        $name = (New-Object System.Reflection.AssemblyName($e.Name)).Name
+        $candidate = Join-Path $script:toolsetDir ($name + '.dll')
+        if (Test-Path -LiteralPath $candidate) { return [System.Reflection.Assembly]::LoadFrom($candidate) }
+        return $null
+    })
+    $iom = [System.Reflection.Assembly]::LoadFrom($iomPath)
+    $libs = [System.Reflection.Assembly]::LoadFrom($libsPath)
+    Assert-Loaded 'IOM.dll' $iom $ToolsetDir $Expected['ExpectedIomMvid'] $Expected['ExpectedIomVersion']
+    Assert-Loaded 'Libs.dll' $libs $ToolsetDir $Expected['ExpectedLibsMvid'] $Expected['ExpectedLibsVersion']
+    [Console]::Out.WriteLine(("ENGINE {0}: Libs {1} ({2}), IOM {3} ({4})" -f $Engine, $libs.GetName().Version, $Expected['ExpectedLibsMvid'], $iom.GetName().Version, $Expected['ExpectedIomMvid']))
+    return @{ Iom = $iom; Libs = $libs; IomPath = $iomPath; LibsPath = $libsPath }
+}
+
 function Invoke-OracleHost {
     param(
         [Parameter(Mandatory)][string] $Engine,
@@ -64,28 +96,9 @@ function Invoke-OracleHost {
     foreach ($key in $Defaults.Keys) { $Bound[$key] = $Defaults[$key] }
     foreach ($key in $BoundParameters.Keys) { $Bound[$key] = $BoundParameters[$key] }
     $toolset = $Bound['ToolsetDir']
-    $iomPath = Join-Path $toolset 'IOM.dll'
-    $libsPath = Join-Path $toolset 'Libs.dll'
-
-    # The hash check comes before anything is loaded.
-    Assert-Sha256 'IOM.dll' $iomPath $Bound['ExpectedIomSha256']
-    Assert-Sha256 'Libs.dll' $libsPath $Bound['ExpectedLibsSha256']
-
-    # 14.35 ships binding redirects in import.exe.config; a PowerShell host has
-    # none, so dependencies resolve by simple name from the toolset folder.
-    $script:toolsetDir = $toolset
-    [AppDomain]::CurrentDomain.add_AssemblyResolve({
-        param($sender, $e)
-        $name = (New-Object System.Reflection.AssemblyName($e.Name)).Name
-        $candidate = Join-Path $script:toolsetDir ($name + '.dll')
-        if (Test-Path -LiteralPath $candidate) { return [System.Reflection.Assembly]::LoadFrom($candidate) }
-        return $null
-    })
-    $iom = [System.Reflection.Assembly]::LoadFrom($iomPath)
-    $libs = [System.Reflection.Assembly]::LoadFrom($libsPath)
-    Assert-Loaded 'IOM.dll' $iom $toolset $Bound['ExpectedIomMvid'] $Bound['ExpectedIomVersion']
-    Assert-Loaded 'Libs.dll' $libs $toolset $Bound['ExpectedLibsMvid'] $Bound['ExpectedLibsVersion']
-    [Console]::Out.WriteLine(("ENGINE {0}: Libs {1} ({2}), IOM {3} ({4})" -f $Engine, $libs.GetName().Version, $Bound['ExpectedLibsMvid'], $iom.GetName().Version, $Bound['ExpectedIomMvid']))
+    $engineAssemblies = Import-OracleEngine -Engine $Engine -ToolsetDir $toolset -Expected $Bound
+    $iomPath = $engineAssemblies.IomPath
+    $libsPath = $engineAssemblies.LibsPath
 
     $source = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'OracleHost.cs')
     if ($Engine -eq '12.0') { $source = "#define ENGINE_12`n" + $source }
