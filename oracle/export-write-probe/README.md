@@ -18,3 +18,7 @@ Recorded output: `fixtures/export-write/probe-14.0.7.txt` and `fixtures/export-w
 4. Delete `%LOCALAPPDATA%\libsjs-15-probe` afterwards.
 
 The probes read the engine's `export.xsl` from the vendored DLL. They do not touch the repository.
+
+## The 12.0 probe
+
+`probe-12.0.ps1` calls the 12.0 `Libs.dll`'s own `CdataFilterXmlInMacCondition` and `CommonMethods.SaveToFile` by reflection (EXP-405, EXP-420 to EXP-423 `[12.0]`). It needs no server. Stage `oracle/native/12.0/` (`IOM.dll` and `Libs.dll`) to a `bin` folder and run `powershell -NoProfile -ExecutionPolicy Bypass -File probe-12.0.ps1 -Bin <bin> -Work <empty work folder>`; the recorded output, with the work folder replaced by `<WD>`, is `fixtures/export-write/probe-12.0.txt`. Its long-path case creates a folder about 240 characters deep under the work folder and deletes it.

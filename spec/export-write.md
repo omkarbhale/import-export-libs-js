@@ -12,6 +12,8 @@ Other engines' variants are added by the variant tickets. What happens before th
 
 All exceptions below are .NET Framework exceptions. Where an exception reaches the log, its message is part of the observable behaviour.
 
+The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`), compared method by method with 14.0.7's, and from an offline probe of the vendored 12.0 DLL, `oracle/export-write-probe/probe-12.0.ps1`, recorded in `fixtures/export-write/probe-12.0.txt` (probe ids `CDF…` and `SAVE…`). The 12.0 build has no `IOWrapper` and no long-path normalisation; its post-XSL step for `filter_xml` is a different method (EXP-405).
+
 ## The post-XSL sequence
 
 ### EXP-400: What runs after the transform, and how failures are mapped
@@ -30,6 +32,8 @@ Every step works on the same DOM object, which is IOM's `PreserveWhitespace = tr
 
 `XmlException`, `NullReferenceException` and `XPathException` thrown by any step of `Export`, including the pre-XSL steps, become a `CItemException` with faultcode `-1`, faultstring the .NET stack trace (its frames are not reproduced), and faultdetail the exception's message followed by ` Can't export item.` (one leading space). The orchestration area decides how the log shows it. A `CItemException` thrown inside a step (EXP-401) passes through unchanged. Any other exception, such as `ArgumentException`, `IOException` or `UnauthorizedAccessException`, is not mapped: it leaves `Export` as it is.
 
+[12.0] The same sequence, with these differences. Step 3 runs only `CdataFilterXmlInMacCondition` and only when the exported item's type is `mp_MacPolicy` (EXP-405); there is no pass for `dr_RelationshipFamily`. In step 7 the type folder and the file are made without path normalisation (EXP-421), and the file is written by `CommonMethods.SaveToFile` (EXP-423). Failures are mapped as in 14.0.7.
+
 ## ApplyXsl
 
 ### EXP-401: The transform output is stripped of one namespace declaration and reloaded into the same DOM
@@ -46,9 +50,13 @@ Failures:
 
 The compiled transform is cached for the process. This is not observable.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-402: The namespace strip also deletes that text from element content
 
 [14.0.7] Because the strip of EXP-401 is a plain string replacement on the serialized output, it also deletes the same text where it occurs inside element text or CDATA: a `method_code` containing `a xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" b` is exported as `a  b`, and a `comments` element holding exactly that text is exported as `<comments></comments>` (an element emptied this way is written `<x></x>`, not `<x />`, because the reload gives it an empty text node; probe `AX1`). Attribute values are not affected, because the serializer writes their quotes as `&quot;`. The port reproduces this.
+
+[12.0] Same as 14.0.7.
 
 ## RemovePermissionIdWhenItMatchesToDefaultPermission
 
@@ -65,6 +73,8 @@ Removal is `RemoveChild`, so the whitespace nodes around `P` stay and the output
 
 A `permission_id` that does not match the default stays, with its attributes (probes `RPM2`, `RPM4`).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-404: A type without default permission data throws a NullReferenceException
 
 [14.0.7] When the lookup of EXP-403 succeeds but the data is incomplete, the step throws `NullReferenceException` (message `Object reference not set to an instance of an object.`), which EXP-400 maps to a per-item failure:
@@ -73,6 +83,8 @@ A `permission_id` that does not match the default stays, with its attributes (pr
 - neither of the two is `1` together and the type has no default `Allowed Permission` with a `Permission` `id` (probe `RPM6`).
 
 A relationship type with `is_relationship` and `use_src_access` both `1` never reaches the default-permission comparison, so it passes without a default (probe `RPM5`).
+
+[12.0] Same as 14.0.7.
 
 ## CdataFilterXml
 
@@ -95,9 +107,19 @@ Vectors (the input is the element's content as XML text, the output the file byt
 - Every `filter_xml` pair of one child is wrapped (`CDF6`); a CDATA node followed by text keeps the text (`CDF11`).
 - Text whose markup is escaped, `&lt;filter_xml&gt;&lt;a x="1"&gt;t&amp;amp;u&lt;/a&gt;&lt;/filter_xml&gt;`, matches no wrap, and step 3 turns it into real elements `filter_xml > a` (with text `t&u`), which the writer indents (`CDF3`).
 
+[12.0] `CdataFilterXmlInMacCondition(doc)` runs for `mp_MacPolicy` only, on the `condition_xml` child, and **replaces only the first occurrence** in each of the first two steps:
+
+1. If `S` does not contain `<filter_xml><![CDATA[`, the first `<filter_xml>` in `S` is replaced by `<filter_xml><![CDATA[` and the result becomes the child's `InnerXml`.
+2. If the child's `InnerXml` now does not contain `]]]]><![CDATA[></filter_xml>`, the first `</filter_xml>` in it is replaced by `]]]]><![CDATA[></filter_xml>` and the result becomes the child's `InnerXml`.
+3. As in 14.0.7: the child's `InnerXml` is set to `WebUtility.HtmlDecode` of its current `InnerXml`.
+
+A condition with two or more `filter_xml` elements therefore keeps the later ones as they were. Probed with the 12.0 DLL (`fixtures/export-write/probe-12.0.txt`): `x` and `y` in `CDATA[<filter_xml>x</filter_xml><filter_xml>y</filter_xml>]` give `<![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml><filter_xml>y</filter_xml>]]>` (14.0.7 wraps both); three give the same with only the first wrapped (`CDF13`); a first element that is already wrapped (`CDF14`) leaves the second element as it was, and two `mp_MacPolicy` items are handled one at a time (`CDF15`: the single element of the first is wrapped, and the first element of the second is wrapped while its second is left). The vectors of 14.0.7 with one `filter_xml` (`CDF1` to `CDF5`, `CDF7`, `CDF8`, `CDF10`, `CDF11`) give the same output. The check "S contains `<filter_xml><![CDATA[`" looks at the whole text, so one wrapped element suppresses the wrapping of the others.
+
 ### EXP-406: HtmlDecode rewrites entity-like text inside the CDATA and can fail the item
 
 [14.0.7] Step 3 of EXP-405 decodes the `InnerXml` string, which still contains CDATA markers, so it also decodes text that is inside a CDATA section: `&amp;nbsp;` becomes `&nbsp;`, `&#160;` becomes U+00A0, `&lt;b&gt;` becomes `<b>` and `&eacute;` becomes `é` (probe `CDF7`). Plain text that holds a bare `&`, such as `plain &amp; text`, decodes to `plain & text`, and loading it throws `XmlException` (`An error occurred while parsing EntityName. Line 1, position 8.`), which EXP-400 maps to a per-item failure (`CDF10`). `HtmlDecode` decodes the HTML 4 named entities (case-sensitive, plus `&apos;`) and decimal or hexadecimal references in the Basic Multilingual Plane, once; it leaves astral references, unknown names and references without `;` as they are. The port reproduces this.
+
+[12.0] Same step 3, for `condition_xml` of `mp_MacPolicy` items only (EXP-405). The vectors `CDF7` (entity-like text inside the CDATA) and `CDF10` (a bare `&` after decoding, `An error occurred while parsing EntityName. Line 1, position 8.`) give the same results in the 12.0 probe.
 
 ## ReplaceReferencesToPolyLists
 
@@ -111,13 +133,19 @@ Vectors (the input is the element's content as XML text, the output the file byt
 
 The new nodes carry no whitespace. In a document with whitespace nodes (EXP-425) the replaced block is written inline (`RPL12`). Properties whose `data_type` is not `list`, or whose `Item` is not a `Property`, are never touched (`RPL10`).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-408: The poly-type names are fetched when the first item reaches this step
 
 [14.0.7] `GetPolytypeNames` (EXP-046) is called at the start of `ReplaceReferencesToPolyLists`, before any property is looked at. Because the step runs for every exported item, the first item of any type triggers the fetch, even when it has no list property, and a failure of the fetch fails that item here (a `CItemException`, which EXP-400 passes through).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-409: After a failed fetch this step converts nothing for the rest of the process
 
 [14.0.7] The latched empty list of EXP-047 makes every later call of this step find no poly-type names, so no `data_source` is replaced (EXP-407, step 2) and the items are exported with their references to polymorphic types unconverted. The bug is registered once, as EXP-047.
+
+[12.0] Same as 14.0.7.
 
 ## RemoveNamespaceNodes
 
@@ -129,9 +157,13 @@ An `Item` in a namespace, for example under a default `xmlns="urn:x"` of its own
 
 In practice this removes the `xmlns:i18n` declaration that the transform copied onto each top-level `Item` (EXP-401). Whitespace and element layout are not touched.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-411: The test for "no prefix" is dead code
 
 [14.0.7] The removal condition is "the prefix is null, or the prefix trimmed is not empty". .NET reports an unprefixed attribute's prefix as the empty string, never null, so the first half is never true, and only the second half acts. The effect is the rule of EXP-410: namespace declarations with a prefix go, `xmlns=""` and plain attributes stay. The port reproduces the effect, and does not strip unprefixed attributes.
+
+[12.0] Same as 14.0.7.
 
 ## RemoveEmptyRelationships
 
@@ -140,6 +172,8 @@ In practice this removes the `xmlns:i18n` declaration that the transform copied 
 [14.0.7] The set of every `Relationships` element in no namespace, at any depth, that has **no child element** is selected once, before any removal. Each is removed from its parent. A `Relationships` that has only whitespace, text, a comment or CDATA also has no child element, so it is removed with that content (probe `REL4`). Removing does not cascade: a `Relationships` that becomes empty because its only item's own `Relationships` was removed stays (`REL3`). A `Relationships` in a namespace (`p:Relationships`) is not matched (`REL9`).
 
 The parent keeps what it had: when it held nothing else it becomes `<Item type="a"></Item>` (an open and close tag) because it was not empty when parsed, not `<Item … />` (`REL1`, `REL2`, `REL8`). The whitespace nodes next to the removed element stay, so a document with whitespace nodes keeps a blank, indented line there (`REL6`, EXP-427). A null document throws `ArgumentNullException` with parameter `doc`.
+
+[12.0] Same as 14.0.7.
 
 ## Output layout
 
@@ -154,6 +188,8 @@ So `com.aras.defaults` (no final dot) and `com.aras.innovator` are not standard,
 
 The culture-sensitive comparison also ignores some code points, such as U+00AD (`com.aras.innov\u00ADator.x` is core). The port compares ordinally, which differs only for such names; it does not reproduce the ignorable code points.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-414: The package folder is named by the package's last segment unless the package is standard
 
 [14.0.7] `CreateOutputDir(packageName)` computes a relative part and joins it to the working directory:
@@ -165,15 +201,21 @@ The result is the working directory, a `\`, and the relative part, with no separ
 
 The result is the folder the package's items are written into: it becomes the helper's `Folder` for the package's export (the orchestration area specifies the call order).
 
+[12.0] Same names. `CreateOutputDir` makes the folder with `Directory.Exists`, `Directory.Delete` and `Directory.CreateDirectory` on the path as built, with no normalisation (EXP-421).
+
 ### EXP-415: An existing package folder is deleted recursively before it is created again
 
 [14.0.7] If the folder of EXP-414 exists (a case-insensitive match, EXP-420), it is deleted with all its content, recursively and without any check of what it holds, and then created empty. A folder with other files, subfolders or a manifest in it loses them (probe `COD`, `-- wipe test`). The folder's name is then spelled as the new request spells it: wiping `…\Core` for `com.aras.innovator.core` leaves `…\core` (probe `case-insensitive wipe`). Only the leaf folder is deleted; its parents and siblings stay.
 
 A read-only file in the folder makes `Directory.Delete` throw `UnauthorizedAccessException` (`Access to the path '<file name>' is denied.`), and so does any other file the process cannot delete; the exception is not mapped (EXP-400). When a file, not a folder, has the folder's name, creating it throws `IOException` (`Cannot create "<path>\" because a file or directory with the same name already exists.`, probe `FILEDIR`).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-416: Packages with the same last segment wipe each other's output
 
 [14.0.7] Because EXP-414 reduces every non-standard package to its last segment, two packages such as `com.x.PLM` and `org.y.PLM` share the folder `PLM\Import`. The folder is created, wiped and recreated for each package in turn (EXP-415), so the second package's export deletes the first package's files. The same happens for standard packages that differ only in case, and between a referenced package's export and a main package of the same last segment. Nothing warns of it, and the manifest still lists both packages. The port reproduces this.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-417: Item files go into a folder named by the item's type
 
@@ -189,15 +231,21 @@ A read-only file in the folder makes `Directory.Delete` throw `UnauthorizedAcces
 
 Real ItemType names are identifiers, possibly with spaces. The exceptions are `IOException` or `SystemException` classes, not `CItemException`, so EXP-400 does not map them (probes `TW`).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-418: The file name is the keyed name, or the requested id when the keyed name cannot be a file name
 
 [14.0.7] The file name is `<name>.xml`. `<name>` is the item's keyed name, except that it is the item's id name (the id the item was requested with, before any config id or current-version resolution) when the keyed name is null or empty, or contains any character of `Path.GetInvalidFileNameChars()`: `"`, `<`, `>`, `|`, the characters U+0000 to U+001F, `:`, `*`, `?`, `\` and `/`. A keyed name made of spaces, or with leading or trailing spaces or dots, is valid as it stands (` .xml`, `..xml`). The id name is used without any check. Because `.xml` always ends the name, the file name never ends in a space or dot, so the stripping of trailing spaces and dots of EXP-420 does not apply to files.
+
+[12.0] Same as 14.0.7.
 
 ## Duplicates and the Windows file-system model
 
 ### EXP-419: A file with the same name as an earlier one is overwritten silently
 
 [14.0.7] The engine never checks whether the file exists. The writer truncates and rewrites it (EXP-423), so when two items of one type and package have the same file name, the later one replaces the earlier one, and only its file remains. Names collide under EXP-420, which compares case-insensitively: `y.XML`, `y.Xml` and `Y.xml` are one file, which keeps the spelling of its first creation (`y.XML`) and the content of the last write (probe `T1`). Items with the same keyed name and different ids are typical, such as items with the same name of different configurations. The export reports each as successfully exported. The port reproduces this.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-420: The port applies Windows file-system rules on every OS
 
@@ -211,6 +259,8 @@ Real ItemType names are identifiers, possibly with spaces. The exceptions are `I
 - **Length.** A path segment longer than 255 UTF-16 code units throws `PathTooLongException` (`The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.`), and so does a path given to the engine with 259 characters or more (EXP-421). A path under that limit is written even when its full path is over 300 characters.
 
 The directory listing order that import relies on is specified with import and is not part of this rule.
+
+[12.0] Same rules for separators, trailing dots and spaces, invalid characters, case and reserved names; they come from the file system and .NET's file functions, not from the engine. The **length** rule is different: the engine does not call `Path.GetFullPath` or any normalisation (EXP-421), so the exceptions that 14.0.7 gets from `NormalizeLongPath` do not occur. A path is handed to `Directory` and `StreamWriter` as built, and whether a full path of 260 characters or more works is the host runtime's and the system's setting. On the oracle machine (Windows PowerShell 5.1, .NET Framework 4.8, long paths enabled in Windows) a folder and an item file whose full path was about 300 characters long were created and written without any prefix (probe `SAVE4` in `fixtures/export-write/probe-12.0.txt`; directories up to 321 characters were also created). The file system's own limits (255 characters in a name) still apply. The port writes whatever the host file system takes.
 
 ## NormalizeLongPath
 
@@ -227,9 +277,13 @@ Probes `NLP`, `NLPB`, `NLPT`, `NLPL` (the relative rows were run from a work fol
 
 A path written `\\?\C:\a\b` or `\?\C:\a` is returned as `C:\a\b` and `C:\a`.
 
+[12.0] Not present. 12.0 has no `IOWrapper` and no `NormalizeLongPath`: `Directory.Exists`, `Directory.Delete`, `Directory.CreateDirectory`, the item-file writer, the manifest, the log and the manifest reader all take the path exactly as the engine built it. Nothing is trimmed from its start, no `\\?\` prefix is added, and a relative path is resolved by the file functions against the current directory.
+
 ### EXP-422: A UNC path loses its leading backslashes and becomes relative
 
 [14.0.7] Step 2 of EXP-421 removes the two leading backslashes of a UNC path, so `\\server\share\dir\f.xml` is returned as `server\share\dir\f.xml`, a relative path. The engine then opens it against the process's current directory, so an output folder or manifest given as a UNC path is read from or written to `<current directory>\server\share\…` instead (probes `NLP`, `NLPU`, `UNCW`: the write fails or lands in the wrong place). `\\?\UNC\server\share\f.xml` becomes `UNC\server\share\f.xml` the same way. When the full path (after resolving against the current directory) is 255 characters or longer, the prefixed result is built from that resolved path. The port reproduces this on Windows-style paths: a path that starts with `\\` is resolved relative to the working directory.
+
+[12.0] Not present. With no normalisation a UNC path such as `\\server\share\dir` is handed to the file functions as it is, and works. The 14.0.7 bug does not exist in 12.0.
 
 ## The item file
 
@@ -238,6 +292,8 @@ A path written `\\?\C:\a\b` or `\?\C:\a` is returned as `C:\a\b` and `C:\a`.
 [14.0.7] `XmlDocumentSaveWithSettings(doc, path)` (the path is normalized by EXP-421) opens a `StreamWriter` on the path with `append: false`, which creates the file or truncates an existing one, with the encoding UTF-8 plus BOM (`EF BB BF`). It creates an `XmlWriter` on it with `Indent = true`, `IndentChars = " "` (one space) and `OmitXmlDeclaration = true`, and every other setting default: new line characters `\r\n`, new line handling `Replace`, new lines on attributes off. It then calls `XmlDocument.Save` with that writer, and disposes the writer and the stream. The file is the BOM followed by the document's serialization. There is no XML declaration and no newline after the root's end tag.
 
 The same writer settings and encoding are the only ones used for item files; the document is the DOM of EXP-400.
+
+[12.0] The item file is written by `CommonMethods.SaveToFile(path, doc)`, which makes the same bytes: a `StreamWriter(path, append: false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true))`, an `XmlWriter.Create` over it with `Indent = true`, `OmitXmlDeclaration = true` and `IndentChars = " "`, and `doc.Save(writer)`. The path is not normalised (EXP-421). The probe confirms the BOM, the indentation, CR LF, `<x />` for empty elements and the raw non-ASCII characters (`SAVE1`, `SAVE3`), and a missing folder is `DirectoryNotFoundException` (`SAVE2`).
 
 ### EXP-424: Text, attributes, line breaks and empty elements
 
@@ -253,6 +309,8 @@ Example: `<AML><Item type="Method" id="ABC" action="add"><name>x</name><e/><e2><
 
 After EXP-401 every element the transform wrote without content is `<x />`; `<x></x>` in a file comes from an element that got an empty text node in the transform, from the strip of EXP-402, or from the post-XSL steps (EXP-427).
 
+[12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
+
 ### EXP-425: Mixed content stops the indentation for the rest of its element
 
 [14.0.7] When the content of an element holds a text node, a whitespace-only node, a significant-whitespace node or a CDATA node, the writer stops indenting from that node on, for the rest of that element's content and its descendants. The children already written stay indented. The element's end tag then follows without a line break or indent. Siblings and ancestors are not affected. Whitespace nodes are written as they are, except that their line breaks become `\r\n`. This is how a response's whitespace, kept in the document (EXP-400), reaches the file.
@@ -264,6 +322,8 @@ After EXP-401 every element the transform wrote without content is `<x />`; `<x>
 
 Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in place, so the result can hold a line with only indentation: after the removal of `permission_id` (EXP-403) the item is `<Item …>\r\n  <name>n</name>\r\n  \r\n </Item>` (probe `RPM17`).
 
+[12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
+
 ### EXP-426: CDATA, comments, processing instructions and document-level nodes
 
 [14.0.7]
@@ -271,6 +331,8 @@ Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in p
 - **CDATA** is written as `<![CDATA[…]]>`, with LF, CR and CRLF in the body written as `\r\n`. An empty CDATA node stays `<![CDATA[]]>`. Adjacent CDATA nodes stay separate. A body that contains `]]>` (only possible when the DOM was built by code or by EXP-405) is split as `]]]]><![CDATA[>`. A CDATA node counts as content for EXP-425.
 - **Comments and processing instructions** in element-only content are written on their own indented line, like elements, and do not stop the indentation.
 - **Document level:** a DOM that holds an XML declaration node would write it (a declaration cannot exist after EXP-401); whitespace after the root element is written, with its line breaks as `\r\n`, but the transform output has none.
+
+[12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
 
 ### EXP-427: Nodes the post-XSL steps create or change keep or lose their empty flag as the DOM does
 
@@ -282,6 +344,10 @@ Removing a node in a post-XSL step leaves its neighbouring whitespace nodes in p
 - removing a node's last child leaves the parent's flag unchanged, so a parent that had content becomes `<x></x>` (EXP-412);
 - removing all children keeps the element's previous flag.
 
+[12.0] Same, as one writer with the same settings makes the bytes (EXP-423).
+
 ### EXP-428: An error while writing leaves a partial file
 
 [14.0.7] The file is created before the document is serialized, and the writer is disposed in a `finally`, so a serialization failure keeps what was written until then. A character reference to a lone surrogate (`&#xD800;`) loads fine, and when the file is written it throws `ArgumentException` (`The surrogate pair (0xD800, 0x79) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF).`, the second number being the following character): the file then holds the BOM and the text written before the failing node, here `<AML>\r\n <Item type="a">\r\n  <name>` (36 bytes, probe `SUR`). The exception is not a `CItemException`, so EXP-400 does not map it; it leaves `Export`.
+
+[12.0] Same: a failed write leaves the partial file, since the writer is opened first and the document is saved into it, as in 14.0.7. Registered in `bugs.md`.

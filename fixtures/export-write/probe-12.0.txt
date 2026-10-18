@@ -1,0 +1,32 @@
+## CDF CdataFilterXmlInMacCondition (12.0: first occurrence only, condition_xml only)
+CDF1 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>a&b</filter_xml>]]></condition_xml></Item></AML>
+CDF1 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[a&b]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF2 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml>]]></condition_xml></Item></AML>
+CDF2 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF3 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml>&lt;filter_xml&gt;&lt;a x=\"1\"&gt;t&amp;amp;u&lt;/a&gt;&lt;/filter_xml&gt;</condition_xml></Item></AML>
+CDF3 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml>\r\n   <filter_xml>\r\n    <a x=\"1\">t&amp;u</a>\r\n   </filter_xml>\r\n  </condition_xml>\r\n </Item>\r\n</AML>"
+CDF4 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[no filter here &amp; &lt;]]></condition_xml></Item></AML>
+CDF4 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[no filter here & <]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF5 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml/></Item></AML>
+CDF5 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml />\r\n </Item>\r\n</AML>"
+CDF6 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml><filter_xml>y</filter_xml>]]></condition_xml></Item></AML>
+CDF6 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml><filter_xml>y</filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF7 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x &amp;nbsp; &#160; &lt;b&gt; &eacute;</filter_xml>]]></condition_xml></Item></AML>
+CDF7 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x &nbsp; \u00A0 <b> \u00E9]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF8 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x]]]]><![CDATA[></filter_xml>]]></condition_xml></Item></AML>
+CDF8 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF10 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml>plain &amp; text</condition_xml></Item></AML>
+CDF10 EXC: System.Xml.XmlException: An error occurred while parsing EntityName. Line 1, position 8.
+CDF11 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml>]]>  tail</condition_xml></Item></AML>
+CDF11 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml>]]>  tail</condition_xml>\r\n </Item>\r\n</AML>"
+CDF13 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml><filter_xml>y</filter_xml><filter_xml>z</filter_xml>]]></condition_xml></Item></AML>
+CDF13 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml><filter_xml>y</filter_xml><filter_xml>z</filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF14 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml><filter_xml>b</filter_xml>]]></condition_xml></Item></AML>
+CDF14 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[a]]]]><![CDATA[></filter_xml><filter_xml>b</filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+CDF15 in : <AML><Item type=\"mp_MacPolicy\" id=\"1\"><condition_xml><![CDATA[<filter_xml>x</filter_xml>]]></condition_xml></Item><Item type=\"mp_MacPolicy\" id=\"2\"><condition_xml><![CDATA[<filter_xml>y</filter_xml><filter_xml>z</filter_xml>]]></condition_xml></Item></AML>
+CDF15 out: [BOM]"<AML>\r\n <Item type=\"mp_MacPolicy\" id=\"1\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[x]]]]><![CDATA[></filter_xml>]]></condition_xml>\r\n </Item>\r\n <Item type=\"mp_MacPolicy\" id=\"2\">\r\n  <condition_xml><![CDATA[<filter_xml><![CDATA[y]]]]><![CDATA[></filter_xml><filter_xml>z</filter_xml>]]></condition_xml>\r\n </Item>\r\n</AML>"
+## SAVE CommonMethods.SaveToFile (12.0: the item-file writer, no path normalisation)
+SAVE1 out: [BOM]"<AML>\r\n <Item type=\"Foo\" id=\"1\" action=\"add\">\r\n  <name>caf\u00E9</name>\r\n  <text>a\r\nb</text>\r\n  <empty />\r\n  <Relationships />\r\n </Item>\r\n</AML>"
+SAVE2 missing folder: EXC: System.IO.DirectoryNotFoundException: Could not find a part of the path '<WD>\sub\s2.xml'.
+SAVE3 relative path: [BOM]"<AML>\r\n <Item type=\"Foo\" id=\"1\" action=\"add\">\r\n  <name>caf\u00E9</name>\r\n  <text>a\r\nb</text>\r\n  <empty />\r\n  <Relationships />\r\n </Item>\r\n</AML>"
+SAVE4 long path (full path 239 characters longer than the work folder, over 260 in total: True): written

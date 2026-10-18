@@ -10,6 +10,8 @@ Sources:
 
 Rules that say "not probed live" come from the IOM source alone: they need server state that dev does not have until the scratch fixtures (wayfinder ticket 67) are recorded.
 
+The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`) compared method by method with 14.0.7's and from live exports of the vendored 12.0 engine against dev. The two builds differ here in the float-property recursion (EXP-116) and in the `dr_RelationshipFamily` and `ac_PolicyAccessItemAttribute` steps (EXP-117, EXP-118, EXP-121); every other rule says `Same as 14.0.7.`
+
 ## Conventions used by every rule here
 
 - **The response document** is the DOM `CItemHelper.applyAML` returns (`Item.dom` of the `ApplyItem` response): a SOAP envelope (`Envelope/Body/Result/Item`). IOM creates it with `PreserveWhitespace` on, so whitespace the server sent stays. The steps below edit this one document in place, in the order of EXP-100. A **fetch** is `CItemHelper.applyAML`: it throws on any fault, including faultcode `0` ("no items", WIRE-006).
@@ -40,11 +42,15 @@ Rules that say "not probed live" come from the IOM source alone: they need serve
 
 The item type tested is the type name of the item being exported (`ExportItem.typeName`), compared exactly (ordinal, case-sensitive). Steps 8 are mutually exclusive. Steps 13 onward (the XSL and the post-processing) are other documents.
 
+[12.0] Same steps and order, except: there is no row for `ac_PolicyAccessItemAttribute` in step 11 (nothing runs for it), step 10 recurses as EXP-116 says, and step 11 for `dr_RelationshipFamily` is EXP-117 without the re-indent.
+
 ## EXP-101: Which exceptions the steps raise, and which are wrapped
 
 [14.0.7] Inside the `try` of `Export`, an `XmlException`, a `NullReferenceException` or an `XPathException` is converted to a `CItemException` with faultcode `-1`, `faultstring` the .NET stack trace, and `faultdetail` and message the original message followed by ` Can't export item.` (a leading space). Every other exception passes through unchanged: a `CItemException` from a fetch (faultcode from the server, or `-1` and `-99` from the helpers named below), a plain `System.Exception`, an `ArgumentException`, an `InvalidCastException`. The first stage that catches them is the export of one item (`spec/export-run.md`).
 
 A null dereference is how these steps report a missing element. Wherever a rule says "dereferences" a result that can be absent, the engine fails with the `NullReferenceException` message `Object reference not set to an instance of an object.`, which this rule wraps. The port reproduces the wrapped message and faultcode; the stack trace text is .NET's and is not reproduced (the log rules say how it is shown).
+
+[12.0] Same as 14.0.7.
 
 ## ItemType and xClassificationTree
 
@@ -53,6 +59,8 @@ A null dereference is how these steps report a missing element. Wherever a rule 
 [14.0.7] For an item of type `ItemType`, step 5 first removes at most one relationship from the response document: the first element, in document order anywhere in the document, matching `//Relationships/Item[@type='Client Event' and related_id[@keyed_name='cmf_OnShowContainer']]`. The `Relationships` container stays even when it becomes empty (the empty-relationship cleanup is a later step). This removal is made on the real document, so it reaches the file.
 
 For `xClassificationTree` see EXP-105. For every other type step 5 does nothing.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-104: ItemType: the cmf lookup that edits a copy
 
@@ -78,11 +86,15 @@ Failures, taken from the IOM source (not probed live):
 - Each removal needs exactly one matching relationship in the copy. With none, or with several, `removeRelationship` throws `System.ArgumentException`, message `The argument passed to the method is not a single item`, which is not wrapped.
 - A `{g}` containing an apostrophe breaks the XPath and raises `XPathException`, which is wrapped.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-105: xClassificationTree: system xClass_xProperty_Flatten relationships are removed
 
 [14.0.7] For an item of type `xClassificationTree`, step 5 edits the real document. Taking the Result item found by `//Result/Item`, for each direct relationship item `Relationships/Item[@type='xClass']` of it, in document order, it removes every direct relationship item `Relationships/Item[@type='xClass_xProperty_Flatten']` of that `xClass` item. Nothing deeper is touched, and the `Relationships` containers stay even when they become empty.
 
 If the document has no `Result/Item`, IOM throws `System.Exception` (`Not a single item`), which is not wrapped.
+
+[12.0] Same as 14.0.7.
 
 ## Extended properties and ids
 
@@ -98,6 +110,8 @@ If the document has no `Result/Item`, IOM throws `System.Exception` (`Not a sing
 
 The possible `set` values are therefore `permission_id`, `permission_id|explicit`, `permission_id|value` and `permission_id|explicit|value`. The branch that sets the attribute on an element with no attributes cannot run, because step 4 guarantees an attribute.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-107: Ids of versionable items are replaced by config ids
 
 [14.0.7] Step 7, for a versionable item type, on the real document:
@@ -106,6 +120,8 @@ The possible `set` values are therefore `permission_id`, `permission_id|explicit
 2. It sets the `id` attribute of the first `Result/Item` to that text. An existing `id` attribute is replaced in place; a missing one is added after the others.
 3. For every `source_id` element at `Relationships/Item/source_id` under that Result item (direct relationship items only), it replaces the content with that text (`InnerText`, so any child element is dropped and the attributes stay).
 4. It removes the `id` attribute from every direct relationship item `Relationships/Item` of the Result item. Their children and deeper items keep theirs.
+
+[12.0] Same as 14.0.7.
 
 ## Relationship types, sequences and forms
 
@@ -119,6 +135,8 @@ The possible `set` values are therefore `permission_id`, `permission_id|explicit
 4. It then takes the first `Result/Item/source_id` of the document, which is the RelationshipType's own `source_id` and not the embedded item's, and, if it exists, adds an attribute `dependencyLevel` to the first `Result/Item`, the result of EXP-109 called with that text and `0`, written as an invariant integer. The attribute is added after the existing ones (an existing one would be replaced in place).
 
 The embedded copy is subject to every later step, including the rewrites of EXP-113 and EXP-116, which see it as part of the document.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-109: The dependency level counts the chain of RelationshipTypes above an ItemType
 
@@ -134,9 +152,13 @@ Example on dev: `Grid Event` is a RelationshipType from `Property` to the ItemTy
 
 The engine recurses without a bound, so data in which the chain is a cycle never ends and .NET overflows its stack. The port keeps the result for every finite chain and, past the one fixed recursion limit it uses for all such cases (the build ticket sets the number), fails with a visible error instead. This is the "unbounded recursion" deviation of `roadmap/round-5.md`; no real data reaches it.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-110: Sequence: current_value is removed
 
 [14.0.7] Step 8 for `Sequence`: it takes the first `Item` of type `Sequence` anywhere in the document (`//Item[@type='Sequence']`). If it has a `current_value` child, that element is removed (only the first such child; its neighbouring whitespace stays). Without a matching item, or without the child, nothing changes.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-111: Form: Field propertytype_id is replaced by the Property item
 
@@ -147,11 +169,15 @@ The engine recurses without a bound, so data in which the chain is a cycle never
 3. If the fetch succeeds and has a first `Result/Item`, the `propertytype_id` content is replaced by a deep copy of that Property item (its attributes `keyed_name` and `type` stay).
 4. A fetch failure follows EXP-112.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-112: Form: the catch handles the wrong fault (bug)
 
 [14.0.7] Around the Property fetch of EXP-111, the catch of `CItemException` is inverted. When the fault has faultcode `0` (the Property is not found), it sets `faultdetail` to `Unable to get property {t} for field {name}` and rethrows, so a missing Property aborts the export of the form. `{name}` is the Field name of EXP-111 and `{t}` is the `type` attribute of the `propertytype_id` element, taken only when that element has a `keyed_name` attribute, and the empty string otherwise (the engine tests `keyed_name` and reads `type`: when `keyed_name` is present and `type` is absent, reading it throws a `NullReferenceException` inside the catch, which replaces the `CItemException` and is wrapped by EXP-101).
 
 For every other faultcode (a permission error, a server fault, IOM's `999` transport fault) the exception is swallowed: nothing is embedded, and the form continues with the `propertytype_id` left as the plain id. This is a reproduced bug (registered in `bugs.md`).
+
+[12.0] Same as 14.0.7.
 
 ## Related items and float properties
 
@@ -171,6 +197,8 @@ All `Relationships` elements at any depth count. In XPath, `@a!='x'` is false wh
 4. The related `Item` is removed from its `related_id` and the `related_id` content is set to the replacement text (`InnerText`). The `related_id` keeps its attributes.
 
 A lookup that finds nothing (faultcode `0`) throws the `CItemException` with `faultdetail` `Unable to get definition of {type attribute text}: {name}`; that is raised by the lookup helper, whose own rule is in `spec/export-requests.md`.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-114: The config id of a related item
 
@@ -195,11 +223,15 @@ From the export path the `action="get"` and empty-`id` branches are not reached 
 4. It builds `<Item type='{type}' action='get' select='id'>`, and for each unique property, in order: the property's `name` child is required (absent throws `CItemException` `-1`, `Error when trying to build unique key for type {type}: required Property doesn't have a name`); the property name is used as an XPath relative to the item (`item.SelectSingleNode(name)`: unescaped, so a name that is not a valid XPath raises an `XPathException`) and when it finds an element, `<{name}>{its text}</{name}>` is appended, unescaped. When it finds nothing: with `exceptionIfPropMissing` it throws `CItemException` `-1`, `Property {name} that is part of the unique key for type {type} is not part of the response`; without it the property is skipped. It closes with `</Item>`.
 5. That text is applied through `Item.apply`. A fault gives null. Otherwise the result is the value of `@id` of the first `Result/Item`. When every property was skipped, the request has no criteria and returns the first item of the type.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-115: Nodes already detached are still processed (bug)
 
 [14.0.7] EXP-113 selects its items before it changes any of them, and removes each non-dependent related item from the document while it loops. A related item nested inside another selected item is still in the snapshot after its ancestor has been removed. It is processed anyway: its metadata lookups are fetched (and may fail), and its `related_id` is rewritten in the detached subtree, which nobody reads. So the requests of EXP-113 are made for every selected item, including those inside collapsed ones, in document order (probed: a parent `P` containing a nested `Q` followed by two siblings visits `P`, `Q`, then the siblings). A dependent related item stays attached, so its nested items are processed on the document.
 
 This is a reproduced bug (registered in `bugs.md`): the extra lookups are cached, so they cost one request per new type name, but a lookup that fails (for example a RelationshipType the server does not have) aborts the export of the item although the node it concerns is no longer part of the output.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-116: Float item properties holding an id are converted to config ids
 
@@ -218,6 +250,13 @@ This is a reproduced bug (registered in `bugs.md`): the extra lookups are cached
 
 Not pinned by this ticket: whether the dev server's `data_source` element carries a `name` attribute. The engine skips every property that lacks it, so the fixtures that cover float properties (wayfinder ticket 24) decide whether this step ever converts a value.
 
+[12.0] Step 10 applies under the same condition (the response has an `Envelope/Body/Result/Item`) and does the same for one item, with two differences in how far it goes:
+
+1. It recurses only into the item's `Relationships/Item` children, in document order, not into every `*/Item`. An item held by a property, such as `related_id/Item` or `source_id/Item`, is not visited. Its float properties are not looked up, so a float item property in it keeps the id the server sent (the generation's id) where 14.0.7 writes the config id; and none of the lookups that 14.0.7 makes for such an item (the float-property lookup for its type, the config id lookups of its values) is sent.
+2. When the float-property lookup of the item's type returns a faultcode `0` fault (the type has none), the method ends: it does not recurse, so no `Relationships/Item` below an item of such a type is visited either. 14.0.7 goes on recursing.
+
+The lookup itself, its cache, the skipped properties and the conversion of a value are as in 14.0.7, and so is the failure text except that the closing quote is missing (EXP-044). Observed in the 12.0 capture of a `List` export: the lookup is sent for `List` (faultcode `0`) and for no `Value` below it; the 14.0.7 capture has the extra lookup for `Value`.
+
 ### EXP-117: dr_RelationshipFamily: the dr_Relationship items are embedded
 
 [14.0.7] Step 11 for `dr_RelationshipFamily`, on the real document: for each `dr_relationship_id` element at `.//*[local-name(.)='Result']/Item/Relationships/Item/dr_relationship_id` (direct relationship items of the Result item), in document order:
@@ -229,11 +268,15 @@ Not pinned by this ticket: whether the dev server's `data_source` element carrie
 
 On dev, `dr_RelationshipFamily` has one item (`User Identities`) whose single `dr_FamilyElement` relationship has `dr_relationship_id` `D54BFC48…`, with `keyed_name` `User Identities-User Identity`.
 
+[12.0] The loop is the routine's steps 1, 2 and 4 of 14.0.7 (`ProcessDerivedRelationshipFamily`): for each `dr_relationship_id` at `.//*[local-name(.)='Result']/Item/Relationships/Item/dr_relationship_id`, in document order, its text is the id and its content is emptied, the `dr_Relationship` is fetched (`<Item type="dr_Relationship" action="get" id="{id}" />`, a fault throws and aborts the item), and a deep copy of the response's first `Result/Item`, when there is one, is appended into the emptied element. There is no step 3: the `implementation_query` text is not re-serialised, so it stays as the server sent it and an empty or malformed one cannot fail the item. Observed on dev (`User Identities`, whose `dr_Relationship` has no `implementation_query`): the 12.0 and 14.0.7 files are identical.
+
 ### EXP-118: ac_PolicyAccessItemAttribute runs the dr_RelationshipFamily routine (bug)
 
 [14.0.7] Step 11 for `ac_PolicyAccessItemAttribute` runs exactly the routine of EXP-117, with the same element names, requests and failures: the code is a second `if` that repeats the `dr_RelationshipFamily` call. The routine looks for `dr_relationship_id` in the direct relationships of the Result item. Its effect on an `ac_PolicyAccessItemAttribute` is therefore whatever its `ac_PolicyAccessAttrDefinition` relationship items hold in that property: the dev schema defines `dr_relationship_id` on `ac_PolicyAccessAttrDefinition`, so the routine does fire there (the earlier reading, that it was a no-op, is wrong). Not probed live: dev holds no `ac_PolicyAccessItemAttribute` item until the scratch fixtures exist.
 
 This is registered in `bugs.md` as the reproduced copy-paste: the second call is the first one's code, and a routine written for the `ac_` shape would not embed `dr_Relationship` items or re-indent an `implementation_query`.
+
+[12.0] Not present. There is no step for `ac_PolicyAccessItemAttribute`: the second call that 14.0.7 repeats does not exist, and nothing is embedded or re-indented for that type. The bug is 14.0.7's only.
 
 ## Conditions in DAC items
 
@@ -251,6 +294,8 @@ Probed examples (`\r\n` is CR LF):
 - Content that already holds CDATA, `<![CDATA[<and><eq a="1"/></and>]]>`, comes out as the text `<![CDATA[<and><eq a="1"/></and>]]>`.
 - `&lt;a/&gt;&lt;b/&gt;` becomes `<a />\r\n<b />`; `&lt;?xml version="1.0"?&gt;&lt;a/&gt;` becomes `<a />`.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-120: HtmlDecode and HtmlEncode follow .NET Framework's WebUtility
 
 [14.0.7] `WebUtility.HtmlDecode` and `HtmlEncode` of .NET Framework 4.8 are used here and by later steps. The port reproduces them exactly (probed):
@@ -258,6 +303,10 @@ Probed examples (`\r\n` is CR LF):
 - **HtmlDecode** replaces named entities from a table of 253 names (the HTML 4.01 set plus `apos`; names are case-sensitive: `&Eacute;` decodes and `&AMP;` does not), numeric references `&#NNN;` and `&#xHHH;`, and leaves everything else as it is. An entity needs its closing semicolon (`&amp` and `&lt` are not decoded). `&#0;` and numbers above U+FFFF (`&#128512;`) are left as written. `&#xD800;` decodes to the lone surrogate. Unknown names (`&foo;`) are left as written. Decoding runs once: `&amp;amp;` gives `&amp;`.
 - **HtmlEncode** writes `<` `>` `&` `"` as `&lt;` `&gt;` `&amp;` `&quot;`, the apostrophe as `&#39;`, characters U+00A0 to U+00FF as decimal references (`&#233;`, `&#160;`), and leaves every other character, including line breaks, tabs, the euro sign and surrogate pairs, as written.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-121: XDocument.ToString re-serialises XML text
 
 [14.0.7] EXP-117 replaces an `implementation_query` text by `XDocument.Parse(text).ToString()`. The parse keeps no whitespace-only text nodes (so existing indentation is discarded); the output is indented by two spaces per level, with CR LF between lines, no XML declaration and no trailing newline, and empty elements as `<x />` (probed on Windows). Text-only and mixed content stays on its own line, comments and CDATA sections are kept, and a document type declaration is written as `<!DOCTYPE a []>`. A DOM line feed inside an attribute value is written as a space. Text that is empty, blank, has several roots or is not XML at all raises `XmlException` (`Root element is missing.`, `There are multiple root elements.`, `Data at the root level is invalid.`), wrapped by EXP-101.
+
+[12.0] Not used. The 12.0 engine never calls `XDocument.ToString` (EXP-117 has no step 3), so this behaviour is not needed for 12.0.

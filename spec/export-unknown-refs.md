@@ -8,7 +8,9 @@ Sources:
 - the framework's own `System.Xml` 4.8 (decompiled locally the same way), for the node-list behaviour of EXP-615, and a replay of that behaviour on the real framework (`fixtures/unknown-refs/enumeration/`);
 - reads on the dev instance (12 SP9) for the package and dependency shape the examples use; no export or import was run for this document (the oracle needs the dev password, which this ticket did not have). The expected outputs in the examples are therefore derived from the rules and marked as such; the export fixture tickets (24 and 67) record the real engine on the catalogue's E06 case.
 
-Everything below is `[14.0.7]`. 12.0 and 14.35 get their variants in their own tickets.
+Everything below is `[14.0.7]` except the `[12.0]` variant that ends each rule. 14.35 gets its variants in its own tickets.
+
+The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`), compared method by method with 14.0.7's: the removal code and its messages are the same in both builds.
 
 ## What an "unknown package" is
 
@@ -28,6 +30,8 @@ The engine calls a reference unknown when its target is in a non-core package th
 
 So `DoNotRemove` skips everything in this document: no request of group 18 is sent, no file is changed, nothing is logged. Under the other two modes, every item exported goes through EXP-601 to EXP-606, even one with no relationships.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-601: Which relationship items are examined
 
 [14.0.7] The first pass visits `Item` elements that are children of a `Relationships` element, anywhere in the exported document (the XPath `.//Relationships/Item` from the document node), in the order EXP-615 describes. That includes the envelope's single root item, items nested in the `Relationships` of related items inside `related_id`, and relationship items of relationship items.
@@ -35,6 +39,8 @@ So `DoNotRemove` skips everything in this document: no request of group 18 is se
 The package name used is the one the run is exporting (`solutionName`), the item's names are those of the export set entry (`ExportItem.typeName`, `keyedName` and `idName`, which are the PackageElement's `element_type`, `name` and `element_id`).
 
 For each visited item, the checks of EXP-602 to EXP-605 run in this order. The first one that removes the item ends the visit (the next item is taken). An item that none removes stays.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-602: A relationship item needs a type
 
@@ -44,6 +50,8 @@ For each visited item, the checks of EXP-602 to EXP-605 run in this order. The f
 - an empty `type`: a `CItemException` with faultcode `-1`, faultstring `Type of relationship is not defined` and detail `Type of relationship is not defined in the AML portion: {the item's outer XML}`.
 
 Both abort the export of this item (EXP-617).
+
+[12.0] Same as 14.0.7.
 
 ### EXP-603: A relationship whose type is in an unknown package is removed
 
@@ -59,6 +67,8 @@ The removal is the one of EXP-610. A table entry (EXP-611) is added with reason 
 
 When the lookup fails the visit fails with the `CItemException` of that request, including faultcode `0` for a name that is no RelationshipType (the server's "No items of type RelationshipType found." reaches the log as the item's error). An answer without an `id` is a `NullReferenceException` (EXP-617).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-604: In a core package, a relationship item that is itself in an unknown package is removed
 
 [14.0.7] This check runs only when the exported package is a core package (EXP-616) and the item survived EXP-603.
@@ -70,6 +80,8 @@ A table entry is added with reason *relationship*:
 - from: `[{package}].[{item type}].{item keyed name}`;
 - to: `[{T}].{r}`.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-605: A relationship item whose related item is in an unknown package is removed
 
 [14.0.7] This check runs for the items that survived EXP-603 and EXP-604, and only for those that have a `related_id` child (the first one; `./related_id`). Without one the visit ends.
@@ -78,6 +90,8 @@ The related item's id `c` comes from `GetRelatedItemConfigId` (EXP-618). The ite
 
 - from: `[{package}].[{item type}].{item keyed name} (ID='{item id}')`, where the id is the export set entry's `idName`;
 - to: `[{t}].{c}` when the `related_id` element has a `type` attribute `t` (any value, empty included), otherwise `ID='{c}'`.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-618: The related item's id
 
@@ -91,6 +105,8 @@ The related item's id `c` comes from `GetRelatedItemConfigId` (EXP-618). The ite
 3. When `c` is null or empty, the visit fails with a `CItemException` of faultcode `-1`, faultstring and detail `Unable to find ID of the related item`.
 
 The export's XSL leaves `<related_id type="X" …><Item type="X" action="get" select="id"><name>…</name></Item></related_id>` for related Methods and Identities (tickets 13 and 14), which is the `get` form: the id is found through the item's unique key, then mapped to the `config_id` for versionable types.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-606: Method references elsewhere are removed with their property element
 
@@ -106,6 +122,8 @@ The export's XSL leaves `<related_id type="X" …><Item type="X" action="get" se
 
 The stubs come from the XSL's Method templates: the properties that point to a Method (an action's `method` and `on_complete`, a transition's `pre_action` and `post_action`, a report's, view's and `tp_XmlSchemaElement`'s) and related Methods.
 
+[12.0] Same as 14.0.7.
+
 ## Which packages are "unknown"
 
 ### EXP-607: The test for "belongs to an unknown package"
@@ -119,6 +137,8 @@ The stubs come from the XSL's Method templates: the properties that point to a M
 The candidate list and the dependency list are read before the loop, so R3, R4 and R5 are sent, on their first use, before the first candidate's R1, even when the list ends up empty.
 
 An id that belongs to a core package or to a dependency of `p` is therefore never removed, and neither is an id that belongs to no package at all.
+
+[12.0] Same as 14.0.7.
 
 ### EXP-608: The metadata the test reads
 
@@ -137,15 +157,21 @@ An id that belongs to a core package or to a dependency of `p` is therefore neve
 - A package that exists but has no groups or elements gives an empty set.
 - `Result` is found by local name anywhere in the answer, so both the envelope form and IOM's single-item narrowing work.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-609: What is kept between items and runs
 
 [14.0.7] Four caches serve the lookups: element-id sets by package name (R1), relationship type ids by name (R2), the non-core name list (R3) and dependency names by package name (R4 and R5). None expires. The first three are emptied whenever a `CItemHelper` is constructed, so each run starts clean. The fourth is not (EXP-619). All are shared by every package exported in the run: a referenced package's export reuses what the main package's export loaded, and the dependency list of each package name is asked once.
 
 An error in a lookup is not cached: the next use asks again.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-619: The dependency cache outlives the run (bug)
 
 [14.0.7] The dependency cache is a `static readonly` table that no constructor resets. A second run in the same process that exports a package whose dependencies were read in an earlier run reuses the old list, even when the database or the connection changed. The CLI runs once per process, so it never shows; a library caller that exports twice in one process sees it. The port keeps this cache at module level, shared by all runs of one process, and does not reset it. Registered in `bugs.md`.
+
+[12.0] Same as 14.0.7.
 
 ## Removal and the table
 
@@ -155,11 +181,15 @@ An error in a lookup is not cached: the next use asks again.
 
 A removal can happen on an item that is no longer part of the document (EXP-615); it then edits the detached subtree and still produces its table entry.
 
+[12.0] Same as 14.0.7.
+
 ### EXP-611: The table of removed references
 
 [14.0.7] The table is a .NET Framework `Hashtable`. Its key is the string `from` followed by `to` (no separator) of the entry, and its value the entry: the two strings and the reason (*type*, *relationship* or *item*). An entry is added only when its key is not already present (`ContainsKey`, then `Add`), so nothing is ever overwritten or removed, and two removals with the same from and to count once. For the *type* and *relationship* forms the from has no item id, so two items of one type and keyed name share an entry; for the *item* forms of EXP-605 the id is part of it, and for EXP-606 it is not.
 
 The table lives for one `ExportProc` run (one package), and entries added before an error stay in it (EXP-617).
+
+[12.0] Same as 14.0.7.
 
 ### EXP-612: Insertion order decides the log order
 
@@ -170,6 +200,8 @@ The table lives for one `ExportProc` run (one package), and entries added before
 3. keys that are already present are skipped (EXP-611).
 
 The Hashtable's one non-deterministic regime (more than 100 collisions in one insertion, ticket 07) cannot occur with these keys.
+
+[12.0] Same as 14.0.7.
 
 ## Log and warning
 
@@ -192,6 +224,8 @@ The first line is `"\n --- REMOVED REFERENCE ---"` written with `WriteLine`, so 
 
 The blocks are written only when the loop ran to its end. When the run is cancelled, or the error question is answered "abort" (ticket 16), `ExportProc` returns first: the removals already made stay in the files written, but no block and no warning appear. The UTF-8 log has no BOM (ticket 15/16 own the stream).
 
+[12.0] Same as 14.0.7.
+
 ### EXP-614: The warning
 
 [14.0.7] When the mode is `RemoveWithWarning` and the table has at least one entry, the warning channel gets, right after the blocks, once for this `ExportProc` run, the text:
@@ -201,6 +235,8 @@ There are references to unknown packages that were removed during the export of 
 ```
 
 with the name of the package this run exported (the referenced package's own name in a referenced-items pass). The message is only delivered to the host's `warning` handler (ticket 16 specifies the channels); its answer is ignored. Under `RemoveSilently` the log blocks are written and there is no warning. Then `end of execution : {date}` and `completed` follow as usual.
+
+[12.0] Same as 14.0.7.
 
 ## Walking the document while removing
 
@@ -244,6 +280,8 @@ advance(): loop
 
 **The list**: elements are read one at a time from `advance()` into a list. The loop asks for element `i` and the list reads up to element `i + 1` first. So when the loop body runs on element `i`, element `i + 1` is already read. Removals in the body happen after that.
 
+[12.0] Same as 14.0.7.
+
 ## Errors
 
 ### EXP-617: Which errors escape, and what they leave behind
@@ -252,11 +290,15 @@ advance(): loop
 
 The `NullReferenceException` cases of this area are: a relationship item with no `type` (EXP-602), a `related_id` child item with no `type` (EXP-618), a RelationshipType answer without `Result/Item/id` (EXP-603), a Method answer without `Result/Item/config_id` (EXP-606), and the `RemoveRelationshipItem` of an item with no parent. The port reproduces them as errors with the same faultcode and the detail text `Object reference not set to an instance of an object. Can't export item.`
 
+[12.0] Same as 14.0.7.
+
 ## Core packages
 
 ### EXP-616: The core package test
 
 [14.0.7] A package name is a core package when it starts with `com.aras.innovator.` and does not start with `com.aras.innovator.solution.`, both prefix tests case-sensitive. (The engine uses the current-culture `StartsWith`; replays on the oracle's culture (en-IN) of names with soft hyphens, zero-width spaces, NUL and other case gave the ordinal answer each time, so the port compares ordinally.) The name `com.aras.innovator.solution.` itself is non-core, and `com.aras.innovator.` followed by any other text is core; every `com.aras.defaults.*` name is non-core here. `IsStandardPackage` and the output directory layout, which treat `com.aras.defaults.*` as standard, are specified with the file layout (ticket 15).
+
+[12.0] Same as 14.0.7.
 
 ## Worked example
 
@@ -276,4 +318,4 @@ With `RemoveSilently` the same files and blocks result and there is no warning; 
 - The unique-key lookup, `IsVersionable` and `GetConfigId` requests (groups 4, 12 and 13) and their caches: export requests (ticket 11).
 - The messages channels, the error question and the log header and footer: orchestration (ticket 16).
 - `RemoveNamespaceNodes` and `RemoveEmptyRelationships`, which run after this step: post-processing (ticket 15).
-- 12.0 and 14.35 differences: tickets 46 and 51 to 52.
+- 12.0 differences: none; every rule here has a `[12.0]` variant that says so (ticket 46). 14.35 differences: tickets 51 and 52.
