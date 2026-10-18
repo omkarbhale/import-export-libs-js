@@ -629,7 +629,10 @@
             "bodySha256": "1ce47e57af44f6e3b64354ccf88ff6c8aed4711541b44da20f44bf83970e6739",
             "textSha256": "3003873fd2ee0d1e6aec8886df623a4b999d504ecfca65e8c57a9e9f907f7538"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-040"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CImportItems::ProcessVersionableItem",
@@ -812,7 +815,10 @@
             "EXP-271",
             "EXP-272",
             "EXP-401",
-            "EXP-402"
+            "EXP-402",
+            "IMP-012",
+            "IMP-013",
+            "IMP-014"
           ]
         },
         {
@@ -885,7 +891,11 @@
             "bodySha256": "f889750ed737699b84471864f2537040dfed516e10a57726f5a60d0440895014",
             "textSha256": "c4cb03a417c9f93badf67f0c1b61697d21d27658588215fdf0ed6e95c9e5b762"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "IMP-007"
+          ],
+          "reason": "Returns an empty XmlDocument with PreserveWhitespace false. The library's XML core creates documents that way by default (IMP-007)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::DeleteSqlItems",
@@ -1115,10 +1125,12 @@
             "bodySha256": "6898f2c9ff76941360d2b82957ded1b790d3ddf0fd38b90cde7f2497f9ba50d0",
             "textSha256": "1625a0d5bb399864617021f0039c631bc94b84b96869da8ceed7ef423ad642d5"
           },
-          "status": "unmapped",
+          "status": "not-ported",
           "rules": [
-            "EXP-200"
-          ]
+            "EXP-200",
+            "IMP-012"
+          ],
+          "reason": "Reads the stylesheet embedded in Libs.dll. The library embeds no stylesheet: build.xsl is re-expressed as ordering rules (IMP-020 to IMP-032), and the export stylesheet likewise."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetMetaDataInfo",
@@ -1289,10 +1301,12 @@
             "bodySha256": "9b39d7741c699ce2a0f88d31bc71c284e1d49df90a9ec37b631e83ef6d2e40c6",
             "textSha256": "211664665c10aa1c2473b52f5f5ab64b5fb1cda28fedbc6d34bf3cda197f5510"
           },
-          "status": "unmapped",
+          "status": "not-ported",
           "rules": [
-            "EXP-200"
-          ]
+            "EXP-200",
+            "IMP-012"
+          ],
+          "reason": "The library has no XSLT engine and embeds no stylesheet. build.xsl is re-expressed as ordering rules (IMP-020 to IMP-032), and the export stylesheet likewise."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::IsValueId",
@@ -2109,7 +2123,8 @@
             "ilSha256": "a80d100efb993d52086e293249d9a4a14711e08080a9fcb81db38f76fc7f6e24",
             "bodySha256": "dd0e90b48df0fae05378c6c367ec79841aaab21e45ccfe1da5a643168530fddb"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "reason": "Empty constructor of the file-system facade. The library has no facade (roadmap/hold/testability-wrappers.md); the observable file-system behaviour is specified as IMP-002 to IMP-006."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryCreateDirectory",
@@ -2168,7 +2183,13 @@
             "bodySha256": "fc63975ecdc73a9eb66e58a3defe89a26d1c8c62fba66ad5f1f25622d857ef0b",
             "textSha256": "97735533e078fa63da1749649136bcd8b11b68376258d3825367591ea5f0727b"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-002",
+            "IMP-004",
+            "IMP-005",
+            "IMP-006"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryGetFiles",
@@ -2180,7 +2201,13 @@
             "bodySha256": "80e470855155d643f9aff73171194fb911b3d24c78fdea3a6af24de288302590",
             "textSha256": "431fb84e2f935ff41782f82c292bf1bd8bcc41ea4772d3c91ae4a3d9c2d523b2"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-003",
+            "IMP-004",
+            "IMP-005",
+            "IMP-006"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::DirectoryGetParentFullName",
@@ -2228,7 +2255,11 @@
             "bodySha256": "141562b591cfec4902a77eb78e38d6a8fa92025de9e7759df9c79a2e472bfe29",
             "textSha256": "aa24fa2e1d56871ddb710e033b61816ecbb82f4787a67edfd2fecfa39ebc1b9c"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-005",
+            "IMP-009"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::NewStreamWriter",
@@ -2258,7 +2289,9 @@
           "status": "unmapped",
           "rules": [
             "EXP-421",
-            "EXP-422"
+            "EXP-422",
+            "IMP-005",
+            "IMP-006"
           ]
         },
         {
@@ -2319,7 +2352,10 @@
             "bodySha256": "e5ec592773301280068ca9b351c9b53f603845e2539843ae90bb837e67b68cbd",
             "textSha256": "f3429167f62bd03711688e0379ae9561339c3d1a4ef9d2f69762105a10e63012"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-007"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.IOWrapper::XmlDocumentSave",
@@ -2394,7 +2430,11 @@
             "bodySha256": "47a4760039ad0619bbd86474b3d38e32488baa09a1bb005191ef976ddf7ff713",
             "textSha256": "ca11f0cfed4e57972287d54977ca7c4be4ca4a855cdba8e676aa679683db1b62"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "IMP-015"
+          ],
+          "reason": "Interface forwarder: the explicit IImportExportManager member only calls the static GetItemsFromPackageDom (IMP-015). The library calls the function directly and has no interface."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Aras.Tools.SolutionUpgrade.IImportExportManager.GetSolutionPath",
@@ -2418,7 +2458,11 @@
             "bodySha256": "58ee92500e837ed8209da364f56e369cff07a71f86e9473ac4ab054001ff9583",
             "textSha256": "170e83c13c044947596559106db29915fa86538ea8b27b62a80f227e4231f145"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "IMP-001"
+          ],
+          "reason": "Interface forwarder: the explicit IImportExportManager member only calls the static LoadPackageDom (IMP-001). The library calls the function directly and has no interface."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::Cancel",
@@ -2556,7 +2600,10 @@
             "bodySha256": "e102783af26a2fc28470b38e0fade8fb4e8bba4537b4c822d9cf79f6457f7a8d",
             "textSha256": "fa9cda188f08d200cbbd55f4cad1f2b0a2450f31b201c0c9e9e7202c01acadcb"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-015"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetSolutionPath",
@@ -2633,7 +2680,37 @@
             "bodySha256": "b3c27718741633046ec97b5a4cd82516024089b15f753903764acf0c85e31337",
             "textSha256": "06a64b16621cbfef16f282175e04bb40838ee4f5590b238ca9a765585c572b86"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-001",
+            "IMP-002",
+            "IMP-003",
+            "IMP-004",
+            "IMP-005",
+            "IMP-006",
+            "IMP-007",
+            "IMP-008",
+            "IMP-009",
+            "IMP-010",
+            "IMP-011",
+            "IMP-012",
+            "IMP-013",
+            "IMP-014",
+            "IMP-020",
+            "IMP-021",
+            "IMP-022",
+            "IMP-023",
+            "IMP-024",
+            "IMP-025",
+            "IMP-026",
+            "IMP-027",
+            "IMP-028",
+            "IMP-029",
+            "IMP-030",
+            "IMP-031",
+            "IMP-032",
+            "IMP-033"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::LogError",
@@ -4126,7 +4203,10 @@
             "bodySha256": "9b5cee84ed94f56a8d1c98e49acf177049912674eeef6543282b7a7b8a39e2ff",
             "textSha256": "129e8f9337f84c018f1d8b460477fe196b16898bb69648592c79707465f5045d"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-009"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.Wrappers.FileInfoWrapper::get_FullName",
@@ -4138,7 +4218,10 @@
             "bodySha256": "20f856902692c8278906bdd77746e96212b7406e34e959ceb5a59388166a03f6",
             "textSha256": "95f92347484717ff8c73f50b636126677804836962e396b4bfd11ca588d41be3"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-009"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.Wrappers.FileInfoWrapper::get_Name",
@@ -4150,7 +4233,10 @@
             "bodySha256": "5ba3bee907783e624dd411ad6669cce0277db3a6b497aee2f7334a5a70597943",
             "textSha256": "d7ee59e7d2e99f0cfaeb93fc8fd2d3b6a2a96d5f7154f08da5830d7f6d3e0f98"
           },
-          "status": "unmapped"
+          "status": "unmapped",
+          "rules": [
+            "IMP-009"
+          ]
         }
       ]
     }
