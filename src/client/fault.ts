@@ -175,6 +175,9 @@ export function getProperty(item: XmlElement, name: string): string | null {
   return text === "" && attributeOf(element, "is_null") === "1" ? null : text;
 }
 
+/** What .NET prints for the engine's exception type. */
+export const CITEM_EXCEPTION_TYPE = "Aras.Tools.SolutionUpgrade.CItemException";
+
 /** The text .NET gives an exception that was made with no message. */
 const DEFAULT_MESSAGE = "Exception of type 'Aras.Tools.SolutionUpgrade.CItemException' was thrown.";
 
@@ -191,7 +194,8 @@ export class CItemException extends Error {
   constructor(
     readonly faultcode: number,
     readonly faultstring: string | null,
-    readonly faultdetail: string | null,
+    /** Mutable like the engine's field: callers add to it and rethrow, and the message stays as it was made. */
+    public faultdetail: string | null,
     cause?: unknown,
   ) {
     super(faultdetail ?? DEFAULT_MESSAGE, cause === undefined ? undefined : { cause });
@@ -213,4 +217,17 @@ export class CItemException extends Error {
     exception.message = text;
     return exception;
   }
+}
+
+/**
+ * The text the engine puts in a `faultstring` where it writes an exception's stack. The port cannot reproduce
+ * .NET frames, so it writes the type name, a colon and the message.
+ *
+ * @spec EXP-055
+ */
+export function stackText(error: unknown): string {
+  if (error instanceof DotNetException) return error.faultString;
+  if (error instanceof CItemException) return `${CITEM_EXCEPTION_TYPE}: ${error.message}`;
+  if (error instanceof Error) return `${error.name}: ${error.message}`;
+  return String(error);
 }
