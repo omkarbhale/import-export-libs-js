@@ -3,7 +3,7 @@
 Generates the reverse-engineering side of the spec for one `Libs.dll` build:
 
 - the decompiled C#, in the gitignored `.decomp/<engine>/` (never committed);
-- `spec/reachable/<engine>.json`: every method the engine's hosts can reach, with its REA method lock and where its C# sits under `.decomp/<engine>/`;
+- `spec/reachable/<engine>.json`: every method the engine's hosts (and any `--entry` roots) can reach, with its REA method lock and where its C# sits under `.decomp/<engine>/`;
 - that build in `spec/source-map.json`, merged so new methods appear as `unmapped`.
 
 ## Requirements
