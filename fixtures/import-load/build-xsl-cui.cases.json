@@ -1,0 +1,46 @@
+[
+ {
+  "name": "cui-order",
+  "parts": [
+   "<AML><Item type='Form' action='add' id='fo'/><Item type='cui_WindowSection' action='add' id='ws'/><Item type='Method' action='add' id='m1'/><Item type='cui_Control' action='add' id='c1'/><Item type='Report' action='add' id='r1'/><Item type='List' action='add' id='l1'/><Item type='cui_Control' action='add' id='c2'/><Item type='Workflow Map' action='add' id='wm'/><Item type='cui_WindowSection' action='add' id='ws2'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-order-two-files",
+  "parts": [
+   "<AML><Item type='cui_WindowSection' action='add' id='ws-f1'/><Item type='Form' action='add' id='fo-f1'/></AML>",
+   "<AML><Item type='cui_Control' action='add' id='c-f2'/><Item type='Report' action='add' id='r-f2'/><Item type='Action' action='add' id='a-f2'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-edit",
+  "parts": [
+   "<AML><Item type='cui_Control' action='edit' id='ce'/><Item type='cui_WindowSection' action='edit' id='we'/><Item type='List' action='edit' id='le'/><Item type='Report' action='edit' id='re'/><Item type='Zeta' action='edit' id='ze'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-other-actions",
+  "parts": [
+   "<AML><Item type='cui_Control' action='delete' id='cd'/><Item type='cui_Control' action='merge' id='cm'/><Item type='cui_Control' id='cn'/><Item type='cui_Control' action='get' id='cg'/><Item type='cui_WindowSection' action='delete' id='wd'/><Item type='cui_WindowSection' action='purge' id='wp'/><Item type='cui_WindowSection' id='wn'/><Item type='cui_WindowSection' action='ADD' id='wA'/><Item type='Report' action='delete' id='rd'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-substring-runs",
+  "parts": [
+   "<AML><Item type='Report|cui_Control' action='add' id='run1'/><Item type='cui_WindowSection|Form' action='add' id='run2'/><Item type='Report|Form' action='add' id='run3'/><Item type='Action|Report' action='add' id='run4'/><Item type='cui_Control|cui_WindowSection' action='edit' id='run5'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-itemtype-follow",
+  "parts": [
+   "<AML><Item type='ItemType' action='add' id='A'/><Item type='cui_Control' action='add' id='c1'/><Item type='cui_Control' action='edit' id='c2'/><Item type='ItemType' action='edit' id='E'/></AML>"
+  ]
+ },
+ {
+  "name": "cui-raw",
+  "raw": true,
+  "parts": [
+   "<AML><Item type='cui_Control' action='add' id='c1'><name>a</name><label xml:lang='en'>x</label></Item></AML>"
+  ]
+ }
+]

@@ -1,0 +1,34 @@
+=== cui-order
+List|add|l1|
+Method|add|m1|
+Report|add|r1|
+cui_Control|add|c1|
+cui_Control|add|c2|
+cui_WindowSection|add|ws|
+cui_WindowSection|add|ws2|
+Form|add|fo|k1
+Workflow Map|add|wm|
+=== cui-order-two-files
+Action|add|a-f2|
+Report|add|r-f2|
+cui_Control|add|c-f2|k2
+cui_WindowSection|add|ws-f1|k1
+Form|add|fo-f1|
+=== cui-edit
+cui_Control|edit|ce|k1
+cui_WindowSection|edit|we|
+List|edit|le|
+Report|edit|re|
+Zeta|edit|ze|
+=== cui-other-actions
+=== cui-substring-runs
+cui_Control|cui_WindowSection|edit|run5|
+Report|Form|add|run3|
+=== cui-itemtype-follow
+cui_Control|add|c1|
+ItemType|add|A|k1
+ItemType|edit|E|
+cui_Control|edit|c2|
+=== cui-raw
+RAW: <AML><Item type="cui_Control" action="add" id="c1" tempKeyName="k1" tempFullName="f1"><name>a</name><label xml:lang="en">x</label></Item></AML>
+cui_Control|add|c1|k1

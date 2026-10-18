@@ -1,23 +1,29 @@
 <#
-Import-run probe for engine 14.0.7 (wayfinder ticket 22). Windows PowerShell 5.1. It loads the staged
-14.0.7 toolset and runs the engine's own ImportExportManager.ImportSolutions, CItemHelper and
-PackageDefinitionManager against Probe.cs's StubConnection, which never touches a network: it records
-what the engine hands to IOM and answers from a small in-memory model of the server. No server, no
-credential and no password is involved. Package folders and the log are built under a work folder.
+Import-run probe for engines 14.0.7 and 14.35 (wayfinder tickets 22 and 53; -Engine names the build the
+staged toolset must be). Windows PowerShell 5.1. It loads the staged toolset and runs the engine's own
+ImportExportManager.ImportSolutions, CItemHelper and PackageDefinitionManager against Probe.cs's
+StubConnection, which never touches a network: it records what the engine hands to IOM and answers from a
+small in-memory model of the server. No server, no credential and no password is involved. Package folders
+and the log are built under a work folder.
 #>
 param(
     [Parameter(Mandatory)][string] $ToolsetDir,
     [Parameter(Mandatory)][string] $Work,
     [Parameter(Mandatory)][string] $Out,
-    [string] $Only = ''
+    [string] $Only = '',
+    [string] $Engine = '14.35'
 )
 Set-StrictMode -Version 1
 $ErrorActionPreference = 'Stop'
 $iomPath = Join-Path $ToolsetDir 'IOM.dll'
 $libsPath = Join-Path $ToolsetDir 'Libs.dll'
+$toolsetBin = $ToolsetDir
+$resolver = [System.ResolveEventHandler]{ param($s, $e) $n = ($e.Name -split ',')[0]; $p = Join-Path $toolsetBin ($n + '.dll'); if (Test-Path $p) { return [System.Reflection.Assembly]::LoadFrom($p) }; return $null }
+[AppDomain]::CurrentDomain.add_AssemblyResolve($resolver)
 [void][System.Reflection.Assembly]::LoadFrom($iomPath)
 $libs = [System.Reflection.Assembly]::LoadFrom($libsPath)
-if ($libs.GetName().Version.ToString() -ne '14.0.7.35492') { throw "Libs.dll is $($libs.GetName().Version), not 14.0.7.35492" }
+$expect = @{ '14.0.7' = '14.0.7.35492'; '14.35' = '14.35.0.43890' }[$Engine]
+if ($libs.GetName().Version.ToString() -ne $expect) { throw "Libs.dll is $($libs.GetName().Version), not $expect" }
 Add-Type -TypeDefinition (Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'Probe.cs')) -ReferencedAssemblies @($iomPath, $libsPath, 'System.Xml')
 $SU = 'Aras.Tools.SolutionUpgrade'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
@@ -27,7 +33,7 @@ function W([string] $s) { [void]$sb.AppendLine($s) }
 function Esc([string] $s) { if ($null -eq $s) { return '<null>' }; return $s.Replace("`r", '\r').Replace("`n", '\n').Replace("`t", '\t') }
 function Scrub([string] $s, [string] $root) {
     if ($null -eq $s) { return $s }
-    $s = $s.Replace($root, '<ROOT>').Replace($me, '<WINUSER>')
+    $s = $s.Replace($root, '<ROOT>').Replace($me, '<WINUSER>').Replace([Environment]::UserName, '<USERNAME>')
     return $s
 }
 function Unwrap($ex) {
@@ -177,6 +183,7 @@ function Run-Import($c) {
     $conn.Respond = {
         param($req)
         $mgrRef.n++
+        if ($c.onReq) { & $c.onReq $req $mgrRef.n $logPath }
         if ($c.cancelOn -and (& $c.cancelOn $req $mgrRef.n)) { $mgrRef.m.Cancel() }
         foreach ($r in $w.rules) { $x = & $r $req $mgrRef.n; if ($null -ne $x) { return $x } }
         return (Model-Respond $w $req)
@@ -560,6 +567,112 @@ Def 's60-helper-direct' {
         @{ label = 'DeleteSqlItems - the delete fails'; run = { param($h) $w.rules = @({ param($r, $n) Fault 7 'bad' }); $h.DeleteSqlItems((Nodes '<AML><Item type="SQL" id="Q1"/><Item type="SQL" id="Q2"/></AML>')); 'done' } }
     )
     Run-Direct 's63-sql-direct' 'DeleteSqlItems' $w $calls
+}
+
+# ---------------------------------------------------------------------------------------------
+# Wayfinder ticket 53 scenarios: behaviours that differ between 14.0.7 and 14.35.
+# ---------------------------------------------------------------------------------------------
+$allRels = '<Relationships><Item type="RelationshipType" id="RT1"><name>Part BOM</name></Item><Item type="RelationshipType" id="RT2"><name>Property</name></Item><Item type="RelationshipType" id="RT3"><name>DiscussionTemplate</name></Item><Item type="RelationshipType" id="RT4"><name>FeedTemplate</name></Item><Item type="RelationshipType" id="RT5"><name>Relationship View</name></Item></Relationships>'
+function Rule-ItemTypeDef { return { param($req, $n) if ($req -like "<Item type=`"ItemType`" action=`"get`" select=`"id`"><name>*</name><Relationships><Item type=`"Property`" action=`"get`" select=`"name`" /><Item type=`"RelationshipType`"*") { return (Res ('<Item type="ItemType" id="IT-def">' + $allRels + '</Item>')) }; return $null } }
+function Pad-Rule($w) { $w.rules = @((Rule-ItemTypeDef)) + $w.rules }
+Def 'n01-cache-hits' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    foreach ($e in 'S0000000000000000000000000000001', 'S0000000000000000000000000000002', 'LID1', 'R0000000000000000000000000000001') { $w.existing[$e] = $true }
+    $rel = { param($id, $rid) '<Item type="Part" id="' + $id + '" action="add"><name>n' + $id + '</name><Relationships>' +
+        '<Item type="Part BOM" id="B' + $id.Substring(1) + '" action="add"><related_id keyed_name="k" type="Part">' + $rid + '</related_id></Item>' +
+        '<Item type="Part BOM" id="C' + $id.Substring(1) + '" action="add"><related_id keyed_name="g" type="Part"><Item type="Part" action="get" select="id"><keyed_name>g</keyed_name></Item></related_id></Item>' +
+        '</Relationships></Item>' }
+    $f1 = F 'Part' 'p1' (& $rel 'P0000000000000000000000000000001' 'R0000000000000000000000000000001')
+    $f2 = F 'Part' 'p2' (& $rel 'P0000000000000000000000000000002' 'R0000000000000000000000000000001')
+    $f3 = F 'ItemType' 'it1' '<Item type="ItemType" id="I0000000000000000000000000000001" action="edit"><name>X</name><Relationships><Item type="Property" id="Y0000000000000000000000000000001" action="edit"><name>p</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    $f4 = F 'ItemType' 'it2' '<Item type="ItemType" id="I0000000000000000000000000000002" action="edit"><name>Y</name><Relationships><Item type="Property" id="Y0000000000000000000000000000002" action="edit"><name>p</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    $f5 = F 'RelationshipType' 'rt1' '<Item type="RelationshipType" id="T0000000000000000000000000000001" action="add"><name>rt1</name><source_id keyed_name="Part" type="ItemType">S0000000000000000000000000000001</source_id><related_id keyed_name="Part" type="ItemType">S0000000000000000000000000000002</related_id></Item>'
+    $f6 = F 'RelationshipType' 'rt2' '<Item type="RelationshipType" id="T0000000000000000000000000000002" action="add"><name>rt2</name><source_id keyed_name="Part" type="ItemType">S0000000000000000000000000000001</source_id><related_id keyed_name="Part" type="ItemType">S0000000000000000000000000000002</related_id></Item>'
+    Run-Import @{ name = 'n01-cache-hits'; note = 'items that repeat the same lookups: nested get (CheckGetItems), plain related_id (CheckRelatedItems), data_source list (CheckDataSourceReferences), RelationshipType source_id/related_id; every repeat is a cache hit'; packages = [ordered]@{ $A = @{ files = @($f1, $f2, $f3, $f4, $f5, $f6) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n02-miss-line-before-request' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.rules += (Fault-On '<Item type="Part" action="get" select="id"><keyed_name>g</keyed_name></Item>' 5 'get refused')
+    $f1 = F 'Part' 'p1' '<Item type="Part" id="P0000000000000000000000000000001" action="add"><name>n</name><Relationships><Item type="Part BOM" action="add"><related_id keyed_name="g" type="Part"><Item type="Part" action="get" select="id"><keyed_name>g</keyed_name></Item></related_id></Item></Relationships></Item>'
+    Run-Import @{ name = 'n02-miss-line-before-request'; note = 'the nested get fails with fault 5: is "-> was obtained from server" logged?'; packages = [ordered]@{ $A = @{ files = @($f1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.rules += (Fault-On '<Item action="get" type="list" select="id"><id>LID1</id></Item>' 5 'list refused')
+    $f3 = F 'ItemType' 'it1' '<Item type="ItemType" id="I0000000000000000000000000000001" action="edit"><name>X</name><Relationships><Item type="Property" id="Y0000000000000000000000000000001" action="edit"><name>p</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    Run-Import @{ name = 'n02b-miss-line-datasource'; note = 'the data_source lookup fails with fault 5'; packages = [ordered]@{ $A = @{ files = @($f3) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n03-forced-refresh-not-stored' {
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.cnt.def = 0
+    $w.rules += { param($req, $n)
+        if ($req -like '<Item type="ItemType" action="get" select="id"><name>Part</name><Relationships><Item type="Property" action="get" select="name" />*') {
+            $w.cnt.def = 1 + [int]$w.cnt.def
+            if ($w.cnt.def -eq 1) { return (Res '<Item type="ItemType" id="IT-def"><Relationships><Item type="RelationshipType" id="RT9"><name>Other</name></Item></Relationships></Item>') }
+            return (Res ('<Item type="ItemType" id="IT-def">' + $allRels + '</Item>'))
+        }
+        if ($req -like '<Item type="ItemType" action="get" select="id"><name>*</name><Relationships><Item type="Property" action="get" select="name" />*') { return (Res ('<Item type="ItemType" id="IT-def">' + $allRels + '</Item>')) }
+        return $null }
+    $mk = { param($n) F 'Part' ('p' + $n) ('<Item type="Part" id="P000000000000000000000000000000' + $n + '" action="add"><name>n' + $n + '</name><Relationships><Item type="Part BOM" action="add"><related_id keyed_name="k" type="Part">R000000000000000000000000000000' + $n + '</related_id></Item></Relationships></Item>') }
+    Run-Import @{ name = 'n03-forced-refresh-not-stored'; note = 'the first definition of Part lacks the relationship type; later answers have it. Three Part items: how many definition requests?'; packages = [ordered]@{ $A = @{ files = @((& $mk 1), (& $mk 2), (& $mk 3)) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n04-discussion-template' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.existing['T0000000000000000000000000000001'] = $true
+    $mk = { param($n) F 'Discussion Forum' ('f' + $n) ('<Item type="Discussion Forum" id="F000000000000000000000000000000' + $n + '" action="add"><name>forum' + $n + '</name><Relationships><Item type="DiscussionTemplate" id="T0000000000000000000000000000001" action="add"><name>tpl</name><Relationships><Item type="FeedTemplate" id="G000000000000000000000000000000' + $n + '" action="add"><name>feed' + $n + '</name></Item></Relationships></Item></Relationships></Item>') }
+    Run-Import @{ name = 'n04-discussion-template'; note = 'two forums carry a DiscussionTemplate relationship with the same id; the template exists, and each has a nested FeedTemplate'; packages = [ordered]@{ $A = @{ files = @((& $mk 1), (& $mk 2)) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.existing['T0000000000000000000000000000001'] = $true
+    $mk2 = { param($n) F 'Discussion Forum' ('f' + $n) ('<Item type="Discussion Forum" id="F000000000000000000000000000000' + $n + '" action="add"><name>forum' + $n + '</name><Relationships><Item type="DiscussionTemplate" id="T0000000000000000000000000000001" action="add"><name>tpl</name></Item></Relationships></Item>') }
+    $mk3 = { param($n) F 'Discussion Forum' ('f' + $n) ('<Item type="Discussion Forum" id="F000000000000000000000000000000' + $n + '" action="add"><name>forum' + $n + '</name><Relationships><Item type="DiscussionTemplate" id="T0000000000000000000000000000001" action="add"><name>tpl</name><Relationships><Item type="FeedTemplate" id="G000000000000000000000000000000' + $n + '" action="add"><name>feed' + $n + '</name></Item></Relationships></Item></Relationships></Item>') }
+    Run-Import @{ name = 'n04b-discussion-template-childless-first'; note = 'the first forum has a childless template (the response stays cached); the second has nested children'; packages = [ordered]@{ $A = @{ files = @((& $mk2 1), (& $mk3 2)) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n05-delayed-dedupe' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $rel = { param($id, $n) F 'Part' ('p' + $n) ('<Item type="Part" id="' + $id + '" action="add"><name>same</name><Relationships><Item type="Part BOM" action="add"><related_id keyed_name="k" type="Part">MISSING-PART</related_id></Item></Relationships></Item>') }
+    Run-Import @{ name = 'n05-delayed-dedupe'; note = 'two files carry the same Part (same id) with the same missing related_id: the queue gets identical entries'; packages = [ordered]@{ $A = @{ files = @((& $rel 'P0000000000000000000000000000001' 1), (& $rel 'P0000000000000000000000000000001' 2)) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.rules += (Fault-On '<Item action="get" type="list" select="id"><id>LID1</id></Item>' 0 'No items of type list found.')
+    $pw = F 'ItemType' 'itw' '<Item type="ItemType" id="I0000000000000000000000000000001" action="edit"><name>X</name><Relationships><Item type="Property" where="name=&apos;p1&apos; and source_id=&apos;I1&apos;" action="edit"><name>p1</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    $pi = F 'ItemType' 'iti' '<Item type="ItemType" id="I0000000000000000000000000000002" action="edit"><name>Y</name><Relationships><Item type="Property" id="Y0000000000000000000000000000002" action="edit"><name>p2</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    $pn = F 'ItemType' 'itn' '<Item type="ItemType" id="I0000000000000000000000000000003" action="edit"><name>Z</name><Relationships><Item type="Property" action="edit"><name>p3</name><data_type>list</data_type><data_source keyed_name="LST" type="List">LID1</data_source></Item></Relationships></Item>'
+    Run-Import @{ name = 'n05b-property-where'; note = 'three Property edits with a missing list: one addressed by where, one by id, one by neither'; packages = [ordered]@{ $A = @{ files = @($pw, $pi, $pn) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n06-versionable-related-skip' {
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.versionable['Part'] = $true; Pad-Rule $w
+    $w.rules += { param($req, $n) if ($req -like '*select="config_id, is_current"*') { return (Fault 0 'none') }; if ($req -like '*<config_id>*') { return (Fault 0 'none') }; return $null }
+    $root = { param($rels) F 'Part' 'pv' ('<Item type="Part" id="P0000000000000000000000000000001" action="add"><name>pv</name><Relationships>' + $rels + '</Relationships></Item>') }
+    $get = '<Item type="Part BOM" action="add"><source_id>P0000000000000000000000000000001</source_id><related_id keyed_name="x" type="Part"><Item type="Part" action="get" where="name=&apos;x&apos;"/></related_id></Item>'
+    Run-Import @{ name = 'n06-related-item-get-no-id'; note = 'versionable root; a relationship whose related_id holds a get Item with a where and no id'; packages = [ordered]@{ $A = @{ files = @((& $root $get)) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w }
+    $w = New-World; $w.packages = @(@{ name = $A }); $w.versionable['Part'] = $true; Pad-Rule $w
+    $w.rules += { param($req, $n) if ($req -like '*select="config_id, is_current"*') { return (Fault 0 'none') }; if ($req -like '*<config_id>*') { return (Fault 0 'none') }; return $null }
+    $add = '<Item type="Part BOM" id="B0000000000000000000000000000001" action="add"><source_id>P0000000000000000000000000000001</source_id><related_id keyed_name="x" type="Part"><Item type="Part" action="add" where="name=&apos;x&apos;"><name>x</name></Item></related_id></Item>'
+    Run-Import @{ name = 'n06b-related-item-add-where'; note = 'versionable root, merge off; the related_id Item has a where, no id, and action add'; packages = [ordered]@{ $A = @{ files = @((& $root $add)) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w }
+}
+Def 'n07-log-progress' {
+    $w = New-World; $w.packages = @(@{ name = $A })
+    $files = @(); for ($i = 1; $i -le 30; $i++) { $files += (F 'List' ('L' + $i) (Item-Xml 'List' ('L{0:D31}' -f $i) 'add' ('LIBSJS-SCRATCH-L' + $i))) }
+    $trace = New-Object System.Collections.ArrayList
+    $hook = { param($req, $n, $lp)
+        try { $fs = [System.IO.File]::Open($lp, 'Open', 'Read', 'ReadWrite'); $len = $fs.Length; $fs.Dispose() } catch { $len = -1 }
+        [void]$trace.Add([string]$n + ':' + $len) }.GetNewClosure()
+    Run-Import @{ name = 'n07-log-progress'; note = 'size of the log file (bytes) read from another handle at each request; 30 List adds'; packages = [ordered]@{ $A = @{ files = $files } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; quiet = $true; onReq = $hook }
+    W ('LOG-SIZE-AT-REQUEST: ' + ($trace -join ' '))
+    W ''
+}
+Def 'n08-cancel-in-delayed' {
+    $w = New-World; $w.packages = @(@{ name = $A }, @{ name = $B }); Pad-Rule $w
+    $rel = { param($id, $n) F 'Part' ('p' + $n) ('<Item type="Part" id="' + $id + '" action="add"><name>same</name><Relationships><Item type="Part BOM" action="add"><related_id keyed_name="k" type="Part">MISSING-PART</related_id></Item></Relationships></Item>') }
+    Run-Import @{ name = 'n08-cancel-in-delayed'; note = 'Cancel() is called while the delayed AML of A is being applied (after its last item); B is also listed'; packages = [ordered]@{ $A = @{ files = @((& $rel 'P0000000000000000000000000000001' 1)) }; $B = @{ files = @($l1) } }; list = @($A, $B); merge = $true; release = 'R1'; description = 'D1'; world = $w
+        cancelOn = { param($req, $n) $req -like '<Item type="Part" id="P0000000000000000000000000000001" action="edit" doGetItem="0" version="0">*' } }
+}
+Def 'n09-caches-direct' {
+    $w = New-World
+    $node = New-Object System.Xml.XmlDocument; $node.LoadXml('<Item type="Part" id="P1" action="add"><item_number>N1</item_number></Item>')
+    $calls = @(
+        @{ label = 'GetCurrentIdByUniqueKey twice on one helper, the keyed-properties request answers fault 0'; run = { param($h) $w.rules = @({ param($r, $n) Fault 0 'none' }); $a = $h.GetCurrentIdByUniqueKey($node.DocumentElement, $true); $b = $h.GetCurrentIdByUniqueKey($node.DocumentElement, $true); '[' + $a + '][' + $b + ']' } },
+        @{ label = 'GetCurrentIdByUniqueKey twice on one helper, the keyed-properties request answers fault 7'; run = { param($h) $w.rules = @({ param($r, $n) Fault 7 'bad' }); try { [void]$h.GetCurrentIdByUniqueKey($node.DocumentElement, $true) } catch { 'first: ' + $_.Exception.InnerException.Message.Substring(0, 30) }; try { [void]$h.GetCurrentIdByUniqueKey($node.DocumentElement, $true) } catch { 'second: ' + $_.Exception.InnerException.Message.Substring(0, 30) } } },
+        @{ label = 'GetPackageGroupIdOrCreateIfNotExists twice on one helper, the add fails (fault 7)'; run = { param($h) $w.rules = @({ param($r, $n) if ($r -like '*action="add"*') { Fault 7 'bad' } else { Fault 0 'none' } }); try { [void]$h.GetPackageGroupIdOrCreateIfNotExists('PD1', 'G') } catch { 'first: fault' }; try { [void]$h.GetPackageGroupIdOrCreateIfNotExists('PD1', 'G') } catch { 'second: fault' } } },
+        @{ label = 'IsVersionable(Part) twice on one helper, the type is missing (fault 0)'; run = { param($h) $w.rules = @({ param($r, $n) Fault 0 'none' }); try { [void]$h.IsVersionable('Part') } catch { 'first: fault' }; try { [void]$h.IsVersionable('Part') } catch { 'second: fault' } } }
+    )
+    Run-Direct 'n09-caches-direct' 'what a failed lookup leaves in the helper cache' $w $calls
 }
 foreach ($k in $scenarios.Keys) { if ($Only -eq '' -or $k -like $Only) { & $scenarios[$k] } }
 [System.IO.File]::WriteAllText($Out, $sb.ToString(), $utf8)
