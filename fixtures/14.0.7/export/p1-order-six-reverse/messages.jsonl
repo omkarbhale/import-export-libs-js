@@ -1,0 +1,19 @@
+{"event":9,"seq":1,"thread":17,"ticks":729694843166,"channel":"currentPackage","text":"Exporting package com.aras.innovator.admin","answer":null}
+{"event":10,"seq":2,"thread":17,"ticks":729694846963,"channel":"status","text":"Item 1 of 1: Item Report - 128C30A645F04E5380F8B4709A3BD1A1","answer":null}
+{"event":16,"seq":3,"thread":17,"ticks":729696232108,"channel":"status","text":"completed","answer":null}
+{"event":19,"seq":4,"thread":17,"ticks":729696607313,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cui","answer":null}
+{"event":20,"seq":5,"thread":17,"ticks":729696608189,"channel":"status","text":"Item 1 of 1: ItemType - PresentableItems","answer":null}
+{"event":59,"seq":6,"thread":17,"ticks":729704273022,"channel":"status","text":"completed","answer":null}
+{"event":65,"seq":7,"thread":17,"ticks":729705112647,"channel":"currentPackage","text":"Exporting package com.aras.innovator.es","answer":null}
+{"event":66,"seq":8,"thread":17,"ticks":729705113188,"channel":"status","text":"Item 1 of 1: Variable - ES_SolrUrl","answer":null}
+{"event":71,"seq":9,"thread":17,"ticks":729705744550,"channel":"status","text":"completed","answer":null}
+{"event":74,"seq":10,"thread":17,"ticks":729706139329,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":75,"seq":11,"thread":17,"ticks":729706140027,"channel":"status","text":"Item 1 of 1: Form - Activity Template","answer":null}
+{"event":109,"seq":12,"thread":17,"ticks":729712715470,"channel":"status","text":"completed","answer":null}
+{"event":112,"seq":13,"thread":17,"ticks":729713205791,"channel":"currentPackage","text":"Exporting package com.aras.innovator.history","answer":null}
+{"event":113,"seq":14,"thread":17,"ticks":729713206656,"channel":"status","text":"Item 1 of 1: Grid - History_whereTemplateUsed","answer":null}
+{"event":123,"seq":15,"thread":17,"ticks":729715027444,"channel":"status","text":"completed","answer":null}
+{"event":126,"seq":16,"thread":17,"ticks":729715477251,"channel":"currentPackage","text":"Exporting package com.aras.innovator.conversion","answer":null}
+{"event":127,"seq":17,"thread":17,"ticks":729715477811,"channel":"status","text":"Item 1 of 1: Identity - Conversion Manager","answer":null}
+{"event":136,"seq":18,"thread":17,"ticks":729717092418,"channel":"status","text":"completed","answer":null}
+{"event":137,"seq":19,"thread":17,"ticks":729717092667,"channel":"currentPackage","text":"","answer":null}

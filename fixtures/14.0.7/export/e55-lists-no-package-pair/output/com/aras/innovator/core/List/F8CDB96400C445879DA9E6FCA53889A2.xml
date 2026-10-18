@@ -1,0 +1,23 @@
+﻿<AML>
+ <Item type="List" id="F8CDB96400C445879DA9E6FCA53889A2" action="add">
+  <description>A simple list to define True and False.</description>
+  <permission_id keyed_name="07962D2CF8B94D3CB4CD59E8D6D73371" type="Permission">07962D2CF8B94D3CB4CD59E8D6D73371</permission_id>
+  <name>True/False</name>
+  <Relationships>
+   <Item type="Value" id="401CA89426674780848E3310C7E21F0D" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">True</label>
+    <sort_order>0</sort_order>
+    <source_id keyed_name="True/False" type="List">F8CDB96400C445879DA9E6FCA53889A2</source_id>
+    <value>1</value>
+   </Item>
+   <Item type="Value" id="DF83AAB6B3E8467DA324A7FBC82E8C41" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">False</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="True/False" type="List">F8CDB96400C445879DA9E6FCA53889A2</source_id>
+    <value>0</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

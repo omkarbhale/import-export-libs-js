@@ -1,0 +1,4 @@
+{"event":9,"seq":1,"thread":15,"ticks":728772121343,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.ApplicationCore","answer":null}
+{"event":10,"seq":2,"thread":15,"ticks":728772124779,"channel":"status","text":"Item 1 of 1: Variable - Application Core","answer":null}
+{"event":16,"seq":3,"thread":15,"ticks":728773502514,"channel":"status","text":"completed","answer":null}
+{"event":17,"seq":4,"thread":15,"ticks":728773502860,"channel":"currentPackage","text":"","answer":null}

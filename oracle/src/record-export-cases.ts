@@ -1,0 +1,240 @@
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
+import { readPassword } from "./cli.js";
+import { EXPORT_CASES, hostItems, hostOptions, type ExportCase } from "./export-cases.js";
+import { DEV_SERVER, record } from "./record.js";
+import { externalizeLargeResponses } from "./transcript.js";
+
+const ENGINE = "14.0.7";
+const ROOT = fileURLToPath(new URL("../..", import.meta.url));
+/** Where the cases are committed. */
+export const CASES_DIR = join(ROOT, "fixtures", ENGINE, "export");
+/** Shared large responses (see transcript.ts). */
+export const BLOBS_DIR = join(CASES_DIR, "_blobs");
+
+const USAGE = `Usage: npm run oracle:export-cases -- [--only <id>,<id>...] [--force] [--list] [--readme-only]
+
+Records the 14.0.7 export fixture cases from export-cases.ts on dev (read-only)
+into fixtures/${ENGINE}/export/<case>/. A case that is already recorded is
+skipped unless --force. The password comes from ARAS_PASSWORD or stdin.
+--readme-only rewrites each case's case.json and README.md and the index from
+export-cases.ts without running the engine.
+`;
+
+/** `case.json`: the case's input and what was recorded. */
+export interface CaseFile {
+  id: string;
+  engine: typeof ENGINE;
+  catalogue: string[];
+  title: string;
+  exercises: string;
+  /** The packages and their items in `Hashtable` insertion order. */
+  packages: ExportCase["packages"];
+  options: NonNullable<ExportCase["options"]>;
+  expectsError: boolean;
+  note?: string;
+  /** What the recording reported. */
+  result: { hostExit: number; calls: number | null; error: string | null };
+}
+
+export function caseFile(c: ExportCase, result: CaseFile["result"]): CaseFile {
+  return {
+    id: c.id,
+    engine: ENGINE,
+    catalogue: c.catalogue,
+    title: c.title,
+    exercises: c.exercises,
+    packages: c.packages,
+    options: c.options ?? {},
+    expectsError: c.expectsError === true,
+    ...(c.note === undefined ? {} : { note: c.note }),
+    result,
+  };
+}
+
+/** A markdown table cell. */
+const cell = (text: string) => text.replace(/\|/g, "\\|").replace(/\t/g, " ");
+
+export function caseReadme(file: CaseFile): string {
+  const options = Object.entries(file.options);
+  const items = file.packages.flatMap((p) => p.items.map((i) => ({ package: p.name, ...i })));
+  const lines = [
+    `# ${file.id}`,
+    "",
+    `${file.title}. Engine ${file.engine}, export, recorded on dev (read-only). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`,
+    "",
+    "## Exercises",
+    "",
+    file.exercises,
+    "",
+    ...(file.note === undefined ? [] : ["## Not covered here", "", file.note, ""]),
+    "## Input",
+    "",
+    "The engine's `selItemsTable` is a `Hashtable` from package to a `Hashtable` of items. The host fills it in this order: a package on its first item, then each item under its id. `run.json` holds the same list as `params.Items`.",
+    "",
+    "| # | Package | Type | Id | Keyed name |",
+    "|---|---|---|---|---|",
+    ...items.map((i, n) => `| ${n + 1} | ${cell(i.package)} | ${cell(i.type)} | ${i.id} | ${cell(i.keyedName) || "(empty)"} |`),
+    "",
+    options.length === 0
+      ? "Engine options: none; every one keeps the engine's default."
+      : `Engine options: ${options.map(([k, v]) => `\`${k}\` = \`${JSON.stringify(v)}\``).join(", ")}.`,
+    "",
+    "## Result",
+    "",
+    file.expectsError
+      ? `The run ends in an engine error, which the case pins: host exit ${file.result.hostExit}, ${file.result.calls ?? "?"} calls.`
+      : `The export completes: host exit ${file.result.hostExit}, ${file.result.calls ?? "?"} calls.`,
+    ...(file.result.error === null ? [] : ["", "```", file.result.error.split("\n")[0]!, "```"]),
+    "",
+    "## Spec rules",
+    "",
+    "None yet. The spec or build ticket that pins this case adds its rule ids here (mapcheck F11).",
+    "",
+    "## Files",
+    "",
+    "| File | What |",
+    "|---|---|",
+    "| `case.json` | this case's input and result, machine-readable |",
+    "| `run.json` | the oracle's run record: toolset identity, parameters, host info |",
+    "| `transcript.jsonl` | every call the engine made, in order. A response of 64 KB or more is in `../_blobs/<sha256>.xml`, named by `responseBlob`; `oracle/src/transcript.ts` reads it back |",
+    "| `messages.jsonl` | the engine's messages, by channel |",
+    "| `engine.log` | the engine's own log |",
+    "| `host.log` | the host's console output |",
+    "| `output/` | the export folder, byte for byte |",
+    "",
+    "Re-record: `ARAS_PASSWORD=… npm run oracle:export-cases -- --only " + file.id + " --force`.",
+    "",
+  ];
+  return lines.join("\n");
+}
+
+export function indexReadme(cases: readonly CaseFile[]): string {
+  return [
+    "# 14.0.7 export fixtures",
+    "",
+    "Recorded from engine 14.0.7.35492 on the dev instance, read-only, from ticket 05's catalogue and option matrix. One folder per case; each README says what the case exercises, its input (the `Hashtable` insertion order included) and the spec rules that pin it.",
+    "",
+    "- Cases are small: one item, or one small package, per branch, plus multi-package cases for ordering (`p1-*`).",
+    "- A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript; every case begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` puts them back.",
+    "- Cases that need scratch packages on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr `event_data`, several `filter_xml`, referenced elements, the last-segment collision) are recorded by ticket 67 after ticket 25.",
+    "- The dev state a case ran against can change. `run.json` carries the time of the run.",
+    "- Re-record with `ARAS_PASSWORD=… npm run oracle:export-cases` (see `npm run oracle:export-cases -- --help`).",
+    "",
+    "| Case | Catalogue | What | Calls |",
+    "|---|---|---|---|",
+    ...cases.map(
+      (c) => `| [${c.id}](${c.id}/README.md) | ${c.catalogue.join(", ")} | ${cell(c.title)} | ${c.result.calls ?? "?"} |`,
+    ),
+    "",
+  ].join("\n");
+}
+
+function recordedCases(): CaseFile[] {
+  return EXPORT_CASES.flatMap((c) => {
+    const file = join(CASES_DIR, c.id, "case.json");
+    return existsSync(file) ? [JSON.parse(readFileSync(file, "utf8")) as CaseFile] : [];
+  });
+}
+
+function install(c: ExportCase, from: string, result: CaseFile["result"]): void {
+  externalizeLargeResponses(join(from, "transcript.jsonl"), BLOBS_DIR);
+  const file = caseFile(c, result);
+  writeFileSync(join(from, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
+  writeFileSync(join(from, "README.md"), caseReadme(file));
+  const to = join(CASES_DIR, c.id);
+  rmSync(to, { recursive: true, force: true });
+  mkdirSync(CASES_DIR, { recursive: true });
+  cpSync(from, to, { recursive: true });
+  rmSync(from, { recursive: true, force: true });
+}
+
+async function main(argv: readonly string[]): Promise<number> {
+  const { values } = parseArgs({
+    args: [...argv],
+    options: { only: { type: "string" }, force: { type: "boolean" }, list: { type: "boolean" }, "readme-only": { type: "boolean" }, help: { type: "boolean", short: "h" } },
+    strict: true,
+  });
+  if (values.help === true) {
+    process.stdout.write(USAGE);
+    return 0;
+  }
+  const only = values.only === undefined ? null : new Set(values.only.split(",").map((s) => s.trim()));
+  if (only !== null) {
+    const unknown = [...only].filter((id) => !EXPORT_CASES.some((c) => c.id === id));
+    if (unknown.length > 0) {
+      process.stderr.write(`unknown case: ${unknown.join(", ")}\n`);
+      return 64;
+    }
+  }
+  const chosen = EXPORT_CASES.filter((c) => only === null || only.has(c.id));
+  if (values.list === true) {
+    for (const c of chosen) process.stdout.write(`${c.id}${existsSync(join(CASES_DIR, c.id, "case.json")) ? "" : "  (not recorded)"}\n`);
+    return 0;
+  }
+
+  if (values["readme-only"] === true) {
+    for (const c of chosen) {
+      const dir = join(CASES_DIR, c.id);
+      if (!existsSync(join(dir, "case.json"))) continue;
+      const file = caseFile(c, (JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as CaseFile).result);
+      writeFileSync(join(dir, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
+      writeFileSync(join(dir, "README.md"), caseReadme(file));
+    }
+    writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
+    return 0;
+  }
+
+  const password = readPassword();
+  const work = mkdtempSync(join(tmpdir(), "libsjs-export-cases-"));
+  const failures: string[] = [];
+  try {
+    for (const c of chosen) {
+      if (values.force !== true && existsSync(join(CASES_DIR, c.id, "case.json"))) {
+        process.stdout.write(`${c.id}: already recorded\n`);
+        continue;
+      }
+      process.stdout.write(`${c.id}: recording\n`);
+      const out = resolve(work, c.id);
+      const result = await record({
+        engine: ENGINE,
+        command: "export",
+        url: DEV_SERVER.url,
+        database: DEV_SERVER.database,
+        user: process.env.ARAS_USER ?? "root",
+        password,
+        out,
+        params: { Items: hostItems(c.packages), ...hostOptions(c.options) },
+        log: () => {},
+      });
+      if (result.remainingSecrets.length > 0) {
+        process.stderr.write(`${c.id}: credential-shaped text survived scrubbing:\n  ${result.remainingSecrets.join("\n  ")}\n`);
+        return 1;
+      }
+      const failed = c.expectsError === true ? result.error === null : result.hostExit !== 0 || result.error !== null;
+      if (failed) {
+        failures.push(c.id);
+        process.stderr.write(`${c.id}: not as expected (host exit ${result.hostExit}, error ${result.error?.split("\n")[0] ?? "none"}); not installed, kept at ${out}\n`);
+        continue;
+      }
+      install(c, out, { hostExit: result.hostExit, calls: result.calls, error: result.error });
+      process.stdout.write(`${c.id}: ${result.calls ?? "?"} calls\n`);
+    }
+  } finally {
+    // Keep the folders of cases that did not install, for a look.
+    if (failures.length === 0) rmSync(work, { recursive: true, force: true });
+  }
+  writeFileSync(join(CASES_DIR, "README.md"), indexReadme(recordedCases()));
+  if (failures.length > 0) {
+    process.stderr.write(`not as expected: ${failures.join(", ")}\n`);
+    return 1;
+  }
+  return 0;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  process.exitCode = await main(process.argv.slice(2));
+}

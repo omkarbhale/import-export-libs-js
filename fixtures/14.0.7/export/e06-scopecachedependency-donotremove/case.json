@@ -1,0 +1,30 @@
+{
+  "id": "e06-scopecachedependency-donotremove",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E06"
+  ],
+  "title": "ItemType: reference to an unknown package, DoNotRemove (ScopeCacheDependency)",
+  "exercises": "The only dev case for RefToUnknownPacks removal: two Server Events relate to Method effs_scopeCacheInvalidOnAddItem in solution.PlmEffectivity, a package that configurator does not depend on. DoNotRemove is the engine default; the request group for unknown packages is still sent.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.configurator",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "A22EC0C6A1B940FB94654AB060F21459",
+          "keyedName": "ScopeCacheDependency"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "refToUnknownPacks": "DoNotRemove"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 51,
+    "error": null
+  }
+}

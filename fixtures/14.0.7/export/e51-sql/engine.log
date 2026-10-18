@@ -1,0 +1,20 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194219-14.0.7-export-c2e751\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194219-14.0.7-export-c2e751\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 01:12:21
+Item id :4D6F8EE6179645F99BAE94036C9E94EF  keyed_name : ConvertFromLocal   type : SQL successfully exported
+end of execution : 10/19/2026 01:12:21

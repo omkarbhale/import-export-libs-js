@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":18,"ticks":729024677017,"channel":"currentPackage","text":"Exporting package com.aras.innovator.derivedrelationships_default","answer":null}
+{"event":11,"seq":2,"thread":18,"ticks":729024687002,"channel":"status","text":"Item 1 of 1: dr_RelationshipFamily - DerivedRelationshipFamily","answer":null}
+{"event":27,"seq":3,"thread":18,"ticks":729030990471,"channel":"status","text":"completed","answer":null}
+{"event":28,"seq":4,"thread":18,"ticks":729030991134,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,6 @@
+<imports>
+  <package name="com.aras.innovator.i18n" path=".\">
+    <dependson name="com.aras.innovator.conflictdetection" />
+    <dependson name="com.aras.innovator.cui_default" />
+  </package>
+</imports>

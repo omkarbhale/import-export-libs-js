@@ -1,0 +1,28 @@
+{
+  "id": "e16-method-by-config-id",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E16"
+  ],
+  "title": "Method: exported by its config_id, not the current generation (Add Alias Identity)",
+  "exercises": "A versionable Method exported by element id = config_id, which is generation 1 and not current; the current generation is 8400D20E29F3443BA6074A0E01AB4BEB. Exercises GetCurrentIdOfVersion's second query and ReplaceIdWithConfigId.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Method",
+          "id": "61346634B3DC4D51964CD7AD988051D7",
+          "keyedName": "Add Alias Identity"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 17,
+    "error": null
+  }
+}

@@ -2,6 +2,8 @@ node_modules/
 dist/
 coverage/
 *.log
+# Recorded engine logs are fixtures.
+!fixtures/**/*.log
 
 # Decompiled C# is regenerated locally and never committed (AGENTS.md).
 .decomp/

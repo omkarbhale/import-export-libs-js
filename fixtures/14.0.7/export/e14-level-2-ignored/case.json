@@ -1,0 +1,30 @@
+{
+  "id": "e14-level-2-ignored",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E14"
+  ],
+  "title": "List: sLevel 2 is ignored by a fixed-depth type",
+  "exercises": "A fixed-depth type ignores sLevel; compare with e14-list.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "level": "2"
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 23,
+    "error": null
+  }
+}

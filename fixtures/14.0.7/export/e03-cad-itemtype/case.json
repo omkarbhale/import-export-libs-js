@@ -1,0 +1,28 @@
+{
+  "id": "e03-cad-itemtype",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E03"
+  ],
+  "title": "ItemType: CAD (reference holding XML markup)",
+  "exercises": "A FileSelectorTemplate reference that holds XML markup becomes CDATA through disable-output-escaping. Also plain references.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "CCF205347C814DD1AF056875E0A880AC",
+          "keyedName": "CAD"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 85,
+    "error": null
+  }
+}

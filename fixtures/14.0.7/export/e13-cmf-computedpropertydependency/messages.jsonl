@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":18,"ticks":727933462579,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cmf","answer":null}
+{"event":12,"seq":2,"thread":18,"ticks":727933467594,"channel":"status","text":"Item 1 of 1: RelationshipType - cmf_ComputedPropertyDependency","answer":null}
+{"event":49,"seq":3,"thread":18,"ticks":727942625137,"channel":"status","text":"completed","answer":null}
+{"event":50,"seq":4,"thread":18,"ticks":727942625547,"channel":"currentPackage","text":"","answer":null}

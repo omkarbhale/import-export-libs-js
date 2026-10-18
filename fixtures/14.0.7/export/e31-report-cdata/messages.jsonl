@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":16,"ticks":728536392010,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":728536399801,"channel":"status","text":"Item 1 of 1: Report - ECN Report","answer":null}
+{"event":18,"seq":3,"thread":16,"ticks":728538879334,"channel":"status","text":"completed","answer":null}
+{"event":19,"seq":4,"thread":16,"ticks":728538879842,"channel":"currentPackage","text":"","answer":null}

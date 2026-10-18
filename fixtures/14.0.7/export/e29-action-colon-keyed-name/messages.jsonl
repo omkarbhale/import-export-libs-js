@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":20,"ticks":728451741913,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":20,"ticks":728451747617,"channel":"status","text":"Item 1 of 1: Action - PE: rollup all parts in DB","answer":null}
+{"event":19,"seq":3,"thread":20,"ticks":728454667950,"channel":"status","text":"completed","answer":null}
+{"event":20,"seq":4,"thread":20,"ticks":728454668174,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,5 @@
+<imports>
+  <package name="com.aras.innovator.history" path=".\">
+    <dependson name="com.aras.innovator.core" />
+  </package>
+</imports>

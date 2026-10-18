@@ -1,0 +1,20 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194313-14.0.7-export-9bc1da\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194313-14.0.7-export-9bc1da\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.cui_default****
+start of execution : 10/19/2026 01:13:15
+Item id :2BBAC312DCCB481CB0B16E651A73EE1E  keyed_name : CadToPdfMenuInitHandler   type : Method successfully exported
+end of execution : 10/19/2026 01:13:15

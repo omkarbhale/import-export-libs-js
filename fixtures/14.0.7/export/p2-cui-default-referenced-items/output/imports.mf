@@ -1,0 +1,7 @@
+<imports>
+  <package name="com.aras.innovator.cui_default" path=".\">
+    <dependson name="com.aras.innovator.cui" />
+    <dependson name="com.steepgraph.solution.contextualHelp" />
+    <dependson name="com.steepgraph.addon.imageviewer" />
+  </package>
+</imports>

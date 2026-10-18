@@ -1,0 +1,28 @@
+{
+  "id": "e13-cmf-computedpropertydependency",
+  "engine": "14.0.7",
+  "catalogue": [
+    "E13"
+  ],
+  "title": "RelationshipType: dependency level 3 (cmf_ComputedPropertyDependency)",
+  "exercises": "dependencyLevel 3, the deepest on dev: cmf_ComputedProperty, cmf_PropertyType, cmf_ElementType. On import it also pins build.xsl's numeric dependencyLevel sort.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "RelationshipType",
+          "id": "0BB2EF414FA442589BCC46BD56B5FAFD",
+          "keyedName": "cmf_ComputedPropertyDependency"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 46,
+    "error": null
+  }
+}

@@ -1,0 +1,40 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194307-14.0.7-export-9da219\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194307-14.0.7-export-9da219\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.admin****
+start of execution : 10/19/2026 01:13:10
+Item id :128C30A645F04E5380F8B4709A3BD1A1  keyed_name : 128C30A645F04E5380F8B4709A3BD1A1   type : Item Report successfully exported
+end of execution : 10/19/2026 01:13:10
+         ****Export com.aras.innovator.cui****
+start of execution : 10/19/2026 01:13:10
+Item id :58AECE23031E496FB04FFDEA6EDEF8A0  keyed_name : PresentableItems   type : ItemType successfully exported
+end of execution : 10/19/2026 01:13:11
+         ****Export com.aras.innovator.es****
+start of execution : 10/19/2026 01:13:11
+Item id :18C614579E6D45468B90F5E9103AA153  keyed_name : ES_SolrUrl   type : Variable successfully exported
+end of execution : 10/19/2026 01:13:11
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 01:13:11
+Item id :F288A3345225407EACBC936191097BCD  keyed_name : Activity Template   type : Form successfully exported
+end of execution : 10/19/2026 01:13:11
+         ****Export com.aras.innovator.history****
+start of execution : 10/19/2026 01:13:11
+Item id :4B9FF34674E34677B877FC8F71B5CDBE  keyed_name : History_whereTemplateUsed   type : Grid successfully exported
+end of execution : 10/19/2026 01:13:12
+         ****Export com.aras.innovator.conversion****
+start of execution : 10/19/2026 01:13:12
+Item id :694C8B27E5D940DAA8BD336E45EC3A63  keyed_name : Conversion Manager   type : Identity successfully exported
+end of execution : 10/19/2026 01:13:12

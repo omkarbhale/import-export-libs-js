@@ -1,0 +1,30 @@
+{
+  "id": "opt-use-import",
+  "engine": "14.0.7",
+  "catalogue": [
+    "UseImport"
+  ],
+  "title": "Option: UseImport on",
+  "exercises": "UseImport on; the catalogue expects it to be logged only, and one case pins that.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "useImport": true
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "error": null
+  }
+}

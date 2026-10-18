@@ -119,7 +119,7 @@ export function exportItem(pkg: string, spec: string): string {
 
 class UsageError extends Error {}
 
-function readPassword(): string {
+export function readPassword(): string {
   const fromEnv = process.env.ARAS_PASSWORD;
   if (fromEnv) return fromEnv;
   if (process.stdin.isTTY) throw new UsageError("set ARAS_PASSWORD or pipe the password on stdin");

@@ -1,0 +1,20 @@
+Tool version: 14.0.7.35492
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194250-14.0.7-export-953fd0\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T194250-14.0.7-export-953fd0\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.tdf****
+start of execution : 10/19/2026 01:12:53
+Item id :37BE25ACED9B46BEA12D66F69703C105  keyed_name : 37BE25ACED9B46BEA12D66F69703C105   type : tp_XmlSchemaElement successfully exported
+end of execution : 10/19/2026 01:12:53
