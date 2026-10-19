@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { NTFS_UPPER_RUNS } from "./ntfs-upper-data.js";
-import { compareNtfsNames, ntfsOrderKey, sortNtfsNames } from "./ntfs-order.js";
+import { compareNtfsNames, ntfsOrderKey, shortNamesOf, sortNtfsNames } from "./ntfs-order.js";
 import { TypeNameOutsideRepertoireError, nlsSortKey, sortByTypeName } from "./nls-word-sort.js";
 
 const DIR = fileURLToPath(new URL("../../fixtures/import-load/", import.meta.url));
@@ -40,6 +40,19 @@ describe("IMP-004: NTFS directory order", () => {
     it(`lists the directories NTFS listed in run ${index + 1} whatever order they come in`, () => {
       const dirs = run.dirs.map(units);
       expect(sortNtfsNames([...dirs].reverse())).toEqual(dirs);
+    });
+  });
+
+  it("builds the short names of the names that do not fit 8.3 (IMP-004)", () => {
+    const names = ["LIBSJS-SCRATCH-Fs_Backup.xmlbak", "LIBSJS-SCRATCH-Fs_Plain.xml", "LIBSJS-SCRATCH-Fs_Notes.txt", "a.xmlbak", "Abc.xml", "my file.v2.xmlx", "m+n.xml~", ".xmlbak"];
+    expect(Object.fromEntries(shortNamesOf(names))).toEqual({
+      "LIBSJS-SCRATCH-Fs_Backup.xmlbak": "LIBSJS~1.XML",
+      "LIBSJS-SCRATCH-Fs_Plain.xml": "LIBSJS~2.XML",
+      "LIBSJS-SCRATCH-Fs_Notes.txt": "LIBSJS~1.TXT",
+      "a.xmlbak": "A~1.XML",
+      "my file.v2.xmlx": "MYFILE~1.XML",
+      "m+n.xml~": "M_N~1.XML",
+      ".xmlbak": "XMLBAK~1",
     });
   });
 

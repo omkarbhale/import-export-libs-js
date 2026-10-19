@@ -180,6 +180,27 @@ describe("IMP-002 to IMP-006: the file listing", () => {
     expect(directoryGetXmlFiles(root).map((path) => path.slice(root.length + 1))).toEqual(["loose.xml"]);
   });
 
+  it("lists a file that only its short name matches at the short name's place (IMP-003, IMP-004)", () => {
+    const root = make({
+      "p/LIBSJS-SCRATCH-Fs_Backup.xmlbak": "",
+      "p/LIBSJS-SCRATCH-Fs_Plain.xml": "",
+      "p/LIBSJS-SCRATCH-Fs_NoItem.xml": "",
+      "p/LIBSJS-SCRATCH-Fs_Notes.txt": "",
+      "p/Zed.xml": "",
+    });
+    expect(directoryGetXmlFiles(join(root, "p")).map((path) => path.slice(root.length + 3))).toEqual([
+      "LIBSJS-SCRATCH-Fs_NoItem.xml",
+      "LIBSJS-SCRATCH-Fs_Plain.xml",
+      "LIBSJS-SCRATCH-Fs_Backup.xmlbak",
+      "Zed.xml",
+    ]);
+  });
+
+  it("numbers clashing short names in the order of the long names (IMP-004)", () => {
+    const root = make({ "p/report-b.xmlz": "", "p/report-a.xmlz": "", "p/report-c.xml": "" });
+    expect(directoryGetXmlFiles(join(root, "p")).map((path) => path.slice(root.length + 3))).toEqual(["report-c.xml", "report-a.xmlz", "report-b.xmlz"]);
+  });
+
   it("does not double a trailing separator", () => {
     const root = make({ "d/a.xml": "" });
     expect(directoryGetDirectories(`${root}/`)).toEqual([`${root}/d`]);
