@@ -1,12 +1,13 @@
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { readTranscript, type TranscriptCall } from "../../oracle/src/transcript.js";
 import { CItemException, ResponseDocument } from "../client/fault.js";
 import type { ServerConnection } from "../client/innovator.js";
 import { CItemHelper } from "../client/item-helper.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
+import { packageCaches } from "../client/package-lookups.js";
 import { ArasVersion } from "../client/version.js";
 import { SUExportContext, type ReferencesToUnknownPackages } from "./export-context.js";
 import { ExportItem } from "./export-item.js";
@@ -83,16 +84,15 @@ const comparable = (log: string, logPath: string, workingDirectory: string): str
     .split(logPath).join("<log>")
     .split(workingDirectory).join("<working>");
 
-/** The modes that remove references to unknown packages wait for the rules `EXP-600` to `EXP-699`. */
-const needsRemoval = (input: Case): boolean => input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning";
-
-describe("the recorded 14.0.7 export cases, run through ExportSolutions (EXP-500 to EXP-520)", () => {
+describe("the recorded 14.0.7 export cases, run through ExportSolutions (EXP-500 to EXP-520, EXP-600 to EXP-620)", () => {
   let packagesCompared = 0;
   let runs = 0;
 
+  // each case was recorded by a process of its own, and the dependency cache outlives a helper (EXP-619)
+  beforeEach(() => packageCaches.dependsOn.clear());
+
   it.each(caseNames)("%s", async (name) => {
     const input = JSON.parse(read(name, "case.json")) as Case;
-    if (needsRemoval(input)) return;
 
     const calls = readTranscript(join(CASES, name, "transcript.jsonl"), BLOBS);
     const recordedLog = read(name, "engine.log");
@@ -154,7 +154,7 @@ describe("the recorded 14.0.7 export cases, run through ExportSolutions (EXP-500
     runs += 1;
   });
 
-  it("ran the cases that need no removal of references, with every package", () => {
+  it("ran the cases, with every package", () => {
     expect(runs).toBeGreaterThan(70);
     expect(packagesCompared).toBeGreaterThan(75);
   });

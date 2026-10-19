@@ -13,8 +13,11 @@ export { ImportExportManager, RUN_ENGINES, selectionTable } from "./import-expor
 export type { ImportExportManagerOptions, SelectionInsertions, SelectionTable } from "./import-export-manager.js";
 export { MESSAGE_TEMPLATES, Message, createMessagesFactory, getMessage } from "./messages.js";
 export type { MessageChannel, MessageOptions, MessagesFactory, OnItemError, SentMessage } from "./messages.js";
-export { UnknownReferenceRemovalMissing, packageItem } from "./package-item.js";
-export type { ExcludedReferences, RemovedReference, UnknownReferenceRemovalProvider } from "./package-item.js";
+export { packageItem } from "./package-item.js";
+export type { ExcludedReferences } from "./package-item.js";
+export { RemovedReference } from "./removed-reference.js";
+export type { RemovedRefReason } from "./removed-reference.js";
+export { getItemId, removeReferencesToAnotherPackages, removeRelationshipItem } from "./unknown-references.js";
 export { RunLog, formatWithArgs, invariantDateTime, logInputParameters } from "./run-log.js";
 export { cmfBody, itemTypeBody } from "./request-bodies.js";
 export { ExportRewrites, removeRelationshipHelper } from "./rewrites.js";

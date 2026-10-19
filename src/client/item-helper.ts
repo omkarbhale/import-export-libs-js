@@ -4,6 +4,7 @@ import { CItemException, type ResponseDocument } from "./fault.js";
 import { Innovator, type ServerConnection } from "./innovator.js";
 import { ItemLookups } from "./item-lookups.js";
 import { ItemReferences } from "./item-references.js";
+import { PackageLookups, resetPackageCaches } from "./package-lookups.js";
 import { probeServerVersion } from "./probe.js";
 import { type ArasVersion, VersionRefusal, engineAcceptsServer, enginesAcceptingServer } from "./version.js";
 
@@ -72,13 +73,22 @@ export class CItemHelper {
   readonly lookups: ItemLookups = new ItemLookups(this);
   /** The rewrites of an answer's references (EXP-113 to EXP-116) and the id of a related item (EXP-114). */
   readonly references: ItemReferences = new ItemReferences(this);
+  /** The lookups behind the unknown-package removal and their caches (EXP-607 to EXP-609). */
+  readonly packages: PackageLookups = new PackageLookups(this);
 
   private readonly skipVersionCheck: boolean;
 
+  /**
+   * `new CItemHelper(connection)`: a helper whose lookups start clean. The constructor empties the caches of the unknown-package
+   * removal except the dependency table (EXP-609, EXP-619).
+   *
+   * @spec EXP-030 EXP-046 EXP-609 WIRE-001
+   */
   constructor(
     private readonly connection: ServerConnection,
     options: ItemHelperOptions = {},
   ) {
+    resetPackageCaches();
     this.engine = options.engine ?? DEFAULT_ENGINE;
     if (!CLIENT_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.skipVersionCheck = options.skipVersionCheck ?? false;

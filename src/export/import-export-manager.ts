@@ -25,11 +25,8 @@ import type { ExportItem } from "./export-item.js";
 import { type Message, type MessagesFactory, getMessage } from "./messages.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
-import {
-  type RemovedReference,
-  type UnknownReferenceRemovalProvider,
-  packageItem,
-} from "./package-item.js";
+import { packageItem } from "./package-item.js";
+import type { RemovedReference } from "./removed-reference.js";
 import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
 
 /** The engines whose export run is built; the rest wait for their variant slices. */
@@ -68,8 +65,6 @@ export function selectionTable(insertions: SelectionInsertions): SelectionTable 
 export interface ImportExportManagerOptions extends PathEnvironment {
   /** The clock of the log's date-times; the default is the host's. Tests inject a fixed one. */
   now?: () => Date;
-  /** Supplies the removal of references to unknown packages, asked for when the context's mode is not `DoNotRemove` (EXP-514). */
-  unknownReferences?: UnknownReferenceRemovalProvider;
   /** The host's standard output, which an import writes its banner, progress and completion to (IMP-421). Nothing by default. */
   console?: ConsoleWriter;
   /** The value of `os_user` in the audit row of an import, or a function that gives it (IMP-452). */
@@ -115,7 +110,6 @@ export class ImportExportManager {
 
   private readonly engine: Engine;
   private readonly now: () => Date;
-  private readonly unknownReferences: UnknownReferenceRemovalProvider | undefined;
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
   private state: ProgressState = "idle";
@@ -139,10 +133,9 @@ export class ImportExportManager {
     this.engine = itemHelper.engine;
     if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
-    const { now, unknownReferences, console, osUser, ...environment } = options;
+    const { now, console, osUser, ...environment } = options;
     this.environment = environment;
     this.now = now ?? (() => new Date());
-    this.unknownReferences = unknownReferences;
 
     this.console = console ?? SILENT_CONSOLE;
     this.importHelper = new ImportHelper(itemHelper, osUser === undefined ? {} : { osUser });
@@ -313,7 +306,7 @@ export class ImportExportManager {
    * package header first. A cancel is looked at before each item. A `CItemException` from an item is that item's failure: the
    * host is asked whether to abort the package, and the answer `true` ends it (EXP-516). Other exceptions leave.
    *
-   * @spec EXP-513 EXP-514 EXP-515 EXP-516 EXP-517 EXP-518
+   * @spec EXP-513 EXP-514 EXP-515 EXP-516 EXP-517 EXP-518 EXP-612 EXP-613 EXP-614
    */
   async exportProc(
     exportContext: SUExportContext,
@@ -340,7 +333,7 @@ export class ImportExportManager {
       status.text = getMessage("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
       await status.execute();
       try {
-        await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.unknownReferences, this.environment);
+        await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment);
         log.writeLine(getMessage("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
       } catch (thrown) {
         if (!(thrown instanceof CItemException)) throw thrown;
