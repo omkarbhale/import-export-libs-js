@@ -17,6 +17,8 @@ import {
   markEmpty,
   namespacesInScope,
   ownerDocument,
+  preservesWhitespace,
+  removeChildren,
   setDeclaration,
 } from "./dom.js";
 import type { XmlDocument, XmlElement, XmlNode } from "./dom.js";
@@ -74,6 +76,17 @@ export function loadXml(text: string, options: LoadOptions): XmlDocument {
   const doc = createXmlDocument(options.preserveWhitespace);
   new Parser(text, doc, options).parseDocument();
   return doc;
+}
+
+/**
+ * `XmlDocument.LoadXml(text)` on a document that already has content: every child and the declaration are dropped and the text is
+ * loaded in their place, with the document's own `PreserveWhitespace`. The root element is a new one (IMP-510).
+ * @spec IMP-510
+ */
+export function loadXmlInto(doc: XmlDocument, text: string): void {
+  removeChildren(doc);
+  setDeclaration(doc, null);
+  new Parser(text, doc, { preserveWhitespace: preservesWhitespace(doc) }).parseDocument();
 }
 
 /**

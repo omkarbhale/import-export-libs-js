@@ -93,15 +93,23 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
 /**
  * The templates of 14.35 that differ from {@link MESSAGE_TEMPLATES} (EXP-504, IMP-470): `ErrorMessageMessage` is two tabs, the
  * banner and the message on a line of its own, and the error block of a run has no leading spaces and a CRLF first. The key
- * `AddingPackageDefinintionForPackageName` keeps its misspelling, and its text is corrected. Every other template is the same.
+ * `AddingPackageDefinintionForPackageName` keeps its misspelling, and its text is corrected. The six keys of the AML batch mode
+ * are new (IMP-514); `TryToResolveAMLBatchCheckDependencies` has no place for the argument the engine passes. Every other template
+ * is the same.
  *
- * @spec EXP-504 IMP-470
+ * @spec EXP-504 IMP-470 IMP-514
  */
 export const MESSAGE_TEMPLATES_1435: Readonly<Record<string, string>> = {
   ...MESSAGE_TEMPLATES,
   AddingPackageDefinintionForPackageName: "Adding PackageDefinition for {0}",
   ErrorMessageMessage: "\t\t****ErrorMessage****\r\n{0}",
   ErrorMessageMessageEnd: "\r\n\t\t****ErrorMessage****\r\n{0}\r\n\t\t********************",
+  TryToBatchAML: "Try to execute AMLs in AML batch mode...",
+  TryToBatchAMLSuccess: "AML successfully applied in AML batch mode:\r\n   AML batch time: {0}\r\n   Resolve dependencies time: {1}",
+  TryToBatchAMLFailed: "Error of import in AML batch mode:\r\n {0}",
+  TryToExecuteAMLOneByOne: "Try to execute AML one by one...",
+  AMLBatchCheckDependenciesWarning: "Error of check dependencies in AML batch mode:\r\n {0}",
+  TryToResolveAMLBatchCheckDependencies: "Trying to resolve AML dependencies in AML batch mode...",
 };
 
 /** `GetMessage` over the catalogue of an engine (IMP-470). */

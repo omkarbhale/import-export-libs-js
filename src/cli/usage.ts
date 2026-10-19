@@ -52,12 +52,20 @@ const IMPORT_RUN = `Import:
   --os-user <name>      The os_user of the rows (default: DOMAIN\\user on Windows, <host>\\<user> elsewhere)
 `;
 
+const IMPORT_BATCH_ERRORS = `Engine 14.35 only:
+  --batch               Send the items that have no Relationships in one <AML> request. A refused batch is imported one item at a time
+  --batch-max <n>       Send a batch when n items are waiting (needs --batch; default 0: after every item)
+  --collect-errors      Keep importing when an item fails, and report all the errors at the end. The exit code is 1 when any was collected
+  --max-errors <n>      End the run when n errors have been collected (needs --collect-errors; default 0: at the first)
+`;
+
 export const IMPORT_USAGE = `Usage: aras-pkg import <manifest> [options]
 
 Imports the packages of an imports.mf manifest, in dependency order.
   --package <name>      Import only this package (repeatable); default: every package of the manifest
 
 ${IMPORT_RUN}
+${IMPORT_BATCH_ERRORS}
 ${COMMON}`;
 
 export const PLAN_USAGE = `Usage: aras-pkg plan import <manifest> [options]

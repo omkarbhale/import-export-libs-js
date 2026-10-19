@@ -18,7 +18,7 @@ export { setInnerXml, getInnerXml } from "./dom-ops.js";
 export * from "./errors.js";
 export { hasOnlyValidFileNameChars, INVALID_FILE_NAME_CHARS } from "./file-names.js";
 export { htmlDecode, htmlEncode } from "./html.js";
-export { loadXml, parseFragment } from "./parser.js";
+export { loadXml, loadXmlInto, parseFragment } from "./parser.js";
 export type { LoadOptions } from "./parser.js";
 export { decodeXmlFile, xmlDocumentLoadFile } from "./load-file.js";
 export { readAllText, xmlDocumentLoad } from "./read-text.js";

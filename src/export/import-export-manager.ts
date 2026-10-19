@@ -18,6 +18,7 @@ import { pathCombine } from "../io/win-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
 import { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
+import { CollectedErrors } from "../import/collected-errors.js";
 import type { SUImportContext } from "../import/import-context.js";
 import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
 import { DB_PATCH_ENGINES, DbPatchApplication, DbPatchesNotInEngineError, type DBUpdateConfig } from "../db-patches/index.js";
@@ -146,7 +147,7 @@ function isFormatOrOverflow(error: unknown): error is Error {
  * logged-in helper, a context and a messages factory, and runs one export at a time. The import half is `importSolutions`, which runs `ImportRun`.
  *
  * @spec EXP-500 EXP-502 EXP-503 EXP-507 EXP-508 EXP-509 EXP-510 EXP-511 EXP-512 EXP-513 EXP-514 EXP-515 EXP-516 EXP-517 EXP-518
- * @spec EXP-519 EXP-520 EXP-540 EXP-541 EXP-542 EXP-543 EXP-544 IMP-402 IMP-405 IMP-409 IMP-410
+ * @spec EXP-519 EXP-520 EXP-540 EXP-541 EXP-542 EXP-543 EXP-544 IMP-402 IMP-405 IMP-409 IMP-410 IMP-540
  */
 export class ImportExportManager {
   /** The manifest the context named, loaded by the constructor when the file exists; an export never uses it. */
@@ -164,6 +165,8 @@ export class ImportExportManager {
   private readonly osUser: ImportHelperOptions["osUser"];
   private readonly culture: string | undefined;
   private state: ProgressState = "idle";
+  /** The collected-errors mode's three fields, which outlive a run (IMP-540). */
+  private readonly collected = new CollectedErrors();
   /** The bound of the item loop (EXP-551). */
   private readonly parallelism: number;
   /** The lock of the failed-item handler (EXP-555) and the one of the cancel branch (EXP-557): two, as in the engine. */
@@ -720,6 +723,7 @@ export class ImportExportManager {
       console: this.console,
       now: this.now,
       getSolutions2Xml: () => this.getSolutions2Xml(),
+      collected: this.collected,
       getState: () => this.state,
       setState: (state) => {
         this.state = state;

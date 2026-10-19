@@ -2,7 +2,7 @@
  * Import: package loading and the `build.xsl` ordering (`IMP-001` to `IMP-099`), the plan `plan import` reports, and the
  * reference checks (`IMP-100` to `IMP-199`), the delayed resolution they queue (`IMP-200` to `IMP-299`), and the merge and versionable
  * processing (`IMP-300` to `IMP-399`), and the run itself with the package registration, the audit row and the SQL items (`IMP-400` to
- * `IMP-499`).
+ * `IMP-499`), and 14.35's AML batch mode and collected errors (`IMP-500` to `IMP-599`).
  */
 export { groupAddedIdsByType } from "./add-order.js";
 export { applyBuildXsl, renderBuildOutput } from "./build-output.js";
@@ -32,9 +32,10 @@ export {
 export type { DelayedResolutionHelper } from "./delayed-resolution.js";
 export { ReferenceChecker } from "./reference-checks.js";
 export type { CheckHost, DelayedResolution, UnresolvedReference } from "./reference-checks.js";
+export { CollectedErrors } from "./collected-errors.js";
 export { SUImportContext } from "./import-context.js";
 export { ImportHelper, defaultOsUser } from "./import-helper.js";
 export { ImportWorkItem } from "./import-work-item.js";
 export type { ImportHelperOptions } from "./import-helper.js";
-export { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, getImportableItemsCount, importInputParameters, logError } from "./import-run.js";
+export { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, formatTimeSpan, getImportableItemsCount, importInputParameters, logError } from "./import-run.js";
 export type { ConsoleWriter, ImportRunHost, ProgressState } from "./import-run.js";

@@ -80,7 +80,7 @@ Whatever happened, a `finally` block empties the queue and replaces the batch qu
 
 [14.0.7] Not present.
 
-### IMP-514: The batch writes four texts of its own
+### IMP-514: The batch writes six texts of its own
 
 [14.35] The catalogue (`IMP-470`) has these keys, used only by the batch mode. `{0}` and `{1}` are `TimeSpan.ToString()` values (`[d.]hh:mm:ss[.fffffff]`, the fraction omitted when it is exactly zero), a port may write the elapsed time in that form.
 
@@ -136,7 +136,7 @@ Everything the failed attempt did stays done. The registrations of step 4 of `IM
 
 1. write `Error of check dependencies in AML batch mode:` and the `Message` to the package log; send the `warning` message with `WarningTryToResolve` and the `Message`; write `Trying to resolve AML dependencies in AML batch mode...`;
 2. a forced flush (`IMP-513`, so `IMP-515` applies to an empty queue) sends everything that was waiting, so that what the failed check may depend on exists;
-3. `RestoreOriginalXml()` on the item, and `CheckWorkItem` again against the batch queue. A second failure leaves the handler: without collected errors it ends the package; with them it is collected (`IMP-542`) and the item **goes on** (`IMP-543`).
+3. `RestoreOriginalXml()` on the item, and `CheckWorkItem` again against the batch queue that the item's first check used, which the flush has just replaced (`IMP-527`). A second failure leaves the handler: without collected errors it ends the package; with them it is collected (`IMP-542`) and the item **goes on** (`IMP-543`).
 
 The item whose check failed is not part of the flushed queue (it is appended later, `IMP-511`). *Observed* (`b06-check-fails-once`: the check of the Method fails once, the two waiting List items are sent, the Method is checked again, queued and sent by the final flush; `b06b-check-fails-always`: the two List items are sent and registered, then the package fails with the check's fault, the Method is never sent).
 
@@ -210,6 +210,14 @@ The registered `id` therefore comes from the first attempt's element, while the 
 
 [14.0.7] Not present.
 
+### IMP-527: The check that follows a failed check queues its delayed entries on a manager nobody reads (bug)
+
+[14.35] `ImportProc` takes the delayed-resolution manager that an item's checks run against once, before the item's first check: in the batch mode it is the batch queue of that moment (`IMP-520`). The recovery of `IMP-518` runs a forced flush, whose `finally` block replaces the batch queue with a new manager (`IMP-513`), and then checks the item again with the manager it took, which is the old one. The entries that the second check makes are added to a manager that is no longer the batch queue: the next flush hands over the new one (`IMP-513`, step 5), so they never reach the package queue and never run. The entries of the first check, made before it failed, went with the forced flush's hand-over.
+
+*Observed* (`b16-check-recovery-queue`: a Part with a `Relationships` element whose `related_id` names a missing item, in merge mode and the batch mode; the first check fails once. The Part is sent alone with an empty `<Relationships></Relationships>`, and the log has no `DELAYED RESOLUTION` line. Without the failure the entry runs at the end of the package, `b10b-delayed-unbatched-item-ok`). Registered in `bugs.md`. It is the second way a delayed entry of an item with Relationships is lost (`IMP-521` is the first).
+
+[14.0.7] Not present.
+
 ## Collected errors
 
 ### IMP-540: The manager keeps the collected errors in three fields, for the life of the manager
@@ -259,7 +267,7 @@ Without `CollectImportErrors`, none of the filters is true: every exception leav
 
 ### IMP-544: A failed add is registered in the package definition (bug)
 
-[14.35] Outside the batch mode `PostWorkItem` is called after every item that is not skipped, in a `try` of its own, whether or not its check or its send was collected (`IMP-542`). For an `add` of an importable type it registers the item with the id read before the send, so an item that does not exist in the database is added to the package definition. The one case where it is not registered is when the error trips the maximum: `CollectException` throws before the registration (`IMP-541`).
+[14.35] Outside the batch mode `PostWorkItem` is called after every item, a skipped one included (`IMP-424`), in a `try` of its own, whether or not its check or its send was collected (`IMP-542`). For an `add` of an importable type it registers the item with the id read before the send, so an item that does not exist in the database is added to the package definition. The one case where it is not registered is when the error trips the maximum: `CollectException` throws before the registration (`IMP-541`).
 
 *Observed* (`c01-collect-basic`, `c03-collect-two-errors-max3`: the refused Method add is followed by the `PackageGroup` and `PackageElement` requests for it; `c02-collect-max-unset`: with the maximum 0 the same failure is not registered). Registered in `bugs.md`.
 
@@ -274,7 +282,7 @@ Without `CollectImportErrors`, none of the filters is true: every exception leav
 
 An inner handler catches a `CItemException` of steps 2 to 4 (the audit-row writes, and any `CItemException` that left `ImportProc`), adds it to `_collectedPackageExceptions` and throws the aggregate (`IMP-548`). The outer handlers are then:
 
-- `catch (AggregateException) when (CollectImportErrors)`: writes `Updating '{name}' package to failed release status` and calls `WriteReleaseData(name, 2, …)`; a `CItemException` of that write is added to the list and otherwise ignored (an `AggregateException` built from it is dropped, so it is in no message or log: *observed*, `c10b-collect-failed-row-write-fails`). It then adds an `InvalidOperationException` to `_collectedExceptions`: the message is CRLF, the `ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus` text (`IMP-407`) with the package name, the aggregate's `Message` and the package name, and CRLF; its inner exception is the aggregate. The aggregate's `Message` is the .NET text, **`One or more errors occurred.`**, without the inner messages (*observed* on .NET Framework 4.8). Then, if the progress state is *cancelled*, or `IsCollectImportErrorsThresholdExceeded` (`IMP-541`), it throws an `AggregateException` of `_collectedExceptions`. Otherwise it returns normally, so **the next package starts** (*observed*, `c04-collect-two-packages`: A fails with one collected error; B and C are imported);
+- `catch (AggregateException) when (CollectImportErrors)`: writes `Updating '{name}' package to failed release status` and calls `WriteReleaseData(name, 2, …)`; a `CItemException` of that write is added to the list, and a new `AggregateException` of the list takes the place of the one that was caught, so the error of the write is the last leaf of the package's block in the report and in the log (*observed*, `c10b-collect-failed-row-write-fails`; the aggregates of the packages before are not touched, `c10e-collect-row-write-fails-second-package`). It then adds an `InvalidOperationException` to `_collectedExceptions`: the message is CRLF, the `ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus` text (`IMP-407`) with the package name, the aggregate's `Message` and the package name, and CRLF; its inner exception is the aggregate. The aggregate's `Message` is the .NET text, **`One or more errors occurred.`**, without the inner messages (*observed* on .NET Framework 4.8). Then, if the progress state is *cancelled*, or `IsCollectImportErrorsThresholdExceeded` (`IMP-541`), it throws an `AggregateException` of `_collectedExceptions`. Otherwise it returns normally, so **the next package starts** (*observed*, `c04-collect-two-packages`: A fails with one collected error; B and C are imported);
 - `catch (Exception)` (any other exception, including a `NullReferenceException`, `IMP-548`): the handler of `IMP-407` as before: failed status, `WriteReleaseData(…, 2, …)`, an `InvalidOperationException` thrown.
 
 The `finally` block (the end-of-execution line, the flush) is as in `IMP-406`. The log of a failed package is therefore: its own block (with each collected error's block inside, from `IMP-541`), then, from `ImportSolutions`, the aggregate's block and a block per collected error (`IMP-546`).

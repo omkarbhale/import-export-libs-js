@@ -15,7 +15,7 @@ import { BLOBS, BLOBS_14_35, CASES, CASES_14_35, SequentialConnection } from "./
 
 /**
  * The recorded 14.0.7 import runs (ticket 25) and the 14.35 ones (ticket 75), replayed through the whole of `ImportSolutions`
- * (IMP-400 to IMP-471, and for 14.35 the rules of ticket 53). Each case
+ * (IMP-400 to IMP-471, and for 14.35 the rules of tickets 53 and 55: the AML batch mode and the collected errors). Each case
  * step is one run of the real engine on dev. The port gets the step's own `input/` (manifest and packages) and the recorded
  * answers, one request after the other in the recorded order, and must send exactly the recorded requests, send the recorded
  * messages, write the recorded log and console text, and return what the engine returned. The log differs from the recording
@@ -31,13 +31,15 @@ interface Step {
     description?: string;
     verbose?: boolean;
     cancelAfterStatus?: number;
+    amlBatch?: { maxSize?: number };
+    collectErrors?: { maxCount?: number };
   };
   only?: string[];
 }
 
 /**
- * The steps of a recorded case folder. `skip` names the cases that exercise what another slice builds: for 14.35 the AML batch
- * mode and the collected errors (`IMP-500` to `IMP-551`) and the `Languages` selection (`IMP-600` to `IMP-640`).
+ * The steps of a recorded case folder. `skip` names the cases that exercise what another slice builds: for 14.35 the `Languages`
+ * selection (`IMP-600` to `IMP-640`).
  */
 function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false): Step[] {
   return readdirSync(casesDir)
@@ -53,7 +55,7 @@ function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false
     });
 }
 
-const SKIPPED_IN_14_35 = /^(batch-|collect-|lang-)/;
+const SKIPPED_IN_14_35 = /^lang-/;
 
 /**
  * Steps whose run differs for a reason outside the import run. `fs-odd-files`: the engine lists `LIBSJS-SCRATCH-Fs_Backup.xmlbak`
@@ -72,6 +74,8 @@ afterAll(() => {
 const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
 
 const CLOCK = /\d\d\/\d\d\/\d{4} \d\d:\d\d:\d\d/g;
+/** The time spans of a batch (`TimeSpan.ToString()`), which differ from run to run (IMP-514). */
+const TIME_SPAN = /(\r\n   (?:AML batch|Resolve dependencies) time: )(?:\d+\.)?\d\d:\d\d:\d\d(?:\.\d+)?/g;
 
 /** The log with what is the run's own replaced: the paths of the header, the item files and every date-time. */
 function comparable(log: string, recordedInput: string, input: string, logPath: string): string {
@@ -88,6 +92,7 @@ function comparable(log: string, recordedInput: string, input: string, logPath: 
       return `File full name '<input>${rest.replace(/\\/g, "/")}'${end}`;
     })
     .replace(CLOCK, "<time>")
+    .replace(TIME_SPAN, "$1<span>")
     .split(logPath)
     .join("<log>");
 }
@@ -142,6 +147,14 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
       importContext.merge = step.options.merge === true;
       importContext.release = step.options.release ?? null;
       importContext.description = step.options.description ?? null;
+      if (step.options.amlBatch !== undefined) {
+        importContext.amlBatchMode = true;
+        importContext.amlBatchMaxSize = step.options.amlBatch.maxSize ?? 0;
+      }
+      if (step.options.collectErrors !== undefined) {
+        importContext.collectImportErrors = true;
+        importContext.collectImportErrorsMaxCount = step.options.collectErrors.maxCount ?? 0;
+      }
 
       const connection = new SequentialConnection(calls);
       const helper = new CItemHelper(connection, { engine });

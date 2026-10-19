@@ -8,10 +8,12 @@ import { MANIFEST_ENGINES, ManifestFile } from "../manifest/index.js";
 import { EXIT } from "./exit.js";
 import type { CliIo } from "./io.js";
 import {
+  BATCH_ERROR_OPTIONS,
   CONNECTION_OPTIONS,
   type ConnectionOptions,
   IMPORT_OPTIONS,
   type OptionValues,
+  countOf,
   flagOf,
   listOf,
   parseOptions,
@@ -40,12 +42,15 @@ interface ImportSettings {
 
 /**
  * The settings of an import run from the command line (IMP-480 steps 1 and 4): the shared context with the connection, the log
- * and `Verbose`, and the import context with the merge flag, the release and the description (IMP-401).
+ * and `Verbose`, and the import context with the merge flag, the release and the description (IMP-401), and for 14.35 the batch and
+ * collected-errors settings (IMP-500).
  *
- * @spec IMP-401 IMP-480
+ * @spec IMP-401 IMP-480 IMP-500
  */
 async function importSettings(command: string, action: string, values: OptionValues, io: CliIo, engine: Engine): Promise<ImportSettings> {
   if (flagOf(values, "merge") && flagOf(values, "no-merge")) throw new UsageError("--merge and --no-merge cannot be used together");
+  const importContext = new SUImportContext();
+  applyBatchErrorOptions(values, importContext, engine);
   const connection = await resolveConnection(values, io);
   const logPath = resolveLogPath(values, command, io);
 
@@ -60,12 +65,36 @@ async function importSettings(command: string, action: string, values: OptionVal
   context.logFilePath = logPath;
   context.timeout = connection.timeout;
 
-  const importContext = new SUImportContext();
   importContext.merge = flagOf(values, "merge");
   importContext.release = stringOf(values, "release") ?? null;
   importContext.description = stringOf(values, "description") ?? null;
 
   return { engine, connection, context, importContext, osUser: stringOf(values, "os-user"), json: flagOf(values, "json"), logPath };
+}
+
+/**
+ * The AML batch mode and the collected-errors mode from the command line: `--batch` and `--batch-max <n>`, `--collect-errors` and
+ * `--max-errors <n>` (IMP-500). Only engine 14.35 has them, so another engine refuses them; a size or a limit with its mode off would
+ * change nothing, and is refused too. Left out, the sizes are the engine's 0: a batch of one item, and a run that stops at its first
+ * error (IMP-500, IMP-541).
+ *
+ * @spec IMP-500
+ */
+function applyBatchErrorOptions(values: OptionValues, importContext: SUImportContext, engine: Engine): void {
+  const batch = flagOf(values, "batch");
+  const collect = flagOf(values, "collect-errors");
+  const batchMax = countOf(values, "batch-max");
+  const maxErrors = countOf(values, "max-errors");
+  if (engine !== "14.35") {
+    const given = batch ? "--batch" : collect ? "--collect-errors" : batchMax !== undefined ? "--batch-max" : maxErrors !== undefined ? "--max-errors" : undefined;
+    if (given !== undefined) throw new UsageError(`${given} is valid only with --engine 14.35: engine ${engine} has no AML batch mode and no collected errors`);
+  }
+  if (batchMax !== undefined && !batch) throw new UsageError("--batch-max needs --batch");
+  if (maxErrors !== undefined && !collect) throw new UsageError("--max-errors needs --collect-errors");
+  importContext.amlBatchMode = batch;
+  importContext.amlBatchMaxSize = batchMax ?? 0;
+  importContext.collectImportErrors = collect;
+  importContext.collectImportErrorsMaxCount = maxErrors ?? 0;
 }
 
 /** The manifest of an import, read before anything is sent: a missing file and an unknown package are refused here. */
@@ -91,7 +120,12 @@ function readManifest(path: string, engine: Engine, requested: readonly string[]
  * @spec IMP-480 WIRE-002 WIRE-040
  */
 export async function importCommand(args: readonly string[], io: CliIo): Promise<number> {
-  const { values, positionals } = parseOptions(args, { ...CONNECTION_OPTIONS, ...IMPORT_OPTIONS, package: { type: "string", multiple: true } });
+  const { values, positionals } = parseOptions(args, {
+    ...CONNECTION_OPTIONS,
+    ...IMPORT_OPTIONS,
+    ...BATCH_ERROR_OPTIONS,
+    package: { type: "string", multiple: true },
+  });
   if (flagOf(values, "help")) {
     io.stdout.write(IMPORT_USAGE);
     return EXIT.ok;
@@ -104,8 +138,16 @@ export async function importCommand(args: readonly string[], io: CliIo): Promise
   const { names } = readManifest(manifestPath, engine, listOf(values, "package"));
   const settings = await importSettings("import", "Import", values, io, engine);
   settings.context.manifestFile = manifestPath;
+  const { importContext } = settings;
 
-  return runOperation(io, settings, "import", { manifest: manifestPath, packages: names, merge: settings.importContext.merge }, async (helper, reporter) => {
+  const facts = {
+    manifest: manifestPath,
+    packages: names,
+    merge: importContext.merge,
+    batch: importContext.amlBatchMode ? { size: importContext.amlBatchMaxSize } : undefined,
+    collectErrors: importContext.collectImportErrors ? { limit: importContext.collectImportErrorsMaxCount } : undefined,
+  };
+  return runOperation(io, settings, "import", facts, async (helper, reporter) => {
     try {
       const manager = new ImportExportManager(settings.context, reporter.messages, helper, {
         console: reporter.console,

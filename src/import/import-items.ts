@@ -43,7 +43,8 @@ const asElements = (nodes: ReturnType<typeof selectNodes>): XmlElement[] => node
  * document (IMP-340). The document is edited in place, so a call that fails after an edit leaves it in the document.
  * Values read from the document go into the requests and the XPath texts unescaped, as the engine does (AGENTS.md rule 7).
  *
- * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353).
+ * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353),
+ * and in the AML batch mode `Import` prepares the document and returns without sending it (IMP-512).
  *
  * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-315 IMP-316 IMP-317 IMP-330 IMP-331 IMP-332 IMP-333 IMP-340
  * @spec IMP-353
@@ -55,12 +56,13 @@ export class ImportItems {
   ) {}
 
   /**
-   * `Import(itemInXml, mergeMode)`. A null reference, an `XmlException` and an `XPathException` leave as a
-   * `CItemException` with faultcode -1 that names the item (IMP-304); every other exception leaves as it is.
+   * `Import(itemInXml, mergeMode, amlBatchMode)`. A null reference, an `XmlException` and an `XPathException` leave as a
+   * `CItemException` with faultcode -1 that names the item (IMP-304); every other exception leaves as it is. With `amlBatchMode`
+   * the call does everything but the last step: the document holds what would have been sent (IMP-512).
    *
-   * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-317 IMP-340
+   * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-317 IMP-340 IMP-512
    */
-  async import(itemInXml: XmlDocument, mergeMode: boolean): Promise<void> {
+  async import(itemInXml: XmlDocument, mergeMode: boolean, amlBatchMode = false): Promise<void> {
     const documentElement = documentElementOf(itemInXml);
     let text = "";
     let type = "";
@@ -82,7 +84,7 @@ export class ImportItems {
       }
       if (mergeMode) await this.merge(itemInXml);
       if (versionable) await this.processVersionableItem(documentElement);
-      await this.helper.applyAML(outerXml(itemInXml));
+      if (!amlBatchMode) await this.helper.applyAML(outerXml(itemInXml));
     } catch (error) {
       if (isNullReference(error) || isXmlException(error) || isXPathException(error)) {
         throw new CItemException(-1, stackText(error), `${error.message} Can't merge item ${text} ${type}`, error);

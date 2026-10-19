@@ -807,6 +807,13 @@ Def 'b15-check-fails-empty-queue' {
     Run-Import @{ name = 'b15-check-fails-empty-queue'; note = 'the check of the very first item fails once, so the queue is empty when the recovery flushes it'; packages = [ordered]@{ $A = @{ files = @($l1, $m1) } }; list = @($A); release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 5 }
 }
 
+Def 'b16-check-recovery-queue' {
+    $w = New-World; $w.packages = @(@{ name = $A }); Pad-Rule $w
+    $w.rules = @((Fault-On '<Item type="ItemType" action="get" select="id"><name>Part</name>*' 5 'check refused' 1)) + $w.rules
+    $p1 = & $part 'P0000000000000000000000000000001' 'one' ('<Relationships><Item type="Part BOM" id="B0000000000000000000000000000001" action="add"><related_id keyed_name="k" type="Part">MISSING-PART</related_id></Item></Relationships>')
+    Run-Import @{ name = 'b16-check-recovery-queue'; note = 'the check of a Part with Relationships and a missing related_id fails once (batch mode): the recovery flushes, restores and checks again; where does the delayed entry of the second check go?'; packages = [ordered]@{ $A = @{ files = @($p1, $l1) } }; list = @($A); merge = $true; release = 'R1'; description = 'D1'; world = $w; batch = $true; batchMax = 10 }
+}
+
 # ---- collected errors
 Def 'c01-collect-basic' {
     $w = New-World; $w.packages = @(@{ name = $A })
