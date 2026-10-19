@@ -42,7 +42,7 @@ import { SYSTEM_IDENTITIES, SYSTEM_PROPERTIES, containsEntry } from "./system-na
  */
 
 /** The engines whose export transform is built; the rest wait for their variant slices. */
-export const TRANSFORM_ENGINES: readonly Engine[] = ["14.0.7"];
+export const TRANSFORM_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 /** Parent Item type and element name of the properties that hold a Method (EXP-236). */
 const METHOD_PROPERTIES: readonly (readonly [string, string])[] = [
@@ -76,7 +76,7 @@ const REFERENCE_ANCESTORS: readonly string[] = ["FileSelectorTemplate", "FeedTem
  */
 export function transformExport(doc: XmlDocument, engine: Engine = DEFAULT_ENGINE): string {
   if (!TRANSFORM_ENGINES.includes(engine)) throw new EngineNotSupportedError(engine);
-  const transform = new ExportTransform();
+  const transform = new ExportTransform(engine);
   transform.documentNode(doc);
   return transform.output.finish();
 }
@@ -97,8 +97,27 @@ export function applyExportTransform(doc: XmlDocument, engine: Engine = DEFAULT_
   }
 }
 
+/**
+ * The 14.35 template `node()[@is_null='1'][not(starts-with(name(), 'xp-'))]`, which writes nothing: an element whose own `is_null`
+ * is exactly the string `1` is dropped with its attributes, text and descendants, unless its qualified name starts with `xp-`
+ * (case-sensitive).
+ *
+ * @spec EXP-380
+ */
+function isNullDropped(element: XmlElement): boolean {
+  return attributeOf(element, "is_null") === "1" && !element.tagName.startsWith("xp-");
+}
+
 class ExportTransform {
   readonly output = new OutputWriter();
+
+  /** 14.35 has the `is_null` drop (EXP-380) and the `export_has_translations` alternative (EXP-381); 14.0.7 has neither. */
+  private readonly is1435: boolean;
+
+  constructor(engine: Engine) {
+    this.is1435 = engine === "14.35";
+  }
+
   /** The document being transformed: the Field fixes select Items anywhere in it (EXP-340). */
   private doc!: XmlDocument;
 
@@ -170,9 +189,11 @@ class ExportTransform {
 
   /**
    * The template chosen for an element in default mode (EXP-202). A property template needs the Item above the element to be of its type.
-   * @spec EXP-202 EXP-260 EXP-311 EXP-312 EXP-313 EXP-314 EXP-315 EXP-316
+   * @spec EXP-202 EXP-260 EXP-311 EXP-312 EXP-313 EXP-314 EXP-315 EXP-316 EXP-380
    */
   private element(element: XmlElement): void {
+    // the last template of the stylesheet but one: it ties with every 0.5 template that matches such an element, and wins (EXP-260)
+    if (this.is1435 && isNullDropped(element)) return;
     if (element.localName === "Envelope") return this.envelope(element);
     if (element.localName === "Body") return this.body(element);
     if (isNamed(element, "Result")) return this.result(element);
@@ -511,10 +532,10 @@ class ExportTransform {
 
   /**
    * The second ItemType, which carries the keyed Properties and the modified system Properties the main pass dropped.
-   * @spec EXP-320 EXP-321 EXP-322
+   * @spec EXP-320 EXP-321 EXP-322 EXP-381
    */
   private itemTypeEdit(itemType: XmlElement): void {
-    const properties = [...keyedProperties(itemType), ...modifiedSystemProperties(itemType)];
+    const properties = [...keyedProperties(itemType), ...modifiedSystemProperties(itemType, this.is1435)];
     if (properties.length === 0) return;
     this.startFixCopy(itemType, "edit");
     this.output.startElement("Relationships");

@@ -20,7 +20,7 @@ import { hexValue } from "./chars.js";
  * the item files (EXP-423 to EXP-428), the re-indented DAC conditions (EXP-119) and `XDocument.ToString` (EXP-121).
  * The state machine below is the one of .NET's `XmlEncodedRawTextWriterIndent`.
  *
- * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427 EXP-428 EXP-119 EXP-121
+ * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427 EXP-428 EXP-119 EXP-121 EXP-410
  */
 
 export interface XmlWriterSettings {
@@ -35,7 +35,14 @@ export const ITEM_FILE_SETTINGS: XmlWriterSettings = { indentChars: " ", conform
 
 const NEW_LINE = "\r\n";
 
+const XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
+
 class RawIndentWriter {
+  /**
+   * The namespace declarations in scope, one map per open element: the prefix to its namespace. A prefixed attribute whose prefix
+   * is not bound to its namespace gets a declaration that the writer adds itself, as .NET's `XmlWellFormedWriter` does (EXP-410).
+   */
+  private readonly namespaces: Array<Map<string, string>> = [new Map([["xml", XML_NAMESPACE]])];
   private out = "";
   private indentLevel = 0;
   private mixed = false;
@@ -148,10 +155,21 @@ class RawIndentWriter {
     this.indentLevel += 1;
     this.mixedStack.push(this.mixed);
     this.out += `<${element.tagName}`;
+    const scope = new Map(this.namespaces[this.namespaces.length - 1]);
+    this.namespaces.push(scope);
+    const implied: Array<[prefix: string, namespace: string]> = [];
     for (const attribute of attributesOf(element)) {
       this.out += ` ${attribute.name}="`;
       this.out += `${escapeAttributeValue(this.checked(attribute.value, true))}"`;
+      if (attribute.name === "xmlns") scope.set("", attribute.value);
+      else if (attribute.prefix === "xmlns") scope.set(attribute.localName ?? "", attribute.value);
+      else if (attribute.prefix && attribute.namespaceURI && scope.get(attribute.prefix) !== attribute.namespaceURI) {
+        // a prefix no declaration binds: the writer declares it after the attributes
+        scope.set(attribute.prefix, attribute.namespaceURI);
+        implied.push([attribute.prefix, attribute.namespaceURI]);
+      }
     }
+    for (const [prefix, namespace] of implied.reverse()) this.out += ` xmlns:${prefix}="${escapeAttributeValue(namespace)}"`;
     this.startTagOpen = true;
     this.contentWritten = false;
     // the content of the root of a document is never mixed; any other element keeps the state it started in
@@ -166,6 +184,7 @@ class RawIndentWriter {
       this.writeIndent();
     }
     this.mixed = this.mixedStack.pop() ?? false;
+    this.namespaces.pop();
     if (shortForm && this.startTagOpen) {
       this.out += " />";
       this.startTagOpen = false;

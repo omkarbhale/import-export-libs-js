@@ -1,5 +1,5 @@
 import { CItemException } from "../client/fault.js";
-import { isNullReference, isXPathException, isXmlException } from "../client/dotnet.js";
+import { DotNetException, isNullReference, isXPathException, isXmlException } from "../client/dotnet.js";
 import { responseDom } from "../client/answer.js";
 import { EngineNotSupportedError, type CItemHelper } from "../client/item-helper.js";
 import { TransportError } from "../client/transport.js";
@@ -13,6 +13,7 @@ import {
 } from "../io/errors.js";
 import { NotSupportedException } from "../xml/errors.js";
 import { directoryGetParentFullName, fileExists } from "../io/host-path.js";
+import { pathCombine } from "../io/win-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
 import { ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
@@ -20,17 +21,28 @@ import type { SUImportContext } from "../import/import-context.js";
 import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
 import { innerText, selectNodes } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
+import type { ExportRunState } from "./cexport-items.js";
 import type { SUExportContext, SolutionUpgradeContext } from "./export-context.js";
 import type { ExportItem } from "./export-item.js";
-import { type Message, type MessagesFactory, getMessage } from "./messages.js";
+import { type Message, type MessagesFactory, getMessageFor } from "./messages.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
+import { packageElementIdsByElementType } from "./package-elements.js";
 import { packageItem } from "./package-item.js";
 import type { RemovedReference } from "./removed-reference.js";
+import { AggregateException, parallelForEach } from "./parallel-for-each.js";
+import { ProgressStreamLogger } from "./progress-logger.js";
+import { newRequestDictionary } from "./request-template.js";
 import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
 
 /** The engines whose export run is built; the rest wait for their variant slices. */
-export const RUN_ENGINES: readonly Engine[] = ["14.0.7"];
+export const RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+
+/**
+ * How many items of a package 14.35's run starts at once. The engine's `Parallel.ForEach` has no bound (EXP-551); the port runs the
+ * items one after the other until the parallel export is built, which bounds this by `--parallelism`.
+ */
+const ITEMS_AT_ONCE = 1;
 
 /** Where a run is, for `Cancel` (EXP-518). */
 type ProgressState = "idle" | "inProgress" | "cancelled";
@@ -78,6 +90,7 @@ export interface ImportExportManagerOptions extends PathEnvironment {
  */
 function isSystemException(error: unknown): error is Error {
   return (
+    isFormatOrOverflow(error) ||
     error instanceof ArgumentException ||
     error instanceof ArgumentNullException ||
     error instanceof NullReferenceException ||
@@ -90,6 +103,11 @@ function isSystemException(error: unknown): error is Error {
     isXPathException(error) ||
     isNullReference(error)
   );
+}
+
+/** `FormatException` and `OverflowException`, which 14.35's level parse raises (EXP-022) and `Export` does not wrap. */
+function isFormatOrOverflow(error: unknown): error is Error {
+  return error instanceof DotNetException && (error.typeName === "System.FormatException" || error.typeName === "System.OverflowException");
 }
 
 /**
@@ -113,6 +131,8 @@ export class ImportExportManager {
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
   private state: ProgressState = "idle";
+  /** 14.35's per-call inputs of `Export` (EXP-002): the template dictionary and the package-element map. Empty for 14.0.7. */
+  private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
 
   /**
    * An export manager. A null `itemHelper` is checked first, then a null `context`. The constructor takes the working directory as
@@ -166,6 +186,11 @@ export class ImportExportManager {
     return invariantDateTime(this.now());
   }
 
+  /** `ResourceManager.GetMessage` of the engine's catalogue (EXP-504). */
+  private text(key: string, ...args: (string | null | undefined)[]): string {
+    return getMessageFor(this.engine, key, ...args);
+  }
+
   /**
    * `GetSolutions2Xml`: the package definitions of the database as a document, or null with the reason sent to the host. No
    * definitions (faultcode 0) is a warning. Any other fault is sent as an error and written to the log through a second writer
@@ -180,14 +205,14 @@ export class ImportExportManager {
     try {
       const response = await this.itemHelper.getSolutions();
       if (response === null) {
-        warning.text = getMessage("TheDatabaseContainsNoPackageDefinitionsPleaseSelectAnotherDatabaseAndTryAgain");
+        warning.text = this.text("TheDatabaseContainsNoPackageDefinitionsPleaseSelectAnotherDatabaseAndTryAgain");
         await warning.execute();
         return null;
       }
       return responseDom(response);
     } catch (thrown) {
       if (!(thrown instanceof CItemException)) throw thrown;
-      const text = getMessage("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, String(thrown.faultcode));
+      const text = this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, String(thrown.faultcode));
       error.text = text;
       await error.execute();
       const writer = RunLog.open(this.context?.logFilePath ?? null, this.environment);
@@ -221,9 +246,17 @@ export class ImportExportManager {
       log.writeLine(logInputParameters(exportContext, version, this.engine));
 
       const packages = await this.getSolutions2Xml();
+      // 14.35 builds the map of every package element of the database first (EXP-550); a missing package list ends the run here, with
+      // no manifest saved. The dictionary of request templates belongs to this call (EXP-060).
+      this.run =
+        this.engine === "14.35"
+          ? { requestDictionary: newRequestDictionary(), packageElementIdsByElementType: packageElementIdsByElementType(packages) }
+          : { requestDictionary: null, packageElementIdsByElementType: null };
       const currentPackage = this.messages.getCurrentPackageMessage();
       const manifest = new ManifestFile(undefined, { ...this.environment, engine: this.engine });
       const refsToExport = new NetfxHashtable<NetfxHashtable<ExportItem>>("the referenced elements to export");
+      // 14.35 joins the path of the manifest with `Combine` before the `try` block, so a null working directory fails here (EXP-511)
+      const manifestPath = this.engine === "14.35" ? pathCombine(exportContext.workingDirectory, "imports.mf") : `${exportContext.workingDirectory ?? ""}\\imports.mf`;
 
       try {
         this.state = "inProgress";
@@ -236,19 +269,35 @@ export class ImportExportManager {
         currentPackage.text = "";
         await currentPackage.execute();
       } catch (thrown) {
-        if (!isSystemException(thrown)) throw thrown;
+        const reported = this.reportedException(thrown);
         const warning = this.messages.getWarningMessage();
-        const text = getMessage("ErrorMessageMessage", thrown.message);
+        const text = this.text("ErrorMessageMessage", reported);
         warning.text = text;
         await warning.execute();
         log.writeLine(text);
       } finally {
         this.state = "idle";
-        manifest.save(`${exportContext.workingDirectory ?? ""}\\imports.mf`);
+        manifest.save(manifestPath);
       }
     } finally {
       log.dispose();
     }
+  }
+
+  /**
+   * What the handler of `ExportSolutions` reports for an exception that left the `try` block: the message of a `SystemException`
+   * (EXP-520), and in 14.35 also of an `AggregateException` from the item loop, whose inner messages are joined with a line end
+   * (EXP-556). Anything else is not the engine's to catch and goes on.
+   */
+  private reportedException(thrown: unknown): string {
+    if (this.engine === "14.35" && thrown instanceof AggregateException) {
+      const inner = thrown.innerExceptions;
+      const unexpected = inner.find((error) => !isSystemException(error));
+      if (unexpected !== undefined) throw unexpected;
+      return inner.map((error) => (error as Error).message).join("\r\n");
+    }
+    if (!isSystemException(thrown)) throw thrown;
+    return thrown.message;
   }
 
   /** One package of the loop (EXP-508 step 2): the manifest entry, the definition, the dependencies, the folder, the items. */
@@ -280,7 +329,7 @@ export class ImportExportManager {
     }
 
     const directory = createOutputDir(exportContext.workingDirectory, packageName, this.environment, this.engine);
-    currentPackage.text = getMessage("ExportingPackagePackageName", packageName);
+    currentPackage.text = this.text("ExportingPackagePackageName", packageName);
     await currentPackage.execute();
     await this.exportProc(exportContext, directory, items, packageName, log);
   }
@@ -315,8 +364,9 @@ export class ImportExportManager {
     packageName: string,
     log: RunLog,
   ): Promise<void> {
-    log.writeLine(getMessage("ExportSolutionName", packageName));
-    log.writeLine(getMessage("StartOfExecutionDateTime", this.timestamp()));
+    if (this.engine === "14.35") return this.exportProcOfItems(exportContext, directory, items, packageName, log);
+    log.writeLine(this.text("ExportSolutionName", packageName));
+    log.writeLine(this.text("StartOfExecutionDateTime", this.timestamp()));
     const status = this.messages.getStatusMessage();
     this.itemHelper.folder = directory;
     const excludedRefs = exportContext.refToUnknownPacks === "DoNotRemove" ? null : new NetfxHashtable<RemovedReference>("the removed references");
@@ -324,27 +374,27 @@ export class ImportExportManager {
     let index = 1;
     for (const [, item] of items.entries()) {
       if (this.isCancelled()) {
-        status.text = getMessage("ExportWasCanceledByUser");
+        status.text = this.text("ExportWasCanceledByUser");
         await status.execute();
         log.writeLine(status.text);
-        log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
+        log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
         return;
       }
-      status.text = getMessage("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
+      status.text = this.text("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
       await status.execute();
       try {
         await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment);
-        log.writeLine(getMessage("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
+        log.writeLine(this.text("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
       } catch (thrown) {
         if (!(thrown instanceof CItemException)) throw thrown;
-        const failed = getMessage("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
+        const failed = this.text("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
         status.text = failed;
         await status.execute();
         log.writeLine(failed);
         const code = String(thrown.faultcode);
-        log.writeLine(getMessage("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
+        log.writeLine(this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
         const question = this.messages.getErrorMessageQuestion();
-        question.text = getMessage(
+        question.text = this.text(
           "ErrorMessageStringDetailCodeAbortCurrentExportOfSolutionName",
           thrown.faultstring,
           thrown.faultdetail,
@@ -352,8 +402,8 @@ export class ImportExportManager {
           packageName,
         );
         if ((await question.execute()) === true) {
-          log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
-          status.text = getMessage("Completed");
+          log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+          status.text = this.text("Completed");
           await status.execute();
           return;
         }
@@ -361,16 +411,32 @@ export class ImportExportManager {
       index += 1;
     }
 
+    await this.endPackage(exportContext, packageName, excludedRefs, status, log);
+  }
+
+  /**
+   * The end of a package that ran to the end (EXP-517): one block per removed reference, the warning when the mode asks for one,
+   * `end of execution` in the log, and `completed`.
+   *
+   * @spec EXP-517
+   */
+  private async endPackage(
+    exportContext: SUExportContext,
+    packageName: string,
+    excludedRefs: NetfxHashtable<RemovedReference> | null,
+    status: Message,
+    log: RunLog,
+  ): Promise<void> {
     if (excludedRefs !== null && excludedRefs.count > 0) {
       for (const removed of excludedRefs.values()) {
         log.writeLine("\n --- REMOVED REFERENCE ---");
-        log.writeLine(getMessage("From", removed.from));
-        log.writeLine(getMessage("To", removed.to));
-        log.writeLine(getMessage("Reason", removed.reason));
+        log.writeLine(this.text("From", removed.from));
+        log.writeLine(this.text("To", removed.to));
+        log.writeLine(this.text("Reason", removed.reason));
       }
       if (exportContext.refToUnknownPacks === "RemoveWithWarning") {
         const warning = this.messages.getWarningMessage();
-        warning.text = getMessage(
+        warning.text = this.text(
           "ThereAreReferencesToUnknownPackagesThatWereRemovedDuringTheExportOfThePackageSolutionNameSeeLogFileForMoreDetailsSearchForWordsRemovedRefError",
           packageName,
           "REMOVED REFERENCE",
@@ -378,9 +444,110 @@ export class ImportExportManager {
         await warning.execute();
       }
     }
-    log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
-    status.text = getMessage("Completed");
+    log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+    status.text = this.text("Completed");
     await status.execute();
+  }
+
+  /**
+   * 14.35's `ExportProc` (EXP-513 to EXP-518, EXP-550 to EXP-557): the same package header, then `Parallel.ForEach` over the items of
+   * the table, in table order, each iteration one whole `PackageItem` call. The port starts {@link ITEMS_AT_ONCE} of them at a time.
+   *
+   * - A progress logger writes the success lines (EXP-554); the lines of items that finish after it was completed are lost (EXP-570).
+   * - The first failed item stops the whole export: the question is sent and its answer is never read (EXP-555, EXP-571). The state
+   *   becomes *cancelled*, which ends the package loop of `ExportSolutions`, and no later package is exported.
+   * - A cancel is looked at at the start of each iteration (EXP-557).
+   * - An exception that is not a `CItemException` stops the loop and leaves as an `AggregateException` (EXP-556).
+   *
+   * @spec EXP-513 EXP-514 EXP-515 EXP-517 EXP-518 EXP-551 EXP-552 EXP-553 EXP-554 EXP-555 EXP-556 EXP-557 EXP-570 EXP-571 EXP-572 EXP-573
+   */
+  private async exportProcOfItems(
+    exportContext: SUExportContext,
+    directory: string,
+    items: NetfxHashtable<ExportItem>,
+    packageName: string,
+    log: RunLog,
+  ): Promise<void> {
+    log.writeLine(this.text("ExportSolutionName", packageName));
+    log.writeLine(this.text("StartOfExecutionDateTime", this.timestamp()));
+    const status = this.messages.getStatusMessage();
+    this.itemHelper.folder = directory;
+    const excludedRefs = exportContext.refToUnknownPacks === "DoNotRemove" ? null : new NetfxHashtable<RemovedReference>("the removed references");
+    const count = items.count;
+    // `i` is one counter for the package: an item reads it when it starts and adds one when it has succeeded (EXP-552)
+    let index = 1;
+    const progress = new ProgressStreamLogger(log);
+    progress.start();
+    try {
+      await parallelForEach(items.values(), ITEMS_AT_ONCE, async (item, loop) => {
+        if (this.isCancelled()) {
+          progress.complete();
+          loop.stop();
+          status.text = this.text("ExportWasCanceledByUser");
+          await status.execute();
+          log.writeLine(status.text);
+          log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+          return;
+        }
+        status.text = this.text("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
+        await status.execute();
+        try {
+          await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment, this.run);
+          progress.writeLine(this.text("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
+          index += 1;
+        } catch (thrown) {
+          if (!(thrown instanceof CItemException)) throw thrown;
+          await this.stopExportAfter(thrown, item, packageName, status, progress, log, loop);
+        }
+      });
+    } finally {
+      progress.complete();
+      progress.dispose();
+    }
+    if (this.isCancelled()) return;
+
+    await this.endPackage(exportContext, packageName, excludedRefs, status, log);
+  }
+
+  /**
+   * The handler of a failed item in 14.35 (EXP-555). It runs when the state is not *cancelled* yet; a failure after an earlier failure
+   * or a cancel is dropped without a message or a log line (EXP-572). In this order: the progress logger is completed, the error
+   * is sent and logged with its fault block, the abort question is sent and its answer is not read (EXP-571), the state becomes
+   * *cancelled*, the log gets `end of execution`, `completed` is sent, and the loop is stopped.
+   *
+   * @spec EXP-555 EXP-571 EXP-572
+   */
+  private async stopExportAfter(
+    thrown: CItemException,
+    item: ExportItem,
+    packageName: string,
+    status: Message,
+    progress: ProgressStreamLogger,
+    log: RunLog,
+    loop: { stop(): void },
+  ): Promise<void> {
+    if (this.isCancelled()) return;
+    progress.complete();
+    const failed = this.text("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
+    status.text = failed;
+    await status.execute();
+    log.writeLine(failed);
+    const code = String(thrown.faultcode);
+    log.writeLine(this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
+    const question = this.messages.getErrorMessageQuestion();
+    question.text = this.text(
+      "ErrorMessageStringDetailCodeAbortCurrentExportOfSolutionName",
+      thrown.faultstring,
+      thrown.faultdetail,
+      code,
+      packageName,
+    );
+    await question.execute();
+    this.state = "cancelled";
+    log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+    status.text = this.text("Completed");
+    await status.execute();
+    loop.stop();
   }
 
   /**
@@ -397,7 +564,7 @@ export class ImportExportManager {
     for (const [dependency, items] of refsToExport.entries()) {
       const directory = createOutputDir(exportContext.workingDirectory, dependency, this.environment, this.engine);
       const currentPackage = this.messages.getCurrentPackageMessage();
-      currentPackage.text = getMessage("ExportingReferencedItemsFromPackageName", dependency);
+      currentPackage.text = this.text("ExportingReferencedItemsFromPackageName", dependency);
       await currentPackage.execute();
       await this.exportProc(exportContext, directory, items, dependency, log);
       if (this.isCancelled()) break;

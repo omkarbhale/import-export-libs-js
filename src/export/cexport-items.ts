@@ -3,11 +3,12 @@ import type { XmlDocument } from "../xml/dom.js";
 import type { CItemHelper } from "../client/item-helper.js";
 import { responseDom } from "../client/answer.js";
 import { element } from "../client/request-text.js";
+import { ArgumentNullException } from "../io/errors.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { guardExport } from "./export-errors.js";
 import { type ExportItem, exportFileName } from "./export-item.js";
 import { mainFetchRequest, serverMajorOf } from "./main-fetch.js";
-import { writeItemFile } from "./output-folder.js";
+import { itemFilePaths, writeItemFile } from "./output-folder.js";
 import {
   applyXsl,
   cdataFilterXml,
@@ -17,12 +18,15 @@ import {
   replaceReferencesToPolyLists,
 } from "./post-xsl.js";
 import { itemTypeBody } from "./request-bodies.js";
-import { ExportRewrites } from "./rewrites.js";
+import { type RequestDictionary, requestTemplate } from "./request-template.js";
+import { ExportRewrites, type PackageElementMap } from "./rewrites.js";
 
 /** What the first three requests of an item's export (EXP-001 rows 1 to 3) found. */
 export interface ItemFetch {
   /** The file the item is written to (EXP-002). */
   readonly fileName: string;
+  /** 14.35 only: the path `Combine` made of the folder, the type name and the file name, before the first request (EXP-417). */
+  readonly path?: string;
   /** Whether the item's type is versionable. */
   readonly versionable: boolean;
   /** The id the main fetch asked for: the current generation's for a versionable type, the requested id otherwise. */
@@ -31,6 +35,16 @@ export interface ItemFetch {
   readonly request: string;
   /** The server's whole answer to the main fetch, envelope included. */
   readonly response: ResponseDocument;
+}
+
+/**
+ * What 14.35's `Export` takes besides the item (EXP-002): the dictionary of request templates that `ExportSolutions` makes once per call
+ * (EXP-060), and the map of the package elements of the whole database (EXP-550). Both must be given, or `Export` refuses the item
+ * with an `ArgumentNullException` before it sends anything. 14.0.7 takes neither.
+ */
+export interface ExportRunState {
+  readonly requestDictionary: RequestDictionary | null;
+  readonly packageElementIdsByElementType: PackageElementMap | null;
 }
 
 /**
@@ -50,12 +64,16 @@ export class CExportItems {
   /** Steps 5 to 12 of EXP-100, which {@link CExportItems.rewrite} runs. */
   readonly rewrites: ExportRewrites;
 
-  /** `environment` is the host the item files are written on: its current directory and platform (EXP-420). */
+  /**
+   * `environment` is the host the item files are written on: its current directory and platform (EXP-420). `run` is 14.35's template
+   * dictionary and package-element map (EXP-002); an export made without them is refused on that engine.
+   */
   constructor(
     private readonly helper: CItemHelper,
     private readonly environment: PathEnvironment = {},
+    private readonly run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null },
   ) {
-    this.rewrites = new ExportRewrites(helper, this);
+    this.rewrites = new ExportRewrites(helper, this, run.packageElementIdsByElementType);
   }
 
   /**
@@ -78,11 +96,21 @@ export class CExportItems {
       if (item.typeName === "dr_RelationshipFamily") cdataFilterXml(transformed, "implementation_query");
       await replaceReferencesToPolyLists(transformed, lookups);
       if (removeUnknownReferences) await removeUnknownReferences(transformed);
-      removeNamespaceNodes(transformed);
+      removeNamespaceNodes(transformed, this.helper.engine);
       removeEmptyRelationships(transformed);
       return transformed;
     });
     return writeItemFile(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
+  }
+
+  /**
+   * 14.35's `Export` takes the template dictionary and the package-element map along, and refuses a null one before anything else
+   * (EXP-002). The refusal is not wrapped by EXP-054.
+   */
+  private checkRun(): { requestDictionary: RequestDictionary } {
+    if (this.run.requestDictionary === null) throw new ArgumentNullException("requestDictionary");
+    if (this.run.packageElementIdsByElementType === null) throw new ArgumentNullException("packageElementIdsByElementType");
+    return { requestDictionary: this.run.requestDictionary };
   }
 
   /**
@@ -108,6 +136,7 @@ export class CExportItems {
    * @spec EXP-001 EXP-002 EXP-010 EXP-011 EXP-020 EXP-054
    */
   fetch(item: ExportItem, level: string | null | undefined): Promise<ItemFetch> {
+    if (this.helper.engine === "14.35") return this.fetchFromTemplate(item, level);
     const fileName = exportFileName(item);
     return guardExport(async () => {
       const lookups = this.helper.lookups;
@@ -117,6 +146,32 @@ export class CExportItems {
       const id = versionable ? await lookups.getCurrentIdOfVersion(idName, typeName) : idName;
       const request = mainFetchRequest(typeName, id, level, this.helper.innovatorVersion);
       return { fileName, versionable, id, request, response: await this.helper.applyAML(request) };
+    });
+  }
+
+  /**
+   * Rows 0 to 3 of EXP-001 for 14.35. Before the first request the engine refuses a missing argument and joins the folder, the type
+   * name and the file name with `Path.Combine`, which refuses a type name or file name with an illegal character (EXP-002, EXP-417);
+   * none of that is wrapped (EXP-054). Then, inside the one `try`, the type's template (EXP-060) with its lookups, the is_versionable
+   * and current-id lookups, and the main fetch from a copy of the template, whose `<id>` comes last (EXP-020). `levels` is never sent.
+   *
+   * @spec EXP-001 EXP-002 EXP-010 EXP-011 EXP-020 EXP-054 EXP-060 EXP-417
+   */
+  private fetchFromTemplate(item: ExportItem, level: string | null | undefined): Promise<ItemFetch> {
+    const { requestDictionary } = this.checkRun();
+    const fileName = exportFileName(item);
+    const path = itemFilePaths(this.helper.folder, item.typeName, fileName).path;
+    return guardExport(async () => {
+      const lookups = this.helper.lookups;
+      const typeName = item.typeName ?? "";
+      const idName = item.idName;
+      const request = (await requestTemplate(requestDictionary, this.helper, typeName, level)).clone();
+      request.setProperty("id", idName);
+      const versionable = await lookups.isVersionable(typeName);
+      const id = versionable ? await lookups.getCurrentIdOfVersion(idName ?? "", typeName) : (idName ?? "");
+      if (versionable) request.setProperty("id", id);
+      const text = request.toXml();
+      return { fileName, path, versionable, id, request: text, response: await this.helper.applyAML(text) };
     });
   }
 
