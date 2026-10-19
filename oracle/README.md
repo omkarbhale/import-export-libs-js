@@ -77,6 +77,40 @@ Ticket 64. It compares the export fixtures of 12.0 and 14.0.7, and of 14.0.7 and
 
 `--live <dir>` is read-only on dev. It records ticket 05's catalogue (the cases every engine has; not the scratch-seeded ones, which need `oracle:export-scratch-cases`) into `<dir>/<engine>/<case>/`, one case after the other so that all three engines see the same dev state, skips a case that is already there, and then prints the comparison and how far each engine's new output is from its committed fixtures.
 
+## Live parity
+
+```sh
+ARAS_PASSWORD=… npm run parity -- --engine 14.0.7                 # the whole catalogue (not the slow cases)
+ARAS_PASSWORD=… npm run parity -- --engine 14.0.7 --case e24-grid,s0-mini-merge
+ARAS_PASSWORD=… npm run parity -- --engine 14.0.7 --kind import   # export, scratch-export, import, language-pack, console-mode
+npm run parity -- --list                                          # the catalogue; no server, no password
+```
+
+Ticket 44. For each case the script runs the oracle (the vendored `Libs.dll` through the Windows host, `oracle/src/record.ts`) and the port (`oracle/src/parity/port-run.ts`, the same classes the CLI uses) on the same inputs against dev, one after the other, and diffs (`oracle/src/parity/diff.ts`):
+
+- the request AML, in order. A transcript holds the AML of each call, not the envelope or the headers, and it starts with the login and the version probe;
+- the output folder, byte for byte (an empty folder counts);
+- the engine log, the messages by channel and the console text;
+- how the run ended: the value `ImportSolutions` returned, the exception that ended the host (its type and message, without the stack), and the host's exit code.
+
+**What is normalised, and nothing else** (`oracle/src/parity/normalize.ts`): the ids the server assigned during the run (each side's run makes its own PackageDefinition and PackageGroup ids; they are numbered in order of first appearance), the date-times of the log, and the header lines and `File full name` paths that name a run's own folders. A difference in anything else is a difference.
+
+**The catalogue** (`npm run parity -- --list`) is every recorded 14.0.7 case, as code: ticket 05's export catalogue and option matrix (`export-cases.ts`, which includes the three unknown-package reference modes `RemoveSilently`, `RemoveWithWarning` and `DoNotRemove`), the scratch-seeded export cases of ticket 67 (`export-scratch-cases.ts`), the import cases of ticket 25 (`import-cases.ts`), ticket 45's language-pack cases, and the console export modes of ticket 66 (`parity/cases.ts`). The case `mode-all-packages` exports every package of dev, about ten thousand items, so it runs only when named with `--case` or `--include-slow`.
+
+**What it changes on dev.** Exports are reads. Everything else touches `LIBSJS-SCRATCH-*` packages and items only, as AGENTS.md says:
+
+- An **import case** is run by the oracle first (its steps keep what they created, the last step deletes all of it), then by the port from fresh copies of the same package folders. The port's side of the oracle host's guard and cleanup is `oracle/src/parity/scratch.ts`: it refuses a package folder, an item file or an item name that is not scratch, and afterwards deletes what the port created, newest first, and only an item whose own name (or whose source's) is a scratch name. A cleanup that leaves an item behind stops the whole run with exit status 3 and the ids.
+- A **scratch-seeded export case** is seeded by the oracle like `oracle:export-scratch-cases`, exported by both sides, and cleaned up by the oracle's `cleanup` command.
+- A **language-pack case** needs the Languages `de` and `fr` and the two scratch Forums of `fixtures/14.0.7/language-pack/setup.aml`. The script never adds a Language (that adds a column to every table with a multilingual property): without them the case is skipped, with the reason.
+- A **console-mode case** (`--use-import`, `--from-manifest`, `--all-packages`) has the oracle run the toolset's own `ConsoleUpgrade.exe` `ProcessExport` by reflection (`ConsoleExport` in `host/OracleHost.cs`, the host parameter `ConsoleMode`), so the table is built by Aras's loops and the port's `src/cli/console-modes.ts` is compared with them on a live server. `ConsoleUpgrade.exe` is not vendored: it is read from the captain's toolset folder and checked against the sha256 pinned in `src/console-tool.ts`.
+- Before it starts, the script refuses a dev that already has a PackageDefinition or DatabaseUpgrade named `LIBSJS-SCRATCH-*`.
+
+The port connects through a subclass of `HttpConnectorExtension`, as the oracle host connects through its own subclass of IOM's `HttpServerConnection`: `CItemHelper.Logout` logs off only the exact type (WIRE-040), so neither side sends a `Logoff`.
+
+**A difference** is printed with the first requests, lines or bytes that differ, and its folders are kept in `--out` (default `oracle/out/parity-<engine>-<time>/<case>/`): `oracle/` is the oracle's recorded run, in the layout of every fixture, and `port/` is the port's, in the same layout. An equal case's folders are removed (`--keep-all` keeps them). Each difference becomes a fixture (`fixtures/14.0.7/parity/`), then a fix or a newly registered bug (`spec/bugs.md`). `report.json` in the folder lists every case. The roadmap record of a run is `roadmap/live-parity-14.0.7.md`.
+
+`oracle/src/parity/*.test.ts` need no server: they run the port's live code against a fake server that serves a recorded fixture, so the runner and the diff are known to find a recorded case equal before they meet dev.
+
 ## The DB patch command
 
 ```sh

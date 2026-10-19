@@ -29,6 +29,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "oracle": "tsx oracle/src/cli.ts",
+    "parity": "tsx oracle/src/parity/cli.ts",
     "oracle:export-cases": "tsx oracle/src/record-export-cases.ts",
     "oracle:export-scratch-cases": "tsx oracle/src/record-export-scratch-cases.ts",
     "oracle:import-cases": "tsx oracle/src/record-import-cases.ts",

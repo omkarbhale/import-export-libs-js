@@ -5,6 +5,7 @@ import type { Engine } from "../../src/engines.js";
 import { MANIFEST_SHA256, PATCH_FILE, PATCH_SHA256, assertTestPatch } from "./dbpatch.js";
 import { listFiles, readManifest, toolsetDigest } from "./manifest.js";
 import { findSecrets, scrub, secretForms } from "./scrub.js";
+import { stageConsoleTool } from "./console-tool.js";
 import { stageHost, stageToolset, oracleWindowsRoot } from "./stage.js";
 import { runPowerShellFile, toWslPath, winJoin } from "./windows.js";
 
@@ -34,6 +35,11 @@ export interface RecordRequest {
   lpConfig?: string;
   /** dbpatch (14.35): the manifest, the folder of patch files and the `ToolName`; only the committed test patch passes. */
   dbpatch?: { manifest: string; folder: string; toolName: string };
+  /** export: a folder copied to `input/` for the console modes that read a manifest, and the manifest's name in it (the host's `ManifestFile`). */
+  exportInputDir?: string;
+  exportManifestName?: string;
+  /** export: the console tool's way of choosing the items (ticket 66); the toolset's own `ConsoleUpgrade.exe` builds the table. */
+  consoleMode?: "all-packages" | "from-manifest" | "use-import";
   log?: (text: string) => void;
 }
 
@@ -194,6 +200,16 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   if (req.command === "export") {
     mkdirSync(join(wslRun, "output"));
     params.WorkDir = winJoin(winRun, "output");
+    if (req.exportInputDir !== undefined) {
+      cpSync(req.exportInputDir, join(wslRun, "input"), { recursive: true });
+      if (req.exportManifestName !== undefined) params.ManifestFile = winJoin(winRun, "input", req.exportManifestName);
+    }
+    if (req.consoleMode !== undefined) {
+      const tool = stageConsoleTool(req.engine);
+      params.ConsoleMode = req.consoleMode;
+      params.ConsolePath = tool.windows;
+      params.ExpectedConsoleSha256 = tool.sha256;
+    }
   } else if (req.command === "cleanup") {
     params.WorkDir = winRun;
   } else if (req.command === "dbpatch") {
@@ -241,7 +257,7 @@ export async function record(req: RecordRequest): Promise<RecordResult> {
   const cleanup = (hostInfo?.cleanup as CleanupReport | undefined) ?? null;
   if (hostInfo !== null) delete hostInfo.cleanup;
   const recordedParams = Object.fromEntries(
-    Object.entries(params).filter(([k]) => !/^(ToolsetDir|OutDir|WorkDir|ImportManifest|LPPath|DbManifest|DbPatchesFolder)$|^Expected/.test(k)),
+    Object.entries(params).filter(([k]) => !/^(ToolsetDir|OutDir|WorkDir|ImportManifest|ManifestFile|ConsolePath|LPPath|DbManifest|DbPatchesFolder)$|^Expected/.test(k)),
   );
   const run = {
     engine: req.engine,

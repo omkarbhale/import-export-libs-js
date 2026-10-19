@@ -1,0 +1,267 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
+import { DEFAULT_ENGINE, isEngine, type Engine } from "../../../src/engines.js";
+import { EXPORT_CASES } from "../export-cases.js";
+import { SEED_GROUPS } from "../export-scratch-cases.js";
+import { casesFor } from "../import-cases.js";
+import { ORACLE_DIR } from "../manifest.js";
+import { DEV_SERVER, assertDevUrl } from "../record.js";
+import { readPassword } from "../cli.js";
+import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
+import { describeDifferences } from "./diff.js";
+import { KNOWN_DIFFERENCES } from "./known.js";
+import { openSideConnection, type PortServer } from "./port-run.js";
+import {
+  type CaseReport,
+  CaseFailure,
+  DevNotClean,
+  type ParityEnv,
+  pruneEqual,
+  runConsoleModeCase,
+  runImportCase,
+  runLanguagePackCase,
+  runPlainExport,
+  runSeedGroup,
+} from "./runners.js";
+
+/** The address WSL reaches the dev instance at; the oracle's Windows side calls the same server `localhost`. */
+const WSL_DEV_URL = "http://172.19.0.1/12sp9";
+
+const USAGE = `Usage: npm run parity -- [--engine 14.0.7] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
+                           [--out <folder>] [--keep-all] [--url <dev url>]
+
+Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, and
+diffs, for each case:
+  - the request AML, in order (login included; the envelope and headers are not recorded);
+  - the output folder, byte for byte;
+  - the engine log, after the date-times, the run's own paths and the ids the server assigned are normalised;
+  - the messages, by channel, and the console text;
+  - how the run ended: the value ImportSolutions returned, or the exception.
+
+Kinds: export (read-only), scratch-export (seeds LIBSJS-SCRATCH-* packages, exports, deletes them), import (LIBSJS-SCRATCH-*
+copies, deleted again by each side), language-pack (needs the Languages de and fr on dev; skipped otherwise), console-mode
+(--use-import, --from-manifest, --all-packages). A case marked slow runs only when named with --case or with --include-slow.
+Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it created, and the ids are in the report.
+
+The password comes from ARAS_PASSWORD or stdin, as for \`npm run oracle\`; the user from ARAS_USER (default root).
+--out keeps the folders of every case that differs or failed (default oracle/out/parity-<engine>-<time>); --keep-all keeps the
+equal ones too. Exit status: 0 every case equal or skipped, 1 a difference or a failed case, 3 dev was left unclean.
+`;
+
+const KINDS: readonly ParityKind[] = ["export", "scratch-export", "import", "language-pack", "console-mode"];
+
+/** The scratch packages and packages a run starts from: nothing named `LIBSJS-SCRATCH-*` may exist on dev. */
+async function assertNoScratchLeft(server: PortServer): Promise<void> {
+  const side = await openSideConnection(server);
+  try {
+    for (const [type, property] of [["PackageDefinition", "name"], ["DatabaseUpgrade", "name"]] as const) {
+      const found = await side.inn.applyItem(`<Item type="${type}" action="get" select="id,${property}"><${property} condition="like">LIBSJS-SCRATCH-*</${property}></Item>`);
+      if (!found.isError && found.items.length > 0) {
+        throw new CaseFailure(`dev already has ${found.items.length} ${type} item(s) named LIBSJS-SCRATCH-*: an earlier run left them. Clean them up with \`npm run oracle -- cleanup\` first.`);
+      }
+    }
+  } finally {
+    await side.close();
+  }
+}
+
+function printCase(report: CaseReport, write: (text: string) => void): void {
+  const tag = { equal: "ok       ", different: "DIFFERENT", known: "known    ", skipped: "skipped  ", failed: "FAILED   " }[report.status];
+  write(`${tag} ${report.id} (${report.kind}, ${report.seconds.toFixed(1)} s${report.steps.length === 0 ? "" : `, ${report.steps.map((s) => `${s.oracleCalls}/${s.portCalls} calls`).join(" + ")}`})\n`);
+  if (report.note !== undefined) write(`    ${report.note}\n`);
+  for (const step of report.steps) {
+    if (step.differences.length === 0) continue;
+    write(`  ${step.name}: oracle ${step.oracleEnd}; port ${step.portEnd}\n`);
+    write(`${describeDifferences(step.differences).join("\n")}\n`);
+  }
+  if (report.created.length > 0) {
+    write(`    created ${report.created.length} item(s); deleted ${report.deleted.length}\n`);
+  }
+}
+
+function selectEntries(engine: Engine, values: { case?: string | undefined; kind?: string | undefined; "include-slow"?: boolean | undefined }): CatalogueEntry[] {
+  const all = catalogue(engine);
+  const dup = duplicateIds(all);
+  if (dup.length > 0) throw new Error(`the catalogue has duplicate ids: ${dup.join(", ")}`);
+  const kinds = values.kind === undefined ? null : new Set(values.kind.split(",").map((s) => s.trim()));
+  if (kinds !== null) {
+    const unknown = [...kinds].filter((k) => !(KINDS as readonly string[]).includes(k));
+    if (unknown.length > 0) throw new Error(`unknown kind: ${unknown.join(", ")} (${KINDS.join(", ")})`);
+  }
+  const named = values.case === undefined ? null : new Set(values.case.split(",").map((s) => s.trim()).filter((s) => s !== ""));
+  if (named !== null) {
+    const unknown = [...named].filter((id) => !all.some((e) => e.id === id));
+    if (unknown.length > 0) throw new Error(`unknown case: ${unknown.join(", ")} (--list shows them)`);
+  }
+  return all.filter((e) => (kinds === null || kinds.has(e.kind)) && (named === null ? values["include-slow"] === true || e.slow !== true : named.has(e.id)));
+}
+
+export async function main(argv: readonly string[]): Promise<number> {
+  let parsed;
+  try {
+    parsed = parseArgs({
+      args: [...argv],
+      options: {
+        engine: { type: "string" },
+        case: { type: "string" },
+        kind: { type: "string" },
+        "include-slow": { type: "boolean" },
+        list: { type: "boolean" },
+        out: { type: "string" },
+        "keep-all": { type: "boolean" },
+        url: { type: "string" },
+        help: { type: "boolean", short: "h" },
+      },
+      strict: true,
+    });
+  } catch (error) {
+    process.stderr.write(`parity: ${(error as Error).message}\n\n${USAGE}`);
+    return 64;
+  }
+  const { values } = parsed;
+  if (values.help === true) {
+    process.stdout.write(USAGE);
+    return 0;
+  }
+  const engineValue = values.engine ?? DEFAULT_ENGINE;
+  if (!isEngine(engineValue) || !PARITY_ENGINES.includes(engineValue)) {
+    process.stderr.write(`parity: engine '${engineValue}' is not supported yet (${PARITY_ENGINES.join(", ")})\n`);
+    return 64;
+  }
+  const engine: Engine = engineValue;
+  let entries: CatalogueEntry[];
+  try {
+    entries = selectEntries(engine, values);
+  } catch (error) {
+    process.stderr.write(`parity: ${(error as Error).message}\n`);
+    return 64;
+  }
+  if (values.list === true) {
+    for (const e of entries) process.stdout.write(`${e.kind.padEnd(14)} ${e.id}${e.slow === true ? "  (slow)" : ""}\n`);
+    return 0;
+  }
+  if (entries.length === 0) {
+    process.stderr.write("parity: no case selected\n");
+    return 64;
+  }
+
+  const portUrl = values.url ?? WSL_DEV_URL;
+  assertDevUrl(portUrl);
+  const password = readPassword();
+  const user = process.env.ARAS_USER ?? "root";
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
+  const out = resolve(values.out ?? join(ORACLE_DIR, "out", `parity-${engine}-${stamp}`));
+  mkdirSync(out, { recursive: true });
+  const port: PortServer = { engine, url: portUrl, logUrl: DEV_SERVER.url, database: DEV_SERVER.database, userName: user, password };
+  const env: ParityEnv = {
+    engine,
+    user,
+    password,
+    oracleUrl: DEV_SERVER.url,
+    database: DEV_SERVER.database,
+    port,
+    out,
+    log: (line) => process.stderr.write(`${line}\n`),
+  };
+
+  const reports: CaseReport[] = [];
+  const write = (text: string) => process.stdout.write(text);
+  const settle = (report: CaseReport) => {
+    const known = KNOWN_DIFFERENCES[report.id];
+    if (known !== undefined && report.status === "different") {
+      report.status = "known";
+      report.note = `known difference: ${known.reason}\n    ${known.followUp}`;
+    } else if (known !== undefined && report.status === "equal") {
+      report.note = "listed in known.ts but now equal: remove the entry";
+    }
+    reports.push(report);
+    printCase(report, write);
+    if (values["keep-all"] !== true) pruneEqual(env, report);
+  };
+  const failed = (id: string, kind: string, error: unknown) =>
+    settle({ id, kind, status: "failed", steps: [], note: error instanceof Error ? error.message : String(error), created: [], deleted: [], seconds: 0 });
+  const chosen = (kind: ParityKind) => entries.filter((e) => e.kind === kind);
+
+  let exitCode = 0;
+  try {
+    await assertNoScratchLeft(port);
+    write(`parity ${engine}: ${entries.length} case(s), folders in ${out}\n`);
+
+    for (const entry of chosen("export")) {
+      const c = EXPORT_CASES.find((x) => x.id === entry.id)!;
+      try {
+        settle(await runPlainExport(env, c));
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        failed(c.id, "export", error);
+      }
+    }
+
+    const scratchIds = new Set(chosen("scratch-export").map((e) => e.id));
+    for (const group of SEED_GROUPS) {
+      const wanted = new Set(group.cases.filter((c) => scratchIds.has(c.id)).map((c) => c.id));
+      if (wanted.size === 0) continue;
+      try {
+        for (const report of await runSeedGroup(env, group, wanted)) settle(report);
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        for (const id of wanted) failed(id, "scratch-export", error);
+      }
+    }
+
+    for (const entry of chosen("import")) {
+      const c = casesFor(engine).find((x) => x.id === entry.id)!;
+      try {
+        settle(await runImportCase(env, c));
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        failed(c.id, "import", error);
+      }
+    }
+
+    for (const entry of chosen("language-pack")) {
+      const c = languagePackCases(engine).find((x) => x.id === entry.id)!;
+      try {
+        settle(await runLanguagePackCase(env, c));
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        failed(c.id, "language-pack", error);
+      }
+    }
+
+    for (const entry of chosen("console-mode")) {
+      const c = CONSOLE_MODE_CASES.find((x) => x.id === entry.id)!;
+      try {
+        settle(await runConsoleModeCase(env, c));
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        failed(c.id, "console-mode", error);
+      }
+    }
+  } catch (error) {
+    if (error instanceof DevNotClean) {
+      process.stderr.write(`\nparity: DEV IS NOT CLEAN. ${error.message}:\n  ${error.left.join("\n  ")}\nNothing more was run.\n`);
+      exitCode = 3;
+    } else {
+      process.stderr.write(`parity: ${error instanceof Error ? error.message : String(error)}\n`);
+      exitCode = 1;
+    }
+  }
+
+  const count = (status: string) => reports.filter((r) => r.status === status).length;
+  write(`\n${reports.length} case(s): ${count("equal")} equal, ${count("different")} different, ${count("known")} known, ${count("failed")} failed, ${count("skipped")} skipped\n`);
+  const created = reports.flatMap((r) => r.created);
+  const deleted = reports.flatMap((r) => r.deleted);
+  write(`dev items created by the runs: ${created.length}; deleted by their cleanups: ${deleted.length}\n`);
+  writeFileSync(join(out, "report.json"), `${JSON.stringify({ engine, startedAt: stamp, reports }, null, 2)}\n`);
+  write(`report: ${join(out, "report.json")}\n`);
+  if (exitCode === 0 && (count("different") > 0 || count("failed") > 0)) exitCode = 1;
+  return exitCode;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  process.exitCode = await main(process.argv.slice(2));
+}
+

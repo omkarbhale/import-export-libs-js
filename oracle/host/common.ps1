@@ -142,6 +142,12 @@ function Invoke-OracleHost {
     if ($Bound.ContainsKey('ExpectedDbManifestSha256')) { $request.ExpectedDbManifestSha256 = $Bound['ExpectedDbManifestSha256'] }
     if ($Bound.ContainsKey('ExpectedDbPatchSha256')) { $request.ExpectedDbPatchSha256 = $Bound['ExpectedDbPatchSha256'] }
     if ($Bound.ContainsKey('DbPatchCleanup')) { $request.DbPatchCleanup = $Bound['DbPatchCleanup'].IsPresent }
+    if ($Bound.ContainsKey('ConsoleMode')) {
+        # The toolset's own ConsoleUpgrade.exe is read from the captain's folder, so it is hash-checked before anything loads it.
+        Assert-Sha256 'ConsoleUpgrade.exe' $Bound['ConsolePath'] $Bound['ExpectedConsoleSha256']
+        $request.ConsoleMode = $Bound['ConsoleMode']
+        $request.ConsolePath = $Bound['ConsolePath']
+    }
     $request.Context = @{}
     $request.Export = @{}
     $request.Import = @{}
