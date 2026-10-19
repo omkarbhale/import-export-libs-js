@@ -12,6 +12,8 @@ export interface CallRecord {
 /** How a run ended: the value `ImportSolutions` returned, `ExportSolutions` returning, or the exception that ended the host. */
 export type Termination =
   | { kind: "exported" }
+  /** `ApplyDBUpdateManifest` returned (14.35's DB patch): a refused patch is an `error` message, not an exception (DBP-050). */
+  | { kind: "applied" }
   | { kind: "returned"; value: number }
   | { kind: "exception"; summary: string };
 
@@ -76,6 +78,7 @@ export function oracleTermination(host: RunFile["host"]): Termination {
   if (host?.error !== undefined && host.error !== null) return { kind: "exception", summary: exceptionSummary(host.error) };
   const result = host?.result ?? "";
   if (result === "exported") return { kind: "exported" };
+  if (result === "ApplyDBUpdateManifest returned") return { kind: "applied" };
   const returned = /^ImportSolutions returned (-?\d+)$/.exec(result);
   if (returned) return { kind: "returned", value: Number(returned[1]) };
   throw new Error(`the run ended with neither a result the parity script knows nor an error: ${JSON.stringify(result)}`);

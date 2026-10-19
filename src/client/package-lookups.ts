@@ -1,3 +1,4 @@
+import type { Engine } from "../engines.js";
 import { isCorePackage } from "../manifest/package-path.js";
 import { nullReference } from "./dotnet.js";
 import { CItemException, type ResponseDocument } from "./fault.js";
@@ -5,6 +6,8 @@ import { type XmlElement, childElements, descendantElements, innerText, localNam
 
 /** What the package lookups need of the helper that owns them. */
 export interface PackageLookupHost {
+  /** The engine whose lookups these are: 14.35 caches a failed lookup of element ids (EXP-621). */
+  readonly engine: Engine;
   /** `CItemHelper.applyAML` (WIRE-006): throws a `CItemException` for any fault, faultcode 0 included. */
   applyAML(aml: string): Promise<ResponseDocument>;
 }
@@ -17,8 +20,11 @@ export interface PackageLookupHost {
  * @spec EXP-609 EXP-619
  */
 export const packageCaches = {
-  /** `m_pkgIDs`: the element ids of a package, by package name. */
-  elementIds: new Map<string, ReadonlySet<string>>(),
+  /**
+   * `m_pkgIDs`: the element ids of a package, by package name. 14.35 keeps a `Lazy` per name, so the entry is the lookup itself: the
+   * workers that ask together wait for one request, and a failed one stays failed (EXP-621). The other engines keep only answers.
+   */
+  elementIds: new Map<string, Promise<ReadonlySet<string>>>(),
   /** `_mNonCorePackageNames`: undefined until the first need, and then never undefined again, even after a failure (EXP-620). */
   nonCoreNames: undefined as string[] | undefined,
   /** `_relationshipTypeIDs`: the id of a RelationshipType, by name. */
@@ -59,13 +65,25 @@ export class PackageLookups {
 
   /**
    * `GetPackageElementIDs` and `GetPackageIDsFromServer`: the `element_id` of every element of every group of the package (R1).
-   * An answer is cached by name; a failure is not.
+   * An answer is cached by name; a failure is not, except in 14.35, whose `Lazy` keeps the exception (EXP-621).
    *
-   * @spec EXP-607 EXP-608 EXP-609
+   * @spec EXP-607 EXP-608 EXP-609 EXP-621
    */
-  async getPackageElementIds(packageName: string): Promise<ReadonlySet<string>> {
+  getPackageElementIds(packageName: string): Promise<ReadonlySet<string>> {
     const cached = packageCaches.elementIds.get(packageName);
     if (cached) return cached;
+    const lookup = this.fetchPackageElementIds(packageName);
+    packageCaches.elementIds.set(packageName, lookup);
+    if (this.host.engine !== "14.35") {
+      // 14.0.7 and 12.0 ask again after a failure; the entry the failed lookup made goes (EXP-609)
+      lookup.catch(() => {
+        if (packageCaches.elementIds.get(packageName) === lookup) packageCaches.elementIds.delete(packageName);
+      });
+    }
+    return lookup;
+  }
+
+  private async fetchPackageElementIds(packageName: string): Promise<ReadonlySet<string>> {
     const response = await this.host.applyAML(
       `<Item type='PackageDefinition' action='get' select='id'><name>${packageName}</name><Relationships>` +
         "<Item type='PackageGroup' action='get' select='id'><Relationships><Item type='PackageElement' action='get' select='element_id'/>" +
@@ -75,7 +93,6 @@ export class PackageLookups {
     for (const element of resultPath(response, ["Item", "Relationships", "Item", "Relationships", "Item", "element_id"])) {
       ids.add(innerText(element));
     }
-    packageCaches.elementIds.set(packageName, ids);
     return ids;
   }
 

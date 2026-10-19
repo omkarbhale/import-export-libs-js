@@ -4,7 +4,7 @@ A readable TypeScript re-implementation of Aras Innovator's package import/expor
 
 It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341), **14.0.7** (14.0.7.35492, the default) and **14.35** (14.35.0.43890).
 
-**Status: in progress.** The 12.0 engine is built for export, import and the offline import plan (it has no language-pack import) and is complete in `spec/source-map.json`. The 14.0.7 engine is built for export, import, language-pack import and the offline import plan, and 14.35 for export, import (with its AML batch mode, collected errors and language selection), language-pack import, language-resource export and DB patch application. 14.0.7 has live parity on dev and is complete in `spec/source-map.json`; the source-map completion of 14.35 is still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
+**Status: in progress.** The 12.0 engine is built for export, import and the offline import plan (it has no language-pack import) and is complete in `spec/source-map.json`. The 14.0.7 engine is built for export, import, language-pack import and the offline import plan, and 14.35 for export, import (with its AML batch mode, collected errors and language selection), language-pack import, language-resource export and DB patch application. 14.0.7 and 14.35 have live parity on dev, and all three engines are complete in `spec/source-map.json`; 12.0's live parity run is still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
 
 ## Install
 
@@ -20,7 +20,7 @@ npm install git+ssh://git@github.com/omkarbhale/import-export-libs-js.git
 
 | Command | What it does |
 |---|---|
-| `aras-pkg export <outDir> [Type:id…]` | Exports items into a folder with an `imports.mf`. The items are arguments, `-` for one per line on standard input, or `--package <name>` (repeatable) for whole packages. Each item's package is found on the server; an item in no package is refused by name and nothing is exported. Aras's console tool's three selections are also modes of `export`: `--use-import <manifest>` (the items an import manifest's package folders would add; 14.0.7), `--from-manifest <manifest>` (all elements of the database's packages the manifest names) and `--all-packages`. |
+| `aras-pkg export <outDir> [Type:id…]` | Exports items into a folder with an `imports.mf`. The items are arguments, `-` for one per line on standard input, or `--package <name>` (repeatable) for whole packages. Each item's package is found on the server; an item in no package is refused by name and nothing is exported. Aras's console tool's three selections are also modes of `export`: `--use-import <manifest>` (the items an import manifest's package folders would add), `--from-manifest <manifest>` (all elements of the database's packages the manifest names) and `--all-packages`. |
 | `aras-pkg import <manifest> [--package <name>…]` | Imports the packages of an `imports.mf`, in dependency order. With `--engine 14.35`, `--batch` and `--batch-max <n>` send the items without Relationships in one `<AML>` request, and `--collect-errors` and `--max-errors <n>` keep importing after a failed item and report every error at the end. |
 | `aras-pkg plan import <manifest> [--package <name>…]` | Offline: the order an import follows and, per package, the item sequence, the repeats and every item the import silently drops. |
 | `aras-pkg import-language-pack <lppath> --lp-package <name>` | Imports a language pack (`ImportConfig.xml`) as a package. Not on `--engine 12.0`. |

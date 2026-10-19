@@ -120,7 +120,7 @@ come from exactly one of:
   Type:id…              the items named as arguments (the id is split off at the first colon)
   -                     the items on standard input, one Type:id per line
   --package <name>      every element of the named package (repeatable); an unknown name is refused with suggestions
-  --use-import <manifest>   the items the package folders of an import manifest would add (Aras's console tool, useimport; 14.0.7)
+  --use-import <manifest>   the items the package folders of an import manifest would add (Aras's console tool, useimport)
   --from-manifest <manifest>  every element of the database's packages that the manifest names (the manifest must exist)
   --all-packages        every element of every package of the database
 The last three are the modes of Aras's console tool and cannot be combined with each other, with items or with --package.

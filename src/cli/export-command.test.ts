@@ -405,12 +405,11 @@ describe("export, local checks come before any server call (HOST-005)", () => {
     expect(t.stderr()).toContain("standard input holds no items");
   });
 
-  it("runs on every engine that has an export, and reports --use-import as not yet supported where package loading is not offered (HOST-008, HOST-113)", async () => {
+  it("runs on every engine that has an export, --use-import included (HOST-008, HOST-113)", async () => {
     const work = scratch();
-    writeFileSync(join(work, "m.mf"), "<imports/>");
-    const { code, t } = await refused(["out", "--use-import", join(work, "m.mf"), "--engine", "14.35", ...CONNECTION]);
-    expect(code).toBe(EXIT.failed);
-    expect(t.stderr()).toContain("engine 14.35 is not yet supported");
+    const missing = await refused(["out", "--use-import", join(work, "missing.mf"), "--engine", "14.35", ...CONNECTION]);
+    expect(missing.code).toBe(EXIT.usage);
+    expect(missing.t.stderr()).toContain("the manifest file does not exist");
     const bad = await refused(["out", "NoColon", "--engine", "12.0", ...CONNECTION]);
     expect(bad.code).toBe(EXIT.usage);
   });

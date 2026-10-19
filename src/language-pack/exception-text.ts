@@ -1,5 +1,6 @@
 import { DotNetException } from "../client/dotnet.js";
 import { CItemException } from "../client/fault.js";
+import { AggregateException } from "../export/parallel-for-each.js";
 
 /** The .NET type names of the exceptions that can end the steps of an `lpimport` (LP-003). */
 const TYPE_NAMES: Readonly<Record<string, string>> = {
@@ -28,7 +29,14 @@ export function dotNetTypeName(error: unknown): string {
   return "System.Object";
 }
 
-/** `Exception.ToString()` without the stack trace, which the port has no counterpart of: the type name and the message. */
+/**
+ * `Exception.ToString()` without the stack trace, which the port has no counterpart of: the type name and the message. An
+ * `AggregateException` passes its first inner exception to the base constructor, so its first line continues ` ---> ` and the inner
+ * exception's own first line (the language scan of 14.35 ends so: IMP-612).
+ */
 export function exceptionText(error: unknown): string {
-  return error instanceof Error ? `${dotNetTypeName(error)}: ${error.message}` : String(error);
+  if (!(error instanceof Error)) return String(error);
+  const text = `${dotNetTypeName(error)}: ${error.message}`;
+  if (error instanceof AggregateException && error.innerExceptions.length > 0) return `${text} ---> ${exceptionText(error.innerExceptions[0])}`;
+  return text;
 }

@@ -36,7 +36,7 @@ describe("the 14.0.7 catalogue", () => {
   });
 });
 
-describe("the 14.35 catalogue (ticket 76, part A: the export side)", () => {
+describe("the 14.35 catalogue (ticket 76)", () => {
   const entries = catalogue("14.35");
 
   it("has one entry per recorded export case of the engine, the scratch-seeded ones and the console modes, with unique ids", () => {
@@ -54,9 +54,13 @@ describe("the 14.35 catalogue (ticket 76, part A: the export side)", () => {
     }
   });
 
-  it("leaves the import side to part B", () => {
-    expect(entries.filter((e) => e.kind === "import" || e.kind === "language-pack")).toEqual([]);
+  it("has the import cases, the language-pack cases and the DB patch cases of 14.35", () => {
+    const count = (kind: string) => entries.filter((e) => e.kind === kind).length;
+    expect(count("import")).toBe(casesFor("14.35").length);
+    expect(entries.filter((e) => e.kind === "language-pack").map((e) => e.id)).toEqual(["lp01", "lp02", "lp03", "lp04", "lp05", "lp06", "lp07", "lp08"]);
+    expect(entries.filter((e) => e.kind === "dbpatch").map((e) => e.id)).toEqual(["dbpatch-non-root", "dbpatch-apply"]);
     expect(PARITY_ENGINES).toContain("14.35");
+    expect(catalogue("14.0.7").some((e) => e.kind === "dbpatch")).toBe(false);
   });
 
   it("takes the 14.35 cases and groups for 14.35 and the 14.0.7 ones for 14.0.7", () => {

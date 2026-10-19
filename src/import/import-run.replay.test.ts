@@ -65,7 +65,8 @@ afterAll(() => {
 /** The header line `Label: value` of the recorded log, which holds the host's settings. */
 const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
 
-const CLOCK = /\d\d\/\d\d\/\d{4} \d\d:\d\d:\d\d/g;
+/** A date-time of the log, or the date alone where 12.0's cut of a package's log falls inside it (IMP-412). */
+const CLOCK = /\d\d\/\d\d\/\d{2,4}(?: \d\d:\d\d:\d\d)?/g;
 /** The time spans of a batch (`TimeSpan.ToString()`), which differ from run to run (IMP-514). */
 const TIME_SPAN = /(\r\n   (?:AML batch|Resolve dependencies) time: )(?:\d+\.)?\d\d:\d\d:\d\d(?:\.\d+)?/g;
 
@@ -186,7 +187,8 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, minimum: numbe
         }
         expect(thrown, `${step.name}: the port ended with an exception`).toBeDefined();
         const [head, inner] = ((run.host.error as string).split("\r\n   at ")[0] as string).split(" ---> ") as [string, string | undefined];
-        expect(exceptionText(thrown), `${step.name}: the exception`).toBe(head);
+        // the first line of Exception.ToString() continues with the first inner exception's (IMP-612)
+        expect(exceptionText(thrown), `${step.name}: the exception`).toBe(inner === undefined ? head : `${head} ---> ${inner}`);
         // an AggregateException shows its inner exceptions after `--->` (IMP-612)
         if (thrown instanceof AggregateException) {
           expect(thrown.innerExceptions.map(exceptionText), `${step.name}: the inner exceptions`).toEqual([inner]);
