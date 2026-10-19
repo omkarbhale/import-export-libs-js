@@ -1,6 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import type { Engine } from "../engines.js";
+import { IMPORT_RUN_ENGINES } from "../import/import-run.js";
 import { planPackage } from "../import/plan.js";
 import type { ImportPlan, PlanItem } from "../import/plan.js";
 import { directoryGetParentFullName } from "../io/host-path.js";
@@ -99,7 +100,7 @@ export async function planCommand(args: readonly string[], io: CliIo): Promise<n
   if (subcommand !== "import") throw new UsageError("plan needs a subject: aras-pkg plan import <manifest>");
   if (manifestPath === undefined) throw new UsageError("plan import needs the manifest: aras-pkg plan import <manifest>");
   if (extra.length > 0) throw new UsageError(`unexpected argument '${extra[0]}'`);
-  requireEngine(engine, MANIFEST_ENGINES);
+  requireEngine(engine, IMPORT_RUN_ENGINES.filter((supported) => MANIFEST_ENGINES.includes(supported)));
   if (!existsSync(manifestPath) || !statSync(manifestPath).isFile()) throw new UsageError(`the manifest '${manifestPath}' does not exist`);
 
   const manifest = new ManifestFile(manifestPath, { engine });
