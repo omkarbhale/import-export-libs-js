@@ -4,6 +4,7 @@ import { isNullReference, isXPathException, isXmlException, nullReference } from
 import { CItemException, type ResponseDocument, stackText } from "../client/fault.js";
 import type { CItemHelper } from "../client/item-helper.js";
 import { type XmlElement as AnswerElement, attributeOf, childElements, innerText, localName, namespaceUri } from "../client/mini-xml.js";
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { getMessage } from "../export/messages.js";
 import { ArgumentNullException } from "../io/errors.js";
 import type { XmlElement } from "../xml/dom.js";
@@ -15,18 +16,20 @@ import { ImportLookups } from "./import-lookups.js";
 const I18N_NAMESPACE = "http://www.aras.com/I18N";
 
 export interface ImportHelperOptions {
-  /** The value of `os_user`, or a function that gives it at each write (IMP-452). The default is {@link defaultOsUser}. */
+  /** The value of `os_user`, or a function that gives it at each write (IMP-452). The default is {@link defaultOsUser} of the helper's engine. */
   osUser?: string | (() => string);
 }
 
 /**
- * `WindowsIdentity.GetCurrent().Name` for a process that is not on Windows: the engine writes `DOMAIN\user` on Windows and
- * `MACHINE\user` for a local account, and the port writes `<hostname>\<user>` on every other host (IMP-452).
+ * The `os_user` of the audit row (IMP-452). 14.0.7 writes `WindowsIdentity.GetCurrent().Name`: `DOMAIN\user` on Windows and
+ * `MACHINE\user` for a local account, and the port writes `<hostname>\<user>` on every other host. 14.35 writes
+ * `Environment.UserName`, the user name of the process alone, on every host.
  *
  * @spec IMP-452
  */
-export function defaultOsUser(platform: NodeJS.Platform = process.platform): string {
+export function defaultOsUser(platform: NodeJS.Platform = process.platform, engine: Engine = DEFAULT_ENGINE): string {
   const user = userInfo().username;
+  if (engine === "14.35") return user;
   const domain = platform === "win32" ? process.env.USERDOMAIN : undefined;
   return `${domain === undefined || domain === "" ? hostname() : domain}\\${user}`;
 }
@@ -56,7 +59,7 @@ function wrapped(error: unknown, suffix: string): CItemException {
  * ItemType and the deletion of SQL items. Values go into the requests unescaped (AGENTS.md rule 7). The lookups share the
  * helper's cache (IMP-102).
  *
- * @spec IMP-411 IMP-425 IMP-426 IMP-429 IMP-446 IMP-447 IMP-448 IMP-450 IMP-451 IMP-452 IMP-453 IMP-460 IMP-461
+ * @spec IMP-411 IMP-425 IMP-426 IMP-429 IMP-446 IMP-447 IMP-448 IMP-450 IMP-451 IMP-452 IMP-453 IMP-460 IMP-461 IMP-183
  */
 export class ImportHelper {
   /** The existence tests, the unlock and the other lookups of the merge (IMP-448). */
@@ -69,7 +72,7 @@ export class ImportHelper {
   ) {
     this.lookups = new ImportLookups(host);
     const osUser = options.osUser;
-    this.osUser = typeof osUser === "string" ? () => osUser : (osUser ?? (() => defaultOsUser()));
+    this.osUser = typeof osUser === "string" ? () => osUser : (osUser ?? (() => defaultOsUser(process.platform, host.engine)));
   }
 
   /**
@@ -82,17 +85,28 @@ export class ImportHelper {
   async getLabelOfItemType(type: string): Promise<string> {
     const aml = `<Item action='get' select='label' type='ItemType' language='en'><name>${type}</name></Item>`;
     const suffix = getMessage("UnableToGetLabelOfTypeItemType", type);
+    const lookups = this.host.lookups;
     try {
-      const cache = this.host.lookups.requestedItems;
-      let answer = cache.get(aml);
-      if (answer === undefined) {
-        answer = await this.host.applyAML(aml);
-        cache.set(aml, answer);
+      let answer: ResponseDocument;
+      if (lookups.isLazy) {
+        answer = await lookups.lazy.getOrAdd(aml, () => this.host.applyAML(aml)).value;
+      } else {
+        const cache = lookups.requestedItems;
+        let cached = cache.get(aml);
+        if (cached === undefined) {
+          cached = await this.host.applyAML(aml);
+          cache.set(aml, cached);
+        }
+        answer = cached;
       }
       const item = descendantsNamed(answer.document.root, "Result").flatMap((result) => childElements(result, "Item"))[0];
       if (item === undefined) throw nullReference();
       return languageProperty(item, "label", "en") ?? type;
     } catch (error) {
+      // 14.35 removes the entry for each of the failures it handles (IMP-447); 14.0.7 never stored a failure
+      if (lookups.isLazy && (error instanceof CItemException || isXmlException(error) || isXPathException(error) || isNullReference(error))) {
+        lookups.lazy.tryRemove(aml);
+      }
       if (error instanceof CItemException) {
         error.faultdetail = (error.faultdetail ?? "") + suffix;
         throw error;
@@ -110,21 +124,35 @@ export class ImportHelper {
    */
   async getPackageGroupIdOrCreateIfNotExists(packageDefinitionId: string | null, packageGroupName: string | null): Promise<string> {
     const get = `<Item type='PackageGroup' select='id' action='get'><name>${packageGroupName ?? ""}</name><source_id>${packageDefinitionId ?? ""}</source_id></Item>`;
+    const add = `<Item type='PackageGroup' action='add' doGetItem='0'><name>${packageGroupName ?? ""}</name><source_id>${packageDefinitionId ?? ""}</source_id></Item>`;
     const suffix = getMessage("CanInitGroupInPackageDefinition");
+    const lookups = this.host.lookups;
     try {
-      const cache = this.host.lookups.requestedItems;
-      let answer = cache.get(get);
-      if (answer === undefined) {
+      let answer: ResponseDocument;
+      if (lookups.isLazy) {
+        // the add is cached under the text of the get, and a failed add stays there for the next call (IMP-446, IMP-183)
         try {
-          answer = await this.host.applyAML(get);
-          cache.set(get, answer);
+          answer = await lookups.lazy.getOrAdd(get, () => this.host.applyAML(get)).value;
         } catch (error) {
-          if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
-          answer = await this.host.applyAML(
-            `<Item type='PackageGroup' action='add' doGetItem='0'><name>${packageGroupName ?? ""}</name><source_id>${packageDefinitionId ?? ""}</source_id></Item>`,
-          );
-          cache.set(get, answer);
+          if (!(error instanceof CItemException)) throw error;
+          lookups.lazy.tryRemove(get);
+          if (error.faultcode !== 0) throw error;
+          answer = await lookups.lazy.getOrAdd(get, () => this.host.applyAML(add)).value;
         }
+      } else {
+        const cache = lookups.requestedItems;
+        let cached = cache.get(get);
+        if (cached === undefined) {
+          try {
+            cached = await this.host.applyAML(get);
+            cache.set(get, cached);
+          } catch (error) {
+            if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
+            cached = await this.host.applyAML(add);
+            cache.set(get, cached);
+          }
+        }
+        answer = cached;
       }
       const item = resultItems(answer)[0];
       if (item === undefined) throw nullReference();

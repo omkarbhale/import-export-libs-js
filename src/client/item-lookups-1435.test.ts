@@ -58,7 +58,6 @@ describe("the metadata lookup keeps a success and drops a refusal (EXP-030, EXP-
     expect(first).toMatchObject({ type: "System.Xml.XmlException" });
     expect(second).toEqual(first);
     expect(stub.requests).toEqual([]);
-    expect(lookups.lazyItems.size).toBe(1);
   });
 
   it("reads is_versionable as exactly 1 (E.isVersionableValues)", async () => {

@@ -7,6 +7,7 @@ export { Innovator } from "./innovator.js";
 export type { ServerConnection } from "./innovator.js";
 export { CLIENT_ENGINES, CItemHelper, EngineNotSupportedError } from "./item-helper.js";
 export type { ItemHelperOptions, VersionGate } from "./item-helper.js";
+export { LazyCache, LazyValue } from "./lazy-cache.js";
 export { ItemLookups, independentRelatedItems } from "./item-lookups.js";
 export type { IndependentRelatedItem, LookupHost, LookupLog, MetadataType, RelatedItemMetadata } from "./item-lookups.js";
 export { ItemReferences, isValueId } from "./item-references.js";

@@ -242,7 +242,7 @@ describe("what is refused before any request is made", () => {
     expect(t.stderr()).toContain("unexpected argument 'other.mf'");
   });
 
-  it.for(["12.0", "14.35"])("engine %s, whose import is not built yet, is reported as not yet supported (exit 1)", async (engine) => {
+  it.for(["12.0"])("engine %s, whose import is not built yet, is reported as not yet supported (exit 1)", async (engine) => {
     const { code, t } = await refused(["import", manifest, ...base, "--engine", engine]);
     expect(code).toBe(EXIT.failed);
     expect(t.stderr()).toContain(`engine ${engine} is not yet supported`);

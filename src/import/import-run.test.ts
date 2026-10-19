@@ -10,9 +10,12 @@ import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "../export/messages.js";
 import { PackageDefinitionManager } from "../export/package-definition-manager.js";
+import type { Engine } from "../engines.js";
 import { ArgumentNullException, DirectoryNotFoundException, InvalidOperationException } from "../io/errors.js";
 import { SUImportContext } from "./import-context.js";
 import { ImportHelper, defaultOsUser } from "./import-helper.js";
+import { ImportWorkItem } from "./import-work-item.js";
+import { catalogueOf } from "../export/messages.js";
 import { getImportableItemsCount, importInputParameters } from "./import-run.js";
 import { getItemsFromPackageDom, isImportableType } from "./items.js";
 import { loadXml } from "../xml/parser.js";
@@ -72,6 +75,8 @@ interface Options {
   description?: string;
   loggedIn?: boolean;
   logDirectory?: string;
+  /** The engine of the run; the default is 14.0.7. */
+  engine?: Engine;
   onMessage?: (message: SentMessage, manager: ImportExportManager) => void;
 }
 
@@ -115,7 +120,7 @@ function harness(options: Options) {
     }
     return modelAnswer(wire);
   });
-  const helper = new CItemHelper(connection);
+  const helper = new CItemHelper(connection, { engine: options.engine ?? "14.0.7" });
   if (options.loggedIn !== false) helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
 
   const sent: SentMessage[] = [];
@@ -363,6 +368,142 @@ describe("IMP-406 to IMP-409: packages, failures and cancel", () => {
     test.manager.cancel();
     expect(await test.run()).toBe(0);
     expect(test.texts("status")).toContain("Item 1 of 1: List - a");
+  });
+});
+
+describe("14.35: packages, failures and cancel (IMP-406, IMP-407, IMP-409, IMP-470)", () => {
+  const one = (name: string): PackageFixture => ({ files: { "List/a.xml": list(`L-${name}`, `Colors-${name}`) } });
+  const two = (name: string): PackageFixture => ({
+    files: { "List/a.xml": list(`L-${name}1`, `Colors-${name}1`), "List/b.xml": list(`L-${name}2`, `Colors-${name}2`) },
+  });
+  const rows = (requests: readonly string[]): (string | undefined)[] =>
+    requests.filter((wire) => wire.includes("<upgrade_status>")).map((wire) => /<upgrade_status>(\d)/.exec(wire)?.[1]);
+
+  it("runs the packages of a manifest and sends the corrected text of the package definition status (IMP-470)", async () => {
+    const test = harness({ engine: "14.35", packages: { A: one("A") } });
+    expect(await test.run()).toBe(0);
+    expect(test.texts("status")).toContain("Adding PackageDefinition for A");
+    expect(test.texts("status")).not.toContain("Adding PackageDefinintion for A");
+    expect(test.log()).toContain("Tool version: 14.35.0.43890");
+    expect(test.texts("status").at(-1)).toBe("completed");
+  });
+
+  it("writes the error block with the CRLF first, and sends the error text without leading spaces (IMP-407, IMP-470)", async () => {
+    const test = harness({
+      engine: "14.35",
+      packages: { A: one("A") },
+      rules: [(wire) => (wire.includes("Colors-A") && wire.includes('action="add"') ? stubFault("5", "boom") : undefined)],
+    });
+    expect(await test.run()).toBe(1);
+    const log = test.log();
+    const failure = /\r\n\t\t\*\*\*\*ErrorMessage\*\*\*\*\r\n([\s\S]*?)\r\n\t\t\*{20}\r\n$/.exec(log)?.[1] ?? "";
+    expect(failure.startsWith("\r\nImport package 'A' failed with message:\n\n")).toBe(true);
+    expect(log).toContain("end of execution : <time>\r\n\r\n\t\t****ErrorMessage****\r\n");
+    expect(test.texts("error")).toEqual([`\t\t****ErrorMessage****\r\n${failure}`]);
+    expect(rows(test.requests)).toEqual(["0", "2"]);
+  });
+
+  it("records a cancel as a failure: the package gets status 2, the run returns 1 and the next package is not started (IMP-409)", async () => {
+    let statuses = 0;
+    const test = harness({
+      engine: "14.35",
+      packages: { A: two("A"), B: one("B") },
+      onMessage: (message, manager) => {
+        if (message.channel === "status" && ++statuses === 3) manager.cancel();
+      },
+    });
+    expect(await test.run()).toBe(1);
+    expect(rows(test.requests)).toEqual(["0", "2"]);
+    expect(test.texts("status")).toContain("Import was canceled by user");
+    expect(test.texts("status")).not.toContain("completed");
+    expect(test.log()).toContain("Updating 'A' package to failed release status");
+    expect(test.log()).not.toContain("'B'");
+    expect(about(test.requests, "PackageDefinition").filter((wire) => wire.includes('action="add"'))).toHaveLength(1);
+    const error = test.texts("error")[0] ?? "";
+    expect(error).toContain("Import package 'A' failed with message:\n\nImport was canceled by user\nUpdating A to failed release status");
+  });
+
+  it("fails a package whose last item was sent while the cancel arrived (IMP-409, probe s09b)", async () => {
+    let sent = 0;
+    const test = harness({
+      engine: "14.35",
+      packages: { A: one("A"), B: one("B") },
+      onMessage: (message, manager) => {
+        // the last status message of the package is its `completed`; a cancel made then arrives after ImportProc returned
+        if (message.channel === "status" && message.text === "completed" && ++sent === 1) manager.cancel();
+      },
+    });
+    expect(await test.run()).toBe(1);
+    expect(rows(test.requests)).toEqual(["0", "2"]);
+    expect(test.log()).not.toContain("'B'");
+  });
+
+  it("still loses a cancel made before the call", async () => {
+    const test = harness({ engine: "14.35", packages: { A: one("A") } });
+    test.manager.cancel();
+    expect(await test.run()).toBe(0);
+    expect(test.texts("status")).toContain("Item 1 of 1: List - a");
+  });
+
+  it("keeps 14.0.7's text and its success for a cancel", async () => {
+    let statuses = 0;
+    const test = harness({
+      packages: { A: two("A") },
+      onMessage: (message, manager) => {
+        if (message.channel === "status" && ++statuses === 3) manager.cancel();
+      },
+    });
+    expect(await test.run()).toBe(0);
+    expect(test.texts("status")).toContain("Adding PackageDefinintion for A");
+  });
+});
+
+describe("14.35: the catalogue, the work item and os_user (IMP-422, IMP-452, IMP-470)", () => {
+  it("lays 14.35's three changed templates over 14.0.7's catalogue", () => {
+    const next = catalogueOf("14.35");
+    const previous = catalogueOf("14.0.7");
+    expect(next("AddingPackageDefinintionForPackageName", "A")).toBe("Adding PackageDefinition for A");
+    expect(next("ErrorMessageMessage", "m")).toBe("\t\t****ErrorMessage****\r\nm");
+    expect(next("ErrorMessageMessageEnd", "m")).toBe("\r\n\t\t****ErrorMessage****\r\nm\r\n\t\t********************");
+    expect(previous("ErrorMessageMessage", "m")).toBe("          ****ErrorMessage****\r\n       m");
+    for (const key of ["ImportPackageName", "Completed", "WarningTryToResolve", "NoSuchKey"]) expect(next(key, "x")).toBe(previous(key, "x"));
+  });
+
+  it("reads an item the way ImportProc did inline: doGetItem, the five attributes in order, and the removals", () => {
+    const document = loadXml(
+      "<Item type='List' tempFullName='C:\\p\\a.xml' action='add' id='L1' tempKeyName='Colors'><name>n</name></Item>",
+      { preserveWhitespace: false },
+    );
+    const item = new ImportWorkItem(document, new SUImportContext(), "14.35");
+    expect([item.action, item.id, item.workItemType, item.originalKeyedName, item.originalFullFileName]).toEqual([
+      "add",
+      "L1",
+      "List",
+      "Colors",
+      "C:\\p\\a.xml",
+    ]);
+    expect(item.keyIdType).toBe("  id : L1    keyed_name : Colors    type : List  ");
+    expect(item.thoroughCheck).toBe(true);
+    expect(item.originalOuterXml).toBe('<Item type="List" action="add" id="L1" doGetItem="0"><name>n</name></Item>');
+    expect(item.itemNode.hasAttribute("tempKeyName")).toBe(false);
+    expect(new ImportWorkItem(loadXml("<Item type='List'/>", { preserveWhitespace: false }), new SUImportContext()).originalOuterXml).toBe("");
+  });
+
+  it("uses a single space for an empty part of the descriptor, and does not check a delete in full", () => {
+    const document = loadXml("<Item action='delete' type='List'/>", { preserveWhitespace: false });
+    const item = new ImportWorkItem(document, new SUImportContext());
+    expect(item.keyIdType).toBe("    type : List  ");
+    expect(item.thoroughCheck).toBe(false);
+  });
+
+  it("refuses a document without an Item with a null reference", () => {
+    expect(() => new ImportWorkItem(loadXml("<AML/>", { preserveWhitespace: false }), new SUImportContext())).toThrow("Object reference");
+  });
+
+  it("writes Environment.UserName for 14.35 and the identity name for 14.0.7", () => {
+    expect(defaultOsUser("linux", "14.35")).not.toContain("\\");
+    expect(defaultOsUser("linux", "14.0.7")).toMatch(/^.+\\.+$/);
+    expect(defaultOsUser("win32", "14.35")).toBe(defaultOsUser("linux", "14.35"));
   });
 });
 

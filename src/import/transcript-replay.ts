@@ -13,6 +13,9 @@ import { documentElementOf } from "../xml/dom.js";
  */
 export const CASES = new URL("../../fixtures/14.0.7/import/", import.meta.url).pathname;
 export const BLOBS = join(CASES, "_blobs");
+/** The recorded 14.35 import runs (ticket 75). */
+export const CASES_14_35 = new URL("../../fixtures/14.35/import/", import.meta.url).pathname;
+export const BLOBS_14_35 = join(CASES_14_35, "_blobs");
 
 export const START = "********** Start of reference checking ************";
 export const END = "************* End of reference checking ************";

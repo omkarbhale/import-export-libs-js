@@ -34,6 +34,7 @@ export { ReferenceChecker } from "./reference-checks.js";
 export type { CheckHost, DelayedResolution, UnresolvedReference } from "./reference-checks.js";
 export { SUImportContext } from "./import-context.js";
 export { ImportHelper, defaultOsUser } from "./import-helper.js";
+export { ImportWorkItem } from "./import-work-item.js";
 export type { ImportHelperOptions } from "./import-helper.js";
 export { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, getImportableItemsCount, importInputParameters, logError } from "./import-run.js";
 export type { ConsoleWriter, ImportRunHost, ProgressState } from "./import-run.js";

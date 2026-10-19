@@ -107,7 +107,7 @@ describe("what plan import refuses", () => {
     expect(t.stderr()).toContain("the manifest has no package 'NOPE'; it has LIBSJS-SCRATCH-DEL");
   });
 
-  it.for(["12.0", "14.35"])("engine %s is not yet supported (exit 1)", async (engine) => {
+  it.for(["12.0"])("engine %s is not yet supported (exit 1)", async (engine) => {
     const { code, t } = await plan([INPUT("s4-del/step-2"), "--engine", engine]);
     expect(code).toBe(EXIT.failed);
     expect(t.stderr()).toContain(`engine ${engine} is not yet supported`);
