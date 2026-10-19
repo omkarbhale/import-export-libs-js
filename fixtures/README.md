@@ -37,6 +37,8 @@ Rules for this folder:
 
 `import-load/` is evidence for `spec/import-load.md`, not an engine run: probes of the 14.0.7 package loader and `build.xsl`, and of the 12.0 ones (`*.12.0*`). Its own README lists the files.
 
+`export-modes/` is evidence for `spec/export-modes.md`, not a server run: the output of `oracle/export-modes-probe/` for each engine (`<engine>-probe.json`), the real `GenerateHashtableFromManifest` and `ConsoleUpgrade.exe`'s `ProcessExport` loops run offline on the inputs the file holds, with every table in `Hashtable` enumeration order. `src/cli/console-modes.test.ts` replays it. Its own README (`oracle/export-modes-probe/README.md`) says how to re-record.
+
 `import-merge/` is evidence for `spec/import-merge.md`, not an engine run: the output of `oracle/merge-probe/` (offline calls of the 14.0.7 import merge, validation and versionable code against stubs, and the same scenarios through 12.0 in `12.0-probe/`). Its own README says how to re-record.
 
 `import-run/` is evidence for `spec/import-run.md`, not an engine run against a server: probes of the 14.0.7 import orchestration, package registration, audit row and SQL handling against a stub connection, and `probe-12.0.txt` for 12.0. Its own README lists the files.

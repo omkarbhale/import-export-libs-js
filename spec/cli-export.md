@@ -20,9 +20,10 @@ Conventions: **an item** is a pair of an ItemType name and an id. **The table** 
 
 - **arguments**: every argument after the output folder is one item (HOST-002);
 - **standard input**: the single argument `-` stands for the items on standard input, one per line (HOST-003);
-- **packages**: `--package <name>`, repeatable, stands for every element of the named packages (HOST-004, HOST-015).
+- **packages**: `--package <name>`, repeatable, stands for every element of the named packages (HOST-004, HOST-015);
+- **a console mode**: `--use-import <manifest>`, `--from-manifest <manifest>` or `--all-packages` choose what to export the way Aras's console tool does, and build the table themselves (HOST-100 in `export-modes.md`).
 
-Giving none of the three, or more than one of them, is a usage error (exit 64): `export needs the items to export: …`. A second `-`, or `-` together with items, is the same error. `--help` prints the usage and exits 0.
+Giving none of the sources, or more than one of them, is a usage error (exit 64): `export needs the items to export: …`. A second `-`, or `-` together with items, is the same error. `--help` prints the usage and exits 0.
 
 [12.0] Same command line. The engine is not yet supported by the export (HOST-008).
 
@@ -99,7 +100,7 @@ The only check is that the path can be a folder: it is not empty, has no NUL cha
 | `--unknown-references <mode>` | `RefToUnknownPacks`: `remove-silently`, `remove-with-warning` or `do-not-remove` (EXP-501, EXP-600). | `do-not-remove`, the setting both reference hosts make |
 | `--on-item-error <answer>` | the host's answer to the error question (EXP-516): `continue` or `abort-package`. | `continue`, the answer of the reference hosts |
 
-A value outside the list is a usage error. `--verbose` is accepted and recorded in the context like the other commands do; export does not read it. The common options (`--url`, `--database`, `--user`, `--password-stdin`, `--engine`, `--log`, `--timeout`, `--time-zone`, `--skip-version-check`, `--json`) are those of the other commands. `UseImport` is not an option of this command; ticket 66 sets it with its modes.
+A value outside the list is a usage error. `--verbose` is accepted and recorded in the context like the other commands do; export does not read it. The common options (`--url`, `--database`, `--user`, `--password-stdin`, `--engine`, `--log`, `--timeout`, `--time-zone`, `--skip-version-check`, `--json`) are those of the other commands. `UseImport` is not an option of this command: `--use-import` sets it (HOST-102).
 
 [12.0] Same as 14.0.7.
 
@@ -107,9 +108,9 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 ### HOST-008: the engines that have an export
 
-[14.0.7] The command runs on `14.0.7`. [12.0] has no export slice yet, and [14.35] runs it.
+[14.0.7] The command runs on `14.0.7`, and on the other engines too, now that their export slices have landed.
 
-[12.0] The command reports `engine 12.0 is not yet supported` and exits 1, after the local checks of HOST-005. The slice that builds the 12.0 export (wayfinder ticket 49) enables it.
+[12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built). The one exception is `--use-import`, which loads package folders and is not offered yet (HOST-113).
 
 [14.35] The command runs as for 14.0.7. Parallelism (wayfinder ticket 59) and the language-resource modes (ticket 61) are not options of this command yet.
 
@@ -119,7 +120,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 1. the context: `Action` is `Export`, the connection settings, `WorkingDirectory`, the log file, the timeout and the export settings (HOST-007);
 2. the connection and the helper, and the login with the version probe and gate (WIRE-002);
-3. the selection is resolved (HOST-010 to HOST-016). A refusal ends the run here: the engine is not built, the output folder is not touched and the log is not opened;
+3. the selection is resolved (HOST-010 to HOST-016; the console modes build the manager first and ask it for the table, HOST-102). A refusal ends the run here: the engine is not built, the output folder is not touched and the log is not opened;
 4. the manager is built and `ExportSolutions(exportContext, selItemsTable)` runs (EXP-500). The engine's messages go to standard error as `[PKG]`, `[INFO]`, `[WARN]` and `[ERROR]` lines;
 5. logout, whatever happened in steps 3 and 4.
 
@@ -279,7 +280,7 @@ A package with no element contributes nothing and the command warns `[WARN] pack
 
 ### HOST-030: the summary
 
-[14.0.7] The summary on standard output (text, or the same facts as JSON with `--json`) holds: `command` (`export`), `engine`, `result` (`success`, `completed with engine errors`, `refused` or `failed`), `exitCode`, `url`, `database`, `user`, `server`, `outDir` (absolute), `source` (`items`, `stdin` or `packages`), `packages` (name and number of items, in the table's order of insertion), `items` (the total), `noPackage` and `notFound` (HOST-014, only when refused), the log path, the message counts and the error text of a failure.
+[14.0.7] The summary on standard output (text, or the same facts as JSON with `--json`) holds: `command` (`export`), `engine`, `result` (`success`, `completed with engine errors`, `refused` or `failed`), `exitCode`, `url`, `database`, `user`, `server`, `outDir` (absolute), `source` (`items`, `stdin`, `packages`, `use-import`, `from-manifest` or `all-packages`; HOST-130 gives the packages of the last three), `packages` (name and number of items, in the table's order of insertion), `items` (the total), `noPackage` and `notFound` (HOST-014, only when refused), the log path, the message counts and the error text of a failure.
 
 [12.0] Same as 14.0.7.
 

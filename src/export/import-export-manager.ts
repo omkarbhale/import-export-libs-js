@@ -32,6 +32,7 @@ import { isLanguageMode } from "./export-context.js";
 import { resolveLanguages } from "./language-selection.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
+import { loadManifestDocument, manifestFileExists, manifestSelects, packageTableFromSolutions } from "./manifest-selection.js";
 import { packageElementIdsByElementType } from "./package-elements.js";
 import { packageItem } from "./package-item.js";
 import type { RemovedReference } from "./removed-reference.js";
@@ -313,6 +314,19 @@ export class ImportExportManager {
       }
       return null;
     }
+  }
+
+  /**
+   * `GenerateHashtableFromManifest(manifestFilePath)`: the table of every package definition of the database, with the elements of
+   * the packages the manifest names and an empty table for the others, or null when the manifest file does not exist (EXP-700).
+   * The manifest is read before the database is asked, so a manifest that cannot be read sends no request (EXP-701).
+   *
+   * @spec EXP-700 EXP-701
+   */
+  async generateHashtableFromManifest(manifestFilePath: string | null): Promise<SelectionTable | null> {
+    if (!manifestFileExists(manifestFilePath, this.engine, this.environment)) return null;
+    const manifest = loadManifestDocument(manifestFilePath as string, this.engine, this.environment);
+    return packageTableFromSolutions(await this.getSolutions2Xml(), manifestSelects(manifest));
   }
 
   /**
