@@ -6954,7 +6954,8 @@
             "LP-020"
           ],
           "symbols": [
-            "src/import/package-files.ts#directoryGetXmlFiles"
+            "src/import/package-files.ts#directoryGetXmlFiles",
+            "src/import/ntfs-order.ts#shortNamesOf"
           ]
         },
         {

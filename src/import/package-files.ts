@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { DirectoryNotFoundException, IOException, UnauthorizedAccessException } from "../io/errors.js";
-import { compareNtfsNames } from "./ntfs-order.js";
+import { compareNtfsNames, shortNamesOf } from "./ntfs-order.js";
 
 /**
  * The engine's `IOWrapper` as the import uses it: the immediate subdirectories of a package folder and the files of one
@@ -114,18 +114,28 @@ function matchesXmlPattern(name: string): boolean {
   return dot >= 0 && name.slice(dot + 1, dot + 4).toLowerCase() === "xml";
 }
 
+/** Whether the long name itself matches `*.xml`: the extension after the last dot is exactly `xml`, in any case. */
+function matchesByLongName(name: string): boolean {
+  const dot = name.lastIndexOf(".");
+  return dot >= 0 && name.slice(dot + 1).toLowerCase() === "xml";
+}
+
 /**
  * `IOWrapper.DirectoryGetFiles(path, "*.xml")`: the files directly inside the folder that the pattern matches (IMP-003), in
  * NTFS order, as the folder path joined with the name. Hidden and read-only files are listed; a directory is not.
+ *
+ * A file whose long name matches is listed at its long name's place. A file that only its short name matches (`a.xmlbak`,
+ * short name `A~1.XML`) is listed at the short name's place (IMP-004), so it follows every name that sorts below `~`.
  * @spec IMP-003 IMP-004 IMP-005 IMP-006
  */
 export function directoryGetXmlFiles(path: string, environment: PathEnvironment = {}): string[] {
   const { host, entries } = listEntries(path, environment);
   const separator = separatorOf(environment);
-  return entries
-    .filter((entry) => matchesXmlPattern(entry.name) && isFile(entry, host))
-    .map((entry) => entry.name)
-    .sort(compareNtfsNames)
+  const matched = entries.filter((entry) => matchesXmlPattern(entry.name) && isFile(entry, host)).map((entry) => entry.name);
+  const shortNames = matched.every(matchesByLongName) ? new Map<string, string>() : shortNamesOf(entries.map((entry) => entry.name));
+  const placeOf = (name: string): string => (matchesByLongName(name) ? name : (shortNames.get(name) ?? name));
+  return matched
+    .sort((a, b) => compareNtfsNames(placeOf(a), placeOf(b)) || compareNtfsNames(a, b))
     .map((name) => combine(shownFolder(host), name, separator));
 }
 

@@ -57,14 +57,6 @@ function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false
     });
 }
 
-/**
- * Steps whose run differs for a reason outside the import run. `fs-odd-files`: the engine lists `LIBSJS-SCRATCH-Fs_Backup.xmlbak`
- * after the `.xml` files, because NTFS finds a file that only its 8.3 short name (`LIBSJS~1.XML`) matches `*.xml` at the short
- * name's place in the directory index, which sorts after every `LIBSJS-…` entry. The loader (`IMP-003`, `IMP-004`) sorts it by its
- * long name, so the items reach the run in another order. Wayfinder ticket 36's rules do not cover short names yet.
- */
-const KNOWN_LOADER_GAPS = new Set(["fs-odd-files/step-1"]);
-
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
@@ -79,18 +71,16 @@ const TIME_SPAN = /(\r\n   (?:AML batch|Resolve dependencies) time: )(?:\d+\.)?\
 
 /** The log with what is the run's own replaced: the paths of the header, the item files and every date-time. */
 function comparable(log: string, recordedInput: string, input: string, logPath: string): string {
+  const inputRelative = (path: string): string => {
+    const rest = path.startsWith(input) ? path.slice(input.length) : path.startsWith(recordedInput) ? path.slice(recordedInput.length) : path;
+    return `<input>${rest.replace(/\\/g, "/")}`;
+  };
   return log
     .replace(/^(Manifest file: ).*(\r)$/m, "$1<manifest>$2")
     .replace(/^(Log file: ).*(\r)$/m, "$1<log>$2")
     .replace(/^(Working directory: ).*(\r)$/m, "$1<working>$2")
-    .replace(/^File full name '(.*)'(\r?)$/gm, (_, path: string, end: string) => {
-      const rest = path.startsWith(input)
-        ? path.slice(input.length)
-        : path.startsWith(recordedInput)
-          ? path.slice(recordedInput.length)
-          : path;
-      return `File full name '<input>${rest.replace(/\\/g, "/")}'${end}`;
-    })
+    .replace(/^(File full name )'(.*)'(\r?)$/gm, (_, label: string, path: string, end: string) => `${label}'${inputRelative(path)}'${end}`)
+    .replace(/^(WARNING: File )'(.*)'( doesn't have )/gm, (_, label: string, path: string, rest: string) => `${label}'${inputRelative(path)}'${rest}`)
     .replace(CLOCK, "<time>")
     .replace(TIME_SPAN, "$1<span>")
     .split(logPath)
@@ -103,7 +93,7 @@ function recordedConsole(hostLog: string): string {
   return afterBanner.slice(0, afterBanner.lastIndexOf("HOST_EXIT"));
 }
 
-function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: ReadonlySet<string>, minimum: number, minimumRefused = 0): void {
+function replayRuns(engine: Engine, steps: Step[], blobs: string, minimum: number, minimumRefused = 0): void {
   const seen = {
     runs: 0,
     failed: 0,
@@ -119,7 +109,7 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
       expect(steps.length).toBeGreaterThan(minimum);
     });
 
-    it.for(steps.filter((step) => !knownGaps.has(step.name)).map((step) => [step.name, step] as const))("%s", async ([, step]) => {
+    it.for(steps.map((step) => [step.name, step] as const))("%s", async ([, step]) => {
       const calls = readTranscript(join(step.dir, "transcript.jsonl"), blobs);
       // a run refused in the constructor (IMP-612, IMP-621) wrote no log
       const logFile = join(step.dir, "engine.log");
@@ -238,8 +228,6 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
       if (step.options.verbose === true) seen.verbose += 1;
     });
 
-    it.skip.for([...knownGaps])("%s differs in the order of the package's files (see KNOWN_LOADER_GAPS)", () => undefined);
-
     it("reached the failure, cancel, merge, verbose and refused paths", () => {
       expect(seen.refused).toBeGreaterThanOrEqual(minimumRefused);
       expect(seen.runs).toBeGreaterThan(minimum);
@@ -251,12 +239,11 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
   });
 }
 
-replayRuns("14.0.7", stepsOf(CASES), BLOBS, KNOWN_LOADER_GAPS, 40);
+replayRuns("14.0.7", stepsOf(CASES), BLOBS, 40);
 replayRuns(
   "14.35",
   stepsOf(CASES_14_35),
   BLOBS_14_35,
-  KNOWN_LOADER_GAPS,
   30,
   3,
 );

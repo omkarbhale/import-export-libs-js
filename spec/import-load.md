@@ -56,6 +56,8 @@ The directory names have no meaning to the engine, only their order does (IMP-00
 
 Hidden and read-only files are read (case `hidden`).
 
+The extra matches come from the file's short (8.3) name. NTFS gives a file whose long name does not fit 8.3 a second name, and the pattern is tested against both. A name such as `LIBSJS-SCRATCH-Fs_Backup.xmlbak` has the short name `LIBSJS~1.XML`, which matches. A file that matches by its long name (an extension of exactly `xml`) is listed once, never a second time for its short name (the 52 names of `listing-order.json` all end in `.xml`, many with a short name of their own, and each is listed once). Where a file that only its short name matches is listed is IMP-004.
+
 [12.0] Same as 14.0.7 (`Directory.GetFiles(dir, "*.xml")`, observed with the case `order`: the same twelve files are read and the same three are not).
 
 [14.35] Same as 14.0.7.
@@ -66,6 +68,18 @@ Hidden and read-only files are read (case `hidden`).
 
 1. Upper-case each UTF-16 code unit on its own with the .NET Framework 4.8 `ToUpperInvariant` mapping of the BMP, recorded in `fixtures/import-load/invariant-upper.json`. Where the table has no entry the unit is unchanged. Surrogates are never mapped, so a supplementary-plane letter does not change case (probe `listing-order`: `𐐀b` comes before `𐐨a`). Titlecase letters such as `ǅ` (U+01C5) are unchanged, so `ǆa`, `Ǆc`, `ǅa2` and `ǅb` list in that order. The mapping is a per-code-unit table, not the host's `toUpperCase`, which maps `ß` to `SS` and differs elsewhere.
 2. Compare the upper-cased names as sequences of UTF-16 code units, unsigned.
+
+A file that matches `*.xml` only by its short name (IMP-003) is listed at the place of that short name, not of its long name, because NTFS keeps the short name as a separate entry of the directory index. The key of such a file is the short name: `BASE~N.EXT`, upper-cased. The library builds it this way:
+
+1. Take the name, remove the leading dots and every space, and remove every dot but the last. Replace each character that an 8.3 name may not hold (control characters and `" * + , / : ; < = > ? [ \ ] |`) with `_`. Upper-case it.
+2. `BASE` is the first 6 characters of what is before the last dot, and `EXT` the first 3 characters of what is after it. A name with no dot left has no `EXT` and no dot in the short name.
+3. `N` counts from 1 among the names of the directory that share `BASE` and `EXT` and do not fit 8.3 themselves, in the NTFS order of their long names. A name that fits 8.3 (ASCII, a base of up to 8 characters, an extension of up to 3, one dot at most) is its own short name and takes no number. A directory counts as a name, as a file does.
+
+The files that match by their long name keep the key of their long name. Two files with the same key are ordered by their long names.
+
+The recording `fs-odd-files` (all three engines) pins what a recording can: the folder holds `LIBSJS-SCRATCH-Fs_Backup.xmlbak` (short name `LIBSJS~N.XML`), the `.xml` files `LIBSJS-SCRATCH-Fs_NoItem`, `_Plain` and `_Utf16`, and a `.txt` file; the engine reads `NoItem`, `Plain`, `Utf16` and then `Backup`. The short name sorts after every name that starts with `LIBSJS-`, because `~` (U+007E) follows `-`, whatever `N` is. The probe `order` agrees: `a.xmlbak` (`A~1.XML`), `m.xmlx` and `p.xml~` sit where their long names would, since no other name falls between the two keys.
+
+Not pinned by any recording, and so taken from the documented NTFS rules of short name generation, not from an observation: the numbering `N` (only one file per directory has matched by its short name in the recordings, so `N` never decided an order), that `N` follows the order of the long names and not the order in which the files were created (the creation order is not in a package folder, and a package copied to another file system loses it), the switch to a hashed base after several clashes (the library does not model it), the short name of a name with characters outside ASCII (such a name counts as not fitting 8.3 and keeps the uppercase of its characters), and a name that is only a leading dot and an extension, such as `.xmlbak`, which has no `EXT` once the dot is removed (it is still read, and its key is `XMLBAK~1`). A re-recording that puts two short-name-only files into one folder would pin `N`.
 
 The comparison is on the file or directory name, not the full path, and it is made inside one directory. Subdirectories are visited in that order, and the files of each in that order before the next subdirectory. Examples (case `order`): directories `10, 9, A, a b, a-b, b, Z, _x, ä, é`; files `.xml, a.xml, a.xmlbak, B.xml, m.xmlx, p.xml~, q.Xml, s.xml.xml, x.XML, Z.xml`.
 
