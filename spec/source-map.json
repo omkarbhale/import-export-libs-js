@@ -4084,7 +4084,6 @@
       "assemblyVersion": "14.0.7.35492",
       "sha256": "7e5754908a3848b13a11accebfea2625b7bee139c0a36aa05ed114387146bf58",
       "mvid": "81698344-c4fa-4ec3-a48f-0961032d17f1",
-      "inProgress": true,
       "methods": [
         {
           "fullName": "<PrivateImplementationDetails>::ComputeStringHash",

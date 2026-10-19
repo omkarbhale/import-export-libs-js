@@ -423,6 +423,8 @@ namespace LibsJsOracle
         public string ExpectedDbManifestSha256;  // dbpatch: the committed test patch's digests (the host re-checks them)
         public string ExpectedDbPatchSha256;
         public bool DbPatchCleanup;     // cleanup: delete DB patch items (the dbpatch command always does)
+        public string ConsoleMode;      // export: the console tool's way of choosing what to export (all-packages | from-manifest | use-import)
+        public string ConsolePath;      // export: the toolset's own ConsoleUpgrade.exe, whose ProcessExport builds the table (the host re-checks its digest)
         public Hashtable Context;       // SolutionUpgradeContext property -> string value
         public Hashtable Export;        // SUExportContext property -> string value
         public Hashtable Import;        // SUImportContext property -> string value
@@ -865,6 +867,48 @@ namespace LibsJsOracle
         }
     }
 
+    /// <summary>
+    /// The console tool's way of choosing what an export covers (wayfinder ticket 66): ConsoleUpgrade.exe's own ProcessExport,
+    /// which builds the package -> items table (the all-packages loop, GenerateHashtableFromManifest, or the useimport loop)
+    /// and then calls the engine's ExportSolutions. It is internal, so it is driven by reflection with the state ConsoleUpgrade.Main
+    /// leaves it: the context, the export context and the manager. The toolset's ConsoleUpgrade.exe is not vendored; the
+    /// per-engine host checks its sha256 before this loads it.
+    /// </summary>
+    public static class ConsoleExport
+    {
+        public static void Run(string consolePath, SolutionUpgradeContext context, SUExportContext exportContext, ImportExportManager manager)
+        {
+            Assembly assembly = Assembly.LoadFrom(consolePath);
+            Type type = assembly.GetType("Aras.Tools.SolutionUpgrade.ConsoleUpgrade.ConsoleUpgrade", true);
+            const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+            object tool = Activator.CreateInstance(type, true);
+            Set(tool, type, "Context", context, All);
+            Set(tool, type, "_exportContext", exportContext, All);
+            Set(tool, type, "ImportExportManager", manager, All);
+            // Only the builds whose console tool has the field get one; the wrapper is Libs' own class, found by name.
+            FieldInfo io = type.GetField("iOWrapper", All);
+            Type wrapper = typeof(ImportExportManager).Assembly.GetType("Aras.Tools.SolutionUpgrade.IOWrapper");
+            if (io != null && wrapper != null) io.SetValue(tool, Activator.CreateInstance(wrapper));
+            MethodInfo process = type.GetMethod("ProcessExport", All);
+            if (process == null) throw new MissingMethodException(type.FullName, "ProcessExport");
+            try
+            {
+                process.Invoke(tool, new object[] { manager });
+            }
+            catch (TargetInvocationException e)
+            {
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+            }
+        }
+
+        private static void Set(object tool, Type type, string field, object value, BindingFlags flags)
+        {
+            FieldInfo f = type.GetField(field, flags);
+            if (f == null) throw new MissingFieldException(type.FullName, field);
+            f.SetValue(tool, value);
+        }
+    }
+
     public static class Host
     {
         public static int Run(HostRequest r)
@@ -922,7 +966,16 @@ namespace LibsJsOracle
                     Apply(exportContext, r.Export, "Export");
                     var manager = new ImportExportManager(context, messages, ci);
                     cancel.Manager = manager;
-                    manager.ExportSolutions(exportContext, Selection(r.Items));
+                    if (r.ConsoleMode != null)
+                    {
+                        if (r.ConsoleMode != "all-packages" && r.ConsoleMode != "from-manifest" && r.ConsoleMode != "use-import")
+                            throw new ArgumentException("unknown console mode " + r.ConsoleMode);
+                        ConsoleExport.Run(r.ConsolePath, context, exportContext, manager);
+                    }
+                    else
+                    {
+                        manager.ExportSolutions(exportContext, Selection(r.Items));
+                    }
                     result = "exported";
                 }
                 else if (r.Command == "dbpatch")

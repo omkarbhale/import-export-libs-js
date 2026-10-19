@@ -14,6 +14,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`engine-diffs.md`](engine-diffs.md) reads the live three-engine export diffs on dev (wayfinder ticket 64): which differences the code reading predicted are confirmed, which dev cannot show, and where each is pinned.
 
+[`live-parity-14.0.7.md`](live-parity-14.0.7.md) records the live run of the port against the DLL on dev for 14.0.7 (wayfinder ticket 44): 131 of 137 cases equal, one known difference, five language-pack cases skipped.
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).

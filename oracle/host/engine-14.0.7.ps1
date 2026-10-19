@@ -39,6 +39,10 @@ param(
     [switch] $LockUpgradeRows,
     # import: "type<TAB>id" per scratch item to give a new generation before the run.
     [string[]] $VersionBefore,
+    # export: the console tool's way of choosing the items (ConsoleUpgrade.exe's ProcessExport builds the table), its path and pinned digest.
+    [ValidateSet('all-packages','from-manifest','use-import')][string] $ConsoleMode,
+    [string] $ConsolePath,
+    [string] $ExpectedConsoleSha256,
 
     # ---- Engine options ----
     [switch] $ContextVerbose,
