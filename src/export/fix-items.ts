@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { ELEMENT_NODE, innerText } from "../xml/index.js";
 import type { XmlDocument, XmlElement, XmlNode } from "../xml/index.js";
 import { attributeOf, childElements, childText, firstChildElement, isItemOfType } from "./source.js";
@@ -82,15 +83,16 @@ export interface PropertyFixAttributes {
 }
 
 /**
- * The first case of EXP-324 that applies to a Property of the ItemType edit.
- * @spec EXP-324 EXP-390
+ * The first case of EXP-324 that applies to a Property of the ItemType edit. 12.0's stylesheet has no case for the Change
+ * Controlled Relationship, so its `related_id`, `sort_order` and `source_id` are edited like any system property (EXP-324, EXP-393).
+ * @spec EXP-324 EXP-390 EXP-393
  */
-export function propertyFixAttributes(property: XmlElement): PropertyFixAttributes {
+export function propertyFixAttributes(property: XmlElement, engine: Engine = DEFAULT_ENGINE): PropertyFixAttributes {
   const name = childText(property, "name");
   const changeControlled = childElements(property, "source_id").some(
     (e) => attributeOf(e, "keyed_name") === "Change Controlled Relationship",
   );
-  if (containsEntry("|related_id|sort_order|source_id|", name) && changeControlled) return { id: true, action: "add" };
+  if (engine !== "12.0" && containsEntry("|related_id|sort_order|source_id|", name) && changeControlled) return { id: true, action: "add" };
   if (containsEntry(SYSTEM_PROPERTIES, name)) {
     return { id: false, action: "edit", where: `source_id='${childText(property, "source_id")}' and name='${name}'` };
   }

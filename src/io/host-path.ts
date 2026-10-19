@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, posix, resolve, win32 } from "node:path";
+import type { Engine } from "../engines.js";
 import { isWhiteSpace } from "./dotnet-text.js";
 import {
   ArgumentException,
@@ -23,6 +24,16 @@ export interface PathEnvironment {
   platform?: NodeJS.Platform;
   /** The current directory, a Windows path when the platform is `win32`; the default is `process.cwd()`. */
   cwd?: string;
+  /**
+   * False when the engine hands every path to the file functions as it built it, with no `NormalizeLongPath`: the 12.0 engine
+   * (EXP-421, MAN-004). The default is true.
+   */
+  normalizePaths?: boolean;
+}
+
+/** The environment as an engine sees it: 12.0 has no path normalisation (EXP-421), the other engines have it. */
+export function pathEnvironmentFor(environment: PathEnvironment, engine: Engine): PathEnvironment {
+  return engine === "12.0" ? { ...environment, normalizePaths: false } : environment;
 }
 
 /** The full path at which `NormalizeLongPath` switches to the `\\?\` form. */
@@ -91,14 +102,15 @@ export function getFullPath(path: string, cwd: string): string {
 }
 
 /**
- * Turns a Windows path string into the path the host opens (MAN-033). On Windows that is `NormalizeLongPath`; on other
+ * Turns a Windows path string into the path the host opens (MAN-033). On Windows that is `NormalizeLongPath` (none for the 12.0
+ * engine, which uses the path as built); on other
  * platforms the path must be relative or rooted by `\` only, and every `\` becomes `/`. A drive or a `\\host` share has no
  * meaning there, and the layer stops with {@link PathNotUsableError}. A null or empty path is returned as it is.
  * @spec MAN-004 MAN-005 MAN-033 LP-010
  */
 export function toHostPath(path: string | null, environment: PathEnvironment = {}): string | null {
   if (path === null || path.length === 0) return path;
-  if ((environment.platform ?? process.platform) === "win32") return normalizeLongPath(path, environment);
+  if ((environment.platform ?? process.platform) === "win32") return environment.normalizePaths === false ? path : normalizeLongPath(path, environment);
   if (/^[A-Za-z]:/.test(path) || path.startsWith("\\\\")) throw new PathNotUsableError(path);
   // Windows resolves `.` and `..` segments in the text before it opens anything, so `x\..\f` reaches `f` although `x` does not exist
   return posix.normalize(path.replace(/\\/g, "/"));

@@ -53,7 +53,8 @@ function singleItemValue(response: ResponseDocument): string {
  * Reads the server version with four requests. A fault with faultcode `0` ("no
  * items") counts as 0 for the service pack, the build and the service update. A
  * Variable with no `value` element reads as an empty value, which fails the parse
- * of the major, minor, build and service update with a `FormatException` (WIRE-021).
+ * of the major, minor, build and service update with a `FormatException` (WIRE-021). The 12.0 engine reads major, minor and
+ * service pack only, with two requests, and the version has no build or service update (WIRE-020, WIRE-021).
  *
  * @spec WIRE-004 WIRE-007 WIRE-020 WIRE-021 WIRE-054
  */
@@ -71,6 +72,8 @@ export async function probeServerVersion(innovator: Innovator, engine: Engine = 
     const value = singleItemValue(servicePackResponse);
     servicePack = value === "" ? 0 : (tryParseInt32(value.replaceAll("SP", "")) ?? 0);
   }
+
+  if (engine === "12.0") return new ArasVersion(parseInt32(major), parseInt32(minor), servicePack, 0, 0);
 
   let build = 0;
   const buildResponse = await innovator.applyAML(variablesAml(["VersionBuild"]));

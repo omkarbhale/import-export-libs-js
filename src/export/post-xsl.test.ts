@@ -20,6 +20,8 @@ import {
  */
 const PROBE = readFileSync(new URL("../../fixtures/export-write/probe-14.0.7.txt", import.meta.url), "utf8").split(/\r?\n/);
 
+const PROBE_12_0 = readFileSync(new URL("../../fixtures/export-write/probe-12.0.txt", import.meta.url), "utf8").split(/\r?\n/);
+
 interface ProbeCase {
   id: string;
   input: string;
@@ -28,9 +30,9 @@ interface ProbeCase {
   exception?: { type: string; message: string };
 }
 
-const cases = (prefix: string): ProbeCase[] => {
+const cases = (prefix: string, lines: string[] = PROBE): ProbeCase[] => {
   const found = new Map<string, ProbeCase>();
-  for (const line of PROBE) {
+  for (const line of lines) {
     const input = new RegExp(`^(${prefix}\\d+) in : (.*)$`).exec(line);
     if (input) found.set(input[1] as string, { id: input[1] as string, input: unescapeProbe(input[2] as string) });
     const output = new RegExp(`^(${prefix}\\d+) out: \\[BOM\\]"(.*)"$`).exec(line);
@@ -81,6 +83,11 @@ describe("CdataFilterXml (EXP-405, EXP-406)", () => {
   for (const probe of cases("CDF")) {
     it(probe.id, () => check(probe, true, (doc) => cdataFilterXml(doc, probe.id === "CDF12" ? "implementation_query" : "condition_xml")));
   }
+
+  // the 12.0 engine wraps the first <filter_xml> and the first </filter_xml> only (EXP-405), as its probe recorded
+  describe.each(cases("CDF", PROBE_12_0))("12.0 probe $id", (probe) => {
+    it("gives the engine's bytes", () => check(probe, true, (doc) => cdataFilterXml(doc, "condition_xml", "12.0")));
+  });
 
   it("rebuilds the child even when nothing is replaced, so an empty one stays empty (EXP-405)", () => {
     const doc = loadXml('<AML><Item><condition_xml/></Item></AML>', { preserveWhitespace: true });

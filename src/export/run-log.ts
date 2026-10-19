@@ -18,6 +18,50 @@ export function invariantDateTime(date: Date): string {
   return `${day} ${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}`;
 }
 
+/**
+ * The general date and time pattern (short date, long time) of the cultures whose pattern was probed with .NET Framework 4.8
+ * (EXP-505). Any other culture gets the invariant pattern, which is not what the engine writes there.
+ */
+const GENERAL_PATTERNS: Readonly<Record<string, string>> = {
+  "en-US": "M/d/yyyy h:mm:ss tt",
+  "en-GB": "dd/MM/yyyy HH:mm:ss",
+  "fr-FR": "dd/MM/yyyy HH:mm:ss",
+  "en-IN": "dd-MM-yyyy HH:mm:ss",
+  "de-DE": "dd.MM.yyyy HH:mm:ss",
+};
+
+/** The culture of this process, as `Intl` names it (`en-US`), which the 12.0 engine's date-times follow by default. */
+export function processCulture(): string {
+  return Intl.DateTimeFormat().resolvedOptions().locale;
+}
+
+/**
+ * `DateTime.Now.ToString()` of the current culture: the culture's general date and time pattern (EXP-505, `[12.0]`). The names
+ * of the cultures are matched without regard to case, with `_` read as `-`. The invariant culture is the empty name.
+ *
+ * @spec EXP-505
+ */
+export function currentCultureDateTime(date: Date, culture: string = processCulture()): string {
+  const name = culture.replace(/_/g, "-").toLowerCase();
+  const pattern = Object.entries(GENERAL_PATTERNS).find(([known]) => known.toLowerCase() === name)?.[1];
+  if (pattern === undefined) return invariantDateTime(date);
+  const pad = (value: number, width = 2): string => String(value).padStart(width, "0");
+  const hour12 = date.getHours() % 12 === 0 ? 12 : date.getHours() % 12;
+  const fields: Record<string, string> = {
+    yyyy: pad(date.getFullYear(), 4),
+    MM: pad(date.getMonth() + 1),
+    M: String(date.getMonth() + 1),
+    dd: pad(date.getDate()),
+    d: String(date.getDate()),
+    HH: pad(date.getHours()),
+    h: String(hour12),
+    mm: pad(date.getMinutes()),
+    ss: pad(date.getSeconds()),
+    tt: date.getHours() < 12 ? "AM" : "PM",
+  };
+  return pattern.replace(/yyyy|MM|M|dd|d|HH|h|mm|ss|tt/g, (field) => fields[field] as string);
+}
+
 /** The host paths of the log files a run holds open. A second writer on one of them fails (EXP-505, EXP-541). */
 const held = new Set<string>();
 

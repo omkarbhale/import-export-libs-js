@@ -2,15 +2,18 @@ import { EngineNotSupportedError } from "../client/item-helper.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { IOException } from "../io/errors.js";
 import { directoryCreateDirectory, directoryDelete, directoryExists, ntfsFoldKey } from "../io/windows-fs.js";
-import { getFullPath } from "../io/host-path.js";
+import { getFullPath, pathEnvironmentFor } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { isStandardPackage } from "../manifest/index.js";
 import { pathCombine } from "../io/win-path.js";
 import { xmlDocumentSaveWithSettings } from "../xml/index.js";
 import type { XmlDocument } from "../xml/index.js";
 
-/** The engines whose output layout is built: 14.0.7 joins paths with a literal `\`, 14.35 with `Path.Combine`; 12.0 waits for its variant slice. */
-export const OUTPUT_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+/**
+ * The engines whose output layout is built: 12.0 and 14.0.7 join paths with a literal `\` (12.0 hands them to the file
+ * functions as built, EXP-421); 14.35 joins them with `Path.Combine`.
+ */
+export const OUTPUT_ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
 
 function checkEngine(engine: Engine): void {
   if (!OUTPUT_ENGINES.includes(engine)) throw new EngineNotSupportedError(engine);
@@ -57,9 +60,10 @@ export function createOutputDir(
   engine: Engine = DEFAULT_ENGINE,
 ): string {
   checkEngine(engine);
+  const paths = pathEnvironmentFor(environment, engine);
   const path = outputDirPath(workingDirectory, packageName, engine);
-  if (directoryExists(path, environment)) directoryDelete(path, true, environment);
-  directoryCreateDirectory(path, environment);
+  if (directoryExists(path, paths)) directoryDelete(path, true, paths);
+  directoryCreateDirectory(path, paths);
   return path;
 }
 
@@ -92,10 +96,11 @@ export function writeItemFile(
   engine: Engine = DEFAULT_ENGINE,
 ): string {
   checkEngine(engine);
+  const paths = pathEnvironmentFor(environment, engine);
   const { typeFolder, path } =
     engine === "14.35" ? itemFilePaths(folder, typeName, fileName) : { typeFolder: `${folder ?? ""}\\${typeName ?? ""}\\`, path: `${folder ?? ""}\\${typeName ?? ""}\\${fileName}` };
-  if (!directoryExists(typeFolder, environment)) directoryCreateDirectory(typeFolder, environment);
-  xmlDocumentSaveWithSettings(doc, path, environment);
+  if (!directoryExists(typeFolder, paths)) directoryCreateDirectory(typeFolder, paths);
+  xmlDocumentSaveWithSettings(doc, path, paths);
   return path;
 }
 
