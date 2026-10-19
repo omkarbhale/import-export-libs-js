@@ -6,7 +6,8 @@ import { afterAll, describe, expect, it } from "vitest";
 import { readTranscript } from "../../oracle/src/transcript.js";
 import { run } from "../cli-run.js";
 import { FakeTransport, devServer, header, respond, soapFault } from "../client/fake-transport.js";
-import { BLOBS, CASES } from "../import/transcript-replay.js";
+import type { Engine } from "../engines.js";
+import { BLOBS, BLOBS_14_35, CASES, CASES_14_35 } from "../import/transcript-replay.js";
 import { EXIT } from "./exit.js";
 import { RecordedServer } from "./replay-transport.js";
 import { type TestIo, testIo } from "./test-io.js";
@@ -35,12 +36,28 @@ const TAGS = { status: "INFO", warning: "WARN", error: "ERROR", currentPackage: 
 interface Step {
   name: string;
   dir: string;
-  options: { merge?: boolean; release?: string; description?: string; verbose?: boolean };
+  options: {
+    merge?: boolean;
+    release?: string;
+    description?: string;
+    verbose?: boolean;
+    amlBatch?: { maxSize?: number };
+    collectErrors?: { maxCount?: number };
+  };
+  engine: Engine;
+  blobs: string;
 }
 
-function step(name: string, index: number): Step {
-  const definition = JSON.parse(readFileSync(join(CASES, name, "case.json"), "utf8")) as { steps: Pick<Step, "options">[] };
-  return { name: `${name}/step-${index}`, dir: join(CASES, name, `step-${index}`), options: definition.steps[index - 1]?.options ?? {} };
+function step(name: string, index: number, engine: Engine = "14.0.7"): Step {
+  const cases = engine === "14.35" ? CASES_14_35 : CASES;
+  const definition = JSON.parse(readFileSync(join(cases, name, "case.json"), "utf8")) as { steps: Pick<Step, "options">[] };
+  return {
+    name: `${name}/step-${index}`,
+    dir: join(cases, name, `step-${index}`),
+    options: definition.steps[index - 1]?.options ?? {},
+    engine,
+    blobs: engine === "14.35" ? BLOBS_14_35 : BLOBS,
+  };
 }
 
 const SUCCESS = [step("s0-mini-defaults", 1), step("s0-mini-merge", 1), step("s0-mini-release-description", 1), step("s0-mini-verbose", 1)];
@@ -48,7 +65,7 @@ const FAILURE = [step("s3-unres-reltype-nested", 1), step("s4-del-refused", 2)];
 
 /** Runs `aras-pkg import` over a recorded step, with the options the step was recorded with. */
 async function importStep(recorded: Step, extra: string[] = []) {
-  const calls = readTranscript(join(recorded.dir, "transcript.jsonl"), BLOBS);
+  const calls = readTranscript(join(recorded.dir, "transcript.jsonl"), recorded.blobs);
   const recordedLog = readFileSync(join(recorded.dir, "engine.log"), "utf8");
   const osUser = /<os_user>([^<]*)<\/os_user>/.exec(calls.map((call) => call.request).join("\n"))?.[1] ?? "";
   const server = new RecordedServer(calls);
@@ -60,6 +77,9 @@ async function importStep(recorded: Step, extra: string[] = []) {
   const args = [
     "import",
     join(recorded.dir, "input", "imports.mf"),
+    ...(recorded.engine === "14.35" ? ["--engine", "14.35"] : []),
+    ...(options.amlBatch === undefined ? [] : ["--batch", "--batch-max", String(options.amlBatch.maxSize ?? 0)]),
+    ...(options.collectErrors === undefined ? [] : ["--collect-errors", "--max-errors", String(options.collectErrors.maxCount ?? 0)]),
     ...["--url", headerValue(recordedLog, "URL"), "--database", headerValue(recordedLog, "Database"), "--user", headerValue(recordedLog, "User")],
     ...["--time-zone", "UTC", "--log", logPath, "--os-user", osUser],
     ...(options.merge === true ? ["--merge"] : []),
@@ -178,6 +198,63 @@ describe("import --json", () => {
   });
 });
 
+describe("import --batch and --collect-errors, replaying the 14.35 runs (IMP-500)", () => {
+  const BATCH = step("batch-size-3", 1, "14.35");
+  const FALLBACK = step("batch-server-failure", 1, "14.35");
+  const COLLECT = step("collect-two-packages", 1, "14.35");
+  const BOTH = step("batch-collect-fallback", 1, "14.35");
+
+  it("--batch --batch-max 3 sends the recorded batches and exits 0", async () => {
+    const { code, t, server, transport } = await importStep(BATCH);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.ok);
+    expect(taggedLines(t)).toEqual(expectedLines(BATCH));
+    expect(header(transport.requests.at(-1) as never, "SOAPAction")).toBe("Logoff");
+  });
+
+  it("a refused batch is imported one item at a time, as recorded, and the run fails (exit 1)", async () => {
+    const { code, t, server } = await importStep(FALLBACK);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.failed);
+    expect(taggedLines(t)).toEqual(expectedLines(FALLBACK));
+  });
+
+  it("--collect-errors --max-errors 5 collects the failed package, goes on with the next, and exits 1 for the collected error", async () => {
+    const { code, t, server } = await importStep(COLLECT);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.failed);
+    expect(taggedLines(t)).toEqual(expectedLines(COLLECT));
+    expect(t.stdout()).toMatch(/\nresult: failed\nexitCode: 1\n/);
+  });
+
+  it("both modes together", async () => {
+    const { code, t, server } = await importStep(BOTH);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.failed);
+    expect(taggedLines(t)).toEqual(expectedLines(BOTH));
+  });
+
+  it("the summary tells the settings of the run", async () => {
+    const { t } = await importStep(BATCH, ["--json"]);
+    expect(JSON.parse(t.stdout())).toMatchObject({ command: "import", engine: "14.35", batch: { size: 3 }, result: "success" });
+    expect(JSON.parse(t.stdout())).not.toHaveProperty("collectErrors");
+    const collected = await importStep(COLLECT, ["--json"]);
+    expect(JSON.parse(collected.t.stdout())).toMatchObject({ collectErrors: { limit: 5 } });
+  });
+
+  it("leaves the modes off, and the sizes at 0, when no flag is given", async () => {
+    const plain = step("s0-mini-defaults", 1, "14.35");
+    const { code, t, server } = await importStep(plain);
+    expect(server.mismatches).toEqual([]);
+    expect(code).toBe(EXIT.ok);
+    expect(t.stdout()).not.toContain("batch");
+  });
+});
+
 describe("import --package", () => {
   it("imports only the named package", async () => {
     const recorded = step("s0-mini-defaults", 1);
@@ -240,6 +317,40 @@ describe("what is refused before any request is made", () => {
     const { code, t } = await refused(["import", manifest, "other.mf", ...base]);
     expect(code).toBe(EXIT.usage);
     expect(t.stderr()).toContain("unexpected argument 'other.mf'");
+  });
+
+  it.for([
+    { flag: "--batch", args: ["--batch"] },
+    { flag: "--collect-errors", args: ["--collect-errors"] },
+    { flag: "--batch-max", args: ["--batch-max", "3"] },
+    { flag: "--max-errors", args: ["--max-errors", "3"] },
+  ])("$flag is valid only with --engine 14.35", async ({ flag, args }) => {
+    const { code, t } = await refused(["import", manifest, ...base, ...args]);
+    expect(code).toBe(EXIT.usage);
+    expect(t.stderr()).toContain(`${flag} is valid only with --engine 14.35: engine 14.0.7 has no AML batch mode and no collected errors`);
+  });
+
+  it("--batch-max without --batch, and --max-errors without --collect-errors", async () => {
+    const batchMax = await refused(["import", manifest, ...base, "--engine", "14.35", "--batch-max", "3"]);
+    expect(batchMax.code).toBe(EXIT.usage);
+    expect(batchMax.t.stderr()).toContain("--batch-max needs --batch");
+    const maxErrors = await refused(["import", manifest, ...base, "--engine", "14.35", "--max-errors", "3"]);
+    expect(maxErrors.code).toBe(EXIT.usage);
+    expect(maxErrors.t.stderr()).toContain("--max-errors needs --collect-errors");
+  });
+
+  it.for(["x", "-1", "1.5", "2147483648", ""])("a size or a limit of '%s' is not a count", async (value) => {
+    const batch = await refused(["import", manifest, ...base, "--engine", "14.35", "--batch", `--batch-max=${value}`]);
+    expect(batch.code).toBe(EXIT.usage);
+    expect(batch.t.stderr()).toContain(`--batch-max needs a whole number from 0 to 2147483647, not '${value}'`);
+    const collect = await refused(["import", manifest, ...base, "--engine", "14.35", "--collect-errors", `--max-errors=${value}`]);
+    expect(collect.code).toBe(EXIT.usage);
+    expect(collect.t.stderr()).toContain(`--max-errors needs a whole number from 0 to 2147483647, not '${value}'`);
+  });
+
+  it("the import-language-pack command does not take them", async () => {
+    const { code } = await refused(["import-language-pack", "ImportConfig.xml", "--lp-package", "P", ...base, "--engine", "14.35", "--batch"]);
+    expect(code).toBe(EXIT.usage);
   });
 
   it.for(["12.0"])("engine %s, whose import is not built yet, is reported as not yet supported (exit 1)", async (engine) => {

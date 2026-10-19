@@ -120,7 +120,7 @@ const getAttribute = (element: XmlElement, name: string): string => element.getA
  * 14.35 queues each entry once (IMP-251) and addresses a Property that has no `id` by its `where` (IMP-220).
  *
  * @spec IMP-200 IMP-201 IMP-202 IMP-203 IMP-204 IMP-210 IMP-211 IMP-212 IMP-213 IMP-220 IMP-221 IMP-222 IMP-230 IMP-240 IMP-241 IMP-242 IMP-250
- * @spec IMP-251
+ * @spec IMP-251 IMP-520
  */
 export class DelayedResolutionManager implements DelayedResolution {
   /** `_mDelayedAmLs`: the queue, the manager's only state (IMP-200). */
@@ -133,6 +133,25 @@ export class DelayedResolutionManager implements DelayedResolution {
   /** The queued entries, in queue order. */
   get queue(): readonly string[] {
     return this.delayedAml;
+  }
+
+  /**
+   * `GetDelayedAmls`: the queue itself, which the AML batch mode hands over to the package's queue after a flush (IMP-520).
+   *
+   * @spec IMP-520
+   */
+  getDelayedAmls(): readonly string[] {
+    return this.delayedAml;
+  }
+
+  /**
+   * `AddDelayedAmls`: adds each entry of a list through `AddDelayedAmlItem`, so that an entry equal to one this queue already holds is
+   * dropped (IMP-520, IMP-251).
+   *
+   * @spec IMP-520 IMP-251
+   */
+  addDelayedAmls(entries: readonly string[]): void {
+    for (const entry of entries) this.addDelayedAmlItem(entry);
   }
 
   /**

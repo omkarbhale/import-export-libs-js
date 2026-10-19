@@ -1,5 +1,6 @@
 import { nullReference } from "../client/dotnet.js";
 import type { XmlDocument, XmlElement } from "../xml/dom.js";
+import { loadXmlInto } from "../xml/parser.js";
 import { selectSingleNode } from "../xml/xpath.js";
 import { outerXml } from "../xml/writer-legacy.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
@@ -22,7 +23,11 @@ const part = (value: string, prefix: string, suffix: string): string => (value !
  * full unless the action is `delete` (`bFast` always reads false, IMP-401). `originalOuterXml` is the item as it stands after the
  * removal, which only the AML batch mode restores (IMP-510); 14.0.7 keeps none.
  *
- * @spec IMP-422 IMP-510
+ * `itemNode` is the element the work item was made with. {@link ImportWorkItem.restoreOriginalXml} replaces the document's root with
+ * a new element and does not refresh it, so after a restore `itemNode` is a detached element with the attributes it had then
+ * (bug IMP-525).
+ *
+ * @spec IMP-422 IMP-510 IMP-525
  */
 export class ImportWorkItem {
   /** The item document (`Item`). */
@@ -57,5 +62,25 @@ export class ImportWorkItem {
     this.thoroughCheck = !importContext.fast && this.action !== "delete";
     // 14.0.7 has no work item and no restore (IMP-510): it never writes the item out before the checks
     this.originalOuterXml = engine === "14.35" ? outerXml(item) : "";
+  }
+
+  /**
+   * `RestoreOriginalXml`: loads the text saved by the constructor back into the item document, discarding every change made since.
+   * The document's root element is a new one; `itemNode` still refers to the old (IMP-510, IMP-525).
+   *
+   * @spec IMP-510 IMP-525
+   */
+  restoreOriginalXml(): void {
+    loadXmlInto(this.item, this.originalOuterXml);
+  }
+
+  /**
+   * `IsSuitableForBatching`: true when the element the work item was made with has no child element named `Relationships` (a direct
+   * child; a deeper one does not count). It reads `itemNode`, not the current root (IMP-510).
+   *
+   * @spec IMP-510
+   */
+  isSuitableForBatching(): boolean {
+    return selectSingleNode("Relationships", this.itemNode) === null;
   }
 }

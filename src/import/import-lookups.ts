@@ -2,6 +2,8 @@ import { CItemException } from "../client/fault.js";
 import type { CItemHelper } from "../client/item-helper.js";
 import { type XmlDocument, type XmlElement, setInnerText } from "../xml/dom.js";
 import { selectNodes } from "../xml/xpath.js";
+import { ArgumentNullException } from "../io/errors.js";
+import type { SUImportContext } from "./import-context.js";
 import { ImportItems, type MergeHelper } from "./import-items.js";
 
 /** What the merge side of the helper needs of it: its requests and the lookups with their cache. */
@@ -38,12 +40,27 @@ export class ImportLookups implements MergeHelper {
   }
 
   /**
-   * `doImport`: runs `CImportItems.Import` on the item document with the run's merge flag (IMP-300).
+   * `doImport(item, mergeMode)`: runs `CImportItems.Import` on the item document with the run's merge flag, which sends the item
+   * (IMP-300). A null document is an `ArgumentNullException` for `itemInXml`.
    *
    * @spec IMP-300
    */
-  doImport(itemInXml: XmlDocument, mergeMode: boolean): Promise<void> {
-    return new ImportItems(this, this.host.engine).import(itemInXml, mergeMode);
+  doImport(itemInXml: XmlDocument | null, mergeMode: boolean): Promise<void> {
+    if (itemInXml === null) throw new ArgumentNullException("itemInXml");
+    return new ImportItems(this, this.host.engine).import(itemInXml, mergeMode, false);
+  }
+
+  /**
+   * `doImport(item, importContext)`: the overload of 14.35 that the batch flush calls. With the context's `AmlBatchMode` on, the item is
+   * prepared and not sent (IMP-512). A null document is an `ArgumentNullException` for `itemInXml`, then a null context for
+   * `importContext`.
+   *
+   * @spec IMP-512
+   */
+  doImportInContext(itemInXml: XmlDocument | null, importContext: SUImportContext | null): Promise<void> {
+    if (itemInXml === null) throw new ArgumentNullException("itemInXml");
+    if (importContext === null) throw new ArgumentNullException("importContext");
+    return new ImportItems(this, this.host.engine).import(itemInXml, importContext.merge, importContext.amlBatchMode);
   }
 
   /**

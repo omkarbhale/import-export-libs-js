@@ -811,6 +811,13 @@ The coverage test checks that every heading here names a rule defined in an area
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportWorkItem::RestoreOriginalXml`, `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportSingleWorkItem`, `TryToFlushAmlBatch`.
 - **Versions:** 14.35.
 
+## IMP-527: the check that follows a failed check queues its delayed entries on a manager nobody reads
+
+- **Behaviour:** the item's delayed-resolution manager is taken once, before its first check. After a failed check the recovery flushes the batch, which replaces the batch queue, and checks the item again with the old manager. What the second check queues is never handed over to the package's queue and never runs.
+- **Why it is a bug:** the item is imported without the relationships that were delayed, and nothing will ever apply them. The package ends as a success.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ImportProc`, `TryToFlushAmlBatch`.
+- **Versions:** 14.35.
+
 ## IMP-543: a collected check failure does not stop the item from being imported
 
 - **Behaviour:** with collected errors on, a failed reference check is collected and the item is sent anyway.

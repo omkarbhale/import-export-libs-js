@@ -34,6 +34,14 @@ export const IMPORT_OPTIONS = {
   "os-user": { type: "string" },
 } as const satisfies OptionSpec;
 
+/** The options of `import` that only engine 14.35 has: the AML batch mode and the collected-errors mode (IMP-500). */
+export const BATCH_ERROR_OPTIONS = {
+  batch: { type: "boolean" },
+  "batch-max": { type: "string" },
+  "collect-errors": { type: "boolean" },
+  "max-errors": { type: "string" },
+} as const satisfies OptionSpec;
+
 /** `parseArgs` in strict mode, with its refusals as usage errors. */
 export function parseOptions(args: readonly string[], spec: OptionSpec): { values: OptionValues; positionals: string[] } {
   try {
@@ -47,6 +55,16 @@ export function parseOptions(args: readonly string[], spec: OptionSpec): { value
 export function stringOf(values: OptionValues, name: string): string | undefined {
   const value = values[name];
   return typeof value === "string" ? value : undefined;
+}
+
+/** A whole number of 0 or more that fits the engine's `int`, which is what `--batch-max` and `--max-errors` are (IMP-500). */
+export function countOf(values: OptionValues, name: string): number | undefined {
+  const text = stringOf(values, name);
+  if (text === undefined) return undefined;
+  if (!/^\d+$/.test(text) || Number(text) > 2_147_483_647) {
+    throw new UsageError(`--${name} needs a whole number from 0 to 2147483647, not '${text}'`);
+  }
+  return Number(text);
 }
 
 export function flagOf(values: OptionValues, name: string): boolean {
