@@ -3,13 +3,11 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { DEFAULT_ENGINE, isEngine, type Engine } from "../../../src/engines.js";
-import { EXPORT_CASES } from "../export-cases.js";
-import { SEED_GROUPS } from "../export-scratch-cases.js";
 import { casesFor } from "../import-cases.js";
 import { ORACLE_DIR } from "../manifest.js";
 import { DEV_SERVER, assertDevUrl } from "../record.js";
 import { readPassword } from "../cli.js";
-import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
+import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, exportCasesOf, seedGroupsOf, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
 import { describeDifferences } from "./diff.js";
 import { KNOWN_DIFFERENCES } from "./known.js";
 import { openSideConnection, type PortServer } from "./port-run.js";
@@ -24,12 +22,13 @@ import {
   runLanguagePackCase,
   runPlainExport,
   runSeedGroup,
+  seedGroupPrecondition,
 } from "./runners.js";
 
 /** The address WSL reaches the dev instance at; the oracle's Windows side calls the same server `localhost`. */
 const WSL_DEV_URL = "http://172.19.0.1/12sp9";
 
-const USAGE = `Usage: npm run parity -- [--engine 14.0.7] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
+const USAGE = `Usage: npm run parity -- [--engine 14.0.7|14.35] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
                            [--out <folder>] [--keep-all] [--url <dev url>]
 
 Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, and
@@ -39,6 +38,9 @@ diffs, for each case:
   - the engine log, after the date-times, the run's own paths and the ids the server assigned are normalised;
   - the messages, by channel, and the console text;
   - how the run ended: the value ImportSolutions returned, or the exception.
+
+Engine 14.35 runs the export side (export, scratch-export, console-mode): it exports the items of a package in parallel, so its runs agree in
+the parts EXP-558 names (oracle/src/parity/diff-1435.ts) and not request for request. Its import side follows (wayfinder ticket 76, part B).
 
 Kinds: export (read-only), scratch-export (seeds LIBSJS-SCRATCH-* packages, exports, deletes them), import (LIBSJS-SCRATCH-*
 copies, deleted again by each side), language-pack (needs the Languages de and fr on dev; skipped otherwise), console-mode
@@ -196,7 +198,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     write(`parity ${engine}: ${entries.length} case(s), folders in ${out}\n`);
 
     for (const entry of chosen("export")) {
-      const c = EXPORT_CASES.find((x) => x.id === entry.id)!;
+      const c = exportCasesOf(engine).find((x) => x.id === entry.id)!;
       try {
         settle(await runPlainExport(env, c));
       } catch (error) {
@@ -206,10 +208,17 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     const scratchIds = new Set(chosen("scratch-export").map((e) => e.id));
-    for (const group of SEED_GROUPS) {
+    for (const group of seedGroupsOf(engine)) {
       const wanted = new Set(group.cases.filter((c) => scratchIds.has(c.id)).map((c) => c.id));
       if (wanted.size === 0) continue;
       try {
+        const why = await seedGroupPrecondition(env, group);
+        if (why !== null) {
+          for (const c of group.cases.filter((x) => wanted.has(x.id))) {
+            settle({ id: c.id, kind: "scratch-export", status: "skipped", steps: [], note: why, created: [], deleted: [], seconds: 0 });
+          }
+          continue;
+        }
         for (const report of await runSeedGroup(env, group, wanted)) settle(report);
       } catch (error) {
         if (error instanceof DevNotClean) throw error;
