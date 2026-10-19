@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { isNullOrWhiteSpace } from "../io/dotnet-text.js";
 import { NullReferenceException } from "../io/errors.js";
 import { isPathRooted, pathCombine } from "../io/win-path.js";
@@ -96,14 +97,22 @@ export function isStandardPackage(name: string | null): boolean {
  * `ExportImportBase.GetPackagePath(packageNode, manifestFolder)`: the folder of a package, as a Windows path string. The
  * `path` attribute (`.\` when blank) is joined to the manifest folder unless it is rooted, and a standard package adds
  * its dotted name as folders. Nothing is normalised.
+ *
+ * 14.35 uses `.` for a blank path and adds the name of a standard package with `Path.Combine`, so no doubled separator
+ * follows a path that ends in one, and an illegal character in the name is refused.
+ *
  * @spec MAN-030 MAN-033
  */
-export function getPackagePath(packageNode: XmlElement | null, manifestFolder: string | null): string {
+export function getPackagePath(packageNode: XmlElement | null, manifestFolder: string | null, engine: Engine = DEFAULT_ENGINE): string {
   if (packageNode === null) throw new NullReferenceException();
   const name = packageNode.getAttribute("name") || "";
   let path = packageNode.getAttribute("path") || "";
-  if (isNullOrWhiteSpace(path)) path = ".\\";
+  const is1435 = engine === "14.35";
+  if (isNullOrWhiteSpace(path)) path = is1435 ? "." : ".\\";
   if (!isPathRooted(path)) path = pathCombine(manifestFolder, path);
-  if (isStandardPackage(name)) path = `${path}\\${name.replace(/\./g, "\\")}`;
+  if (isStandardPackage(name)) {
+    const folders = name.replace(/\./g, "\\");
+    path = is1435 ? pathCombine(path, folders) : `${path}\\${folders}`;
+  }
   return path;
 }

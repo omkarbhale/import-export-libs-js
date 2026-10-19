@@ -4,6 +4,7 @@ import { childText, relationshipRows, resultItems } from "./answer.js";
 import { isNullOrWhiteSpace, isXPathException, isXmlException, nullReference, tryParseInt32 } from "./dotnet.js";
 import { CItemException, ResponseDocument, getProperty, loadXml, stackText } from "./fault.js";
 import type { Innovator } from "./innovator.js";
+import { LazyCache, LazyValue } from "./lazy-cache.js";
 import { type XmlElement, attributeOf, descendantElements } from "./mini-xml.js";
 import { element, textElement } from "./request-text.js";
 import { RECURSION_LIMIT, StackOverflowException } from "../recursion-limit.js";
@@ -17,7 +18,7 @@ export interface LookupLog {
 
 /** What the lookups need of the helper that owns them. */
 export interface LookupHost {
-  /** The engine whose cache rules (EXP-030, EXP-064) and texts apply; the default is 14.0.7. */
+  /** The engine whose cache rules (IMP-102, EXP-030, EXP-064) and texts apply; the default is 14.0.7. */
   readonly engine?: Engine;
   readonly inn: Innovator;
   readonly innovatorVersion: ArasVersion | undefined;
@@ -78,45 +79,31 @@ function wrapped(error: unknown, text: string): CItemException {
  * and ids as they are, unescaped (EXP-004).
  *
  * In 14.35 the cache holds `Lazy` values (EXP-030): one request per key even when several callers ask together, and each lookup
- * keeps or drops a failure as EXP-064 says. The values are promises in `lazyItems`.
+ * keeps or drops a failure as EXP-064 says. The values are in `lazy`.
  *
  * @spec EXP-004 EXP-010 EXP-011 EXP-030 EXP-031 EXP-032 EXP-040 EXP-041 EXP-042 EXP-043 EXP-044 EXP-045 EXP-046 EXP-047 EXP-064 IMP-102
+ * @spec IMP-132 IMP-182 IMP-183
  */
 export class ItemLookups {
   /**
    * `_requestedItems`: the answers of the cached lookups, by their exact engine text, never emptied (EXP-030). The
    * import's reference checks read and fill it too (IMP-102), so it is one dictionary for the helper's whole run. This is
-   * 14.0.7's dictionary; 14.35 keeps its `Lazy` values in {@link ItemLookups.lazyItems}.
+   * 14.0.7's dictionary; 14.35 keeps its `Lazy` values in {@link ItemLookups.lazy}.
    */
   readonly requestedItems = new Map<string, ResponseDocument>();
   /**
-   * 14.35's `_requestedItems`, a `ConcurrentDictionary<string, Lazy<XmlDocument>>` (EXP-030): the value of a key is made once, by
-   * the first caller, and an exception the factory throws is kept with it and thrown again to every later caller.
+   * 14.35's `_requestedItems`: the same dictionary with `Lazy` values, shared by the import checks and the lookups (IMP-102). A
+   * helper of another engine does not use it.
    */
-  readonly lazyItems = new Map<string, Promise<unknown>>();
+  readonly lazy = new LazyCache();
   /** The poly-type names: set before the request is sent and kept after a failure (EXP-046, EXP-047). */
   private polytypeNames: string[] | undefined;
 
   constructor(private readonly host: LookupHost) {}
 
-  /** True when the lookups follow 14.35's cache rules (EXP-030, EXP-064). */
-  private get isLazy(): boolean {
+  /** True when the lookups follow 14.35's cache of `Lazy` values (IMP-102). */
+  get isLazy(): boolean {
     return this.host.engine === "14.35";
-  }
-
-  /** `GetOrAdd(key, factory).Value`: the value of the key, made by `factory` for the first caller only. */
-  private getOrAdd<T>(key: string, factory: () => Promise<T>): Promise<T> {
-    let value = this.lazyItems.get(key) as Promise<T> | undefined;
-    if (value === undefined) {
-      value = factory();
-      this.lazyItems.set(key, value);
-    }
-    return value;
-  }
-
-  /** `TryRemove(key)`: drops the value, unless another caller has already replaced it. */
-  private removeLazy(key: string, value: Promise<unknown>): void {
-    if (this.lazyItems.get(key) === value) this.lazyItems.delete(key);
   }
 
   /**
@@ -125,10 +112,16 @@ export class ItemLookups {
    * cached one. A "no items" fault gets a new detail, which names `System.Xml.XmlAttribute` where the type should be
    * (EXP-032, IMP-180).
    *
-   * @spec EXP-030 EXP-031 EXP-032 IMP-102 IMP-132 IMP-180
+   * In 14.35 the cache holds the request before it is run, a forced request does not replace an entry that exists (IMP-182), and
+   * a `CItemException` removes the entry (IMP-132).
+   *
+   * An exception that is not a `CItemException` (a text that does not parse, before anything is sent) stays cached and is thrown
+   * again (EXP-064).
+   *
+   * @spec EXP-030 EXP-031 EXP-032 EXP-064 IMP-102 IMP-132 IMP-180 IMP-182
    */
   async getTypeAmlInner(aml: string, log?: LookupLog, force = false): Promise<ResponseDocument> {
-    if (this.isLazy) return this.getTypeAmlLazy(aml, log, force);
+    if (this.isLazy) return this.getTypeAmlInnerLazy(aml, log, force);
     try {
       log?.writeLine(aml);
       const cached = force ? undefined : this.requestedItems.get(aml);
@@ -149,24 +142,24 @@ export class ItemLookups {
     }
   }
 
-  /**
-   * 14.35's `GetTypeAmlInner`: the answer comes from `GetOrAdd(aml, request).Value`, and a `CItemException` removes the entry first, so
-   * a refused lookup is sent again; for faultcode 0 the exception then gets the detail of EXP-032. An exception that is not a
-   * `CItemException` (a text that does not parse, before anything is sent) stays cached and is thrown again (EXP-064). The lines
-   * "was obtained from cache" and "from server" of 14.0.7 are gone.
-   *
-   * @spec EXP-030 EXP-031 EXP-032 EXP-064
-   */
-  private async getTypeAmlLazy(aml: string, log: LookupLog | undefined, force: boolean): Promise<ResponseDocument> {
-    log?.writeLine(aml);
-    if (force) this.lazyItems.delete(aml);
-    let value: Promise<ResponseDocument> | undefined;
+  /** 14.35's `GetTypeAmlInner` (IMP-132). */
+  private async getTypeAmlInnerLazy(aml: string, log: LookupLog | undefined, force: boolean): Promise<ResponseDocument> {
     try {
-      value = this.getOrAdd(aml, () => this.host.applyAML(aml));
-      return await value;
+      log?.writeLine(aml);
+      const cached = force ? undefined : this.lazy.tryGetValue<ResponseDocument>(aml);
+      if (cached !== undefined) {
+        log?.writeLine("  was obtained from cache");
+        return await cached.value;
+      }
+      // the request is added only when the text has no entry yet, and then run: a forced request on a cached text keeps the old entry (IMP-182)
+      const request = new LazyValue(() => this.host.applyAML(aml));
+      this.lazy.tryAdd(aml, request);
+      const response = await request.value;
+      log?.writeLine("  was obtained from server");
+      return response;
     } catch (error) {
       if (error instanceof CItemException) {
-        if (value) this.removeLazy(aml, value);
+        this.lazy.tryRemove(aml);
         if (error.faultcode === 0) {
           const name = childText(loadXml(aml).root, "name") ?? "";
           error.faultdetail = `Unable to get definition of ${XML_ATTRIBUTE_TYPE_NAME}: ${name}`;
@@ -272,12 +265,10 @@ export class ItemLookups {
 
   /**
    * `GetUniqueProperties`: the keyed, required properties of a type other than `generation`. It is sent directly, so
-   * an error answer is a `CItemException` with the answer's faultcode, and only a success is cached.
+   * an error answer is a `CItemException` with the answer's faultcode, and only a success is cached. In 14.35 a failure is
+   * cached as well (IMP-183).
    *
-   * In 14.35 a fault is kept with the entry, faultcode 0 included, and the next call throws the same exception without asking again
-   * (EXP-064).
-   *
-   * @spec EXP-030 EXP-041 EXP-064
+   * @spec EXP-030 EXP-041 EXP-064 IMP-183
    */
   async getUniqueProperties(type: string): Promise<ResponseDocument> {
     const aml =
@@ -292,7 +283,8 @@ export class ItemLookups {
       }
       return response;
     };
-    if (this.isLazy) return this.getOrAdd(aml, request);
+    // 14.35 keeps the request itself, so a failure is remembered and thrown again with no request (IMP-183)
+    if (this.isLazy) return this.lazy.getOrAdd(aml, request).value;
     const cached = this.requestedItems.get(aml);
     if (cached) return cached;
     const response = await request();
@@ -434,14 +426,14 @@ export class ItemLookups {
       "<Item type='Property' select='name, data_type, data_source' action='get'><data_type>item</data_type>" +
       `<item_behavior>float</item_behavior>${names}</Item></Relationships></Item>`;
     if (this.isLazy) {
-      const rows = await this.getOrAdd(aml, async () => {
+      const rows = await this.lazy.getOrAdd(aml, async () => {
         try {
           return relationshipRows(await this.host.applyAML(aml));
         } catch (error) {
           if (error instanceof CItemException && error.faultcode === 0) return [];
           throw wrapped(error, `Failed to process properties of type 'Item' for ItemType '${type}'`);
         }
-      });
+      }).value;
       return rows;
     }
     try {
@@ -469,14 +461,14 @@ export class ItemLookups {
       `<Item type='ItemType' action='get' select='id, is_relationship, use_src_access'><name>${name}</name><Relationships>` +
       "<Item type='Allowed Permission' action='get' select='related_id(id)'><is_default>1</is_default></Item></Relationships></Item>";
     if (this.isLazy) {
-      return this.getOrAdd(aml, async () => {
+      return this.lazy.getOrAdd(aml, async () => {
         try {
           return await this.host.applyAML(aml);
         } catch (error) {
           if (error instanceof CItemException) return null;
           throw error;
         }
-      });
+      }).value;
     }
     const cached = this.requestedItems.get(aml);
     if (cached) return cached;

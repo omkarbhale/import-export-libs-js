@@ -6,7 +6,8 @@ Sources:
 
 - the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`): `ManifestFile`, `ExportImportBase`, `IOWrapper` and `ImportExportManager.GetSolutionPath`, never committed;
 - probes of the real 14.0.7 `Libs.dll` on Windows PowerShell 5.1 (.NET Framework 4.8.1), recorded in `fixtures/manifest/14.0.7/probes/` with their scripts. Where a rule gives a result "observed" or lists vectors, they are in those files;
-- the .NET XML byte rules of the XML core (reading, `Save`): item-file and manifest writer results, BOM sniffing and parse rules.
+- the .NET XML byte rules of the XML core (reading, `Save`): item-file and manifest writer results, BOM sniffing and parse rules;
+- for the `[14.35]` lines: the 14.35 decompile (`.decomp/14.35/`, never committed) compared with the 14.0.7 one for `ManifestFile`, `ExportImportBase`, `IOWrapper` and `ImportExportManager.GetSolutionPath` (the same code, apart from `GetPackagePath`), and the probe `fixtures/manifest/14.35/probes/01-package-paths.out` against the vendored 14.35 `Libs.dll`.
 
 Names follow the C# members (`GetPackageNamesInImportOrder`) so that `source-map.json` can point at them. "The engine" means 14.0.7's `Libs.dll`. Strings in rules are written as they appear on the wire or in the file; `\` in a path is one backslash.
 
@@ -40,6 +41,8 @@ The engine is not validating: a manifest with another root name loads. Reads the
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ## Creating, reading and saving
 
 ### MAN-002: A new manifest is an empty `imports` document
@@ -47,6 +50,8 @@ The engine is not validating: a manifest with another root name loads. Reads the
 [14.0.7] `new ManifestFile()` creates a new `XmlDocument` and loads `<imports/>` into it. Export builds its manifest this way, and so does the language-pack preprocessor for its temporary one. The document has no XML declaration and does not preserve whitespace.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### MAN-003: A manifest is read with ReadAllText and LoadXml
 
@@ -71,6 +76,8 @@ The engine reads the manifest only through this constructor and `ImportExportMan
 
 The failures of a missing file or folder, an empty file, an empty path and a null path are the .NET exceptions of 14.0.7, with the path as the engine got it. `ImportExportManager`'s own load of the same file is the same call. `GenerateHashtableFromManifest` (ticket 66) reads the manifest the same way, with `File.Exists` and `Load` on the raw path.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-004: Every file-system operation first normalises the path
 
 [14.0.7] `IOWrapper.NormalizeLongPath(path)` is applied to the path of every file-system operation the engine makes: reading and saving the manifest, reading package folders, creating and deleting folders, opening the log and writing item files. For a null or empty path it returns the path as is. Otherwise:
@@ -85,6 +92,8 @@ The port applies this on Windows. On other platforms there is no counterpart: pa
 
 [12.0] Not present. No path is normalised: every file-system operation of the manifest, the package folders and the log takes the path as built (EXP-421). The `.NET` exceptions for an illegal path come from the file functions themselves.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-005: Paths that start with `\` lose it, so UNC and drive-less paths break (bug)
 
 [14.0.7] Step 1 of MAN-004 removes every leading backslash, so a path that starts with `\` becomes relative:
@@ -95,6 +104,8 @@ The port applies this on Windows. On other platforms there is no counterpart: pa
 Reading or saving then fails with `System.IO.DirectoryNotFoundException`, `Could not find a part of the path '<current directory>\host\share\…'.`, or silently uses a different file when a folder of that name exists below the current directory. The same happens to a package path in the manifest that is UNC or starts with `\` (MAN-030). A drive path works. Registered in `bugs.md`.
 
 [12.0] Not present. A path that starts with `\` is handed to the file functions as it is, so UNC package folders and drive-less paths work. The bug is 14.0.7's only.
+
+[14.35] Same as 14.0.7.
 
 ### MAN-006: Save writes the document with `XmlDocument.Save(path)`
 
@@ -115,6 +126,8 @@ Failures are the .NET exceptions of the file system, observed: a missing folder 
 
 [12.0] `ManifestFile.Save(path)` calls `XmlDocument.Save(path)` on the raw path (no normalisation). The bytes are the same as in 14.0.7: the writer is the same call. Failures are the file functions' exceptions.
 
+[14.35] Same as 14.0.7.
+
 ## Writing the manifest
 
 ### MAN-010: AddPackage adds a package once, with a derived path
@@ -130,11 +143,15 @@ Export adds a package for each package it exports, in the order of the table it 
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-011: A package name that ends with `.` or is empty gets the path `\Import` (bug)
 
 [14.0.7] The last-segment pattern of MAN-010 needs at least one character after the last dot. For a name that ends with `.` (`trailing.`, `a.b.`) or an empty name nothing matches and the segment is empty, so the path is `\Import`. Import resolves that path as rooted (MAN-030, rooted without a drive letter, and MAN-005 for what the engine then does with it), so the package's folder is looked up outside the working directory. A correct engine would use the name, or refuse it. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### MAN-012: AddDependsOn adds a dependency once and refuses a blank name
 
@@ -149,6 +166,8 @@ A name is not trimmed: ` a ` and `a` are two dependencies.
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-013: AddReferencedElement adds an element once per id
 
 [14.0.7] `AddReferencedElement(dependsOnNode, item)`:
@@ -160,6 +179,8 @@ A name is not trimmed: ` a ` and `a` are two dependencies.
 The element is identified by the id only: an id of `''` is an element like any other.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### MAN-014: Names are put into XPath unescaped, so a quote breaks the lookup (bug)
 
@@ -182,6 +203,8 @@ The port evaluates these expressions with an XPath 1.0 engine, not a string-equa
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ## Looking things up
 
 ### MAN-015: The lookups
@@ -199,6 +222,8 @@ All of them look only at direct children (MAN-001). A name with `'` fails as MAN
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-016: GetDependsOnInfo builds one table from a package's dependencies
 
 [14.0.7] `GetDependsOnInfo(packageName)` returns a new `Hashtable` (MAN-017). It is empty when `GetPackageNode(packageName)` is null (a null or unknown name). Otherwise, for each name of `GetAllDependsOnNames` in document order it calls `GetDependsOn(packageNode, name)`, and adds the entry `name → GetReferencedElements(thatDependsOn)` with `Hashtable.Add`. Import uses this table to record a package's dependencies (the import-run rules).
@@ -212,6 +237,8 @@ All of them look only at direct children (MAN-001). A name with `'` fails as MAN
 Observed key orders (the table is built from `dependson` names `a` to `h`, in forward or reverse order, with the same result both ways): `b,c,a,f,g,d,e,h`. For `com.aras.innovator.core`, `com.aras.innovator.admin` the order is `com.aras.innovator.admin,com.aras.innovator.core`; with `solution.PLM` and `defaults.base` added it is `core,admin,solution.PLM,defaults.base`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Hashtable
 
@@ -239,6 +266,8 @@ The emulation is `src/manifest/netfx-hashtable.ts`. Verified against the real en
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-018: Past 100 probe collisions .NET switches to randomized hashing, which the port cannot follow (bug)
 
 [14.0.7] When one insertion walks more than 100 occupied buckets, .NET Framework silently switches the table to a per-process randomized string hash and rebuilds it. The enumeration order then differs from run to run. Observed: 101 keys with equal hashes still give a fixed order and 102 give a different order on every run. It needs more than 100 keys whose probe chains coincide in one insertion, which in practice means identical 31-bit hashes; random 32-hex ids and real package names never reach it.
@@ -246,6 +275,8 @@ The emulation is `src/manifest/netfx-hashtable.ts`. Verified against the real en
 The port cannot reproduce a random order. It follows MAN-017 and, when an insertion would walk more than 100 occupied buckets, throws an error that names the table and the key instead of continuing, so a run never silently orders by something the engine would have randomised. This is the one place where the library deliberately departs from the engine's observable behaviour in a table's order. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Package order for import
 
@@ -264,6 +295,8 @@ The method has three steps: pass 1 (MAN-021), the removal of the packages pass 1
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-021: Pass 1 takes packages whose dependencies are already in the result
 
 [14.0.7] Pass 1 visits the pending packages in the requested order, once each, and appends a package to the result when:
@@ -276,6 +309,8 @@ A dependency that is not being imported can never be in the result, so a package
 Observed (requested order and dependencies → result, no database): `A>B; B` with `A,B` → `B,A`; `A;B;C` with `B,A,C` → `B,A,C`; `A>B,C; B>C; C` with `A,B,C` → `C,B,A` (pass 1 takes only `C`, pass 2 takes `B` then `A`); `A>B; A; B` (a package listed twice in the manifest, the first node's dependencies count) with `A,B` → `B,A`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### MAN-022: Pass 2 places the rest by depth-first search
 
@@ -292,6 +327,8 @@ So a dependency that is not being imported is never in the result, a dependency 
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-023: The warnings and the database test
 
 [14.0.7] The two warnings are strings in the engine's message table (the messages rules own that table), formatted with the package name through `string.Format` with the invariant culture:
@@ -305,6 +342,8 @@ The database test is `//Item[@type='PackageDefinition' and name='{pkg}']` evalua
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-024: Failure shapes of the ordering
 
 [14.0.7] Besides the cases above, observed:
@@ -316,6 +355,8 @@ The database test is `//Item[@type='PackageDefinition' and name='{pkg}']` evalua
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-025: A dependency cycle that does not pass through the starting package never ends (bug)
 
 [14.0.7] `MoveToOrderedList` recurses without bound when it reaches a pending package that is part of a cycle but is not the package being placed. For example, with `A>B`, `B>A` and `C>A`, importing `C,A,B`: placing `C` calls `MoveToOrderedList(C, A)`, which calls it for `B`, which calls it for `A` again, and so on. The same happens for a package that depends on itself when another package is being placed (`A>B`, `B>B`: importing `A,B` recurses at `B`). The process dies with a stack overflow that no `catch` can handle. Observed: the host's process ends with `Process is terminated due to StackOverflowException.` on its error output and a failure exit code (253 through WSL), and nothing is returned, logged or cleaned up.
@@ -325,6 +366,8 @@ The depth at which the stack runs out depends on the host's thread stack size. A
 The port counts the nesting depth of `MoveToOrderedList` (the call made by the ordering is at depth 1) and, when a call would be at a depth of 100,000, stops with an error whose message is `Process is terminated due to StackOverflowException.` (the engine's own text), without returning a partial order. The library therefore fails where the engine dies, but as a catchable error: the one deviation that cannot be avoided (round 5, line 9). A chain deeper than the bound but within what a host's stack can take would fail in the port and succeed in the engine; no real manifest is that deep. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Package paths
 
@@ -367,6 +410,34 @@ The rest of the probe vectors (illegal characters, drive and volume forms) are i
 
 [12.0] Same as 14.0.7.
 
+[14.35] `GetPackagePath(packageNode, manifestFolder)` changes in two places (the 14.35 decompile against 14.0.7's, and the probe `fixtures/manifest/14.35/probes/01-package-paths.out` run against the vendored 14.35 `Libs.dll`, which has the vectors below):
+
+1. A blank `path` (empty or white space only, as in step 2 of 14.0.7) becomes `.`, not `.\`. Step 3 is unchanged, so it gives `Path.Combine(manifestFolder, ".")`, which ends in `\.` and not in `\.\`.
+2. Step 4 appends the name with `Path.Combine(result, name.Replace('.', '\'))` and no longer concatenates `\` and the name. `Combine` puts a `\` between the two only when `result` does not already end in `\`, `/` or `:`. It also checks both strings for the illegal characters of step 3 (a character below U+0020, or `"`, `<`, `>`, `|`), so a standard package whose name holds one fails with `System.ArgumentException`, `Illegal characters in path.`, where 14.0.7 returned a path that holds it. `result` is never empty and the name never rooted (it starts with `com.`), so `Combine`'s other shortcuts do not apply. Nothing else is normalised.
+
+The result for an ordinary package (not standard) is as in 14.0.7, apart from step 1: the standard-package names are the only ones step 4 touches. Observed (manifest folder `C:\m` unless stated), with the 14.0.7 result where it differs:
+
+| `name` | `path` | 14.35 | 14.0.7 |
+|---|---|---|---|
+| `com.aras.innovator.core` | `.\`, empty, blank or missing | `C:\m\.\com\aras\innovator\core` | `C:\m\.\\com\aras\innovator\core` |
+| `com.aras.defaults.Foo.Bar` | `.\` | `C:\m\.\com\aras\defaults\Foo\Bar` | `C:\m\.\\com\aras\defaults\Foo\Bar` |
+| `com.aras.innovator.core` | `Imp\` | `C:\m\Imp\com\aras\innovator\core` | `C:\m\Imp\\com\aras\innovator\core` |
+| `com.aras.innovator.core` | `Imp\\` | `C:\m\Imp\\com\aras\innovator\core` | `C:\m\Imp\\\com\aras\innovator\core` |
+| `com.aras.innovator.core` | `x/` | `C:\m\x/com\aras\innovator\core` | `C:\m\x/\com\aras\innovator\core` |
+| `com.aras.innovator.core` | `C:` | `C:com\aras\innovator\core` | `C:\com\aras\innovator\core` |
+| `com.aras.innovator.core` | `/` | `/com\aras\innovator\core` | `/\com\aras\innovator\core` |
+| `com.aras.innovator.core` | empty, folder empty | `.\com\aras\innovator\core` | `.\\com\aras\innovator\core` |
+| `com.aras.innovator.core` | empty, folder `C:` | `C:.\com\aras\innovator\core` | `C:.\\com\aras\innovator\core` |
+| `com.aras.innovator.core` | `C:\abs` | `C:\abs\com\aras\innovator\core` | the same |
+| `com.aras.defaults.Foo` | `\\srv\share\x` | `\\srv\share\x\com\aras\defaults\Foo` | the same |
+| `com.aras.innovator.` | `.\` | `C:\m\.\com\aras\innovator\` | `C:\m\.\\com\aras\innovator\` |
+| `com.aras.innovator.a..b` | `.\` | `C:\m\.\com\aras\innovator\a\\b` | `C:\m\.\\com\aras\innovator\a\\b` |
+| `com.aras.innovator.a"b`, `a<b`, `a\|b` or `a` + a tab + `b` | `.\` or `C:\abs` | `System.ArgumentException: Illegal characters in path.` | the path with the character in it |
+| `com.aras.innovator.a?b*c`, `a/b` | `.\` | `C:\m\.\com\aras\innovator\a?b*c`, `…\a/b` | with the doubled `\` after `.` as above |
+| `com.aras.innovator` (not standard), `com.aras.innovator.solution.PLM` | `.\` | `C:\m\.\` | the same |
+
+Windows treats `\.\\` and `\.\` as the same folder, so on the engine's own platform the 14.0.7 and 14.35 paths of a standard package open the same folder. The port compares and reports path strings as text (MAN-033), so it reproduces the text of 14.35, and the doubled separator of 14.0.7 is not in it. The rest of the rule (the rooted test, the null checks, the order in which illegal characters are found) is as in 14.0.7.
+
 ### MAN-031: Which packages are standard
 
 [14.0.7] `IsStandardPackage(name)` is true for a default package or a core package; a null name throws `System.NullReferenceException`.
@@ -388,6 +459,8 @@ The port does not follow other culture rules, which no manifest, package name or
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7: `IsStandardPackage`, `IsDefaultPackage` and `IsCorePackage` are the same code, including the culture-sensitive `StartsWith`. The 14.35 `Libs.dll` gives the same answer as 14.0.7's for all 31 names of `01-package-paths.ps1` section 2 (`fixtures/manifest/14.35/probes/01-package-paths.out`, section 2 equal to `fixtures/manifest/14.0.7/probes/01-package-paths.out` line for line).
+
 ### MAN-032: GetSolutionPath adds the manifest lookup and the error text
 
 [14.0.7] `ImportExportManager.GetSolutionPath(packageName, manifestFolder, manifest)` is what import calls for each package (the import-load rules). It:
@@ -402,6 +475,8 @@ The interface member `IImportExportManager.GetSolutionPath` is a forwarder to th
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### MAN-033: Path strings keep their Windows form, and one layer maps them to the host
 
 [14.0.7] The engine runs on Windows only, and every path it builds is a Windows path string: `\` separates, `C:\` and `\\host\` start absolute paths, and `/` is accepted as a separator by .NET's file functions but kept as written by `Combine`.
@@ -414,3 +489,5 @@ The port keeps that: `GetPackagePath`, `Combine`, the rooted test and the standa
 File and folder names compare as the host's file system does (case-insensitively on Windows and macOS by default, exactly on Linux). Names inside the manifest (package, dependency, element) always compare ordinally and case-sensitively, as in the lookups above.
 
 [12.0] Same. Where the rule refers to MAN-004's normalisation on Windows, 12.0 has none: the string is passed on as built.
+
+[14.35] Same as 14.0.7.

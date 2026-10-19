@@ -1,6 +1,7 @@
 import { DotNetException, isNullOrWhiteSpace, nullReference } from "../client/dotnet.js";
 import { CItemException, type ResponseDocument, stackText } from "../client/fault.js";
 import type { CItemHelper } from "../client/item-helper.js";
+import { LazyValue } from "../client/lazy-cache.js";
 import { ArgumentNullException } from "../io/errors.js";
 import {
   CDATA_SECTION_NODE,
@@ -124,17 +125,46 @@ export class ReferenceChecker {
     return document;
   }
 
+  /** True when the helper is 14.35's, whose cache holds the request itself and not its answer (IMP-102). */
+  private get isLazy(): boolean {
+    return this.host.lookups.isLazy;
+  }
+
   /**
    * The answer for `aml` from the cache, or from the server, which is then cached; `onServer` is what the check logs
    * after a request that was answered, `onCache` what it logs for a hit. A fault is not cached (IMP-102).
+   *
+   * 14.35 takes `GetOrAdd(aml, request).Value`: the line `onServer` is written by the request, before it is sent (IMP-181), and
+   * a hit writes nothing. The entry of a request that failed stays until {@link forget} removes it.
    */
   private async cachedRequest(aml: string, log: LogWriter, onServer: string, onCache: string): Promise<void> {
+    if (this.isLazy) {
+      const entry = this.host.lookups.lazy.getOrAdd<ResponseDocument>(aml, () => {
+        log.writeLine(onServer);
+        return this.host.applyAML(aml);
+      });
+      await entry.value;
+      return;
+    }
     if (this.requestedItems.has(aml)) {
       log.writeLine(onCache);
       return;
     }
     this.requestedItems.set(aml, await this.host.applyAML(aml));
     log.writeLine(onServer);
+  }
+
+  /**
+   * 14.35 removes the entry of a request that threw a `CItemException`, whatever its faultcode, before the check looks at the
+   * faultcode (IMP-102). In 14.0.7 a fault was never stored, so there is nothing to remove.
+   */
+  private forget(aml: string, error: unknown): void {
+    if (error instanceof CItemException) this.dropEntry(aml);
+  }
+
+  /** `TryRemove(aml)` on 14.35's cache. */
+  private dropEntry(aml: string): void {
+    if (this.isLazy) this.host.lookups.lazy.tryRemove(aml);
   }
 
   /**
@@ -187,17 +217,29 @@ export class ReferenceChecker {
     for (const relationshipType of RELATIONSHIP_TYPES_FOR_CHECKING_ON_DELAYED_RESOLUTION) {
       const relationships = asElements(selectNodes(`.//Item/Relationships/Item[@type='${relationshipType}']`, itemInXml));
       for (const relationship of relationships) {
+        let request = "";
         try {
           const type = attributeOrEmpty(relationship, "type");
           const id = attributeOrEmpty(relationship, "id");
           if (type === "" || id === "") continue;
-          const request = `<Item type='${type}' id='${id}' action ='get' select='id' levels='0'></Item>`;
+          request = `<Item type='${type}' id='${id}' action ='get' select='id' levels='0'></Item>`;
           log.writeLine(`checking item with get action:${request}`);
-          if (this.requestedItems.has(request)) {
-            log.writeLine(ARROW_WAS_OBTAINED_FROM_CACHE);
-            continue;
+          if (this.isLazy) {
+            // the entry is looked up, and when there is none it is added and run; a hit is not read (IMP-110)
+            if (this.host.lookups.lazy.tryGetValue(request) !== undefined) {
+              log.writeLine(ARROW_WAS_OBTAINED_FROM_CACHE);
+              continue;
+            }
+            const entry = new LazyValue(() => this.host.applyAML(request));
+            this.host.lookups.lazy.tryAdd(request, entry);
+            await entry.value;
+          } else {
+            if (this.requestedItems.has(request)) {
+              log.writeLine(ARROW_WAS_OBTAINED_FROM_CACHE);
+              continue;
+            }
+            this.requestedItems.set(request, await this.host.applyAML(request));
           }
-          this.requestedItems.set(request, await this.host.applyAML(request));
           log.writeLine(ARROW_WAS_OBTAINED_FROM_SERVER);
           const nested = asElements(selectNodes(".//Item", relationship));
           if (nested.length === 0) continue;
@@ -212,9 +254,12 @@ export class ReferenceChecker {
             }
             item.setAttribute("action", replacement);
           }
-          // the engine throws a faultcode 0 exception here, which its own handler turns into this entry
+          // the engine throws a faultcode 0 exception here, which its own handler turns into this entry; in 14.35 the handler also
+          // removes the entry of the template, so the next element with that id is rewritten again (IMP-110, IMP-111)
+          this.dropEntry(request);
           unresolved.push({ faultcode: 10005, problemNode: relationship });
         } catch (error) {
+          this.forget(request, error);
           if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
           unresolved.push({ faultcode: 10005, problemNode: relationship });
         }
@@ -230,11 +275,12 @@ export class ReferenceChecker {
    */
   async checkGetItems(itemInXml: XmlDocument, log: LogWriter, unresolved: UnresolvedReference[]): Promise<void> {
     for (const item of asElements(selectNodes(".//Item[@action='get']", itemInXml))) {
+      const request = outerXml(item);
       try {
-        const request = outerXml(item);
         log.writeLine(`checking item with get action:${request}`);
         await this.cachedRequest(request, log, ARROW_WAS_OBTAINED_FROM_SERVER, ARROW_WAS_OBTAINED_FROM_CACHE);
       } catch (error) {
+        this.forget(request, error);
         if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
         const parent = item.parentNode;
         if (parent === null) continue;
@@ -344,6 +390,7 @@ export class ReferenceChecker {
         log.writeLine(request);
         await this.cachedRequest(request, log, WAS_OBTAINED_FROM_SERVER, WAS_OBTAINED_FROM_CACHE);
       } catch (error) {
+        this.forget(request, error);
         if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
         unresolved.push({ faultcode: 10000, problemNode: dataSource });
       }
@@ -373,6 +420,7 @@ export class ReferenceChecker {
           if (await this.floats(related)) setInnerText(related, await lookups.getCurrentIdOfVersion(id, type));
         }
       } catch (error) {
+        this.forget(request, error);
         if (!(error instanceof CItemException) || error.faultcode !== 0) throw error;
         if (await lookups.isVersionable(type)) {
           if (await this.floats(related)) related.setAttribute("__find_latest_generation_", "yes");
@@ -412,12 +460,13 @@ export class ReferenceChecker {
       const keyedName = attributeOrEmpty(end, "keyed_name");
       const id = innerText(end);
       if (keyedName === "" || type === "") continue;
+      const request = `<Item levels='0' action='get' type='ItemType'><id>${id}</id></Item>`;
       try {
         log.writeLine("checking RelationshipType's source_id,related_id");
-        const request = `<Item levels='0' action='get' type='ItemType'><id>${id}</id></Item>`;
         log.writeLine(request);
         await this.cachedRequest(request, log, WAS_OBTAINED_FROM_SERVER, WAS_OBTAINED_FROM_CACHE);
       } catch (error) {
+        this.forget(request, error);
         if (error instanceof CItemException && error.faultcode === 0) {
           if (nameNode === null) throw nullReference();
           error.faultdetail = `Bad ${nodeName(end)} ${keyedName} for ${innerText(nameNode)}`;
@@ -440,12 +489,13 @@ export class ReferenceChecker {
       const keyedName = attributeOrEmpty(grid, "keyed_name");
       const id = innerText(grid);
       if (keyedName === "" || type === "") continue;
+      const request = `<Item levels='0' action='get' type='Grid'><id>${id}</id></Item>`;
       try {
         log.writeLine("checking Grids types");
-        const request = `<Item levels='0' action='get' type='Grid'><id>${id}</id></Item>`;
         log.writeLine(request);
         await this.cachedRequest(request, log, WAS_OBTAINED_FROM_SERVER, WAS_OBTAINED_FROM_CACHE);
       } catch (error) {
+        this.forget(request, error);
         if (error instanceof CItemException && error.faultcode === 0) {
           if (nameNode === null) throw nullReference();
           error.faultdetail = `Bad Grid ${keyedName} for ${innerText(nameNode)}`;

@@ -598,7 +598,7 @@ and, on a `CItemException` with faultcode `0`, `<Item type='PackageGroup' action
 
 [12.0] Same (observed `s62-group-direct`: the second call sends nothing; the suffix ` Can init group in PackageDefinition.` and the wrapping are the same).
 
-[14.35] Same requests and results as 14.0.7. The answer is cached in the helper by the `get` request text (`IMP-102`). When the `get` fails with faultcode `0` its entry is removed, and the `add` is cached under the same key. If the `add` fails, its failed entry stays: a second call for the same group in the same helper rethrows that fault with no request (`IMP-183`, probe `n09`); 14.0.7 sent the `get` and the `add` again. The errors and their suffix ` Can init group in PackageDefinition.` are as before.
+[14.35] Same requests and results as 14.0.7. The answer is cached in the helper by the `get` request text (`IMP-102`). When the `get` fails with faultcode `0` its entry is removed, and the `add` is cached under the same key. If the `add` fails, its failed entry stays (it is under the key of the `get`): a second call for the same group in the same helper reads it, rethrows that fault with no request (`IMP-183`, probe `n09`), and removes it, because the handler of the `get` is the first to see the exception (`TryRemove`, then the faultcode test). A third call therefore sends the `get` and the `add` again. 14.0.7 sent the `get` and the `add` on every call. The suffix ` Can init group in PackageDefinition.` is added to the stored exception each time it is thrown. The errors and their suffix ` Can init group in PackageDefinition.` are as before.
 
 ### IMP-447: The group is named after the ItemType's English label
 

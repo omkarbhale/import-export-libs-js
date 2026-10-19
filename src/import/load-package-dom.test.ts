@@ -4,6 +4,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { CItemException } from "../client/fault.js";
+import type { Engine } from "../engines.js";
 import { ArgumentNullException, DirectoryNotFoundException, IOException } from "../io/errors.js";
 import { ArgumentException, NotSupportedException, XmlException } from "../xml/errors.js";
 import { documentElementOf } from "../xml/dom.js";
@@ -38,9 +39,11 @@ interface LoadCase {
 }
 
 const cases = JSON.parse(readFileSync(DIR + "load-package-dom.cases.json", "utf8")) as LoadCase[];
-const outSections = readFileSync(DIR + "load-package-dom.out.txt", "utf8")
-  .split(/\r?\n(?==== )/)
-  .map((section) => section.replace(/^=== [^\n]*\n/, "").replace(/\n$/, "").split("\n"));
+const recordedSections = (file: string): string[][] =>
+  readFileSync(DIR + file, "utf8")
+    .split(/\r?\n(?==== )/)
+    .map((section) => section.replace(/^=== [^\n]*\n/, "").replace(/\n$/, "").split("\n"));
+const outSections = recordedSections("load-package-dom.out.txt");
 
 const WINDOWS_ONLY = new Set(["hidden", "locked", "unc"]);
 const roots: string[] = [];
@@ -74,7 +77,7 @@ const DOTNET_TYPES: Record<string, string> = {
  * Runs a case as lpd.ps1 does and writes what it wrote, with the folder as `<ROOT>` and every path of the case with `\`, as
  * the recording on Windows has them.
  */
-function observe(testCase: LoadCase, root: string, solutionPath: string): string[] {
+function observe(testCase: LoadCase, root: string, solutionPath: string, engine: Engine = "14.0.7"): string[] {
   const lines: string[] = [];
   const log: string[] = [];
   const logWriter: LogWriter = { writeLine: (text) => log.push(`${text}\r\n`) };
@@ -92,7 +95,7 @@ function observe(testCase: LoadCase, root: string, solutionPath: string): string
     return escapeText(result.split(root).join("<ROOT>"));
   };
   try {
-    const doc = loadPackageDom(solutionPath, logWriter);
+    const doc = loadPackageDom(solutionPath, logWriter, { engine });
     lines.push(`RESULT: ${shown(outerXml(doc))}`);
     lines.push(`ITEMS: ${getItemsFromPackageDom(doc).length}`);
   } catch (error) {
@@ -116,41 +119,46 @@ function expected(section: string[]): string[] {
   });
 }
 
-describe("IMP-001 to IMP-012: LoadPackageDom replays the engine's own run", () => {
-  it("has a recorded section for every case", () => expect(outSections.length).toBe(cases.length));
+function replayLoads(engine: Engine, sections: string[][]): void {
+  describe(`IMP-001 to IMP-012: LoadPackageDom replays the engine's own run (${engine})`, () => {
+    it("has a recorded section for every case", () => expect(sections.length).toBe(cases.length));
 
-  cases.forEach((testCase, index) => {
-    const label = `${testCase.name} (case ${index + 1})`;
-    if (WINDOWS_ONLY.has(testCase.name)) {
-      it.skip(`${label}: needs Windows`);
-      return;
-    }
-    it(label, () => {
-      const root = build(testCase);
-      let solutionPath = testCase.solutionPath === undefined ? root : join(root, testCase.solutionPath);
-      if (testCase.relative !== undefined) solutionPath = relative(process.cwd(), join(root, testCase.relative));
-      if (testCase.trailingSlash) solutionPath += "/";
-      const observed = observe(testCase, root, solutionPath);
-      let recorded = expected(outSections[index] ?? []);
-      if (testCase.name === "decl-second") {
-        // the position counts the stamp, so the length of the path: 5, the first file's serialization, and 3 (IMP-010)
-        const first = testCase.files[0] as LoadCase["files"][number];
-        const doc = loadXml(first.text ?? "", { preserveWhitespace: false });
-        const item = (documentElementOf(doc) as XmlElement).firstChild as XmlElement;
-        item.setAttribute("tempKeyName", "a");
-        item.setAttribute("tempFullName", join(root, first.path));
-        const position = 5 + outerXml(doc).length + 3;
-        recorded = recorded.map((line) => line.replace("position 158.", `position ${position}.`));
-      }
-      if (testCase.relative !== undefined) {
-        // the paths of the log are relative to the current directory here, as the engine shows a relative path
-        expect(observed.filter((line) => !line.startsWith("LOG:"))).toEqual(recorded.filter((line) => !line.startsWith("LOG:")));
+    cases.forEach((testCase, index) => {
+      const label = `${testCase.name} (case ${index + 1})`;
+      if (WINDOWS_ONLY.has(testCase.name)) {
+        it.skip(`${label}: needs Windows`);
         return;
       }
-      expect(observed).toEqual(recorded);
+      it(label, () => {
+        const root = build(testCase);
+        let solutionPath = testCase.solutionPath === undefined ? root : join(root, testCase.solutionPath);
+        if (testCase.relative !== undefined) solutionPath = relative(process.cwd(), join(root, testCase.relative));
+        if (testCase.trailingSlash) solutionPath += "/";
+        const observed = observe(testCase, root, solutionPath, engine);
+        let recorded = expected(sections[index] ?? []);
+        if (testCase.name === "decl-second") {
+          // the position counts the stamp, so the length of the path: 5, the first file's serialization, and 3 (IMP-010)
+          const first = testCase.files[0] as LoadCase["files"][number];
+          const doc = loadXml(first.text ?? "", { preserveWhitespace: false });
+          const item = (documentElementOf(doc) as XmlElement).firstChild as XmlElement;
+          item.setAttribute("tempKeyName", "a");
+          item.setAttribute("tempFullName", join(root, first.path));
+          const position = 5 + outerXml(doc).length + 3;
+          recorded = recorded.map((line) => line.replace("position 158.", `position ${position}.`));
+        }
+        if (testCase.relative !== undefined) {
+          // the paths of the log are relative to the current directory here, as the engine shows a relative path
+          expect(observed.filter((line) => !line.startsWith("LOG:"))).toEqual(recorded.filter((line) => !line.startsWith("LOG:")));
+          return;
+        }
+        expect(observed).toEqual(recorded);
+      });
     });
   });
-});
+}
+
+replayLoads("14.0.7", outSections);
+replayLoads("14.35", recordedSections("load-package-dom.out.14.35.txt"));
 
 describe("IMP-002 to IMP-006: the file listing", () => {
   const make = (files: Record<string, string>): string => {
@@ -308,7 +316,7 @@ describe("IMP-011: failures", () => {
 
   it("refuses an engine whose stylesheet is not built, after reading the files", () => {
     const root = folder({ "d/a.xml": "<AML><Item type='List' action='add' id='x'/></AML>" });
-    expect(failure(() => loadPackageDom(root, quiet, { engine: "14.35" }))).toBeInstanceOf(NotSupportedException);
+    expect(failure(() => loadPackageDom(root, quiet, { engine: "12.0" }))).toBeInstanceOf(NotSupportedException);
   });
 });
 

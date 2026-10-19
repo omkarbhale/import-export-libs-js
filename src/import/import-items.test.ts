@@ -355,6 +355,78 @@ describe("the related_id property of Change Controlled Relationship (IMP-315)", 
   });
 });
 
+describe("14.35: a related_id that holds an Item with no id (IMP-332, IMP-333, IMP-353)", () => {
+  const relation = (relatedId: string, relationshipAttributes = "id='R1' action='add'"): string =>
+    withRelation(`<Item type='Part BOM' ${relationshipAttributes}><source_id>A</source_id><related_id>${relatedId}</related_id></Item>`);
+
+  async function run14_35(xml: string, setup: Setup = partVersionable): Promise<{ helper: StubHelper; document: XmlDocument }> {
+    const helper = new StubHelper();
+    setup(helper);
+    // the final send holds a get item here, which the stub would answer with a fault
+    helper.onApply = () => envelope("");
+    const document = loadXml(xml, { preserveWhitespace: false });
+    await new ImportItems(helper, "14.35").import(document, false);
+    return { helper, document };
+  }
+
+  it("skips the relationship whole when the first Item has no id and the action get", async () => {
+    const xml = relation(`<Item type='Part' action='get' where="name='b'" />`);
+    const { helper, document } = await run14_35(xml);
+    expect(helper.calls.filter((call) => call.startsWith("ExistRelItemInCurVer"))).toEqual([]);
+    // nothing is changed, not even the id attribute of the relationship
+    expect(outerXml(document)).toContain(`<Item type="Part BOM" id="R1" action="add">`);
+    expect(outerXml(document)).not.toContain("where=\"source_id");
+  });
+
+  it("matches the relationship on an empty related id for any other action (IMP-353)", async () => {
+    const { helper, document } = await run14_35(relation(`<Item type='Part' action='add' where="name='b'" />`), (h) => {
+      partVersionable(h);
+      h.relExists.set("Part BOM|A|", true);
+    });
+    expect(helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|");
+    expect(outerXml(document)).toContain(`<Item type="Part BOM" action="edit" where="source_id='A' and related_id=''">`);
+  });
+
+  it("makes it an add when the empty related id is not found", async () => {
+    const { document } = await run14_35(relation(`<Item type='Part' action='edit' where="name='b'" />`));
+    expect(outerXml(document)).toContain(`<Item type="Part BOM" action="add">`);
+  });
+
+  it("treats an empty id like a missing one", async () => {
+    const skipped = await run14_35(relation(`<Item type='Part' id='' action='get' />`));
+    expect(skipped.helper.calls.filter((call) => call.startsWith("ExistRelItemInCurVer"))).toEqual([]);
+    const sent = await run14_35(relation(`<Item type='Part' id='' action='add' />`));
+    expect(sent.helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|");
+  });
+
+  it("tests only the first Item's action: a later get does not skip it", async () => {
+    const { helper } = await run14_35(relation(`<Item type='Part' action='add' where="name='b'" /><Item type='Part' action='get' />`));
+    expect(helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|");
+  });
+
+  it("uses the first id among all the Items, and then the action test does not apply", async () => {
+    const { helper } = await run14_35(relation(`<Item type='Part' action='get' where="name='b'" /><Item type='Part' id='B2' action='add' />`), (h) => {
+      partVersionable(h);
+      h.relExists.set("Part BOM|A|B2", true);
+    });
+    expect(helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|B2");
+  });
+
+  it("is unchanged when the Item has an id, and when related_id holds text", async () => {
+    const withId = await run14_35(relation(`<Item type='Part' id='B' action='add' />`));
+    expect(withId.helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|B");
+    const text = await run14_35(relation("B"));
+    expect(text.helper.calls).toContain("ExistRelItemInCurVer Part BOM|A|B");
+  });
+
+  it("still fails in 14.0.7, with the null reference that IMP-304 wraps", async () => {
+    const helper = new StubHelper();
+    partVersionable(helper);
+    const document = loadXml(relation(`<Item type='Part' action='get' where="name='b'" />`), { preserveWhitespace: false });
+    await expect(new ImportItems(helper).import(document, false)).rejects.toThrow(/Object reference not set to an instance of an object\. Can't merge item A Part/);
+  });
+});
+
 describe("CImportItems.Import against the merge probe of 14.0.7 (IMP-300 to IMP-340)", () => {
   it("replays the 14.0.7 probe", () => {
     expect(probe.engine).toBe("14.0.7");

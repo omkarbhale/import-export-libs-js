@@ -1,0 +1,108 @@
+## 1 GetPackagePath
+name="com.aras.innovator.core" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="   " folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\core"
+name="My.Pkg" path="Pkg\\Import" folder="C:\\m" => "C:\\m\\Pkg\\Import"
+name="My.Pkg" path="Pkg\\Import" folder="C:\\m\\" => "C:\\m\\Pkg\\Import"
+name="My.Pkg" path="Pkg\\Import" folder="C:/m" => "C:/m\\Pkg\\Import"
+name="My.Pkg" path="Pkg\\Import" folder="C:/m/" => "C:/m/Pkg\\Import"
+name="My.Pkg" path="Pkg/Import" folder="C:\\m" => "C:\\m\\Pkg/Import"
+name="My.Pkg" path="C:\\abs\\x" folder="C:\\m" => "C:\\abs\\x"
+name="My.Pkg" path="C:\\abs\\x\\" folder="C:\\m" => "C:\\abs\\x\\"
+name="My.Pkg" path="\\\\srv\\share\\x" folder="C:\\m" => "\\\\srv\\share\\x"
+name="My.Pkg" path="\\rooted" folder="C:\\m" => "\\rooted"
+name="My.Pkg" path="/rooted" folder="C:\\m" => "/rooted"
+name="My.Pkg" path="D:rel" folder="C:\\m" => "D:rel"
+name="My.Pkg" path=" x " folder="C:\\m" => "C:\\m\\ x "
+name="My.Pkg" path="a\"b" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="My.Pkg" path="a|b" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="My.Pkg" path="a\tb" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="My.Pkg" path="a?b*c" folder="C:\\m" => "C:\\m\\a?b*c"
+name="My.Pkg" path="x" folder="C:\\m\"" => System.ArgumentException: "Illegal characters in path."
+name="My.Pkg" path="x" folder="" => "x"
+name="My.Pkg" path="x" folder="" => "x"
+name="My.Pkg" path="x" folder="C:" => "C:x"
+name="My.Pkg" path="x" folder="/home/u/m" => "/home/u/m\\x"
+name="My.Pkg" path="x" folder="\\\\srv\\share\\m" => "\\\\srv\\share\\m\\x"
+name="My.Pkg" path="..\\y" folder="C:\\m" => "C:\\m\\..\\y"
+name="com.aras.defaults.Foo.Bar" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\defaults\\Foo\\Bar"
+name="com.aras.defaults.Foo.Bar" path="" folder="C:\\m" => "C:\\m\\.\\com\\aras\\defaults\\Foo\\Bar"
+name="COM.ARAS.DEFAULTS.Foo" path=".\\" folder="C:\\m" => "C:\\m\\.\\COM\\ARAS\\DEFAULTS\\Foo"
+name="com.aras.innovator.core" path="C:\\abs" folder="C:\\m" => "C:\\abs\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="Imp\\" folder="C:\\m" => "C:\\m\\Imp\\com\\aras\\innovator\\core"
+name="com.aras.innovator." path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\"
+name="com.aras.innovator" path=".\\" folder="C:\\m" => "C:\\m\\.\\"
+name="COM.ARAS.INNOVATOR.core" path=".\\" folder="C:\\m" => "C:\\m\\.\\"
+name="com.aras.innovator.solution.PLM" path=".\\" folder="C:\\m" => "C:\\m\\.\\"
+name="com.aras.innovator.solution" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\solution"
+name="com.aras.innovator.solutionX.PLM" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\solutionX\\PLM"
+name="com.aras.innovator.Solution.PLM" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\Solution\\PLM"
+name="com.aras.defaults" path=".\\" folder="C:\\m" => "C:\\m\\.\\"
+name="com.aras.defaults." path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\defaults\\"
+name="com.aras.innovator.a..b" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\a\\\\b"
+name="com.aras.innovator.\u00ADx" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\\u00ADx"
+name="" path=".\\" folder="C:\\m" => "C:\\m\\.\\"
+name="com.aras.innovator.core" path="x/" folder="C:\\m" => "C:\\m\\x/com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="C:" folder="C:\\m" => "C:com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="/" folder="C:\\m" => "/com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="Imp\\\\" folder="C:\\m" => "C:\\m\\Imp\\\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="." folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="x" folder="C:\\m\\" => "C:\\m\\x\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="x" folder="" => "x\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="" => ".\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="C:" => "C:.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="C:/m/" => "C:/m/.\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="" folder="" => ".\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="a\"b" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.core" path="C:\\a\"b" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.a\"b" path=".\\" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.a<b" path="C:\\abs" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.a|b" path=".\\" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.a\tb" path=".\\" folder="C:\\m" => System.ArgumentException: "Illegal characters in path."
+name="com.aras.innovator.a?b*c" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\a?b*c"
+name="com.aras.innovator.a/b" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\a/b"
+name="com.aras.innovator.a\\b" path=".\\" folder="C:\\m" => "C:\\m\\.\\com\\aras\\innovator\\a\\b"
+name="com.aras.innovator.a..b" path="C:\\abs" folder="C:\\m" => "C:\\abs\\com\\aras\\innovator\\a\\\\b"
+name="com.aras.innovator." path="C:\\abs\\" folder="C:\\m" => "C:\\abs\\com\\aras\\innovator\\"
+name="com.aras.defaults." path="." folder="C:\\m" => "C:\\m\\.\\com\\aras\\defaults\\"
+name="com.aras.defaults.Foo" path="\\\\srv\\share\\x" folder="C:\\m" => "\\\\srv\\share\\x\\com\\aras\\defaults\\Foo"
+name="com.aras.defaults.Foo" path="\\\\srv\\share\\x\\" folder="C:\\m" => "\\\\srv\\share\\x\\com\\aras\\defaults\\Foo"
+name="com.aras.defaults.Foo" path="D:rel" folder="C:\\m" => "D:rel\\com\\aras\\defaults\\Foo"
+name="com.aras.defaults.Foo" path="rel:" folder="C:\\m" => "C:\\m\\rel:com\\aras\\defaults\\Foo"
+name="com.aras.innovator.core" path="x" folder="/home/u/m" => "/home/u/m\\x\\com\\aras\\innovator\\core"
+name="com.aras.innovator.core" path="a b" folder="C:\\m" => "C:\\m\\a b\\com\\aras\\innovator\\core"
+packageNode=null => System.NullReferenceException: "Object reference not set to an instance of an object."
+## 2 IsStandard
+name="com.aras.innovator." => standard=True core=True default=False
+name="com.aras.innovator.x" => standard=True core=True default=False
+name="com.aras.innovator" => standard=False core=False default=False
+name="COM.ARAS.INNOVATOR.x" => standard=False core=False default=False
+name="com.aras.innovator.solution." => standard=False core=False default=False
+name="com.aras.innovator.solution.x" => standard=False core=False default=False
+name="com.aras.innovator.Solution.x" => standard=True core=True default=False
+name="com.aras.defaults." => standard=True core=False default=True
+name="COM.ARAS.DEFAULTS.X" => standard=True core=False default=True
+name="com.aras.defaults" => standard=False core=False default=False
+name="Com.Aras.Defaults.x" => standard=True core=False default=True
+name=" com.aras.innovator.x" => standard=False core=False default=False
+name="com.aras.innovator.\u00ADx" => standard=True core=True default=False
+name="com.aras.innovator\u00AD.x" => standard=True core=True default=False
+name="com.ar\u200Bas.innovator.x" => standard=False core=False default=False
+name="com.aras.innovator.\u200Bsolution.x" => standard=True core=True default=False
+name="com.aras.innovator.solution\u200B.x" => standard=True core=True default=False
+name="com.aras.innovator.\u0301x" => standard=False core=False default=False
+name="com.aras.innovator.\u0000x" => standard=True core=True default=False
+name="com\u0000.aras.innovator.x" => standard=False core=False default=False
+name="\u00ADcom.aras.innovator.x" => standard=True core=True default=False
+name="com.aras.innovator.solution.\u00AD" => standard=False core=False default=False
+name="com.aras.innovator.solutio\u00ADn.x" => standard=False core=False default=False
+name="com.aras.defaults\u00AD.x" => standard=False core=False default=False
+name="com.aras.innovator.solutiOn.x" => standard=True core=True default=False
+name="com.aras.innovator.solut\u0131on.x" => standard=True core=True default=False
+name="COM.ARAS.INNOVATOR.SOLUTION.x" => standard=False core=False default=False
+name="Com.aras.innovator.x" => standard=False core=False default=False
+name="com.aras.innovator.\u00AD" => standard=True core=True default=False
+name="com.aras.defaults.\u00AD" => standard=True core=False default=True
+name="com.aras.innovator.solution.\u200Bx" => standard=False core=False default=False
+culture => en-IN / en-US
