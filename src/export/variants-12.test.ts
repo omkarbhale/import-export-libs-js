@@ -15,7 +15,7 @@ import { CExportItems } from "./cexport-items.js";
 import { SUExportContext } from "./export-context.js";
 import { ImportExportManager } from "./import-export-manager.js";
 import { mainFetchRequest } from "./main-fetch.js";
-import { MESSAGE_TEMPLATES, MESSAGE_TEMPLATES_12_0, createMessagesFactory, messageFor, type SentMessage } from "./messages.js";
+import { MESSAGE_TEMPLATES, MESSAGE_TEMPLATES_12_0, createMessagesFactory, getMessageFor, type SentMessage } from "./messages.js";
 import { createOutputDir, writeItemFile } from "./output-folder.js";
 import { CDATA_SECTION_ELEMENTS, CDATA_SECTION_ELEMENTS_12_0 } from "./output.js";
 import { currentCultureDateTime } from "./run-log.js";
@@ -211,13 +211,13 @@ describe("EXP-400, EXP-421 to EXP-423: no path normalisation in 12.0", () => {
 
 describe("EXP-504 to EXP-520: the messages and the log of the 12.0 run", () => {
   it("has the literals of the 12.0 engine where the catalogue differs", () => {
-    expect(messageFor("12.0", "ErrorMessageMessage", "boom")).toBe("          ****ErrorMessage****\r\n       boom\r\n          *******************");
-    expect(messageFor("14.0.7", "ErrorMessageMessage", "boom")).toBe("          ****ErrorMessage****\r\n       boom");
-    expect(messageFor("12.0", "ErrorMessageGetSolutions", "a", "b", "3")).toBe(
+    expect(getMessageFor("12.0", "ErrorMessageMessage", "boom")).toBe("          ****ErrorMessage****\r\n       boom\r\n          *******************");
+    expect(getMessageFor("14.0.7", "ErrorMessageMessage", "boom")).toBe("          ****ErrorMessage****\r\n       boom");
+    expect(getMessageFor("12.0", "ErrorMessageGetSolutions", "a", "b", "3")).toBe(
       "          ****ErrorMessage****\r\nfaultstring: a\r\nfaultdetail :b\r\nfaultcode: 3\r\n          *******************",
     );
-    expect(messageFor("12.0", "ErrorOfExportingItemIdKeyedNameTypeLog", "I", "K", "T")).toBe("Error of exporting Item id :I  keyed_name : K type : T");
-    expect(messageFor("12.0", "ErrorOfExportingItemIdKeyedNameType", "I", "K", "T")).toBe("Error of exporting Item id :I  keyed_name : K    type : T");
+    expect(getMessageFor("12.0", "ErrorOfExportingItemIdKeyedNameTypeLog", "I", "K", "T")).toBe("Error of exporting Item id :I  keyed_name : K type : T");
+    expect(getMessageFor("12.0", "ErrorOfExportingItemIdKeyedNameType", "I", "K", "T")).toBe("Error of exporting Item id :I  keyed_name : K    type : T");
     const same = Object.keys(MESSAGE_TEMPLATES).filter((key) => MESSAGE_TEMPLATES[key] === MESSAGE_TEMPLATES_12_0[key]);
     expect(same.length).toBeGreaterThan(20);
   });
