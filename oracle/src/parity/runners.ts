@@ -1,5 +1,6 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { allPackagesTable, fromManifestTable, useImportTable } from "../../../src/cli/console-modes.js";
 import type { SelectionTable } from "../../../src/export/import-export-manager.js";
 import type { Engine } from "../../../src/engines.js";
@@ -9,7 +10,9 @@ import { hostOptions as importHostOptions, expectedOutcome, type ImportCase, typ
 import { writePackages, type ScratchPackage } from "../import-packages.js";
 import { LP_PACKAGE, writePack, type LpCase } from "../language-pack-cases.js";
 import { outcomeMatches, returnedValue } from "../record-import-cases.js";
-import { record, type CleanupReport, type ItemRef, type RecordRequest, type RecordResult } from "../record.js";
+import { oracleWindowsRoot } from "../stage.js";
+import { winJoin } from "../windows.js";
+import { record, runId, type CleanupReport, type ItemRef, type RecordRequest, type RecordResult } from "../record.js";
 import { type Difference, diffOutcomes } from "./diff.js";
 import { diffExportRuns1435 } from "./diff-1435.js";
 import { getProperty } from "../../../src/client/fault.js";
@@ -63,6 +66,22 @@ const describeEnd = (outcome: RunOutcome): string =>
     : outcome.termination.kind === "returned"
       ? `returned ${outcome.termination.value}`
       : "exported";
+
+/**
+ * A fresh folder for the port's package files whose path is as long as the oracle's `input/` folder (`…\\oracle\\runs\\<run id>\\input`).
+ * A path reaches the engine's package log (the warning for a file without a root tag), and 12.0 reads the in-memory log only up to
+ * `1024 × ⌊(N − 1) / 1024⌋` UTF-16 code units (IMP-406): a path of another length would move the cut, a difference of the harness
+ * and not of the engine. The caller removes the folder's parent (`dirname`) when the step is done.
+ */
+export function inputDirLikeOracle(engine: Engine, command: string, base = tmpdir()): string {
+  const target = winJoin(oracleWindowsRoot(), "runs", runId(engine, command), "input").length;
+  const root = mkdtempSync(join(base, "libsjs-parity-in-"));
+  const pad = target - root.length - "//input".length;
+  if (pad < 1) return join(root, "input");
+  const dir = join(root, "p".repeat(pad), "input");
+  mkdirSync(dir, { recursive: true });
+  return dir;
+}
 
 /** A compared run with the differences found by a comparison of its own. */
 function report(name: string, oracle: RunOutcome, port: RunOutcome, differences: Difference[]): StepReport {
@@ -270,17 +289,23 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
   const reports: StepReport[] = [];
   const portSteps: RunOutcome[] = [];
   const portMadeBefore: string[][] = [];
+  let portDeleted: ItemRef[] = [];
   try {
     for (const [i, step] of c.steps.entries()) {
       const dir = join(env.out, c.id, `step-${i + 1}`, "port");
-      const input = join(dir, "input");
+      const input = inputDirLikeOracle(env.engine, "import");
       writePackages(input, step.packages);
-      const run = await runPortImport(
-        env.port,
-        { inputDir: input, options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
-        osUserOf(oracleSteps[i]!.calls),
-        join(dir, "work"),
-      );
+      let run;
+      try {
+        run = await runPortImport(
+          env.port,
+          { inputDir: input, options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
+          osUserOf(oracleSteps[i]!.calls),
+          join(dir, "work"),
+        );
+      } finally {
+        rmSync(dirname(dirname(input)), { recursive: true, force: true });
+      }
       portCreated.push(...run.preRunCreated, ...run.created);
       writePortRun(dir, run.outcome);
       portSteps.push(run.outcome);
@@ -295,7 +320,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
       );
     }
   } finally {
-    const portDeleted = await portCleanupAll(env, c.id, portCreated);
+    portDeleted = await portCleanupAll(env, c.id, portCreated);
     if (portDeleted.length === 0 && portCreated.length > 0) notes.push("the port's cleanup deleted nothing, though its runs created items");
   }
   const status = statusOf(reports);
@@ -306,7 +331,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
     steps: reports,
     ...(notes.length > 0 ? { note: notes.join("; ") } : {}),
     created: oracleCreated.concat(refs(portCreated)),
-    deleted,
+    deleted: deleted.concat(portDeleted),
     seconds: (Date.now() - started) / 1000,
   };
 }

@@ -125,3 +125,12 @@ describe("an outcome", () => {
     expect(normal.exitCode).toBe(2);
   });
 });
+
+describe("the warning for a skipped file, whose path is the run's own", () => {
+  it("is the same on the oracle's Windows path and the port's POSIX one, with no header naming the working directory (12.0)", () => {
+    const windows = normalizeLog("WARNING: File 'C:\\r\\runs\\x\\input\\P\\Import\\V\\a.xml' doesn't have root tag 'AML/Item'. File is skipped.\r\n", new Map());
+    const posix = normalizeLog("WARNING: File '/t/p/input/P/Import/V/a.xml' doesn't have root tag 'AML/Item'. File is skipped.\r\n", new Map());
+    expect(windows).toBe(posix);
+    expect(posix).toContain("<input>/P/Import/V/a.xml");
+  });
+});

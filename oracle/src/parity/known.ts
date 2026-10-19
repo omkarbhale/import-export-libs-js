@@ -10,11 +10,5 @@ export interface KnownDifference {
   followUp: string;
 }
 
-export const KNOWN_DIFFERENCES: Readonly<Record<string, KnownDifference>> = {
-  "fs-odd-files": {
-    reason:
-      "The engine lists a package folder with Directory.GetFiles(*.xml), and NTFS also matches a file whose extension only starts with xml (Foo.xmlbak) through its 8.3 short name, at the short name's place in the directory index. The port's loader (IMP-003, IMP-004) orders by long name, so LIBSJS-SCRATCH-Fs_Backup.xmlbak reaches the run in another position and the items are imported in another order.",
-    followUp:
-      "roadmap/live-parity-14.0.7.md, 'Known difference'; the same gap is skipped in src/import/import-run.replay.test.ts (KNOWN_LOADER_GAPS) and listed in the map's follow-ups (ticket 40, PR #66). Closing it needs 8.3 short-name generation and the NTFS index order.",
-  },
-};
+/** None now: `fs-odd-files`, listed here for 14.0.7 until ticket 36's 8.3 short-name ordering (IMP-003, IMP-004), is equal on 12.0 and 14.0.7 (`roadmap/live-parity-12.0.md`). */
+export const KNOWN_DIFFERENCES: Readonly<Record<string, KnownDifference>> = {};

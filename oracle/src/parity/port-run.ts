@@ -35,8 +35,14 @@ export interface PortServer {
   transport?: HttpTransport;
 }
 
-/** The host's defaults (`oracle/host/engine-14.0.7.ps1`): a connection timeout of 600000 ms. */
+/** The host's defaults (`oracle/host/engine-<engine>.ps1`): a connection timeout of 600000 ms. */
 const HOST_TIMEOUT = 600_000;
+
+/**
+ * The culture the oracle host runs in, which 12.0's log follows for three of its date-times (EXP-505): the Windows machine's own,
+ * `en-IN` (`dd-MM-yyyy HH:mm:ss`). The port runs on another OS, so it is told rather than left to its process culture.
+ */
+export const ORACLE_HOST_CULTURE = "en-IN";
 
 /** A connection to dev that records every call it makes, as the oracle's `RecordingHttpServerConnection` does. */
 export interface Session {
@@ -71,6 +77,11 @@ export async function openSession(server: PortServer): Promise<Session> {
   const calls: CallRecord[] = [];
   const connection = newConnection(server, calls);
   const helper = new CItemHelper(connection, { engine: server.engine });
+  if (server.engine === "12.0") {
+    // 12.0's CItemHelper.Login() logs in only the exact type HttpConnectorExtension (WIRE-017), so the oracle host logs in first
+    const user = await connection.login();
+    if (user.isError) throw new Error(`host login failed: ${user.errorString}`);
+  }
   await helper.login();
   return { connection, helper, calls };
 }
@@ -224,6 +235,7 @@ export async function runPortExport(server: PortServer, run: PortExport, work = 
     manager = await ImportExportManager.create(context, messages, session.helper, {
       cwd: work,
       console: collected.sink,
+      culture: ORACLE_HOST_CULTURE,
       ...(run.parallelism === undefined ? {} : { parallelism: run.parallelism }),
     });
     const selection = typeof run.selection === "function" ? await run.selection(session.helper, context, manager) : run.selection;
@@ -334,7 +346,7 @@ export async function runPortImport(
   const calls: CallRecord[] = [];
   try {
     session = await openSession(server);
-    manager = new ImportExportManager(context, messages, session.helper, { cwd: work, console: collected.sink, osUser });
+    manager = new ImportExportManager(context, messages, session.helper, { cwd: work, console: collected.sink, osUser, culture: ORACLE_HOST_CULTURE });
     const packages = step.only !== undefined ? [...step.only] : (manager.manifestFile?.getAllPackageNames() ?? []);
     assertScratchImport(packages, step.inputDir);
     ended = { kind: "returned", value: await manager.importSolutions(packages, importContext) };

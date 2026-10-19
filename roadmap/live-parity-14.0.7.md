@@ -34,9 +34,11 @@ The console modes were run with Aras's own `ConsoleUpgrade.exe` `ProcessExport` 
 7. The port's temporary language-pack package is outside the working directory, as the oracle's is.
 8. One import step of `s4-del-refused` once ended with no result and no error on the oracle side (a transient failure of the host or the server); its rerun was equal.
 
-## Known difference: `fs-odd-files`
+## Known difference: `fs-odd-files` (closed: see the update at the end of this section)
 
 Step 1 of `fs-odd-files` imports the same six items in a different order. The engine lists a package folder with `Directory.GetFiles(*.xml)`, and NTFS also matches a file whose extension only starts with `xml` (`LIBSJS-SCRATCH-Fs_Backup.xmlbak`) through its 8.3 short name, at the short name's place in the directory index. The port's loader (IMP-003, IMP-004) orders by long name, so that file reaches the run elsewhere. The recorded fixture `fixtures/14.0.7/import/fs-odd-files/` pins the engine's order (the replay test skips the step, `KNOWN_LOADER_GAPS` in `src/import/import-run.replay.test.ts`), and the map lists it as a follow-up of ticket 40. It is a gap of the port, not an engine bug, so it is not in `spec/bugs.md`; closing it needs 8.3 short-name generation and the NTFS index order, a ticket of its own. The script reports it as `known` (`oracle/src/parity/known.ts`) so that a run fails only on a new difference, and says when the entry can go.
+
+**Update, 2026-10-20 (ticket 44, reopened).** The gap closed with the 8.3 short-name ordering of ticket 36 (PR #87, IMP-003 and IMP-004): `fs-odd-files` is equal on 14.0.7 and on 12.0 in the live run of `roadmap/live-parity-12.0.md`, its entry is gone from `oracle/src/parity/known.ts`, and the replay test no longer skips it.
 
 ## Not run
 
