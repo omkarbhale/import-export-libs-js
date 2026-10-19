@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve, win32 } from "node:path";
 import { isWhiteSpace } from "./dotnet-text.js";
 import {
@@ -104,6 +104,20 @@ export function toHostPath(path: string | null, environment: PathEnvironment = {
 }
 
 const EMPTY_PATH = "Empty path name is not legal.";
+
+/**
+ * `IOWrapper.FileExists`: true for a file, and false for a folder, a missing path, a null or empty path and a path the host
+ * cannot name, which `File.Exists` answers with false instead of throwing.
+ * @spec EXP-502
+ */
+export function fileExists(path: string | null, environment: PathEnvironment = {}): boolean {
+  try {
+    const host = toHostPath(path, environment);
+    return host !== null && host.length > 0 && statSync(host).isFile();
+  } catch {
+    return false;
+  }
+}
 
 /** Turns a Node file-system failure into the exception .NET raises for the same failure. */
 export function translateFileError(error: unknown, hostPath: string, forWrite: boolean): unknown {
