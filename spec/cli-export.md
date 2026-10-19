@@ -25,7 +25,7 @@ Conventions: **an item** is a pair of an ItemType name and an id. **The table** 
 
 Giving none of the sources, or more than one of them, is a usage error (exit 64): `export needs the items to export: …`. A second `-`, or `-` together with items, is the same error. `--help` prints the usage and exits 0.
 
-[12.0] Same command line. The engine is not yet supported by the export (HOST-008).
+[12.0] Same command line.
 
 [14.35] Same.
 
