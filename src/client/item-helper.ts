@@ -162,11 +162,6 @@ export class CItemHelper {
     }
   }
 
-  /** The context timeout, which the manager's constructor copies to an IOM connection after login (WIRE-031). */
-  applyTimeout(timeout: number): void {
-    applyContextTimeout(this.connection, timeout);
-  }
-
   /**
    * Logs off, but only on the connection Aras's console tool makes. `[14.35]`: a helper with no connection does nothing,
    * and one with a connection forgets it afterwards whatever its type.
@@ -183,7 +178,7 @@ export class CItemHelper {
    * The timeout step of the `ImportExportManager` constructor: a timeout above 0, or exactly -1, is copied to an IOM
    * connection, which the constructor reads through `Inn` first.
    */
-  applyContextTimeout(timeout: number): void {
+  applyTimeout(timeout: number): void {
     if (timeout > 0 || timeout === -1) applyContextTimeout(this.inn.connection, timeout);
   }
 }

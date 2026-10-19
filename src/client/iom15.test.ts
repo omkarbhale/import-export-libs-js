@@ -458,17 +458,17 @@ describe("a cancelled login (WIRE-017, WIRE-056)", () => {
     const helper = new CItemHelper(connect(timingOut((r) => r.url.endsWith("OAuthServerDiscovery.aspx"))), { engine: "14.35" });
     await helper.login();
     for (const timeout of [5000, -1]) {
-      expect(() => helper.applyContextTimeout(timeout)).toThrow("Object reference not set to an instance of an object.");
+      expect(() => helper.applyTimeout(timeout)).toThrow("Object reference not set to an instance of an object.");
     }
-    for (const timeout of [0, -2]) expect(() => helper.applyContextTimeout(timeout)).not.toThrow();
+    for (const timeout of [0, -2]) expect(() => helper.applyTimeout(timeout)).not.toThrow();
   });
 
   it("copies the context timeout to the connection of a helper that is connected", async () => {
     const connection = connect(new FakeTransport(devServer()));
     const helper = new CItemHelper(connection, { engine: "14.35" });
-    helper.applyContextTimeout(250);
+    helper.applyTimeout(250);
     expect(connection.timeout).toBe(250);
-    helper.applyContextTimeout(0);
+    helper.applyTimeout(0);
     expect(connection.timeout).toBe(250);
   });
 
