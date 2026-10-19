@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { EngineNotSupportedError } from "./client/engine-support.js";
+import { applyDbPatchesCommand } from "./cli/db-patches-command.js";
 import { importCommand, languagePackCommand } from "./cli/import-command.js";
 import { EXIT } from "./cli/exit.js";
 import { type CliIo, processIo } from "./cli/io.js";
@@ -14,6 +15,7 @@ const COMMANDS: Readonly<Record<string, (args: readonly string[], io: CliIo) => 
   import: importCommand,
   plan: planCommand,
   "import-language-pack": languagePackCommand,
+  "apply-db-patches": applyDbPatchesCommand,
 };
 
 /**

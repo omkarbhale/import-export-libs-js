@@ -13,6 +13,7 @@ Commands:
   import <manifest>              Import the packages of a manifest (imports.mf)
   plan import <manifest>         Show, offline, the order an import follows and the items it drops
   import-language-pack <lppath>  Import a language pack as a package (not on 12.0)
+  apply-db-patches <manifest>    Apply the database update patches a manifest lists (14.35 only, login root)
 
 Run \`aras-pkg <command> --help\` for the options of a command.
 
@@ -80,4 +81,17 @@ available on engine 12.0, which has no language-pack import.
   --lp-debug            Keep the temporary package on disk
 
 ${IMPORT_RUN}
+${COMMON}`;
+
+export const DB_PATCHES_USAGE = `Usage: aras-pkg apply-db-patches <manifest> --engine 14.35 --user root [options]
+
+Applies the database update patches that an updates manifest lists, through the server's ApplyUpdate action, and records them in
+a DatabaseUpgrade row ("Applied Updates") for the manifest's release. It exists only in engine 14.35, and only for the login
+\`root\`: any other engine or user is refused before anything is sent. Each patch is the file <name>.xml in the patches folder.
+A patch the server refuses is reported as an error and the run goes on with the next one (the engine's behaviour); the exit code is 1
+when any error was reported.
+  --patches-folder <dir>  The folder of the patch files (default: the folder of the manifest)
+  --tool-name <text>      The description of the DatabaseUpgrade row a run creates (default: Libs)
+  --os-user <name>        The os_user of that row (default: DOMAIN\\user on Windows, <host>\\<user> elsewhere)
+
 ${COMMON}`;

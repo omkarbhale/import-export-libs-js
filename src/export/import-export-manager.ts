@@ -19,6 +19,7 @@ import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.
 import { ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
 import type { SUImportContext } from "../import/import-context.js";
 import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
+import { DB_PATCH_ENGINES, DbPatchApplication, DbPatchesNotInEngineError, type DBUpdateConfig } from "../db-patches/index.js";
 import { innerText, selectNodes } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
 import type { ExportRunState } from "./cexport-items.js";
@@ -130,6 +131,7 @@ export class ImportExportManager {
   private readonly now: () => Date;
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
+  private readonly osUser: ImportHelperOptions["osUser"];
   private state: ProgressState = "idle";
   /** 14.35's per-call inputs of `Export` (EXP-002): the template dictionary and the package-element map. Empty for 14.0.7. */
   private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
@@ -171,6 +173,7 @@ export class ImportExportManager {
       manifestPath !== null && manifestPath !== "" && fileExists(manifestPath, this.environment)
         ? new ManifestFile(manifestPath, { ...this.environment, engine: this.engine })
         : null;
+    this.osUser = osUser;
   }
 
   /** `Cancel()`: the run is cancelled at the next place that looks (EXP-518). A cancel before a run starts is overwritten by it. */
@@ -598,5 +601,26 @@ export class ImportExportManager {
       },
     });
     return run.importSolutions(packages, importContext);
+  }
+
+  /**
+   * `ApplyDBUpdateManifest(config)`: applies the patches a manifest lists and records them in the server's "Applied Updates" items
+   * (DBP-001 to DBP-094). It returns nothing: a patch that fails is an `error` message, not an exception (DBP-094). Only 14.35 has
+   * the member. `newId` gives the ids of the items the run adds; the default is a random GUID, as the engine's.
+   *
+   * @spec DBP-001
+   */
+  async applyDBUpdateManifest(config: DBUpdateConfig | null, options: { newId?: () => string } = {}): Promise<void> {
+    if (!DB_PATCH_ENGINES.includes(this.engine)) throw new DbPatchesNotInEngineError(this.engine);
+    const application = new DbPatchApplication({
+      context: this.context as SolutionUpgradeContext,
+      messages: this.messages,
+      itemHelper: this.itemHelper,
+      environment: this.environment,
+      now: this.now,
+      ...(this.osUser === undefined ? {} : { osUser: this.osUser }),
+      ...(options.newId === undefined ? {} : { newId: options.newId }),
+    });
+    return application.applyDBUpdateManifest(config);
   }
 }
