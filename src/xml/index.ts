@@ -1,6 +1,7 @@
 /**
  * The XML core: .NET Framework's `System.Xml` behaviour that the engine's output and input depend on, byte for byte.
  *
+ * - load-file.ts: `XmlDocument.Load(path)`, which the 12.0 engine reads files with;
  * - dom.ts: the DOM (xmldom's) and what is recorded beside it: `IsEmpty`, `PreserveWhitespace`, the XML declaration;
  * - parser.ts: `LoadXml` and `InnerXml`, with .NET's errors and positions; read-text.ts: `File.ReadAllText`;
  * - writer-xmlwriter.ts: the `XmlWriter` of the item files, the DAC conditions and `XDocument.ToString` (xdocument.ts), and the
@@ -19,6 +20,7 @@ export { hasOnlyValidFileNameChars, INVALID_FILE_NAME_CHARS } from "./file-names
 export { htmlDecode, htmlEncode } from "./html.js";
 export { loadXml, parseFragment } from "./parser.js";
 export type { LoadOptions } from "./parser.js";
+export { decodeXmlFile, xmlDocumentLoadFile } from "./load-file.js";
 export { readAllText, xmlDocumentLoad } from "./read-text.js";
 export { encodeItemFile, xmlDocumentSave, xmlDocumentSaveWithSettings } from "./save.js";
 export { xdocumentToString } from "./xdocument.js";

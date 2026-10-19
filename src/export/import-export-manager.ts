@@ -12,7 +12,7 @@ import {
   UnauthorizedAccessException,
 } from "../io/errors.js";
 import { NotSupportedException } from "../xml/errors.js";
-import { directoryGetParentFullName, fileExists } from "../io/host-path.js";
+import { directoryGetParentFullName, fileExists, pathEnvironmentFor } from "../io/host-path.js";
 import { pathCombine } from "../io/win-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
@@ -33,10 +33,10 @@ import type { RemovedReference } from "./removed-reference.js";
 import { AggregateException, parallelForEach } from "./parallel-for-each.js";
 import { ProgressStreamLogger } from "./progress-logger.js";
 import { newRequestDictionary } from "./request-template.js";
-import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
+import { RunLog, currentCultureDateTime, invariantDateTime, logInputParameters } from "./run-log.js";
 
 /** The engines whose export run is built; the rest wait for their variant slices. */
-export const RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+export const RUN_ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
 
 /**
  * How many items of a package 14.35's run starts at once. The engine's `Parallel.ForEach` has no bound (EXP-551); the port runs the
@@ -81,6 +81,11 @@ export interface ImportExportManagerOptions extends PathEnvironment {
   console?: ConsoleWriter;
   /** The value of `os_user` in the audit row of an import, or a function that gives it (IMP-452). */
   osUser?: ImportHelperOptions["osUser"];
+  /**
+   * The culture whose general date and time pattern the 12.0 engine's log uses for three of its date-times (EXP-505), as
+   * .NET names it (`en-US`, `en-IN`). The default is the culture of this process. The other engines write the invariant one.
+   */
+  culture?: string;
 }
 
 /**
@@ -130,6 +135,7 @@ export class ImportExportManager {
   private readonly now: () => Date;
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
+  private readonly culture: string | undefined;
   private state: ProgressState = "idle";
   /** 14.35's per-call inputs of `Export` (EXP-002): the template dictionary and the package-element map. Empty for 14.0.7. */
   private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
@@ -153,9 +159,10 @@ export class ImportExportManager {
     this.engine = itemHelper.engine;
     if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
-    const { now, console, osUser, ...environment } = options;
-    this.environment = environment;
+    const { now, console, osUser, culture, ...environment } = options;
+    this.environment = pathEnvironmentFor(environment, this.engine);
     this.now = now ?? (() => new Date());
+    this.culture = culture;
 
     this.console = console ?? SILENT_CONSOLE;
     this.importHelper = new ImportHelper(itemHelper, osUser === undefined ? {} : { osUser });
@@ -182,8 +189,14 @@ export class ImportExportManager {
     return this.state === "cancelled";
   }
 
+  /** A date-time as the engine concatenates it into the log: invariant, except in three places of the 12.0 engine's. */
   private timestamp(): string {
     return invariantDateTime(this.now());
+  }
+
+  /** `DateTime.Now.ToString()` of the current culture, which the 12.0 engine writes at the head of a package and after a cancel or an abort. */
+  private localTimestamp(): string {
+    return this.engine === "12.0" ? currentCultureDateTime(this.now(), this.culture) : this.timestamp();
   }
 
   /** `ResourceManager.GetMessage` of the engine's catalogue (EXP-504). */
@@ -212,7 +225,12 @@ export class ImportExportManager {
       return responseDom(response);
     } catch (thrown) {
       if (!(thrown instanceof CItemException)) throw thrown;
-      const text = this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, String(thrown.faultcode));
+      const text = this.text(
+        this.engine === "12.0" ? "ErrorMessageGetSolutions" : "ErrorMessageStringDetailCode",
+        thrown.faultstring,
+        thrown.faultdetail,
+        String(thrown.faultcode),
+      );
       error.text = text;
       await error.execute();
       const writer = RunLog.open(this.context?.logFilePath ?? null, this.environment);
@@ -239,13 +257,20 @@ export class ImportExportManager {
     if (selectedItems === null) throw new ArgumentNullException("selItemsTable");
     const selection = selectedItems instanceof NetfxHashtable ? selectedItems : selectionTable(selectedItems);
 
+    // 14.0.7 opens the log first, writes its header and then asks for the package definitions; 12.0 asks first and opens the log
+    // after, with no header (EXP-505 to EXP-508). So `GetSolutions2Xml`'s own writer finds the file free in 12.0 (EXP-541).
+    const early = this.engine === "12.0" ? await this.getSolutions2Xml() : undefined;
     const log = RunLog.open(exportContext.logFilePath, this.environment);
     try {
-      const version = this.itemHelper.innovatorVersion;
-      if (version === undefined) throw new NullReferenceException();
-      log.writeLine(logInputParameters(exportContext, version, this.engine));
-
-      const packages = await this.getSolutions2Xml();
+      let packages: XmlDocument | null;
+      if (this.engine === "12.0") {
+        packages = early ?? null;
+      } else {
+        const version = this.itemHelper.innovatorVersion;
+        if (version === undefined) throw new NullReferenceException();
+        log.writeLine(logInputParameters(exportContext, version, this.engine));
+        packages = await this.getSolutions2Xml();
+      }
       // 14.35 builds the map of every package element of the database first (EXP-550); a missing package list ends the run here, with
       // no manifest saved. The dictionary of request templates belongs to this call (EXP-060).
       this.run =
@@ -366,7 +391,7 @@ export class ImportExportManager {
   ): Promise<void> {
     if (this.engine === "14.35") return this.exportProcOfItems(exportContext, directory, items, packageName, log);
     log.writeLine(this.text("ExportSolutionName", packageName));
-    log.writeLine(this.text("StartOfExecutionDateTime", this.timestamp()));
+    log.writeLine(this.text("StartOfExecutionDateTime", this.localTimestamp()));
     const status = this.messages.getStatusMessage();
     this.itemHelper.folder = directory;
     const excludedRefs = exportContext.refToUnknownPacks === "DoNotRemove" ? null : new NetfxHashtable<RemovedReference>("the removed references");
@@ -377,7 +402,7 @@ export class ImportExportManager {
         status.text = this.text("ExportWasCanceledByUser");
         await status.execute();
         log.writeLine(status.text);
-        log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+        log.writeLine(this.text("EndOfExecutionDateTime", this.localTimestamp()));
         return;
       }
       status.text = this.text("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
@@ -390,7 +415,7 @@ export class ImportExportManager {
         const failed = this.text("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
         status.text = failed;
         await status.execute();
-        log.writeLine(failed);
+        log.writeLine(this.engine === "12.0" ? this.text("ErrorOfExportingItemIdKeyedNameTypeLog", item.idName, item.keyedName, item.typeName) : failed);
         const code = String(thrown.faultcode);
         log.writeLine(this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
         const question = this.messages.getErrorMessageQuestion();
@@ -402,7 +427,7 @@ export class ImportExportManager {
           packageName,
         );
         if ((await question.execute()) === true) {
-          log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+          log.writeLine(this.text("EndOfExecutionDateTime", this.localTimestamp()));
           status.text = this.text("Completed");
           await status.execute();
           return;

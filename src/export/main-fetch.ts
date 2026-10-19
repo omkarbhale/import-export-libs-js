@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { isNullOrWhiteSpace, nullReference } from "../client/dotnet.js";
 import type { ArasVersion } from "../client/version.js";
 import { cmfBody, itemTypeBody } from "./request-bodies.js";
@@ -14,7 +15,8 @@ const levelsOf = (levels: string, types: readonly string[]): Array<[string, Fetc
 
 /**
  * The per-type table of `CExportItems.Export`. The engine's `switch` on the type name compiles to a hash dispatch
- * confirmed by string equality, which is an ordinal, case-sensitive match, so a `Map` is exactly it.
+ * confirmed by string equality, which is an ordinal, case-sensitive match, so a `Map` is exactly it. 12.0 has no row for
+ * `ac_PolicyAccessItemAttribute` (see {@link rowFor}).
  *
  * @spec EXP-021 EXP-026
  */
@@ -35,6 +37,11 @@ const SHAPES: ReadonlyMap<string, FetchShape> = new Map<string, FetchShape>([
   ["cmf_ContentType", { body: "cmf_ContentType" }],
   ["cmf_TabularView", { body: "cmf_TabularView" }],
 ]);
+
+/** The row of a type for an engine: 12.0's table lacks `ac_PolicyAccessItemAttribute`, which takes the default row (EXP-021). */
+function rowFor(typeName: string, engine: Engine): FetchShape | undefined {
+  return engine === "12.0" && typeName === "ac_PolicyAccessItemAttribute" ? undefined : SHAPES.get(typeName);
+}
 
 const DEFAULT_SELECT = "xp-*($value, @explicit, @permission_id), *[is_not_null()]";
 
@@ -65,12 +72,18 @@ export function requestedLevel(level: string | null | undefined): string {
  *
  * @spec EXP-003 EXP-020 EXP-021 EXP-022 EXP-023 EXP-024 EXP-025
  */
-export function mainFetchRequest(typeName: string, id: string, level: string | null | undefined, server: ArasVersion | undefined): string {
+export function mainFetchRequest(
+  typeName: string,
+  id: string,
+  level: string | null | undefined,
+  server: ArasVersion | undefined,
+  engine: Engine = DEFAULT_ENGINE,
+): string {
   const attributes: Array<[string, string]> = [
     ["type", typeName],
     ["action", "get"],
   ];
-  const shape = SHAPES.get(typeName);
+  const shape = rowFor(typeName, engine);
   let body = "";
   if (!shape) {
     attributes.push(["levels", requestedLevel(level)]);

@@ -2,7 +2,7 @@ import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { PasswordDigest } from "./digest.js";
 import { DotNetException } from "./dotnet.js";
 import { CLIENT_ENGINES, EngineNotSupportedError } from "./engine-support.js";
-import { ResponseDocument, iomFault, loadXml, unknownErrorFault } from "./fault.js";
+import { ResponseDocument, failedToLoginFault, iomFault, loadXml, unknownErrorFault } from "./fault.js";
 import {
   attributeOf,
   childElements,
@@ -21,6 +21,7 @@ import {
   type TokenProvider,
   bearerProtocol,
   discover,
+  discoverIom12,
 } from "./oauth.js";
 import { Iom15PasswordTokenProvider } from "./oauth-iom15.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
@@ -37,7 +38,7 @@ export interface CallRecord {
 }
 
 export interface ConnectionSettings {
-  /** The engine whose IOM this connection reproduces: IOM 14 for `14.0.7`, IOM 15 for `14.35`. Default `14.0.7`. */
+  /** The engine whose IOM this connection reproduces: IOM 12 for `12.0`, IOM 14 for `14.0.7`, IOM 15 for `14.35`. Default `14.0.7`. */
   engine?: Engine;
   url: string;
   database: string;
@@ -153,6 +154,7 @@ export class HttpServerConnection {
   private timeoutMs = 0;
   private authenticator: Authenticator | undefined;
   private readonly cookies = new CookieJar();
+  private readonly iom12: boolean;
   private readonly urls: ReturnType<typeof serverUrls>;
   private readonly transport: HttpTransport;
   private readonly onCall: ((call: CallRecord) => void) | undefined;
@@ -160,7 +162,8 @@ export class HttpServerConnection {
   constructor(private readonly settings: ConnectionSettings) {
     this.engine = settings.engine ?? DEFAULT_ENGINE;
     if (!CLIENT_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
-    this.urls = serverUrls(settings.url);
+    this.iom12 = this.engine === "12.0";
+    this.urls = serverUrls(settings.url, this.engine);
     this.transport = settings.transport ?? nodeTransport;
     this.onCall = settings.onCall;
     this.locale = settings.locale;
@@ -231,7 +234,7 @@ export class HttpServerConnection {
     const { database, userName, password } = this.settings;
     let discovered;
     try {
-      discovered = await discover(this.transport, this.urls.discovery);
+      discovered = await (this.iom12 ? discoverIom12 : discover)(this.transport, this.urls.discovery);
     } catch (error) {
       if (!(error instanceof DiscoveryNotFound)) throw error;
     }
@@ -241,7 +244,7 @@ export class HttpServerConnection {
           provider:
             this.engine === "14.35"
               ? new Iom15PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password })
-              : new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }),
+              : new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }, this.iom12),
           protocol: bearerProtocol(discovered.protocolType),
           token: undefined,
         }
@@ -322,7 +325,8 @@ export class HttpServerConnection {
     }
     const validated = await this.callAction("ValidateUser", "<Item/>");
     const id = resultChild(validated, "id");
-    if (!id) return validated.isError ? validated : unknownErrorFault();
+    if (!id) return validated.isError ? validated : this.iom12 ? failedToLoginFault() : unknownErrorFault();
+    if (this.iom12) return this.loginIom12();
     this.userId = innerText(id);
     const user = await this.readUser(this.userId);
     if (user.isError) {
@@ -333,6 +337,21 @@ export class HttpServerConnection {
     if (database && innerText(database) !== "") this.loggedOnDatabase = innerText(database);
     const loginName = resultChild(validated, "login_name");
     if (loginName && innerText(loginName) !== "") this.loggedOnUser = innerText(loginName);
+    return user;
+  }
+
+  /**
+   * IOM 12's `getUserInfo` after a `ValidateUser` that gave an id (WIRE-015): the user id comes from a second call,
+   * `GetCurrentUserID`, and the user record is read as in IOM 14. The database and the login name are not kept.
+   */
+  private async loginIom12(): Promise<ResponseDocument> {
+    const current = await this.callAction("GetCurrentUserID", "<Empty/>");
+    if (current.isError) return current;
+    const result = descendantElements(current.document.root).find((e) => e.name === "Result");
+    if (!result) throw new DotNetException("System.Exception", "Cannot obtain user id");
+    this.userId = innerText(result);
+    const user = await this.readUser(this.userId);
+    if (user.isError) this.userId = undefined;
     return user;
   }
 
