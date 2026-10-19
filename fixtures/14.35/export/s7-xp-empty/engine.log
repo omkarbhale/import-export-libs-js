@@ -1,0 +1,20 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221306-14.35-export-634167\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221306-14.35-export-634167\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export LIBSJS-SCRATCH-XPROPINST****
+start of execution : 10/19/2026 03:43:08
+Item id :F06E6941DE328CB42A63A668AB03B22A  keyed_name : LIBSJS-SCRATCH-XIT_Empty   type : LIBSJS_SCRATCH_XIT successfully exported
+end of execution : 10/19/2026 03:43:08

@@ -1,0 +1,100 @@
+﻿<AML>
+ <Item type="ItemType" id="4F1AC04A2B484F3ABA4E20DB63808A88" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Parts.htm</help_url>
+  <label xml:lang="en">Part</label>
+  <label_plural xml:lang="en">Parts</label_plural>
+  <Relationships>
+   <Item type="DiscussionTemplate" id="380D321FE086476FBF2AE318D5FBC96B" action="add">
+    <Relationships>
+     <Item type="DiscussionTemplateView" id="7FC569BEF3C34E0E81D888D8E68B14B0" action="add">
+      <related_id keyed_name="F6AF0D642C0D4EA7B08F192A443A9432" type="SSVCPresentationConfiguration">
+       <Item type="SSVCPresentationConfiguration" id="F6AF0D642C0D4EA7B08F192A443A9432" action="add">
+        <form_tooltip_template xml:lang="en">Form of ${ItemType:label} ${Item:keyed_name}</form_tooltip_template>
+       </Item>
+      </related_id>
+     </Item>
+    </Relationships>
+   </Item>
+   <Item type="Property" id="074E4827E5044F8BA6B6FD546E21D271" action="add">
+    <label xml:lang="en">Cost</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="AC04927AA0D645DE8657E956C8449F8F" action="add">
+    <label xml:lang="en">Cost Basis</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="04EB70FA8BF04F2FBA12095F56F011A2" action="add">
+    <label xml:lang="en">Description</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="BD14F1CE2F544EB0912D48ED963B930C" action="add">
+    <label xml:lang="en">External ID</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="FCC78BFA36D649F8B645C192CFCEB67F" action="add">
+    <label xml:lang="en">External Owner</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="18EEDC4C501945638E30EFAE69FAFF9E" action="add">
+    <label xml:lang="en">External Type</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="668EB2233D4341329EE97449B0267E3A" action="add">
+    <label xml:lang="en">Changes</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="F95E298391874E21A825EF5B0238B1C7" action="add">
+    <default_value xml:lang="en">Make</default_value>
+    <label xml:lang="en">Make / Buy</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="6DE61A89F16848049DF8967B51FD7F58" action="add">
+    <help_tooltip xml:lang="en" />
+    <label xml:lang="en">Name</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="29CCA13C125B47A3B4723101F5443B00" action="add">
+    <label xml:lang="en">Thumbnail</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="6EF283BEF0894DD1BE556E74F7A15AF0" action="add">
+    <default_value xml:lang="en">EA</default_value>
+    <label xml:lang="en">Unit</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="2E05616329F846C78C0A8F8468AC1EF8" action="add">
+    <label xml:lang="en">Weight</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" id="17FB1B0DEC8F47449E8B2A2A503B9A86" action="add">
+    <label xml:lang="en">Weight Basis</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+ <Item type="ItemType" id="4F1AC04A2B484F3ABA4E20DB63808A88" action="edit" xmlns:i18n="http://www.aras.com/I18N">
+  <Relationships>
+   <Item type="Property" id="879EAA0579BD4120BF3DF324ABA7A341" action="add">
+    <help_tooltip xml:lang="en">HI THERE</help_tooltip>
+    <label xml:lang="en">Part Number</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" action="edit" where="source_id='4F1AC04A2B484F3ABA4E20DB63808A88' and name='classification'">
+    <label xml:lang="en">Type</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" action="edit" where="source_id='4F1AC04A2B484F3ABA4E20DB63808A88' and name='major_rev'">
+    <label xml:lang="en">Revision</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" action="edit" where="source_id='4F1AC04A2B484F3ABA4E20DB63808A88' and name='state'">
+    <label xml:lang="en">State</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+   <Item type="Property" action="edit" where="source_id='4F1AC04A2B484F3ABA4E20DB63808A88' and name='superseded_date'">
+    <label xml:lang="en">Superseded Date</label>
+    <source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

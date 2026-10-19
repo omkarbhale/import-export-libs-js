@@ -1,0 +1,52 @@
+{
+  "id": "x-abort-skips-later-package",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 abort"
+  ],
+  "title": "A failing item in a package that the manifest enumerates first, a healthy package after it",
+  "exercises": "EXP-555: the remaining packages are skipped, with no manifest entry, directory, definition lookup or message. The Hashtable of the host enumerates `core` before `history` here (EXP-508), although `history` was inserted first, so the failing package comes first and `history` is never exported. The pair with x-abort-after-healthy-package inserts them the other way round.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    },
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "00000000000000000000000000000001",
+          "keyedName": "Nope One"
+        },
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "rules": [
+    "EXP-516",
+    "EXP-555",
+    "EXP-570",
+    "EXP-571",
+    "EXP-572",
+    "EXP-558",
+    "EXP-508"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "error": null
+  }
+}

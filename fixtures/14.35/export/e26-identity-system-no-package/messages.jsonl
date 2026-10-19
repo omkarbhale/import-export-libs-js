@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":17,"ticks":825480269356,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":11,"seq":2,"thread":17,"ticks":825480280549,"channel":"status","text":"Item 1 of 1: Identity - World","answer":null}
+{"event":19,"seq":3,"thread":17,"ticks":825481975609,"channel":"status","text":"completed","answer":null}
+{"event":20,"seq":4,"thread":17,"ticks":825481976104,"channel":"currentPackage","text":"","answer":null}

@@ -1,0 +1,5 @@
+{"event":10,"seq":1,"thread":16,"ticks":823933493311,"channel":"currentPackage","text":"Exporting package com.aras.innovator.configurator","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":823933505657,"channel":"status","text":"Item 1 of 1: ItemType - ScopeCacheDependency","answer":null}
+{"event":75,"seq":3,"thread":16,"ticks":823945070428,"channel":"warning","text":"There are references to unknown packages that were removed during the export of the package 'com.aras.innovator.configurator'.\nSee log file for more details (search for words 'REMOVED REFERENCE')","answer":null}
+{"event":76,"seq":4,"thread":16,"ticks":823945071017,"channel":"status","text":"completed","answer":null}
+{"event":77,"seq":5,"thread":16,"ticks":823945087040,"channel":"currentPackage","text":"","answer":null}

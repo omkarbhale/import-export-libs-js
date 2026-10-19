@@ -1,0 +1,6 @@
+<imports>
+  <package name="com.aras.innovator.preferences" path=".\">
+    <dependson name="com.aras.innovator.dashboard" />
+    <dependson name="com.aras.innovator.cui_default" />
+  </package>
+</imports>

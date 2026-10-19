@@ -1,0 +1,28 @@
+{
+  "id": "e34-preference",
+  "engine": "14.35",
+  "catalogue": [
+    "E34"
+  ],
+  "title": "Preference: levels 2, element name = id",
+  "exercises": "Levels 2; the file is named by the id.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.preferences",
+      "items": [
+        {
+          "type": "Preference",
+          "id": "507A16AA36F94513AD7EC1F948B5B48F",
+          "keyedName": "507A16AA36F94513AD7EC1F948B5B48F"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 40,
+    "error": null
+  }
+}

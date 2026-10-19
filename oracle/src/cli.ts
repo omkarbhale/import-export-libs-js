@@ -48,7 +48,7 @@ Engine options (passed to the engine's host; an option the engine lacks is an er
   --ref-to-unknown-packs RemoveSilently|RemoveWithWarning|DoNotRemove, --use-import,
   --merge, --fast, --release <r>, --description <d>, --vault, --lp-debug,
   import: --version-before <type>:<id>,... (give those scratch items a new generation first),
-         --cancel-after-status <n> (press Cancel after n status messages), --lock-upgrade-rows (lock the
+         --cancel-after-status <n> (press Cancel after n status messages; export too, for 14.35's parallel loop), --lock-upgrade-rows (lock the
          packages' scratch DatabaseUpgrade rows first), --keep-created (skip the cleanup, for a later cleanup run),
   14.35: --languages a,b, --engine-action <Export|ExportLanguageResourcesOnly|ExportMetadataWithLanguageResources>,
          --aml-batch-mode, --aml-batch-max-size <n>, --collect-import-errors, --collect-import-errors-max-count <n>

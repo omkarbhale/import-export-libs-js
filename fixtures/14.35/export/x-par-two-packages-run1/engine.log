@@ -1,0 +1,35 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222627-14.35-export-0225be\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222627-14.35-export-0225be\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.solution.PLM****
+start of execution : 10/19/2026 03:56:29
+Item id :049573909D3D49FD81E0C2AEA1CDD62C  keyed_name : PE_Impact_Matrix_expand   type : Variable successfully exported
+Item id :A41D0BAAF61B4427BAE59D3879DB5FF6  keyed_name : CAD Length Units   type : Variable successfully exported
+Item id :ED8C1F0C5721435A9CA1D8FADB30A168  keyed_name : CAD Transformation Matrix Format   type : Variable successfully exported
+Item id :679408C1EFE845AFA526D3897B42DBFF  keyed_name : Product Engineering   type : Variable successfully exported
+Item id :968471EC23804034A3B7B2B5C78601E7  keyed_name : CAD Angular Units   type : Variable successfully exported
+end of execution : 10/19/2026 03:56:29
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:56:29
+Item id :AEE9D6567EDB45A4A50A669F5B385BD5  keyed_name : Field Positioning   type : List successfully exported
+Item id :6056059D6CCB4E65A6465E1C36D2055D  keyed_name : Field Length Unit   type : List successfully exported
+Item id :858DCAAD7FF94EDC969A1C3CFA57FA93  keyed_name : Data Types   type : List successfully exported
+Item id :DA63CDCCBB654870B291EBA9A5FFBBA9  keyed_name : Field Types   type : List successfully exported
+Item id :972269F295174215AEB67FB24262468D  keyed_name : DBUpgadeStatus   type : List successfully exported
+Item id :EAB29654E2CD4D30B376957788198B40  keyed_name : Categories   type : List successfully exported
+Item id :F90729D18482477CBB61311F108A3379  keyed_name : DBUpgradeType   type : List successfully exported
+Item id :51D8F6076D2E41AAA7D72D6F1B2184D1  keyed_name : Configurable Grid Events   type : List successfully exported
+end of execution : 10/19/2026 03:56:30

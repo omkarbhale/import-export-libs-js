@@ -1,0 +1,28 @@
+{
+  "id": "e29-action-colon-keyed-name",
+  "engine": "14.35",
+  "catalogue": [
+    "E29"
+  ],
+  "title": "Action: keyed name with a colon (PE: rollup all parts in DB)",
+  "exercises": "The keyed name contains ':', which is not allowed in a file name, so the file is named by the id. The package element's name is 'PE rollup all parts in DB'; this case passes the item's real keyed name.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Action",
+          "id": "3313FB477B9A4982A30EA157ED896247",
+          "keyedName": "PE: rollup all parts in DB"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 18,
+    "error": null
+  }
+}

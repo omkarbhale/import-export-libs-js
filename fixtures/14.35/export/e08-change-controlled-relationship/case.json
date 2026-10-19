@@ -1,0 +1,28 @@
+{
+  "id": "e08-change-controlled-relationship",
+  "engine": "14.35",
+  "catalogue": [
+    "E08"
+  ],
+  "title": "ItemType: Change Controlled Relationship",
+  "exercises": "R8, the Change Controlled Relationship fix-mode Property arm. It fires only if its related_id, sort_order and source_id Properties differ from stock.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "2A5BB1A93BDC436B824B9FFE6DB89553",
+          "keyedName": "Change Controlled Relationship"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 35,
+    "error": null
+  }
+}

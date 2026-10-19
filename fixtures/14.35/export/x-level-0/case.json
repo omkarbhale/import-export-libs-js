@@ -1,0 +1,36 @@
+{
+  "id": "x-level-0",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 request tree"
+  ],
+  "title": "CommandBarSection: sLevel 0",
+  "exercises": "A level of 0 gives the bare item with no tree: none of the relationship-type lookups of EXP-061 is sent, and the main fetch asks for the item alone. Compare e53-level-1 to e53-level-3.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.i18n",
+      "items": [
+        {
+          "type": "CommandBarSection",
+          "id": "0212985C3E90930D618120D9625E4BB8",
+          "keyedName": "Language_TOC_Content"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "level": "0"
+  },
+  "expectsError": false,
+  "rules": [
+    "EXP-021",
+    "EXP-022",
+    "EXP-060",
+    "EXP-061"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 17,
+    "error": null
+  }
+}

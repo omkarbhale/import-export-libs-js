@@ -1,0 +1,28 @@
+{
+  "id": "e20-workflow-map-ecn",
+  "engine": "14.35",
+  "catalogue": [
+    "E20"
+  ],
+  "title": "Workflow Map: non-system process_owner (ECN)",
+  "exercises": "Versionable, levels 3. process_owner is a non-system identity (Change Specialist II), so it becomes a bare id. The request transcript shows the nested float-property lookups.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Workflow Map",
+          "id": "48B8C3644AA34B7A9A310DB09815003D",
+          "keyedName": "ECN"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 69,
+    "error": null
+  }
+}

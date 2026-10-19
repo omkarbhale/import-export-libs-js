@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":16,"ticks":827183928888,"channel":"currentPackage","text":"Exporting package com.aras.innovator.i18n","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":827183936078,"channel":"status","text":"Item 1 of 1: CommandBarSection - Language_TOC_Content","answer":null}
+{"event":20,"seq":3,"thread":16,"ticks":827185869592,"channel":"status","text":"completed","answer":null}
+{"event":21,"seq":4,"thread":16,"ticks":827185870211,"channel":"currentPackage","text":"","answer":null}

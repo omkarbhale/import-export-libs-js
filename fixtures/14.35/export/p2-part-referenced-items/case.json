@@ -1,0 +1,30 @@
+{
+  "id": "p2-part-referenced-items",
+  "engine": "14.35",
+  "catalogue": [
+    "ReferencedItems"
+  ],
+  "title": "Package with dependencies, referenced items on (Part)",
+  "exercises": "bExportReferencedItems on for a package that depends on others. Compare with e02-part-itemtype, which has it off.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "exportReferencedItems": true
+  },
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 70,
+    "error": null
+  }
+}

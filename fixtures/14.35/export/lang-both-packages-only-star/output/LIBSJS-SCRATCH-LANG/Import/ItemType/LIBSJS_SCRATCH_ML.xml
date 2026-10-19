@@ -1,0 +1,29 @@
+﻿<AML>
+ <Item type="ItemType" id="C442609F868621BBE8487B6F8EA1A27E" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <label xml:lang="en">LIBSJS_SCRATCH_ML</label>
+  <i18n:label xml:lang="fr">Type de test</i18n:label>
+  <i18n:label xml:lang="de">Skratch-Typ</i18n:label>
+  <Relationships>
+   <Item type="Property" id="43DD305818F17E7547842AE4BD79B923" action="add">
+    <label xml:lang="en">summary</label>
+    <i18n:label xml:lang="fr">Resume</i18n:label>
+    <i18n:label xml:lang="de">Zusammenfassung</i18n:label>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+   </Item>
+   <Item type="Property" id="EE1E89CCF32B1B1A5CC2EB0B79D8A442" action="add">
+    <label xml:lang="en">title</label>
+    <i18n:label xml:lang="fr">Titre</i18n:label>
+    <i18n:label xml:lang="de">Titel</i18n:label>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+ <Item type="ItemType" id="C442609F868621BBE8487B6F8EA1A27E" action="edit" xmlns:i18n="http://www.aras.com/I18N">
+  <Relationships>
+   <Item type="Property" id="A94A12F513573F79A7C8FA9CAADC873B" action="add">
+    <label xml:lang="en">name</label>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

@@ -1,0 +1,15 @@
+﻿<AML>
+ <Item type="LIBSJS_SCRATCH_XIT" id="BB375A03ED9E92E2098011DDF895576F" action="add">
+  <name>LIBSJS-SCRATCH-XIT_Values</name>
+  <title>values</title>
+  <xp-libsjs_scratch_xp1 set="permission_id|value" is_null="1" permission_id="" />
+  <xp-libsjs_scratch_xp2 set="permission_id|value" is_null="1" permission_id="" />
+  <Relationships>
+   <Item type="LIBSJS_SCRATCH_XIT_xClass" id="15F195A857CD297EC1AF0B954BCF436D" action="add">
+    <related_id keyed_name="/LIBSJS_SCRATCH_XTree/*/LIBSJS_SCRATCH_XClass_A" type="xClass">1CD5FC3E77E4E45CB943A782BB4652D8</related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="BB375A03ED9E92E2098011DDF895576F" type="LIBSJS_SCRATCH_XIT">BB375A03ED9E92E2098011DDF895576F</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

@@ -1,0 +1,35 @@
+{
+  "id": "l1-only-no-list",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportLanguageResourcesOnly with no language list at all",
+  "exercises": "LP-113: the context's `Languages` is null. Reaching the constructor with a null list in a language mode throws an ArgumentNullException before any request. (The reference host never passes null; a library caller can.)",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly"
+  },
+  "expectsError": true,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-113"
+  ],
+  "result": {
+    "hostExit": 2,
+    "calls": 6,
+    "error": "System.ArgumentNullException: Value cannot be null.\r\nParameter name: source\r\n   at System.Linq.Enumerable.Where[TSource](IEnumerable`1 source, Func`2 predicate)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager..ctor(ISolutionUpgradeContext context, IMessagesFactory messagesFactory, ICItemHelper itemHelper)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  }
+}

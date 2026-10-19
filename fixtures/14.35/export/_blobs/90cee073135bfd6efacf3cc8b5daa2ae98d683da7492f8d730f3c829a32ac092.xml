@@ -1,0 +1,1025 @@
+<SOAP-ENV:Envelope xmlns:i18n="http://www.aras.com/I18N" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="4F1AC04A2B484F3ABA4E20DB63808A88"><config_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</config_id><help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Parts.htm</help_url><id keyed_name="Part" type="ItemType">4F1AC04A2B484F3ABA4E20DB63808A88</id><is_versionable>1</is_versionable><label xml:lang="en">Part</label><label_plural xml:lang="en">Parts</label_plural><name>Part</name><i18n:help_url is_null="1" xml:lang="de" /><i18n:help_url is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /><i18n:label_plural is_null="1" xml:lang="de" /><i18n:label_plural is_null="1" xml:lang="fr" /><Relationships><Item type="DiscussionTemplate" typeId="C64BA744050149A1A32F402ED965CB1A" id="380D321FE086476FBF2AE318D5FBC96B"><config_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</config_id><id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</id><related_id is_null="1" /><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><Relationships><Item type="FeedTemplate" typeId="4697179F1FC94E25A8274E586EEF2F39" id="72E655A6DCD5499D8B5547230A6E6D83"><config_id keyed_name="72E655A6DCD5499D8B5547230A6E6D83" type="FeedTemplate">72E655A6DCD5499D8B5547230A6E6D83</config_id><id keyed_name="72E655A6DCD5499D8B5547230A6E6D83" type="FeedTemplate">72E655A6DCD5499D8B5547230A6E6D83</id><related_id is_null="1" /><source_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</source_id></Item><Item type="FeedTemplate" typeId="4697179F1FC94E25A8274E586EEF2F39" id="7D4B86FC634E47F98B63F63F2BA06CEE"><config_id keyed_name="7D4B86FC634E47F98B63F63F2BA06CEE" type="FeedTemplate">7D4B86FC634E47F98B63F63F2BA06CEE</config_id><id keyed_name="7D4B86FC634E47F98B63F63F2BA06CEE" type="FeedTemplate">7D4B86FC634E47F98B63F63F2BA06CEE</id><related_id is_null="1" /><source_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</source_id></Item><Item type="FeedTemplate" typeId="4697179F1FC94E25A8274E586EEF2F39" id="43C7020B4B8D4ADBB2664F1AE96CDA5A"><config_id keyed_name="43C7020B4B8D4ADBB2664F1AE96CDA5A" type="FeedTemplate">43C7020B4B8D4ADBB2664F1AE96CDA5A</config_id><id keyed_name="43C7020B4B8D4ADBB2664F1AE96CDA5A" type="FeedTemplate">43C7020B4B8D4ADBB2664F1AE96CDA5A</id><related_id is_null="1" /><source_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</source_id></Item><Item type="FeedTemplate" typeId="4697179F1FC94E25A8274E586EEF2F39" id="74D0D922D30D480C86D3CA488DC54D41"><config_id keyed_name="74D0D922D30D480C86D3CA488DC54D41" type="FeedTemplate">74D0D922D30D480C86D3CA488DC54D41</config_id><id keyed_name="74D0D922D30D480C86D3CA488DC54D41" type="FeedTemplate">74D0D922D30D480C86D3CA488DC54D41</id><related_id is_null="1" /><source_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</source_id></Item><Item type="DiscussionTemplateView" typeId="ED06F0AEA37242349F2C499B7FEA6A26" id="7FC569BEF3C34E0E81D888D8E68B14B0"><config_id keyed_name="7FC569BEF3C34E0E81D888D8E68B14B0" type="DiscussionTemplateView">7FC569BEF3C34E0E81D888D8E68B14B0</config_id><id keyed_name="7FC569BEF3C34E0E81D888D8E68B14B0" type="DiscussionTemplateView">7FC569BEF3C34E0E81D888D8E68B14B0</id><related_id keyed_name="F6AF0D642C0D4EA7B08F192A443A9432" type="SSVCPresentationConfiguration"><Item type="SSVCPresentationConfiguration" typeId="E7A68175B2024FFB876E87D0081071A9" id="F6AF0D642C0D4EA7B08F192A443A9432"><config_id keyed_name="F6AF0D642C0D4EA7B08F192A443A9432" type="SSVCPresentationConfiguration">F6AF0D642C0D4EA7B08F192A443A9432</config_id><form_tooltip_template xml:lang="en">Form of ${ItemType:label} ${Item:keyed_name}</form_tooltip_template><id keyed_name="F6AF0D642C0D4EA7B08F192A443A9432" type="SSVCPresentationConfiguration">F6AF0D642C0D4EA7B08F192A443A9432</id><i18n:form_tooltip_template is_null="1" xml:lang="de" /><i18n:form_tooltip_template is_null="1" xml:lang="fr" /></Item></related_id><source_id keyed_name="380D321FE086476FBF2AE318D5FBC96B" type="DiscussionTemplate">380D321FE086476FBF2AE318D5FBC96B</source_id></Item></Relationships></Item><Item type="ITPresentationConfiguration" typeId="797EE3B1B9624E369B3E45FA0C10757C" id="67FD0B2707C046839684C30591D90084"><config_id keyed_name="67FD0B2707C046839684C30591D90084" type="ITPresentationConfiguration">67FD0B2707C046839684C30591D90084</config_id><id keyed_name="67FD0B2707C046839684C30591D90084" type="ITPresentationConfiguration">67FD0B2707C046839684C30591D90084</id><related_id keyed_name="F2BAFC3F368B4EDE968406BFDB6597AC" type="PresentationConfiguration">F2BAFC3F368B4EDE968406BFDB6597AC</related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="2B13BC79EE2D4C0294C7DD4297CCB3DB"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>120</column_width><config_id keyed_name="classification" type="Property">2B13BC79EE2D4C0294C7DD4297CCB3DB</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="classification" type="Property">2B13BC79EE2D4C0294C7DD4297CCB3DB</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>classification</keyed_name><label xml:lang="en">Type</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>512</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>512</stored_length><track_history>0</track_history><name>classification</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="C8D97CBD5276427795AEAEBF02B1D742"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="config_id" type="Property">C8D97CBD5276427795AEAEBF02B1D742</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="config_id" type="Property">C8D97CBD5276427795AEAEBF02B1D742</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>config_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2688</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>config_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="074E4827E5044F8BA6B6FD546E21D271"><behavior>float</behavior><column_alignment>right</column_alignment><column_width>80</column_width><config_id keyed_name="cost" type="Property">074E4827E5044F8BA6B6FD546E21D271</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>decimal</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="cost" type="Property">074E4827E5044F8BA6B6FD546E21D271</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>cost</keyed_name><label xml:lang="en">Cost</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><prec>19</prec><range_inclusive>0</range_inclusive><readonly>0</readonly><scale>4</scale><sort_order>896</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>cost</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="AC04927AA0D645DE8657E956C8449F8F"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>100</column_width><config_id keyed_name="cost_basis" type="Property">AC04927AA0D645DE8657E956C8449F8F</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Goal Basis">540DD8228C8043BD905BF401D245926E</data_source><data_type>list</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="cost_basis" type="Property">AC04927AA0D645DE8657E956C8449F8F</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>cost_basis</keyed_name><label xml:lang="en">Cost Basis</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1408</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>64</stored_length><track_history>0</track_history><name>cost_basis</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="946A4251B1F247F3994B6A3DBC6F06E9"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="created_by_id" type="Property">946A4251B1F247F3994B6A3DBC6F06E9</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="created_by_id" type="Property">946A4251B1F247F3994B6A3DBC6F06E9</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>created_by_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>640</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>created_by_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="343A13F3E50E4EF8B5C1E300EFE443A7"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="created_on" type="Property">343A13F3E50E4EF8B5C1E300EFE443A7</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>date</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="created_on" type="Property">343A13F3E50E4EF8B5C1E300EFE443A7</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>created_on</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>512</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>created_on</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F88A979E89E5415CA62877C9BD4C2A1B"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="css" type="Property">F88A979E89E5415CA62877C9BD4C2A1B</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>text</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="css" type="Property">F88A979E89E5415CA62877C9BD4C2A1B</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>css</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>2304</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>css</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="BD80FB96DFD94CEC833A84B12EBFE007"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="current_state" type="Property">BD80FB96DFD94CEC833A84B12EBFE007</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Life Cycle State" type="ItemType" name="Life Cycle State">5EFB53D35BAE468B851CD388BEA46B30</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="current_state" type="Property">BD80FB96DFD94CEC833A84B12EBFE007</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>current_state</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1280</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>current_state</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="04EB70FA8BF04F2FBA12095F56F011A2"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>250</column_width><config_id keyed_name="description" type="Property">04EB70FA8BF04F2FBA12095F56F011A2</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="description" type="Property">04EB70FA8BF04F2FBA12095F56F011A2</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>description</keyed_name><label xml:lang="en">Description</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1792</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>256</stored_length><track_history>0</track_history><name>description</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="245C3959F7A841ABB7B17A482ADD9EE8"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="effective_date" type="Property">245C3959F7A841ABB7B17A482ADD9EE8</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>date</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="effective_date" type="Property">245C3959F7A841ABB7B17A482ADD9EE8</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>effective_date</keyed_name><label xml:lang="en">Effective Date</label><major_rev>A</major_rev><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-15T14:00:25</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>3072</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>effective_date</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="BD14F1CE2F544EB0912D48ED963B930C"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="external_id" type="Property">BD14F1CE2F544EB0912D48ED963B930C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="external_id" type="Property">BD14F1CE2F544EB0912D48ED963B930C</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>1</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>external_id</keyed_name><label xml:lang="en">External ID</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1920</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>256</stored_length><track_history>0</track_history><name>external_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="FCC78BFA36D649F8B645C192CFCEB67F"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="external_owner" type="Property">FCC78BFA36D649F8B645C192CFCEB67F</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="external_owner" type="Property">FCC78BFA36D649F8B645C192CFCEB67F</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>external_owner</keyed_name><label xml:lang="en">External Owner</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>2176</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>128</stored_length><track_history>0</track_history><name>external_owner</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="18EEDC4C501945638E30EFAE69FAFF9E"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="external_type" type="Property">18EEDC4C501945638E30EFAE69FAFF9E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="external_type" type="Property">18EEDC4C501945638E30EFAE69FAFF9E</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>external_type</keyed_name><label xml:lang="en">External Type</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>2048</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>128</stored_length><track_history>0</track_history><name>external_type</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="378AD8EEE34046459EE0DA474A939E19"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="generation" type="Property">378AD8EEE34046459EE0DA474A939E19</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>integer</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="generation" type="Property">378AD8EEE34046459EE0DA474A939E19</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>generation</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2432</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>generation</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="668EB2233D4341329EE97449B0267E3A"><behavior>float</behavior><column_alignment>center</column_alignment><column_width>60</column_width><config_id keyed_name="has_change_pending" type="Property">668EB2233D4341329EE97449B0267E3A</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>boolean</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="has_change_pending" type="Property">668EB2233D4341329EE97449B0267E3A</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>has_change_pending</keyed_name><label xml:lang="en">Changes</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>95000</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>has_change_pending</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="A9F21A23A84F40818A57F04F46D6F8DB"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="id" type="Property">A9F21A23A84F40818A57F04F46D6F8DB</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="id" type="Property">A9F21A23A84F40818A57F04F46D6F8DB</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>384</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="9B639E62E4C442B7B4215756B72C5678"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="is_current" type="Property">9B639E62E4C442B7B4215756B72C5678</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>boolean</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="is_current" type="Property">9B639E62E4C442B7B4215756B72C5678</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>is_current</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1664</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>is_current</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="4FAE6DA7EC3741509436897411634A51"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="is_released" type="Property">4FAE6DA7EC3741509436897411634A51</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>boolean</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="is_released" type="Property">4FAE6DA7EC3741509436897411634A51</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>is_released</keyed_name><label xml:lang="en">Released</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2048</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>is_released</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="879EAA0579BD4120BF3DF324ABA7A341"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>197</column_width><config_id keyed_name="item_number" type="Property">879EAA0579BD4120BF3DF324ABA7A341</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_text></help_text><help_tooltip xml:lang="en">HI THERE</help_tooltip><id keyed_name="item_number" type="Property">879EAA0579BD4120BF3DF324ABA7A341</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>1</is_indexed><is_keyed>1</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>item_number</keyed_name><keyed_name_order>1</keyed_name_order><label xml:lang="en">Part Number</label><major_rev>A</major_rev><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-24T18:08:13</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><order_by>1</order_by><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>320</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>32</stored_length><track_history>0</track_history><name>item_number</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="08EED5285B264F92809DC867CE1F3BF6"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="keyed_name" type="Property">08EED5285B264F92809DC867CE1F3BF6</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="keyed_name" type="Property">08EED5285B264F92809DC867CE1F3BF6</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>1</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>keyed_name</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>256</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>128</stored_length><track_history>0</track_history><name>keyed_name</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F9B71B4731E64B3A95198F5F6499E53A"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="locked_by_id" type="Property">F9B71B4731E64B3A95198F5F6499E53A</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="locked_by_id" type="Property">F9B71B4731E64B3A95198F5F6499E53A</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>locked_by_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1536</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>locked_by_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6378B1C113144CE3B4D2F8A1E403A71B"><behavior>float</behavior><column_alignment>center</column_alignment><column_width>50</column_width><config_id keyed_name="major_rev" type="Property">6378B1C113144CE3B4D2F8A1E403A71B</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="major_rev" type="Property">6378B1C113144CE3B4D2F8A1E403A71B</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>major_rev</keyed_name><label xml:lang="en">Revision</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>256</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>8</stored_length><track_history>0</track_history><name>major_rev</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /><Relationships><Item type="Grid Event" typeId="E2DECCA6300E4815B466C62C66E9D3AF" id="D3E5A21817CF47FC8A388A11E4FB101B"><config_id keyed_name="D3E5A21817CF47FC8A388A11E4FB101B" type="Grid Event">D3E5A21817CF47FC8A388A11E4FB101B</config_id><related_id keyed_name="Grid Cell ReadOnly" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="5C2B59DEBF464F46BE68CB64FBAAD914"><comments>Makes cell not editable.  Use with Grid event method OnEditStart</comments><config_id keyed_name="Grid Cell ReadOnly" type="Method">5C2B59DEBF464F46BE68CB64FBAAD914</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:59</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="Grid Cell ReadOnly" type="Method">5C2B59DEBF464F46BE68CB64FBAAD914</id><is_current>1</is_current><is_released>0</is_released><keyed_name>Grid Cell ReadOnly</keyed_name><major_rev>A</major_rev><method_code>currSelCell.setEditable(false);</method_code><method_type>JavaScript</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:59</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>Grid Cell ReadOnly</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="major_rev" type="Property">6378B1C113144CE3B4D2F8A1E403A71B</source_id><id keyed_name="D3E5A21817CF47FC8A388A11E4FB101B" type="Grid Event">D3E5A21817CF47FC8A388A11E4FB101B</id></Item></Relationships></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F95E298391874E21A825EF5B0238B1C7"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>100</column_width><config_id keyed_name="make_buy" type="Property">F95E298391874E21A825EF5B0238B1C7</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_source keyed_name="Make Buy">F7553D600D57489BB81309E32835AFEC</data_source><data_type>list</data_type><default_value xml:lang="en">Make</default_value><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="make_buy" type="Property">F95E298391874E21A825EF5B0238B1C7</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>make_buy</keyed_name><label xml:lang="en">Make / Buy</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1152</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>64</stored_length><track_history>0</track_history><name>make_buy</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="647CFC378BEC4A3DABAA40BC7CECA52C"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="managed_by_id" type="Property">647CFC378BEC4A3DABAA40BC7CECA52C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="managed_by_id" type="Property">647CFC378BEC4A3DABAA40BC7CECA52C</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>managed_by_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>896</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>managed_by_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="787C3A45A8544C418569F57B90EE8551"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="minor_rev" type="Property">787C3A45A8544C418569F57B90EE8551</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="minor_rev" type="Property">787C3A45A8544C418569F57B90EE8551</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>minor_rev</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1920</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>8</stored_length><track_history>0</track_history><name>minor_rev</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="8A0CE37F55A242228BC10846DFE681FC"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="modified_by_id" type="Property">8A0CE37F55A242228BC10846DFE681FC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="modified_by_id" type="Property">8A0CE37F55A242228BC10846DFE681FC</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>modified_by_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1152</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>modified_by_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="422CA5019E594229991AC2E73967BF5E"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="modified_on" type="Property">422CA5019E594229991AC2E73967BF5E</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>date</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="modified_on" type="Property">422CA5019E594229991AC2E73967BF5E</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>modified_on</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>1024</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>modified_on</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6DE61A89F16848049DF8967B51FD7F58"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>200</column_width><config_id keyed_name="name" type="Property">6DE61A89F16848049DF8967B51FD7F58</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_text></help_text><help_tooltip xml:lang="en"></help_tooltip><id keyed_name="name" type="Property">6DE61A89F16848049DF8967B51FD7F58</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>name</keyed_name><label xml:lang="en">Name</label><major_rev>A</major_rev><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-15T14:00:01</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>384</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>64</stored_length><track_history>0</track_history><name>name</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F2C52146D51C4F5F8FB42C76558258F1"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="new_version" type="Property">F2C52146D51C4F5F8FB42C76558258F1</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>boolean</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="new_version" type="Property">F2C52146D51C4F5F8FB42C76558258F1</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>new_version</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2560</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>new_version</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="3FD173C750C345ED92AAE5E2801FE267"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="not_lockable" type="Property">3FD173C750C345ED92AAE5E2801FE267</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>boolean</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="not_lockable" type="Property">3FD173C750C345ED92AAE5E2801FE267</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>not_lockable</keyed_name><label xml:lang="en">Not Lockable</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2176</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>not_lockable</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="7BA2D4FC2DD54F21BAC3B4A9BB70A624"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="owned_by_id" type="Property">7BA2D4FC2DD54F21BAC3B4A9BB70A624</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="owned_by_id" type="Property">7BA2D4FC2DD54F21BAC3B4A9BB70A624</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>owned_by_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>768</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>owned_by_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="70C8CA58CC4B4CA799DC4E40C4986A73"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="permission_id" type="Property">70C8CA58CC4B4CA799DC4E40C4986A73</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Permission" type="ItemType" name="Permission">C6A89FDE1294451497801DF78341B473</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="permission_id" type="Property">70C8CA58CC4B4CA799DC4E40C4986A73</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>1</is_required><item_behavior>float</item_behavior><keyed_name>permission_id</keyed_name><label is_null="1" xml:lang="en" /><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2816</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>permission_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="C81CCD5094B645A09D589FB7E03910EC"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="release_date" type="Property">C81CCD5094B645A09D589FB7E03910EC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>date</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="release_date" type="Property">C81CCD5094B645A09D589FB7E03910EC</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>release_date</keyed_name><label xml:lang="en">Release Date</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>2944</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>release_date</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="F1E10EBEA23E40ADA7C9BCB0416ECC46"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>80</column_width><config_id keyed_name="state" type="Property">F1E10EBEA23E40ADA7C9BCB0416ECC46</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>string</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="state" type="Property">F1E10EBEA23E40ADA7C9BCB0416ECC46</id><is_current>1</is_current><is_hidden>0</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>state</keyed_name><label xml:lang="en">State</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>1</readonly><sort_order>640</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>32</stored_length><track_history>0</track_history><name>state</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6594F45FED1B447AA86D9FD1B4D6CCE3"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="superseded_date" type="Property">6594F45FED1B447AA86D9FD1B4D6CCE3</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_type>date</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="superseded_date" type="Property">6594F45FED1B447AA86D9FD1B4D6CCE3</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>superseded_date</keyed_name><label xml:lang="en">Superseded Date</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><pattern>short_date_time</pattern><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>5120</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>superseded_date</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="5394A10B59A2451391D5A27FB43461EC"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="team_id" type="Property">5394A10B59A2451391D5A27FB43461EC</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><data_source keyed_name="Team" type="ItemType" name="Team">CC23F9130F574E7D99DF9659F27590A6</data_source><data_type>item</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="team_id" type="Property">5394A10B59A2451391D5A27FB43461EC</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>team_id</keyed_name><label xml:lang="en">Team</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>3328</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>team_id</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="29CCA13C125B47A3B4723101F5443B00"><behavior>float</behavior><column_alignment>left</column_alignment><config_id keyed_name="thumbnail" type="Property">29CCA13C125B47A3B4723101F5443B00</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>image</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="thumbnail" type="Property">29CCA13C125B47A3B4723101F5443B00</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>thumbnail</keyed_name><label xml:lang="en">Thumbnail</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>5248</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>thumbnail</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="6EF283BEF0894DD1BE556E74F7A15AF0"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>60</column_width><config_id keyed_name="unit" type="Property">6EF283BEF0894DD1BE556E74F7A15AF0</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_source keyed_name="Units">2BE5CDEBF2114CE88DEF9455ECAF785B</data_source><data_type>list</data_type><default_value xml:lang="en">EA</default_value><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="unit" type="Property">6EF283BEF0894DD1BE556E74F7A15AF0</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>0</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>unit</keyed_name><label xml:lang="en">Unit</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1024</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>64</stored_length><track_history>0</track_history><name>unit</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="2E05616329F846C78C0A8F8468AC1EF8"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>80</column_width><config_id keyed_name="weight" type="Property">2E05616329F846C78C0A8F8468AC1EF8</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_type>decimal</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="weight" type="Property">2E05616329F846C78C0A8F8468AC1EF8</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>weight</keyed_name><label xml:lang="en">Weight</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><prec>19</prec><range_inclusive>0</range_inclusive><readonly>0</readonly><scale>4</scale><sort_order>1536</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><track_history>0</track_history><name>weight</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="Property" typeId="26D7CD4E033242148E2724D3D054B4D3" id="17FB1B0DEC8F47449E8B2A2A503B9A86"><behavior>float</behavior><column_alignment>left</column_alignment><column_width>100</column_width><config_id keyed_name="weight_basis" type="Property">17FB1B0DEC8F47449E8B2A2A503B9A86</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:49</created_on><data_source keyed_name="Goal Basis">540DD8228C8043BD905BF401D245926E</data_source><data_type>list</data_type><default_value is_null="1" xml:lang="en" /><generation>1</generation><help_tooltip is_null="1" xml:lang="en" /><id keyed_name="weight_basis" type="Property">17FB1B0DEC8F47449E8B2A2A503B9A86</id><is_current>1</is_current><is_hidden>1</is_hidden><is_hidden2>1</is_hidden2><is_indexed>0</is_indexed><is_keyed>0</is_keyed><is_multi_valued>0</is_multi_valued><is_released>0</is_released><is_required>0</is_required><item_behavior>float</item_behavior><keyed_name>weight_basis</keyed_name><label xml:lang="en">Weight Basis</label><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><range_inclusive>0</range_inclusive><readonly>0</readonly><sort_order>1664</sort_order><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><stored_length>64</stored_length><track_history>0</track_history><name>weight_basis</name><i18n:default_value is_null="1" xml:lang="de" /><i18n:default_value is_null="1" xml:lang="fr" /><i18n:help_tooltip is_null="1" xml:lang="de" /><i18n:help_tooltip is_null="1" xml:lang="fr" /><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="A06CE2E9D07542DB9883CAF20BB22B11"><config_id keyed_name="Part Alternate" type="RelationshipType">A06CE2E9D07542DB9883CAF20BB22B11</config_id><id keyed_name="Part Alternate" type="RelationshipType">A06CE2E9D07542DB9883CAF20BB22B11</id><label xml:lang="en">Alternates</label><related_id keyed_name="Part" type="ItemType" name="Part"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="4F1AC04A2B484F3ABA4E20DB63808A88"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><class_structure>&lt;class id="4F1AC04A2B484F3ABA4E20DB63808A88"&gt;&lt;class name="Component" id="0D83A764A1EA0CB66E34980C4B50F7E7" /&gt;&lt;class name="Assembly" id="512FF7893DBCD6D1AC1F55B87A480934" /&gt;&lt;class name="Material" id="64801C21172EEEB61692B77CB5E0ABF1" /&gt;&lt;class name="Software" id="74DB7ADB15E0E70BD729E8837D0FF3C9" /&gt;&lt;/class&gt;</class_structure><close_icon>../images/Part.svg</close_icon><config_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><default_page_size>25</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Parts.htm</help_url><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="Part" type="ItemType">4F1AC04A2B484F3ABA4E20DB63808A88</id><implementation_type>table</implementation_type><instance_data>PART</instance_data><is_current>1</is_current><is_dependent>0</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>1</is_versionable><keyed_name>Part</keyed_name><label xml:lang="en">Part</label><label_plural xml:lang="en">Parts</label_plural><large_icon>../images/Part.svg</large_icon><major_rev>A</major_rev><manual_versioning>0</manual_versioning><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-24T18:08:15</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/Part.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>0</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Part</name></Item></related_id><relationship_id keyed_name="Part Alternate" type="ItemType" name="Part Alternate">7350C0705BB14CCBAC79D8D9FBC2F5E6</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="56595520EC8A4EAB9B6D80A617F5D6AA"><config_id keyed_name="Part AML" type="RelationshipType">56595520EC8A4EAB9B6D80A617F5D6AA</config_id><id keyed_name="Part AML" type="RelationshipType">56595520EC8A4EAB9B6D80A617F5D6AA</id><label xml:lang="en">AML</label><related_id keyed_name="Manufacturer Part" type="ItemType" name="Manufacturer Part"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="FDE9DA6F52C642EA807287C340EE0B72"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><close_icon>../images/ManufacturerPart.svg</close_icon><config_id keyed_name="Manufacturer Part" type="ItemType" name="Manufacturer Part">FDE9DA6F52C642EA807287C340EE0B72</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:45</created_on><default_page_size>25</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Create_Manufacturer_Parts.htm</help_url><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="Manufacturer Part" type="ItemType">FDE9DA6F52C642EA807287C340EE0B72</id><implementation_type>table</implementation_type><instance_data>MANUFACTURER_PART</instance_data><is_current>1</is_current><is_dependent>0</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>0</is_versionable><keyed_name>Manufacturer Part</keyed_name><label xml:lang="en">Manufacturer Part</label><label_plural xml:lang="en">Manufacturer Parts</label_plural><large_icon>../images/ManufacturerPart.svg</large_icon><major_rev>A</major_rev><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-15T13:40:40</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/ManufacturerPart.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>1</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Manufacturer Part</name></Item></related_id><relationship_id keyed_name="Part AML" type="ItemType" name="Part AML">332F11B553BA4CCC892201C1FA51F056</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="159C6D88795B4A86864420863466F728"><config_id keyed_name="Part BOM" type="RelationshipType">159C6D88795B4A86864420863466F728</config_id><id keyed_name="Part BOM" type="RelationshipType">159C6D88795B4A86864420863466F728</id><label xml:lang="en">BOM</label><related_id keyed_name="Part" type="ItemType" name="Part"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="4F1AC04A2B484F3ABA4E20DB63808A88"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><class_structure>&lt;class id="4F1AC04A2B484F3ABA4E20DB63808A88"&gt;&lt;class name="Component" id="0D83A764A1EA0CB66E34980C4B50F7E7" /&gt;&lt;class name="Assembly" id="512FF7893DBCD6D1AC1F55B87A480934" /&gt;&lt;class name="Material" id="64801C21172EEEB61692B77CB5E0ABF1" /&gt;&lt;class name="Software" id="74DB7ADB15E0E70BD729E8837D0FF3C9" /&gt;&lt;/class&gt;</class_structure><close_icon>../images/Part.svg</close_icon><config_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:48</created_on><default_page_size>25</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Parts.htm</help_url><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="Part" type="ItemType">4F1AC04A2B484F3ABA4E20DB63808A88</id><implementation_type>table</implementation_type><instance_data>PART</instance_data><is_current>1</is_current><is_dependent>0</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>1</is_versionable><keyed_name>Part</keyed_name><label xml:lang="en">Part</label><label_plural xml:lang="en">Parts</label_plural><large_icon>../images/Part.svg</large_icon><major_rev>A</major_rev><manual_versioning>0</manual_versioning><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-24T18:08:15</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/Part.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>0</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Part</name></Item></related_id><relationship_id keyed_name="Part BOM" type="ItemType" name="Part BOM">5E9C5A12CC58413A8670CF4003C57848</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="C65FB7DC8C3A4EFC97A6EE8196C0B448"><config_id keyed_name="Part CAD" type="RelationshipType">C65FB7DC8C3A4EFC97A6EE8196C0B448</config_id><id keyed_name="Part CAD" type="RelationshipType">C65FB7DC8C3A4EFC97A6EE8196C0B448</id><label xml:lang="en">CAD Documents</label><related_id keyed_name="CAD" type="ItemType" name="CAD"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="CCF205347C814DD1AF056875E0A880AC"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><class_structure>&lt;class id="CCF205347C814DD1AF056875E0A880AC"&gt;&lt;class id="915D1CDCE18A469E9CCDD03419A70E7B" name="Mechanical"&gt;&lt;class id="78A83C3AFFDD47F797FF6D6995916EFC" name="Part" /&gt;&lt;class id="D2A05E3258644212BA12692D72ACE3B6" name="Assembly" /&gt;&lt;class id="C05E861A69DC4DE0A45DC21CAB5F5ED5" name="Drawing" /&gt;&lt;class id="EBB4DD85C1AD463E9FA37658E37F71F3" name="Simulation" /&gt;&lt;/class&gt;&lt;class id="8582C077BD64441AA7F1189977F36094" name="Electronic"&gt;&lt;class id="FD1EED5E5B0E491994A1FD849F8556F8" name="Design" /&gt;&lt;class id="2F1B0C3EB7894CAE87E07080A82A52E1" name="Assembly" /&gt;&lt;class id="E3B845F3F2324927810C29A9482D605A" name="Fabrication" /&gt;&lt;class id="FE68214DED2A4AA9BC45EF567ECF3FFC" name="Logical" /&gt;&lt;class id="CCC71764D6E147B69733C72D405A15CC" name="Manufacturing" /&gt;&lt;class id="A50531AE60F6425AB812F8307D178642" name="Panelization" /&gt;&lt;class id="6CB35DB7F7654355BE721345340073B3" name="Physical" /&gt;&lt;/class&gt;&lt;/class&gt;</class_structure><close_icon>../images/CAD.svg</close_icon><config_id keyed_name="CAD" type="ItemType" name="CAD">CCF205347C814DD1AF056875E0A880AC</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:26</created_on><default_page_size>50</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="CAD" type="ItemType">CCF205347C814DD1AF056875E0A880AC</id><implementation_type>table</implementation_type><instance_data>CAD</instance_data><is_current>1</is_current><is_dependent>0</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>1</is_versionable><keyed_name>CAD</keyed_name><label xml:lang="en">CAD Document</label><label_plural xml:lang="en">CAD Documents</label_plural><large_icon>../images/CAD.svg</large_icon><major_rev>A</major_rev><manual_versioning>1</manual_versioning><modified_by_id keyed_name="Innovator Admin" type="User">30B991F927274FA3829655F50C99472E</modified_by_id><modified_on>2026-08-15T13:43:36</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/CAD.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>1</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>CAD</name></Item></related_id><relationship_id keyed_name="Part CAD" type="ItemType" name="Part CAD">935DF68BCFD849EBB5C3A528F04C5B5B</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="199974B1330640319AD3A39569359E7B"><config_id keyed_name="Part Changes" type="RelationshipType">199974B1330640319AD3A39569359E7B</config_id><id keyed_name="Part Changes" type="RelationshipType">199974B1330640319AD3A39569359E7B</id><label xml:lang="en">Changes</label><related_id is_null="1" /><relationship_id keyed_name="Part Changes" type="ItemType" name="Part Changes">5824C649B0E84426A0A42AD5D03E8A44</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="09CBB0294FAB477AA7300906DC035462"><config_id keyed_name="Part Document" type="RelationshipType">09CBB0294FAB477AA7300906DC035462</config_id><id keyed_name="Part Document" type="RelationshipType">09CBB0294FAB477AA7300906DC035462</id><label xml:lang="en">Documents</label><related_id keyed_name="Document" type="ItemType" name="Document"><Item type="ItemType" typeId="450906E86E304F55A34B3C0D65C097EA" id="B88C14B99EF449828C5D926E39EE8B89"><allow_private_permission>1</allow_private_permission><auto_search>0</auto_search><class_structure>&lt;class id="B88C14B99EF449828C5D926E39EE8B89"&gt;&lt;class name="Drawing" id="8B176CD37558A7F76BB5E0DB670B1B61" /&gt;&lt;class name="CAD Model" id="D724E3D6F56931629D758000ED6C47D4" /&gt;&lt;class name="Specification" id="B9FA37397257546FF49159A01E8E90F8" /&gt;&lt;class name="Software" id="682BC79FB50DCD9B5BDD47E94928DFEA" /&gt;&lt;class name="Miscellaneous" id="5C54253BFF858649508647FFE274E5B4" /&gt;&lt;class id="BC1087B0D09746DFA7D3F49C7522914E" name="Product" /&gt;&lt;class id="DDFA6ECFA05944D5A25D2DBAAB01FA3E" name="Project" /&gt;&lt;class id="A0C27A016E814CAB86E28AEF1462B841" name="General" /&gt;&lt;class id="BDDFFB63F2D1448498F650F1F248AF8C" name="Email" /&gt;&lt;class id="BD5995FECE7849F39836160424E4D905" name="Process" /&gt;&lt;class id="A0CA02E683A3477EA79BEA2ED733016B" name="Ad-hoc" /&gt;&lt;/class&gt;</class_structure><close_icon>../images/Document.svg</close_icon><config_id keyed_name="Document" type="ItemType" name="Document">B88C14B99EF449828C5D926E39EE8B89</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:36</created_on><default_page_size>25</default_page_size><enforce_discovery>1</enforce_discovery><generation>1</generation><help_url xml:lang="en">mergedProjects/ProductEngineering/plm_Documents.htm</help_url><hide_where_used>0</hide_where_used><history_template keyed_name="Default" type="History Template">3BC16EF9E52B4F9792AB76BCE0492F29</history_template><id keyed_name="Document" type="ItemType">B88C14B99EF449828C5D926E39EE8B89</id><implementation_type>table</implementation_type><instance_data>DOCUMENT</instance_data><is_current>1</is_current><is_dependent>0</is_dependent><is_relationship>0</is_relationship><is_released>0</is_released><is_versionable>1</is_versionable><keyed_name>Document</keyed_name><label xml:lang="en">Document</label><label_plural xml:lang="en">Documents</label_plural><large_icon>../images/Document.svg</large_icon><major_rev>A</major_rev><manual_versioning>0</manual_versioning><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T13:00:27</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><open_icon>../images/Document.svg</open_icon><permission_id keyed_name="ItemType" type="Permission">102D29B8CD9948BFB5F558341DF4C0F9</permission_id><revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions><show_parameters_tab>0</show_parameters_tab><structure_view>tabs on</structure_view><unlock_on_logout>0</unlock_on_logout><use_src_access>0</use_src_access><name>Document</name></Item></related_id><relationship_id keyed_name="Part Document" type="ItemType" name="Part Document">BFE7AD9711A547FBB05827B5169493CE</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="024A379F7F5C466C8AE23042E2CB60AB"><config_id keyed_name="Part Goal" type="RelationshipType">024A379F7F5C466C8AE23042E2CB60AB</config_id><id keyed_name="Part Goal" type="RelationshipType">024A379F7F5C466C8AE23042E2CB60AB</id><label xml:lang="en">Goals</label><related_id is_null="1" /><relationship_id keyed_name="Part Goal" type="ItemType" name="Part Goal">D7C815A268C54E57897AA3E98D185598</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="RelationshipType" typeId="471932C33B604C3099070F4106EE5024" id="567E4149FBF74DACA0B0C4C9B1E79A3B"><config_id keyed_name="Part MultiLevel BOM" type="RelationshipType">567E4149FBF74DACA0B0C4C9B1E79A3B</config_id><id keyed_name="Part MultiLevel BOM" type="RelationshipType">567E4149FBF74DACA0B0C4C9B1E79A3B</id><label xml:lang="en">BOM Structure</label><related_id is_null="1" /><relationship_id keyed_name="Part MultiLevel BOM" type="ItemType" name="Part MultiLevel BOM">F0C6BC7CE99A4BB692E82927B40C6F0B</relationship_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><i18n:label is_null="1" xml:lang="de" /><i18n:label is_null="1" xml:lang="fr" /></Item><Item type="View" typeId="8EFCE40BCB74478B8254CEB594CE8774" id="00DC42A5136F48C2865BF2ADFADF784A"><config_id keyed_name="default" type="View">00DC42A5136F48C2865BF2ADFADF784A</config_id><id keyed_name="default" type="View">00DC42A5136F48C2865BF2ADFADF784A</id><related_id keyed_name="Part AML Editor" type="Form"><Item type="Form" typeId="47573682FB7549F59ADECD4BFE04F1DE" id="5FFC8F61CCFD4D1893C4DF7987720C8B"><config_id keyed_name="Part AML Editor" type="Form">5FFC8F61CCFD4D1893C4DF7987720C8B</config_id><id keyed_name="Part AML Editor" type="Form">5FFC8F61CCFD4D1893C4DF7987720C8B</id><Relationships><Item type="Body" typeId="BF60433C7E924BE6B78D901809F8FEF6" id="4E00E2975553402DAB4180941C83F124"><config_id keyed_name="4E00E2975553402DAB4180941C83F124" type="Body">4E00E2975553402DAB4180941C83F124</config_id><related_id is_null="1" /><source_id keyed_name="Part AML Editor" type="Form">5FFC8F61CCFD4D1893C4DF7987720C8B</source_id><id keyed_name="4E00E2975553402DAB4180941C83F124" type="Body">4E00E2975553402DAB4180941C83F124</id></Item></Relationships></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="View" typeId="8EFCE40BCB74478B8254CEB594CE8774" id="AADA4F7076E645E59A1896D2728D3372"><config_id keyed_name="default" type="View">AADA4F7076E645E59A1896D2728D3372</config_id><id keyed_name="default" type="View">AADA4F7076E645E59A1896D2728D3372</id><related_id keyed_name="Part" type="Form"><Item type="Form" typeId="47573682FB7549F59ADECD4BFE04F1DE" id="CAF99D0A8E6E44E9A681C38015FACE91"><config_id keyed_name="Part" type="Form">CAF99D0A8E6E44E9A681C38015FACE91</config_id><id keyed_name="Part" type="Form">CAF99D0A8E6E44E9A681C38015FACE91</id><Relationships><Item type="Body" typeId="BF60433C7E924BE6B78D901809F8FEF6" id="83907DEF8B3044A08BDCBB77B1C0517E"><config_id keyed_name="83907DEF8B3044A08BDCBB77B1C0517E" type="Body">83907DEF8B3044A08BDCBB77B1C0517E</config_id><related_id is_null="1" /><source_id keyed_name="Part" type="Form">CAF99D0A8E6E44E9A681C38015FACE91</source_id><id keyed_name="83907DEF8B3044A08BDCBB77B1C0517E" type="Body">83907DEF8B3044A08BDCBB77B1C0517E</id></Item></Relationships></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="33CF66E2ACE94F528BE19051DC5CC892"><config_id keyed_name="33CF66E2ACE94F528BE19051DC5CC892" type="Server Event">33CF66E2ACE94F528BE19051DC5CC892</config_id><related_id keyed_name="PE_RollupPart" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="E6C202FD29354476ACC25EA2E3471139"><config_id keyed_name="PE_RollupPart" type="Method">E6C202FD29354476ACC25EA2E3471139</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_RollupPart" type="Method">E6C202FD29354476ACC25EA2E3471139</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_RollupPart</keyed_name><major_rev>A</major_rev><method_code>'handler For Part onAfterAdd And onAfterUpdate
+
+Aras.Server.Core.Utilities. IsIdValid(Me.getID(), True)
+
+Dim sqlQuery As String = "exec PE_RollupPart '" + CCO.Variables.InnDatabase.QuoteValue(Me.getID()) + "','Part'"
+Dim conn As Aras.Server.Core.InnovatorDatabase = CCO.Variables.InnDatabase
+Dim result As Aras.Server.Core.InnovatorDataSet = conn.ExecuteSelect(sqlQuery)
+
+If (result.RowsNumber = 1)
+  Me.removeProperty("cost")
+  Me.removeProperty("weight")
+  Me.removeProperty("cost_basis")
+  Me.removeProperty("weight_basis")
+  If (Not DBNull.Value.Equals(result("cost"))) Then Me.setProperty("cost", result("cost"))
+  If (Not DBNull.Value.Equals(result("weight"))) Then Me.setProperty("weight", result("weight"))
+  If (Not DBNull.Value.Equals(result("cost_basis"))) Then Me.setProperty("cost_basis", result("cost_basis"))
+  If (Not DBNull.Value.Equals(result("weight_basis"))) Then Me.setProperty("weight_basis", result("weight_basis"))
+End If
+Me.setAction("")
+Return Me
+</method_code><method_type>VB</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_RollupPart</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="33CF66E2ACE94F528BE19051DC5CC892" type="Server Event">33CF66E2ACE94F528BE19051DC5CC892</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="515B6A1D4E9E449C91B217B9C8FEED59"><config_id keyed_name="515B6A1D4E9E449C91B217B9C8FEED59" type="Server Event">515B6A1D4E9E449C91B217B9C8FEED59</config_id><related_id keyed_name="PE_update_has_change_pending" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="DB6A7506779F42F596433298E0855FD1"><config_id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_update_has_change_pending</keyed_name><major_rev>A</major_rev><method_code>Aras.Server.Security.Identity plmIdentity = Aras.Server.Security.Identity.GetByName("Aras PLM");
+bool PermissionWasSet  = Aras.Server.Security.Permissions.GrantIdentity(plmIdentity);
+
+try
+{
+	Action&lt;string,IEnumerable&lt;string&gt;,string&gt; execUpdateFlag = (itemType,idList,ignoredAffItemID) =&gt; 
+			{
+				String itemTypeDbName = String.Empty;
+
+				if (!String.IsNullOrEmpty(itemType))
+				{
+					itemTypeDbName = CCO.DB.GenerateTableName(itemType);
+				}
+
+				Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+
+				foreach (String itemID in idList)
+				{
+					string sqlQueryFormat = "exec update_has_change_pending_flag '" + itemTypeDbName + "','" + itemID + "','" + ignoredAffItemID + "'";
+					conn.ExecuteSQL(sqlQueryFormat);
+				}
+			};
+
+  string thisType = this.getType();
+	List&lt;String&gt; itemIDs = new List&lt;String&gt;();
+	string itemTypeName = String.Empty;
+  string ignoredAffectedItemID = String.Empty;
+  
+  Item affectedItem = null;
+
+  switch(thisType)
+  {
+    case "Part":
+    case "Document":
+    case "CAD":
+		var nonUserInputTableName = new Dictionary&lt;string, string&gt;()
+		{
+			{"PART", "Part"}, {"DOCUMENT", "Document"},{"CAD", "CAD"}
+		};
+		string thisTypeTable = nonUserInputTableName[thisType.ToUpperInvariant()];
+	    string tableName = CCO.DB.GenerateTableName(thisTypeTable);
+	    Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+	    string configId = this.getProperty("config_id");
+
+	    Aras.Server.Core.Utilities.IsIdValid(configId, true);
+
+	    string sqlQuery = "SELECT TOP(1) id FROM " + tableName + " WHERE IS_CURRENT = '1' AND config_id = '" + conn.QuoteValue(configId) + "'";
+	    Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+	    if (result.RowsNumber == 0)
+	    {
+	    	const string errorString = "Item last version is not found.";
+	    	const string errorDetail = "config_id = '{0}'";
+	    	Item errorItem = this.getInnovator().newError(errorString);
+	    	errorItem.setErrorDetail(string.Format(errorDetail,this.getProperty("config_id")));
+	    	return errorItem;
+	    }
+	    itemIDs.Add(result["id"].ToString());
+	
+		itemTypeName = thisType;
+		break;
+    case "Affected Item":
+      affectedItem = this;
+    break;
+    case "Express ECO Affected Item":
+    case "Express DCO Affected Item":
+    case "ECN Affected Item":
+    case "Simple ECO Affected Item":
+    {
+		  // test that related item has all needed properties
+      affectedItem = this.getItemsByXPath("/Item/related_id/Item[@type='Affected Item' and new_item_id and affected_id]");
+  	  if(affectedItem.node == null)
+  	  {  
+  	    if(this.getAction() != "delete")
+  	    {
+  	      
+		  	Aras.Server.Core.InnovatorDatabase dbconn = CCO.Variables.InnDatabase;
+		  	string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+		  	string affectedItemId = this.getProperty("related_id");
+
+		  	Aras.Server.Core.Utilities.IsIdValid(affectedItemId, true);
+
+			string sqlQuerySelect = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + dbconn.QuoteValue(affectedItemId) + "'";
+
+			Aras.Server.Core.InnovatorDataSet rs = dbconn.ExecuteSelect(sqlQuerySelect);
+			if (rs.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,affectedItemId));
+				return errorItem;
+			}
+
+			affectedItem = this.newItem("Affected Item","");
+			affectedItem.setID(affectedItemId);
+			affectedItem.setProperty("affected_id",rs["affected_id"].ToString());
+			affectedItem.setProperty("new_item_id",rs["new_item_id"].ToString());
+  	    }
+  	    else
+  	    {
+  	  	  affectedItem = this.getRelatedItem();
+  	    }
+  	  }
+  	  break;
+    }
+    case "Simple MCO Part":
+    {
+			itemIDs.Add(this.getProperty("related_id", ""));
+			itemTypeName = "Part";
+  	  break;
+    }
+    case "Express ECO":
+    case "Express DCO":
+    case "ECN":
+    case "Simple ECO":
+    {			
+      Dictionary&lt;string, string&gt; relationships = new Dictionary&lt;string, string&gt;()
+      {
+        {"Express ECO", "Express ECO Affected Item"},
+        {"Express DCO", "Express DCO Affected Item"},
+        {"ECN", "ECN Affected Item"},
+        {"Simple ECO", "Simple ECO Affected Item"}
+      };
+    
+      string relshipType = relationships[thisType];
+    
+      Item relshipItemList = this.newItem(relshipType, "get");
+      relshipItemList.setProperty("source_id", this.getID());
+      relshipItemList = relshipItemList.apply();
+
+      int relshipItemCount = relshipItemList.getItemCount();
+
+      if(relshipItemCount &lt; 0)
+      {
+        //TODO ERROR: Have to return error item!!!!
+        return relshipItemList;
+      }
+
+      for(int i = 0; i &lt; relshipItemCount; i++)
+      {
+        Item relshipItem = relshipItemList.getItemByIndex(i);
+        relshipItem.setAction("PE_update_has_change_pending");
+        relshipItem = relshipItem.apply();
+      }
+
+      return this;
+    }
+  }
+
+  if(affectedItem != null)
+  { 
+  	string idlistAttr = affectedItem.getAttribute("idlist","");
+  	string[] idlist;
+  	if (string.IsNullOrEmpty(idlistAttr))
+  	{
+  		idlist = new string[]{affectedItem.getID()};
+  	}
+  	else
+  	{
+  		idlist = idlistAttr.Split(',');
+  	}
+
+	string execute_action = affectedItem.getAttribute("action", "");
+	if(execute_action == "edit" || execute_action == "update" || execute_action == "delete")
+	{
+		foreach(string id in idlist)
+		{
+			List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+
+			Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+			string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+
+			Aras.Server.Core.Utilities.IsIdValid(id, true);
+
+			string sqlQuery = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + conn.QuoteValue(id) + "'";
+
+			Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+			if (result.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,id));
+				return errorItem;
+			}
+
+			itemIdList.Add(result["affected_id"].ToString());
+			itemIdList.Add(result["new_item_id"].ToString());
+			ignoredAffectedItemID = id;
+			execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+		}
+	}
+	else
+	{
+		List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+		itemIdList.Add(affectedItem.getProperty("affected_id",""));
+		itemIdList.Add(affectedItem.getProperty("new_item_id",""));
+		ignoredAffectedItemID = "";
+		execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+	}
+  }
+
+  if(itemIDs.Count != 0)
+  {
+	execUpdateFlag(itemTypeName,itemIDs,ignoredAffectedItemID);
+    return this; 
+  }
+}	
+finally
+{
+  if (PermissionWasSet) Aras.Server.Security.Permissions.RevokeIdentity(plmIdentity);
+}
+
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_update_has_change_pending</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="515B6A1D4E9E449C91B217B9C8FEED59" type="Server Event">515B6A1D4E9E449C91B217B9C8FEED59</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="DA5D030FB0B84D1D8DBD29BB7986C5D6"><config_id keyed_name="DA5D030FB0B84D1D8DBD29BB7986C5D6" type="Server Event">DA5D030FB0B84D1D8DBD29BB7986C5D6</config_id><related_id keyed_name="PE_RollupPart" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="E6C202FD29354476ACC25EA2E3471139"><config_id keyed_name="PE_RollupPart" type="Method">E6C202FD29354476ACC25EA2E3471139</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_RollupPart" type="Method">E6C202FD29354476ACC25EA2E3471139</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_RollupPart</keyed_name><major_rev>A</major_rev><method_code>'handler For Part onAfterAdd And onAfterUpdate
+
+Aras.Server.Core.Utilities. IsIdValid(Me.getID(), True)
+
+Dim sqlQuery As String = "exec PE_RollupPart '" + CCO.Variables.InnDatabase.QuoteValue(Me.getID()) + "','Part'"
+Dim conn As Aras.Server.Core.InnovatorDatabase = CCO.Variables.InnDatabase
+Dim result As Aras.Server.Core.InnovatorDataSet = conn.ExecuteSelect(sqlQuery)
+
+If (result.RowsNumber = 1)
+  Me.removeProperty("cost")
+  Me.removeProperty("weight")
+  Me.removeProperty("cost_basis")
+  Me.removeProperty("weight_basis")
+  If (Not DBNull.Value.Equals(result("cost"))) Then Me.setProperty("cost", result("cost"))
+  If (Not DBNull.Value.Equals(result("weight"))) Then Me.setProperty("weight", result("weight"))
+  If (Not DBNull.Value.Equals(result("cost_basis"))) Then Me.setProperty("cost_basis", result("cost_basis"))
+  If (Not DBNull.Value.Equals(result("weight_basis"))) Then Me.setProperty("weight_basis", result("weight_basis"))
+End If
+Me.setAction("")
+Return Me
+</method_code><method_type>VB</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_RollupPart</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="DA5D030FB0B84D1D8DBD29BB7986C5D6" type="Server Event">DA5D030FB0B84D1D8DBD29BB7986C5D6</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="C0267B14460A48E285F44606065C2B0F"><config_id keyed_name="C0267B14460A48E285F44606065C2B0F" type="Server Event">C0267B14460A48E285F44606065C2B0F</config_id><related_id keyed_name="PE_AffectedItemFloat" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="C4469727C13B4222BCDDA4BF3DEF6644"><config_id keyed_name="PE_AffectedItemFloat" type="Method">C4469727C13B4222BCDDA4BF3DEF6644</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:00</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="PE_AffectedItemFloat" type="Method">C4469727C13B4222BCDDA4BF3DEF6644</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_AffectedItemFloat</keyed_name><major_rev>A</major_rev><method_code>// Called OnAfterVersion for Parts and Documents.  Performs a manual float of the new_item_id 
+//  property on Affected Item while the change item (ECN, Simple ECO, Express ECO, ECR, Express DCO) is still open
+
+// Grant 'Aras PLM' permissions
+Aras.Server.Security.Identity plmIdentity = Aras.Server.Security.Identity.GetByName("Aras PLM");
+bool PermissionWasSet = Aras.Server.Security.Permissions.GrantIdentity(plmIdentity);
+
+Innovator inn = this.getInnovator();
+
+// Retrieve the id of the new version
+string thisType = this.getType();
+string oldId = this.getID();
+string itemTypeDbNameCurrent = CCO.Variables.InnDatabase.QuoteName(CCO.DB.GenerateTableName(thisType));
+string oldConfigId = this.getProperty("config_id");
+
+Aras.Server.Core.Utilities. IsIdValid(oldId, true);
+
+string sqlQuery = "SELECT aff.id FROM AFFECTED_ITEM aff INNER JOIN " + itemTypeDbNameCurrent + 
+                  " allPartWithCurrentConfigID ON allPartWithCurrentConfigID.CONFIG_ID = '" +CCO.Variables.InnDatabase.QuoteValue(oldConfigId)+ 
+                  "' AND aff.NEW_ITEM_ID = allPartWithCurrentConfigID.id";
+Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+
+if (result.RowsNumber &lt;= 0)
+	return this;
+
+string[] affectedItemsIdlist = new string[result.RowsNumber];
+for (int i = 0; i &lt; result.RowsNumber; i++)
+{
+	affectedItemsIdlist[i] = result["id"].ToString();
+	result.MoveNext();
+}
+
+// Get the latest generation
+Item newVer = this.newItem(thisType, "get");
+newVer.setAttribute("select", "id");
+newVer.setProperty("config_id", this.getProperty("config_id"));
+newVer.setProperty("is_current", "1");
+newVer = newVer.apply();
+if (newVer.isError())
+	return newVer;
+
+string newId = newVer.getID();
+
+//// Find any unreleased change items that reference the old generation as a new_item_id (Superseding Item)
+string[] chgItemNames = { "ECN", "Simple ECO", "ECR", "Express ECO", "Express DCO" };
+foreach (string chgItemName in chgItemNames)
+{
+	Item affItemRel = this.newItem(chgItemName + " Affected Item", "get");
+	affItemRel.setAttribute("select", "source_id(state), related_id(id)");
+	affItemRel.setProperty("related_id", String.Join(",", affectedItemsIdlist));
+	affItemRel.setPropertyCondition("related_id", "in");
+	affItemRel = affItemRel.apply();
+	for (int i = 0; i &lt; affItemRel.getItemCount(); i++)
+	{
+		Item affecteItemRelship = affItemRel.getItemByIndex(i);
+		Item sourceItem = affecteItemRelship.getPropertyItem("source_id");
+		if (String.Equals(sourceItem.getProperty("state"), "Released", StringComparison.Ordinal))
+			continue;
+
+		// Edit each Affected Item and set new_item_id to the id of the new generation
+		Item tempItem = inn.newItem("Affected Item", "edit");
+		tempItem.setAttribute("doGetItem", "0");
+		tempItem.setID(affecteItemRelship.getRelatedItemID());
+		tempItem.setProperty("new_item_id", newId);
+		tempItem = tempItem.apply();
+		if (tempItem.isError())
+			return tempItem;
+
+		//Edit Affected Relationship (set new id of new relationship)
+		tempItem = inn.newItem("Affected Item Relationship","get");
+		tempItem.setProperty("source_id",affecteItemRelship.getRelatedItemID());
+		Item affectedItemRelationships = tempItem.apply();
+		for (int j = 0; j &lt; affectedItemRelationships.getItemCount(); j++)
+		{
+			Item affectedItemRelationship = affectedItemRelationships.getItemByIndex(j);
+			Item affectedRelationship = affectedItemRelationship.getRelatedItem();
+			string affectedRelationshipId = affectedRelationship.getID();
+			string newRelId = affectedRelationship.getProperty("new_rel_id");
+			if (newRelId != null)
+			{
+				Item partBOM = inn.newItem("Part BOM","get");
+				partBOM.setID(newRelId);
+				partBOM = partBOM.apply();
+				string sortOrder = partBOM.getProperty("sort_order");
+				string itemTypeId = partBOM.getProperty("typeId");
+				Item newRelItem = inn.newItem("Part BOM","get");
+				newRelItem.setProperty("source_id",newId);
+				newRelItem.setProperty("sort_order",sortOrder);
+				newRelItem.setProperty("typeId",itemTypeId);
+				newRelItem = newRelItem.apply();
+				string newRelItemId = newRelItem.getID();
+				affectedRelationship = inn.newItem("Affected Relationship","edit");
+				affectedRelationship.setID(affectedRelationshipId);
+				affectedRelationship.setProperty("new_rel_id",newRelItemId);
+				affectedRelationship = affectedRelationship.apply();
+			}
+		}
+	}
+}
+// Revoke 'Aras PLM' permissions
+if (PermissionWasSet)
+	Aras.Server.Security.Permissions.RevokeIdentity(plmIdentity);
+
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:00</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_AffectedItemFloat</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="C0267B14460A48E285F44606065C2B0F" type="Server Event">C0267B14460A48E285F44606065C2B0F</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="FD3FCBF45B8A4B1AACBDFBA09337688F"><config_id keyed_name="FD3FCBF45B8A4B1AACBDFBA09337688F" type="Server Event">FD3FCBF45B8A4B1AACBDFBA09337688F</config_id><related_id keyed_name="PE_update_has_change_pending" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="DB6A7506779F42F596433298E0855FD1"><config_id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:04</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</execution_allowed_to><generation>1</generation><id keyed_name="PE_update_has_change_pending" type="Method">DB6A7506779F42F596433298E0855FD1</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_update_has_change_pending</keyed_name><major_rev>A</major_rev><method_code>Aras.Server.Security.Identity plmIdentity = Aras.Server.Security.Identity.GetByName("Aras PLM");
+bool PermissionWasSet  = Aras.Server.Security.Permissions.GrantIdentity(plmIdentity);
+
+try
+{
+	Action&lt;string,IEnumerable&lt;string&gt;,string&gt; execUpdateFlag = (itemType,idList,ignoredAffItemID) =&gt; 
+			{
+				String itemTypeDbName = String.Empty;
+
+				if (!String.IsNullOrEmpty(itemType))
+				{
+					itemTypeDbName = CCO.DB.GenerateTableName(itemType);
+				}
+
+				Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+
+				foreach (String itemID in idList)
+				{
+					string sqlQueryFormat = "exec update_has_change_pending_flag '" + itemTypeDbName + "','" + itemID + "','" + ignoredAffItemID + "'";
+					conn.ExecuteSQL(sqlQueryFormat);
+				}
+			};
+
+  string thisType = this.getType();
+	List&lt;String&gt; itemIDs = new List&lt;String&gt;();
+	string itemTypeName = String.Empty;
+  string ignoredAffectedItemID = String.Empty;
+  
+  Item affectedItem = null;
+
+  switch(thisType)
+  {
+    case "Part":
+    case "Document":
+    case "CAD":
+		var nonUserInputTableName = new Dictionary&lt;string, string&gt;()
+		{
+			{"PART", "Part"}, {"DOCUMENT", "Document"},{"CAD", "CAD"}
+		};
+		string thisTypeTable = nonUserInputTableName[thisType.ToUpperInvariant()];
+	    string tableName = CCO.DB.GenerateTableName(thisTypeTable);
+	    Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+	    string configId = this.getProperty("config_id");
+
+	    Aras.Server.Core.Utilities.IsIdValid(configId, true);
+
+	    string sqlQuery = "SELECT TOP(1) id FROM " + tableName + " WHERE IS_CURRENT = '1' AND config_id = '" + conn.QuoteValue(configId) + "'";
+	    Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+	    if (result.RowsNumber == 0)
+	    {
+	    	const string errorString = "Item last version is not found.";
+	    	const string errorDetail = "config_id = '{0}'";
+	    	Item errorItem = this.getInnovator().newError(errorString);
+	    	errorItem.setErrorDetail(string.Format(errorDetail,this.getProperty("config_id")));
+	    	return errorItem;
+	    }
+	    itemIDs.Add(result["id"].ToString());
+	
+		itemTypeName = thisType;
+		break;
+    case "Affected Item":
+      affectedItem = this;
+    break;
+    case "Express ECO Affected Item":
+    case "Express DCO Affected Item":
+    case "ECN Affected Item":
+    case "Simple ECO Affected Item":
+    {
+		  // test that related item has all needed properties
+      affectedItem = this.getItemsByXPath("/Item/related_id/Item[@type='Affected Item' and new_item_id and affected_id]");
+  	  if(affectedItem.node == null)
+  	  {  
+  	    if(this.getAction() != "delete")
+  	    {
+  	      
+		  	Aras.Server.Core.InnovatorDatabase dbconn = CCO.Variables.InnDatabase;
+		  	string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+		  	string affectedItemId = this.getProperty("related_id");
+
+		  	Aras.Server.Core.Utilities.IsIdValid(affectedItemId, true);
+
+			string sqlQuerySelect = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + dbconn.QuoteValue(affectedItemId) + "'";
+
+			Aras.Server.Core.InnovatorDataSet rs = dbconn.ExecuteSelect(sqlQuerySelect);
+			if (rs.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,affectedItemId));
+				return errorItem;
+			}
+
+			affectedItem = this.newItem("Affected Item","");
+			affectedItem.setID(affectedItemId);
+			affectedItem.setProperty("affected_id",rs["affected_id"].ToString());
+			affectedItem.setProperty("new_item_id",rs["new_item_id"].ToString());
+  	    }
+  	    else
+  	    {
+  	  	  affectedItem = this.getRelatedItem();
+  	    }
+  	  }
+  	  break;
+    }
+    case "Simple MCO Part":
+    {
+			itemIDs.Add(this.getProperty("related_id", ""));
+			itemTypeName = "Part";
+  	  break;
+    }
+    case "Express ECO":
+    case "Express DCO":
+    case "ECN":
+    case "Simple ECO":
+    {			
+      Dictionary&lt;string, string&gt; relationships = new Dictionary&lt;string, string&gt;()
+      {
+        {"Express ECO", "Express ECO Affected Item"},
+        {"Express DCO", "Express DCO Affected Item"},
+        {"ECN", "ECN Affected Item"},
+        {"Simple ECO", "Simple ECO Affected Item"}
+      };
+    
+      string relshipType = relationships[thisType];
+    
+      Item relshipItemList = this.newItem(relshipType, "get");
+      relshipItemList.setProperty("source_id", this.getID());
+      relshipItemList = relshipItemList.apply();
+
+      int relshipItemCount = relshipItemList.getItemCount();
+
+      if(relshipItemCount &lt; 0)
+      {
+        //TODO ERROR: Have to return error item!!!!
+        return relshipItemList;
+      }
+
+      for(int i = 0; i &lt; relshipItemCount; i++)
+      {
+        Item relshipItem = relshipItemList.getItemByIndex(i);
+        relshipItem.setAction("PE_update_has_change_pending");
+        relshipItem = relshipItem.apply();
+      }
+
+      return this;
+    }
+  }
+
+  if(affectedItem != null)
+  { 
+  	string idlistAttr = affectedItem.getAttribute("idlist","");
+  	string[] idlist;
+  	if (string.IsNullOrEmpty(idlistAttr))
+  	{
+  		idlist = new string[]{affectedItem.getID()};
+  	}
+  	else
+  	{
+  		idlist = idlistAttr.Split(',');
+  	}
+
+	string execute_action = affectedItem.getAttribute("action", "");
+	if(execute_action == "edit" || execute_action == "update" || execute_action == "delete")
+	{
+		foreach(string id in idlist)
+		{
+			List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+
+			Aras.Server.Core.InnovatorDatabase conn = CCO.Variables.InnDatabase;
+			string itemTypeDbName = CCO.DB.GenerateTableName("Affected Item");
+
+			Aras.Server.Core.Utilities.IsIdValid(id, true);
+
+			string sqlQuery = "SELECT TOP(1) affected_id,new_item_id FROM " + itemTypeDbName + " WHERE id = '" + conn.QuoteValue(id) + "'";
+
+			Aras.Server.Core.InnovatorDataSet result = conn.ExecuteSelect(sqlQuery);
+			if (result.RowsNumber == 0)
+			{
+				const string errorString = "Affected Item is not found.";
+				const string errorDetail = "id = '{0}'";
+				Item errorItem = this.getInnovator().newError(errorString);
+				errorItem.setErrorDetail(string.Format(errorDetail,id));
+				return errorItem;
+			}
+
+			itemIdList.Add(result["affected_id"].ToString());
+			itemIdList.Add(result["new_item_id"].ToString());
+			ignoredAffectedItemID = id;
+			execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+		}
+	}
+	else
+	{
+		List&lt;string&gt; itemIdList = new List&lt;string&gt;();
+		itemIdList.Add(affectedItem.getProperty("affected_id",""));
+		itemIdList.Add(affectedItem.getProperty("new_item_id",""));
+		ignoredAffectedItemID = "";
+		execUpdateFlag(itemTypeName,itemIdList,ignoredAffectedItemID);
+	}
+  }
+
+  if(itemIDs.Count != 0)
+  {
+	execUpdateFlag(itemTypeName,itemIDs,ignoredAffectedItemID);
+    return this; 
+  }
+}	
+finally
+{
+  if (PermissionWasSet) Aras.Server.Security.Permissions.RevokeIdentity(plmIdentity);
+}
+
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:04</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_update_has_change_pending</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="FD3FCBF45B8A4B1AACBDFBA09337688F" type="Server Event">FD3FCBF45B8A4B1AACBDFBA09337688F</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="9A7FF246BA074888B5D7E8EB009AE30F"><config_id keyed_name="9A7FF246BA074888B5D7E8EB009AE30F" type="Server Event">9A7FF246BA074888B5D7E8EB009AE30F</config_id><related_id keyed_name="PE_clean_has_change_pending_prop" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="F1B7B3EDC8C348A7AD0382D55A9AD99A"><config_id keyed_name="PE_clean_has_change_pending_prop" type="Method">F1B7B3EDC8C348A7AD0382D55A9AD99A</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:01</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="PE_clean_has_change_pending_prop" type="Method">F1B7B3EDC8C348A7AD0382D55A9AD99A</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_clean_has_change_pending_prop</keyed_name><major_rev>A</major_rev><method_code>string type = this.getType();
+if (String.Equals(type, "Part", StringComparison.Ordinal))
+{
+	// Reorders the relationships to put all Part Goal items at the end
+	Item goals = this.getRelationships("Part Goal");
+	for (int i = 0; i &lt; goals.getItemCount() - 1; i++)
+	{
+		Item goal = goals.getItemByIndex(i);
+		this.removeRelationship(goal);
+		this.addRelationship(goal);
+	}
+}
+
+this.removeProperty("has_change_pending");
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:01</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_clean_has_change_pending_prop</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="9A7FF246BA074888B5D7E8EB009AE30F" type="Server Event">9A7FF246BA074888B5D7E8EB009AE30F</id></Item><Item type="Server Event" typeId="8214ECDE53F04AFC95243E10B2C7BBD4" id="70C33E68784447069B344D9951AD2D9B"><config_id keyed_name="70C33E68784447069B344D9951AD2D9B" type="Server Event">70C33E68784447069B344D9951AD2D9B</config_id><related_id keyed_name="PE_clean_has_change_pending_prop" type="Method"><Item type="Method" typeId="87879A09B8044DE380D59DF22DE1867F" id="F1B7B3EDC8C348A7AD0382D55A9AD99A"><config_id keyed_name="PE_clean_has_change_pending_prop" type="Method">F1B7B3EDC8C348A7AD0382D55A9AD99A</config_id><core>0</core><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:01</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">F08211E432904F5DA4D191EF5ED6F3DF</current_state><execution_allowed_to keyed_name="Administrators" type="Identity">2618D6F5A90949BAA7E920D1B04C7EE1</execution_allowed_to><generation>1</generation><id keyed_name="PE_clean_has_change_pending_prop" type="Method">F1B7B3EDC8C348A7AD0382D55A9AD99A</id><is_current>1</is_current><is_released>0</is_released><keyed_name>PE_clean_has_change_pending_prop</keyed_name><major_rev>A</major_rev><method_code>string type = this.getType();
+if (String.Equals(type, "Part", StringComparison.Ordinal))
+{
+	// Reorders the relationships to put all Part Goal items at the end
+	Item goals = this.getRelationships("Part Goal");
+	for (int i = 0; i &lt; goals.getItemCount() - 1; i++)
+	{
+		Item goal = goals.getItemByIndex(i);
+		this.removeRelationship(goal);
+		this.addRelationship(goal);
+	}
+}
+
+this.removeProperty("has_change_pending");
+return this;</method_code><method_type>C#</method_type><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:01</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Method" type="Permission">696C2AAAD70F47C79C7B232372FBB919</permission_id><state>Released</state><name>PE_clean_has_change_pending_prop</name><itemtype>87879A09B8044DE380D59DF22DE1867F</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="70C33E68784447069B344D9951AD2D9B" type="Server Event">70C33E68784447069B344D9951AD2D9B</id></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="214F981E1F9248B8BCDD3FC746E18580"><config_id keyed_name="214F981E1F9248B8BCDD3FC746E18580" type="Item Action">214F981E1F9248B8BCDD3FC746E18580</config_id><related_id keyed_name="PE: rollup all parts in DB" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="3313FB477B9A4982A30EA157ED896247"><config_id keyed_name="PE: rollup all parts in DB" type="Action">3313FB477B9A4982A30EA157ED896247</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><generation>1</generation><id keyed_name="PE: rollup all parts in DB" type="Action">3313FB477B9A4982A30EA157ED896247</id><is_current>1</is_current><is_released>0</is_released><item_query></item_query><keyed_name>PE: rollup all parts in DB</keyed_name><location>server</location><major_rev>A</major_rev><method keyed_name="PE_RollupAllPartsInDB" type="Method">EDFC2A5512A144899955E70BC383FCB7</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Action" type="Permission">E337A7BB11B147A396B0556F0EDFEA0D</permission_id><target>none</target><type>itemtype</type><name>PE: rollup all parts in DB</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="214F981E1F9248B8BCDD3FC746E18580" type="Item Action">214F981E1F9248B8BCDD3FC746E18580</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="E01B1CA45B29415E8277B46A33D885C9"><config_id keyed_name="E01B1CA45B29415E8277B46A33D885C9" type="Item Action">E01B1CA45B29415E8277B46A33D885C9</config_id><related_id keyed_name="PE_ManualRelease" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="2CAC9B41B8394D29B89C45C522703BC4"><config_id keyed_name="PE_ManualRelease" type="Action">2CAC9B41B8394D29B89C45C522703BC4</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><generation>1</generation><id keyed_name="PE_ManualRelease" type="Action">2CAC9B41B8394D29B89C45C522703BC4</id><is_current>1</is_current><is_released>0</is_released><item_query>&lt;Item type="{@type}" action="get" id="{@id}" select="keyed_name,state,owned_by_id,config_id"/&gt;</item_query><keyed_name>PE_ManualRelease</keyed_name><label xml:lang="en">Manual Release</label><location>server</location><major_rev>A</major_rev><method keyed_name="PE_ManualRelease" type="Method">B5119D8F8FDB4F80A2FBD362E10FD994</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Action" type="Permission">E337A7BB11B147A396B0556F0EDFEA0D</permission_id><target>none</target><type>item</type><name>PE_ManualRelease</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="E01B1CA45B29415E8277B46A33D885C9" type="Item Action">E01B1CA45B29415E8277B46A33D885C9</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="043BE748FC294F80AB4EA47801B16B45"><config_id keyed_name="043BE748FC294F80AB4EA47801B16B45" type="Item Action">043BE748FC294F80AB4EA47801B16B45</config_id><related_id keyed_name="PE_CreateNewRevision" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="39BE6AC491184B979EC03D1400F35F2F"><config_id keyed_name="PE_CreateNewRevision" type="Action">39BE6AC491184B979EC03D1400F35F2F</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><generation>1</generation><id keyed_name="PE_CreateNewRevision" type="Action">39BE6AC491184B979EC03D1400F35F2F</id><is_current>1</is_current><is_released>0</is_released><item_query>&lt;Item type="{@type}" action="get" id="{@id}" select="keyed_name,state,owned_by_id,config_id"/&gt;</item_query><keyed_name>PE_CreateNewRevision</keyed_name><label xml:lang="en">Create New Revision</label><location>server</location><major_rev>A</major_rev><method keyed_name="PE_CreateNewRevision" type="Method">487CFDDF4850492288711BC61CEED00A</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Action" type="Permission">E337A7BB11B147A396B0556F0EDFEA0D</permission_id><target>none</target><type>item</type><name>PE_CreateNewRevision</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="043BE748FC294F80AB4EA47801B16B45" type="Item Action">043BE748FC294F80AB4EA47801B16B45</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="09D70F14AEA042F2B317971B584A6054"><config_id keyed_name="09D70F14AEA042F2B317971B584A6054" type="Item Action">09D70F14AEA042F2B317971B584A6054</config_id><related_id keyed_name="PE_AddToChange" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="83FB72FC3E4D42B8B51BCD7F4194E527"><config_id keyed_name="PE_AddToChange" type="Action">83FB72FC3E4D42B8B51BCD7F4194E527</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><generation>1</generation><id keyed_name="PE_AddToChange" type="Action">83FB72FC3E4D42B8B51BCD7F4194E527</id><is_current>1</is_current><is_released>0</is_released><item_query>&lt;Item type="{@type}" id="{@id}" levels= "1" action="get" /&gt;</item_query><keyed_name>PE_AddToChange</keyed_name><label xml:lang="en">Add Item(s) To Change…</label><location>client</location><major_rev>A</major_rev><method keyed_name="PE_GetSelectedItems" type="Method">BC74EDD7DFB7417BB537B9CF1C37D300</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><on_complete keyed_name="PE_ChooseCMItem" type="Method">32ED42A6F53948418BB4D732ABE115DB</on_complete><permission_id keyed_name="Action" type="Permission">E337A7BB11B147A396B0556F0EDFEA0D</permission_id><target>none</target><type>item</type><name>PE_AddToChange</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="09D70F14AEA042F2B317971B584A6054" type="Item Action">09D70F14AEA042F2B317971B584A6054</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="6867D9DBAAD16632FCA86F91283C4734"><config_id keyed_name="6867D9DBAAD16632FCA86F91283C4734" type="Item Action">6867D9DBAAD16632FCA86F91283C4734</config_id><related_id keyed_name="Change Discussion Definition" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="5B155B40AD8F405D812EF95BC5848214"><can_execute keyed_name="SSVCActionCanExecute" type="Method">8209B57C79174378AB3A9A4F81C685F9</can_execute><config_id keyed_name="Change Discussion Definition" type="Action">5B155B40AD8F405D812EF95BC5848214</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:50:48</created_on><generation>1</generation><id keyed_name="Change Discussion Definition" type="Action">5B155B40AD8F405D812EF95BC5848214</id><is_current>1</is_current><is_released>0</is_released><item_query>&lt;Item type="{@type}" id="{@id}" levels="1" action="get" /&gt;</item_query><keyed_name>Change Discussion Definition</keyed_name><location>client</location><major_rev>A</major_rev><method keyed_name="VC_ChangeDiscussionDefinition" type="Method">84A84181B4F84C7CB831D13A61043CF6</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:50:48</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="AdministratorsOnly" type="Permission">9862DDFAAF97463B940DA624B95BA71A</permission_id><target>none</target><type>item</type><name>Change Discussion Definition</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="6867D9DBAAD16632FCA86F91283C4734" type="Item Action">6867D9DBAAD16632FCA86F91283C4734</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="Item Action" typeId="6C280692633D4498BD9CFEA7989138AB" id="61CD5CB017834E77B081EE593D2D188E"><config_id keyed_name="61CD5CB017834E77B081EE593D2D188E" type="Item Action">61CD5CB017834E77B081EE593D2D188E</config_id><related_id keyed_name="VC_AddItemsToBookmarks" type="Action"><Item type="Action" typeId="483228BE6B9A4C0E99ACD55FDF328DEC" id="FD4D2BE9E2B14919BF1973842A556AFD"><can_execute keyed_name="SSVCActionCanExecute" type="Method">8209B57C79174378AB3A9A4F81C685F9</can_execute><config_id keyed_name="VC_AddItemsToBookmarks" type="Action">FD4D2BE9E2B14919BF1973842A556AFD</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:50:49</created_on><generation>1</generation><id keyed_name="VC_AddItemsToBookmarks" type="Action">FD4D2BE9E2B14919BF1973842A556AFD</id><is_current>1</is_current><is_released>0</is_released><item_query>&lt;Item type="{@type}" id="{@id}" levels= "1" action="get" /&gt;</item_query><keyed_name>VC_AddItemsToBookmarks</keyed_name><label xml:lang="en">Add Item to Bookmarks...</label><location>client</location><major_rev>A</major_rev><method keyed_name="VC_GetSelectedItems" type="Method">DF8802FFCAA847FC99152F0F8F12BF2C</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:50:49</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><on_complete keyed_name="VC_AddItemsToBookmarks" type="Method">FA7F704076B84B358D9FE277D7796664</on_complete><permission_id keyed_name="Action" type="Permission">E337A7BB11B147A396B0556F0EDFEA0D</permission_id><target>none</target><type>item</type><name>VC_AddItemsToBookmarks</name><itemtype>483228BE6B9A4C0E99ACD55FDF328DEC</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><id keyed_name="61CD5CB017834E77B081EE593D2D188E" type="Item Action">61CD5CB017834E77B081EE593D2D188E</id><itemtype>6C280692633D4498BD9CFEA7989138AB</itemtype></Item><Item type="ItemType Life Cycle" typeId="A2294A4CD0B14DE4912C1B530218AB57" id="03F8D81C409149299E4FFABCB6BF98F5"><config_id keyed_name="03F8D81C409149299E4FFABCB6BF98F5" type="ItemType Life Cycle">03F8D81C409149299E4FFABCB6BF98F5</config_id><id keyed_name="03F8D81C409149299E4FFABCB6BF98F5" type="ItemType Life Cycle">03F8D81C409149299E4FFABCB6BF98F5</id><related_id keyed_name="Part" type="Life Cycle Map"><Item type="Life Cycle Map" typeId="AC32527D85604A4D9FC9107C516AEF47" id="E337EBF706FA4172B2CD1A6487E00875"><config_id keyed_name="Part" type="Life Cycle Map">E337EBF706FA4172B2CD1A6487E00875</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:17</created_on><description>Default Part Life Cycle</description><generation>1</generation><id keyed_name="Part" type="Life Cycle Map">E337EBF706FA4172B2CD1A6487E00875</id><is_current>1</is_current><is_released>0</is_released><keyed_name>Part</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:17</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Life Cycle Map" type="Permission">6C082E8B8F524B79B12ADFFCBB252967</permission_id><start_state keyed_name="Preliminary" type="Life Cycle State">72A2322564FE4193933CFB5339487A06</start_state><name>Part</name></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="TOC Access" typeId="38C9CE2A4E06401DABF942E1D0224E87" id="44BDF6CC677342CB9BA8E0D05ED88960"><config_id keyed_name="Design" type="TOC Access">44BDF6CC677342CB9BA8E0D05ED88960</config_id><id keyed_name="Design" type="TOC Access">44BDF6CC677342CB9BA8E0D05ED88960</id><related_id keyed_name="World" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="A73B655731924CD0B027E4F4D5FCC0A9"><config_id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</config_id><id keyed_name="World" type="Identity">A73B655731924CD0B027E4F4D5FCC0A9</id></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="Can Add" typeId="3A65F41FF1FC42518A702FDA164AF420" id="150B98662AC14A56B6929B85F4798192"><config_id keyed_name="150B98662AC14A56B6929B85F4798192" type="Can Add">150B98662AC14A56B6929B85F4798192</config_id><id keyed_name="150B98662AC14A56B6929B85F4798192" type="Can Add">150B98662AC14A56B6929B85F4798192</id><related_id keyed_name="All Employees" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="B32BD81D1AD04207BF1E61E39A4E0E13"><config_id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</config_id><id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</id><Relationships><Item type="Member" typeId="7348E620D27E40D1868C54247B5DE8D1" id="DD4515F8B84C4B78816A2FD0353F7195"><config_id keyed_name="DD4515F8B84C4B78816A2FD0353F7195" type="Member">DD4515F8B84C4B78816A2FD0353F7195</config_id><related_id keyed_name="Super User" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="6B14D33C4A7D41C188CCF2BC15BD01A3"><config_id keyed_name="Super User" type="Identity">6B14D33C4A7D41C188CCF2BC15BD01A3</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2002-04-24T19:16:11</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description>The Innovator super user with no restrictions.</description><generation>1</generation><id keyed_name="Super User" type="Identity">6B14D33C4A7D41C188CCF2BC15BD01A3</id><is_alias>1</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Super User</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2003-06-01T03:16:41</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="18847ECF606640F8A3C5CA498863E56E" type="Permission">18847ECF606640F8A3C5CA498863E56E</permission_id><state>Released</state><name>Super User</name></Item></related_id><source_id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</source_id><id keyed_name="DD4515F8B84C4B78816A2FD0353F7195" type="Member">DD4515F8B84C4B78816A2FD0353F7195</id></Item><Item type="Member" typeId="7348E620D27E40D1868C54247B5DE8D1" id="E61352F482AF4BF9BEC9689F04EE91C9"><config_id keyed_name="E61352F482AF4BF9BEC9689F04EE91C9" type="Member">E61352F482AF4BF9BEC9689F04EE91C9</config_id><related_id keyed_name="Innovator Admin" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="DBA5D86402BF43D5976854B8B48FCDD1"><config_id keyed_name="Innovator Admin" type="Identity">DBA5D86402BF43D5976854B8B48FCDD1</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2002-04-24T19:16:13</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description>The Innovator administrator.</description><generation>1</generation><id keyed_name="Innovator Admin" type="Identity">DBA5D86402BF43D5976854B8B48FCDD1</id><is_alias>1</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Innovator Admin</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2005-07-15T21:03:48</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="C6ADE0B097D945B68E4791F9DA0E7E67" type="Permission">C6ADE0B097D945B68E4791F9DA0E7E67</permission_id><state>Released</state><name>Innovator Admin</name></Item></related_id><source_id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</source_id><id keyed_name="E61352F482AF4BF9BEC9689F04EE91C9" type="Member">E61352F482AF4BF9BEC9689F04EE91C9</id></Item></Relationships></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="Allowed Permission" typeId="DB54505FA3E9419DA3C1E1AFB7A48C1C" id="CE28DC3038764F458AB90B347C436C5F"><config_id keyed_name="CE28DC3038764F458AB90B347C436C5F" type="Allowed Permission">CE28DC3038764F458AB90B347C436C5F</config_id><id keyed_name="CE28DC3038764F458AB90B347C436C5F" type="Allowed Permission">CE28DC3038764F458AB90B347C436C5F</id><related_id keyed_name="New Part" type="Permission"><Item type="Permission" typeId="C6A89FDE1294451497801DF78341B473" id="5C07EB829D4241F6BB884952960FAF58"><config_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</config_id><id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</id><Relationships><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="644F62A6304B4DEB9A5B8C6F9AC6496F"><config_id keyed_name="644F62A6304B4DEB9A5B8C6F9AC6496F" type="Access">644F62A6304B4DEB9A5B8C6F9AC6496F</config_id><related_id keyed_name="Aras PLM" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="56A96DA9E981481688563E2D14D5D878"><config_id keyed_name="Aras PLM" type="Identity">56A96DA9E981481688563E2D14D5D878</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:54</created_on><description>Internal identity for Aras PLM</description><generation>1</generation><id keyed_name="Aras PLM" type="Identity">56A96DA9E981481688563E2D14D5D878</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Aras PLM</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:54</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Identity" type="Permission">761D6A3E3CA146138B47393D29FF6824</permission_id><name>Aras PLM</name></Item></related_id><source_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</source_id><id keyed_name="644F62A6304B4DEB9A5B8C6F9AC6496F" type="Access">644F62A6304B4DEB9A5B8C6F9AC6496F</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="6ACF1A59945A4EA591A36B9A87F7924A"><config_id keyed_name="6ACF1A59945A4EA591A36B9A87F7924A" type="Access">6ACF1A59945A4EA591A36B9A87F7924A</config_id><related_id keyed_name="Manager" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="9200A800443E4A5AAA80D0BCE5760307"><classification>System</classification><config_id keyed_name="Manager" type="Identity">9200A800443E4A5AAA80D0BCE5760307</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2004-08-05T02:48:17</created_on><generation>1</generation><id keyed_name="Manager" type="Identity">9200A800443E4A5AAA80D0BCE5760307</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Manager</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:41:16</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="System Item" type="Permission">E902B143591F448F868487447D926B25</permission_id><name>Manager</name></Item></related_id><source_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</source_id><id keyed_name="6ACF1A59945A4EA591A36B9A87F7924A" type="Access">6ACF1A59945A4EA591A36B9A87F7924A</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="B594911822C041E5B057F859212A8F59"><config_id keyed_name="B594911822C041E5B057F859212A8F59" type="Access">B594911822C041E5B057F859212A8F59</config_id><related_id keyed_name="Owner" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="538B300BB2A347F396C436E9EEE1976C"><classification>System</classification><config_id keyed_name="Owner" type="Identity">538B300BB2A347F396C436E9EEE1976C</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2004-08-05T02:48:18</created_on><generation>1</generation><id keyed_name="Owner" type="Identity">538B300BB2A347F396C436E9EEE1976C</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Owner</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:41:17</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="System Item" type="Permission">E902B143591F448F868487447D926B25</permission_id><name>Owner</name></Item></related_id><source_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</source_id><id keyed_name="B594911822C041E5B057F859212A8F59" type="Access">B594911822C041E5B057F859212A8F59</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="B91804C6B2954424AB8BF51FEEA07774"><config_id keyed_name="B91804C6B2954424AB8BF51FEEA07774" type="Access">B91804C6B2954424AB8BF51FEEA07774</config_id><related_id keyed_name="Creator" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="8FE5430B42014D94AE83246F299D9CC4"><classification>System</classification><config_id keyed_name="Creator" type="Identity">8FE5430B42014D94AE83246F299D9CC4</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2003-11-06T22:25:08</created_on><description>The User who created the Item</description><generation>1</generation><id keyed_name="Creator" type="Identity">8FE5430B42014D94AE83246F299D9CC4</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>Creator</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:41:16</modified_on><new_version>0</new_version><not_lockable>0</not_lockable><permission_id keyed_name="System Item" type="Permission">E902B143591F448F868487447D926B25</permission_id><name>Creator</name></Item></related_id><source_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</source_id><id keyed_name="B91804C6B2954424AB8BF51FEEA07774" type="Access">B91804C6B2954424AB8BF51FEEA07774</id></Item><Item type="Access" typeId="AEFCD3D2DC1D4E3EA126D49D68041EB6" id="DEFF27D9AB2D40A6A5811E2DAEB4E7C2"><config_id keyed_name="DEFF27D9AB2D40A6A5811E2DAEB4E7C2" type="Access">DEFF27D9AB2D40A6A5811E2DAEB4E7C2</config_id><related_id keyed_name="All Employees" type="Identity"><Item type="Identity" typeId="E582AB17663F4EF28460015B2BE9E094" id="B32BD81D1AD04207BF1E61E39A4E0E13"><config_id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:56:53</created_on><description>Main Organizational User Group</description><generation>1</generation><id keyed_name="All Employees" type="Identity">B32BD81D1AD04207BF1E61E39A4E0E13</id><is_alias>0</is_alias><is_current>1</is_current><is_released>0</is_released><keyed_name>All Employees</keyed_name><major_rev>A</major_rev><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:56:53</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Identity" type="Permission">761D6A3E3CA146138B47393D29FF6824</permission_id><name>All Employees</name></Item></related_id><source_id keyed_name="New Part" type="Permission">5C07EB829D4241F6BB884952960FAF58</source_id><id keyed_name="DEFF27D9AB2D40A6A5811E2DAEB4E7C2" type="Access">DEFF27D9AB2D40A6A5811E2DAEB4E7C2</id></Item></Relationships></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id></Item><Item type="Item Report" typeId="5BD6BED0CD794A078AA42476F47ECF46" id="40DDBA3DA60F463EB0DF816568843953"><config_id keyed_name="40DDBA3DA60F463EB0DF816568843953" type="Item Report">40DDBA3DA60F463EB0DF816568843953</config_id><id keyed_name="40DDBA3DA60F463EB0DF816568843953" type="Item Report">40DDBA3DA60F463EB0DF816568843953</id><related_id keyed_name="Multilevel BOM Report" type="Report"><Item type="Report" typeId="F0834BBA6FB64394B78DF5BB725532DD" id="FB8CA61BE45E46DE9E4346BB653398C2"><config_id keyed_name="Multilevel BOM Report" type="Report">FB8CA61BE45E46DE9E4346BB653398C2</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:07</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description></description><generation>1</generation><id keyed_name="Multilevel BOM Report" type="Report">FB8CA61BE45E46DE9E4346BB653398C2</id><is_current>1</is_current><is_released>1</is_released><keyed_name>Multilevel BOM Report</keyed_name><location>client</location><major_rev>A</major_rev><method keyed_name="PE_execMultilevelRepAndApplyXslt" type="Method">C889328E80B14C28960A4C0EC4C6AF8E</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:07</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Report" type="Permission">6F2E8817ED92423DA60EA1623FFCEBA7</permission_id><report_query></report_query><state>Released</state><target>one window</target><type>item</type><xsl_stylesheet>&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt" xmlns:aras="http://www.aras-corp.com"&gt;
+	&lt;xsl:output method="html" omit-xml-declaration="yes" standalone="yes" indent="yes"&gt;&lt;/xsl:output&gt;
+	&lt;xsl:variable name="MaxDepth"&gt;
+		&lt;xsl:for-each select="Result/Item[@alias='Part']/depth"&gt;
+			&lt;xsl:sort select="." data-type="number" order="descending"/&gt;
+			&lt;xsl:if test="position() = 1"&gt;
+				&lt;xsl:value-of select="."/&gt;
+			&lt;/xsl:if&gt;
+		&lt;/xsl:for-each&gt;
+	&lt;/xsl:variable&gt;
+	&lt;xsl:template match="/"&gt;
+		&lt;html&gt;
+			&lt;head&gt;&lt;/head&gt;
+			&lt;body topmargin="50" leftmargin="50"&gt;
+				&lt;div class="print_button_wrapper"&gt;
+					&lt;img id="print_button" src="../images/Print.svg" onclick="printReport(window);" /&gt;
+					&lt;a href="#" onclick="printReport(window); return false;"&gt;Print&lt;/a&gt;
+				&lt;/div&gt;
+				&lt;div class="table_wrapper"&gt;
+					&lt;div class="report_name"&gt;
+						Bill of Materials Report
+					&lt;/div&gt;
+					&lt;div class="report_generation_time"&gt;&lt;/div&gt;
+					&lt;table border="0" cellspacing="0" cellpadding="0"&gt;
+						&lt;tr&gt;
+							&lt;th colspan="{$MaxDepth + 1}"&gt;BOM Level&lt;/th&gt;
+							&lt;th&gt;Part Number&lt;/th&gt;
+							&lt;th&gt;Name&lt;/th&gt;
+							&lt;th&gt;Quantity&lt;/th&gt;
+							&lt;th&gt;AML Status&lt;/th&gt;
+							&lt;th&gt;Manufacturer&lt;/th&gt;
+							&lt;th&gt;Manufacturer Part&lt;/th&gt;
+						&lt;/tr&gt;
+						&lt;xsl:call-template name ="rootItems"&gt;&lt;/xsl:call-template&gt;
+					&lt;/table&gt;
+				&lt;/div&gt;
+			&lt;/body&gt;
+			&lt;script&gt;
+				function loadScript(url)
+				{
+					const loadedJS = document.createElement('script');
+					loadedJS.src = url;
+					document.getElementsByTagName('head')[0].appendChild(loadedJS);
+				}
+				function loadStyle(url)
+				{
+					const link = document.createElement('link');
+					link.setAttribute('rel', 'stylesheet');
+					link.setAttribute('href', url);
+					document.getElementsByTagName('head')[0].appendChild(link)
+				}
+				loadScript(parent.aras.getBaseURL('/javascript/PopupMenu.js'));
+				loadScript(parent.aras.getBaseURL('/Solutions/PLM/javascript/report.js'));
+				loadStyle(parent.aras.getBaseURL('/Solutions/PLM/styles/report.css'));
+			&lt;/script&gt;
+		&lt;/html&gt;
+	&lt;/xsl:template&gt;
+
+	&lt;xsl:template name="rootItems"&gt;
+		&lt;xsl:apply-templates select="/Result/Item[@alias='Part']"&gt;&lt;/xsl:apply-templates&gt;
+	&lt;/xsl:template&gt;
+	
+	&lt;xsl:template name="IndentureLevel"&gt;
+		&lt;xsl:param name="currentDepth" select="0" /&gt;
+		&lt;xsl:param name="rowCount" /&gt;
+		&lt;xsl:if test="$currentDepth = 0"&gt;
+			&lt;td rowspan="{$rowCount}" width="20px" style="padding: 5px 0px 5px 10px" align="center"&gt;
+				&lt;xsl:if test="depth=$currentDepth"&gt;
+					&lt;xsl:value-of select="depth"/&gt;
+				&lt;/xsl:if&gt;
+			&lt;/td&gt;
+		&lt;/xsl:if&gt;
+		&lt;xsl:if test="$currentDepth != 0"&gt;
+			&lt;td rowspan="{$rowCount}" width="20px" style="padding: 5px 0" align="center"&gt;
+				&lt;xsl:if test="depth=$currentDepth"&gt;
+					&lt;xsl:value-of select="depth"/&gt;
+				&lt;/xsl:if&gt;
+			&lt;/td&gt;
+		&lt;/xsl:if&gt;
+		&lt;xsl:if test="not($currentDepth = $MaxDepth)"&gt;
+			&lt;xsl:call-template name="IndentureLevel"&gt;
+				&lt;xsl:with-param name="currentDepth" select="$currentDepth + 1"/&gt;
+				&lt;xsl:with-param name="rowCount" select="$rowCount"/&gt;
+			&lt;/xsl:call-template&gt;
+		&lt;/xsl:if&gt;
+	&lt;/xsl:template&gt;
+
+	&lt;xsl:template match="/Result/Item[@alias='Part']"&gt;
+		&lt;xsl:variable name="rowCount"&gt;
+			&lt;xsl:choose&gt;
+				&lt;xsl:when test="count(Relationships/Item[@alias='Part AML'])=0"&gt;1&lt;/xsl:when&gt;
+				&lt;xsl:otherwise&gt;
+					&lt;xsl:value-of select="count(Relationships/Item[@alias='Part AML'])"/&gt;
+				&lt;/xsl:otherwise&gt;
+			&lt;/xsl:choose&gt;
+		&lt;/xsl:variable&gt;
+		&lt;tr&gt;
+			&lt;xsl:call-template name="IndentureLevel" &gt;
+				&lt;xsl:with-param name="rowCount" select="$rowCount"/&gt;
+			&lt;/xsl:call-template&gt;
+			&lt;td rowspan="{$rowCount}" width="120px"&gt;
+				&lt;xsl:value-of select="item_number"&gt;&lt;/xsl:value-of&gt;
+			&lt;/td&gt;
+			&lt;td rowspan="{$rowCount}" width="120px"&gt;
+				&lt;xsl:value-of select="name"&gt;&lt;/xsl:value-of&gt;
+			&lt;/td&gt;
+			&lt;td rowspan="{$rowCount}" width="80px" align="center"&gt;
+				&lt;xsl:choose&gt;
+					&lt;xsl:when test="depth=0"&gt;1&lt;/xsl:when&gt;
+					&lt;xsl:when test="depth!=0 and (quantity)=''"&gt;1&lt;/xsl:when&gt;
+					&lt;xsl:otherwise&gt;
+						&lt;xsl:value-of select="quantity"/&gt;
+					&lt;/xsl:otherwise&gt;
+				&lt;/xsl:choose&gt;
+			&lt;/td&gt;
+			&lt;td width="100px"&gt;
+				&lt;xsl:value-of select="Relationships/Item[@alias='Part AML'][1]/state"/&gt;
+			&lt;/td&gt;
+			&lt;td width="120px"&gt;
+				&lt;xsl:value-of select="Relationships/Item[@alias='Part AML'][1]/Relationships/Item[@alias='Manufacturer Part']/manufacturer/@keyed_name"/&gt;
+			&lt;/td&gt;
+			&lt;td width="120px"&gt;
+				&lt;xsl:value-of select="Relationships/Item[@alias='Part AML'][1]/Relationships/Item[@alias='Manufacturer Part']/item_number"/&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;xsl:apply-templates select="Relationships/Item[@alias='Part AML'][position()!=1]"/&gt;
+	&lt;/xsl:template&gt;
+	&lt;xsl:template match="Item[@alias='Part AML']"&gt;
+		&lt;tr&gt;
+			&lt;td width="100px"&gt;
+				&lt;xsl:value-of select="state"&gt;&lt;/xsl:value-of&gt;
+			&lt;/td&gt;
+			&lt;td width="120px"&gt;
+				&lt;xsl:value-of select="Relationships/Item[@alias='Manufacturer Part']/manufacturer/@keyed_name"/&gt;
+			&lt;/td&gt;
+			&lt;td width="120px"&gt;
+				&lt;xsl:value-of select="Relationships/Item[@alias='Manufacturer Part']/item_number"/&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</xsl_stylesheet><name>Multilevel BOM Report</name><itemtype>F0834BBA6FB64394B78DF5BB725532DD</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><itemtype>5BD6BED0CD794A078AA42476F47ECF46</itemtype></Item><Item type="Item Report" typeId="5BD6BED0CD794A078AA42476F47ECF46" id="BDD7633E09C347C18FB53842E7C1153C"><config_id keyed_name="BDD7633E09C347C18FB53842E7C1153C" type="Item Report">BDD7633E09C347C18FB53842E7C1153C</config_id><id keyed_name="BDD7633E09C347C18FB53842E7C1153C" type="Item Report">BDD7633E09C347C18FB53842E7C1153C</id><related_id keyed_name="BOM Quantity Rollup Report" type="Report"><Item type="Report" typeId="F0834BBA6FB64394B78DF5BB725532DD" id="2290D6D2214C4A38B5C08755AEE8A282"><config_id keyed_name="BOM Quantity Rollup Report" type="Report">2290D6D2214C4A38B5C08755AEE8A282</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description></description><generation>1</generation><id keyed_name="BOM Quantity Rollup Report" type="Report">2290D6D2214C4A38B5C08755AEE8A282</id><is_current>1</is_current><is_released>1</is_released><keyed_name>BOM Quantity Rollup Report</keyed_name><location>client</location><major_rev>A</major_rev><method keyed_name="PE_execQuantityRepAndApplyXslt" type="Method">2B5F142FFE1B48CE8D161D2E4AFC28D1</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Report" type="Permission">6F2E8817ED92423DA60EA1623FFCEBA7</permission_id><report_query></report_query><state>Released</state><target>one window</target><type>item</type><xsl_stylesheet>&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:exslt="http://exslt.org/common" extension-element-prefixes="exslt" xmlns:aras="http://www.aras-corp.com"&gt;
+ &lt;xsl:output method="html" omit-xml-declaration="yes" standalone="yes" indent="yes"&gt;&lt;/xsl:output&gt;
+ &lt;xsl:template match="/"&gt;
+  &lt;html&gt;
+   &lt;head&gt;&lt;/head&gt;
+   &lt;body topmargin="50" leftmargin="50"&gt;
+    &lt;div class="print_button_wrapper"&gt;
+     &lt;img id="print_button" src="../images/Print.svg" onclick="printReport(window);" /&gt;
+     &lt;a href="#" onclick="printReport(window); return false;"&gt;Print&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="table_wrapper"&gt;
+     &lt;div class="report_name"&gt;
+      Quantity Rollup Report for &lt;xsl:value-of select="//Item/item_number"/&gt;
+     &lt;/div&gt;
+     &lt;div class="report_generation_time"&gt;&lt;/div&gt;
+     
+     &lt;table border="0" cellspacing="0" cellpadding="0"&gt;
+      &lt;tr&gt;
+       &lt;th&gt;Part Number&lt;/th&gt;
+       &lt;th&gt;Name&lt;/th&gt;
+       &lt;th&gt;Calculated Quantity&lt;/th&gt;
+      &lt;/tr&gt;
+       &lt;xsl:call-template name="main"&gt;&lt;/xsl:call-template&gt;
+     &lt;/table&gt;
+    &lt;/div&gt;
+   &lt;/body&gt;
+   &lt;script&gt;
+    function loadScript(url)
+    {
+     const loadedJS = document.createElement('script');
+     loadedJS.src = url;
+     document.getElementsByTagName('head')[0].appendChild(loadedJS);
+    }
+    function loadStyle(url)
+    {
+     const link = document.createElement('link');
+     link.setAttribute('rel', 'stylesheet');
+     link.setAttribute('href', url);
+     document.getElementsByTagName('head')[0].appendChild(link)
+    }
+    loadScript(parent.aras.getBaseURL('/Solutions/PLM/javascript/report.js'));
+    loadStyle(parent.aras.getBaseURL('/Solutions/PLM/styles/report.css'));
+   &lt;/script&gt;
+  &lt;/html&gt;
+ &lt;/xsl:template&gt;
+ 
+ &lt;xsl:template name="main"&gt;
+  &lt;xsl:for-each select="Result/Item[@alias='Part']"&gt;
+   &lt;xsl:variable name="part_number"&gt;
+    &lt;xsl:value-of select="item_number"/&gt;
+    &lt;xsl:if test="item_number='' or not(item_number)"&gt;
+     &lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;
+    &lt;/xsl:if&gt;
+   &lt;/xsl:variable&gt;
+   &lt;xsl:variable name="part_name"&gt;
+    &lt;xsl:value-of select="name"/&gt;
+    &lt;xsl:if test="name='' or not(name)"&gt;
+     &lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;
+    &lt;/xsl:if&gt;
+   &lt;/xsl:variable&gt;
+   &lt;xsl:variable name="sum_of_products"&gt;
+    &lt;xsl:value-of select="total_count"/&gt;
+    &lt;xsl:if test="total_count='' or not(total_count)"&gt;
+     &lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;
+    &lt;/xsl:if&gt;
+   &lt;/xsl:variable&gt;
+   &lt;xsl:if test="position()!=1"&gt;
+    &lt;xsl:call-template name="draw_row_for_item"&gt;
+     &lt;xsl:with-param name="sum_of_products" select="$sum_of_products"&gt;&lt;/xsl:with-param&gt;
+     &lt;xsl:with-param name="part_number" select="$part_number"&gt;&lt;/xsl:with-param&gt;
+     &lt;xsl:with-param name="part_name" select="$part_name"&gt;&lt;/xsl:with-param&gt;
+    &lt;/xsl:call-template&gt;
+   &lt;/xsl:if&gt;
+  &lt;/xsl:for-each&gt;
+ &lt;/xsl:template&gt;
+ 
+ &lt;!-- Draw rows of table--&gt;
+ &lt;xsl:template name="draw_row_for_item"&gt;
+  &lt;xsl:param name="sum_of_products"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="part_number"&gt;&lt;/xsl:param&gt;
+  &lt;xsl:param name="part_name"&gt;&lt;/xsl:param&gt;
+  &lt;tr&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="$part_number"&gt;&lt;/xsl:value-of&gt;
+   &lt;/td&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="$part_name"&gt;&lt;/xsl:value-of&gt;
+   &lt;/td&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="$sum_of_products"&gt;&lt;/xsl:value-of&gt;
+   &lt;/td&gt;
+  &lt;/tr&gt;
+ &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</xsl_stylesheet><name>BOM Quantity Rollup Report</name><itemtype>F0834BBA6FB64394B78DF5BB725532DD</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><itemtype>5BD6BED0CD794A078AA42476F47ECF46</itemtype></Item><Item type="Item Report" typeId="5BD6BED0CD794A078AA42476F47ECF46" id="A0546FD2F89C40F9BE85D3439B2A8AB5"><config_id keyed_name="A0546FD2F89C40F9BE85D3439B2A8AB5" type="Item Report">A0546FD2F89C40F9BE85D3439B2A8AB5</config_id><id keyed_name="A0546FD2F89C40F9BE85D3439B2A8AB5" type="Item Report">A0546FD2F89C40F9BE85D3439B2A8AB5</id><related_id keyed_name="BOM Costing Report" type="Report"><Item type="Report" typeId="F0834BBA6FB64394B78DF5BB725532DD" id="B932166880F84F30BB02C62E0C29CBEF"><config_id keyed_name="BOM Costing Report" type="Report">B932166880F84F30BB02C62E0C29CBEF</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:06</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description></description><generation>1</generation><id keyed_name="BOM Costing Report" type="Report">B932166880F84F30BB02C62E0C29CBEF</id><is_current>1</is_current><is_released>1</is_released><keyed_name>BOM Costing Report</keyed_name><location>client</location><major_rev>A</major_rev><method keyed_name="PE_executeCostingRepAndApplyXslt" type="Method">3931CCC2D1E740F1AE3959AC77395392</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:06</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Report" type="Permission">6F2E8817ED92423DA60EA1623FFCEBA7</permission_id><report_query></report_query><state>Released</state><target>one window</target><type>item</type><xsl_stylesheet>&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:aras="http://www.aras-corp.com"&gt;
+ &lt;xsl:output method="html" omit-xml-declaration="yes" standalone="yes" indent="yes"&gt;&lt;/xsl:output&gt;
+ &lt;xsl:variable name="MaxDepth"&gt;
+  &lt;xsl:for-each select="Result/Item[@alias='Part']/depth"&gt;
+   &lt;xsl:sort select="." data-type="number" order="descending"/&gt;
+   &lt;xsl:if test="position() = 1"&gt;
+    &lt;xsl:value-of select="."/&gt;
+   &lt;/xsl:if&gt;
+  &lt;/xsl:for-each&gt;
+ &lt;/xsl:variable&gt;
+ &lt;xsl:template match="/"&gt;
+  &lt;html&gt;
+   &lt;head&gt;&lt;/head&gt;
+   &lt;body topmargin="50" leftmargin="50"&gt;
+    &lt;div class="print_button_wrapper"&gt;
+     &lt;img id="print_button" src="../images/Print.svg" onclick="printReport(window);" /&gt;
+     &lt;a href="#" onclick="printReport(window); return false;"&gt;Print&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="table_wrapper"&gt;
+     &lt;div class="report_name"&gt;
+      Bill of Materials Costing Report
+     &lt;/div&gt;
+     &lt;div class="report_generation_time"&gt;&lt;/div&gt;
+     &lt;table border="0" cellspacing="0" cellpadding="0"&gt;
+      &lt;tr&gt;
+       &lt;th colspan="{$MaxDepth + 1}"&gt;BOM Level&lt;/th&gt;
+       &lt;th&gt;Part Number&lt;/th&gt;
+       &lt;th&gt;Name&lt;/th&gt;
+       &lt;th&gt;Quantity&lt;/th&gt;
+       &lt;th&gt;Cost&lt;/th&gt;
+       &lt;th&gt;Cost Basis&lt;/th&gt;
+      &lt;/tr&gt;
+       &lt;xsl:call-template name="Levels"&gt;&lt;/xsl:call-template&gt;
+     &lt;/table&gt;
+    &lt;/div&gt;
+   &lt;/body&gt;
+   &lt;script&gt;
+    function loadScript(url)
+    {
+     const loadedJS = document.createElement('script');
+     loadedJS.src = url;
+     document.getElementsByTagName('head')[0].appendChild(loadedJS);
+    }
+    function loadStyle(url)
+    {
+     const link = document.createElement('link');
+     link.setAttribute('rel', 'stylesheet');
+     link.setAttribute('href', url);
+     document.getElementsByTagName('head')[0].appendChild(link)
+    }
+    loadScript(parent.aras.getBaseURL('/Solutions/PLM/javascript/report.js'));
+    loadStyle(parent.aras.getBaseURL('/Solutions/PLM/styles/report.css'));
+   &lt;/script&gt;
+  &lt;/html&gt;
+ &lt;/xsl:template&gt;
+ 
+ &lt;!-- Find the Part Level and pass as the 'Depth' param to the next template --&gt;
+ &lt;xsl:template name="Levels"&gt;
+  &lt;xsl:for-each select="Result/Item[@alias='Part']"&gt;
+   &lt;xsl:apply-templates mode="PartBOM" select="."&gt;
+    &lt;xsl:with-param name="Depth" select="depth"/&gt;
+   &lt;/xsl:apply-templates&gt;
+  &lt;/xsl:for-each&gt;
+ &lt;/xsl:template&gt;
+
+ &lt;xsl:template name="IndentureLevel"&gt;
+  &lt;xsl:param name="currentDepth" select="0" /&gt;
+  &lt;xsl:if test="$currentDepth = 0"&gt;
+   &lt;td width="20px" style="padding: 5px 0px 5px 10px" align="center"&gt;
+    &lt;xsl:if test="depth=$currentDepth"&gt;&lt;xsl:value-of select="depth"/&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;
+  &lt;/xsl:if&gt;
+  &lt;xsl:if test="$currentDepth != 0"&gt;
+   &lt;td width="20px" style="padding: 5px 0" align="center"&gt;
+    &lt;xsl:if test="depth=$currentDepth"&gt;&lt;xsl:value-of select="depth"/&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;
+  &lt;/xsl:if&gt;
+  &lt;xsl:if test="not($currentDepth = $MaxDepth)"&gt;
+   &lt;xsl:call-template name="IndentureLevel"&gt;
+    &lt;xsl:with-param name="currentDepth" select="$currentDepth + 1"/&gt;
+   &lt;/xsl:call-template&gt;
+  &lt;/xsl:if&gt;
+ &lt;/xsl:template&gt;
+
+ &lt;xsl:template mode="PartBOM" match="Result/Item[@alias='Part']"&gt;
+  &lt;xsl:param name="Depth"&gt;&lt;/xsl:param&gt;
+  &lt;tr&gt;
+   &lt;xsl:call-template name="IndentureLevel" /&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="item_number"&gt;&lt;/xsl:value-of&gt;
+    &lt;xsl:if test="item_number='' or not(item_number)"&gt;&lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="name"&gt;&lt;/xsl:value-of&gt;
+    &lt;xsl:if test="name='' or not(name)"&gt;&lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;
+   &lt;xsl:choose&gt;
+    &lt;xsl:when test="$Depth = '0'"&gt;
+     &lt;td&gt;1&lt;/td&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:when test="quantity != '0'"&gt;
+     &lt;td&gt;
+      &lt;xsl:value-of select="quantity"&gt;&lt;/xsl:value-of&gt;
+      &lt;xsl:if test="quantity='' or not(quantity)"&gt;&lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;&lt;/xsl:if&gt;
+     &lt;/td&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+     &lt;td&gt;0&lt;/td&gt;
+    &lt;/xsl:otherwise&gt;
+   &lt;/xsl:choose&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="cost"&gt;&lt;/xsl:value-of&gt;
+    &lt;xsl:if test="cost='' or not(cost)"&gt;&lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;
+   &lt;td&gt;
+    &lt;xsl:value-of select="cost_basis"&gt;&lt;/xsl:value-of&gt;
+    &lt;xsl:if test="cost_basis='' or not(cost_basis)"&gt;&lt;xsl:text&gt;&amp;#160;&lt;/xsl:text&gt;&lt;/xsl:if&gt;
+   &lt;/td&gt;  &lt;/tr&gt;
+ &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</xsl_stylesheet><name>BOM Costing Report</name><itemtype>F0834BBA6FB64394B78DF5BB725532DD</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><itemtype>5BD6BED0CD794A078AA42476F47ECF46</itemtype></Item><Item type="Item Report" typeId="5BD6BED0CD794A078AA42476F47ECF46" id="BA0F02BE1662499A958837A60FA1480D"><config_id keyed_name="BA0F02BE1662499A958837A60FA1480D" type="Item Report">BA0F02BE1662499A958837A60FA1480D</config_id><id keyed_name="BA0F02BE1662499A958837A60FA1480D" type="Item Report">BA0F02BE1662499A958837A60FA1480D</id><related_id keyed_name="PE_SearchPartCircularReferences" type="Report"><Item type="Report" typeId="F0834BBA6FB64394B78DF5BB725532DD" id="EB940D65D28E47618BC9708787223C58"><config_id keyed_name="PE_SearchPartCircularReferences" type="Report">EB940D65D28E47618BC9708787223C58</config_id><created_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</created_by_id><created_on>2020-07-24T12:57:07</created_on><current_state name="Released" keyed_name="Released" type="Life Cycle State">C363ABDADF8D485393BB89877DBDCFD0</current_state><description>Find and list circular dependencies between Parts</description><generation>1</generation><id keyed_name="PE_SearchPartCircularReferences" type="Report">EB940D65D28E47618BC9708787223C58</id><is_current>1</is_current><is_released>1</is_released><keyed_name>PE_SearchPartCircularReferences</keyed_name><location>server</location><major_rev>A</major_rev><method keyed_name="PE_SearchPartCircularReferences" type="Method">75E9C2DB990C4D759ACB03BDFFC0D247</method><modified_by_id keyed_name="Super User" type="User">AD30A6D8D3B642F5A2AFED1A4B02BEFA</modified_by_id><modified_on>2020-07-24T12:57:07</modified_on><new_version>1</new_version><not_lockable>0</not_lockable><permission_id keyed_name="Report" type="Permission">6F2E8817ED92423DA60EA1623FFCEBA7</permission_id><report_query></report_query><state>Released</state><target>window</target><type>itemtype</type><xsl_stylesheet>&lt;xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format"&gt;
+  &lt;xsl:output method="html"/&gt;
+  &lt;xsl:template match="/"&gt;
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;List of circular dependencies between Parts&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body topmargin="50" leftmargin="50"&gt;
+        &lt;div class="print_button_wrapper"&gt;
+         &lt;img id="print_button" src="../images/Print.svg" onclick="printReport(window);" /&gt;
+         &lt;a href="#" onclick="printReport(window); return false;"&gt;Print&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class="table_wrapper"&gt;
+          &lt;div class="report_name"&gt;
+            List of circular dependencies between Parts
+          &lt;/div&gt;
+          &lt;div class="report_generation_time"&gt;&lt;/div&gt;
+          &lt;xsl:choose&gt;
+          &lt;xsl:when test="not(//Result/Item[loop_number='0'])"&gt;
+            &lt;div&gt;No circular dependencies between Parts are found.&lt;/div&gt;
+          &lt;/xsl:when&gt;
+          &lt;xsl:otherwise&gt;
+            &lt;table border="0" cellpadding="0" cellspacing="0"&gt;
+              &lt;tbody&gt;
+                &lt;tr&gt;
+                  &lt;th&gt;Loop #&lt;/th&gt;
+                  &lt;th&gt;Source Part&lt;/th&gt;
+                  &lt;th&gt;Referenced Part&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;xsl:for-each select="//Result/Item"&gt;
+                  &lt;tr&gt;
+                    &lt;xsl:variable name="currentLoop" select="loop_number"/&gt;
+                    &lt;xsl:if test="not(preceding-sibling::Item[1]) or preceding-sibling::Item[1]/loop_number != $currentLoop"&gt;
+                      &lt;td&gt;
+                        &lt;xsl:attribute name="rowspan"&gt;&lt;xsl:value-of select="count(following-sibling::Item[loop_number=$currentLoop]) + 1"/&gt;&lt;/xsl:attribute&gt;
+                        &lt;xsl:value-of select="$currentLoop + 1"/&gt;
+                      &lt;/td&gt;
+                    &lt;/xsl:if&gt;
+                    &lt;td&gt;
+                      &lt;strong&gt;&lt;xsl:value-of select="source_keyed_name"/&gt;&lt;/strong&gt; gen.&lt;xsl:value-of select="source_generation"/&gt; (&lt;xsl:value-of select="source_id"/&gt;)
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                      &lt;strong&gt;&lt;xsl:value-of select="related_keyed_name"/&gt;&lt;/strong&gt; gen.&lt;xsl:value-of select="related_generation"/&gt; (&lt;xsl:value-of select="related_id"/&gt;)
+                    &lt;/td&gt;
+                  &lt;/tr&gt;
+                &lt;/xsl:for-each&gt;
+              &lt;/tbody&gt;
+            &lt;/table&gt;
+          &lt;/xsl:otherwise&gt;
+          &lt;/xsl:choose&gt;
+        &lt;/div&gt;
+      &lt;/body&gt;
+      &lt;script&gt;
+        function loadScript(url)
+        {
+          const loadedJS = document.createElement('script');
+          loadedJS.src = url;
+          document.getElementsByTagName('head')[0].appendChild(loadedJS);
+        }
+        function loadStyle(url)
+        {
+          const link = document.createElement('link');
+          link.setAttribute('rel', 'stylesheet');
+          link.setAttribute('href', url);
+          document.getElementsByTagName('head')[0].appendChild(link)
+        }
+        loadScript(parent.aras.getBaseURL('/Solutions/PLM/javascript/report.js'));
+        loadStyle(parent.aras.getBaseURL('/Solutions/PLM/styles/report.css'));
+      &lt;/script&gt;
+    &lt;/html&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;
+</xsl_stylesheet><name>PE_SearchPartCircularReferences</name><itemtype>F0834BBA6FB64394B78DF5BB725532DD</itemtype></Item></related_id><source_id keyed_name="Part" type="ItemType" name="Part">4F1AC04A2B484F3ABA4E20DB63808A88</source_id><itemtype>5BD6BED0CD794A078AA42476F47ECF46</itemtype></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

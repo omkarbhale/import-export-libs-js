@@ -1,0 +1,43 @@
+{
+  "id": "l3-only-star-stock-itemtype",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportLanguageResourcesOnly, `*`, the stock ItemType Part",
+  "exercises": "LP-111, LP-122, LP-126: `*` becomes `de`, `fr`; the ItemType body (EXP-024) with a select per node and the ml lookups repeated for the types it reaches. Many requests, no stored translation.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly",
+    "languages": [
+      "*"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Languages `en`, `de` and `fr` (added for the recording and deleted again afterwards). Stock items carry no `de` or `fr` values, so every translated slot of the answer is empty.",
+  "rules": [
+    "LP-100",
+    "LP-111",
+    "LP-120",
+    "LP-122",
+    "LP-126",
+    "LP-142",
+    "LP-184"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 87,
+    "error": null
+  }
+}

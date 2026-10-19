@@ -1,0 +1,22 @@
+Tool version: 14.35.0.43890
+Action: ExportMetadataWithLanguageResources
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221723-14.35-export-5778f0\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T221723-14.35-export-5778f0\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export LIBSJS-SCRATCH-LANGINST****
+start of execution : 10/19/2026 03:47:25
+Item id :DCEA32D00A07DB24159FDBB5AC7CD1F0  keyed_name : LIBSJS-SCRATCH-ML_De   type : LIBSJS_SCRATCH_ML successfully exported
+Item id :FF462072D1C8242084376811138692E3  keyed_name : LIBSJS-SCRATCH-ML_En   type : LIBSJS_SCRATCH_ML successfully exported
+Item id :9A6E52C3E2003A22F014863A787CC9F3  keyed_name : LIBSJS-SCRATCH-ML_All   type : LIBSJS_SCRATCH_ML successfully exported
+end of execution : 10/19/2026 03:47:25

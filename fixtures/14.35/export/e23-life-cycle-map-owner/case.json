@@ -1,0 +1,28 @@
+{
+  "id": "e23-life-cycle-map-owner",
+  "engine": "14.35",
+  "catalogue": [
+    "E23"
+  ],
+  "title": "Life Cycle Map: role Owner with a pre_action (Part)",
+  "exercises": "role = Owner (system), with a pre_action.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Life Cycle Map",
+          "id": "E337EBF706FA4172B2CD1A6487E00875",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 43,
+    "error": null
+  }
+}

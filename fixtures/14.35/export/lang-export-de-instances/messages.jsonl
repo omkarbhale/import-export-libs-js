@@ -1,0 +1,6 @@
+{"event":10,"seq":1,"thread":16,"ticks":822366385232,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-LANGINST","answer":null}
+{"event":11,"seq":2,"thread":16,"ticks":822366397495,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_De","answer":null}
+{"event":12,"seq":3,"thread":3,"ticks":822366398500,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_En","answer":null}
+{"event":13,"seq":4,"thread":4,"ticks":822366399301,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_All","answer":null}
+{"event":23,"seq":5,"thread":16,"ticks":822368561878,"channel":"status","text":"completed","answer":null}
+{"event":24,"seq":6,"thread":16,"ticks":822368564748,"channel":"currentPackage","text":"","answer":null}

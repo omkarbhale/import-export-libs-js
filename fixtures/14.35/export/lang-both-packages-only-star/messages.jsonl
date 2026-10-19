@@ -1,0 +1,9 @@
+{"event":11,"seq":1,"thread":18,"ticks":822318646573,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-LANGINST","answer":null}
+{"event":12,"seq":2,"thread":14,"ticks":822318659445,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_De","answer":null}
+{"event":13,"seq":3,"thread":18,"ticks":822318660934,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_All","answer":null}
+{"event":14,"seq":4,"thread":16,"ticks":822318664300,"channel":"status","text":"Item 1 of 3: LIBSJS_SCRATCH_ML - LIBSJS-SCRATCH-ML_En","answer":null}
+{"event":24,"seq":5,"thread":18,"ticks":822321152290,"channel":"status","text":"completed","answer":null}
+{"event":26,"seq":6,"thread":18,"ticks":822321407726,"channel":"currentPackage","text":"Exporting package LIBSJS-SCRATCH-LANG","answer":null}
+{"event":27,"seq":7,"thread":18,"ticks":822321409720,"channel":"status","text":"Item 1 of 1: ItemType - LIBSJS_SCRATCH_ML","answer":null}
+{"event":74,"seq":8,"thread":18,"ticks":822332654990,"channel":"status","text":"completed","answer":null}
+{"event":75,"seq":9,"thread":18,"ticks":822332655393,"channel":"currentPackage","text":"","answer":null}

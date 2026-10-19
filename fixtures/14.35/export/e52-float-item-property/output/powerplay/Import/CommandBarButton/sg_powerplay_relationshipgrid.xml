@@ -1,0 +1,10 @@
+﻿<AML>
+ <Item type="CommandBarButton" id="4B51486994E740E383BA33D46250AAFA" action="add">
+  <aria_label xml:lang="en">PowerPlay</aria_label>
+  <image>../Images/PowerPlay/sg_powerplay.svg</image>
+  <label xml:lang="en">PowerPlay</label>
+  <on_click_handler keyed_name="sg_powerplay_relgrid_click" type="Method">47441EDDD825405D8BE100F1E5D236BD</on_click_handler>
+  <tooltip_template xml:lang="en">PowerPlay</tooltip_template>
+  <name>sg_powerplay_relationshipgrid</name>
+ </Item>
+</AML>

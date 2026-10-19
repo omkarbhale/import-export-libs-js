@@ -1,0 +1,44 @@
+{
+  "id": "l3-only-de-stock-list",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportLanguageResourcesOnly, `de`, a stock List",
+  "exercises": "LP-120 to LP-125, LP-142: a List and its Value relationships asked for `label_de`. Stock values have no translation, so the answer holds empty i18n elements and the reshaping keeps only what locates the item.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly",
+    "languages": [
+      "de"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Languages `en`, `de` and `fr` (added for the recording and deleted again afterwards). Stock items carry no `de` or `fr` values, so every translated slot of the answer is empty.",
+  "rules": [
+    "LP-100",
+    "LP-120",
+    "LP-121",
+    "LP-124",
+    "LP-125",
+    "LP-141",
+    "LP-142",
+    "LP-150"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 21,
+    "error": null
+  }
+}

@@ -1,0 +1,8 @@
+﻿<AML>
+ <Item type="LIBSJS_SCRATCH_ML" id="DCEA32D00A07DB24159FDBB5AC7CD1F0" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <name>LIBSJS-SCRATCH-ML_De</name>
+  <summary xml:lang="en">Only two</summary>
+  <title xml:lang="en">German too</title>
+  <i18n:title xml:lang="de">Auch deutsch</i18n:title>
+ </Item>
+</AML>

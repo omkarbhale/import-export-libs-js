@@ -1,0 +1,44 @@
+{
+  "id": "x-level-not-a-number",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 request tree"
+  ],
+  "title": "Two CommandBarSections with a level that is not a number",
+  "exercises": "The default row of EXP-021 parses the level: 'abc' makes the factory of the type's template throw a FormatException, the Lazy keeps it, and the second item of the type gets the same exception without a request (EXP-062). The exception is not a CItemException, so it ends the run through the aggregate handler of EXP-556 as a warning. No file is written.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.i18n",
+      "items": [
+        {
+          "type": "CommandBarSection",
+          "id": "0212985C3E90930D618120D9625E4BB8",
+          "keyedName": "Language_TOC_Content"
+        },
+        {
+          "type": "CommandBarSection",
+          "id": "35C6304FF739C77F618120D9625E4BB8",
+          "keyedName": "Locale_TOC_Content"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "level": "abc"
+  },
+  "expectsError": false,
+  "rules": [
+    "EXP-021",
+    "EXP-022",
+    "EXP-060",
+    "EXP-061",
+    "EXP-054",
+    "EXP-062",
+    "EXP-556"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 10,
+    "error": null
+  }
+}

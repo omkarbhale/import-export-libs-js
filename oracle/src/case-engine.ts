@@ -30,3 +30,9 @@ export const blobsDir = (engine: ImportEngine, kind: "export" | "import"): strin
 /** A recorder's command line as the READMEs print it: `npm run <script> [-- --engine <engine>] [args]`; the default engine needs no flag. */
 export const recorderCommand = (script: string, engine: ImportEngine, args = ""): string =>
   `npm run ${script}${engine === DEFAULT_CASE_ENGINE ? "" : ` -- --engine ${engine}`}${args === "" ? "" : `${engine === DEFAULT_CASE_ENGINE ? " --" : ""} ${args}`}`;
+
+/** The engines whose export cases are recorded: the two above, and 14.35 (ticket 57; its import cases are ticket 75's). */
+export const EXPORT_ENGINES = [...CASE_ENGINES, "14.35"] as const;
+export type ExportEngine = (typeof EXPORT_ENGINES)[number];
+
+export const isExportEngine = (value: string): value is ExportEngine => (EXPORT_ENGINES as readonly string[]).includes(value);

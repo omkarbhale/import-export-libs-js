@@ -1,0 +1,13 @@
+<imports>
+  <package name="com.aras.innovator.core" path=".\">
+    <dependson name="com.aras.innovator.admin" />
+  </package>
+  <package name="com.aras.innovator.solution.PLM" path="PLM\Import">
+    <dependson name="com.aras.innovator.solution.ApplicationCore" />
+  </package>
+  <package name="com.aras.defaults.filerepresentations" path=".\">
+    <dependson name="com.aras.innovator.filerepresentations" />
+    <dependson name="com.aras.innovator.core" />
+  </package>
+  <package name="com.steepgraph.pagex" path="pagex\Import" />
+</imports>

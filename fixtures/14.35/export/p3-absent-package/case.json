@@ -1,0 +1,28 @@
+{
+  "id": "p3-absent-package",
+  "engine": "14.35",
+  "catalogue": [
+    "P3"
+  ],
+  "title": "A Hashtable key naming a package absent from the DB",
+  "exercises": "InitSolution's CItemException escapes ExportSolutions, and the manifest is still saved in the finally block.",
+  "packages": [
+    {
+      "name": "LIBSJS-SCRATCH-ABSENT",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": true,
+  "result": {
+    "hostExit": 2,
+    "calls": 8,
+    "error": "Aras.Tools.SolutionUpgrade.CItemException: Server error\r\n\r\nRequest (formatted):\r\n<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\">\r\n  <name>LIBSJS-SCRATCH-ABSENT</name>\r\n  <is_current>1</is_current>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type PackageDefinition found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type PackageDefinition found.]]></af:legacy_detail>\r\n        <af:legacy_faultstring><![CDATA[No items of type 'PackageDefinition' found using the criteria: \r\n<Item type=\"PackageDefinition\" select=\"id,name,generation\" action=\"get\"><name>LIBSJS-SCRATCH-ABSENT</name><is_current>1</is_current></Item>\r\n]]></af:legacy_faultstring>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.applyAML(String aml)\r\n   at Aras.Tools.SolutionUpgrade.PackageDefinitionManager.InitSolution(Boolean bCreate)\r\n   at Aras.Tools.SolutionUpgrade.ImportExportManager.ExportSolutions(SUExportContext exportContext, Hashtable selItemsTable)\r\n   at LibsJsOracle.Host.Run(HostRequest r)"
+  }
+}

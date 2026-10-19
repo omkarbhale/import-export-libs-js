@@ -1,0 +1,35 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222007-14.35-export-fdcb44\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222007-14.35-export-fdcb44\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: RemoveSilently
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.configurator****
+start of execution : 10/19/2026 03:50:09
+Item id :A22EC0C6A1B940FB94654AB060F21459  keyed_name : ScopeCacheDependency   type : ItemType successfully exported
+
+ --- REMOVED REFERENCE ---
+From:	[com.aras.innovator.configurator].[ItemType].ScopeCacheDependency (ID='A22EC0C6A1B940FB94654AB060F21459')
+To:	[Method].868FE76FEFB14B37A1A5573434F021A7
+Reason:	The item contains a reference to an item that belongs to an unknown package (i.e. neither a core package nor a package that the package depends on)
+
+ --- REMOVED REFERENCE ---
+From:	[com.aras.innovator.configurator].[ItemType].ScopeCacheDependency (ID='A22EC0C6A1B940FB94654AB060F21459')
+To:	[ItemType].A8C33F5606104501899F94D378878626
+Reason:	The item contains a reference to an item that belongs to an unknown package (i.e. neither a core package nor a package that the package depends on)
+
+ --- REMOVED REFERENCE ---
+From:	[com.aras.innovator.configurator].[ItemType].ScopeCacheDependency (ID='A22EC0C6A1B940FB94654AB060F21459')
+To:	[ItemType].0B477D812B35400DB4F27C6067783B29
+Reason:	The item contains a reference to an item that belongs to an unknown package (i.e. neither a core package nor a package that the package depends on)
+end of execution : 10/19/2026 03:50:10

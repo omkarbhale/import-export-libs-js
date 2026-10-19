@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":18,"ticks":824192888385,"channel":"currentPackage","text":"Exporting package com.aras.innovator.cmf","answer":null}
+{"event":12,"seq":2,"thread":18,"ticks":824192901234,"channel":"status","text":"Item 1 of 1: RelationshipType - cmf_ElementBinding","answer":null}
+{"event":44,"seq":3,"thread":18,"ticks":824204844512,"channel":"status","text":"completed","answer":null}
+{"event":45,"seq":4,"thread":18,"ticks":824204845016,"channel":"currentPackage","text":"","answer":null}

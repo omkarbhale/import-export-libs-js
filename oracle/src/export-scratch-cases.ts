@@ -1,7 +1,7 @@
 import type { ExportCase, ExportCaseOptions } from "./export-cases.js";
 import type { ImportStep } from "./import-cases.js";
 import { collDistinct, collId, refId, refPair } from "./import-packages.js";
-import { AC, CMF, DR, SPECIAL, XPROP, implementationQuery, special, specialIds, specialStepTwo, xprop, xpropId, xpropInstances } from "./seed-packages.js";
+import { AC, CMF, DR, LANG, SPECIAL, XPROP, implementationQuery, lang, langId, langInstances, langItemTypeId, special, specialIds, specialStepTwo, xprop, xpropId, xpropInstances } from "./seed-packages.js";
 import type { ItemRef } from "./record.js";
 
 /**
@@ -44,7 +44,7 @@ export interface SeededPackage {
   items: SeededItem[];
 }
 
-export interface ScratchExportCase {
+export interface ScratchExportCase extends Pick<ExportCase, "expectsError"> {
   /** The folder under fixtures/<engine>/export/. */
   id: string;
   catalogue: string[];
@@ -53,6 +53,8 @@ export interface ScratchExportCase {
   packages: SeededPackage[];
   options?: ExportCaseOptions;
   note?: string;
+  /** The spec rules that pin the case (14.35 cases name them). */
+  rules?: readonly string[];
 }
 
 /** Packages to seed, as a list of import steps, and the cases that export from the result. */
@@ -80,7 +82,7 @@ export interface SeedRecord {
 }
 
 /** A case with its items resolved to ids, in the shape the stock recorder writes. */
-export type ResolvedCase = Pick<ExportCase, "id" | "catalogue" | "title" | "exercises" | "packages" | "options" | "note">;
+export type ResolvedCase = Pick<ExportCase, "id" | "catalogue" | "title" | "exercises" | "packages" | "options" | "note" | "rules" | "expectsError">;
 
 const ok = (name: string, packages: ImportStep["packages"], options?: ImportStep["options"]): ImportStep => ({ name, packages, expect: "success", ...(options === undefined ? {} : { options }) });
 
@@ -235,6 +237,138 @@ export const SEED_GROUPS: SeedGroup[] = [
 
 export const SCRATCH_EXPORT_CASES: ScratchExportCase[] = SEED_GROUPS.flatMap((g) => g.cases);
 
+/** 14.35 repeats the groups above with its own engine, and adds the groups of its own. */
+const langType: SeededItem = { type: "ItemType", keyedName: LANG.itemType, id: langItemTypeId() };
+const langItems: SeededItem[] = [LANG.all, LANG.german, LANG.plain].map((name) => ({ type: LANG.itemType, keyedName: name, id: langId(name) }));
+const ONLY = "ExportLanguageResourcesOnly";
+const META = "ExportMetadataWithLanguageResources";
+const LANG_NOTE = "Recorded while dev had the Languages `en`, `de` and `fr` (added for the recording and deleted again afterwards, as ticket 45 did; `oracle/README.md` says how).";
+
+/**
+ * 14.35's language-resource export modes need translated values, and dev holds
+ * none. The group needs the Languages `de` and `fr` on the server; the seed
+ * imports a scratch ItemType whose labels and `ml_string` Properties are
+ * translated, then its instances.
+ */
+const LANGUAGE_GROUPS: SeedGroup[] = [
+  {
+    id: "lang-ml",
+    steps: [ok("scratch ItemType with translated labels", [lang()]), ok("instances with translated values", [langInstances()])],
+    cases: [
+      {
+        id: "lang-only-star-itemtype",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly, `*`, the translated scratch ItemType",
+        exercises:
+          "LP-111, LP-120 to LP-126, LP-140 to LP-145: `*` becomes `de`, `fr`; the ItemType body asks for `label_de`, `label_fr` and the like on the ItemType and on its Properties; only the language elements and what locates them are kept, the i18n elements go behind their default-language sibling, and the root Item gets xmlns:i18n.",
+        packages: [{ name: LANG.name, items: [langType] }],
+        options: { engineAction: ONLY, languages: ["*"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-110", "LP-111", "LP-112", "LP-115", "LP-120", "LP-121", "LP-122", "LP-124", "LP-125", "LP-126", "LP-140", "LP-141", "LP-142", "LP-143", "LP-144", "LP-145", "LP-150"],
+      },
+      {
+        id: "lang-meta-star-itemtype",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportMetadataWithLanguageResources, `*`, the translated scratch ItemType",
+        exercises:
+          "LP-123: the metadata mode selects every node's own properties together with the suffixed names, and keeps the whole item, flagging the properties whose translation differs from the default (LP-141).",
+        packages: [{ name: LANG.name, items: [langType] }],
+        options: { engineAction: META, languages: ["*"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-110", "LP-111", "LP-120", "LP-121", "LP-123", "LP-124", "LP-125", "LP-126", "LP-140", "LP-141", "LP-143", "LP-144", "LP-145"],
+      },
+      {
+        id: "lang-only-de-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly, `de`, three instances translated twice, once and not at all",
+        exercises:
+          "LP-120 to LP-126 and LP-141 to LP-143 on instances of a scratch type: the `title` and `summary` lookups, the suffixed select for `de` only (`fr` values are not asked for), and the instance with no translation, which has nothing to keep.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: ONLY, languages: ["de"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-110", "LP-114", "LP-120", "LP-121", "LP-122", "LP-124", "LP-125", "LP-126", "LP-141", "LP-142", "LP-143", "LP-144"],
+      },
+      {
+        id: "lang-only-de-fr-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly, `de` and `fr`, the three instances",
+        exercises: "LP-143 and LP-183: two languages per property; the order of the i18n elements of one property (the engine writes them in reverse).",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: ONLY, languages: ["de", "fr"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-121", "LP-125", "LP-141", "LP-142", "LP-143", "LP-183"],
+      },
+      {
+        id: "lang-only-en-de-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly, `en` and `de`",
+        exercises: "LP-112: `en` is removed from the list, so the run is the one of `de` alone.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: ONLY, languages: ["en", "de"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-112"],
+      },
+      {
+        id: "lang-meta-de-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportMetadataWithLanguageResources, `de`, the three instances",
+        exercises: "LP-123, LP-141, LP-186: the metadata mode keeps the whole item and the `de` values beside it.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: META, languages: ["de"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-123", "LP-124", "LP-125", "LP-141", "LP-143", "LP-144", "LP-186"],
+      },
+      {
+        id: "lang-meta-star-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportMetadataWithLanguageResources, `*`, the three instances",
+        exercises: "LP-111 in the metadata mode: `*` is `de`, `fr`.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: META, languages: ["*"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-111", "LP-123", "LP-143"],
+      },
+      {
+        id: "lang-both-packages-only-star",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly, `*`, the ItemType and its instances in two packages",
+        exercises: "LP-150, LP-184: a run over two packages, the ml lookups repeated for every visit, and the parallel loop of EXP-551 in a language mode.",
+        packages: [
+          { name: LANG.name, items: [langType] },
+          { name: LANG.instancesName, items: langItems },
+        ],
+        options: { engineAction: ONLY, languages: ["*"] },
+        note: LANG_NOTE,
+        rules: ["LP-100", "LP-126", "LP-150", "LP-151", "LP-184", "EXP-551"],
+      },
+      {
+        id: "lang-export-de-instances",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "A plain Export of the instances with the list `de`",
+        exercises: "LP-110: outside the language modes the list is only checked against the installed languages; the export asks for no translated values and the output is that of a plain export.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { languages: ["de"] },
+        note: LANG_NOTE,
+        rules: ["LP-110", "LP-114", "LP-100"],
+      },
+      {
+        id: "lang-only-upper-case-code",
+        catalogue: ["14.35 language modes", "S10"],
+        title: "ExportLanguageResourcesOnly with `DE`",
+        exercises: "LP-180: the check compares exactly while the server's codes are lower-cased, so `DE` is reported as not installed although `de` is.",
+        packages: [{ name: LANG.instancesName, items: langItems }],
+        options: { engineAction: ONLY, languages: ["DE"] },
+        expectsError: true,
+        note: LANG_NOTE,
+        rules: ["LP-114", "LP-115", "LP-180"],
+      },
+    ],
+  },
+];
+
+export const SEED_GROUPS_1435: SeedGroup[] = [...SEED_GROUPS, ...LANGUAGE_GROUPS];
+export const SCRATCH_EXPORT_CASES_1435: ScratchExportCase[] = SEED_GROUPS_1435.flatMap((g) => g.cases);
+
 /** Finds the id of a seeded item in the created lists (see `SeededItem`). */
 export function resolveItem(item: SeededItem, created: readonly ItemRef[]): string {
   if (typeof item.id === "string") return item.id;
@@ -255,5 +389,7 @@ export function resolveCase(c: ScratchExportCase, created: readonly ItemRef[]): 
     packages: c.packages.map((p) => ({ name: p.name, items: p.items.map((i) => ({ type: i.type, keyedName: i.keyedName, id: resolveItem(i, created) })) })),
     ...(c.options === undefined ? {} : { options: c.options }),
     ...(c.note === undefined ? {} : { note: c.note }),
+    ...(c.rules === undefined ? {} : { rules: c.rules }),
+    ...(c.expectsError === undefined ? {} : { expectsError: c.expectsError }),
   };
 }

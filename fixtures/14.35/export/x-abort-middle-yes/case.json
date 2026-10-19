@@ -1,0 +1,78 @@
+{
+  "id": "x-abort-middle-yes",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 abort"
+  ],
+  "title": "The same run with ErrorQuestion answered yes",
+  "exercises": "The same items as x-abort-middle-no with the question answered yes. EXP-571: the answer is never read, so both answers stop the export the same way.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "List",
+          "id": "EAB29654E2CD4D30B376957788198B40",
+          "keyedName": "Categories"
+        },
+        {
+          "type": "List",
+          "id": "51D8F6076D2E41AAA7D72D6F1B2184D1",
+          "keyedName": "Configurable Grid Events"
+        },
+        {
+          "type": "List",
+          "id": "858DCAAD7FF94EDC969A1C3CFA57FA93",
+          "keyedName": "Data Types"
+        },
+        {
+          "type": "List",
+          "id": "972269F295174215AEB67FB24262468D",
+          "keyedName": "DBUpgadeStatus"
+        },
+        {
+          "type": "List",
+          "id": "00000000000000000000000000000002",
+          "keyedName": "Nope Two"
+        },
+        {
+          "type": "List",
+          "id": "F90729D18482477CBB61311F108A3379",
+          "keyedName": "DBUpgradeType"
+        },
+        {
+          "type": "List",
+          "id": "6056059D6CCB4E65A6465E1C36D2055D",
+          "keyedName": "Field Length Unit"
+        },
+        {
+          "type": "List",
+          "id": "AEE9D6567EDB45A4A50A669F5B385BD5",
+          "keyedName": "Field Positioning"
+        },
+        {
+          "type": "List",
+          "id": "DA63CDCCBB654870B291EBA9A5FFBBA9",
+          "keyedName": "Field Types"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "errorQuestionAnswer": "yes"
+  },
+  "expectsError": false,
+  "rules": [
+    "EXP-516",
+    "EXP-555",
+    "EXP-570",
+    "EXP-571",
+    "EXP-572",
+    "EXP-558"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 26,
+    "error": null
+  }
+}

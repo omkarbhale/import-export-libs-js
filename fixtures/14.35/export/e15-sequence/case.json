@@ -1,0 +1,28 @@
+{
+  "id": "e15-sequence",
+  "engine": "14.35",
+  "catalogue": [
+    "E15"
+  ],
+  "title": "Sequence: Default Part",
+  "exercises": "Levels 1; current_value is removed (ProcessSequence).",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "Sequence",
+          "id": "1A5FABE557C74B20AAB9E3394B180507",
+          "keyedName": "Default Part"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 16,
+    "error": null
+  }
+}

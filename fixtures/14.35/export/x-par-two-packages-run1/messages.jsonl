@@ -1,0 +1,18 @@
+{"event":10,"seq":1,"thread":18,"ticks":827689924188,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":6,"ticks":827689940383,"channel":"status","text":"Item 1 of 5: Variable - CAD Length Units","answer":null}
+{"event":12,"seq":3,"thread":13,"ticks":827689942775,"channel":"status","text":"Item 1 of 5: Variable - Product Engineering","answer":null}
+{"event":13,"seq":4,"thread":18,"ticks":827689948517,"channel":"status","text":"Item 1 of 5: Variable - PE_Impact_Matrix_expand","answer":null}
+{"event":14,"seq":5,"thread":11,"ticks":827689949167,"channel":"status","text":"Item 1 of 5: Variable - CAD Transformation Matrix Format","answer":null}
+{"event":15,"seq":6,"thread":15,"ticks":827689975586,"channel":"status","text":"Item 1 of 5: Variable - CAD Angular Units","answer":null}
+{"event":27,"seq":7,"thread":18,"ticks":827692547143,"channel":"status","text":"completed","answer":null}
+{"event":30,"seq":8,"thread":18,"ticks":827693008910,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":31,"seq":9,"thread":18,"ticks":827693010476,"channel":"status","text":"Item 1 of 8: List - DBUpgadeStatus","answer":null}
+{"event":32,"seq":10,"thread":12,"ticks":827693011654,"channel":"status","text":"Item 1 of 8: List - Data Types","answer":null}
+{"event":33,"seq":11,"thread":14,"ticks":827693013234,"channel":"status","text":"Item 1 of 8: List - Field Types","answer":null}
+{"event":34,"seq":12,"thread":17,"ticks":827693015551,"channel":"status","text":"Item 1 of 8: List - Configurable Grid Events","answer":null}
+{"event":35,"seq":13,"thread":11,"ticks":827693015980,"channel":"status","text":"Item 1 of 8: List - Categories","answer":null}
+{"event":36,"seq":14,"thread":16,"ticks":827693016280,"channel":"status","text":"Item 1 of 8: List - Field Positioning","answer":null}
+{"event":37,"seq":15,"thread":3,"ticks":827693017078,"channel":"status","text":"Item 1 of 8: List - Field Length Unit","answer":null}
+{"event":38,"seq":16,"thread":6,"ticks":827693018159,"channel":"status","text":"Item 1 of 8: List - DBUpgradeType","answer":null}
+{"event":54,"seq":17,"thread":18,"ticks":827694946033,"channel":"status","text":"completed","answer":null}
+{"event":55,"seq":18,"thread":18,"ticks":827694947379,"channel":"currentPackage","text":"","answer":null}

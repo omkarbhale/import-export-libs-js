@@ -1,0 +1,54 @@
+{
+  "engine": "14.35",
+  "command": "export",
+  "toolset": {
+    "digest": "67ae54538658",
+    "source": "Desktop\\Delete me\\PackageImportExportUtilities35\\Import",
+    "libs": {
+      "version": "14.35.0.43890",
+      "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160"
+    },
+    "iom": {
+      "version": "15.0.0.0",
+      "mvid": "9d41c787-a018-40ee-a8e7-47efa0e2ad65"
+    }
+  },
+  "server": {
+    "url": "http://localhost/12sp9",
+    "database": "12sp9",
+    "user": "root"
+  },
+  "params": {
+    "Command": "export",
+    "Url": "http://localhost/12sp9",
+    "Database": "12sp9",
+    "User": "root",
+    "Items": [
+      "com.aras.innovator.core\tList\tEAB29654E2CD4D30B376957788198B40\tCategories",
+      "com.aras.innovator.core\tList\t51D8F6076D2E41AAA7D72D6F1B2184D1\tConfigurable Grid Events",
+      "com.aras.innovator.core\tList\t858DCAAD7FF94EDC969A1C3CFA57FA93\tData Types",
+      "com.aras.innovator.core\tList\t972269F295174215AEB67FB24262468D\tDBUpgadeStatus",
+      "com.aras.innovator.core\tList\t00000000000000000000000000000002\tNope Two",
+      "com.aras.innovator.core\tList\tF90729D18482477CBB61311F108A3379\tDBUpgradeType",
+      "com.aras.innovator.core\tList\t6056059D6CCB4E65A6465E1C36D2055D\tField Length Unit",
+      "com.aras.innovator.core\tList\tAEE9D6567EDB45A4A50A669F5B385BD5\tField Positioning",
+      "com.aras.innovator.core\tList\tDA63CDCCBB654870B291EBA9A5FFBBA9\tField Types"
+    ],
+    "ErrorQuestionAnswer": "no"
+  },
+  "recorder": "RecordingHttpServerConnection (IOM HttpServerConnection subclass, CallAction override)",
+  "startedAt": "2026-10-18T22:25:46.442Z",
+  "finishedAt": "2026-10-18T22:25:49.295Z",
+  "hostExit": 0,
+  "host": {
+    "stopwatchFrequency": 10000000,
+    "clr": "4.0.30319.42000",
+    "calls": 26,
+    "messages": 14,
+    "innovatorVersion": "Major=12 Minor=0 ServicePack=9 Build=24090 ServiceUpdate=0",
+    "timeoutAfterRun": 600000,
+    "result": "exported",
+    "error": null
+  },
+  "scrubbed": {}
+}

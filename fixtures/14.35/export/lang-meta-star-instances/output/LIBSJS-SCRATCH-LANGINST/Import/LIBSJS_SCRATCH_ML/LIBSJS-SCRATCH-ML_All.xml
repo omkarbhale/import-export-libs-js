@@ -1,0 +1,11 @@
+﻿<AML>
+ <Item type="LIBSJS_SCRATCH_ML" id="9A6E52C3E2003A22F014863A787CC9F3" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <name>LIBSJS-SCRATCH-ML_All</name>
+  <summary xml:lang="en">English summary</summary>
+  <i18n:summary xml:lang="fr">Resume francais</i18n:summary>
+  <i18n:summary xml:lang="de">Deutsche Zusammenfassung</i18n:summary>
+  <title xml:lang="en">All three</title>
+  <i18n:title xml:lang="fr">Les trois</i18n:title>
+  <i18n:title xml:lang="de">Alle drei</i18n:title>
+ </Item>
+</AML>

@@ -1,0 +1,7 @@
+﻿<AML>
+ <Item type="CommandBarButton" id="0DD3CB20F7224E3FB3D5CA87E100A04A" action="add">
+  <label xml:lang="en">Field Builder</label>
+  <on_click_handler keyed_name="sg_pageXfieldBuilderBtn" type="Method">710B4AA3E2BF4291BF22E5297B543489</on_click_handler>
+  <name>com.steepgraph.pagex.builder.button</name>
+ </Item>
+</AML>

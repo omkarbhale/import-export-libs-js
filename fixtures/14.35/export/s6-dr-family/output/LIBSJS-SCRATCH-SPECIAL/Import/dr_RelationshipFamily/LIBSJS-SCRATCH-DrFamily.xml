@@ -1,0 +1,74 @@
+﻿<AML>
+ <Item type="dr_RelationshipFamily" id="62210B831C5192B63D8391421B5EFA39" action="add">
+  <description>Scratch derived relationship family.</description>
+  <drs_persistent_type>Persistent</drs_persistent_type>
+  <permission_id keyed_name="dr_DerivedRelationshipFamilyPreliminary" type="Permission">33560723BB194075A52CC03A0892D1E5</permission_id>
+  <prevent_default_event_handlers>1</prevent_default_event_handlers>
+  <query_definition_id keyed_name="LIBSJS-SCRATCH-DrQuery" type="qry_QueryDefinition">6FA2920AD941FB19DA3B0B22EAB5B08B</query_definition_id>
+  <name>LIBSJS-SCRATCH-DrFamily</name>
+  <Relationships>
+   <Item type="dr_FamilyElement" id="28A2623D20798C05AACD43B875368428" action="add">
+    <dr_relationship_id keyed_name="LIBSJS-SCRATCH-DrFamily-LIBSJS-SCRATCH-DrRel" type="dr_Relationship">
+     <Item type="dr_Relationship" id="6AC6EB272A59D380F729F2F94C7EFB9F" action="add">
+      <departure_itemtype_id keyed_name="User" type="ItemType" name="User">45E899CD2859442982EB22BB2DF683E5</departure_itemtype_id>
+      <description>Scratch derived relationship.</description>
+      <destination_itemtype_id keyed_name="Identity" type="ItemType" name="Identity">E582AB17663F4EF28460015B2BE9E094</destination_itemtype_id>
+      <implementation_query><![CDATA[<Item type="qry_QueryDefinition">
+  <Relationships>
+    <Item type="qry_QueryItem">
+      <item_type>45E899CD2859442982EB22BB2DF683E5</item_type>
+      <alias>User</alias>
+      <ref_id>01AFB817103E97097FD5B2CE7BCA1A13</ref_id>
+      <offset_fetch_xml is_null="1"></offset_fetch_xml>
+    </Item>
+    <Item type="qry_QueryItem">
+      <item_type>E582AB17663F4EF28460015B2BE9E094</item_type>
+      <alias>Identity</alias>
+      <ref_id>A5F35304D6F21AF59A6776557B0B8F5E</ref_id>
+      <offset_fetch_xml is_null="1"></offset_fetch_xml>
+    </Item>
+    <Item type="qry_QueryReference">
+      <child_ref_id>01AFB817103E97097FD5B2CE7BCA1A13</child_ref_id>
+    </Item>
+    <Item type="qry_QueryReference">
+      <child_ref_id>A5F35304D6F21AF59A6776557B0B8F5E</child_ref_id>
+      <filter_xml><![CDATA[<condition>
+  	<eq>
+  		<property name="id" query_items_xpath="parent::Item" />
+  		<property name="id" />
+  	</eq>
+  </condition>]]]]><![CDATA[></filter_xml>
+      <parent_ref_id>01AFB817103E97097FD5B2CE7BCA1A13</parent_ref_id>
+      <ref_id>26CB983558D2BA716EE6A6B1A6C983CA</ref_id>
+    </Item>
+  </Relationships>
+</Item>]]></implementation_query>
+      <name>LIBSJS-SCRATCH-DrRel</name>
+     </Item>
+    </dr_relationship_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-DrFamily" type="dr_RelationshipFamily">62210B831C5192B63D8391421B5EFA39</source_id>
+    <Relationships>
+     <Item type="dr_FamilyElement qry_QueryItem" id="07049C9C0FC9DF4CE035A95E4A760344" action="add">
+      <parent_query_reference_ref_id>17C03D0407C561A17082B1EFC571FED3</parent_query_reference_ref_id>
+      <sort_order>128</sort_order>
+      <source_id keyed_name="28A2623D20798C05AACD43B875368428" type="dr_FamilyElement">28A2623D20798C05AACD43B875368428</source_id>
+     </Item>
+     <Item type="dr_FamilyElement qry_QueryItem" id="4842C6517C9E7B69EF940B3222DCDBC9" action="add">
+      <parent_query_reference_ref_id>D8EFCB945FD5CFB89580D85AD69A7FBE</parent_query_reference_ref_id>
+      <sort_order>256</sort_order>
+      <source_id keyed_name="28A2623D20798C05AACD43B875368428" type="dr_FamilyElement">28A2623D20798C05AACD43B875368428</source_id>
+     </Item>
+    </Relationships>
+   </Item>
+   <Item type="dr_FamilyEventHandler" id="32729EEDC42F3D6117661AEF64968D95" action="add">
+    <event_data><![CDATA[{"scratch":true,
+      "note":"event data"}]]></event_data>
+    <event_handler_id keyed_name="LIBSJS-SCRATCH-DrHandler" type="Method">0B6A1FFC63E810D4E2C077D5CFB2CD20</event_handler_id>
+    <event_type>OnAfterPersistRelationships</event_type>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS-SCRATCH-DrFamily" type="dr_RelationshipFamily">62210B831C5192B63D8391421B5EFA39</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

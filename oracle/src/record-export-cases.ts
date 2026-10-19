@@ -3,24 +3,31 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { CASE_ENGINES, DEFAULT_CASE_ENGINE, ENGINE_BUILD, blobsDir, casesDir, recorderCommand, isCaseEngine, type CaseEngine } from "./case-engine.js";
+import { DEFAULT_CASE_ENGINE, ENGINE_BUILD, EXPORT_ENGINES, blobsDir, casesDir, isExportEngine, recorderCommand, type ExportEngine } from "./case-engine.js";
 import { readPassword } from "./cli.js";
 import { EXPORT_CASES, hostItems, hostOptions, type ExportCase } from "./export-cases.js";
-import { SCRATCH_EXPORT_CASES, type ResolvedCase, type SeedRecord } from "./export-scratch-cases.js";
+import { EXPORT_CASES_1435 } from "./export-cases-1435.js";
+import { SCRATCH_EXPORT_CASES, SCRATCH_EXPORT_CASES_1435, type ResolvedCase, type SeedRecord } from "./export-scratch-cases.js";
 import { DEV_SERVER, record, type ItemRef } from "./record.js";
 import { externalizeLargeResponses } from "./transcript.js";
 
-const ENGINE: CaseEngine = DEFAULT_CASE_ENGINE;
+const ENGINE: ExportEngine = DEFAULT_CASE_ENGINE;
 /** Where the 14.0.7 cases are committed. */
 export const CASES_DIR = casesDir(ENGINE, "export");
 /** Shared large responses of the 14.0.7 cases (see transcript.ts). */
 export const BLOBS_DIR = blobsDir(ENGINE, "export");
 
-const USAGE = `Usage: npm run oracle:export-cases -- [--engine 14.0.7|12.0] [--only <id>,<id>...] [--force] [--list] [--readme-only]
+/** The export cases of an engine that need no scratch state: 12.0 and 14.0.7 have the catalogue, 14.35 the catalogue and the cases of its own rules. */
+export const exportCases = (engine: ExportEngine): readonly ExportCase[] => (engine === "14.35" ? EXPORT_CASES_1435 : EXPORT_CASES);
+/** The cases an engine records with `oracle:export-scratch-cases`. */
+export const scratchCases = (engine: ExportEngine): readonly { id: string }[] => (engine === "14.35" ? SCRATCH_EXPORT_CASES_1435 : SCRATCH_EXPORT_CASES);
+
+const USAGE = `Usage: npm run oracle:export-cases -- [--engine 14.0.7|12.0|14.35] [--only <id>,<id>...] [--force] [--list] [--readme-only]
 
 Records the export fixture cases from export-cases.ts on dev (read-only) into
 fixtures/<engine>/export/<case>/ (default engine 14.0.7). A case that is already
-recorded is skipped unless --force. The password comes from ARAS_PASSWORD or
+recorded is skipped unless --force. 14.35 adds the cases of its own export rules
+(export-cases-1435.ts). The password comes from ARAS_PASSWORD or
 stdin. --readme-only rewrites each case's case.json and README.md and the index
 from export-cases.ts without running the engine.
 `;
@@ -28,7 +35,7 @@ from export-cases.ts without running the engine.
 /** `case.json`: the case's input and what was recorded. */
 export interface CaseFile {
   id: string;
-  engine: CaseEngine;
+  engine: ExportEngine;
   catalogue: string[];
   title: string;
   exercises: string;
@@ -37,13 +44,15 @@ export interface CaseFile {
   options: NonNullable<ExportCase["options"]>;
   expectsError: boolean;
   note?: string;
+  /** The spec rules that pin the case, when the case list names them (the 14.35 cases do). */
+  rules?: readonly string[];
   /** What the recording reported. */
   result: { hostExit: number; calls: number | null; error: string | null };
   /** Cases that need scratch state on dev (ticket 67): the seed the case ran against, and what was deleted afterwards. */
   seed?: SeedRecord;
 }
 
-export function caseFile(c: ResolvedCase & Partial<Pick<ExportCase, "expectsError">>, result: CaseFile["result"], seed?: SeedRecord, engine: CaseEngine = ENGINE): CaseFile {
+export function caseFile(c: ResolvedCase & Partial<Pick<ExportCase, "expectsError" | "rules">>, result: CaseFile["result"], seed?: SeedRecord, engine: ExportEngine = ENGINE): CaseFile {
   return {
     id: c.id,
     engine,
@@ -54,6 +63,7 @@ export function caseFile(c: ResolvedCase & Partial<Pick<ExportCase, "expectsErro
     options: c.options ?? {},
     expectsError: c.expectsError === true,
     ...(c.note === undefined ? {} : { note: c.note }),
+    ...(c.rules === undefined ? {} : { rules: c.rules }),
     result,
     ...(seed === undefined ? {} : { seed }),
   };
@@ -89,6 +99,9 @@ function seedSection(seed: SeedRecord): string[] {
   ];
 }
 
+/** Where a case's label comes from: ticket 05's catalogue, or the ticket that added the case (the 14.35 cases of its own rules carry a "14.35" label). */
+const ticketOf = (file: CaseFile): string => (file.engine === "14.35" && file.catalogue.some((c) => c.startsWith("14.35")) ? "ticket 57" : "ticket 05");
+
 export function caseReadme(file: CaseFile): string {
   const options = Object.entries(file.options);
   const items = file.packages.flatMap((p) => p.items.map((i) => ({ package: p.name, ...i })));
@@ -96,8 +109,8 @@ export function caseReadme(file: CaseFile): string {
     `# ${file.id}`,
     "",
     file.seed === undefined
-      ? `${file.title}. Engine ${file.engine}, export, recorded on dev (read-only). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`
-      : `${file.title}. Engine ${file.engine}, export, recorded on dev against scratch state that the run seeded and deleted again (ticket ${file.engine === ENGINE ? "67" : "48"}). Catalogue: ${file.catalogue.join(", ")} (ticket 05).`,
+      ? `${file.title}. Engine ${file.engine}, export, recorded on dev (read-only). Catalogue: ${file.catalogue.join(", ")} (${ticketOf(file)}).`
+      : `${file.title}. Engine ${file.engine}, export, recorded on dev against scratch state that the run seeded and deleted again (ticket ${file.engine === ENGINE ? "67" : file.engine === "14.35" ? "57" : "48"}). Catalogue: ${file.catalogue.join(", ")} (${ticketOf(file)}).`,
     "",
     "## Exercises",
     "",
@@ -126,7 +139,9 @@ export function caseReadme(file: CaseFile): string {
     ...(file.seed === undefined ? [] : seedSection(file.seed)),
     "## Spec rules",
     "",
-    "None yet. The spec or build ticket that pins this case adds its rule ids here (mapcheck F11).",
+    file.rules === undefined
+      ? "None yet. The spec or build ticket that pins this case adds its rule ids here (mapcheck F11)."
+      : `${file.rules.join(", ")}.`,
     "",
     "## Files",
     "",
@@ -148,15 +163,22 @@ export function caseReadme(file: CaseFile): string {
   return lines.join("\n");
 }
 
-export function indexReadme(cases: readonly CaseFile[], engine: CaseEngine = ENGINE): string {
+export function indexReadme(cases: readonly CaseFile[], engine: ExportEngine = ENGINE): string {
   return [
     `# ${engine} export fixtures`,
     "",
-    `Recorded from engine ${ENGINE_BUILD[engine]} on the dev instance, read-only, from ticket 05's catalogue and option matrix. One folder per case; each README says what the case exercises, its input (the \`Hashtable\` insertion order included) and the spec rules that pin it.`,
+    engine === "14.35"
+      ? `Recorded from engine ${ENGINE_BUILD[engine]} (Libs with IOM 15) on the dev instance, from ticket 05's catalogue and option matrix (the same cases as \`../../14.0.7/export/\`) and the cases of every \`[14.35]\` export rule (ticket 57): the request tree, abort semantics, cancel, parallel runs and both language-resource modes. One folder per case; each README says what the case exercises, its input (the \`Hashtable\` insertion order included) and the spec rules that pin it.`
+      : `Recorded from engine ${ENGINE_BUILD[engine]} on the dev instance, read-only, from ticket 05's catalogue and option matrix. One folder per case; each README says what the case exercises, its input (the \`Hashtable\` insertion order included) and the spec rules that pin it.`,
     "",
     "- Cases are small: one item, or one small package, per branch, plus multi-package cases for ordering (`p1-*`).",
     "- A response of 64 KB or more is stored once in `_blobs/` and named by `responseBlob` in the transcript; every case begins with the same 2.7 MB list of PackageDefinitions. `oracle/src/transcript.ts` puts them back.",
-    `- Cases that need scratch state on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr \`event_data\`, several \`filter_xml\`, referenced elements, the last-segment collision) are recorded by \`${recorderCommand("oracle:export-scratch-cases", engine)}\` (ticket ${engine === ENGINE ? "67" : "48"}). Each imports \`LIBSJS-SCRATCH-*\` packages, exports, and deletes what it created; its README lists the ids created and deleted.`,
+    `- Cases that need scratch state on dev (cmf_ContentType, cmf_TabularView, dac_DomainDefinition, ac_PolicyAccessItemAttribute, xp-* values, dr \`event_data\`, several \`filter_xml\`, referenced elements, the last-segment collision${engine === "14.35" ? ", translated values for the language modes" : ""}) are recorded by \`${recorderCommand("oracle:export-scratch-cases", engine)}\` (ticket ${engine === ENGINE ? "67" : engine === "14.35" ? "57" : "48"}). Each imports \`LIBSJS-SCRATCH-*\` packages, exports, and deletes what it created; its README lists the ids created and deleted.`,
+    ...(engine === "14.35"
+      ? [
+          "- 14.35 exports the items of a package in parallel (EXP-551), so its log, messages and the files of items in flight are not deterministic. The fixtures keep the raw engine log and compare it as a set (EXP-558, `fixtures/README.md`). The cases whose outcome depends on timing are recorded three times (`-run1` to `-run3`) so a test sees what varies and what does not.",
+        ]
+      : []),
     "- The dev state a case ran against can change. `run.json` carries the time of the run.",
     `- Re-record with \`ARAS_PASSWORD=… ${recorderCommand("oracle:export-cases", engine)}\` (see \`${recorderCommand("oracle:export-cases", engine, "--help")}\`).`,
     "",
@@ -169,15 +191,15 @@ export function indexReadme(cases: readonly CaseFile[], engine: CaseEngine = ENG
   ].join("\n");
 }
 
-export function recordedCases(engine: CaseEngine = ENGINE): CaseFile[] {
-  return [...EXPORT_CASES, ...SCRATCH_EXPORT_CASES].flatMap((c) => {
+export function recordedCases(engine: ExportEngine = ENGINE): CaseFile[] {
+  return [...exportCases(engine), ...scratchCases(engine)].flatMap((c) => {
     const file = join(casesDir(engine, "export"), c.id, "case.json");
     return existsSync(file) ? [JSON.parse(readFileSync(file, "utf8")) as CaseFile] : [];
   });
 }
 
 /** Deletes the blobs no recorded transcript names any more (a re-recorded case leaves its old ones behind). */
-export function pruneBlobs(cases: readonly CaseFile[], engine: CaseEngine = ENGINE): string[] {
+export function pruneBlobs(cases: readonly CaseFile[], engine: ExportEngine = ENGINE): string[] {
   const dir = casesDir(engine, "export");
   const blobs = blobsDir(engine, "export");
   if (!existsSync(blobs)) return [];
@@ -194,7 +216,7 @@ export function pruneBlobs(cases: readonly CaseFile[], engine: CaseEngine = ENGI
   return removed;
 }
 
-function install(engine: CaseEngine, c: ExportCase, from: string, result: CaseFile["result"]): void {
+function install(engine: ExportEngine, c: ExportCase, from: string, result: CaseFile["result"]): void {
   externalizeLargeResponses(join(from, "transcript.jsonl"), blobsDir(engine, "export"));
   const file = caseFile(c, result, undefined, engine);
   writeFileSync(join(from, "case.json"), `${JSON.stringify(file, null, 2)}\n`);
@@ -217,20 +239,21 @@ async function main(argv: readonly string[]): Promise<number> {
     return 0;
   }
   const engine = values.engine ?? ENGINE;
-  if (!isCaseEngine(engine)) {
-    process.stderr.write(`unknown engine: ${engine} (${CASE_ENGINES.join(", ")})\n`);
+  if (!isExportEngine(engine)) {
+    process.stderr.write(`unknown engine: ${engine} (${EXPORT_ENGINES.join(", ")})\n`);
     return 64;
   }
+  const cases = exportCases(engine);
   const dir = casesDir(engine, "export");
   const only = values.only === undefined ? null : new Set(values.only.split(",").map((s) => s.trim()));
   if (only !== null) {
-    const unknown = [...only].filter((id) => !EXPORT_CASES.some((c) => c.id === id));
+    const unknown = [...only].filter((id) => !cases.some((c) => c.id === id));
     if (unknown.length > 0) {
       process.stderr.write(`unknown case: ${unknown.join(", ")}\n`);
       return 64;
     }
   }
-  const chosen = EXPORT_CASES.filter((c) => only === null || only.has(c.id));
+  const chosen = cases.filter((c) => only === null || only.has(c.id));
   if (values.list === true) {
     for (const c of chosen) process.stdout.write(`${c.id}${existsSync(join(dir, c.id, "case.json")) ? "" : "  (not recorded)"}\n`);
     return 0;

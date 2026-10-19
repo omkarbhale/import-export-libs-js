@@ -1,0 +1,24 @@
+﻿<AML>
+ <Item type="List" id="9FEC936F59F14FECAA3621F726FBAAF2" action="add">
+  <description>A simple list to define Yes and No.</description>
+  <label>Yes/No</label>
+  <permission_id keyed_name="B9539662C6094E6DBCD947131842008C" type="Permission">B9539662C6094E6DBCD947131842008C</permission_id>
+  <name>Yes/No</name>
+  <Relationships>
+   <Item type="Value" id="B005262CFE4640B5989BBDDA39EC2457" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">Yes</label>
+    <sort_order>0</sort_order>
+    <source_id keyed_name="Yes/No" type="List">9FEC936F59F14FECAA3621F726FBAAF2</source_id>
+    <value>1</value>
+   </Item>
+   <Item type="Value" id="8F111626CCFE498D93430024F64D35BA" action="add">
+    <inactive>0</inactive>
+    <label xml:lang="en">No</label>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="Yes/No" type="List">9FEC936F59F14FECAA3621F726FBAAF2</source_id>
+    <value>0</value>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>

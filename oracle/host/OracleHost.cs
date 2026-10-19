@@ -338,7 +338,8 @@ namespace LibsJsOracle
     /// <summary>
     /// Stands in for the user pressing Cancel: after the Nth status message is
     /// delivered it calls ImportExportManager.Cancel(), which the import loop
-    /// reads before its next item. 0 never cancels.
+    /// reads before its next item (and which 14.35's parallel export reads at
+    /// the start of every item). 0 never cancels.
     /// </summary>
     public class CancelTrigger
     {
@@ -349,7 +350,7 @@ namespace LibsJsOracle
         public void Status()
         {
             if (After <= 0 || Manager == null) return;
-            if (++_seen == After) Manager.Cancel();
+            if (System.Threading.Interlocked.Increment(ref _seen) == After) Manager.Cancel();
         }
     }
 
@@ -920,6 +921,7 @@ namespace LibsJsOracle
                     exportContext.RefToUnknownPacks = ReferencesToUnknownPackages.DoNotRemove;
                     Apply(exportContext, r.Export, "Export");
                     var manager = new ImportExportManager(context, messages, ci);
+                    cancel.Manager = manager;
                     manager.ExportSolutions(exportContext, Selection(r.Items));
                     result = "exported";
                 }

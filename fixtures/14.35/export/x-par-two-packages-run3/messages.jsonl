@@ -1,0 +1,18 @@
+{"event":10,"seq":1,"thread":17,"ticks":827766337101,"channel":"currentPackage","text":"Exporting package com.aras.innovator.solution.PLM","answer":null}
+{"event":11,"seq":2,"thread":6,"ticks":827766349447,"channel":"status","text":"Item 1 of 5: Variable - CAD Length Units","answer":null}
+{"event":12,"seq":3,"thread":16,"ticks":827766349970,"channel":"status","text":"Item 1 of 5: Variable - CAD Length Units","answer":null}
+{"event":13,"seq":4,"thread":17,"ticks":827766350356,"channel":"status","text":"Item 1 of 5: Variable - CAD Length Units","answer":null}
+{"event":14,"seq":5,"thread":18,"ticks":827766352152,"channel":"status","text":"Item 1 of 5: Variable - CAD Length Units","answer":null}
+{"event":15,"seq":6,"thread":11,"ticks":827766367886,"channel":"status","text":"Item 1 of 5: Variable - CAD Transformation Matrix Format","answer":null}
+{"event":27,"seq":7,"thread":17,"ticks":827768071886,"channel":"status","text":"completed","answer":null}
+{"event":30,"seq":8,"thread":17,"ticks":827768491278,"channel":"currentPackage","text":"Exporting package com.aras.innovator.core","answer":null}
+{"event":31,"seq":9,"thread":17,"ticks":827768492570,"channel":"status","text":"Item 1 of 8: List - DBUpgadeStatus","answer":null}
+{"event":32,"seq":10,"thread":4,"ticks":827768492819,"channel":"status","text":"Item 1 of 8: List - Data Types","answer":null}
+{"event":33,"seq":11,"thread":3,"ticks":827768493119,"channel":"status","text":"Item 1 of 8: List - Field Types","answer":null}
+{"event":34,"seq":12,"thread":5,"ticks":827768493298,"channel":"status","text":"Item 1 of 8: List - Field Length Unit","answer":null}
+{"event":35,"seq":13,"thread":19,"ticks":827768493760,"channel":"status","text":"Item 1 of 8: List - DBUpgradeType","answer":null}
+{"event":36,"seq":14,"thread":16,"ticks":827768494095,"channel":"status","text":"Item 1 of 8: List - Configurable Grid Events","answer":null}
+{"event":37,"seq":15,"thread":14,"ticks":827768494832,"channel":"status","text":"Item 1 of 8: List - Categories","answer":null}
+{"event":38,"seq":16,"thread":6,"ticks":827768495417,"channel":"status","text":"Item 1 of 8: List - Field Positioning","answer":null}
+{"event":54,"seq":17,"thread":17,"ticks":827770649390,"channel":"status","text":"completed","answer":null}
+{"event":55,"seq":18,"thread":17,"ticks":827770649680,"channel":"currentPackage","text":"","answer":null}

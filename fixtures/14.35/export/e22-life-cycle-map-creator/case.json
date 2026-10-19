@@ -1,0 +1,28 @@
+{
+  "id": "e22-life-cycle-map-creator",
+  "engine": "14.35",
+  "catalogue": [
+    "E22"
+  ],
+  "title": "Life Cycle Map: role Creator, pre_action Method (FileExchangePackageUpload)",
+  "exercises": "Levels 3. A transition role = Creator (system); the pre_action Method becomes a get by @keyed_name.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.exchange",
+      "items": [
+        {
+          "type": "Life Cycle Map",
+          "id": "2C51AD67B5904C2F88A5F0D53EE0459A",
+          "keyedName": "FileExchangePackageUpload"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 43,
+    "error": null
+  }
+}

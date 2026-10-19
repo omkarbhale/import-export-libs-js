@@ -1,0 +1,4 @@
+{"event":11,"seq":1,"thread":16,"ticks":825719605070,"channel":"currentPackage","text":"Exporting package com.aras.innovator.preferences","answer":null}
+{"event":12,"seq":2,"thread":16,"ticks":825719611453,"channel":"status","text":"Item 1 of 1: Preference - 507A16AA36F94513AD7EC1F948B5B48F","answer":null}
+{"event":43,"seq":3,"thread":16,"ticks":825729474258,"channel":"status","text":"completed","answer":null}
+{"event":44,"seq":4,"thread":16,"ticks":825729474841,"channel":"currentPackage","text":"","answer":null}

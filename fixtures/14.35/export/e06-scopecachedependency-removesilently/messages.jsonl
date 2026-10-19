@@ -1,0 +1,4 @@
+{"event":10,"seq":1,"thread":15,"ticks":823889554649,"channel":"currentPackage","text":"Exporting package com.aras.innovator.configurator","answer":null}
+{"event":11,"seq":2,"thread":15,"ticks":823889568538,"channel":"status","text":"Item 1 of 1: ItemType - ScopeCacheDependency","answer":null}
+{"event":75,"seq":3,"thread":15,"ticks":823902169581,"channel":"status","text":"completed","answer":null}
+{"event":76,"seq":4,"thread":15,"ticks":823902170310,"channel":"currentPackage","text":"","answer":null}

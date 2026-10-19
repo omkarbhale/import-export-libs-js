@@ -1,0 +1,50 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222328-14.35-export-739a6b\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222328-14.35-export-739a6b\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.history****
+start of execution : 10/19/2026 03:53:30
+Item id :4B9FF34674E34677B877FC8F71B5CDBE  keyed_name : History_whereTemplateUsed   type : Grid successfully exported
+end of execution : 10/19/2026 03:53:30
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:53:30
+Error of exporting Item id :00000000000000000000000000000001  keyed_name : Nope Promotion    type : Workflow Promotion
+      ******Error message******
+faultstring: Server error
+
+Request (formatted):
+<Item type="ItemType" select="is_versionable" action="get">
+  <name>Workflow Promotion</name>
+</Item>
+
+Response (formatted):
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
+    <SOAP-ENV:Fault xmlns:af="http://www.aras.com/InnovatorFault">
+      <faultcode>0</faultcode>
+      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>
+      <detail>
+        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>
+        <af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: 
+<Item type="ItemType" select="is_versionable" action="get"><name>Workflow Promotion</name></Item>
+]]></af:legacy_faultstring>
+      </detail>
+    </SOAP-ENV:Fault>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+faultdetail: Unable to get definition of System.Xml.XmlAttribute: Workflow Promotion
+faultcode:   0
+     **********************
+end of execution : 10/19/2026 03:53:30

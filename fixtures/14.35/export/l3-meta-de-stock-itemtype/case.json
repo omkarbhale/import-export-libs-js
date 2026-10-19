@@ -1,0 +1,43 @@
+{
+  "id": "l3-meta-de-stock-itemtype",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportMetadataWithLanguageResources, `de`, the stock ItemType Part",
+  "exercises": "LP-123: the metadata mode on a large ItemType, with the whole item kept and the empty `de` slots beside it.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.solution.PLM",
+      "items": [
+        {
+          "type": "ItemType",
+          "id": "4F1AC04A2B484F3ABA4E20DB63808A88",
+          "keyedName": "Part"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportMetadataWithLanguageResources",
+    "languages": [
+      "de"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Languages `en`, `de` and `fr` (added for the recording and deleted again afterwards). Stock items carry no `de` or `fr` values, so every translated slot of the answer is empty.",
+  "rules": [
+    "LP-100",
+    "LP-123",
+    "LP-124",
+    "LP-125",
+    "LP-141",
+    "LP-143",
+    "LP-144"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 102,
+    "error": null
+  }
+}

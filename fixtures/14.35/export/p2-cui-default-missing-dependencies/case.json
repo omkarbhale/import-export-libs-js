@@ -1,0 +1,28 @@
+{
+  "id": "p2-cui-default-missing-dependencies",
+  "engine": "14.35",
+  "catalogue": [
+    "P2"
+  ],
+  "title": "Package whose dependencies are not on dev (cui_default), referenced items off",
+  "exercises": "cui_default depends on com.steepgraph.solution.contextualHelp and com.steepgraph.addon.imageviewer, neither present as a PackageDefinition. With referenced items off the dependency lookups are not made.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cui_default",
+      "items": [
+        {
+          "type": "Method",
+          "id": "2BBAC312DCCB481CB0B16E651A73EE1E",
+          "keyedName": "CadToPdfMenuInitHandler"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "error": null
+  }
+}

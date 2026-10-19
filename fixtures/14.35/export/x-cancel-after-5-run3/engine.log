@@ -1,0 +1,23 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222614-14.35-export-a5750b\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222614-14.35-export-a5750b\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:56:16
+Item id :972269F295174215AEB67FB24262468D  keyed_name : DBUpgadeStatus   type : List successfully exported
+Export was canceled by user
+end of execution : 10/19/2026 03:56:16
+Export was canceled by user
+end of execution : 10/19/2026 03:56:16

@@ -1,0 +1,40 @@
+{
+  "id": "l1-only-en",
+  "engine": "14.35",
+  "catalogue": [
+    "14.35 language modes"
+  ],
+  "title": "ExportLanguageResourcesOnly with the list `en`",
+  "exercises": "LP-112: `en` is removed by exact comparison, leaving an empty list: no Language request for the check (LP-114) and no translated-value request.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.cmf",
+      "items": [
+        {
+          "type": "List",
+          "id": "01B506E02528434DB36D562A3FAB826D",
+          "keyedName": "cmf_DocumentPropertyDataType"
+        }
+      ]
+    }
+  ],
+  "options": {
+    "engineAction": "ExportLanguageResourcesOnly",
+    "languages": [
+      "en"
+    ]
+  },
+  "expectsError": false,
+  "note": "Recorded while dev had the Language `en` only. With a second Language the `*` expands to its code and the same item is exported with translations: see the `lang-*` cases (seeded and cleaned up by `oracle:export-scratch-cases`).",
+  "rules": [
+    "LP-100",
+    "LP-110",
+    "LP-112",
+    "LP-114"
+  ],
+  "result": {
+    "hostExit": 0,
+    "calls": 20,
+    "error": null
+  }
+}

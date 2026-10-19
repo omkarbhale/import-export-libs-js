@@ -1,0 +1,28 @@
+{
+  "id": "e26-identity-system-no-package",
+  "engine": "14.35",
+  "catalogue": [
+    "E26"
+  ],
+  "title": "Identity: system Identity in no package, under core (World)",
+  "exercises": "A system Identity as the root. It is in no package, so it is also an items-in-no-package engine case: ExportSolutions never checks membership and only needs the package to exist.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.core",
+      "items": [
+        {
+          "type": "Identity",
+          "id": "A73B655731924CD0B027E4F4D5FCC0A9",
+          "keyedName": "World"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 16,
+    "error": null
+  }
+}

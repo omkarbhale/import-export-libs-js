@@ -1,0 +1,28 @@
+Tool version: 14.35.0.43890
+Action: Export
+Manifest file: 
+Log file: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222436-14.35-export-d97689\engine.log
+Working directory: C:\Users\omkarb\AppData\Local\import-export-libs-js\oracle\runs\20261018T222436-14.35-export-d97689\output
+URL: http://localhost/12sp9
+Database: 12sp9
+User: root
+Innovator version: 12.0 SP9 Build 24090
+Language pack: 
+Language pack name: 
+Export referenced items: False
+Export unknown packages action: DoNotRemove
+Export level: 1
+Export using import structure: False
+
+         ****Export com.aras.innovator.core****
+start of execution : 10/19/2026 03:54:38
+Item id :F288A3345225407EACBC936191097BCD  keyed_name : Activity Template   type : Form successfully exported
+end of execution : 10/19/2026 03:54:40
+         ****Export com.aras.innovator.admin****
+start of execution : 10/19/2026 03:54:40
+Item id :128C30A645F04E5380F8B4709A3BD1A1  keyed_name : 128C30A645F04E5380F8B4709A3BD1A1   type : Item Report successfully exported
+end of execution : 10/19/2026 03:54:40
+         ****Export com.aras.innovator.cui****
+start of execution : 10/19/2026 03:54:40
+Item id :58AECE23031E496FB04FFDEA6EDEF8A0  keyed_name : PresentableItems   type : ItemType successfully exported
+end of execution : 10/19/2026 03:54:41

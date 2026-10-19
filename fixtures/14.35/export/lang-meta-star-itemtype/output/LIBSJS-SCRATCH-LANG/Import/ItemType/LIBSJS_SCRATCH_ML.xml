@@ -1,0 +1,102 @@
+﻿<AML>
+ <Item type="ItemType" id="C442609F868621BBE8487B6F8EA1A27E" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <allow_private_permission>1</allow_private_permission>
+  <auto_search>1</auto_search>
+  <enforce_discovery>1</enforce_discovery>
+  <hide_where_used>0</hide_where_used>
+  <implementation_type>table</implementation_type>
+  <instance_data>LIBSJS_SCRATCH_ML</instance_data>
+  <is_dependent>0</is_dependent>
+  <is_relationship>0</is_relationship>
+  <is_versionable>0</is_versionable>
+  <label xml:lang="en">LIBSJS_SCRATCH_ML</label>
+  <i18n:label xml:lang="fr">Type de test</i18n:label>
+  <i18n:label xml:lang="de">Skratch-Typ</i18n:label>
+  <revisions keyed_name="Default" type="Revision">7FE395DD8B9F4E1090756A34B733D75E</revisions>
+  <show_parameters_tab>1</show_parameters_tab>
+  <structure_view>tabs off</structure_view>
+  <unlock_on_logout>0</unlock_on_logout>
+  <use_src_access>0</use_src_access>
+  <name>LIBSJS_SCRATCH_ML</name>
+  <Relationships>
+   <Item type="Property" id="43DD305818F17E7547842AE4BD79B923" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>ml_string</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>0</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">summary</label>
+    <i18n:label xml:lang="fr">Resume</i18n:label>
+    <i18n:label xml:lang="de">Zusammenfassung</i18n:label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>192</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+    <track_history>0</track_history>
+    <name>summary</name>
+   </Item>
+   <Item type="Property" id="EE1E89CCF32B1B1A5CC2EB0B79D8A442" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>ml_string</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>0</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">title</label>
+    <i18n:label xml:lang="fr">Titre</i18n:label>
+    <i18n:label xml:lang="de">Titel</i18n:label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+    <track_history>0</track_history>
+    <name>title</name>
+   </Item>
+   <Item type="Can Add" id="DDF7BC7A6CDF7DCC68E4D0D74DB11744" action="add">
+    <can_add>1</can_add>
+    <related_id keyed_name="World" type="Identity">
+     <Item type="Identity" action="get" select="id">
+      <name>World</name>
+     </Item>
+    </related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+   </Item>
+   <Item type="Allowed Permission" id="C638181631F3F281392C98458124F33B" action="add">
+    <is_default>1</is_default>
+    <related_id keyed_name="LIBSJS-SCRATCH-ML_Perm" type="Permission">250E490AF633DA5FD221FBE757210F7D</related_id>
+    <sort_order>128</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+ <Item type="ItemType" id="C442609F868621BBE8487B6F8EA1A27E" action="edit" xmlns:i18n="http://www.aras.com/I18N">
+  <Relationships>
+   <Item type="Property" id="A94A12F513573F79A7C8FA9CAADC873B" action="add">
+    <column_alignment>left</column_alignment>
+    <data_type>string</data_type>
+    <is_hidden>0</is_hidden>
+    <is_hidden2>0</is_hidden2>
+    <is_indexed>0</is_indexed>
+    <is_keyed>1</is_keyed>
+    <is_multi_valued>0</is_multi_valued>
+    <is_required>0</is_required>
+    <label xml:lang="en">name</label>
+    <range_inclusive>0</range_inclusive>
+    <readonly>0</readonly>
+    <sort_order>64</sort_order>
+    <source_id keyed_name="LIBSJS_SCRATCH_ML" type="ItemType" name="LIBSJS_SCRATCH_ML">C442609F868621BBE8487B6F8EA1A27E</source_id>
+    <stored_length>64</stored_length>
+    <track_history>0</track_history>
+    <name>name</name>
+   </Item>
+  </Relationships>
+ </Item>
+ <Item type="View" action="delete" where="source_id='C442609F868621BBE8487B6F8EA1A27E'" xmlns:i18n="http://www.aras.com/I18N" />
+ <Item type="Form" action="delete" where="name='LIBSJS_SCRATCH_ML'" xmlns:i18n="http://www.aras.com/I18N" />
+</AML>

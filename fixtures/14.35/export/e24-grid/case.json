@@ -1,0 +1,28 @@
+{
+  "id": "e24-grid",
+  "engine": "14.35",
+  "catalogue": [
+    "E24"
+  ],
+  "title": "Grid: History_whereTemplateUsed",
+  "exercises": "Levels 2. The only Grid that is a package element on dev.",
+  "packages": [
+    {
+      "name": "com.aras.innovator.history",
+      "items": [
+        {
+          "type": "Grid",
+          "id": "4B9FF34674E34677B877FC8F71B5CDBE",
+          "keyedName": "History_whereTemplateUsed"
+        }
+      ]
+    }
+  ],
+  "options": {},
+  "expectsError": false,
+  "result": {
+    "hostExit": 0,
+    "calls": 27,
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+﻿<AML>
+ <Item type="List" id="01B506E02528434DB36D562A3FAB826D" action="add" xmlns:i18n="http://www.aras.com/I18N">
+  <Relationships>
+   <Item type="Value" id="BD6418B069864E04AA36E2B8427DA310" action="add">
+    <label xml:lang="en">Boolean</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="B1DDA920E6C746B5A2EB6FC44162B6FE" action="add">
+    <label xml:lang="en">Date Time</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="17AA9FA63C8E4772B50CA2DD7043A9A9" action="add">
+    <label xml:lang="en">Integer</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="56063D3C21E24270A260439943472FC4" action="add">
+    <label xml:lang="en">Float</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="E44BC1259E4B4E50A6AB4BB513F2EBD1" action="add">
+    <label xml:lang="en">String</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="5B6831A94BAE46DB95344704A70851D6" action="add">
+    <label xml:lang="en">Text</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+   <Item type="Value" id="43C35194A01B41318D707E697B0E98C9" action="add">
+    <label xml:lang="en">Image</label>
+    <source_id keyed_name="cmf_DocumentPropertyDataType" type="List">01B506E02528434DB36D562A3FAB826D</source_id>
+   </Item>
+  </Relationships>
+ </Item>
+</AML>
