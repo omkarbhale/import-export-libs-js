@@ -1,6 +1,5 @@
 import { existsSync, statSync } from "node:fs";
 import { CItemHelper } from "../client/item-helper.js";
-import { VersionRefusal } from "../client/version.js";
 import type { Engine } from "../engines.js";
 import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
@@ -24,18 +23,12 @@ import {
   stringOf,
 } from "./options.js";
 import { Reporter } from "./reporter.js";
-import { openSession } from "./session.js";
+import { describeFailure, openSession } from "./session.js";
 import { type Summary, printSummary } from "./summary.js";
 import { IMPORT_USAGE, LANGUAGE_PACK_USAGE, UsageError } from "./usage.js";
 
 /** The engines `import` runs: those whose client, manifest and import run are all built. */
 const IMPORT_ENGINES: readonly Engine[] = IMPORT_RUN_ENGINES.filter((engine) => MANIFEST_ENGINES.includes(engine));
-
-/** The text a failure shows: the message, and for a refused server the engines that would take it. */
-function describe(error: unknown): string {
-  if (error instanceof VersionRefusal) return `${error.message}\n${error.hint}`;
-  return error instanceof Error ? error.message : String(error);
-}
 
 /** What `import` and `import-language-pack` share: the context of the import, and its summary. */
 interface ImportSettings {
@@ -99,7 +92,7 @@ async function execute(
     server = helper.innovatorVersion?.fullString;
     returnCode = await operation(helper, reporter);
   } catch (error) {
-    failure = describe(error);
+    failure = describeFailure(error);
     reporter.error(failure);
     const left = leftBehindTempFolder(error);
     if (left !== undefined) reporter.warn(`The temporary package was left at ${left}`);

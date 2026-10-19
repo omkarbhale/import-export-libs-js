@@ -15,7 +15,7 @@
   },
   "$defs": {
     "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-    "ruleId": { "type": "string", "pattern": "^(EXP|IMP|MAN|WIRE|LP|DBP)-[0-9]{3}$" },
+    "ruleId": { "type": "string", "pattern": "^(EXP|IMP|MAN|WIRE|LP|DBP|HOST)-[0-9]{3}$" },
     "symbol": {
       "description": "A TypeScript export, written <path under src/>#<ExportName> or #<ExportName>.<member>.",
       "type": "string",

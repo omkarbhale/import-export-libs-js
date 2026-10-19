@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { EngineNotSupportedError } from "./client/engine-support.js";
+import { exportCommand } from "./cli/export-command.js";
 import { importCommand, languagePackCommand } from "./cli/import-command.js";
 import { EXIT } from "./cli/exit.js";
 import { type CliIo, processIo } from "./cli/io.js";
@@ -11,6 +12,7 @@ export { EXIT };
 export type { CliIo };
 
 const COMMANDS: Readonly<Record<string, (args: readonly string[], io: CliIo) => Promise<number>>> = {
+  export: exportCommand,
   import: importCommand,
   plan: planCommand,
   "import-language-pack": languagePackCommand,
