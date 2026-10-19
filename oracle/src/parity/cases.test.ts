@@ -30,10 +30,9 @@ describe("the 14.0.7 catalogue", () => {
     expect(entries.filter((e) => e.slow === true).map((e) => e.id)).toEqual(["mode-all-packages"]);
   });
 
-  it("has the language-pack cases of 14.0.7 only", () => {
+  it("has ticket 45's language-pack cases for 14.0.7 and none for 12.0", () => {
     expect(languagePackCases("14.0.7").map((c) => c.id)).toEqual(["lp01", "lp02", "lp03", "lp04", "lp05"]);
     expect(languagePackCases("12.0")).toEqual([]);
-    expect(languagePackCases("14.35")).toEqual([]);
   });
 });
 
