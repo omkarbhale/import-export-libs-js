@@ -10,6 +10,7 @@ const ENGINE_LINE = `Engines: ${ENGINES.join(", ")} (default ${DEFAULT_ENGINE})`
 export const USAGE = `Usage: aras-pkg <command> [options]
 
 Commands:
+  export <outDir> [Type:id…]     Export items, or whole packages, into a folder with an imports.mf
   import <manifest>              Import the packages of a manifest (imports.mf)
   plan import <manifest>         Show, offline, the order an import follows and the items it drops
   import-language-pack <lppath>  Import a language pack as a package (not on 12.0)
@@ -93,5 +94,26 @@ when any error was reported.
   --patches-folder <dir>  The folder of the patch files (default: the folder of the manifest)
   --tool-name <text>      The description of the DatabaseUpgrade row a run creates (default: Libs)
   --os-user <name>        The os_user of that row (default: DOMAIN\\user on Windows, <host>\\<user> elsewhere)
+
+${COMMON}`;
+
+export const EXPORT_USAGE = `Usage: aras-pkg export <outDir> [Type:id…] [options]
+       aras-pkg export <outDir> - [options]
+       aras-pkg export <outDir> --package <name> [--package <name>…] [options]
+
+Exports items into <outDir>, grouped by the package each belongs to, with an imports.mf that imports them again. The items
+come from exactly one of:
+  Type:id…              the items named as arguments (the id is split off at the first colon)
+  -                     the items on standard input, one Type:id per line
+  --package <name>      every element of the named package (repeatable); an unknown name is refused with suggestions
+Each item's package is found on the server (PackageElement, PackageGroup, PackageDefinition). An item in no package, or not
+found, is refused by name and nothing is exported. <outDir> is used as it is: it need not exist or be empty, and the engine
+deletes the subfolder of each package it exports before writing it.
+
+Export:
+  --level <text>             The levels of the fetch for types without a fixed one (default: the engine's 1)
+  --export-referenced        Also export the elements the packages' dependencies reference (default: off)
+  --unknown-references <m>   remove-silently, remove-with-warning or do-not-remove (default: do-not-remove)
+  --on-item-error <answer>   continue (default) or abort-package: the answer to the error question (not on 14.35)
 
 ${COMMON}`;

@@ -209,6 +209,15 @@ describe("spec coverage", () => {
     ]);
   });
 
+  it("accepts the HOST- prefix of the CLI's own rules", () => {
+    const areaDocs = [AREA_DOC, { path: "spec/cli-export.md", text: "# CLI\n\n### HOST-001: Takes items\n\n[14.0.7] Items.\n" }];
+    expect(checkCoverage(input({ areaDocs }))).toEqual([
+      "HOST-001 (spec/cli-export.md:3) is cited nowhere: no @spec tag and no source-map entry",
+    ]);
+    const srcFiles = [{ path: "src/cli/export-command.ts", text: "/** @spec HOST-001 */\nexport const exportCommand = 1;\n" }];
+    expect(checkCoverage(input({ areaDocs, srcFiles: [IMPL, ...srcFiles] }))).toEqual([]);
+  });
+
   it("fails on a cited rule that is defined nowhere", () => {
     const srcFiles = [{ path: IMPL.path, text: "/** @spec IMP-001 IMP-009 */\nexport function applyAml(): void {}\n" }];
     expect(checkCoverage(input({ srcFiles }))).toEqual(["IMP-009 is cited in src/import/apply.ts but defined in no spec document"]);

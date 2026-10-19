@@ -12,7 +12,7 @@ import { COMPLETE_ENGINES, ENGINE_ASSEMBLY_VERSIONS, isEngine } from "../src/eng
  * (spec/reachable/<engine>.json) and, once vendored, its oracle DLL.
  */
 
-const RULE_ID = String.raw`(?:EXP|IMP|MAN|WIRE|LP|DBP)-\d{3}(?![\w-])`;
+const RULE_ID = String.raw`(?:EXP|IMP|MAN|WIRE|LP|DBP|HOST)-\d{3}(?![\w-])`;
 const RULE_HEADING = new RegExp(String.raw`^(#{2,4})\s+(${RULE_ID})\b`);
 const ANY_HEADING = /^(#{1,6})\s/;
 const VARIANT = /^\s*(?:[-*]\s+)?\[(\d+(?:\.\d+)+)\]/;

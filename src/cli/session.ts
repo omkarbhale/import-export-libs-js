@@ -1,5 +1,6 @@
 import { HttpConnectorExtension } from "../client/connection.js";
 import { CItemHelper } from "../client/item-helper.js";
+import { VersionRefusal } from "../client/version.js";
 import type { Engine } from "../engines.js";
 import type { CliIo } from "./io.js";
 import type { ConnectionOptions } from "./options.js";
@@ -31,4 +32,10 @@ export async function openSession(engine: Engine, options: ConnectionOptions, io
     );
   }
   return helper;
+}
+
+/** The text a failure shows: the message, and for a refused server the engines that would take it. */
+export function describeFailure(error: unknown): string {
+  if (error instanceof VersionRefusal) return `${error.message}\n${error.hint}`;
+  return error instanceof Error ? error.message : String(error);
 }
