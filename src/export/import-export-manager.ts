@@ -28,6 +28,8 @@ import type { SUExportContext, SolutionUpgradeContext } from "./export-context.j
 import type { ExportItem } from "./export-item.js";
 import { AsyncLock } from "./async-lock.js";
 import { type Message, type MessagesFactory, OptionNotSupportedError, getMessageFor } from "./messages.js";
+import { isLanguageMode } from "./export-context.js";
+import { resolveLanguages } from "./language-selection.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
 import { packageElementIdsByElementType } from "./package-elements.js";
@@ -162,6 +164,8 @@ export class ImportExportManager {
   private readonly cancelLock = new AsyncLock();
   /** 14.35's per-call inputs of `Export` (EXP-002): the template dictionary and the package-element map. Empty for 14.0.7. */
   private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
+  /** The language work of the engine's constructor (LP-110), started once; see {@link ImportExportManager.prepare}. */
+  private prepared: Promise<void> | null = null;
 
   /**
    * An export manager. A null `itemHelper` is checked first, then a null `context`. The constructor takes the working directory as
@@ -202,6 +206,43 @@ export class ImportExportManager {
         ? new ManifestFile(manifestPath, { ...this.environment, engine: this.engine })
         : null;
     this.osUser = osUser;
+  }
+
+  /**
+   * The engine's constructor, whole: {@link ImportExportManager.prepare} runs the language work after the synchronous part, which
+   * needs the server (LP-110). A language list that is not valid, or not installed, fails here as it fails the engine's constructor.
+   * Use this where the engine would write `new ImportExportManager(...)` with a language list or one of the language modes.
+   */
+  static async create(
+    context: SolutionUpgradeContext | null,
+    messages: MessagesFactory,
+    itemHelper: CItemHelper | null,
+    options: ImportExportManagerOptions = {},
+  ): Promise<ImportExportManager> {
+    const manager = new ImportExportManager(context, messages, itemHelper, options);
+    await manager.prepare();
+    return manager;
+  }
+
+  /**
+   * The last part of the engine's constructor, which sends requests (LP-110): in 14.35 the language list is resolved against the
+   * server and checked, and the context's `Languages` is rewritten in place. Done once; the run methods call it first, so a manager
+   * made with `new` still checks its languages before it does anything else, but the error then comes from the first run. Engines
+   * without the setting do nothing, except that a language mode is refused: 14.0.7 and 12.0 have no such action (LP-100).
+   *
+   * @spec LP-100 LP-110
+   */
+  prepare(): Promise<void> {
+    this.prepared ??= this.resolveLanguages();
+    return this.prepared;
+  }
+
+  private async resolveLanguages(): Promise<void> {
+    if (this.engine !== "14.35") {
+      if (isLanguageMode(this.context?.action ?? "")) throw new EngineNotSupportedError(this.engine);
+      return;
+    }
+    await resolveLanguages(this.context as SolutionUpgradeContext, this.itemHelper);
   }
 
   /** `Cancel()`: the run is cancelled at the next place that looks (EXP-518). A cancel before a run starts is overwritten by it. */
@@ -268,6 +309,7 @@ export class ImportExportManager {
   async exportSolutions(exportContext: SUExportContext | null, selectedItems: SelectionInsertions | SelectionTable | null): Promise<void> {
     if (exportContext === null) throw new ArgumentNullException("exportContext");
     if (selectedItems === null) throw new ArgumentNullException("selItemsTable");
+    await this.prepare();
     const selection = selectedItems instanceof NetfxHashtable ? selectedItems : selectionTable(selectedItems);
 
     const log = RunLog.open(exportContext.logFilePath, this.environment);
@@ -318,12 +360,13 @@ export class ImportExportManager {
   /**
    * What the handler of `ExportSolutions` reports for an exception that left the `try` block: the message of a `SystemException`
    * (EXP-520), and in 14.35 also of an `AggregateException` from the item loop, whose inner messages are joined with a line end
-   * (EXP-556). Anything else is not the engine's to catch and goes on.
+   * (EXP-556): its handler reports every exception the engine could have raised there, `System.Exception` included (LP-182). Anything
+   * else is not the engine's to catch and goes on.
    */
   private reportedException(thrown: unknown): string {
     if (this.engine === "14.35" && thrown instanceof AggregateException) {
       const inner = thrown.innerExceptions;
-      const unexpected = inner.find((error) => !isSystemException(error));
+      const unexpected = inner.find((error) => !(isSystemException(error) || error instanceof DotNetException));
       if (unexpected !== undefined) throw unexpected;
       return inner.map((error) => (error as Error).message).join("\r\n");
     }
@@ -530,7 +573,10 @@ export class ImportExportManager {
         status.text = this.text("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
         await status.execute();
         try {
-          await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment, this.run);
+          // the action and the languages are read from the manager's context for each item, as the engine does (LP-100)
+          const { action, languages } = this.context as SolutionUpgradeContext;
+          const run = { ...this.run, action, languages };
+          await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment, run);
           progress.writeLine(this.text("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
           index += 1;
         } catch (thrown) {
@@ -621,6 +667,7 @@ export class ImportExportManager {
    */
   async importSolutions(packages: readonly (string | null)[] | null, importContext: SUImportContext | null): Promise<number> {
     if (importContext === null) throw new ArgumentNullException("importContext");
+    await this.prepare();
     const run = new ImportRun({
       engine: this.engine,
       context: this.context as SolutionUpgradeContext,

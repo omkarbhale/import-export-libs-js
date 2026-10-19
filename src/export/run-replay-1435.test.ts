@@ -27,8 +27,9 @@ import { type SentMessage, createMessagesFactory } from "./messages.js";
  * - **A run that failed or was cancelled** is a prefix of the engine's: the port started fewer items, so its files, success lines
  *   and requests are among the engine's and not the other way round (EXP-555, EXP-557, EXP-570).
  *
- * The cases of the language-resource export wait for ticket 61 and the removal of references to unknown packages for the
- * `EXP-600` rules.
+ * The cases of the language-resource export run here as well (LP-100 to LP-187): the manager is made with `create`, which does the
+ * language work of the engine's constructor, and a case whose constructor refused the languages is compared by the error and the
+ * requests that came before it. The removal of references to unknown packages waits for the `EXP-600` rules.
  */
 const CASES = new URL("../../fixtures/14.35/export/", import.meta.url).pathname;
 const BLOBS = join(CASES, "_blobs");
@@ -57,8 +58,16 @@ class RecordedConnection implements ServerConnection {
     this.used = calls.map((_, index) => index < LOGIN_CALLS);
   }
 
+  /**
+   * The recorded requests the port did not send. A repeat of an `is_versionable` lookup that the port did send is not counted: the engine's
+   * workers that start together each ask before the first answer is cached (3 requests for 3 items in `lang-only-de-instances`, 1 in
+   * `lang-only-en-de-instances`), and the port, which runs the items one after the other, asks once.
+   */
   get leftover(): string[] {
-    return this.calls.filter((_, index) => !this.used[index]).map((call) => call.request.slice(0, 200));
+    const sent = new Set(this.calls.filter((_, index) => this.used[index]).map((call) => call.request));
+    return this.calls
+      .filter((call, index) => !this.used[index] && !(call.request.includes('select="is_versionable"') && sent.has(call.request)))
+      .map((call) => call.request.slice(0, 200));
   }
 
   async callAction(action: string, request: string): Promise<ResponseDocument> {
@@ -164,20 +173,53 @@ const maskItems = (text: string, failing: Array<{ id: string; keyedName: string 
 
 /** The modes that remove references to unknown packages wait for the rules `EXP-600` to `EXP-699`. */
 const needsRemoval = (input: Case): boolean => input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning";
-/** The language-resource exports and the language selection wait for ticket 61. */
-const needsLanguages = (input: Case): boolean => input.options.engineAction !== undefined || input.options.languages !== undefined;
+/** A case whose language list the engine's constructor refused: the run never started, so it left no log, no messages and no files. */
+const failsInConstructor = (input: Case): boolean => input.expectsError && (input.options.engineAction !== undefined || input.options.languages !== undefined);
+
+/** The manager of a case, made as the engine's constructor makes it: with the action and the language list of the case. */
+async function languageManager(input: Case, calls: TranscriptCall[], working: string) {
+  const context = new SUExportContext();
+  context.workingDirectory = join(working, "output");
+  context.logFilePath = join(working, "engine.log");
+  context.action = input.options.engineAction ?? "Export";
+  context.languages = input.options.languages ?? null;
+  const connection = new RecordedConnection(calls);
+  const helper = new CItemHelper(connection, { engine: "14.35" });
+  helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
+  let manager: ImportExportManager | undefined;
+  let error: unknown;
+  try {
+    manager = await ImportExportManager.create(context, createMessagesFactory({ engine: "14.35", onMessage: () => undefined }), helper, { cwd: working });
+  } catch (thrown) {
+    error = thrown;
+  }
+  return { context, connection, manager, error };
+}
 
 describe("the recorded 14.35 export cases, run through ExportSolutions (EXP-500 to EXP-520, EXP-550 to EXP-558)", () => {
   let compared = 0;
   let failures = 0;
   let cancels = 0;
+  let refused = 0;
 
   /** Replays a case with `parallelism` items in flight. A run that was stopped is replayed one at a time only: the port's items in flight differ from the engine's. */
   async function replay(name: string, parallelism: number): Promise<void> {
     const input = JSON.parse(read(name, "case.json")) as Case;
-    if (needsRemoval(input) || needsLanguages(input)) return;
+    if (needsRemoval(input)) return;
 
     const calls = readTranscript(join(CASES, name, "transcript.jsonl"), BLOBS);
+    if (failsInConstructor(input)) {
+      if (parallelism > 1) return;
+      const working = mkdtempSync(join(tmpdir(), "libsjs-run1435-"));
+      roots.push(working);
+      const made = await languageManager(input, calls, working);
+      expect(made.manager, `${name}: the constructor must refuse`).toBeUndefined();
+      expect(input.result.error, `${name}: the engine's exception`).toContain((made.error as Error).message);
+      expect(made.connection.leftover, `${name}: requests the port did not send`).toEqual([]);
+      // the language list is left as it stood when the constructor threw (LP-110)
+      refused += 1;
+      return;
+    }
     const recordedLog = read(name, "engine.log");
     const recordedMessages = read(name, "messages.jsonl")
       .split("\n")
@@ -203,19 +245,23 @@ describe("the recorded 14.35 export cases, run through ExportSolutions (EXP-500 
     context.useImport = headerValue(recordedLog, "Export using import structure") === "True";
     context.refToUnknownPacks = headerValue(recordedLog, "Export unknown packages action") as ReferencesToUnknownPackages;
 
+    context.action = input.options.engineAction ?? "Export";
+    context.languages = input.options.languages ?? null;
+
     const connection = new RecordedConnection(calls);
     const helper = new CItemHelper(connection, { engine: "14.35" });
     helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
     const sent: SentMessage[] = [];
     let statuses = 0;
-    const manager: ImportExportManager = new ImportExportManager(
+    let manager: ImportExportManager | undefined;
+    manager = await ImportExportManager.create(
       context,
       createMessagesFactory({
         engine: "14.35",
         onMessage: (message) => {
           sent.push(message);
           if (message.channel === "status") statuses += 1;
-          if (cancelAfter !== undefined && message.channel === "status" && statuses === cancelAfter) manager.cancel();
+          if (cancelAfter !== undefined && message.channel === "status" && statuses === cancelAfter) manager?.cancel();
         },
       }),
       helper,
@@ -309,9 +355,10 @@ describe("the recorded 14.35 export cases, run through ExportSolutions (EXP-500 
   it.each(caseNames)("%s", (name) => replay(name, 1), 60_000);
   it.each(caseNames)("%s, eight items in flight", (name) => replay(name, 8), 60_000);
 
-  it("ran the cases that need no removal of references and no language", () => {
-    expect(compared).toBeGreaterThan(80);
+  it("ran the cases that need no removal of references", () => {
+    expect(compared).toBeGreaterThan(90);
     expect(failures).toBe(7);
     expect(cancels).toBe(3);
+    expect(refused).toBe(6);
   });
 });

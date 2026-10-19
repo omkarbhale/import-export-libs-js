@@ -10,6 +10,8 @@ export type { ItemHelperOptions, VersionGate } from "./item-helper.js";
 export { ItemLookups, independentRelatedItems } from "./item-lookups.js";
 export type { IndependentRelatedItem, LookupHost, LookupLog, MetadataType, RelatedItemMetadata } from "./item-lookups.js";
 export { ItemReferences, isValueId } from "./item-references.js";
+export { getLanguagesFromInnovator } from "./language-lookups.js";
+export type { LanguageInfo } from "./language-lookups.js";
 export type { ReferencesHost } from "./item-references.js";
 export { UnmappedTimeZoneError, localWindowsTimeZoneId } from "./timezone.js";
 export { nodeTransport } from "./transport.js";

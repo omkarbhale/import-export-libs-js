@@ -17,7 +17,15 @@ import {
   removePermissionIdWhenItMatchesToDefaultPermission,
   replaceReferencesToPolyLists,
 } from "./post-xsl.js";
-import { itemTypeBody } from "./request-bodies.js";
+import { EXPORT_ACTION, LANGUAGE_RESOURCES_ONLY } from "./export-context.js";
+import { type LanguageRequests, documentSelects } from "./language-requests.js";
+import {
+  addI18nNamespaceToAllRootItems,
+  markPropertiesWithTranslationsIfNeeded,
+  orderPropertiesWithTranslations,
+  removeNotLocalizedProperties,
+} from "./language-steps.js";
+import { itemTypeBodyOf } from "./request-bodies.js";
 import { type RequestDictionary, requestTemplate } from "./request-template.js";
 import { ExportRewrites, type PackageElementMap } from "./rewrites.js";
 
@@ -40,11 +48,16 @@ export interface ItemFetch {
 /**
  * What 14.35's `Export` takes besides the item (EXP-002): the dictionary of request templates that `ExportSolutions` makes once per call
  * (EXP-060), and the map of the package elements of the whole database (EXP-550). Both must be given, or `Export` refuses the item
- * with an `ArgumentNullException` before it sends anything. 14.0.7 takes neither.
+ * with an `ArgumentNullException` before it sends anything. 14.0.7 takes neither. It also takes the action of the run and the resolved
+ * language list, which the language modes use (LP-100, LP-110); a state without them is a plain `Export`.
  */
 export interface ExportRunState {
   readonly requestDictionary: RequestDictionary | null;
   readonly packageElementIdsByElementType: PackageElementMap | null;
+  /** The context's `Action`; `Export` when absent. */
+  readonly action?: string;
+  /** The context's `Languages` as the manager's constructor left them (LP-110). */
+  readonly languages?: readonly string[] | null;
 }
 
 /**
@@ -83,14 +96,24 @@ export class CExportItems {
    * `XPathException` leaves as a `CItemException` and no file is written; whatever the write throws is not mapped. The file goes
    * into `helper.folder`. Returns the path it was written to.
    *
-   * @spec EXP-400 EXP-417 EXP-418 EXP-419 EXP-423
+   * In 14.35 the language modes add four steps (LP-140): the translated properties are flagged before the transform, the transform's
+   * output is cut down to the language elements in `ExportLanguageResourcesOnly` (and `export` returns null, having written nothing,
+   * when none is left, LP-151), and the i18n elements are ordered and given their namespace before the write.
+   *
+   * @spec EXP-400 EXP-417 EXP-418 EXP-419 EXP-423 LP-140 LP-151
    */
-  async export(item: ExportItem, level: string | null | undefined, removeUnknownReferences?: UnknownReferenceRemoval): Promise<string> {
+  async export(item: ExportItem, level: string | null | undefined, removeUnknownReferences?: UnknownReferenceRemoval): Promise<string | null> {
     const fetched = await this.fetch(item, level);
     const rewritten = await this.rewrite(item, fetched);
+    const { action } = this.mode;
     const doc = await guardExport(async () => {
       const lookups = this.helper.lookups;
-      const transformed = applyXsl(rewritten, this.helper.engine);
+      markPropertiesWithTranslationsIfNeeded(rewritten, action);
+      let transformed: XmlDocument | null = applyXsl(rewritten, this.helper.engine);
+      if (action === LANGUAGE_RESOURCES_ONLY) {
+        transformed = removeNotLocalizedProperties(transformed);
+        if (transformed === null) return null;
+      }
       await removePermissionIdWhenItMatchesToDefaultPermission(transformed, lookups);
       if (item.typeName === "mp_MacPolicy") cdataFilterXml(transformed, "condition_xml");
       if (item.typeName === "dr_RelationshipFamily") cdataFilterXml(transformed, "implementation_query");
@@ -98,11 +121,19 @@ export class CExportItems {
       if (removeUnknownReferences) await removeUnknownReferences(transformed);
       removeNamespaceNodes(transformed, this.helper.engine);
       removeEmptyRelationships(transformed);
+      orderPropertiesWithTranslations(transformed, action);
+      addI18nNamespaceToAllRootItems(transformed, action);
       return transformed;
     });
+    if (doc === null) return null;
     // 14.35's workers write at the same time and hold the file while they do (EXP-419)
     if (this.helper.engine === "14.35") return writeItemFileShared(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
     return writeItemFile(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
+  }
+
+  /** The action and the language list of the run (LP-110); a plain export when the run state names none. */
+  private get mode(): LanguageRequests {
+    return { action: this.run.action ?? EXPORT_ACTION, languages: this.run.languages ?? null };
   }
 
   /**
@@ -167,7 +198,7 @@ export class CExportItems {
       const lookups = this.helper.lookups;
       const typeName = item.typeName ?? "";
       const idName = item.idName;
-      const request = (await requestTemplate(requestDictionary, this.helper, typeName, level)).clone();
+      const request = (await requestTemplate(requestDictionary, this.helper, typeName, level, this.mode)).clone();
       request.setProperty("id", idName);
       const versionable = await lookups.isVersionable(typeName);
       const id = versionable ? await lookups.getCurrentIdOfVersion(idName ?? "", typeName) : (idName ?? "");
@@ -197,19 +228,22 @@ export class CExportItems {
    * Row 5: the ItemType fetch for a relationship type, by `relationship_id`, with the ItemType body. There is no
    * `levels`, `select` or `<id>` child. The dependency-level chain (`helper.lookups.getDepencyLevel`) follows.
    *
-   * @spec EXP-003 EXP-049
+   * In 14.35's language modes the body goes through the walk of LP-125 first, so the request carries a `select` on every element and
+   * the lookups for them come before it.
+   *
+   * @spec EXP-003 EXP-049 LP-125
    */
-  fetchRelationshipItemType(relationshipId: string): Promise<ResponseDocument> {
-    const request = element(
-      "Item",
-      [
-        ["type", "ItemType"],
-        ["action", "get"],
-        ["id", relationshipId],
-      ],
-      itemTypeBody(serverMajorOf(this.helper.innovatorVersion)),
-    );
-    return this.helper.applyAML(request);
+  async fetchRelationshipItemType(relationshipId: string): Promise<ResponseDocument> {
+    const body = itemTypeBodyOf(serverMajorOf(this.helper.innovatorVersion));
+    const attributes: Array<[string, string]> = [
+      ["type", "ItemType"],
+      ["action", "get"],
+      ["id", relationshipId],
+    ];
+    if (this.helper.engine !== "14.35") return this.helper.applyAML(element("Item", attributes, body.text()));
+    const [rootSelect, ...bodySelects] = await documentSelects(this.helper, ["ItemType", ...body.types], this.mode);
+    if (rootSelect !== undefined) attributes.push(["select", rootSelect]);
+    return this.helper.applyAML(element("Item", attributes, body.text(bodySelects)));
   }
 
   /**
