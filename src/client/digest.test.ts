@@ -32,6 +32,16 @@ describe("PasswordDigest (WIRE-014, WIRE-055)", () => {
     expect(() => digest.switchTo("MD5")).toThrow("Parole already contains Sha256 hash.");
   });
 
+  it("takes 32 hex characters and a final line feed for an MD5 hash, as .NET's $ does (WIRE-014)", () => {
+    const digest = new PasswordDigest(`${MD5_TEST}\n`);
+    expect(digest.value).toBe(`${MD5_TEST}\n`);
+    expect(() => digest.switchTo("SHA256")).toThrow("Parole already contains Md5 hash.");
+    expect(new PasswordDigest(`${SHA256_TEST}\n`).mode).toBe("SHA256");
+    // Two line feeds, or a carriage return, are not a final line feed: the text is hashed.
+    expect(new PasswordDigest(`${MD5_TEST}\n\n`).value).not.toBe(`${MD5_TEST}\n\n`);
+    expect(new PasswordDigest(`${MD5_TEST}\r\n`).value).not.toBe(`${MD5_TEST}\r\n`);
+  });
+
   it("refuses an unknown mode", () => {
     expect(() => new PasswordDigest("test").switchTo("md5")).toThrow(DotNetException);
     expect(() => new PasswordDigest("test").switchTo("md5")).toThrow("Unknown hashing mode.");

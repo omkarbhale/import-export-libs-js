@@ -8,8 +8,8 @@ export interface ServerConnection {
 }
 
 /**
- * IOM's `Innovator` as the engine uses it: `applyAML` and applying a single
- * item. Neither throws for a fault; the response document tells.
+ * IOM's `Innovator` as the engine uses it: `applyAML`, applying a single
+ * item and `applySQL`. None throws for a fault; the response document tells.
  *
  * @spec WIRE-004 WIRE-006
  */
@@ -31,5 +31,14 @@ export class Innovator {
     const [item] = items;
     if (items.length !== 1 || item === undefined) throw new DotNetException("System.Exception", "Not a single item");
     return this.connection.callAction("ApplyItem", outerXml(item));
+  }
+
+  /**
+   * `Innovator.applySQL` (the 14.35 language-pack path, WIRE-004): sends `<sql><Query>{sql}</Query></sql>` as `ApplySQL`.
+   * The SQL is the element's text, so `&`, `<` and `>` in it are escaped.
+   */
+  applySql(sql: string): Promise<ResponseDocument> {
+    const text = sql.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return this.connection.callAction("ApplySQL", `<sql><Query>${text}</Query></sql>`);
   }
 }

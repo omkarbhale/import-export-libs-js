@@ -7,12 +7,14 @@ import { CItemHelper } from "./item-helper.js";
 import { forgetAccessibleOAuthServer } from "./oauth.js";
 
 /**
- * Every 14.0.7 export case begins with the engine's login, user record and
+ * Every 14.0.7 and 14.35 export case begins with the engine's login, user record and
  * version probe. The recorded AML of those first calls must be what the client
  * sends, and the recorded responses what it reads.
  */
-const EXPORT_CASES = new URL("../../fixtures/14.0.7/export/", import.meta.url).pathname;
-const cases = readdirSync(EXPORT_CASES).filter((name) => existsSync(join(EXPORT_CASES, name, "transcript.jsonl")));
+const ENGINES = ["14.0.7", "14.35"] as const;
+const exportCases = (engine: (typeof ENGINES)[number]) => new URL(`../../fixtures/${engine}/export/`, import.meta.url).pathname;
+const casesOf = (engine: (typeof ENGINES)[number]) =>
+  readdirSync(exportCases(engine)).filter((name) => existsSync(join(exportCases(engine), name, "transcript.jsonl")));
 
 interface Call {
   action: string;
@@ -20,8 +22,8 @@ interface Call {
   response: string;
 }
 
-function loginCalls(name: string): Call[] {
-  return readFileSync(join(EXPORT_CASES, name, "transcript.jsonl"), "utf8")
+function loginCalls(engine: (typeof ENGINES)[number], name: string): Call[] {
+  return readFileSync(join(exportCases(engine), name, "transcript.jsonl"), "utf8")
     .split("\n")
     .filter((line) => line !== "")
     .slice(0, 6)
@@ -50,7 +52,9 @@ const OAUTH = {
   token: '{"access_token":"token","expires_in":3600,"token_type":"Bearer"}',
 };
 
-describe("the login and version probe of every recorded 14.0.7 export", () => {
+describe.each(ENGINES)("the login and version probe of every recorded %s export", (engine) => {
+  const cases = casesOf(engine);
+
   beforeEach(() => forgetAccessibleOAuthServer());
 
   it("has export cases to replay", () => {
@@ -58,7 +62,7 @@ describe("the login and version probe of every recorded 14.0.7 export", () => {
   });
 
   it.each(cases)("%s", async (name) => {
-    const recorded = loginCalls(name);
+    const recorded = loginCalls(engine, name);
     expect(recorded.map((c) => c.action)).toEqual(["ValidateUser", "ApplyItem", "ApplyAML", "ApplyAML", "ApplyAML", "ApplyAML"]);
 
     let soapCalls = 0;
@@ -75,6 +79,7 @@ describe("the login and version probe of every recorded 14.0.7 export", () => {
 
     const calls: CallRecord[] = [];
     const connection = new HttpConnectorExtension({
+      engine,
       url: "http://dev.example/12sp9",
       database: "12sp9",
       userName: "root",
@@ -83,12 +88,13 @@ describe("the login and version probe of every recorded 14.0.7 export", () => {
       transport,
       onCall: (call) => calls.push(call),
     });
-    const helper = new CItemHelper(connection);
+    const helper = new CItemHelper(connection, { engine });
     await helper.login();
 
     expect(calls.map((c) => ({ action: c.action, request: c.request, response: c.response }))).toEqual(recorded);
     expect(helper.innovatorVersion?.fullString).toBe("12.0 SP9 Build 24090");
-    expect(helper.versionGate).toMatchObject({ accepted: true, skipped: false, fittingEngines: ["12.0", "14.0.7", "14.35"] });
+    expect(helper.versionGate).toMatchObject({ engine, accepted: true, skipped: false, fittingEngines: ["12.0", "14.0.7", "14.35"] });
+    expect(helper.isConnected).toBe(true);
     expect(bodyText(transport.requests[transport.requests.length - 1]!)).toContain("VersionServiceUpdate");
   });
 });

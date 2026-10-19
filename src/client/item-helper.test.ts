@@ -99,14 +99,15 @@ describe("CItemHelper.login: the version probe (WIRE-020, WIRE-021)", () => {
     );
   });
 
-  it("fails on a build with no value element", async () => {
+  it("fails the parse, as a format error, of a build with no value element (the probe reads an empty value)", async () => {
     const transport = new FakeTransport((request, index) =>
       bodyText(request).includes("VersionBuild")
         ? respond('<Envelope><Body><Result><Item type="Variable"><name>VersionBuild</name></Item></Result></Body></Envelope>')
         : devServer()(request, index),
     );
     expect(await caught(new CItemHelper(connect(transport)).login())).toMatchObject({
-      name: "System.ArgumentNullException",
+      name: "System.FormatException",
+      message: "Input string was not in a correct format.",
     });
   });
 
@@ -252,9 +253,16 @@ describe("the version gate (WIRE-022 to WIRE-024)", () => {
   });
 
   it("is built only for the engines whose client behaviour exists", () => {
-    expect(CLIENT_ENGINES).toEqual(["14.0.7"]);
+    expect(CLIENT_ENGINES).toEqual(["14.0.7", "14.35"]);
     expect(() => new CItemHelper(connect(withVariables({})), { engine: "12.0" })).toThrow(EngineNotSupportedError);
-    expect(() => new CItemHelper(connect(withVariables({})), { engine: "14.35" })).toThrow("engine 14.35 is not yet supported");
+    expect(() => new CItemHelper(connect(withVariables({})), { engine: "12.0" })).toThrow("engine 12.0 is not yet supported");
+    expect(() => new HttpConnectorExtension({ engine: "12.0", url: "http://dev.example/12sp9", database: "d", userName: "u", password: "p" })).toThrow(
+      EngineNotSupportedError,
+    );
+  });
+
+  it("refuses a connection that belongs to another engine's IOM", () => {
+    expect(() => new CItemHelper(connect(withVariables({})), { engine: "14.35" })).toThrow("a 14.0.7 connection cannot serve the 14.35 engine");
   });
 });
 

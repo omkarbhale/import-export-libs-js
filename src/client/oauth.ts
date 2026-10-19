@@ -286,13 +286,68 @@ function formEncode(value: string): string {
     .replace(/%20/g, "+");
 }
 
+/** What a token endpoint answered: the tokens it named, each absent when the answer had none. */
+export interface TokenAnswer {
+  accessToken: string | undefined;
+  refreshToken: string | undefined;
+}
+
+/** Where IOM gets a bearer token from; the connection asks again, once, when a request is refused. */
+export interface TokenProvider {
+  getAccessToken(): Promise<string>;
+}
+
+/**
+ * One form-encoded POST to the token endpoint, and the reading of its answer: a 200 or 400 JSON body, an `error` field
+ * as an OAuth error, any other status as `server_error`.
+ *
+ * @spec WIRE-012
+ */
+export async function postTokenForm(
+  transport: HttpTransport,
+  tokenEndpoint: string,
+  fields: ReadonlyArray<readonly [string, string]>,
+): Promise<TokenAnswer> {
+  const body = Buffer.from(fields.map(([name, value]) => `${name}=${formEncode(value)}`).join("&"), "utf8");
+  const response = await send(transport, {
+    method: "POST",
+    url: tokenEndpoint,
+    headers: [
+      ["Accept", "application/json"],
+      ["Content-Type", "application/x-www-form-urlencoded"],
+      ["Host", new URL(tokenEndpoint).host],
+      ["Content-Length", String(body.length)],
+    ],
+    body,
+    responseTimeoutMs: OAUTH_TIMEOUT_MS,
+    readTimeoutMs: NO_READ_LIMIT,
+  });
+
+  if (response.status !== 200 && response.status !== 400) {
+    throw new OAuthServerError("server_error", `(${statusName(response.status)}) ${response.reason}`);
+  }
+  let json: Record<string, unknown>;
+  try {
+    json = parseJsonObject(text(response));
+  } catch (error) {
+    const message = (error as Error).message;
+    throw new OAuthServerError(message, message);
+  }
+  const code = stringValue(json, "error");
+  if (code !== undefined && code.trim() !== "") {
+    const key = Object.keys(json).find((k) => k.toLowerCase() === "error_description");
+    throw new OAuthServerError(code, key === undefined ? code : (stringValue(json, key) ?? code));
+  }
+  return { accessToken: stringValue(json, "access_token"), refreshToken: stringValue(json, "refresh_token") };
+}
+
 /**
  * The password grant of IOM's `PasswordTokenProvider`, with its one retry that
  * uses SHA-256 when the server asks for that hash.
  *
  * @spec WIRE-012 WIRE-013 WIRE-014
  */
-export class PasswordTokenProvider {
+export class PasswordTokenProvider implements TokenProvider {
   private readonly digest: PasswordDigest;
 
   /** Throws like IOM when the database or user name is empty. */
@@ -321,52 +376,17 @@ export class PasswordTokenProvider {
   }
 
   private async requestToken(): Promise<string> {
-    const body = Buffer.from(
-      [
-        ["grant_type", "password"],
-        ["client_id", "IOMApp"],
-        ["scope", "Innovator"],
-        ["database", this.credentials.database],
-        ["username", this.credentials.userName],
-        ["password", this.digest.value],
-      ]
-        .map(([name, value]) => `${name}=${formEncode(value ?? "")}`)
-        .join("&"),
-      "utf8",
-    );
-    const response = await send(this.transport, {
-      method: "POST",
-      url: this.tokenEndpoint,
-      headers: [
-        ["Accept", "application/json"],
-        ["Content-Type", "application/x-www-form-urlencoded"],
-        ["Host", new URL(this.tokenEndpoint).host],
-        ["Content-Length", String(body.length)],
-      ],
-      body,
-      responseTimeoutMs: OAUTH_TIMEOUT_MS,
-      readTimeoutMs: NO_READ_LIMIT,
-    });
-
-    if (response.status !== 200 && response.status !== 400) {
-      throw new OAuthServerError("server_error", `(${statusName(response.status)}) ${response.reason}`);
-    }
-    let json: Record<string, unknown>;
-    try {
-      json = parseJsonObject(text(response));
-    } catch (error) {
-      const message = (error as Error).message;
-      throw new OAuthServerError(message, message);
-    }
-    const code = stringValue(json, "error");
-    if (code !== undefined && code.trim() !== "") {
-      const key = Object.keys(json).find((k) => k.toLowerCase() === "error_description");
-      throw new OAuthServerError(code, key === undefined ? code : (stringValue(json, key) ?? code));
-    }
-    const token = stringValue(json, "access_token");
-    if (token === undefined || token === "") {
+    const { accessToken } = await postTokenForm(this.transport, this.tokenEndpoint, [
+      ["grant_type", "password"],
+      ["client_id", "IOMApp"],
+      ["scope", "Innovator"],
+      ["database", this.credentials.database],
+      ["username", this.credentials.userName],
+      ["password", this.digest.value],
+    ]);
+    if (accessToken === undefined || accessToken === "") {
       throw new DotNetException("System.ArgumentException", "Token value can not be null or empty.");
     }
-    return token;
+    return accessToken;
   }
 }

@@ -113,7 +113,7 @@ Expect: 100-continue
 
 [14.35] Same as 14.0.7 in every capture: the SOAP headers are `Content-Type`, `LOCALE`, `TIMEZONE_NAME`, `SOAPAction`, `Authorization`, `Host`, `Cookie`, `Content-Length`, `Expect` in that order, the token request's are `Accept`, `Content-Type`, `Host`, `Content-Length`, `Expect`, the discovery GETs carry only `Host` (and `Connection: Keep-Alive` on the first), and `TIMEZONE_NAME` starts as the machine's Windows time zone id. The library's time zone rule is unchanged.
 
-IOM 15 adds one header: `Aras-Request-ReadOnly: 1`, written between `TIMEZONE_NAME` and `SOAPAction`. It is sent when the request is an `ApplyItem` whose root `Item` has the attribute `readOnly` equal to `1`, or an `ApplyAML` in which every `/AML/Item` has `readOnly` equal to `1`. The comparison is exact (`true` does not count) and an `AML` root with no `Item` child counts as read-only (`probe.json`, `F.iomHelpers`). `ValidateUser`, `Logoff`, `ApplySQL` and the raw actions never carry it. The engine does not write `readOnly` itself, so a request carries the header only when the AML it sends happens to match, for example an item from a package file that has the attribute; no request in the captures does.
+IOM 15 adds one header: `Aras-Request-ReadOnly: 1`, written between `TIMEZONE_NAME` and `SOAPAction`. It is sent when the request is an `ApplyItem` whose root `Item` has the attribute `readOnly` equal to `1`, or an `ApplyAML` in which every `/AML/Item` has `readOnly` equal to `1`. The comparison is exact (`true` does not count) and an `AML` root with no `Item` child counts as read-only (`probe.json`, `F.iomHelpers`). The test is an XPath over the request document, `/Item` for `ApplyItem` and `/AML/Item` for `ApplyAML`, so an `ApplyAML` whose root is not `AML` has no `/AML/Item` either and counts as read-only too. `ValidateUser`, `Logoff`, `ApplySQL` and the raw actions never carry it. The engine does not write `readOnly` itself, so a request carries the header only when the AML it sends happens to match, for example an item from a package file that has the attribute; no request in the captures does.
 
 ### WIRE-006: `CItemHelper.applyAML` sends ApplyItem and throws on any fault
 
@@ -300,7 +300,7 @@ When that request returns a fault, a second `ApplyItem` follows with the same it
 
 [12.0] Same as 14.0.7.
 
-[14.35] Same trigger as 14.0.7: a SOAP request answered with the discovery document's `unauthorized_status_code` (401 or 498) gets one new token and one resend, and a second refusal is the `999` fault `System.Net.WebException: The remote server returned an error: (401) Unauthorized.`. What the renewal sends differs:
+[14.35] Same trigger as 14.0.7: a SOAP request answered with the protocol type's refusal status (401 for `Standard`, 498 for `Custom`; IOM 15 holds the two in a fixed table by type and does not read the document's own `unauthorized_status_code`) gets one new token and one resend, and a second refusal is the `999` fault `System.Net.WebException: The remote server returned an error: (401) Unauthorized.`. What the renewal sends differs:
 
 - when the provider holds a refresh token (WIRE-012), the renewal is `grant_type=refresh_token&client_id=IOMApp&refresh_token=<token>`, form-encoded with the token request's headers. The answer must hold a `refresh_token` and an `access_token`; otherwise the fault is `System.InvalidOperationException: Refresh token is missing.` or `…: Access token is missing.`. Each success replaces the stored refresh token;
 - otherwise it is a fresh password grant (WIRE-012) with the password as WIRE-013 left it. Dev issues no refresh token, so this is what a renewal against dev sends.
@@ -413,7 +413,7 @@ Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
 
-[14.35] Same as 14.0.7: the `ImportExportManager` constructor copies a context timeout above 0, or exactly `-1`, to an `HttpServerConnection` after login. When `Login()` returned with no connection (WIRE-017), a timeout above 0 makes the constructor throw `System.NullReferenceException`, because it reads `Inn.getConnection()` first; with timeout 0 the constructor succeeds and the run fails at its first use of the connection (`capture-cancelled-login.jsonl`'s host ended with `System.NullReferenceException`).
+[14.35] Same as 14.0.7: the `ImportExportManager` constructor copies a context timeout above 0, or exactly `-1`, to an `HttpServerConnection` after login. When `Login()` returned with no connection (WIRE-017), a timeout above 0 or exactly `-1` makes the constructor throw `System.NullReferenceException`, because it reads `Inn.getConnection()` first; with any other timeout the constructor succeeds and the run fails at its first use of the connection (`capture-cancelled-login.jsonl`'s host ended with `System.NullReferenceException`).
 
 ## Logoff
 

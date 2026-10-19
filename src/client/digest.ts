@@ -3,8 +3,29 @@ import { DotNetException } from "./dotnet.js";
 
 export type HashingMode = "MD5" | "SHA256";
 
-const MD5_HASH = /^[0-9a-f]{32}$/i;
-const SHA256_HASH = /^[0-9a-f]{64}$/i;
+/** .NET's `$` also matches before a final line feed, so 32 hex characters plus `\n` count as an MD5 hash. */
+const MD5_HASH = /^[0-9a-f]{32}\n?$/i;
+const SHA256_HASH = /^[0-9a-f]{64}\n?$/i;
+
+/** IOM's `Md5.IsHash`: 32 hex characters in either case. */
+export function isMd5Hash(text: string): boolean {
+  return MD5_HASH.test(text);
+}
+
+/** IOM's `Sha256.IsHash`: 64 hex characters in either case. */
+export function isSha256Hash(text: string): boolean {
+  return SHA256_HASH.test(text);
+}
+
+/** IOM's `Md5.ComputeHash`: the lowercase hex of MD5 over the ASCII bytes; a password that already is an MD5 hash is kept. */
+export function md5Digest(password: string): string {
+  return isMd5Hash(password) ? password : createHash("md5").update(asciiBytes(password)).digest("hex");
+}
+
+/** IOM's `Sha256.ComputeHash`: the uppercase hex of SHA-256 over the ASCII bytes; a password that already is one is kept. */
+export function sha256Digest(password: string): string {
+  return isSha256Hash(password) ? password : createHash("sha256").update(asciiBytes(password)).digest("hex").toUpperCase();
+}
 
 /** .NET's `Encoding.ASCII`: every code point above 0x7F, an astral one included, becomes one `?`. */
 function asciiBytes(text: string): Buffer {
@@ -40,20 +61,16 @@ export class PasswordDigest {
   /** Switches the mode. A password that already is the other kind of hash cannot be switched. */
   switchTo(mode: string): void {
     if (mode === "MD5") {
-      if (SHA256_HASH.test(this.password)) {
+      if (isSha256Hash(this.password)) {
         throw new DotNetException("System.InvalidOperationException", "Parole already contains Sha256 hash.");
       }
-      this.digest = MD5_HASH.test(this.password)
-        ? this.password
-        : createHash("md5").update(asciiBytes(this.password)).digest("hex");
+      this.digest = md5Digest(this.password);
       this.current = "MD5";
     } else if (mode === "SHA256") {
-      if (MD5_HASH.test(this.password)) {
+      if (isMd5Hash(this.password)) {
         throw new DotNetException("System.InvalidOperationException", "Parole already contains Md5 hash.");
       }
-      this.digest = SHA256_HASH.test(this.password)
-        ? this.password
-        : createHash("sha256").update(asciiBytes(this.password)).digest("hex").toUpperCase();
+      this.digest = sha256Digest(this.password);
       this.current = "SHA256";
     } else {
       throw new DotNetException("System.InvalidOperationException", "Unknown hashing mode.");

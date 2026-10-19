@@ -9309,10 +9309,13 @@
             "bodySha256": "5da93f60fafe67c94ed8eca681fb3fee86085f4a1fec70f98ffbfeef278c66ce",
             "textSha256": "af9657e31670cab79c0d1ea03a20aca406631918afc714c09e7bfe39ba3373e3"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-040",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9325,9 +9328,12 @@
             "bodySha256": "76258acf0a152f59ff5a88f52d5109b308e276e992130224501c8266ef007dc5",
             "textSha256": "4954638f36158c87785773a7644afdb0554ee33aac5b71d5befbed68c38cfe5b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9340,9 +9346,12 @@
             "bodySha256": "f302668473934c244a0bd883326539f774b82a3ddfdb69e0211af6e1ebe60429",
             "textSha256": "28df9ba445e755045e9528da4bfc3fd97b6d342d46c0f438797f145aa97d9d80"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-022"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion.fullString"
           ]
         },
         {
@@ -9355,10 +9364,13 @@
             "bodySha256": "de39a6b205675e89cc8881e0ede5c39c44db12aa738bbc948a4af172cc0e5768",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-040",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9371,10 +9383,13 @@
             "bodySha256": "c0486425d9a1ebb043db4d21ec8e4daf0ce954bfaca7851ccf3c16f05f09a267",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-040",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9387,10 +9402,13 @@
             "bodySha256": "c0df7107163846f450afcee94d563c3e775e03fc0420856ebe2d88c0d837d4f6",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-040",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9403,9 +9421,12 @@
             "bodySha256": "74612d65255ddac9626f5265135223d4ce06bb29bffbe01b74ea12cc7d0e0a39",
             "textSha256": "7e37b95ee68742c535a7a9523c80ed480c82fb92c3f5c9fec0380d4ab2575265"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9418,9 +9439,12 @@
             "bodySha256": "8cdd352990ccf26801c2a6b0ff5a2bbc5ee4551d71a3f5955a76b7147c663ae7",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9433,9 +9457,12 @@
             "bodySha256": "52590e673038405ba2c66f4a0bac55a5f3a67f0713639054ff73d7329fc714a5",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -9448,9 +9475,12 @@
             "bodySha256": "5ae9eda1ca085ef13d9e780a2f041d8169c1fce811bc2647c4dc05d5bb33daf9",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -10311,9 +10341,12 @@
             "ilSha256": "f2d6f2790783847647ab196c96a8193366800e53c4771ef7d71bb085c79b9c69",
             "bodySha256": "d8e7d51b3ed537de3f7d9f2bb806e099e36c559673f1dcf010ec680a1af49145"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-051"
+          ],
+          "symbols": [
+            "src/client/pretty-xml.ts#prettyXml"
           ]
         },
         {
@@ -10326,10 +10359,13 @@
             "bodySha256": "5fe7d609b1d31b87a4001b6b5cf24afd6f6b231e0e7607b3d51c0e7bfd763c40",
             "textSha256": "3fb2e6e5a3d0032aa57b3e43af49439e42f30afb705e6ebedb268f6d548af9ea"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-051",
             "WIRE-052"
+          ],
+          "symbols": [
+            "src/client/fault.ts#CItemException.fromResponse"
           ]
         },
         {
@@ -10342,7 +10378,7 @@
             "bodySha256": "0b61469af4b68cc9e7cd17d615bfcc9b6e716a593fe1c6ac759d53fc41de1660",
             "textSha256": "5a66e746311486051df0b2a9a9d19d42dd4128bc0ae048c3b9d9bd6852234ad6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-407",
             "IMP-445",
@@ -10350,6 +10386,9 @@
             "IMP-460",
             "WIRE-051",
             "WIRE-052"
+          ],
+          "symbols": [
+            "src/client/fault.ts#CItemException"
           ]
         },
         {
@@ -10362,10 +10401,13 @@
             "bodySha256": "b164882ed04c70e13c6d3fc1f3c9fdb17b73d7d86848bc0e23412766191b8572",
             "textSha256": "db236546e4199f9012c785341cc343fa223443cdde12503e4ed0520dda17a185"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-051",
             "WIRE-052"
+          ],
+          "symbols": [
+            "src/client/fault.ts#CItemException.fromRequest"
           ]
         },
         {
@@ -10378,9 +10420,12 @@
             "bodySha256": "8117b3194ab3a229d036630c6022f5cf4c95ee703e2a0d1076fea41991084429",
             "textSha256": "e2ef53fc4e038da6dc4a346d9265dedd0b66fdebb2a27f52bea3c2d7cb6a04e0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-051"
+          ],
+          "symbols": [
+            "src/client/pretty-xml.ts#prettyXml"
           ]
         },
         {
@@ -11732,10 +11777,13 @@
             "bodySha256": "9b4b8715ec6ce80f556fe424b0fb4d49ed091b2803fddc665e8a3a44f8714059",
             "textSha256": "cabff74dfb578c3211269be0317ee8ad353e1c0ca76888c0d39a16450d557786"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-022",
             "WIRE-023"
+          ],
+          "symbols": [
+            "src/client/version.ts#currentUtilityVersion"
           ]
         },
         {
@@ -11779,13 +11827,16 @@
             "bodySha256": "3f6ca34ed9abd37848c464dcadd156486c2c00c632d26b977bf494a4ac038701",
             "textSha256": "daeda2423373098365da6cca7dfe11d3743abd9c915e33d3277c934eb6f4f214"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-004",
             "WIRE-007",
             "WIRE-020",
             "WIRE-021",
             "WIRE-054"
+          ],
+          "symbols": [
+            "src/client/probe.ts#probeServerVersion"
           ]
         },
         {
@@ -12160,7 +12211,7 @@
             "bodySha256": "e02096d206970b60c02c2ef96fd018abc7716c778576a03cf482b764e7dfd7dc",
             "textSha256": "98b6c1087555ccd1efb38de024202df9277c88a7549ff5d47f9a12002a0e3050"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-003",
             "WIRE-010",
@@ -12171,10 +12222,15 @@
             "WIRE-015",
             "WIRE-016",
             "WIRE-017",
+            "WIRE-018",
             "WIRE-023",
             "WIRE-024",
             "WIRE-055",
             "WIRE-056"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.login",
+            "src/client/version.ts#VersionRefusal"
           ]
         },
         {
@@ -12366,7 +12422,7 @@
             "bodySha256": "bf9b22bc7eab1df4797e6021741294e4dfa4760b99d7414393ff6088f0a943bb",
             "textSha256": "edc543b3875c62297237911f025fa44d0c0e7638a7d24b1381a982c8a8d95fb2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-004",
             "WIRE-005",
@@ -12375,7 +12431,12 @@
             "WIRE-018",
             "WIRE-030",
             "WIRE-050",
+            "WIRE-051",
             "WIRE-053"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.applyAML",
+            "src/client/innovator.ts#Innovator.applyItem"
           ]
         },
         {
@@ -12524,9 +12585,12 @@
             "bodySha256": "2381fec05791f59d99c137b9ee21ff80162ab0acc35d1b6d847726b710562777",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.inn"
           ]
         },
         {
@@ -12539,10 +12603,13 @@
             "bodySha256": "9531fde22c94ed134f6b905120b63df3dbc307d282f74e9f5099f42df1a30182",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.innovatorVersion"
           ]
         },
         {
@@ -12555,10 +12622,13 @@
             "bodySha256": "027bee5c420e344640a0dd85dbf1d6a5e85ad8ae81be01f7c86e80deedeb7626",
             "textSha256": "d307df2799b4a8230c0bf2af3711318f585b3d6983ca09435c611db29064bb5d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001",
             "WIRE-040"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.isConnected"
           ]
         },
         {
@@ -12584,10 +12654,14 @@
             "bodySha256": "98db1edf2eed309a69bdcb53bd79e4e6d615ee5c42a93c403e10a9b60a7682be",
             "textSha256": "5aca45fa6a4c0f1596c6379f5720fd12366dd7f658828be613a43e5f1b6e4956"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-002",
             "WIRE-040"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.logout",
+            "src/client/connection.ts#HttpServerConnection.logout"
           ]
         },
         {
@@ -12613,10 +12687,11 @@
             "bodySha256": "433e1bd31c719f999d1afadc9708f5a0e2b7658fce4cd28b7c84bb07acaf179a",
             "textSha256": "ea53a626b4f78990a998624dac667cc39a863cc65bf1182a207022e0fb9a7a13"
           },
-          "status": "unmapped",
+          "status": "not-ported",
           "rules": [
             "WIRE-001"
-          ]
+          ],
+          "reason": "CItemHelper.Cookie is set to null at construction and never read (WIRE-001), and the library's connection keeps its own cookies (WIRE-005)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Folder",
@@ -12644,9 +12719,12 @@
             "bodySha256": "db736199a444dbf537aac23cb483c1edfde6d199130e5968e9c5ec266adbb0f5",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.inn"
           ]
         },
         {
@@ -12659,10 +12737,13 @@
             "bodySha256": "0a70ee186e2dca828e1d682fbea26b71ebfe33c48270d13975d708cfae011f6a",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.innovatorVersion"
           ]
         },
         {
@@ -13216,11 +13297,14 @@
             "bodySha256": "bf760157284d800f9e74cccd60bd4dbcbf32b43bb91a5608ae067741719344c9",
             "textSha256": "5e08ef415d9ed6f785fef2f018236574b8978187ebce50b2aa16eeb9e719c885"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-002",
             "WIRE-005",
             "WIRE-090"
+          ],
+          "symbols": [
+            "src/client/connection.ts#HttpConnectorExtension"
           ]
         },
         {
@@ -13233,7 +13317,7 @@
             "bodySha256": "40dea0ad2339cba626b8d740450aede061ca8b1415b6769202dd43811cfe505d",
             "textSha256": "d34955279196f6d5d68ee172990739490234c7cd19b8e28b6ccfe0cbc26767d9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-010",
             "WIRE-011",
@@ -13242,8 +13326,12 @@
             "WIRE-014",
             "WIRE-015",
             "WIRE-016",
+            "WIRE-018",
             "WIRE-040",
             "WIRE-090"
+          ],
+          "symbols": [
+            "src/client/connection.ts#HttpServerConnection.login"
           ]
         },
         {
