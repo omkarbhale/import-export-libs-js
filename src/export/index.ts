@@ -9,7 +9,7 @@ export { defaultSelect, mainFetchRequest, requestedLevel } from "./main-fetch.js
 export { PackageDefinitionManager } from "./package-definition-manager.js";
 export { SUExportContext, SolutionUpgradeContext } from "./export-context.js";
 export type { ReferencesToUnknownPackages } from "./export-context.js";
-export { ImportExportManager, RUN_ENGINES, selectionTable } from "./import-export-manager.js";
+export { ImportExportManager, RUN_ENGINES, defaultParallelism, selectionTable } from "./import-export-manager.js";
 export type { ImportExportManagerOptions, SelectionInsertions, SelectionTable } from "./import-export-manager.js";
 export {
   MESSAGE_TEMPLATES,

@@ -14277,9 +14277,12 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-551"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportProcOfItems"
           ]
         },
         {
@@ -14292,7 +14295,7 @@
             "bodySha256": "5813393d2b755a49d7b9091d77d77f933d0ebf8bb2a9f46c0ab0eabdee4d6ce2",
             "textSha256": "7f46f6bf7743096b325a67ff1723232b290bf98a765cc37383fc86a3ddf89061"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-514",
             "EXP-515",
@@ -14308,6 +14311,12 @@
             "EXP-572",
             "EXP-573",
             "WIRE-060"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportProcOfItems",
+            "src/export/import-export-manager.ts#ImportExportManager.stopExportAfter",
+            "src/export/parallel-for-each.ts#parallelForEach",
+            "src/export/async-lock.ts#AsyncLock"
           ]
         },
         {
@@ -14600,7 +14609,7 @@
             "bodySha256": "8b22e7a4bbe064a9c4e8fc313d66a5ea5077bb6fa6784a7bec21713c31beaa2a",
             "textSha256": "fc9fe904a61b72135dd01978bb40bda128941a058b44abac98cca72e1ce16459"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "EXP-504",
@@ -14623,6 +14632,12 @@
             "EXP-572",
             "EXP-573",
             "WIRE-060"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportProc",
+            "src/export/import-export-manager.ts#ImportExportManager.exportProcOfItems",
+            "src/export/import-export-manager.ts#ImportExportManager.stopExportAfter",
+            "src/export/progress-logger.ts#ProgressStreamLogger"
           ]
         },
         {

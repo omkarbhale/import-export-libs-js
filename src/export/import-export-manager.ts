@@ -1,3 +1,4 @@
+import { availableParallelism } from "node:os";
 import { CItemException } from "../client/fault.js";
 import { DotNetException, isNullReference, isXPathException, isXmlException } from "../client/dotnet.js";
 import { responseDom } from "../client/answer.js";
@@ -24,7 +25,8 @@ import type { XmlDocument, XmlElement } from "../xml/index.js";
 import type { ExportRunState } from "./cexport-items.js";
 import type { SUExportContext, SolutionUpgradeContext } from "./export-context.js";
 import type { ExportItem } from "./export-item.js";
-import { type Message, type MessagesFactory, getMessageFor } from "./messages.js";
+import { AsyncLock } from "./async-lock.js";
+import { type Message, type MessagesFactory, OptionNotSupportedError, getMessageFor } from "./messages.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
 import { packageElementIdsByElementType } from "./package-elements.js";
@@ -39,10 +41,12 @@ import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
 export const RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 /**
- * How many items of a package 14.35's run starts at once. The engine's `Parallel.ForEach` has no bound (EXP-551); the port runs the
- * items one after the other until the parallel export is built, which bounds this by `--parallelism`.
+ * How many items of a package 14.35's run has in flight when the host does not say: one worker per logical processor, which is where
+ * the engine's `Parallel.ForEach` starts (EXP-551).
  */
-const ITEMS_AT_ONCE = 1;
+export function defaultParallelism(): number {
+  return availableParallelism();
+}
 
 /** Where a run is, for `Cancel` (EXP-518). */
 type ProgressState = "idle" | "inProgress" | "cancelled";
@@ -81,6 +85,24 @@ export interface ImportExportManagerOptions extends PathEnvironment {
   console?: ConsoleWriter;
   /** The value of `os_user` in the audit row of an import, or a function that gives it (IMP-452). */
   osUser?: ImportHelperOptions["osUser"];
+  /**
+   * How many items of a package 14.35's export has in flight at most: an integer of 1 or more, the number of logical processors by
+   * default (EXP-551). `1` exports one item at a time. 14.0.7 and 12.0 export one item at a time and refuse the option.
+   */
+  parallelism?: number;
+}
+
+/**
+ * The bound of `Parallel.ForEach` for an engine (EXP-551): the option, or the processor count for 14.35, and 1 for the engines that
+ * export one item at a time, which refuse the option. A value that is not an integer of 1 or more is a `RangeError`.
+ *
+ * @spec EXP-551
+ */
+function resolveParallelism(engine: Engine, requested: number | undefined): number {
+  if (requested === undefined) return engine === "14.35" ? defaultParallelism() : 1;
+  if (!Number.isInteger(requested) || requested < 1) throw new RangeError(`parallelism must be an integer of 1 or more, not ${String(requested)}`);
+  if (engine !== "14.35") throw new OptionNotSupportedError("--parallelism", engine, "the engine exports one item at a time");
+  return requested;
 }
 
 /**
@@ -131,6 +153,11 @@ export class ImportExportManager {
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
   private state: ProgressState = "idle";
+  /** The bound of the item loop (EXP-551). */
+  private readonly parallelism: number;
+  /** The lock of the failed-item handler (EXP-555) and the one of the cancel branch (EXP-557): two, as in the engine. */
+  private readonly failureLock = new AsyncLock();
+  private readonly cancelLock = new AsyncLock();
   /** 14.35's per-call inputs of `Export` (EXP-002): the template dictionary and the package-element map. Empty for 14.0.7. */
   private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
 
@@ -153,7 +180,8 @@ export class ImportExportManager {
     this.engine = itemHelper.engine;
     if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
-    const { now, console, osUser, ...environment } = options;
+    const { now, console, osUser, parallelism, ...environment } = options;
+    this.parallelism = resolveParallelism(this.engine, parallelism);
     this.environment = environment;
     this.now = now ?? (() => new Date());
 
@@ -351,8 +379,8 @@ export class ImportExportManager {
   }
 
   /**
-   * `ExportProc`: the items of one package into `directory`, one at a time in table order (EXP-513 to EXP-518). The log gets the
-   * package header first. A cancel is looked at before each item. A `CItemException` from an item is that item's failure: the
+   * `ExportProc`: the items of one package into `directory`, one at a time in table order (EXP-513 to EXP-518); 14.35's runs them in
+   * parallel ({@link ImportExportManager.exportProcOfItems}). The log gets the package header first. A cancel is looked at before each item. A `CItemException` from an item is that item's failure: the
    * host is asked whether to abort the package, and the answer `true` ends it (EXP-516). Other exceptions leave.
    *
    * @spec EXP-513 EXP-514 EXP-515 EXP-516 EXP-517 EXP-518 EXP-612 EXP-613 EXP-614
@@ -451,8 +479,11 @@ export class ImportExportManager {
 
   /**
    * 14.35's `ExportProc` (EXP-513 to EXP-518, EXP-550 to EXP-557): the same package header, then `Parallel.ForEach` over the items of
-   * the table, in table order, each iteration one whole `PackageItem` call. The port starts {@link ITEMS_AT_ONCE} of them at a time.
+   * the table, in table order, each iteration one whole `PackageItem` call. The port has at most `parallelism` of them in flight.
    *
+   * - The workers share the counter of the item numbers, the status message, the log, the progress logger, the table of removed
+   *   references and the client (EXP-551 to EXP-553, EXP-573). An item reads the counter when it starts and adds one when it has
+   *   succeeded, so items that start together show one number.
    * - A progress logger writes the success lines (EXP-554); the lines of items that finish after it was completed are lost (EXP-570).
    * - The first failed item stops the whole export: the question is sent and its answer is never read (EXP-555, EXP-571). The state
    *   becomes *cancelled*, which ends the package loop of `ExportSolutions`, and no later package is exported.
@@ -479,14 +510,18 @@ export class ImportExportManager {
     const progress = new ProgressStreamLogger(log);
     progress.start();
     try {
-      await parallelForEach(items.values(), ITEMS_AT_ONCE, async (item, loop) => {
+      await parallelForEach(items.values(), this.parallelism, async (item, loop) => {
         if (this.isCancelled()) {
-          progress.complete();
-          loop.stop();
-          status.text = this.text("ExportWasCanceledByUser");
-          await status.execute();
-          log.writeLine(status.text);
-          log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+          await this.cancelLock.run(async () => {
+            progress.complete();
+            loop.stop();
+            // `execute` reads the text when it is called; the log gets this worker's text, not what another worker has set since
+            const canceled = this.text("ExportWasCanceledByUser");
+            status.text = canceled;
+            await status.execute();
+            log.writeLine(canceled);
+            log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+          });
           return;
         }
         status.text = this.text("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
@@ -510,14 +545,15 @@ export class ImportExportManager {
   }
 
   /**
-   * The handler of a failed item in 14.35 (EXP-555). It runs when the state is not *cancelled* yet; a failure after an earlier failure
-   * or a cancel is dropped without a message or a log line (EXP-572). In this order: the progress logger is completed, the error
-   * is sent and logged with its fault block, the abort question is sent and its answer is not read (EXP-571), the state becomes
-   * *cancelled*, the log gets `end of execution`, `completed` is sent, and the loop is stopped.
+   * The handler of a failed item in 14.35 (EXP-555), which runs under the one lock of the workers. When the state is *cancelled* by
+   * then, an earlier failure or a cancel has been reported and the handler does nothing, with no message and no log line (EXP-572).
+   * Otherwise, in this order: the progress logger is completed, the error is sent and logged with its fault block, the abort
+   * question is sent and its answer is not read (EXP-571), the state becomes *cancelled*, the log gets `end of execution`, and
+   * `completed` is sent. The port stops the loop as soon as it holds the lock, so that no item starts while the host is being told.
    *
    * @spec EXP-555 EXP-571 EXP-572
    */
-  private async stopExportAfter(
+  private stopExportAfter(
     thrown: CItemException,
     item: ExportItem,
     packageName: string,
@@ -526,28 +562,30 @@ export class ImportExportManager {
     log: RunLog,
     loop: { stop(): void },
   ): Promise<void> {
-    if (this.isCancelled()) return;
-    progress.complete();
-    const failed = this.text("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
-    status.text = failed;
-    await status.execute();
-    log.writeLine(failed);
-    const code = String(thrown.faultcode);
-    log.writeLine(this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
-    const question = this.messages.getErrorMessageQuestion();
-    question.text = this.text(
-      "ErrorMessageStringDetailCodeAbortCurrentExportOfSolutionName",
-      thrown.faultstring,
-      thrown.faultdetail,
-      code,
-      packageName,
-    );
-    await question.execute();
-    this.state = "cancelled";
-    log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
-    status.text = this.text("Completed");
-    await status.execute();
-    loop.stop();
+    return this.failureLock.run(async () => {
+      if (this.isCancelled()) return;
+      progress.complete();
+      loop.stop();
+      const failed = this.text("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
+      status.text = failed;
+      await status.execute();
+      log.writeLine(failed);
+      const code = String(thrown.faultcode);
+      log.writeLine(this.text("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
+      const question = this.messages.getErrorMessageQuestion();
+      question.text = this.text(
+        "ErrorMessageStringDetailCodeAbortCurrentExportOfSolutionName",
+        thrown.faultstring,
+        thrown.faultdetail,
+        code,
+        packageName,
+      );
+      await question.execute();
+      this.state = "cancelled";
+      log.writeLine(this.text("EndOfExecutionDateTime", this.timestamp()));
+      status.text = this.text("Completed");
+      await status.execute();
+    });
   }
 
   /**

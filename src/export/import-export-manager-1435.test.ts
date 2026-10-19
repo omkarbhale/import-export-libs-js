@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { availableParallelism, tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { ResponseDocument } from "../client/fault.js";
@@ -10,7 +10,7 @@ import { ArasVersion } from "../client/version.js";
 import { IOException } from "../io/errors.js";
 import { SUExportContext } from "./export-context.js";
 import { ExportItem } from "./export-item.js";
-import { ImportExportManager, type SelectionInsertions } from "./import-export-manager.js";
+import { ImportExportManager, type SelectionInsertions, defaultParallelism } from "./import-export-manager.js";
 import { OptionNotSupportedError, type SentMessage, checkOnItemError, createMessagesFactory } from "./messages.js";
 import { AggregateException, parallelForEach } from "./parallel-for-each.js";
 import { ProgressStreamLogger } from "./progress-logger.js";
@@ -18,9 +18,10 @@ import { ProgressStreamLogger } from "./progress-logger.js";
 /**
  * 14.35's `ExportSolutions` against the scripted runs of the engine (`oracle/export-output-probe/run-export.ps1`, recorded in
  * `fixtures/export-output/run-export-14.35.txt`): a scripted connection answers the package definitions, the lookups and the main
- * fetch of each item, with a body or a failure where the scenario says so. The engine ran the items of a package in parallel and the
- * port runs them one at a time, so what a run leaves is compared the way EXP-558 says, and only where the port's schedule decides
- * nothing the recording did not fix. The scenario names (`S1` to `S23`) are the probe's.
+ * fetch of each item, with a body or a failure where the scenario says so. The engine ran the items of a package in parallel. The
+ * scenarios run the port one item at a time unless one says otherwise, so what a run leaves is compared the way EXP-558 says, and only
+ * where the port's schedule decides nothing the recording did not fix; the last part of the file runs the port in parallel. The
+ * scenario names (`S1` to `S23`) are the probe's.
  */
 const roots: string[] = [];
 afterAll(() => {
@@ -45,9 +46,33 @@ class Scripted implements ServerConnection {
   defaultPermissionFailures = 0;
   private permissionCalls = 0;
   readonly requests: string[] = [];
+  /** The names of the polymorphic ItemTypes the lookup answers; none by default (a "no items" fault). */
+  polytypes: string[] = [];
+  /** How long the answer to the poly-type request takes, and to the main fetch of an item. */
+  polytypeDelayMs = 0;
+  itemDelayMs = 0;
+  /** The main fetches wait for this before they are answered, so a test releases the items of a wave together. */
+  itemGate: Promise<void> | undefined;
+  onItemWaiting: ((inFlight: number) => void) | undefined;
+  /** The main fetches of items that are waiting for their answer now, and the most there were at once. */
+  inFlight = 0;
+  maxInFlight = 0;
 
   async callAction(_action: string, request: string): Promise<ResponseDocument> {
     this.requests.push(request);
+    const root = parseXml(request).root;
+    const isPolytypes = attributeOf(root, "type") === "ItemType" && childElements(root, "implementation_type").length > 0;
+    const isItemFetch = childElements(root, "id").length > 0 && attributeOf(root, "action") === "get" && !["ItemType", "PackageElement"].includes(attributeOf(root, "type") ?? "");
+    if (isItemFetch) {
+      this.inFlight += 1;
+      this.maxInFlight = Math.max(this.maxInFlight, this.inFlight);
+      this.onItemWaiting?.(this.inFlight);
+      if (this.itemGate) await this.itemGate;
+      if (this.itemDelayMs > 0) await new Promise((resolve) => setTimeout(resolve, this.itemDelayMs));
+      this.inFlight -= 1;
+    } else if (isPolytypes && this.polytypeDelayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, this.polytypeDelayMs));
+    }
     return ResponseDocument.parse(this.answer(request));
   }
 
@@ -72,7 +97,8 @@ class Scripted implements ServerConnection {
         : stubResult(`<Item type="PackageDependsOn" id="PDO"><Relationships>${inner}</Relationships></Item>`);
     }
     if (type === "ItemType" && select === "name" && childElements(root, "implementation_type").length > 0) {
-      return stubFault("0", "No items of type ItemType found.");
+      if (this.polytypes.length === 0) return stubFault("0", "No items of type ItemType found.");
+      return stubResult(this.polytypes.map((name) => `<Item type="ItemType" id="PT-${name}"><name>${name}</name></Item>`).join(""));
     }
     if (type === "ItemType" && select === "id, is_relationship, use_src_access") {
       this.permissionCalls += 1;
@@ -97,7 +123,11 @@ class Scripted implements ServerConnection {
 }
 
 interface Scenario {
-  packages: Array<[name: string, items: Array<[id: string, type: string]>]>;
+  packages: Array<[name: string, items: Array<[id: string, type: string, keyedName?: string]>]>;
+  /** How many items the port has in flight; the scenarios of the probe run one at a time. */
+  parallelism?: number;
+  /** The host calls `Cancel()` when the status message with this number has been sent. */
+  cancelAfterStatus?: number;
   setup?: (connection: Scripted) => void;
   referenced?: boolean;
   dependencies?: Record<string, string>;
@@ -150,10 +180,23 @@ async function run(scenario: Scenario) {
   context.refToUnknownPacks = "DoNotRemove";
   context.exportReferencedItems = scenario.referenced ?? false;
   const sent: SentMessage[] = [];
-  const manager = new ImportExportManager(context, createMessagesFactory({ engine: "14.35", onMessage: (message) => void sent.push(message) }), helper, { cwd: working });
+  let statuses = 0;
+  const manager: ImportExportManager = new ImportExportManager(
+    context,
+    createMessagesFactory({
+      engine: "14.35",
+      onMessage: (message) => {
+        sent.push(message);
+        if (message.channel === "status") statuses += 1;
+        if (scenario.cancelAfterStatus !== undefined && message.channel === "status" && statuses === scenario.cancelAfterStatus) manager.cancel();
+      },
+    }),
+    helper,
+    { cwd: working, parallelism: scenario.parallelism ?? 1 },
+  );
   const selection: SelectionInsertions = scenario.packages.map(([name, items]) => [
     name,
-    items.map(([id, type]) => [id, new ExportItem(`k-${id}`, id, type)] as const),
+    items.map(([id, type, keyedName]) => [id, new ExportItem(keyedName ?? `k-${id}`, id, type)] as const),
   ]);
   const thrown = await manager.exportSolutions(context, selection).then(
     () => undefined,
@@ -178,6 +221,8 @@ async function run(scenario: Scenario) {
     manifest: existsSync(join(output, "imports.mf")) ? readFileSync(join(output, "imports.mf"), "utf8") : undefined,
     text,
     requests: connection.requests,
+    maxInFlight: connection.maxInFlight,
+    read: (relative: string) => (existsSync(join(output, relative)) ? readFileSync(join(output, relative)) : undefined),
   };
 }
 
@@ -458,5 +503,192 @@ describe("Parallel.ForEach (EXP-551, EXP-556)", () => {
     expect(seen).toEqual([1, 11]);
     expect(failure).toBeInstanceOf(AggregateException);
     expect((failure as AggregateException).innerExceptions.map((error) => (error as Error).message)).toEqual(["boom 1"]);
+  });
+});
+
+describe("the parallel export (EXP-551 to EXP-558)", () => {
+  /** A gate that opens when `waiting` item fetches are waiting on it: the whole first wave of the loop is in flight by then. */
+  const wave = (waiting: number) => (connection: Scripted) => {
+    let open: () => void = () => undefined;
+    connection.itemGate = new Promise<void>((resolve) => {
+      open = resolve;
+    });
+    connection.onItemWaiting = (inFlight) => {
+      if (inFlight >= waiting) open();
+    };
+  };
+  /** The ids of the first `count` items of `list("A", total)` in the engine's table order, which is the order a worker takes them in. */
+  const tableOrder = async (total: number, count: number): Promise<string[]> => {
+    const result = await run({ packages: [["pkg.a", list("A", total)]], parallelism: 1 });
+    return itemOrder(result.messages)
+      .slice(0, count)
+      .map((keyed) => keyed.slice(2));
+  };
+  const absent = (requests: string[], ids: string[]): boolean => ids.every((id) => !requests.some((request) => request.includes(`<id>${id}</id>`)));
+  const bodyLines = (body: string): string[] => body.split("\r\n").filter((line) => line !== "");
+  const successes = (body: string): string[] => bodyLines(body).filter((line) => line.endsWith("successfully exported")).sort();
+  const noNumber = (message: string): string => message.replace(/^status\|Item \d+ of/, "status|Item _ of");
+
+  it("has at most `parallelism` items in flight, and writes the files, the manifest and the success lines a one-at-a-time run writes", async () => {
+    const setup = (connection: Scripted): void => void (connection.itemDelayMs = 20);
+    const sequential = await run({ packages: [["pkg.a", list("A", 10)]], parallelism: 1, setup });
+    const parallel = await run({ packages: [["pkg.a", list("A", 10)]], parallelism: 4, setup });
+    expect(sequential.maxInFlight).toBe(1);
+    expect(parallel.maxInFlight).toBe(4);
+    expect(parallel.thrown).toBeUndefined();
+    // the files: the same names, the same bytes
+    expect(parallel.files).toEqual(sequential.files);
+    for (const file of sequential.files.filter((name) => name.endsWith(".xml"))) {
+      expect(parallel.read(file)?.equals(sequential.read(file) as Buffer), file).toBe(true);
+    }
+    expect(parallel.manifest).toBe(sequential.manifest);
+    // the log and the messages agree as sets: the success lines, the status texts without their numbers, and the rest in order
+    expect(successes(parallel.body)).toEqual(successes(sequential.body));
+    expect(successes(parallel.body)).toHaveLength(10);
+    expect(bodyLines(parallel.body).filter((line) => !line.endsWith("successfully exported"))).toEqual(
+      bodyLines(sequential.body).filter((line) => !line.endsWith("successfully exported")),
+    );
+    const statusOf = (messages: string[]): string[] => messages.filter((message) => message.startsWith("status|Item")).map(noNumber).sort();
+    expect(statusOf(parallel.messages)).toEqual(statusOf(sequential.messages));
+    expect(parallel.messages.filter((message) => !message.startsWith("status|Item"))).toEqual(
+      sequential.messages.filter((message) => !message.startsWith("status|Item")),
+    );
+  });
+
+  it("starts the items in table order and gives items that start together one number (EXP-552)", async () => {
+    const order = await tableOrder(8, 8);
+    const result = await run({ packages: [["pkg.a", list("A", 8)]], parallelism: 4, setup: wave(4) });
+    const statuses = result.messages.filter((message) => message.startsWith("status|Item"));
+    expect(statuses).toHaveLength(8);
+    expect(statuses.slice(0, 4)).toEqual(order.slice(0, 4).map((id) => `status|Item 1 of 8: List - k-${id}`));
+    // the later items start as the first ones end: their numbers are 1 + the items done by then, never more than the items before them
+    statuses.forEach((status, at) => expect(Number(/Item (\d+) of/.exec(status)?.[1]), status).toBeLessThanOrEqual(at + 1));
+    expect(itemOrder(result.messages)).toEqual(order.map((id) => `k-${id}`));
+    expect(result.files.filter((file) => file.endsWith(".xml"))).toHaveLength(8);
+  });
+
+  it("is bound by the processor count when no bound is given, and refuses a bound that is not an integer of 1 or more", () => {
+    const helper = (engine: "14.0.7" | "14.35") => new CItemHelper(new Scripted(), { engine });
+    const messages = (engine: "14.0.7" | "14.35") => createMessagesFactory({ engine });
+    expect(defaultParallelism()).toBe(availableParallelism());
+    for (const bad of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(() => new ImportExportManager(new SUExportContext(), messages("14.35"), helper("14.35"), { parallelism: bad }), String(bad)).toThrow(RangeError);
+    }
+    expect(() => new ImportExportManager(new SUExportContext(), messages("14.35"), helper("14.35"), { parallelism: 3 })).not.toThrow();
+    expect(() => new ImportExportManager(new SUExportContext(), messages("14.0.7"), helper("14.0.7"), { parallelism: 3 })).toThrow(OptionNotSupportedError);
+    expect(() => new ImportExportManager(new SUExportContext(), messages("14.0.7"), helper("14.0.7"))).not.toThrow();
+  });
+
+  it("reports one failure when items fail together, starts no item after it, and lets the running items write their files (EXP-555, EXP-570, EXP-572)", async () => {
+    const wave4 = await tableOrder(12, 4);
+    const [ok1, bad1, bad2, ok2] = wave4 as [string, string, string, string];
+    const result = await run({
+      packages: [["pkg.a", list("A", 12)]],
+      parallelism: 4,
+      setup: (c) => (wave(4)(c), c.failIds.add(bad1), c.failIds.add(bad2)),
+    });
+    expect(result.thrown).toBeUndefined();
+    expect(result.messages.filter((message) => message.startsWith("errorQuestion|"))).toHaveLength(1);
+    const reported = result.messages.filter((message) => message.startsWith("status|Error of exporting"));
+    expect(reported).toHaveLength(1);
+    expect([bad1, bad2].map((id) => `status|Error of exporting Item id :${id}  keyed_name : k-${id}    type : List`)).toContain(reported[0]);
+    expect(result.messages.filter((message) => message === "status|completed")).toHaveLength(1);
+    expect(result.messages.slice(-2)).toEqual(["status|completed", "currentPackage|"]);
+    expect(bodyLines(result.body).filter((line) => line.startsWith("Error of exporting Item id"))).toEqual([reported[0]?.slice("status|".length)]);
+    expect(result.body.match(/end of execution/g)).toHaveLength(1);
+    // the items that had not started never did; the two that were running wrote their files; the failed ones wrote none
+    expect(absent(result.requests, (await tableOrder(12, 12)).slice(4))).toBe(true);
+    expect(result.files.filter((file) => file.endsWith(".xml"))).toEqual(filesOf([ok1, ok2].map((id) => `k-${id}`)));
+    // their success lines were queued after the logger was completed and are lost
+    expect(successes(result.body)).toEqual([]);
+    expect(result.manifest).toBe(MANIFEST_A);
+  });
+
+  it("reports every exception that escaped the workers, and skips the rest (EXP-556)", async () => {
+    const [ok1, bad1, bad2, ok2] = (await tableOrder(12, 4)) as [string, string, string, string];
+    const result = await run({
+      packages: [["pkg.a", list("A", 12)]],
+      parallelism: 4,
+      setup: (c) => (wave(4)(c), c.throwIds.add(bad1), c.throwIds.add(bad2)),
+    });
+    expect(result.thrown).toBeUndefined();
+    const warning = result.messages.slice(-1)[0] ?? "";
+    // the order is the order in which the exceptions were recorded, which depends on when the workers reached their requests
+    expect(warning.split("\r\n").slice(1).sort()).toEqual([`scripted failure for ${bad1}`, `scripted failure for ${bad2}`].sort());
+    expect(warning.startsWith("warning|\t\t****ErrorMessage****\r\n")).toBe(true);
+    expect(result.messages).not.toContain("status|completed");
+    expect(result.body).not.toContain("end of execution");
+    expect(absent(result.requests, (await tableOrder(12, 12)).slice(4))).toBe(true);
+    // the running items that did not fail wrote their files
+    expect(result.files.filter((file) => file.endsWith(".xml"))).toEqual(filesOf([ok1, ok2].map((id) => `k-${id}`)));
+    expect(result.manifest).toBe(MANIFEST_A);
+  });
+
+  it("writes the cancel pair once and starts no item after the flag is seen (EXP-557)", async () => {
+    const order = await tableOrder(12, 12);
+    const result = await run({ packages: [["pkg.a", list("A", 12)]], parallelism: 4, setup: wave(4), cancelAfterStatus: 4 });
+    expect(result.thrown).toBeUndefined();
+    expect(result.messages.filter((message) => message === "status|Export was canceled by user")).toHaveLength(1);
+    expect(result.messages).not.toContain("status|completed");
+    expect(result.body.match(/Export was canceled by user\r\nend of execution/g)).toHaveLength(1);
+    expect(absent(result.requests, order.slice(4))).toBe(true);
+    // the four that were running went on to write their files
+    expect(result.files.filter((file) => file.endsWith(".xml"))).toEqual(filesOf(order.slice(0, 4).map((id) => `k-${id}`)));
+    expect(result.messages.slice(-1)).toEqual(["currentPackage|"]);
+  });
+
+  describe("two workers that write one file (EXP-419)", () => {
+    const duplicates: Scenario["packages"] = [
+      [
+        "pkg.a",
+        [
+          ["A01", "List", "dup"],
+          ["A02", "List", "dup"],
+        ],
+      ],
+    ];
+
+    it("fail one of them with a sharing violation when their writes overlap, which ends the run through the aggregate handler", async () => {
+      const result = await run({ packages: duplicates, parallelism: 2, setup: wave(2) });
+      expect(result.thrown).toBeUndefined();
+      expect(result.messages.slice(-1)).toEqual([expect.stringMatching(/^warning\|\t\t\*\*\*\*ErrorMessage\*\*\*\*\r\nThe process cannot access the file '.*dup\.xml' because it is being used by another process\.$/)]);
+      expect(result.messages).not.toContain("status|completed");
+      expect(result.files.filter((file) => file.endsWith(".xml"))).toEqual(["a/Import/List/dup.xml"]);
+      expect(result.manifest).toBe(MANIFEST_A);
+    });
+
+    it("keep the later one's content when their writes do not overlap", async () => {
+      const result = await run({ packages: duplicates, parallelism: 1 });
+      expect(result.thrown).toBeUndefined();
+      expect(result.messages).toContain("status|completed");
+      expect(result.files.filter((file) => file.endsWith(".xml"))).toEqual(["a/Import/List/dup.xml"]);
+      expect(result.text("a/Import/List/dup.xml")).toContain("n-A02");
+    });
+  });
+
+  describe("the poly-type names race (EXP-408, EXP-461)", () => {
+    const property = '<Relationships><Item type="Property" id="P1"><data_type>list</data_type><data_source keyed_name="PolyT" type="List">L1</data_source></Item></Relationships>';
+    const setup = (connection: Scripted): void => {
+      connection.polytypes = ["PolyT"];
+      connection.polytypeDelayMs = 150;
+      connection.itemBody = property;
+    };
+    const converted = (result: Awaited<ReturnType<typeof run>>): string[] =>
+      result.files.filter((file) => file.endsWith(".xml") && (result.text(file) ?? "").includes('<data_source keyed_name="PolyT">'));
+
+    it("exports the items that reach the step while the names are fetched with the reference as it is", async () => {
+      const result = await run({ packages: [["pkg.a", list("A", 8)]], parallelism: 4, setup });
+      expect(result.thrown).toBeUndefined();
+      expect(result.files.filter((file) => file.endsWith(".xml"))).toHaveLength(8);
+      // the worker that made the request waits for the names and converts; the others go on with the empty list
+      expect(converted(result)).toHaveLength(1);
+      const plain = result.files.filter((file) => file.endsWith(".xml") && (result.text(file) ?? "").includes('<data_source keyed_name="PolyT" type="List">L1</data_source>'));
+      expect(plain).toHaveLength(7);
+    });
+
+    it("converts every item when one worker runs them one after the other", async () => {
+      const result = await run({ packages: [["pkg.a", list("A", 8)]], parallelism: 1, setup });
+      expect(converted(result)).toHaveLength(8);
+    });
   });
 });

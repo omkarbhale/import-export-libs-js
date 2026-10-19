@@ -1,6 +1,8 @@
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
-import { directoryCreateDirectory, directoryDelete, directoryExists } from "../io/windows-fs.js";
+import { IOException } from "../io/errors.js";
+import { directoryCreateDirectory, directoryDelete, directoryExists, ntfsFoldKey } from "../io/windows-fs.js";
+import { getFullPath } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { isStandardPackage } from "../manifest/index.js";
 import { pathCombine } from "../io/win-path.js";
@@ -95,4 +97,47 @@ export function writeItemFile(
   if (!directoryExists(typeFolder, environment)) directoryCreateDirectory(typeFolder, environment);
   xmlDocumentSaveWithSettings(doc, path, environment);
   return path;
+}
+
+/** The item files that a worker holds open for writing right now, by the volume's name for them (EXP-419). */
+const heldItemFiles = new Set<string>();
+
+/** The turn the writer gives the other workers while it holds the file: the engine's open is not instant, and nor is its write. */
+const yieldTurn = (): Promise<void> => new Promise((resolve) => setImmediate(resolve));
+
+/**
+ * {@link writeItemFile} for 14.35's concurrent workers (EXP-419). The engine opens the file for writing with read sharing only, so a
+ * worker that opens a file while another worker still has it open fails with the `IOException` of a sharing violation, which
+ * is not a `CItemException` and ends the run through the aggregate handler (EXP-556). The port holds the file, named as the volume names
+ * it (EXP-420), from before the folder is made until the bytes are on disk, and lets the other workers run while it does. Two
+ * writes that do not overlap give the later one's content, as in 14.0.7.
+ *
+ * @spec EXP-419 EXP-420
+ */
+export async function writeItemFileShared(
+  folder: string | null,
+  typeName: string | null,
+  fileName: string,
+  doc: XmlDocument,
+  environment: PathEnvironment = {},
+  engine: Engine = DEFAULT_ENGINE,
+): Promise<string> {
+  checkEngine(engine);
+  const { path } = itemFilePaths(folder, typeName, fileName);
+  let shown = path;
+  let key = path;
+  try {
+    shown = getFullPath(path, environment.cwd ?? process.cwd());
+    key = ntfsFoldKey(shown);
+  } catch {
+    // a path the volume refuses is refused by the write below, with its own exception
+  }
+  if (heldItemFiles.has(key)) throw new IOException(`The process cannot access the file '${shown}' because it is being used by another process.`);
+  heldItemFiles.add(key);
+  try {
+    await yieldTurn();
+    return writeItemFile(folder, typeName, fileName, doc, environment, engine);
+  } finally {
+    heldItemFiles.delete(key);
+  }
 }
