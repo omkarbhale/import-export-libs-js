@@ -4,7 +4,7 @@ import { formatMessage } from "../io/dotnet-text.js";
  * The templates of the engine's message catalogue that an export reaches (EXP-504, 14.0.7). `\r\n` and `\n` are literal in the
  * engine's templates, and the leading and inner spaces are part of them.
  *
- * @spec EXP-504 EXP-602 EXP-603 EXP-613
+ * @spec EXP-504 EXP-602 EXP-603 EXP-613 LP-010
  */
 export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
   ExportingPackagePackageName: "Exporting package {0}",
@@ -74,6 +74,8 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
   TheFollowingItemHasNoType: "The following item has no type - {0}",
   ItemHasNoID: "Item has no ID",
   TheFollowingItemHaNoIdAndCannotBeDeleted: "The following item has no id and can't be deleted - {0}",
+  // The language-pack import's (LP-010).
+  FileNotFound: "File not found : {0}.",
   // `CannotAddInstanceOfDatabaseUpgradeItemType` is stored under a key with a leading space in the engine, so its lookup finds
   // nothing (IMP-453); it has no entry here on purpose.
   TypeOfRelationshipIsNotDefined: "Type of relationship is not defined",

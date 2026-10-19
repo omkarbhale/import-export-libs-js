@@ -4,3 +4,4 @@ export * from "./client/index.js";
 export * from "./manifest/index.js";
 export * from "./export/index.js";
 export * from "./import/index.js";
+export * from "./language-pack/index.js";
