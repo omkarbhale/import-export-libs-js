@@ -21,7 +21,7 @@ export const ENGINE_ASSEMBLY_VERSIONS: Readonly<Record<Engine, string>> = {
  * spec/source-map.json is mapped or not-ported, and the build may not carry
  * `inProgress`. An engine's final slice adds it here and clears the flag.
  */
-export const COMPLETE_ENGINES: readonly Engine[] = [];
+export const COMPLETE_ENGINES: readonly Engine[] = ["12.0"];
 
 export function isEngine(value: string): value is Engine {
   return (ENGINES as readonly string[]).includes(value);

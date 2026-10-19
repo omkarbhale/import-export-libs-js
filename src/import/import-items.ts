@@ -122,7 +122,9 @@ export class ImportItems {
         const locked = selectSingleNode("locked_by_id", found);
         if (locked !== null && innerText(locked) !== "") await this.helper.unlock(id, type);
         for (const add of adds) {
-          if (getAttribute(add, "id") === id && !ImportItems.removeSystemPropertyForPolyType(add)) add.setAttribute("action", "edit");
+          if (getAttribute(add, "id") !== id) continue;
+          // IMP-315: 12.0 has no RemoveSystemPropertyForPolyType, so every add with the found id becomes an edit
+          if (this.engine === "12.0" || !ImportItems.removeSystemPropertyForPolyType(add)) add.setAttribute("action", "edit");
         }
       }
     }

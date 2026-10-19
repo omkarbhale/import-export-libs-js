@@ -11,7 +11,7 @@ import { type SentMessage, createMessagesFactory } from "../export/messages.js";
 import { SUImportContext } from "./import-context.js";
 import type { ConsoleWriter } from "./import-run.js";
 import type { Engine } from "../engines.js";
-import { BLOBS, BLOBS_14_35, CASES, CASES_14_35, SequentialConnection } from "./transcript-replay.js";
+import { BLOBS, BLOBS_12_0, BLOBS_14_35, CASES, CASES_12_0, CASES_14_35, LOGIN_CALLS_12_0, SequentialConnection } from "./transcript-replay.js";
 
 /**
  * The recorded 14.0.7 import runs (ticket 25) and the 14.35 ones (ticket 75), replayed through the whole of `ImportSolutions`
@@ -93,7 +93,7 @@ function comparable(log: string, recordedInput: string, input: string, logPath: 
     })
     .replace(CLOCK, "<time>")
     .replace(TIME_SPAN, "$1<span>")
-    .split(logPath)
+    .split(logPath === "" ? "\u0000" : logPath)
     .join("<log>");
 }
 
@@ -156,7 +156,7 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
         importContext.collectImportErrorsMaxCount = step.options.collectErrors.maxCount ?? 0;
       }
 
-      const connection = new SequentialConnection(calls);
+      const connection = engine === "12.0" ? new SequentialConnection(calls, LOGIN_CALLS_12_0) : new SequentialConnection(calls);
       const helper = new CItemHelper(connection, { engine });
       helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
       const sent: SentMessage[] = [];
@@ -198,8 +198,10 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
       const log = readFileSync(logPath);
       expect(log.subarray(0, 3).equals(Buffer.from([0xef, 0xbb, 0xbf])), `${step.name}: the log has no BOM`).toBe(false);
       const recordedInput = /^Working directory: (.*)\r$/m.exec(recordedLog)?.[1] ?? "";
+      // 12.0 writes no header, so the recorded log path is known only from the sharing violation the log may hold (IMP-410)
+      const recordedLogPath = headerValue(recordedLog, "Log file") || (/file '([^']*)' because it is being used/.exec(recordedLog)?.[1] ?? "");
       expect(comparable(log.toString("utf8"), recordedInput, input, logPath), `${step.name}: the log`).toBe(
-        comparable(recordedLog, recordedInput, input, headerValue(recordedLog, "Log file")),
+        comparable(recordedLog, recordedInput, input, recordedLogPath),
       );
       expect(console, `${step.name}: the console`).toBe(recordedConsole(readFileSync(join(step.dir, "host.log"), "utf8")));
 
@@ -231,3 +233,4 @@ replayRuns(
   KNOWN_LOADER_GAPS,
   30,
 );
+replayRuns("12.0", stepsOf(CASES_12_0), BLOBS_12_0, KNOWN_LOADER_GAPS, 35);

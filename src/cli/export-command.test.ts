@@ -405,12 +405,12 @@ describe("export, local checks come before any server call (HOST-005)", () => {
     expect(t.stderr()).toContain("standard input holds no items");
   });
 
-  it("runs on every engine that has an export, and reports --use-import as not yet supported where package loading is not built (HOST-008, HOST-113)", async () => {
+  it("runs on every engine that has an export, and reports --use-import as not yet supported where package loading is not offered (HOST-008, HOST-113)", async () => {
     const work = scratch();
     writeFileSync(join(work, "m.mf"), "<imports/>");
-    const { code, t } = await refused(["out", "--use-import", join(work, "m.mf"), "--engine", "12.0", ...CONNECTION]);
+    const { code, t } = await refused(["out", "--use-import", join(work, "m.mf"), "--engine", "14.35", ...CONNECTION]);
     expect(code).toBe(EXIT.failed);
-    expect(t.stderr()).toContain("engine 12.0 is not yet supported");
+    expect(t.stderr()).toContain("engine 14.35 is not yet supported");
     const bad = await refused(["out", "NoColon", "--engine", "12.0", ...CONNECTION]);
     expect(bad.code).toBe(EXIT.usage);
   });

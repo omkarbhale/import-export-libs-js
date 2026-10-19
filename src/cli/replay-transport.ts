@@ -2,7 +2,18 @@ import type { TranscriptCall } from "../../oracle/src/transcript.js";
 import { bodyText, devServer, header, respond, type FakeHandler } from "../client/fake-transport.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import type { TransportRequest } from "../client/transport.js";
-import { LOGIN_CALLS } from "../import/transcript-replay.js";
+import type { Engine } from "../engines.js";
+import { LOGIN_CALLS, LOGIN_CALLS_12_0 } from "../import/transcript-replay.js";
+
+/** The dev server with `GetCurrentUserID` added, which IOM 12 asks after `ValidateUser`. */
+const iom12Login =
+  (server: FakeHandler): FakeHandler =>
+  (request, index) =>
+    header(request, "SOAPAction") === "GetCurrentUserID"
+      ? respond(
+          `<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><GetCurrentUserIDResponse><Result>USER1</Result></GetCurrentUserIDResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>`,
+        )
+      : server(request, index);
 
 const DECLARATION = /^<\?xml[^>]*\?>/;
 
@@ -15,20 +26,29 @@ const LOGIN_REQUEST = /^<Item type="User" action="get" select="default_vault"|<n
  * recorded response. A request that is not the recorded one is noted in `mismatches` and answered with a fault.
  */
 export class RecordedServer {
-  private next = LOGIN_CALLS;
+  private next: number;
+  private readonly loginCalls: number;
   /** The requests that were not the recorded ones. */
   readonly mismatches: string[] = [];
-  private readonly login = devServer();
+  private readonly login: FakeHandler;
 
-  constructor(private readonly calls: readonly TranscriptCall[]) {}
+  /** `engine` 12.0 answers IOM 12's login, which asks `GetCurrentUserID` and sends one request less (WIRE-017). */
+  constructor(
+    private readonly calls: readonly TranscriptCall[],
+    engine: Engine = "14.0.7",
+  ) {
+    this.loginCalls = engine === "12.0" ? LOGIN_CALLS_12_0 : LOGIN_CALLS;
+    this.next = this.loginCalls;
+    this.login = engine === "12.0" ? iom12Login(devServer()) : devServer();
+  }
 
   /** How many of the recorded requests after the login were sent. */
   get consumed(): number {
-    return this.next - LOGIN_CALLS;
+    return this.next - this.loginCalls;
   }
 
   get total(): number {
-    return this.calls.length - LOGIN_CALLS;
+    return this.calls.length - this.loginCalls;
   }
 
   readonly handler: FakeHandler = (request: TransportRequest, index: number) => {

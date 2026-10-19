@@ -13,6 +13,9 @@ import { documentElementOf } from "../xml/dom.js";
  */
 export const CASES = new URL("../../fixtures/14.0.7/import/", import.meta.url).pathname;
 export const BLOBS = join(CASES, "_blobs");
+/** The recorded 12.0 import runs (ticket 48). */
+export const CASES_12_0 = new URL("../../fixtures/12.0/import/", import.meta.url).pathname;
+export const BLOBS_12_0 = join(CASES_12_0, "_blobs");
 /** The recorded 14.35 import runs (ticket 75). */
 export const CASES_14_35 = new URL("../../fixtures/14.35/import/", import.meta.url).pathname;
 export const BLOBS_14_35 = join(CASES_14_35, "_blobs");
@@ -164,18 +167,26 @@ export function stepOptions(caseDir: string, index: number): { merge: boolean; f
 /** The requests of a login, which the replays of a whole run do not send again: `ValidateUser`, the user lookup and the version probe. */
 export const LOGIN_CALLS = 6;
 
+/** 12.0's login sends one request less: `GetCurrentUserID` replaces the user lookup, and the probe is two requests (WIRE-017). */
+export const LOGIN_CALLS_12_0 = 5;
+
 /** Answers each request with the next recorded call, which must be the same request. */
 export class SequentialConnection implements ServerConnection {
-  private next = LOGIN_CALLS;
+  private next: number;
 
-  constructor(private readonly calls: TranscriptCall[]) {}
+  constructor(
+    private readonly calls: TranscriptCall[],
+    private readonly loginCalls = LOGIN_CALLS,
+  ) {
+    this.next = loginCalls;
+  }
 
   get consumed(): number {
-    return this.next - LOGIN_CALLS;
+    return this.next - this.loginCalls;
   }
 
   get total(): number {
-    return this.calls.length - LOGIN_CALLS;
+    return this.calls.length - this.loginCalls;
   }
 
   async callAction(action: string, request: string): Promise<ResponseDocument> {
@@ -183,7 +194,7 @@ export class SequentialConnection implements ServerConnection {
     const call = this.calls[this.next];
     if (call?.action !== action || call.request !== wire) {
       throw new Error(
-        `request ${this.next - LOGIN_CALLS + 1} differs from the recorded one:\nsent:     ${action} ${wire.slice(0, 600)}\nrecorded: ${call?.action} ${call?.request.slice(0, 600)}`,
+        `request ${this.next - this.loginCalls + 1} differs from the recorded one:\nsent:     ${action} ${wire.slice(0, 600)}\nrecorded: ${call?.action} ${call?.request.slice(0, 600)}`,
       );
     }
     this.next += 1;

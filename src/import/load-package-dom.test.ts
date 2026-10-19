@@ -15,6 +15,7 @@ import { getItemsFromPackageDom } from "./items.js";
 import { loadPackage, loadPackageDom } from "./load-package-dom.js";
 import type { LogWriter } from "./load-package-dom.js";
 import { directoryGetDirectories, directoryGetXmlFiles } from "./package-files.js";
+import { plainChildren } from "./build-order.js";
 import { planPackage } from "./plan.js";
 
 /**
@@ -44,6 +45,8 @@ const recordedSections = (file: string): string[][] =>
     .split(/\r?\n(?==== )/)
     .map((section) => section.replace(/^=== [^\n]*\n/, "").replace(/\n$/, "").split("\n"));
 const outSections = recordedSections("load-package-dom.out.txt");
+/** The cases that only 12.0's reader can tell apart (IMP-007), with their recorded sections. */
+const extraCases = JSON.parse(readFileSync(DIR + "load-package-dom.12.0-extra.cases.json", "utf8")) as LoadCase[];
 
 const WINDOWS_ONLY = new Set(["hidden", "locked", "unc"]);
 const roots: string[] = [];
@@ -119,11 +122,11 @@ function expected(section: string[]): string[] {
   });
 }
 
-function replayLoads(engine: Engine, sections: string[][]): void {
-  describe(`IMP-001 to IMP-012: LoadPackageDom replays the engine's own run (${engine})`, () => {
-    it("has a recorded section for every case", () => expect(sections.length).toBe(cases.length));
+function replayLoads(engine: Engine, sections: string[][], loadCases: LoadCase[] = cases): void {
+  describe(`IMP-001 to IMP-012: LoadPackageDom replays the engine's own run (${engine}, ${loadCases === cases ? "the catalogue" : "the extra cases"})`, () => {
+    it("has a recorded section for every case", () => expect(sections.length).toBe(loadCases.length));
 
-    cases.forEach((testCase, index) => {
+    loadCases.forEach((testCase, index) => {
       const label = `${testCase.name} (case ${index + 1})`;
       if (WINDOWS_ONLY.has(testCase.name)) {
         it.skip(`${label}: needs Windows`);
@@ -142,9 +145,9 @@ function replayLoads(engine: Engine, sections: string[][]): void {
           const doc = loadXml(first.text ?? "", { preserveWhitespace: false });
           const item = (documentElementOf(doc) as XmlElement).firstChild as XmlElement;
           item.setAttribute("tempKeyName", "a");
-          item.setAttribute("tempFullName", join(root, first.path));
+          if (engine !== "12.0") item.setAttribute("tempFullName", join(root, first.path));
           const position = 5 + outerXml(doc).length + 3;
-          recorded = recorded.map((line) => line.replace("position 158.", `position ${position}.`));
+          recorded = recorded.map((line) => line.replace(/position (158|75)\./, `position ${position}.`));
         }
         if (testCase.relative !== undefined) {
           // the paths of the log are relative to the current directory here, as the engine shows a relative path
@@ -157,6 +160,8 @@ function replayLoads(engine: Engine, sections: string[][]): void {
   });
 }
 
+replayLoads("12.0", recordedSections("load-package-dom.12.0.out.txt"));
+replayLoads("12.0", recordedSections("load-package-dom.12.0-extra.out.txt"), extraCases);
 replayLoads("14.0.7", outSections);
 replayLoads("14.35", recordedSections("load-package-dom.out.14.35.txt"));
 
@@ -314,9 +319,15 @@ describe("IMP-011: failures", () => {
     expect(error.message).toMatch(/IMP-016/);
   });
 
-  it("refuses an engine whose stylesheet is not built, after reading the files", () => {
+  it("loads a package under every engine's stylesheet (12.0 stamps tempKeyName only)", () => {
     const root = folder({ "d/a.xml": "<AML><Item type='List' action='add' id='x'/></AML>" });
-    expect(failure(() => loadPackageDom(root, quiet, { engine: "12.0" }))).toBeInstanceOf(NotSupportedException);
+    const stamped = (engine: Engine): string[] => {
+      const document = loadPackageDom(root, quiet, { engine });
+      const item = plainChildren(documentElementOf(document) as XmlElement, "Item")[0] as XmlElement;
+      return [...item.attributes].map((attribute) => attribute.name);
+    };
+    expect(stamped("12.0")).toEqual(["type", "action", "id", "tempKeyName"]);
+    expect(stamped("14.0.7")).toEqual(["type", "action", "id", "tempKeyName", "tempFullName"]);
   });
 });
 

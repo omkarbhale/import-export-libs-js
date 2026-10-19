@@ -15,7 +15,7 @@ const part = (value: string, prefix: string, suffix: string): string => (value !
 /**
  * `ImportWorkItem`: one item document of a package as the import loop holds it (IMP-422). The constructor reads the root `Item`
  * the way the loop of 14.0.7 did inline: it sets `doGetItem` to `0`, reads `action`, `id`, `type`, `tempKeyName` and
- * `tempFullName` in that order, removes the last two (IMP-009) and builds the descriptor from the id, the keyed name and the
+ * `tempFullName` in that order, removes the last two (IMP-009; 12.0 has no `tempFullName`, so it removes `tempKeyName` only) and builds the descriptor from the id, the keyed name and the
  * type. A document without a root `Item` is a null reference.
  *
  * The properties are the ones the loop reads: `id` is read again after the item is sent (IMP-428), and the registration in the
@@ -55,8 +55,9 @@ export class ImportWorkItem {
     this.workItemType = getAttribute(node, "type");
     this.originalKeyedName = getAttribute(node, "tempKeyName");
     node.removeAttribute("tempKeyName");
-    this.originalFullFileName = getAttribute(node, "tempFullName");
-    node.removeAttribute("tempFullName");
+    // IMP-422: 12.0 reads and removes `tempKeyName` only; an item's own `tempFullName` stays and goes into the request (IMP-009)
+    this.originalFullFileName = engine === "12.0" ? "" : getAttribute(node, "tempFullName");
+    if (engine !== "12.0") node.removeAttribute("tempFullName");
     this.keyIdType =
       part(this.id, "  id : ", "  ") + part(this.originalKeyedName, "  keyed_name : ", "  ") + part(this.workItemType, "  type : ", "  ");
     this.thoroughCheck = !importContext.fast && this.action !== "delete";

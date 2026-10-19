@@ -1,7 +1,6 @@
 import type { Engine } from "../engines.js";
 import { ELEMENT_NODE, documentElementOf, innerText } from "../xml/dom.js";
 import type { XmlDocument, XmlElement, XmlNode } from "../xml/dom.js";
-import { NotSupportedException } from "../xml/errors.js";
 import { sortByTypeName } from "./nls-word-sort.js";
 
 /**
@@ -22,7 +21,9 @@ const CUI_TYPES = "cui_Control|cui_WindowSection|";
 const EDIT_LIST_HEAD = `${EDIT_LIST_START}${EDIT_LIST_REST}`;
 const EDIT_LIST_HEAD_14_35 = `${EDIT_LIST_START}${CUI_TYPES}${EDIT_LIST_REST}`;
 const EDIT_LIST_MIDDLE = "Morphae|RelationshipType|";
-const LIST_TAIL = "Metric|Chart|Dashboard|ac_PolicyAccessItemAttribute|mp_PolicyAccessEnvAttribute|mp_MacPolicy|qry_QueryDefinition|dr_RelationshipFamily|dac_DomainDefinition|";
+const LIST_TAIL_12_0 = "Metric|Chart|Dashboard|mp_PolicyAccessEnvAttribute|mp_MacPolicy|qry_QueryDefinition|dr_RelationshipFamily|dac_DomainDefinition|";
+/** 12.0's two lists lack `ac_PolicyAccessItemAttribute`, so G53 takes every action of it (IMP-022). */
+const LIST_TAIL = LIST_TAIL_12_0.replace("Dashboard|", "Dashboard|ac_PolicyAccessItemAttribute|");
 
 /** The eleven command bar types of G20 to G30, in the order of their groups. */
 const COMMAND_BAR_TYPES = [
@@ -47,6 +48,11 @@ interface EngineRules {
   readonly unlistedList: string;
 }
 
+const RULES_12_0: EngineRules = {
+  editList: `${EDIT_LIST_HEAD}${EDIT_LIST_MIDDLE}${LIST_TAIL_12_0}${COMMAND_BAR_LIST}`,
+  unlistedList: `${EDIT_LIST_HEAD}ItemType|${EDIT_LIST_MIDDLE}Field|Property|View|SQL|${LIST_TAIL_12_0}${COMMAND_BAR_LIST}`,
+};
+
 const RULES_14_0_7: EngineRules = {
   editList: `${EDIT_LIST_HEAD}${EDIT_LIST_MIDDLE}${LIST_TAIL}${COMMAND_BAR_LIST}`,
   unlistedList: `${EDIT_LIST_HEAD}ItemType|${EDIT_LIST_MIDDLE}Field|Property|View|SQL|${LIST_TAIL}${COMMAND_BAR_LIST}`,
@@ -58,9 +64,9 @@ const RULES_14_35: EngineRules = {
 };
 
 function rulesOf(engine: Engine): EngineRules {
-  if (engine === "14.0.7") return RULES_14_0_7;
+  if (engine === "12.0") return RULES_12_0;
   if (engine === "14.35") return RULES_14_35;
-  throw new NotSupportedException(`The build.xsl ordering of engine ${engine} is not built yet (IMP-020 names its groups); only 14.0.7 and 14.35 are.`);
+  return RULES_14_0_7;
 }
 
 /** The `contains(list, concat('|', @type, '|'))` test of G52 and G53. */
@@ -237,10 +243,11 @@ function groupTable(engine: Engine): Group[] {
     adds("G42", "Metric"),
     adds("G43", "Chart"),
     adds("G44", "Dashboard"),
-    adds("G45", "ac_PolicyAccessItemAttribute"),
+    // IMP-021: 12.0 has no G45 and no G48, so an ac_PolicyAccessItemAttribute reaches G53 and a promote item is dropped (IMP-022, IMP-029)
+    ...(engine === "12.0" ? [] : [adds("G45", "ac_PolicyAccessItemAttribute")]),
     adds("G46", "mp_PolicyAccessEnvAttribute"),
     adds("G47", "mp_MacPolicy"),
-    group("G48", where((item) => item.type === "mp_MacPolicy" && item.action === "mp_PromoteItem")),
+    ...(engine === "12.0" ? [] : [group("G48", where((item) => item.type === "mp_MacPolicy" && item.action === "mp_PromoteItem"))]),
     adds("G49", "qry_QueryDefinition"),
     adds("G50", "dr_RelationshipFamily"),
     adds("G51", "dac_DomainDefinition"),

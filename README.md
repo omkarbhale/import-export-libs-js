@@ -4,7 +4,7 @@ A readable TypeScript re-implementation of Aras Innovator's package import/expor
 
 It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341), **14.0.7** (14.0.7.35492, the default) and **14.35** (14.35.0.43890).
 
-**Status: in progress.** The 14.0.7 engine is built for export, import, language-pack import and the offline import plan, and 14.35 for import (with its AML batch mode and collected errors) and DB patch application; the rest of the other two engines is still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
+**Status: in progress.** The 12.0 engine is built for export, import and the offline import plan (it has no language-pack import) and is complete in `spec/source-map.json`. The 14.0.7 engine is built for export, import, language-pack import and the offline import plan, and 14.35 for export, import (with its AML batch mode and collected errors), language-resource export and DB patch application. Live parity on dev and the source-map completion of 14.0.7 and 14.35 are still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
 
 ## Install
 

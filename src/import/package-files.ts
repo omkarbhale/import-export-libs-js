@@ -49,7 +49,8 @@ function translateListError(error: unknown, host: string): unknown {
  */
 function hostFolder(folder: string, environment: PathEnvironment): string {
   const onWindows = (environment.platform ?? process.platform) === "win32";
-  return toHostPath(onWindows ? folder : folder.replace(/^\?+/, ""), environment) as string;
+  // 12.0 hands the folder to the file functions as it is, so a leading `?` stays (IMP-006)
+  return toHostPath(onWindows || environment.normalizePaths === false ? folder : folder.replace(/^\?+/, ""), environment) as string;
 }
 
 /** The path the engine shows: the long-path prefix reaches neither the log nor `tempFullName` (IMP-005). */
