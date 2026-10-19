@@ -156,12 +156,14 @@ export function exportContextFor(
   options: ExportCaseOptions,
   workingDirectory: string,
   logFilePath: string,
-): { context: SUExportContext; onItemError: "continue" | "abort-package" } {
-  if (options.engineAction !== undefined || options.languages !== undefined || options.cancelAfterStatus !== undefined) {
-    throw new Error(`the options ${JSON.stringify(options)} are 14.35's; parity runs them with the 14.35 slice`);
+): { context: SUExportContext; onItemError: "continue" | "abort-package" | undefined } {
+  if (server.engine !== "14.35" && (options.engineAction !== undefined || options.languages !== undefined || options.cancelAfterStatus !== undefined)) {
+    throw new Error(`the options ${JSON.stringify(options)} are 14.35's`);
   }
   const context = baseContext(new SUExportContext(), server, workingDirectory, logFilePath, options.verbose === true);
-  context.action = "Export";
+  // the host sets Action = Export unless the case names one, and leaves Languages null unless it lists some
+  context.action = options.engineAction ?? "Export";
+  context.languages = options.languages ?? null;
   // the host sets sLevel = "1" and DoNotRemove before it applies the case's options
   context.level = options.level ?? "1";
   context.refToUnknownPacks = options.refToUnknownPacks ?? "DoNotRemove";
@@ -169,6 +171,8 @@ export function exportContextFor(
   context.useImport = options.useImport === true;
   if (options.timeout !== undefined) context.timeout = options.timeout;
   const answer = options.errorQuestionAnswer ?? "no";
+  // 14.35 never reads the answer (EXP-555, EXP-571), and the library refuses an answer for it
+  if (server.engine === "14.35") return { context, onItemError: undefined };
   if (answer === "none") throw new Error("errorQuestionAnswer 'none' answers the error question with null, which the port's host has no way to say");
   return { context, onItemError: answer === "yes" ? "abort-package" : "continue" };
 }
@@ -184,6 +188,8 @@ export interface PortExport {
   options: ExportCaseOptions;
   /** For a console mode that names a manifest: the engine reads it in its constructor. */
   manifestFile?: string;
+  /** How many items of a package 14.35 has in flight (EXP-551); the processor count by default, and 14.35 only. */
+  parallelism?: number;
 }
 
 /**
@@ -197,13 +203,29 @@ export async function runPortExport(server: PortServer, run: PortExport, work = 
   const { context, onItemError } = exportContextFor(server, run.options, output, logPath);
   if (run.manifestFile !== undefined) context.manifestFile = run.manifestFile;
   const collected = collectors();
-  const messages = createMessagesFactory({ onMessage: (message) => void collected.messages.push(message), onItemError, engine: server.engine });
+  // the host's CancelTrigger: Cancel() once the Nth status message has been delivered
+  const cancelAfter = run.options.cancelAfterStatus ?? 0;
+  let statuses = 0;
+  let manager: ImportExportManager | undefined;
+  const messages = createMessagesFactory({
+    onMessage: (message) => {
+      collected.messages.push(message);
+      if (message.channel === "status" && cancelAfter > 0 && ++statuses === cancelAfter) manager?.cancel();
+    },
+    ...(onItemError === undefined ? {} : { onItemError }),
+    engine: server.engine,
+  });
   let session: Session | undefined;
   let ended: Termination = { kind: "exported" };
   const calls: CallRecord[] = [];
   try {
     session = await openSession(server);
-    const manager = new ImportExportManager(context, messages, session.helper, { cwd: work, console: collected.sink });
+    // 14.35's constructor resolves the language list against the server, so a refused list ends the run here
+    manager = await ImportExportManager.create(context, messages, session.helper, {
+      cwd: work,
+      console: collected.sink,
+      ...(run.parallelism === undefined ? {} : { parallelism: run.parallelism }),
+    });
     const selection = typeof run.selection === "function" ? await run.selection(session.helper, context, manager) : run.selection;
     await manager.exportSolutions(context, selection);
   } catch (error) {

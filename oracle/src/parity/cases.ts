@@ -1,13 +1,17 @@
 import type { Engine } from "../../../src/engines.js";
 import { EXPORT_CASES, type ExportCase } from "../export-cases.js";
-import { SEED_GROUPS, type SeedGroup } from "../export-scratch-cases.js";
+import { EXPORT_CASES_1435 } from "../export-cases-1435.js";
+import { SEED_GROUPS, SEED_GROUPS_1435, type SeedGroup } from "../export-scratch-cases.js";
 import { casesFor, type ImportCase, type ImportStep } from "../import-cases.js";
 import { mini } from "../import-packages.js";
 import { LP_CASES, type LpCase } from "../language-pack-cases.js";
 import type { ConsoleModeCase } from "./runners.js";
 
-/** The engines the script compares. The 12.0 and 14.35 slices add themselves (wayfinder tickets 50 and 76). */
-export const PARITY_ENGINES: readonly Engine[] = ["14.0.7"];
+/**
+ * The engines the script compares. 14.35 is listed with its export side (wayfinder ticket 76, part A: export, parallel export,
+ * language-resource export, the scratch-seeded exports and the console modes); its import side joins with part B, and 12.0 with ticket 50.
+ */
+export const PARITY_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 export type ParityKind = "export" | "scratch-export" | "import" | "language-pack" | "console-mode";
 
@@ -66,17 +70,21 @@ export const CONSOLE_MODE_CASES: readonly ConsoleModeCase[] = [
 /** The language-pack cases the 14.0.7 engine has (ticket 45): the others are 14.35's. */
 export const languagePackCases = (engine: Engine): readonly LpCase[] => (engine === "14.0.7" ? LP_CASES.filter((c) => /^lp0[1-5]$/.test(c.id)) : []);
 
+/** The export cases of an engine that need no seed: 14.35 has the catalogue and the cases of its own export rules (ticket 57). */
+export const exportCasesOf = (engine: Engine): readonly ExportCase[] => (engine === "14.35" ? EXPORT_CASES_1435 : engine === "14.0.7" ? EXPORT_CASES : []);
+
+/** The seed groups of an engine: 14.35 repeats 14.0.7's and adds the language-resource group. */
+export const seedGroupsOf = (engine: Engine): readonly SeedGroup[] => (engine === "14.35" ? SEED_GROUPS_1435 : engine === "14.0.7" ? SEED_GROUPS : []);
+
 /** The catalogue of an engine, in the order the script runs it. */
 export function catalogue(engine: Engine): CatalogueEntry[] {
-  const exportCases: readonly ExportCase[] = engine === "14.0.7" ? EXPORT_CASES : [];
-  const groups: readonly SeedGroup[] = engine === "14.0.7" ? SEED_GROUPS : [];
   const imports: readonly ImportCase[] = engine === "14.0.7" ? casesFor("14.0.7") : [];
   return [
-    ...exportCases.map((c): CatalogueEntry => ({ id: c.id, kind: "export", title: c.title })),
-    ...groups.flatMap((g) => g.cases.map((c): CatalogueEntry => ({ id: c.id, kind: "scratch-export", title: c.title }))),
+    ...exportCasesOf(engine).map((c): CatalogueEntry => ({ id: c.id, kind: "export", title: c.title })),
+    ...seedGroupsOf(engine).flatMap((g) => g.cases.map((c): CatalogueEntry => ({ id: c.id, kind: "scratch-export", title: c.title }))),
     ...imports.map((c): CatalogueEntry => ({ id: c.id, kind: "import", title: c.title })),
     ...languagePackCases(engine).map((c): CatalogueEntry => ({ id: c.id, kind: "language-pack", title: c.title })),
-    ...(engine === "14.0.7" ? CONSOLE_MODE_CASES : []).map((c): CatalogueEntry => ({ id: c.id, kind: "console-mode", title: c.title, ...(c.slow === true ? { slow: true as const } : {}) })),
+    ...(engine === "12.0" ? [] : CONSOLE_MODE_CASES).map((c): CatalogueEntry => ({ id: c.id, kind: "console-mode", title: c.title, ...(c.slow === true ? { slow: true as const } : {}) })),
   ];
 }
 

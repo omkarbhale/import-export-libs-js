@@ -61,7 +61,7 @@ function sameBytes(a: Buffer, b: Buffer): boolean {
   return a.equals(b);
 }
 
-function diffFiles(oracle: Map<string, Buffer> | null, port: Map<string, Buffer> | null): Difference[] {
+export function diffFiles(oracle: Map<string, Buffer> | null, port: Map<string, Buffer> | null): Difference[] {
   if (oracle === null && port === null) return [];
   if (oracle === null || port === null) {
     return [{ area: "files", summary: oracle === null ? "the oracle left no folder, the port did" : "the oracle left a folder, the port none" }];

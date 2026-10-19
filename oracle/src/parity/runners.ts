@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { allPackagesTable, fromManifestTable, useImportTable } from "../../../src/cli/console-modes.js";
 import type { SelectionTable } from "../../../src/export/import-export-manager.js";
 import type { Engine } from "../../../src/engines.js";
-import { EXPORT_CASES, hostItems, hostOptions as exportHostOptions, type ExportCase } from "../export-cases.js";
+import { hostItems, hostOptions as exportHostOptions, type ExportCase } from "../export-cases.js";
 import { resolveCase, type SeedGroup } from "../export-scratch-cases.js";
 import { hostOptions as importHostOptions, expectedOutcome, type ImportCase, type ImportStep } from "../import-cases.js";
 import { writePackages, type ScratchPackage } from "../import-packages.js";
@@ -11,6 +11,7 @@ import { LP_PACKAGE, writePack, type LpCase } from "../language-pack-cases.js";
 import { outcomeMatches, returnedValue } from "../record-import-cases.js";
 import { record, type CleanupReport, type ItemRef, type RecordRequest, type RecordResult } from "../record.js";
 import { type Difference, diffOutcomes } from "./diff.js";
+import { diffExportRuns1435 } from "./diff-1435.js";
 import { getProperty } from "../../../src/client/fault.js";
 import { type RunOutcome, readOracleOutcome } from "./outcome.js";
 import { type PortServer, createdBy, openSideConnection, osUserOf, runPortExport, runPortImport, runPortLanguagePack, selectionOf } from "./port-run.js";
@@ -62,6 +63,11 @@ const describeEnd = (outcome: RunOutcome): string =>
     : outcome.termination.kind === "returned"
       ? `returned ${outcome.termination.value}`
       : "exported";
+
+/** A compared run with the differences found by a comparison of its own. */
+function report(name: string, oracle: RunOutcome, port: RunOutcome, differences: Difference[]): StepReport {
+  return { name, differences, oracleCalls: oracle.calls.length, portCalls: port.calls.length, oracleEnd: describeEnd(oracle), portEnd: describeEnd(port) };
+}
 
 /** The login every call list starts with is the same on both sides here: the live port logs in as the oracle host does. */
 export function compare(
@@ -158,6 +164,8 @@ export async function runExportCase(env: ParityEnv, c: Pick<ExportCase, "id" | "
   const oracle = readOracleOutcome(out, { filesFrom: "output" });
   const port = await runPortExport(env.port, { selection: selectionOf(c.packages), options });
   writePortRun(join(env.out, label, "port"), port);
+  // 14.35 exports the items of a package in parallel: its runs agree in the parts EXP-558 names
+  if (env.engine === "14.35") return report(label, oracle, port, diffExportRuns1435(oracle, port, { packages: c.packages, options }));
   return compare(label, oracle, port);
 }
 
@@ -308,16 +316,35 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
 /** Languages the language-pack cases translate into, and the scratch Forums they edit (`fixtures/14.0.7/language-pack/setup.aml`). */
 const LP_LANGUAGES = ["de", "fr"];
 
-/** Why a language-pack case cannot run on this dev, or null when it can: the cases need the Languages `de` and `fr` and the two scratch Forums. */
-export async function languagePackPrecondition(env: ParityEnv): Promise<string | null> {
+/** The Languages of `LP_LANGUAGES` that dev does not have: adding one adds a column to every table with a multilingual property, which the script does not do. */
+async function missingLanguages(env: ParityEnv): Promise<string[]> {
   const side = await openSideConnection(env.port);
   try {
     const languages = await side.inn.applyItem('<Item type="Language" action="get" select="code"/>');
     const codes = languages.isError ? [] : languages.items.map((item) => getProperty(item, "code") ?? "");
-    const missing = LP_LANGUAGES.filter((code) => !codes.includes(code));
-    if (missing.length > 0) {
-      return `dev has no Language ${missing.join(", ")}; the language-pack cases need them, and adding a Language (fixtures/14.0.7/language-pack/setup.aml) adds a column to every table with a multilingual property`;
-    }
+    return LP_LANGUAGES.filter((code) => !codes.includes(code));
+  } finally {
+    await side.close();
+  }
+}
+
+/** Why a seed group cannot run on this dev, or null when it can: the language-resource group (14.35) translates into `de` and `fr`. */
+export async function seedGroupPrecondition(env: ParityEnv, group: Pick<SeedGroup, "id">): Promise<string | null> {
+  if (group.id !== "lang-ml") return null;
+  const missing = await missingLanguages(env);
+  return missing.length === 0
+    ? null
+    : `dev has no Language ${missing.join(", ")}; the language-resource cases translate into them, and adding a Language (fixtures/14.35/language-pack/README.md) adds a column to every table with a multilingual property`;
+}
+
+/** Why a language-pack case cannot run on this dev, or null when it can: the cases need the Languages `de` and `fr` and the two scratch Forums. */
+export async function languagePackPrecondition(env: ParityEnv): Promise<string | null> {
+  const missing = await missingLanguages(env);
+  if (missing.length > 0) {
+    return `dev has no Language ${missing.join(", ")}; the language-pack cases need them, and adding a Language (fixtures/14.0.7/language-pack/setup.aml) adds a column to every table with a multilingual property`;
+  }
+  const side = await openSideConnection(env.port);
+  try {
     const forums = await side.inn.applyItem('<Item type="Forum" action="get" select="keyed_name"><keyed_name condition="like">LIBSJS-SCRATCH-LP-*</keyed_name></Item>');
     if (forums.isError || forums.items.length < 2) return "dev has not the two scratch Forums LIBSJS-SCRATCH-LP-Forum and LIBSJS-SCRATCH-LP-Forum2 that the language packs translate (setup.aml)";
     return null;
@@ -412,7 +439,7 @@ export async function runConsoleModeCase(env: ParityEnv, c: ConsoleModeCase): Pr
       },
     });
     writePortRun(join(env.out, c.id, "port"), port);
-    step = compare(c.id, oracle, port);
+    step = env.engine === "14.35" ? report(c.id, oracle, port, diffExportRuns1435(oracle, port, { packages: [], options: {}, racing: true })) : compare(c.id, oracle, port);
   } catch (error) {
     failure = error;
   } finally {
@@ -447,7 +474,3 @@ export function writePortRun(dir: string, outcome: RunOutcome): void {
 export function pruneEqual(env: ParityEnv, report: CaseReport): void {
   if (report.status === "equal" || report.status === "skipped") rmSync(join(env.out, report.id), { recursive: true, force: true });
 }
-
-/** The export cases of an engine that need no seed. */
-export const plainExportCases = (engine: Engine): readonly ExportCase[] => (engine === "14.0.7" ? EXPORT_CASES : []);
-
