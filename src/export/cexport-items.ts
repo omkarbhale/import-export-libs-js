@@ -8,7 +8,7 @@ import type { PathEnvironment } from "../io/host-path.js";
 import { guardExport } from "./export-errors.js";
 import { type ExportItem, exportFileName } from "./export-item.js";
 import { mainFetchRequest, serverMajorOf } from "./main-fetch.js";
-import { itemFilePaths, writeItemFile } from "./output-folder.js";
+import { itemFilePaths, writeItemFile, writeItemFileShared } from "./output-folder.js";
 import {
   applyXsl,
   cdataFilterXml,
@@ -100,6 +100,8 @@ export class CExportItems {
       removeEmptyRelationships(transformed);
       return transformed;
     });
+    // 14.35's workers write at the same time and hold the file while they do (EXP-419)
+    if (this.helper.engine === "14.35") return writeItemFileShared(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
     return writeItemFile(this.helper.folder, item.typeName, fetched.fileName, doc, this.environment, this.helper.engine);
   }
 

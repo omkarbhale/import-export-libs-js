@@ -13,10 +13,10 @@ export interface ParallelLoopState {
 }
 
 /**
- * `Parallel.ForEach(source, body)` of 14.35's `ExportProc` (EXP-551): `body` runs for the items in order, at most `maxParallelism` at
- * a time. After `loop.stop()` or an exception no item is started, and the items that run are waited for. Exceptions that escaped
- * are collected in the order they were recorded and thrown as one {@link AggregateException} when every running item has ended.
- * The port runs the items of a package one at a time (`maxParallelism` 1) until the parallel export is built.
+ * `Parallel.ForEach(source, body)` of 14.35's `ExportProc` (EXP-551): `maxParallelism` workers take the items in order, each the next
+ * one when its item has ended, so the first `maxParallelism` items start together and no more than that many run at any time. After
+ * `loop.stop()` or an exception no item is started, and the items that run are waited for. Exceptions that escaped are collected in
+ * the order they were recorded and thrown as one {@link AggregateException} when every running item has ended.
  *
  * @spec EXP-551 EXP-556
  */
