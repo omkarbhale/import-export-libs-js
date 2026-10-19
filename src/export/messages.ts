@@ -129,11 +129,6 @@ export function getMessage(key: string, ...args: (string | null | undefined)[]):
 
 /** {@link getMessage} with the catalogue of an engine. */
 export function getMessageFor(engine: Engine, key: string, ...args: (string | null | undefined)[]): string {
-  return messageFor(engine, key, ...args);
-}
-
-/** {@link getMessage} for an engine. */
-export function messageFor(engine: Engine, key: string, ...args: (string | null | undefined)[]): string {
   const template = (engine === "12.0" ? MESSAGE_TEMPLATES_12_0 : engine === "14.35" ? MESSAGE_TEMPLATES_1435 : MESSAGE_TEMPLATES)[key];
   if (template === undefined) return "";
   return args.length === 0 ? template : formatMessage(template, ...args);
