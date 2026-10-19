@@ -1,7 +1,8 @@
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { HttpConnectorExtension } from "../../../src/client/connection.js";
+import { DBUpdateConfig } from "../../../src/db-patches/index.js";
 import { CItemHelper } from "../../../src/client/item-helper.js";
 import { Innovator } from "../../../src/client/innovator.js";
 import { packageCaches } from "../../../src/client/package-lookups.js";
@@ -18,6 +19,7 @@ import { exceptionText } from "../../../src/language-pack/exception-text.js";
 import type { ExportCaseOptions, ExportCasePackage } from "../export-cases.js";
 import type { ImportOptions } from "../import-cases.js";
 import { type CallRecord, type RunOutcome, type Termination, exceptionSummary, readTree } from "./outcome.js";
+import { DBPATCH_DIR, MANIFEST_FILE, PATCH_FILE, PATCH_NUMBER, PATCH_RELEASE, TOOL_NAME, assertTestPatch } from "../dbpatch.js";
 import { manifestPackageNames } from "../record.js";
 import { scrub, secretForms } from "../scrub.js";
 import { type CreatedItem, assertScratchImport, createdItems, preRun } from "./scratch.js";
@@ -283,8 +285,8 @@ export async function runPortImport(
   work = mkdtempSync(join(tmpdir(), "libsjs-parity-import-")),
 ): Promise<PortImportResult & { preRunCreated: CreatedItem[] }> {
   const options = step.options;
-  if (options.languages !== undefined || options.amlBatch !== undefined || options.collectErrors !== undefined) {
-    throw new Error(`the options ${JSON.stringify(options)} are 14.35's; parity runs them with the 14.35 slice`);
+  if (server.engine !== "14.35" && (options.languages !== undefined || options.amlBatch !== undefined || options.collectErrors !== undefined)) {
+    throw new Error(`the options ${JSON.stringify(options)} are 14.35's`);
   }
   const manifestPath = join(step.inputDir, step.manifestName ?? "imports.mf");
   mkdirSync(work, { recursive: true });
@@ -315,6 +317,17 @@ export async function runPortImport(
   importContext.description = options.description ?? null;
   importContext.vault = options.vault === true;
   importContext.fast = options.fast === true;
+  // 14.35's settings, as the host sets them: Context.Languages stays null unless the case lists some, and the AML batch and
+  // collected-errors modes carry their sizes
+  if (options.languages !== undefined) context.languages = [...options.languages];
+  if (options.amlBatch !== undefined) {
+    importContext.amlBatchMode = true;
+    importContext.amlBatchMaxSize = options.amlBatch.maxSize;
+  }
+  if (options.collectErrors !== undefined) {
+    importContext.collectImportErrors = true;
+    importContext.collectImportErrorsMaxCount = options.collectErrors.maxCount;
+  }
 
   const collected = collectors();
   let statusMessages = 0;
@@ -334,7 +347,8 @@ export async function runPortImport(
   const calls: CallRecord[] = [];
   try {
     session = await openSession(server);
-    manager = new ImportExportManager(context, messages, session.helper, { cwd: work, console: collected.sink, osUser });
+    // 14.35's constructor scans the packages for their languages and checks the selection against the server (IMP-610, IMP-620)
+    manager = await ImportExportManager.create(context, messages, session.helper, { cwd: work, console: collected.sink, osUser });
     const packages = step.only !== undefined ? [...step.only] : (manager.manifestFile?.getAllPackageNames() ?? []);
     assertScratchImport(packages, step.inputDir);
     ended = { kind: "returned", value: await manager.importSolutions(packages, importContext) };
@@ -381,7 +395,7 @@ export async function runPortLanguagePack(
   osUser: string,
   work = mkdtempSync(join(tmpdir(), "libsjs-parity-lp-")),
 ): Promise<PortImportResult> {
-  if (run.languages !== undefined) throw new Error("the Languages selection is 14.35's; parity runs it with the 14.35 slice");
+  if (run.languages !== undefined && server.engine !== "14.35") throw new Error("the Languages selection is 14.35's");
   mkdirSync(work, { recursive: true });
   assertScratchImport([run.lpPackage], work, run.lpDir);
   const logPath = join(work, "engine.log");
@@ -392,6 +406,7 @@ export async function runPortLanguagePack(
   context.lpPath = join(run.lpDir, "ImportConfig.xml");
   context.lpPackage = run.lpPackage;
   context.lpDebug = run.lpDebug;
+  if (run.languages !== undefined) context.languages = [...run.languages];
   const importContext = new SUImportContext();
   const collected = collectors();
   const messages = createMessagesFactory({ onMessage: (message) => void collected.messages.push(message), engine: server.engine });
@@ -407,6 +422,8 @@ export async function runPortLanguagePack(
         console: collected.sink,
         osUser,
         tempPath: `${tempRoot}/`,
+        // the oracle's host runs ConsoleUpgrade's steps without its catch: no log line, and an exception is not a return of 1
+        hostCatch: false,
       }),
     };
   } catch (error) {
@@ -430,5 +447,103 @@ export async function runPortLanguagePack(
       exitCode: ended.kind === "exception" ? 2 : 0,
     }, server.password),
     created: createdBy(calls),
+  };
+}
+
+// ---- DB patch (14.35) --------------------------------------------------------------------------------------------------------
+
+export interface PortDbPatch {
+  /** Check, before the run, that the release and the number are absent (the oracle host does it before its first run only). */
+  preconditions: boolean;
+  /** The ids the engine gives the items it adds; a recorded run served by a fake server names them, a live server takes the engine's own. */
+  newId?: () => string;
+}
+
+/** The items a DB patch run created, in the order it made them: the `add`s the transcript shows, and the "Applied Updates" item `ApplyUpdate` answered with. */
+export function dbPatchCreated(calls: readonly CallRecord[]): CreatedItem[] {
+  const created: CreatedItem[] = [];
+  for (const call of calls) {
+    created.push(...createdItems(call.request, call.response));
+    if (call.action !== "ApplyUpdate") continue;
+    const found = /<Item[^>]*\btype="Applied Updates"[^>]*\bid="([0-9A-Fa-f]{32})"|<Item[^>]*\bid="([0-9A-Fa-f]{32})"[^>]*\btype="Applied Updates"/.exec(call.response);
+    const id = found?.[1] ?? found?.[2];
+    if (id !== undefined && !created.some((c) => c.type === "Applied Updates" && c.id === id)) created.push({ type: "Applied Updates", id, unconfirmed: false });
+  }
+  return created;
+}
+
+/** The oracle host's read-only check before a DB patch run: neither the release row nor the numbered update may exist (DBP-071). */
+async function assertPatchAbsent(server: PortServer): Promise<void> {
+  const side = await openSideConnection(server);
+  try {
+    const row = await side.inn.applyItem(`<Item type="DatabaseUpgrade" action="get" select="id"><name>Applied Updates</name><target_release>${PATCH_RELEASE}</target_release><type>0</type></Item>`);
+    if (!row.isError) throw new Error(`a DatabaseUpgrade 'Applied Updates' for release ${PATCH_RELEASE} already exists; stopping`);
+    const applied = await side.inn.applyItem(`<Item type="Applied Updates" action="get" select="id"><up_number>${PATCH_NUMBER}</up_number></Item>`);
+    if (!applied.isError) throw new Error(`an 'Applied Updates' item ${PATCH_NUMBER} already exists; stopping`);
+  } finally {
+    await side.close();
+  }
+}
+
+/**
+ * One `ApplyDBUpdateManifest` of the port against dev, as the oracle's `dbpatch` command does it: only the committed no-op patch
+ * (DBP-071), the context of DBP-002, the manager's own method. A refused patch is an `error` message and host exit 1; an exception
+ * (the non-root refusal) is host exit 2.
+ */
+export async function runPortDbPatch(
+  server: PortServer,
+  run: PortDbPatch,
+  osUser: string,
+  work = mkdtempSync(join(tmpdir(), "libsjs-parity-dbpatch-")),
+): Promise<PortImportResult> {
+  const committed = assertTestPatch(join(DBPATCH_DIR, MANIFEST_FILE), DBPATCH_DIR, TOOL_NAME);
+  // the oracle stages the manifest and the patch file in the run's `input` folder, which is the engine's working directory too
+  const input = join(work, "input");
+  mkdirSync(input, { recursive: true });
+  copyFileSync(committed.manifest, join(input, MANIFEST_FILE));
+  copyFileSync(join(committed.folder, PATCH_FILE), join(input, PATCH_FILE));
+  if (run.preconditions) await assertPatchAbsent(server);
+  const logPath = join(work, "engine.log");
+  const context = baseContext(new SolutionUpgradeContext(), server, input, logPath, false);
+  context.action = "ImportDPPatch";
+  const config = new DBUpdateConfig();
+  config.dbUpdatedManifestFilePath = join(input, MANIFEST_FILE);
+  config.dbPatchesFolderPath = input;
+  config.toolName = TOOL_NAME;
+
+  const collected = collectors();
+  const messages = createMessagesFactory({ onMessage: (message) => void collected.messages.push(message), engine: server.engine });
+  let session: Session | undefined;
+  let ended: Termination = { kind: "applied" };
+  const calls: CallRecord[] = [];
+  try {
+    session = await openSession(server);
+    const manager = new ImportExportManager(context, messages, session.helper, { cwd: work, console: collected.sink, ...(osUser === "" ? {} : { osUser }) });
+    await manager.applyDBUpdateManifest(config, run.newId === undefined ? {} : { newId: run.newId });
+  } catch (error) {
+    ended = termination(error);
+  } finally {
+    if (session !== undefined) {
+      try {
+        await session.helper.logout();
+      } catch (error) {
+        if (ended.kind === "applied") ended = { kind: "exception", summary: `logout: ${exceptionText(error)}` };
+      }
+      calls.push(...session.calls);
+    }
+  }
+  const errors = collected.messages.filter((m) => m.channel === "error").length;
+  return {
+    outcome: scrubbedOutcome({
+      side: "port",
+      calls,
+      files: null,
+      log: readLog(logPath),
+      messages: collected.messages.map(({ channel, text }) => ({ channel, text })),
+      console: collected.console(),
+      termination: ended,
+      exitCode: ended.kind === "exception" ? 2 : errors > 0 ? 1 : 0,
+    }, server.password),
+    created: dbPatchCreated(calls),
   };
 }

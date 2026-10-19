@@ -9945,7 +9945,6 @@
       "assemblyVersion": "14.35.0.43890",
       "sha256": "f35cc5ce4e80d49e298825ffbc0dca0ea3e136c74f55ed12e5410e7e13714805",
       "mvid": "bdb15286-0555-4e3d-a61a-0fc29b2b2160",
-      "inProgress": true,
       "methods": [
         {
           "fullName": "Aras.Tools.CertificateUtils/<>c__DisplayClass2_0::.ctor",
@@ -11417,8 +11416,9 @@
             "ilSha256": "41dddd0fcf0b384ef778ce17ead40968aa1c6f7668e5a722ad24c6c222fa28c5",
             "bodySha256": "782c0dc06e6c87419616fa7319d787a71f9c9630601486b4235ebde1f9582e63"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "not-ported",
+          "rules": [],
+          "reason": "Compiler-generated cache of the GetSolutionNames lambda, which is not ported."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c::.ctor",
@@ -11429,8 +11429,9 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "not-ported",
+          "rules": [],
+          "reason": "Compiler-generated cache of the GetSolutionNames lambda, which is not ported."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c::<GetSolutionNames>b__73_0",
@@ -11442,7 +11443,9 @@
             "bodySha256": "699b17d12baf592cf0ffe1d2976b5748c60fb3c3983d4ebc1df1f335edbf34a4",
             "textSha256": "0bdd141a7d04e58f08d9035b8ba63a0635e9465db950b05efe8a3ea3f5afc504"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [],
+          "reason": "The lambda of GetSolutionNames, which is host-only (import.exe's GUI lists package names with it) and not ported."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c__DisplayClass33_0::.ctor",
@@ -12199,7 +12202,15 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-607",
+            "EXP-609",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getPackageElementIds"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c__DisplayClass83_0::<GetPackageElementIDs>b__1",
@@ -12211,7 +12222,15 @@
             "bodySha256": "e07470672c96b323b7cb7e5b15c03aef940551455e77a38ae3fe5573b87c0114",
             "textSha256": "2aeacf804cbe26b0f5033fa5eb259f88a52697ea9b807e3450e26f90dd8095e2"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-607",
+            "EXP-609",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getPackageElementIds"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper/<>c__DisplayClass89_0::.ctor",
@@ -12490,8 +12509,15 @@
             "ilSha256": "5bc716245a33b5f757cbdfbf04ba3e51febf1acf1d8ba25312c84b4be57e200f",
             "bodySha256": "edb99d539dca37e1103656053224a3f5d13db11f4783f22afee85484a2e49982"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-609",
+            "EXP-619",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#packageCaches"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::.ctor",
@@ -12503,11 +12529,15 @@
             "bodySha256": "b99a7104037a2315d5d7828ba917b59863a6dda6ff378c36e1fc2cc5221dd446",
             "textSha256": "251d82a64902345d061a0872e78d89d084d4f49916fe8d8165bcf713b838ce29"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-046",
+            "EXP-609",
             "WIRE-001"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper"
           ]
         },
         {
@@ -12520,7 +12550,15 @@
             "bodySha256": "f50e8fb7af0e0556dae09a6e67f5b87cd692b8a0c19bd4114a3fb29e416c417e",
             "textSha256": "6e8ca7b4effcb5e07f87a76dd07dfe9fc4738bf72f476ccc637c006c299562cf"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-608",
+            "EXP-609",
+            "EXP-619"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getDependsOnPackageNames"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::<GetItemType>b__94_0",
@@ -12573,7 +12611,15 @@
             "bodySha256": "70dc218be46fcc4f3020b338975064d8354659a3e6a7cface16ed86944e32c0d",
             "textSha256": "2aeacf804cbe26b0f5033fa5eb259f88a52697ea9b807e3450e26f90dd8095e2"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-607",
+            "EXP-609",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getPackageElementIds"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::<getRelationshipTypeID>b__81_0",
@@ -12585,7 +12631,15 @@
             "bodySha256": "5a89308fd4fbabefa5d468be8bd04581410e4d7c070bd6f86024decc4b813c06",
             "textSha256": "adab0becb4889d8f6f60056c5c3acb8596b981c96a6d99bb379cb07a0ab9d281"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-603",
+            "EXP-608",
+            "EXP-609"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getRelationshipTypeId"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ApplyXsl",
@@ -12597,7 +12651,7 @@
             "bodySha256": "0c7d8e4dc23c48f723d5fc25a97bffd860d4bae89064907d4516323e1277cb6a",
             "textSha256": "cbf96756e67e7a6951de279390f28a74b9c581b1966297c53140765013d83a54"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-200",
             "EXP-201",
@@ -12668,6 +12722,14 @@
             "IMP-012",
             "IMP-013",
             "IMP-014"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#applyXsl",
+            "src/export/transform.ts#applyExportTransform",
+            "src/export/transform.ts#transformExport",
+            "src/export/output.ts#OutputWriter",
+            "src/import/build-output.ts#applyBuildXsl",
+            "src/import/build-output.ts#renderBuildOutput"
           ]
         },
         {
@@ -12994,8 +13056,15 @@
             "bodySha256": "20d4bbe8c2250fd800ceba80ba50a672dd0c7068f831a4945f99127ade49a572",
             "textSha256": "a7553856919d523801af390a408e00d9c225c9abceb956eede5611e4f7057c4e"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-608",
+            "EXP-609",
+            "EXP-619"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getDependsOnPackageNames"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetInnovatorServerVersion",
@@ -13148,8 +13217,17 @@
             "bodySha256": "fb5759e337e978d292209669aee739018e854f3c11151711044deac094aae77d",
             "textSha256": "65b3022938c6f5869b88ba8973c95c2eecf0d919be4c5ed2b13eb52916a9df06"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-607",
+            "EXP-608",
+            "EXP-609",
+            "EXP-616",
+            "EXP-620"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getNonCorePackageNames"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageElementIDs",
@@ -13161,8 +13239,15 @@
             "bodySha256": "f61ef2770355e37030f43cc22bf6d7ecef2a7319667b38c6879f53e843a62d1e",
             "textSha256": "2aeacf804cbe26b0f5033fa5eb259f88a52697ea9b807e3450e26f90dd8095e2"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-607",
+            "EXP-609",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getPackageElementIds"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageGroupIdOrCreateIfNotExists",
@@ -13194,8 +13279,14 @@
             "bodySha256": "d89f24b4740b75e924b6122cb2e165fbcd0f5a6ceee48e9df33e59100d316dfb",
             "textSha256": "33e4e948ca40d524ee9320c67e78d74f60acbf8a3c294e8658bc4f4d9a4596c1"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-608",
+            "EXP-621"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getPackageElementIds"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetPolytypeNames",
@@ -13207,13 +13298,16 @@
             "bodySha256": "227e535a0b5ce22499facc8a88a79bdb30b03c3a24ac58083a51832084f2a9fe",
             "textSha256": "78a8d7355bcd8ea8d736c0ed67be0ab60322353ad3dd825adfaeb7a48874f167"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-046",
             "EXP-047",
             "EXP-408",
             "EXP-409",
             "EXP-461"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getPolytypeNames"
           ]
         },
         {
@@ -13267,8 +13361,9 @@
             "bodySha256": "a56c0bab9203aa5528c9adc9fda7d0bdb05ff81a8f310265e66fdaefb90814ee",
             "textSha256": "e64b992603bb8bf2ee4e5c57ba71c5b851c250271003578b9f9e61265301a584"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "not-ported",
+          "rules": [],
+          "reason": "Host-only: import.exe's GUI lists package names with it. The library's import takes a manifest and its export takes a table, so nothing calls it (spec/export-run.md, wayfinder ticket 16)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::GetTypeAmlInner",
@@ -13345,10 +13440,13 @@
             "bodySha256": "0f7fccd1eb0f21e0e462cbad55bc62fe80f188fc5f40b06a8f0e236462c57557",
             "textSha256": "525c66473831ce85780b1fc865fabf36627470395934d5080d5fc3a7f63c119a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-017",
             "WIRE-056"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.login"
           ]
         },
         {
@@ -13573,8 +13671,24 @@
             "bodySha256": "ac1e5828af4364648e7a5c2e87939d306692f6c539c085b6b7597dc8a3353b99",
             "textSha256": "f02107197689f2a4cb1c7686907666f463fc5df0f47f070ea912c9ad615fe6c6"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-601",
+            "EXP-602",
+            "EXP-603",
+            "EXP-604",
+            "EXP-605",
+            "EXP-606",
+            "EXP-611",
+            "EXP-615",
+            "EXP-617"
+          ],
+          "symbols": [
+            "src/export/unknown-references.ts#removeReferencesToAnotherPackages",
+            "src/export/live-node-list.ts#DescendantSearch",
+            "src/export/live-node-list.ts#RelationshipItemSearch",
+            "src/export/live-node-list.ts#lazyNodeList"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::RemoveRelationshipItem",
@@ -13586,8 +13700,14 @@
             "bodySha256": "2976684dc020e15bec4c602e4547b1509a508a9e0459fdcf2ab4e024fe5082a9",
             "textSha256": "9f855d975a46a027259b549a01644d3d4ad73af0e9c096f1d52c73145c653955"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-610",
+            "EXP-615"
+          ],
+          "symbols": [
+            "src/export/unknown-references.ts#removeRelationshipItem"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::ReplaceReferencesToPolyLists",
@@ -13599,12 +13719,15 @@
             "bodySha256": "484e7d8fbf82a62a1215bfef7ad9924ca57cb890c930bef6e74ac6d92a941a87",
             "textSha256": "46cef4f2cc2f39664df301c21fe1277ebc9a62d24101793a17e9b6f81e010b37"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-407",
             "EXP-408",
             "EXP-409",
             "EXP-461"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#replaceReferencesToPolyLists"
           ]
         },
         {
@@ -13802,8 +13925,13 @@
             "bodySha256": "455667e999e7f406b1c53dd13094d5d1eeb3fd1fffaa7971eb57bcd2e130fb1a",
             "textSha256": "d8045b751b18e59652d9a7c3a826c218d626aac0e44cd33d54d1ec9c72e3cbd6"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-604"
+          ],
+          "symbols": [
+            "src/export/unknown-references.ts#getItemId"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getRelationshipTypeID",
@@ -13815,8 +13943,15 @@
             "bodySha256": "495aa51267a3adfcb363c7a30bd43f9f34b6bbb064e988d6c460dd88c7776508",
             "textSha256": "8fd47afad1ad17aa6e792505c542bd6d21ca33a4e1847d4cfde369d9351441fb"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-603",
+            "EXP-608",
+            "EXP-609"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.getRelationshipTypeId"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::getSolutions",
@@ -13922,8 +14057,13 @@
             "bodySha256": "fb80584940f92850bae6b6a0f16d6837bf7d63a30e7f6caca4a6a38798ef17f0",
             "textSha256": "b529c38ebe9a6dc4f18661b55c262f11dd1d01cdbc795f080d012532c51b3440"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-607"
+          ],
+          "symbols": [
+            "src/client/package-lookups.ts#PackageLookups.isInNonCorePackages"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::logout",
@@ -15215,7 +15355,26 @@
             "ilSha256": "41b3b72832ddb477c875aa1446e2913a243f3b29f231a2cc141f5de17cf0d39b",
             "bodySha256": "ef3455a7075da4cb07e377b55703a225166095a923591e3598ff7c335727e1d9"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "DBP-022",
+            "EXP-556",
+            "IMP-610",
+            "IMP-620",
+            "IMP-621",
+            "LP-111",
+            "LP-112",
+            "LP-114",
+            "LP-180",
+            "LP-187"
+          ],
+          "symbols": [
+            "src/export/language-selection.ts#resolveLanguages",
+            "src/export/language-selection.ts#throwIfNoSelectedLanguagesInDatabase",
+            "src/db-patches/config.ts#readUpdateNodes",
+            "src/db-patches/config.ts#inRunOrder",
+            "src/export/import-export-manager.ts#ImportExportManager.reportedException"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager/<>c::.ctor",
@@ -15226,7 +15385,26 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "DBP-022",
+            "EXP-556",
+            "IMP-610",
+            "IMP-620",
+            "IMP-621",
+            "LP-111",
+            "LP-112",
+            "LP-114",
+            "LP-180",
+            "LP-187"
+          ],
+          "symbols": [
+            "src/export/language-selection.ts#resolveLanguages",
+            "src/export/language-selection.ts#throwIfNoSelectedLanguagesInDatabase",
+            "src/db-patches/config.ts#readUpdateNodes",
+            "src/db-patches/config.ts#inRunOrder",
+            "src/export/import-export-manager.ts#ImportExportManager.reportedException"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager/<>c::<.ctor>b__15_0",
@@ -15463,7 +15641,7 @@
             "bodySha256": "ff44eb86eb1f72d1a8b74570d0fd4e5190a93c274eada53be9a32a93db6a593d",
             "textSha256": "538ba46dc8c916d2ab8afcc30388b11f7ac9027ac4e1ed8af26cf795e9973f3f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-502",
             "IMP-402",
@@ -15483,6 +15661,11 @@
             "LP-114",
             "LP-185",
             "WIRE-031"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager",
+            "src/export/import-export-manager.ts#ImportExportManager.scanLanguages",
+            "src/export/language-selection.ts#resolveLanguages"
           ]
         },
         {
@@ -15650,7 +15833,7 @@
             "bodySha256": "8e82b8f5831cefa735d8cbd8866e4031534d373b8dae85870f9d0c3b00177992",
             "textSha256": "188ba12641c007aea805ec98dc2ab310d647456e7db686c3a4dd46044b24b6b8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-100",
             "IMP-425",
@@ -15662,6 +15845,10 @@
             "IMP-633",
             "IMP-634",
             "IMP-635"
+          ],
+          "symbols": [
+            "src/import/import-run.ts#ImportRun.checkWorkItem",
+            "src/import/skipped-languages.ts#removeSkippedLanguageNodes"
           ]
         },
         {
@@ -15977,7 +16164,7 @@
             "bodySha256": "151195f9a97235d852dfc0b88c61baac78cc9c804ff0be3d2544af3204f1404c",
             "textSha256": "8921e48f80843165ee58a3c17ca593287edc6af39940ac7e443afd438d321561"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-406",
             "IMP-407",
@@ -15990,6 +16177,11 @@
             "IMP-548",
             "IMP-630",
             "IMP-635"
+          ],
+          "symbols": [
+            "src/import/import-run.ts#ImportRun.importPackage",
+            "src/import/collected-errors.ts#CollectedErrors",
+            "src/import/skipped-languages.ts#languagesToSkip"
           ]
         },
         {
@@ -16918,8 +17110,11 @@
             "bodySha256": "7efb94b970c8190bcae58c3791af79b63bd268e8cace92383adcc2a2851e9d33",
             "textSha256": "03ed83de110818d948565317d2e922b8a49417e297c255c37b536c00c2933323"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "not-ported",
+          "rules": [
+            "WIRE-091"
+          ],
+          "reason": "Referenced only by the GUI hosts import.exe and export.exe, which show the server path. The library's CLI plays the console host, which hands the URL to the connection as given, and IOM derives the SOAP page itself (WIRE-003, WIRE-091)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.Interfaces.LanguageInfo::.ctor",
@@ -18242,8 +18437,13 @@
             "bodySha256": "d6dd733c44e134a4faab09a7b85f5c2d6445f6955bfbd5cd566aac8b94be70e7",
             "textSha256": "60b5bc111c86d8b4f73343eb029695818f1c847b2cd03748af23cc53c3fcbdb3"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-611"
+          ],
+          "symbols": [
+            "src/export/removed-reference.ts#RemovedReference"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_From",
@@ -18255,8 +18455,13 @@
             "bodySha256": "2df859e56db6718c2128971a0edccd8164df3a63d50d4f8a971d56a3049b5265",
             "textSha256": "021c77f94466e55f8078c0ab9262e630e8a4b63a0296b1a1fe6e7a8ed5a9a9aa"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-613"
+          ],
+          "symbols": [
+            "src/export/removed-reference.ts#RemovedReference.from"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_Reason",
@@ -18268,8 +18473,13 @@
             "bodySha256": "729ab7f29d7cb686201644f13c186cd8dd2c5cb88fda0b9b44f82aa2836660ef",
             "textSha256": "0288e3a92fd1eeeb6fc9d061b5cc682d765d2209d174f02a07f06e9df14095e5"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-613"
+          ],
+          "symbols": [
+            "src/export/removed-reference.ts#RemovedReference.reason"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.RemovedReference::get_To",
@@ -18281,8 +18491,13 @@
             "bodySha256": "1cf91dc1f9b881becf3c71313c1da0a857bedc4c6391febd96bde7c6804ba700",
             "textSha256": "4a777c31d65dd7df9287c3d6ef859c4e0360276edd5e54b2922bc56d0d9b33c0"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-613"
+          ],
+          "symbols": [
+            "src/export/removed-reference.ts#RemovedReference.to"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ResourceManager::.ctor",

@@ -10,7 +10,14 @@ import { ManifestFile } from "../manifest/index.js";
 import { exceptionText } from "./exception-text.js";
 import { LanguagePackPreprocessor, type LanguagePackOptions } from "./preprocessor.js";
 
-export interface LanguagePackImportOptions extends ImportExportManagerOptions, LanguagePackOptions {}
+export interface LanguagePackImportOptions extends ImportExportManagerOptions, LanguagePackOptions {
+  /**
+   * Whether the host's `catch` runs (LP-003): it appends the exception to the log, and in 14.35 turns a `CItemException` into the
+   * console line and a return of 1. Default true. The oracle's host runs the same steps without that `catch`, so the live parity
+   * turns it off to compare the steps themselves.
+   */
+  hostCatch?: boolean;
+}
 
 /**
  * `lpimport` after the arguments are read and the helper has logged in: the steps 3 to 7 of the host's `Main` (LP-001). The
@@ -34,7 +41,7 @@ export async function languagePackImport(
   helper: CItemHelper,
   options: LanguagePackImportOptions = {},
 ): Promise<number> {
-  const { tempPath, randomFileName, ...managerOptions } = options;
+  const { tempPath, randomFileName, hostCatch = true, ...managerOptions } = options;
   const { platform, cwd } = options;
   const environment: PathEnvironment = { ...(platform === undefined ? {} : { platform }), ...(cwd === undefined ? {} : { cwd }) };
   const preprocessorOptions: LanguagePackOptions = {
@@ -52,6 +59,7 @@ export async function languagePackImport(
       const manager = new ImportExportManager(context, messages, helper, managerOptions);
       return await manager.importSolutions(manager.manifestFile?.getAllPackageNames() ?? [], importContext);
     } catch (error) {
+      if (!hostCatch) throw error;
       appendToLog(context.logFilePath, exceptionText(error), environment);
       if (helper.engine === "14.35" && error instanceof CItemException) {
         options.console?.write(`Error: ${error.message}`);

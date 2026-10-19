@@ -145,13 +145,14 @@ describe("export --use-import (HOST-110 to HOST-113)", () => {
     expect(log.indexOf("Conflict:")).toBeLessThan(log.indexOf("Tool version:"));
   });
 
-  it("is not offered for an engine whose package loading the CLI does not offer it for", async () => {
-    for (const engine of ["14.35"]) {
+  it("is offered for every engine: 14.35 reaches the manifest check, where it was once refused as not yet supported (HOST-113)", async () => {
+    for (const engine of ["12.0", "14.0.7", "14.35"]) {
       const work = scratch();
       const t = testIo({ env: { ARAS_PASSWORD: "pw" }, cwd: work });
-      const code = await run(["export", join(work, "out"), "--use-import", importFolder(work), "--engine", engine, "--url", "http://x", "--database", "d", "--user", "u"], t.io);
-      expect(code).toBe(EXIT.failed);
-      expect(t.stderr()).toContain(`engine ${engine} is not yet supported`);
+      const code = await run(["export", join(work, "out"), "--use-import", join(work, "missing.mf"), "--engine", engine, "--url", "http://x", "--database", "d", "--user", "u"], t.io);
+      expect(code).toBe(EXIT.usage);
+      expect(t.stderr()).toContain("the manifest file does not exist");
+      expect(t.stderr()).not.toContain("is not yet supported");
     }
   });
 });

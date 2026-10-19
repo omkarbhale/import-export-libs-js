@@ -139,7 +139,7 @@ Nothing is sent to the server. The import's `build.xsl` ordering and the loading
 
 [12.0] Same loop, with the 12.0 file handling: `Path.GetDirectoryName` and `new StreamWriter(logFile, true)` on the raw paths (no normalisation, EXP-505 `[12.0]`), and the 12.0 loading of the package folders (IMP-005 and IMP-008 `[12.0]`: encodings honoured, another text for a skipped file). Observed in `fixtures/export-modes/12.0-probe.json` (`ui-r15-latin1-file--step-1--input` fails with `Invalid character in the given encoding. Line 3, position 21.`; the warning reads `doesn't have root tag 'AML/Item'`). The port loads 12.0's package folders with the 12.0 rules (wayfinder ticket 50), so the mode is offered for 12.0 (HOST-113).
 
-[14.35] Same loop, with 14.35's file handling (`IOWrapper` with the normalisation inlined) and 14.35's loading of package folders. The port's 14.35 loading is not built yet (wayfinder ticket 60), so the mode is not offered for 14.35 (HOST-113).
+[14.35] Same loop, with 14.35's file handling (`IOWrapper` with the normalisation inlined) and 14.35's loading of package folders. The port's 14.35 loading is built (wayfinder ticket 60), and the mode is offered for 14.35 (HOST-113).
 
 ### HOST-111: only the importable items with action add are taken, keyed by id, named by their file
 
@@ -186,7 +186,7 @@ A repeated package name in the manifest is read twice and then fails: the second
 
 [12.0] The mode runs on 12.0, with 12.0's loading of package folders (IMP-005 to IMP-011 `[12.0]`). `--from-manifest` and `--all-packages` run on 12.0 too: they read only the answer of the package-definition request.
 
-[14.35] The CLI reports `engine 14.35 is not yet supported` for `--use-import`, until the 14.35 import slice (ticket 60) builds its loading of package folders. `--from-manifest` and `--all-packages` run on 14.35.
+[14.35] The mode runs on 14.35, with 14.35's loading of package folders (IMP-005 to IMP-011 `[14.35]`). The live parity of the mode on dev (`mode-use-import-scratch`, `mode-use-import-absent-items`; `roadmap/live-parity-14.35.md`) and the probe of ConsoleUpgrade's loop on 14.35 (`fixtures/export-modes/14.35-probe.json`) both agree with the port. `--from-manifest` and `--all-packages` run on 14.35 too.
 
 ### HOST-120: --from-manifest is the engine's GenerateHashtableFromManifest
 

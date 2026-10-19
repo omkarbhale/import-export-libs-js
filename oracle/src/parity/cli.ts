@@ -7,6 +7,7 @@ import { casesFor } from "../import-cases.js";
 import { ORACLE_DIR } from "../manifest.js";
 import { DEV_SERVER, assertDevUrl } from "../record.js";
 import { readPassword } from "../cli.js";
+import { DBPATCH_CASES } from "../record-dbpatch-cases.js";
 import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, exportCasesOf, seedGroupsOf, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
 import { describeDifferences } from "./diff.js";
 import { KNOWN_DIFFERENCES } from "./known.js";
@@ -18,6 +19,7 @@ import {
   type ParityEnv,
   pruneEqual,
   runConsoleModeCase,
+  runDbPatchCase,
   runImportCase,
   runLanguagePackCase,
   runPlainExport,
@@ -39,12 +41,13 @@ diffs, for each case:
   - the messages, by channel, and the console text;
   - how the run ended: the value ImportSolutions returned, or the exception.
 
-Engine 14.35 runs the export side (export, scratch-export, console-mode): it exports the items of a package in parallel, so its runs agree in
-the parts EXP-558 names (oracle/src/parity/diff-1435.ts) and not request for request. Its import side follows (wayfinder ticket 76, part B).
+Engine 14.35 exports the items of a package in parallel, so its export runs agree in the parts EXP-558 names
+(oracle/src/parity/diff-1435.ts) and not request for request. Its dbpatch kind applies the committed no-op test patch (oracle/dbpatch/,
+DBP-070) as root, applies it again, and as admin; the oracle's DB patch cleanup deletes the three items each side made.
 
 Kinds: export (read-only), scratch-export (seeds LIBSJS-SCRATCH-* packages, exports, deletes them), import (LIBSJS-SCRATCH-*
 copies, deleted again by each side), language-pack (needs the Languages de and fr on dev; skipped otherwise), console-mode
-(--use-import, --from-manifest, --all-packages). A case marked slow runs only when named with --case or with --include-slow.
+(--use-import, --from-manifest, --all-packages), dbpatch (14.35 only). A case marked slow runs only when named with --case or with --include-slow.
 Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it created, and the ids are in the report.
 
 The password comes from ARAS_PASSWORD or stdin, as for \`npm run oracle\`; the user from ARAS_USER (default root).
@@ -52,7 +55,7 @@ The password comes from ARAS_PASSWORD or stdin, as for \`npm run oracle\`; the u
 equal ones too. Exit status: 0 every case equal or skipped, 1 a difference or a failed case, 3 dev was left unclean.
 `;
 
-const KINDS: readonly ParityKind[] = ["export", "scratch-export", "import", "language-pack", "console-mode"];
+const KINDS: readonly ParityKind[] = ["export", "scratch-export", "import", "language-pack", "console-mode", "dbpatch"];
 
 /** The scratch packages and packages a run starts from: nothing named `LIBSJS-SCRATCH-*` may exist on dev. */
 async function assertNoScratchLeft(server: PortServer): Promise<void> {
@@ -243,6 +246,16 @@ export async function main(argv: readonly string[]): Promise<number> {
       } catch (error) {
         if (error instanceof DevNotClean) throw error;
         failed(c.id, "language-pack", error);
+      }
+    }
+
+    for (const entry of chosen("dbpatch")) {
+      const c = DBPATCH_CASES.find((x) => `dbpatch-${x.id}` === entry.id)!;
+      try {
+        settle({ ...(await runDbPatchCase(env, c)), id: entry.id });
+      } catch (error) {
+        if (error instanceof DevNotClean) throw error;
+        failed(entry.id, "dbpatch", error);
       }
     }
 

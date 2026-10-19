@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeLog, normalizeOutcome, replaceIds, serverIds } from "./normalize.js";
+import { dbPatchIds, normalizeLog, normalizeOutcome, replaceIds, serverIds } from "./normalize.js";
 import type { RunOutcome } from "./outcome.js";
 
 const A = "A".repeat(32);
@@ -123,5 +123,57 @@ describe("an outcome", () => {
     );
     expect(normal.termination).toBe("exception Aras.X: no manifest at <working>/imports.mf");
     expect(normal.exitCode).toBe(2);
+  });
+});
+
+describe("the normalisations of the 14.35 runs (ticket 76)", () => {
+  it("replaces the ISO date-times of the items a server answers with, and the elapsed times of the AML batch mode", () => {
+    const log = "Working directory: /w\r\n   AML batch time: 00:00:00.0237003\r\n<created_on>2026-10-20T02:28:25</created_on>\r\n";
+    const lines = normalizeLog(log, new Map());
+    expect(lines).toContain("   AML batch time: <elapsed>\r");
+    expect(lines).toContain("<created_on><time></created_on>\r");
+    const messages = normalizeOutcome(outcome({ messages: [{ channel: "status", text: "AML batch time: 00:00:01.5000000 at 2026-10-20T02:28:25" }] })).messages;
+    expect(messages).toEqual(["status: AML batch time: <elapsed> at <time>"]);
+  });
+
+  it("reads a path below the working directory the same on Windows and POSIX, in the log and in the messages", () => {
+    const log = "Working directory: C:\\run\\input\r\nDB updated manifest file path: C:\\run\\input\\manifest.xml\r\n";
+    expect(normalizeLog(log, new Map())).toContain("DB updated manifest file path: <working>/manifest.xml\r");
+    const posix = normalizeOutcome(
+      outcome({ log: "Working directory: /run/input\r\n", messages: [{ channel: "status", text: "Loaded [/run/input/manifest.xml] for release 99.99" }] }),
+    ).messages;
+    const windows = normalizeOutcome(
+      outcome({ log: "Working directory: C:\\run\\input\r\n", messages: [{ channel: "status", text: "Loaded [C:\\run\\input\\manifest.xml] for release 99.99" }] }),
+    ).messages;
+    expect(windows).toEqual(posix);
+    expect(posix).toEqual(["status: Loaded [<working>/manifest.xml] for release 99.99"]);
+  });
+});
+
+describe("the language-pack temp folder", () => {
+  it("is the run's own: the same exception on Windows and POSIX reads alike", () => {
+    const windows = normalizeOutcome(
+      outcome({ termination: { kind: "exception", summary: "System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\\Users\\u\\AppData\\Local\\Temp\\LanguagePack_gu3a3hu0.2sw\\Dot\\Import'." } }),
+    ).termination;
+    const posix = normalizeOutcome(
+      outcome({ termination: { kind: "exception", summary: "System.IO.DirectoryNotFoundException: Could not find a part of the path '/tmp/libsjs-parity-lptemp-7CUtiD/LanguagePack_nqfphja5.qtv/Dot/Import'." } }),
+    ).termination;
+    expect(windows).toBe(posix);
+    expect(posix).toBe("exception System.IO.DirectoryNotFoundException: Could not find a part of the path '<lp-temp>/Dot/Import'.");
+  });
+});
+
+describe("dbPatchIds", () => {
+  it("lists, in order, the ids an add asks for and the id the server gave the applied update", () => {
+    const row = "1".repeat(32);
+    const update = "2".repeat(32);
+    const link = "3".repeat(32);
+    const calls = [
+      { action: "ApplyItem", request: `<Item type="DatabaseUpgrade" action="add" id="${row}" select="id"/>`, response: "" },
+      { action: "ApplyUpdate", request: "<Item/>", response: `<Result><Item type="Applied Updates" id="${update}"/></Result>` },
+      { action: "ApplyItem", request: `<Item type="DatabaseUpgradePatch" action="add" id="${link}"/>`, response: "" },
+      { action: "ApplyItem", request: `<Item type="DatabaseUpgrade" action="edit" id="${row}"/>`, response: "" },
+    ];
+    expect(dbPatchIds(calls)).toEqual([row, update, link]);
   });
 });

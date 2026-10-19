@@ -9,12 +9,15 @@ import { hostOptions as importHostOptions, expectedOutcome, type ImportCase, typ
 import { writePackages, type ScratchPackage } from "../import-packages.js";
 import { LP_PACKAGE, writePack, type LpCase } from "../language-pack-cases.js";
 import { outcomeMatches, returnedValue } from "../record-import-cases.js";
+import { DBPATCH_DIR, MANIFEST_FILE, TOOL_NAME } from "../dbpatch.js";
+import type { DbPatchCase } from "../record-dbpatch-cases.js";
 import { record, type CleanupReport, type ItemRef, type RecordRequest, type RecordResult } from "../record.js";
 import { type Difference, diffOutcomes } from "./diff.js";
 import { diffExportRuns1435 } from "./diff-1435.js";
 import { getProperty } from "../../../src/client/fault.js";
+import { dbPatchIds } from "./normalize.js";
 import { type RunOutcome, readOracleOutcome } from "./outcome.js";
-import { type PortServer, createdBy, openSideConnection, osUserOf, runPortExport, runPortImport, runPortLanguagePack, selectionOf } from "./port-run.js";
+import { type PortServer, createdBy, openSideConnection, osUserOf, runPortDbPatch, runPortExport, runPortImport, runPortLanguagePack, selectionOf } from "./port-run.js";
 import { type CreatedItem, cleanup as portCleanup } from "./scratch.js";
 
 /** What every runner needs: the engine, who connects where, and where this run keeps its folders. */
@@ -62,7 +65,9 @@ const describeEnd = (outcome: RunOutcome): string =>
     ? `exception ${outcome.termination.summary.split("\n")[0]}`
     : outcome.termination.kind === "returned"
       ? `returned ${outcome.termination.value}`
-      : "exported";
+      : outcome.termination.kind === "applied"
+        ? "applied"
+        : "exported";
 
 /** A compared run with the differences found by a comparison of its own. */
 function report(name: string, oracle: RunOutcome, port: RunOutcome, differences: Difference[]): StepReport {
@@ -228,6 +233,8 @@ export async function runSeedGroup(env: ParityEnv, group: SeedGroup, caseIds: Re
  */
 export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<CaseReport> {
   const started = Date.now();
+  const why = await importCasePrecondition(env, c);
+  if (why !== null) return { id: c.id, kind: "import", status: "skipped", steps: [], note: why, created: [], deleted: [], seconds: 0 };
   const oracleSteps: RunOutcome[] = [];
   const oracleMadeBefore: string[][] = [];
   const oracleCreated: ItemRef[] = [];
@@ -270,6 +277,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
   const reports: StepReport[] = [];
   const portSteps: RunOutcome[] = [];
   const portMadeBefore: string[][] = [];
+  let portDeleted: ItemRef[] = [];
   try {
     for (const [i, step] of c.steps.entries()) {
       const dir = join(env.out, c.id, `step-${i + 1}`, "port");
@@ -295,7 +303,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
       );
     }
   } finally {
-    const portDeleted = await portCleanupAll(env, c.id, portCreated);
+    portDeleted = await portCleanupAll(env, c.id, portCreated);
     if (portDeleted.length === 0 && portCreated.length > 0) notes.push("the port's cleanup deleted nothing, though its runs created items");
   }
   const status = statusOf(reports);
@@ -306,7 +314,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
     steps: reports,
     ...(notes.length > 0 ? { note: notes.join("; ") } : {}),
     created: oracleCreated.concat(refs(portCreated)),
-    deleted,
+    deleted: deleted.concat(portDeleted),
     seconds: (Date.now() - started) / 1000,
   };
 }
@@ -316,16 +324,33 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
 /** Languages the language-pack cases translate into, and the scratch Forums they edit (`fixtures/14.0.7/language-pack/setup.aml`). */
 const LP_LANGUAGES = ["de", "fr"];
 
-/** The Languages of `LP_LANGUAGES` that dev does not have: adding one adds a column to every table with a multilingual property, which the script does not do. */
-async function missingLanguages(env: ParityEnv): Promise<string[]> {
+/** The codes of the Languages dev has. */
+async function installedLanguages(env: ParityEnv): Promise<string[]> {
   const side = await openSideConnection(env.port);
   try {
     const languages = await side.inn.applyItem('<Item type="Language" action="get" select="code"/>');
-    const codes = languages.isError ? [] : languages.items.map((item) => getProperty(item, "code") ?? "");
-    return LP_LANGUAGES.filter((code) => !codes.includes(code));
+    return languages.isError ? [] : languages.items.map((item) => getProperty(item, "code") ?? "");
   } finally {
     await side.close();
   }
+}
+
+/** The Languages of `LP_LANGUAGES` that dev does not have: adding one adds a column to every table with a multilingual property, which the script does not do. */
+async function missingLanguages(env: ParityEnv): Promise<string[]> {
+  const codes = await installedLanguages(env);
+  return LP_LANGUAGES.filter((code) => !codes.includes(code));
+}
+
+/**
+ * Why an import case cannot give its recorded result on this dev, or null when it can: a case lists the Languages dev must have
+ * (`devLanguages`), and its result depends on the whole set (`Languages = *` over a package that uses de is refused when de is not installed).
+ */
+export async function importCasePrecondition(env: ParityEnv, c: Pick<ImportCase, "devLanguages">): Promise<string | null> {
+  if (c.devLanguages === undefined) return null;
+  const have = new Set(await installedLanguages(env));
+  const want = new Set(c.devLanguages);
+  if (have.size === want.size && [...want].every((code) => have.has(code))) return null;
+  return `the case needs the Languages ${[...want].join(", ")} on dev and dev has ${[...have].join(", ")}; the script never adds or removes a Language (it adds or drops a column of every table with a multilingual property)`;
 }
 
 /** Why a seed group cannot run on this dev, or null when it can: the language-resource group (14.35) translates into `de` and `fr`. */
@@ -366,7 +391,7 @@ export async function runLanguagePackCase(env: ParityEnv, c: LpCase): Promise<Ca
     command: "lpimport",
     inputDir: input,
     lpDir: pack,
-    params: { LPPackage: c.lpPackage ?? LP_PACKAGE, ...(c.lpDebug === true ? { LPDebug: true } : {}) },
+    params: { LPPackage: c.lpPackage ?? LP_PACKAGE, ...(c.lpDebug === true ? { LPDebug: true } : {}), ...(c.languages === undefined ? {} : { Languages: [...c.languages] }) },
   });
   const oracle = readOracleOutcome(out, { ...(c.lpDebug === true ? { filesFrom: "temp-package" } : {}) });
   const report = result.cleanup;
@@ -374,7 +399,7 @@ export async function runLanguagePackCase(env: ParityEnv, c: LpCase): Promise<Ca
     throw new DevNotClean(`the oracle's cleanup of ${c.id} left items behind`, [...(report?.kept ?? []).map((k) => `${k.type}:${k.id}`), ...(report?.unverified ?? []).map((u) => `${u.type}:${u.id}`)]);
   }
   const dir = join(env.out, c.id, "port");
-  const run = await runPortLanguagePack(env.port, { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true }, osUserOf(oracle.calls), join(dir, "work"));
+  const run = await runPortLanguagePack(env.port, { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true, ...(c.languages === undefined ? {} : { languages: c.languages }) }, osUserOf(oracle.calls), join(dir, "work"));
   let portDeleted: ItemRef[] = [];
   try {
     writePortRun(dir, run.outcome);
@@ -383,6 +408,95 @@ export async function runLanguagePackCase(env: ParityEnv, c: LpCase): Promise<Ca
   }
   const step = compare(c.id, oracle, run.outcome);
   return { id: c.id, kind: "language-pack", status: statusOf([step]), steps: [step], created: report.created.concat(refs(run.created)), deleted: report.deleted.concat(portDeleted), seconds: (Date.now() - started) / 1000 };
+}
+
+// ---- DB patch (14.35) -------------------------------------------------------------------------------------------------------
+
+/**
+ * One DB patch case: the committed no-op patch applied as each step's login (DBP-070, DBP-071). The oracle runs every step first
+ * (each keeps what it created, the last deletes all of it), then the port runs the same steps and the oracle's `cleanup` command, in
+ * its DB patch mode, deletes what the port created: it deletes an item only when it matches the test patch. The ids the runs make up
+ * are numbered, not compared (the engine gives the `id` of the items it adds, and the server the "Applied Updates" item's).
+ */
+export async function runDbPatchCase(env: ParityEnv, c: DbPatchCase): Promise<CaseReport> {
+  const started = Date.now();
+  const dbpatch = { manifest: join(DBPATCH_DIR, MANIFEST_FILE), folder: DBPATCH_DIR, toolName: TOOL_NAME };
+  const as = (user: string): ParityEnv => ({ ...env, user, port: { ...env.port, userName: user } });
+  const oracleSteps: RunOutcome[] = [];
+  const oracleCreated: ItemRef[] = [];
+  let deleted: ItemRef[] = [];
+  const notes: string[] = [];
+  try {
+    for (const [i, step] of c.steps.entries()) {
+      const last = i === c.steps.length - 1;
+      const { result, out } = await oracleRun(as(step.user), `${c.id}/step-${i + 1}`, {
+        command: "dbpatch",
+        dbpatch,
+        params: { ...(last ? {} : { KeepCreated: true }), ...(oracleCreated.length === 0 ? {} : { PriorCreated: priorLines(oracleCreated) }) },
+      });
+      oracleCreated.push(...(result.cleanup?.created ?? []));
+      const outcome = readOracleOutcome(out);
+      oracleSteps.push(outcome);
+      const errors = outcome.messages.filter((m) => m.channel === "error").length;
+      const ended = step.expect.kind === "applied" ? outcome.termination.kind === "applied" && errors === 0 : step.expect.kind === "patch-failed" ? errors === 1 : outcome.termination.kind === "exception";
+      if (!ended) notes.push(`step ${i + 1} (${step.name}): the oracle ended as ${describeEnd(outcome)}, not as the recorded case says (${step.expect.kind}); dev may have changed`);
+      if (last) {
+        const report = result.cleanup;
+        if (report === null || report.kept.length > 0 || report.unverified.length > 0) {
+          throw new DevNotClean(`the oracle's cleanup of ${c.id} left items behind`, [...(report?.kept ?? []).map((k) => `${k.type}:${k.id}`), ...(report?.unverified ?? []).map((u) => `${u.type}:${u.id}`)]);
+        }
+        deleted = report.deleted;
+      }
+    }
+  } catch (error) {
+    if (!(error instanceof DevNotClean)) await oracleDbPatchCleanup(env, c.id, oracleCreated).catch(() => undefined);
+    throw error;
+  }
+
+  // the port's pass
+  const portCreated: ItemRef[] = [];
+  const portSteps: RunOutcome[] = [];
+  const reports: StepReport[] = [];
+  let portDeleted: ItemRef[] = [];
+  try {
+    for (const [i, step] of c.steps.entries()) {
+      const dir = join(env.out, c.id, `step-${i + 1}`, "port");
+      const run = await runPortDbPatch(as(step.user).port, { preconditions: i === 0 }, osUserOf(oracleSteps[i]!.calls), join(dir, "work"));
+      portCreated.push(...refs(run.created));
+      writePortRun(dir, run.outcome);
+      portSteps.push(run.outcome);
+      reports.push(
+        compare(`step ${i + 1}: ${step.name}`, oracleSteps[i]!, run.outcome, {
+          oracle: oracleSteps.slice(0, i),
+          port: portSteps.slice(0, i),
+          madeBefore: { oracle: dbPatchIds(oracleSteps.slice(0, i + 1).flatMap((o) => o.calls)), port: dbPatchIds(portSteps.flatMap((o) => o.calls)) },
+        }),
+      );
+    }
+  } finally {
+    portDeleted = await oracleDbPatchCleanup(env, `${c.id}-port`, portCreated);
+    if (portDeleted.length === 0 && portCreated.length > 0) notes.push("the cleanup of the port's items deleted nothing, though its runs created items");
+  }
+  return {
+    id: c.id,
+    kind: "dbpatch",
+    status: statusOf(reports),
+    steps: reports,
+    ...(notes.length > 0 ? { note: notes.join("; ") } : {}),
+    created: oracleCreated.concat(portCreated),
+    deleted: deleted.concat(portDeleted),
+    seconds: (Date.now() - started) / 1000,
+  };
+}
+
+/** The oracle's `cleanup` in its DB patch mode: it deletes an item only when it matches the test patch, and reads back that nothing of the release or the number is left. */
+async function oracleDbPatchCleanup(env: ParityEnv, label: string, created: readonly ItemRef[]): Promise<ItemRef[]> {
+  if (created.length === 0) return [];
+  const { result } = await oracleRun(env, `${label}-cleanup`, { command: "cleanup", params: { PriorCreated: priorLines(created), DbPatchCleanup: true } });
+  const report = result.cleanup;
+  const left = [...(report?.kept ?? []).map((k) => `${k.type}:${k.id} (${k.reason})`), ...(report?.unverified ?? []).map((u) => `${u.type}:${u.id} (unverified)`)];
+  if (report === null || left.length > 0) throw new DevNotClean(`the DB patch cleanup of ${label} left items behind`, left.length > 0 ? left : created.map((c) => `${c.type}:${c.id}`));
+  return report.deleted;
 }
 
 // ---- console export modes ---------------------------------------------------------------------------------------------------

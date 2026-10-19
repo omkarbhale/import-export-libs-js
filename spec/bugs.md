@@ -342,21 +342,28 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the unknown-package removal visits `SelectNodes` results with `foreach` and removes nodes from the document as it goes. .NET Framework builds that list lazily, one element ahead, from iterators over the live tree, so the loop still visits nodes inside a subtree it has just detached, records references from them, and never visits matches that come after a detached subtree. Those references stay in the exported file. Example: removing `a` from `a(a1, a2), b, c(c1)` visits `a, a1, a2, b, c` and not `c1`.
 - **Why it is a bug:** a correct engine would take the matches first, or skip detached nodes. The result depends on where in the document the removals fall.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::RemoveReferencesToAnotherPackages`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-619: the dependency cache of the unknown-package removal is never reset
 
 - **Behaviour:** the dependency names of a package are cached in a `static readonly` table that no constructor clears, unlike the three other caches of the same code. A second export in the same process reuses the dependency list read by the first.
 - **Why it is a bug:** the dependencies can change between runs, or the second run can talk to another database; a correct engine would start each run with empty caches.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
 
 ## EXP-620: a failed list of non-core packages is cached empty
 
 - **Behaviour:** the list of non-core package names of the unknown-package removal is created empty before the request that fills it. If that request fails, the item that needed it fails, and every later check in the same run finds an empty list: no candidate package is fetched and no reference belongs to an unknown package, so the references stay in the files without any message.
 - **Why it is a bug:** the failure should not be cached; the next use should ask again, as it does for the other three lookups.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetNonCorePackageNames`.
-- **Versions:** 12.0, 14.0.7.
+- **Versions:** 12.0, 14.0.7, 14.35.
+
+## EXP-621: a failed lookup of a package's element ids is cached for the run
+
+- **Behaviour:** in 14.35 the element ids of a package, which the unknown-package removal reads, are cached as a `Lazy` value. When the request fails, the `Lazy` keeps the exception, and every later check that needs that package's ids throws it again without sending a request. 14.0.7 and 12.0 ask again.
+- **Why it is a bug:** a failure of the connection should not decide every later check of the run; the other lookups of the same code (the relationship type ids and the dependency names) are not cached when they fail.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetPackageElementIDs`.
+- **Versions:** 14.35.
 
 ## IMP-211: a relationship owner addressed by where is queued with the text System.Xml.XmlAttribute
 

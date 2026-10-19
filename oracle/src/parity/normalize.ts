@@ -36,14 +36,34 @@ export function serverIds(calls: readonly Pick<CallRecord, "request" | "response
   return assigned;
 }
 
+/**
+ * The ids a DB patch run makes up itself, in order of first appearance: the engine gives the `id` of the items it adds (the
+ * DatabaseUpgrade row, the link), and the server gives the "Applied Updates" item's in its `ApplyUpdate` answer. Each side's run makes
+ * its own, so they are numbered like the ids the server assigns: pass them as `madeBefore` of {@link normalizeOutcome}.
+ */
+export function dbPatchIds(calls: readonly Pick<CallRecord, "action" | "request" | "response">[]): string[] {
+  const ids: string[] = [];
+  const add = (id: string | undefined): void => {
+    if (id !== undefined && !ids.includes(id.toUpperCase())) ids.push(id.toUpperCase());
+  };
+  for (const call of calls) {
+    if (call.action === "ApplyItem" && /\baction="add"/.test(call.request)) add(/\bid="([0-9A-Fa-f]{32})"/.exec(call.request)?.[1]);
+    if (call.action === "ApplyUpdate") add(/<Item[^>]*\bid="([0-9A-Fa-f]{32})"/.exec(call.response)?.[1]);
+  }
+  return ids;
+}
+
 /** The text with every assigned id replaced by its number. */
 export function replaceIds(text: string, assigned: ReadonlyMap<string, string>): string {
   if (assigned.size === 0) return text;
   return text.replace(ID, (id) => assigned.get(id.toUpperCase()) ?? id);
 }
 
-/** The date-times of a log: invariant (`MM/dd/yyyy`) and en-IN (`dd-MM-yyyy`), as 14.0.7 and 12.0 write them. */
-const CLOCK = /\d\d[/-]\d\d[/-]\d{4} \d\d:\d\d:\d\d/g;
+/** The elapsed times 14.35's AML batch mode logs and sends (`AML batch time: 00:00:00.0237003`): a duration is never the same twice. */
+const ELAPSED = /\b\d\d:\d\d:\d\d\.\d{7}\b/g;
+
+/** The date-times of a log: invariant (`MM/dd/yyyy`) and en-IN (`dd-MM-yyyy`), as 14.0.7 and 12.0 write them, and the ISO ones of the items a server answers with (`created_on`). */
+const CLOCK = /\d\d[/-]\d\d[/-]\d{4} \d\d:\d\d:\d\d|\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/g;
 
 /** The header lines of a log that name a folder or file of the run itself. */
 const OWN_PATH_HEADERS = /^(Log file|Working directory|Manifest file|Language pack): .*(\r?)$/gm;
@@ -53,8 +73,19 @@ export function workingDirectoryOf(log: string): string {
   return /^Working directory: (.*?)\r?$/m.exec(log)?.[1] ?? "";
 }
 
+/** The temporary folder `LanguagePackPreprocessor` makes (`LanguagePack_<random>`): its place and its random name are the run's own. */
+const LP_TEMP = /(?:[A-Za-z]:[\\/]|\/)[^'"\s[\]]*?LanguagePack_[a-z0-9.]{12}(?=[\\/'"\s\]]|$)/g;
+
 /** A path with `\` as `/`, so a Windows path and a POSIX one compare. */
 const slashed = (path: string): string => path.replace(/\\/g, "/");
+
+/** The language-pack temp folder replaced, and the path below it read with `/`. */
+function lpTempPaths(text: string): string {
+  return text.replace(new RegExp(`${LP_TEMP.source}((?:[\\\\/][^\\s"'<>[\\]]*)?)`, "g"), (_all, rest: string) => `<lp-temp>${rest.replace(/\\/g, "/")}`);
+}
+
+/** A path below the working directory, once the directory is replaced, with its `\\` read as `/` (a Windows path and a POSIX one compare). */
+export const workingPaths = (text: string): string => lpTempPaths(text).replace(/<working>([\\/][^\s"'<>[\]]*)/g, (_all, rest: string) => `<working>${rest.replace(/\\/g, "/")}`);
 
 /**
  * The log with what is the run's own replaced: the header lines that name its folders, each `File full name` made relative to
@@ -73,9 +104,10 @@ export function normalizeLog(log: string, assigned: ReadonlyMap<string, string>)
           : `<other>/${normal.slice(normal.lastIndexOf("/") + 1)}`;
       return `File full name '${rest}'${end}`;
     })
-    .replace(CLOCK, "<time>");
+    .replace(CLOCK, "<time>")
+    .replace(ELAPSED, "<elapsed>");
   const replaced = working === "" ? out : out.split(working).join("<working>");
-  return replaceIds(replaced, assigned);
+  return replaceIds(workingPaths(replaced), assigned);
 }
 
 /** The folders of a run named in a text (an exception's message), replaced by a placeholder. */
@@ -96,8 +128,9 @@ export interface NormalizedOutcome {
 
 function describeTermination(termination: Termination, folders: readonly string[], assigned: ReadonlyMap<string, string>): string {
   if (termination.kind === "exported") return "exported";
+  if (termination.kind === "applied") return "applied";
   if (termination.kind === "returned") return `returned ${termination.value}`;
-  return `exception ${replaceIds(withoutFolders(termination.summary, folders), assigned)}`;
+  return `exception ${replaceIds(workingPaths(withoutFolders(termination.summary, folders)), assigned)}`;
 }
 
 /**
@@ -113,7 +146,7 @@ export function normalizeOutcome(outcome: RunOutcome, options: { skipCalls?: num
     calls: calls.map((call) => `${call.action} ${replaceIds(call.request, assigned)}`),
     files: outcome.files,
     log: normalizeLog(outcome.log, assigned).split("\n"),
-    messages: outcome.messages.map((message) => `${message.channel}: ${replaceIds(message.text.replace(CLOCK, "<time>"), assigned)}`),
+    messages: outcome.messages.map((message) => `${message.channel}: ${replaceIds(workingPaths(withoutFolders(message.text, [working]).replace(CLOCK, "<time>").replace(ELAPSED, "<elapsed>")), assigned)}`),
     console: outcome.console === null ? null : replaceIds(withoutFolders(outcome.console, [working]), assigned),
     termination: describeTermination(outcome.termination, [working], assigned),
     exitCode: outcome.exitCode,

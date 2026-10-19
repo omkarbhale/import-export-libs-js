@@ -186,7 +186,7 @@ async function playScenario(probe: Probe, scenario: Scenario): Promise<Run> {
   return finish();
 }
 
-/** `--use-import` loads package folders, which the CLI offers for 12.0 and 14.0.7 so far (HOST-113). */
+/** `--use-import` loads package folders, which the CLI offers for every engine (HOST-113). */
 const WAITS_FOR_LOADING = (engine: Engine, name: string): boolean => name.startsWith("ui-") && !USE_IMPORT_ENGINES.includes(engine);
 
 for (const engine of ["12.0", "14.0.7", "14.35"] as const) {

@@ -4,13 +4,15 @@ This document specifies what the export does when `RefToUnknownPacks` is `Remove
 
 Sources:
 
-- the 14.0.7 decompile of `Libs.dll` (`.decomp/14.0.7/`, never committed): `CItemHelper::RemoveReferencesToAnotherPackages` and its helpers, `RemovedReference`, and the loop in `ImportExportManager::ExportProc`;
+- the 14.0.7 and 14.35 decompiles of `Libs.dll` (`.decomp/14.0.7/` and `.decomp/14.35/`, never committed): `CItemHelper::RemoveReferencesToAnotherPackages` and its helpers, `RemovedReference`, and the loop in `ImportExportManager::ExportProc`;
 - the framework's own `System.Xml` 4.8 (decompiled locally the same way), for the node-list behaviour of EXP-615, and a replay of that behaviour on the real framework (`fixtures/unknown-refs/enumeration/`);
 - reads on the dev instance (12 SP9) for the package and dependency shape the examples use; no export or import was run for this document (the oracle needs the dev password, which this ticket did not have). The expected outputs in the examples are therefore derived from the rules and marked as such; the export fixture tickets (24 and 67) record the real engine on the catalogue's E06 case.
 
-Everything below is `[14.0.7]` except the `[12.0]` variant that ends each rule. 14.35 gets its variants in its own tickets.
+Everything below is `[14.0.7]` except the `[12.0]` and `[14.35]` variants that end each rule.
 
 The `[12.0]` variants come from the 12.0 decompile (`.decomp/12.0/`), compared method by method with 14.0.7's: the removal code and its messages are the same in both builds.
+
+The `[14.35]` variants come from the 14.35 decompile (`.decomp/14.35/`), compared the same way (wayfinder ticket 76): `RemoveReferencesToAnotherPackages`, `RemoveRelationshipItem`, `getItemID`, `isInNonCorePackages`, `GetNonCorePackageNames`, `GetDependsOnPackageNames`, `getRelationshipTypeID`, `GetPackageElementIDs` and `RemovedReference` do the same work with the same requests and the same messages. What changed is that the caches are thread-safe, because 14.35 exports the items of a package in parallel (EXP-551): see EXP-609 and EXP-621. The live parity of the removal modes on dev (`e02-part-removewithwarning`, `e06-scopecachedependency-*`) is equal for the port and the DLL (`roadmap/live-parity-14.35-export.md`).
 
 ## What an "unknown package" is
 
@@ -32,6 +34,8 @@ So `DoNotRemove` skips everything in this document: no request of group 18 is se
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-601: Which relationship items are examined
 
 [14.0.7] The first pass visits `Item` elements that are children of a `Relationships` element, anywhere in the exported document (the XPath `.//Relationships/Item` from the document node), in the order EXP-615 describes. That includes the envelope's single root item, items nested in the `Relationships` of related items inside `related_id`, and relationship items of relationship items.
@@ -41,6 +45,8 @@ The package name used is the one the run is exporting (`solutionName`), the item
 For each visited item, the checks of EXP-602 to EXP-605 run in this order. The first one that removes the item ends the visit (the next item is taken). An item that none removes stays.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-602: A relationship item needs a type
 
@@ -52,6 +58,8 @@ For each visited item, the checks of EXP-602 to EXP-605 run in this order. The f
 Both abort the export of this item (EXP-617).
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-603: A relationship whose type is in an unknown package is removed
 
@@ -69,6 +77,8 @@ When the lookup fails the visit fails with the `CItemException` of that request,
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-604: In a core package, a relationship item that is itself in an unknown package is removed
 
 [14.0.7] This check runs only when the exported package is a core package (EXP-616) and the item survived EXP-603.
@@ -82,6 +92,8 @@ A table entry is added with reason *relationship*:
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-605: A relationship item whose related item is in an unknown package is removed
 
 [14.0.7] This check runs for the items that survived EXP-603 and EXP-604, and only for those that have a `related_id` child (the first one; `./related_id`). Without one the visit ends.
@@ -92,6 +104,8 @@ The related item's id `c` comes from `GetRelatedItemConfigId` (EXP-618). The ite
 - to: `[{t}].{c}` when the `related_id` element has a `type` attribute `t` (any value, empty included), otherwise `ID='{c}'`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-618: The related item's id
 
@@ -107,6 +121,8 @@ The related item's id `c` comes from `GetRelatedItemConfigId` (EXP-618). The ite
 The export's XSL leaves `<related_id type="X" …><Item type="X" action="get" select="id"><name>…</name></Item></related_id>` for related Methods and Identities (tickets 13 and 14), which is the `get` form: the id is found through the item's unique key, then mapped to the `config_id` for versionable types.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-606: Method references elsewhere are removed with their property element
 
@@ -124,6 +140,8 @@ The stubs come from the XSL's Method templates: the properties that point to a M
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ## Which packages are "unknown"
 
 ### EXP-607: The test for "belongs to an unknown package"
@@ -139,6 +157,8 @@ The candidate list and the dependency list are read before the loop, so R3, R4 a
 An id that belongs to a core package or to a dependency of `p` is therefore never removed, and neither is an id that belongs to no package at all.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-608: The metadata the test reads
 
@@ -159,6 +179,8 @@ An id that belongs to a core package or to a dependency of `p` is therefore neve
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-609: What is kept between items and runs
 
 [14.0.7] Four caches serve the lookups: element-id sets by package name (R1), relationship type ids by name (R2), the non-core name list (R3) and dependency names by package name (R4 and R5). None expires. The first three are emptied whenever a `CItemHelper` is constructed, so each run starts clean. The fourth is not (EXP-619). All are shared by every package exported in the run: a referenced package's export reuses what the main package's export loaded, and the dependency list of each package name is asked once.
@@ -167,11 +189,15 @@ An error in the lookups of R1, R2, R4 and R5 is not cached: the next use asks ag
 
 [12.0] Same as 14.0.7.
 
+[14.35] The same four caches, with the same resets: the constructors of `CItemHelper` replace the element-id, relationship-type and non-core caches, and the dependency table is a `static readonly` field that no constructor replaces (EXP-619). The caches are now thread-safe, because the workers of a package export (EXP-551) share them. The element-id cache holds a `Lazy` per package name, made by `GetOrAdd`: the first worker that needs a name runs the lookup and the others wait for its result, so R1 is sent once per name, and **a lookup that failed stays failed** for the run (EXP-621). The relationship type ids and the dependency names are filled by `GetOrAdd(key, factory)`, whose factory runs outside the lock: two workers that miss the same key together may both send R2, or R4 and R5, and one result is kept; a failure there is not cached, as in 14.0.7. The non-core list (R3) is still a plain field that the first need creates empty and fills (EXP-620). The port sends one request per name for R1; for the others a repeat is possible, as in the engine, and the comparison of EXP-558 takes the requests as a set.
+
 ### EXP-619: The dependency cache outlives the run (bug)
 
 [14.0.7] The dependency cache is a `static readonly` table that no constructor resets. A second run in the same process that exports a package whose dependencies were read in an earlier run reuses the old list, even when the database or the connection changed. The CLI runs once per process, so it never shows; a library caller that exports twice in one process sees it. The port keeps this cache at module level, shared by all runs of one process, and does not reset it. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same: `MDependsOnPackages` is a `static readonly` `ConcurrentDictionary` that no constructor replaces. The port keeps the cache at module level and does not reset it.
 
 ### EXP-620: A failed list of non-core packages is cached empty (bug)
 
@@ -179,6 +205,12 @@ An error in the lookups of R1, R2, R4 and R5 is not cached: the next use asks ag
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same: `GetNonCorePackageNames` creates the list before it sends the request. The workers that run during the failure all find it empty.
+
+
+### EXP-621: A failed lookup of a package's element ids stays failed (bug)
+
+[14.35] The element-id cache is a `ConcurrentDictionary` of `Lazy<Hashtable>` (EXP-609). A `Lazy` made with a factory alone runs it once, and when the factory throws it keeps the exception and throws it again on every later `Value`. So when R1 for a package fails (a transport error, or any fault: `applyAML` throws for all of them), every later check in the run that needs that package's element ids gets the same exception, without a request, where 14.0.7 and 12.0 ask again (EXP-609). The check fails the item that needed it; the exception is the first one, with its first stack. The cache is emptied by the next `CItemHelper`. *Inferred from the code, not seen on dev:* a failing R1 needs a failure of the connection during a run. The port keeps the failed lookup in the cache for 14.35 only. Registered in `bugs.md`.
 ## Removal and the table
 
 ### EXP-610: Removing a relationship item
@@ -189,6 +221,8 @@ A removal can happen on an item that is no longer part of the document (EXP-615)
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-611: The table of removed references
 
 [14.0.7] The table is a .NET Framework `Hashtable`. Its key is the string `from` followed by `to` (no separator) of the entry, and its value the entry: the two strings and the reason (*type*, *relationship* or *item*). An entry is added only when its key is not already present (`ContainsKey`, then `Add`), so nothing is ever overwritten or removed, and two removals with the same from and to count once. For the *type* and *relationship* forms the from has no item id, so two items of one type and keyed name share an entry; for the *item* forms of EXP-605 the id is part of it, and for EXP-606 it is not.
@@ -196,6 +230,8 @@ A removal can happen on an item that is no longer part of the document (EXP-615)
 The table lives for one `ExportProc` run (one package), and entries added before an error stay in it (EXP-617).
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ### EXP-612: Insertion order decides the log order
 
@@ -208,6 +244,8 @@ The table lives for one `ExportProc` run (one package), and entries added before
 The Hashtable's one non-deterministic regime (more than 100 collisions in one insertion, ticket 07) cannot occur with these keys.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Log and warning
 
@@ -232,6 +270,8 @@ The blocks are written only when the loop ran to its end. When the run is cancel
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ### EXP-614: The warning
 
 [14.0.7] When the mode is `RemoveWithWarning` and the table has at least one entry, the warning channel gets, right after the blocks, once for this `ExportProc` run, the text:
@@ -243,6 +283,8 @@ There are references to unknown packages that were removed during the export of 
 with the name of the package this run exported (the referenced package's own name in a referenced-items pass). The message is only delivered to the host's `warning` handler (ticket 16 specifies the channels); its answer is ignored. Under `RemoveSilently` the log blocks are written and there is no warning. Then `end of execution : {date}` and `completed` follow as usual.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Walking the document while removing
 
@@ -288,6 +330,8 @@ advance(): loop
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same: the loops are the same `foreach` over `SelectNodes` while removing, on the same framework (the host's CLR is 4.0.30319). The workers of a package each remove from their own item's document, so the loops do not race.
+
 ## Errors
 
 ### EXP-617: Which errors escape, and what they leave behind
@@ -298,6 +342,8 @@ The `NullReferenceException` cases of this area are: a relationship item with no
 
 [12.0] Same as 14.0.7.
 
+[14.35] Same as 14.0.7.
+
 ## Core packages
 
 ### EXP-616: The core package test
@@ -305,6 +351,8 @@ The `NullReferenceException` cases of this area are: a relationship item with no
 [14.0.7] A package name is a core package when it starts with `com.aras.innovator.` and does not start with `com.aras.innovator.solution.`, both prefix tests case-sensitive. The test is `ExportImportBase.IsCorePackage`, the same method the manifest uses, so it is the culture-sensitive `StartsWith` of MAN-031 with the code point differences recorded there, not an ordinal comparison (the replay of ordinary names cannot tell them apart; the soft hyphen and the other ignorable code points of MAN-031 can). The name `com.aras.innovator.solution.` itself is non-core, and `com.aras.innovator.` followed by any other text is core; every `com.aras.defaults.*` name is non-core here. `IsStandardPackage` and the output directory layout, which treat `com.aras.defaults.*` as standard, are specified with the file layout (ticket 15).
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## Worked example
 
@@ -324,4 +372,4 @@ With `RemoveSilently` the same files and blocks result and there is no warning; 
 - The unique-key lookup, `IsVersionable` and `GetConfigId` requests (groups 4, 12 and 13) and their caches: export requests (ticket 11).
 - The messages channels, the error question and the log header and footer: orchestration (ticket 16).
 - `RemoveNamespaceNodes` and `RemoveEmptyRelationships`, which run after this step: post-processing (ticket 15).
-- 12.0 differences: none; every rule here has a `[12.0]` variant that says so (ticket 46). 14.35 differences: tickets 51 and 52.
+- 12.0 differences: none; every rule here has a `[12.0]` variant that says so (ticket 46). 14.35 differences: the thread-safe caches, EXP-609 and EXP-621; every other rule has a `[14.35]` variant that says it is the same (ticket 76).

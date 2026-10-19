@@ -111,7 +111,10 @@ describe("the scan runs for every import, whatever Languages is (IMP-610)", () =
 
   it("fails on a file that is not XML even with no selection (bad-file-no-languages-option)", async () => {
     const built = await build({ P1: { "readme.xml": "not xml" } }, null);
-    expect(exceptionText(built.thrown)).toBe("System.AggregateException: One or more errors occurred.");
+    // the first line of Exception.ToString() continues with the inner exception's (the oracle's host shows it so)
+    expect(exceptionText(built.thrown)).toBe(
+      "System.AggregateException: One or more errors occurred. ---> System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.",
+    );
     expect(exceptionText((built.thrown as AggregateException).innerExceptions[0])).toBe(
       "System.Xml.XmlException: Data at the root level is invalid. Line 1, position 1.",
     );
