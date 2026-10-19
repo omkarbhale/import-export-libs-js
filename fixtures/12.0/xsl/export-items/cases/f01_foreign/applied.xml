@@ -1,0 +1,4 @@
+<AML><Item type="ItemType" id="IT1" action="add"><name>Child</name><Relationships>
+<Item type="Property" id="PA" action="add"><name>parent</name><data_type>item</data_type><data_source keyed_name="Parent" name="Parent" type="ItemType">IT0</data_source><source_id keyed_name="Child" type="ItemType">IT1</source_id></Item>
+<Item type="Property" id="PB" action="add"><name>pname</name><data_type>foreign</data_type><data_source><Item type="Property" action="get" select="id"><name></name><source_id>IT1</source_id></Item></data_source><foreign_property><Item type="Property" action="get" select="id"><keyed_name>name</keyed_name><source_id><Item type="ItemType" action="get" select="id"><name></name></Item></source_id></Item></foreign_property><source_id keyed_name="Child" type="ItemType">IT1</source_id></Item>
+</Relationships></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Child'" /></AML>

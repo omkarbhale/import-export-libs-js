@@ -64,6 +64,18 @@ That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/`
 
 `--engine 12.0` records the same catalogue from engine 12.0 into `fixtures/12.0/export/` (ticket 48); `fixtures/12.0/README.md` maps the 12.0 variant rules to cases. The same flag works for `oracle:export-scratch-cases` and `oracle:import-cases`.
 
+## Engine diffs
+
+```sh
+npm run oracle:engine-diff                                  # compare the committed fixtures of the three engines; no server
+npm run oracle:engine-diff -- --write                       # re-pin fixtures/engine-diffs/ after a re-record
+ARAS_PASSWORD=… npm run oracle:engine-diff -- --live <dir>  # record the catalogue again, on all three engines, then compare
+```
+
+Ticket 64. It compares the export fixtures of 12.0 and 14.0.7, and of 14.0.7 and 14.35, case by case (`oracle/src/engine-diff.ts`): the output folders byte for byte, then the host exit, the calls, the messages and the engine log (with times and paths left out). It also compares `export.xsl` on the same inputs across the three engines (`fixtures/<engine>/xsl/export`, `export-items` and `export-fix`). `fixtures/engine-diffs/` pins the result, and `oracle/src/engine-diff.test.ts` fails on any change and on a difference that no rule explains. `roadmap/engine-diffs.md` reads it.
+
+`--live <dir>` is read-only on dev. It records ticket 05's catalogue (the cases every engine has; not the scratch-seeded ones, which need `oracle:export-scratch-cases`) into `<dir>/<engine>/<case>/`, one case after the other so that all three engines see the same dev state, skips a case that is already there, and then prints the comparison and how far each engine's new output is from its committed fixtures.
+
 ## The DB patch command
 
 ```sh
@@ -138,7 +150,7 @@ For each input the host does two things on fresh documents, in `host/xsl-probe.p
 
 The stylesheet is never written out: `run.json` holds only its size and sha256. The source document is loaded as the engine loads it: with whitespace kept for `export.xsl` (IOM's response DOM) and dropped for `build.xsl` (`CreateNewXmlDocument()`). `--culture` sets the thread's culture, which `build.xsl`'s `xsl:sort` follows (ticket 06 X7); the culture used is recorded, and is the host's own (`en-IN` on dev) when not given.
 
-The folder it writes holds `run.json` (engine, toolset identity, stylesheet size and hash, `PreserveWhitespace`, culture, CLR, and per case the input hash, source and the outcome of each step) and `cases/<name>/` with `input.xml`, `transform.xml` and `applied.xml`. Inputs are scrubbed before the engine sees them, so every output derives from the committed input. Recordings are committed as `fixtures/<engine>/xsl/<set>/` (`export`, `export-items`, `export-fix`, `build`, and `build-sv-SE` for the culture case), and `oracle/src/xsl-fixtures.ts` loads them for the unit tests that replay them on any OS. `oracle/src/xsl.test.ts` checks every recording against its vendored `Libs.dll` and the case inputs it came from.
+The folder it writes holds `run.json` (engine, toolset identity, stylesheet size and hash, `PreserveWhitespace`, culture, CLR, and per case the input hash, source and the outcome of each step) and `cases/<name>/` with `input.xml`, `transform.xml` and `applied.xml`. Inputs are scrubbed before the engine sees them, so every output derives from the committed input. Recordings are committed as `fixtures/<engine>/xsl/<set>/` (`export`, `export-items`, `export-fix` and `build` for every engine, and `build-sv-SE` for the culture case, 14.0.7 only), and `oracle/src/xsl-fixtures.ts` loads them for the unit tests that replay them on any OS. `oracle/src/xsl.test.ts` checks every recording against its vendored `Libs.dll` and the case inputs it came from.
 
 ## Import fixture cases
 

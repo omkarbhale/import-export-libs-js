@@ -1,0 +1,1 @@
+<AML><Item type="A" id="1" action="add"><x:Result xmlns:x="urn:x">t</x:Result><y><Item type="Identity" action="get" select="id"><name>World</name></Item></y></Item></AML>

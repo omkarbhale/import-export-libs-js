@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><filter_xml><![CDATA[a<b>&c]]></filter_xml></Item></AML>

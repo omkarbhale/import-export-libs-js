@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><m:method_code xmlns:m="urn:m">x</m:method_code><method_code xmlns="urn:d">y</method_code></Item></AML>

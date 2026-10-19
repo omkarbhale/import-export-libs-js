@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="View" id="V"><role keyed_name="World" type="Identity">a<b/>c</role><role keyed_name="Acme" type="Identity">a<b>x</b>c</role><role>plain</role><role keyed_name="Owner"/></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

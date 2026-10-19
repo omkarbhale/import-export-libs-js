@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><Relationships><Item type="DiscussionTemplate" id="D1" action="add"><Relationships><Item type="FeedTemplate" id="FT1" action="add"><Relationships><Item type="FileSelectorTemplate" id="FS1" action="add"><reference>a &lt; b</reference></Item></Relationships></Item></Relationships></Item></Relationships></Item></AML>

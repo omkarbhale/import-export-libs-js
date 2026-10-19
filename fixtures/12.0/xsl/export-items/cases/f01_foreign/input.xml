@@ -1,0 +1,4 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" id="IT1"><name>Child</name><Relationships>
+<Item type="Property" id="PA"><name>parent</name><data_type>item</data_type><data_source keyed_name="Parent" name="Parent" type="ItemType">IT0</data_source><source_id keyed_name="Child" type="ItemType">IT1</source_id></Item>
+<Item type="Property" id="PB"><name>pname</name><data_type>foreign</data_type><data_source keyed_name="parent" type="Property">PA</data_source><foreign_property keyed_name="name" type="Property">PX</foreign_property><source_id keyed_name="Child" type="ItemType">IT1</source_id></Item>
+</Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

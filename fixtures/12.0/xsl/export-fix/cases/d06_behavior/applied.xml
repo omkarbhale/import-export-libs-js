@@ -1,0 +1,1 @@
+<AML><Item type="ItemType" id="1" action="add" /><Item type="View" action="delete" where="source_id='1'" /><Item type="Form" action="delete" where="name=''" /></AML>

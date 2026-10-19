@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="A" id="1" xmlns:i18n="http://www.aras.com/I18N"><label i18n:x="1" xml:lang="en">l</label><Relationships><Item type="B" id="2" xmlns:foo="urn:foo" foo:a="1"><n xmlns:bar="urn:bar">v</n></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

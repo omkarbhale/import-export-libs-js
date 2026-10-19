@@ -1,0 +1,9 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships>
+<Item type="View" id="V1" action="add" />
+<Item type="View" id="V2" action="add"><role></role></Item>
+<Item type="View" id="V3" action="add"><role type="Identity">R3</role></Item>
+<Item type="View" id="V4" action="add"><role keyed_name="World" type="Identity" is_null="0"><Item type="Identity" action="get" select="id"><name>World</name></Item></role></Item>
+<Item type="View" id="V5" action="add"><role keyed_name="World|Creator" type="Identity"><Item type="Identity" action="get" select="id"><name>World|Creator</name></Item></role></Item>
+<Item type="View" id="V6" action="add"><role keyed_name="Acme" type="Identity" z="1">nested</role></Item>
+<Item type="View" id="V7" action="add"><role keyed_name="World" type="Identity"><Item type="Identity" action="get" select="id"><name>World</name></Item></role></Item>
+</Relationships></Item></AML>

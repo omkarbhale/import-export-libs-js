@@ -1,0 +1,10 @@
+<AML><Item type="Form" id="F1" action="add"><name>f</name><Relationships>
+<Item type="Body" id="B1" action="add"><Relationships>
+<Item type="Field" id="FL1" action="add"><name>f1</name><propertytype_id keyed_name="name" type="Property">PR1</propertytype_id></Item>
+<Item type="Field" id="FL2" action="add"><name>f2</name></Item>
+<Item type="Field" id="FL3" action="add"><name>f3</name><propertytype_id keyed_name="zz" type="Property">PR3</propertytype_id></Item>
+<Item type="Field" id="FL4" action="add"><name>f4</name></Item>
+<Item type="Field" id="FL5" action="add"><name>f5</name><propertytype_id keyed_name="x" type="Property">PR5</propertytype_id></Item>
+<Item type="Field" id="FL6" action="add"><name>f6</name><propertytype_id keyed_name="x" type="Property">PR6</propertytype_id></Item>
+<Item type="Other" id="O1" action="add"><propertytype_id keyed_name="x" type="Property">O1P</propertytype_id></Item>
+</Relationships></Item></Relationships></Item><Item type="Field" id="FL2" action="edit"><!-- Please note: this AML depends on the "Part" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name>id</name><source_id type="ItemType" keyed_name="Part">T1</source_id></Item></propertytype_id></Item></AML>

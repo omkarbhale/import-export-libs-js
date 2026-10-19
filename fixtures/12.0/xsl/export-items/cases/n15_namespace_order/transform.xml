@@ -1,0 +1,1 @@
+<AML><Item type="A" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:q="urn:q" xmlns:r="urn:r" xmlns:s="urn:s" xmlns:t="urn:t"><Relationships><Item type="B" id="2" action="add"><x xmlns:u="urn:u" xmlns:v="urn:v" /></Item></Relationships></Item></AML>

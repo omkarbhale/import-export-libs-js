@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><Relationships><Item type="Identity" action="get" select="id"><name>World|Creator</name></Item><Item type="Identity" action="get" select="id"><name>Creator|Owner</name></Item>I3I4</Relationships></Item></AML>

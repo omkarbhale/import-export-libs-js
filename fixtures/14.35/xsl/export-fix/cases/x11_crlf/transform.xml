@@ -1,0 +1,2 @@
+<AML><Item type="Variable" id="V1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><name>n</name><default_value>a
+b</default_value></Item></AML>

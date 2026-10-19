@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><xsl>a&lt;b&gt;&amp;c</xsl></Item></AML>

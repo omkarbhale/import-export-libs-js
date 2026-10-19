@@ -1,0 +1,1 @@
+<AML><Item type="ItemType" id="IT1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><name>IT1</name><Relationships><Item type="Property" id="P1" action="add"><name>p</name></Item></Relationships></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='IT1'" /></AML>

@@ -1,0 +1,4 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships><Item type="ItemType" id="IT" action="add"><Relationships><Item type="DiscussionTemplate" id="D" action="add"><Relationships><Item type="FeedTemplate" id="F" action="add"><Relationships><Item type="FileSelectorTemplate" id="S" action="add"><reference><![CDATA[line1
+line2
+line3
+x	tab '"&amp;]]></reference></Item><Item type="FileSelectorTemplate" id="S2" action="add"><reference><![CDATA[]]></reference></Item><Item type="FileSelectorTemplate" id="S3" action="add"><reference><![CDATA[axc]]></reference></Item><Item type="FileSelectorTemplate" id="S4" action="add"><reference><![CDATA[cdata ]]> end]]></reference></Item></Relationships></Item></Relationships></Item></Relationships></Item></Relationships></Item></AML>

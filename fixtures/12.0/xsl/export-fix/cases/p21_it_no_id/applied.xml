@@ -1,0 +1,1 @@
+<AML><Item type="ItemType" action="add"><name>Foo</name><Relationships /></Item><Item type="ItemType" action="edit"><Relationships><Item type="Property" id="P1" action="add"><name>k</name><is_keyed>1</is_keyed></Item></Relationships></Item><Item type="View" action="delete" where="source_id=''" /><Item type="Form" action="delete" where="name='Foo'" /></AML>

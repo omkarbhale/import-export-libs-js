@@ -6,7 +6,7 @@ Recorded from engine 12.0.0.13341 (`Libs.dll` MVID `73656177-…`, ticket 48) on
 |---|---|---|
 | [`export/`](export/README.md) | ticket 05's export catalogue and option matrix (read-only), plus the scratch-seeded export cases | `npm run oracle:export-cases -- --engine 12.0`, `npm run oracle:export-scratch-cases -- --engine 12.0` |
 | [`import/`](import/README.md) | ticket 05's scratch packages, manifest and file-system cases and option matrix (`LIBSJS-SCRATCH-*` only, cleaned up), plus three cases that exist only for 12.0 | `npm run oracle:import-cases -- --engine 12.0` |
-| `xsl/` | `export.xsl` and `build.xsl` run on given documents (ticket 68) | `npm run oracle -- --engine 12.0 xsl …` |
+| `xsl/` | `export.xsl` and `build.xsl` run on given documents (ticket 68); `export-items` and `export-fix` are the 14.0.7 sets run again for the engine diffs (ticket 64) | `npm run oracle -- --engine 12.0 xsl …` |
 
 The password arrives through `ARAS_PASSWORD` or stdin. Every import and seed deleted what it created; each case README lists the ids created and deleted.
 

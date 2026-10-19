@@ -1,0 +1,1 @@
+<AML><Item type="A" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><x:Result xmlns:x="urn:x">I</x:Result><AML><Item type="Method" id="M" action="add"><n>m</n></Item></AML></Item></AML>

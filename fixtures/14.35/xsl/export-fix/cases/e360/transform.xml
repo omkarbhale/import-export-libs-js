@@ -1,0 +1,2 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><method_code><![CDATA[a]]]]><![CDATA[>b <x> &
+line2]]></method_code><event_data /><query><![CDATA[   ]]></query><condition>a&lt;b</condition></Item></AML>

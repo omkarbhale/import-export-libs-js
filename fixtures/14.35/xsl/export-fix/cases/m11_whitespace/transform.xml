@@ -1,0 +1,7 @@
+<AML><Item type="Foo" id="F1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+ <Relationships>
+  
+ </Relationships>
+</Item><Item type="Member" id="M1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <name>n</name>
+  </Item></AML>

@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add"><stylesheet><![CDATA[a<b>&c]]></stylesheet></Item></AML>

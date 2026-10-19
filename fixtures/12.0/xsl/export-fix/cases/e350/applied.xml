@@ -1,0 +1,1 @@
+<AML><Item type="Identity" id="ID1" action="add"><name>I</name><Relationships /></Item><Item type="Member" id="M1" action="add"><source_id keyed_name="I" type="Identity">ID1</source_id><related_id keyed_name="World" type="Identity"><Item type="Identity" action="get" select="id"><name>World</name></Item></related_id></Item></AML>

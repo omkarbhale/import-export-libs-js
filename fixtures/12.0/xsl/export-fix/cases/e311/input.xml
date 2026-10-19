@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><id>i</id><config_id>c</config_id><x><state>s</state></x><sort_order>128</sort_order><keyed_name type="x"><Item type="Foo" id="9"/></keyed_name></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

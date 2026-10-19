@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Method" id="M1" keyed_name="mm"><name>mm</name><method_code><![CDATA[a]]]]><![CDATA[>b]]></method_code></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

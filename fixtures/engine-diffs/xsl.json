@@ -1,0 +1,579 @@
+[
+  {
+    "left": "12.0",
+    "right": "14.0.7",
+    "set": "export",
+    "cases": 16,
+    "onlyLeft": [],
+    "onlyRight": [
+      "recorded-11"
+    ],
+    "differing": []
+  },
+  {
+    "left": "14.0.7",
+    "right": "14.35",
+    "set": "export",
+    "cases": 16,
+    "onlyLeft": [
+      "recorded-11"
+    ],
+    "onlyRight": [],
+    "differing": [
+      {
+        "name": "report-is-null-method",
+        "transform": true,
+        "applied": true
+      }
+    ]
+  },
+  {
+    "left": "12.0",
+    "right": "14.0.7",
+    "set": "export-items",
+    "cases": 138,
+    "onlyLeft": [],
+    "onlyRight": [],
+    "differing": []
+  },
+  {
+    "left": "14.0.7",
+    "right": "14.35",
+    "set": "export-items",
+    "cases": 138,
+    "onlyLeft": [],
+    "onlyRight": [],
+    "differing": [
+      {
+        "name": "i07_identity_prop_edge",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m02_method_valued",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m05_method_in_relat_attrs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p01_field",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "q10_grid_event_other_places",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "r17_empty_vs_open",
+        "transform": true,
+        "applied": true
+      }
+    ]
+  },
+  {
+    "left": "12.0",
+    "right": "14.0.7",
+    "set": "export-fix",
+    "cases": 424,
+    "onlyLeft": [],
+    "onlyRight": [],
+    "differing": [
+      {
+        "name": "a15_system_prop_with_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a18_keyed_ccr",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a19_ccr_related_unkeyed",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "c01_08_implementation_query",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "c01_11_event_data",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "c42_inside_nonitem",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "c45_member_fix",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "c46_property_fix",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "d16_user_pwd",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "d18_user_pwd_empty",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "e324",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p05_ccr_variants",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "q_ccr_pipe",
+        "transform": true,
+        "applied": true
+      }
+    ]
+  },
+  {
+    "left": "14.0.7",
+    "right": "14.35",
+    "set": "export-fix",
+    "cases": 424,
+    "onlyLeft": [],
+    "onlyRight": [],
+    "differing": [
+      {
+        "name": "a02_keyed_system_name",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a04_modified_behavior_readonly",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a09_default_value_present",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a11_default_value_empty",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a15_system_prop_with_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a16_system_prop_empty_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a17_custom_with_key_and_modified",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a18_keyed_ccr",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a20_modified_where_quote",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a24_system_name_with_is_keyed_template",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "a25_two_modified_order",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "d11_item_behavior",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "e320",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "e322b",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "i06_where_prop_newline",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_column_alignment_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_column_alignment_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_column_width_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_data_type_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_data_type_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_default_value_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_hidden2_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_hidden2_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_hidden_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_hidden_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_keyed_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_is_keyed_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_order_by_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_readonly_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_readonly_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_stored_length_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_behavior_stored_length_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_column_alignment_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_column_alignment_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_column_width_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_data_type_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_data_type_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_default_value_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_hidden2_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_hidden2_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_hidden_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_hidden_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_keyed_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_is_keyed_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_readonly_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_readonly_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_is_current_stored_length_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_column_alignment_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_column_alignment_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_column_width_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_data_type_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_data_type_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_default_value_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_hidden2_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_hidden2_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_hidden_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_hidden_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_keyed_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_is_keyed_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_order_by_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_readonly_abs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_readonly_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "m_related_id_stored_length_mut",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "n02_it_ns",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p02_two_names_mod",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p04_ws_comment_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p17_rt_with_modified",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p20_it_edit_no_attrs",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "p23_root_rt_nested_other",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t01_comment_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t02_pi_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t03_text_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t06_ws_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t07_two_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t09_member_only_rels",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t11_both_branches_once",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t16_label_two",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t17_ws_values",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t18_col_width_ws",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t19_stored_len_zero",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t21_default_isnull0",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t22_two_defaults",
+        "transform": true,
+        "applied": true
+      },
+      {
+        "name": "t24_dup_children_second",
+        "transform": true,
+        "applied": true
+      }
+    ]
+  }
+]

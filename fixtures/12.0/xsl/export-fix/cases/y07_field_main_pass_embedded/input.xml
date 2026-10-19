@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Form" id="FO"><Relationships><Item type="Field" id="A"><propertytype_id keyed_name="custom" type="Property"><Item type="Property" id="PQ"><name>id</name></Item></propertytype_id></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

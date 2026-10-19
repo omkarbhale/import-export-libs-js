@@ -1,0 +1,1 @@
+<AML><Item type="RelationshipType" id="RT1" action="add"><name>rt</name><relationship_id keyed_name="Bar" type="ItemType">IT2</relationship_id></Item></AML>

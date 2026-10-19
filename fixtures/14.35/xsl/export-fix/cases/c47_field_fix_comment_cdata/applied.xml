@@ -1,0 +1,1 @@
+<AML><Item type="Field" id="FL1" action="add" /><Item type="Field" id="FL1" action="edit"><!-- Please note: this AML depends on the "query" ItemType. Please make sure it exists before running this. --><propertytype_id><Item type="Property" action="get" select="id"><name>id</name><source_id type="ItemType" keyed_name="query">I1</source_id></Item></propertytype_id></Item></AML>

@@ -1,0 +1,8 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" id="IT1"><name>T</name><Relationships>
+<Item type="Property" id="P1"><name>state</name><source_id keyed_name="T" type="ItemType">IT1</source_id><Relationships><Item type="Grid Event" id="GE1"><source_id keyed_name="state" type="Property">P1</source_id><related_id keyed_name="ev" type="Method">M1</related_id><grid_event>onSearch</grid_event></Item></Relationships></Item>
+<Item type="Property" id="P2"><name>customp</name><source_id keyed_name="T" type="ItemType">IT1</source_id><Relationships><Item type="Grid Event" id="GE2"><source_id keyed_name="customp" type="Property" extra="e">P2</source_id><related_id keyed_name="ev" type="Method">M1</related_id></Item></Relationships></Item>
+<Item type="Property" id="P3"><source_id keyed_name="T" type="ItemType">IT1</source_id><Relationships><Item type="Grid Event" id="GE3"><source_id keyed_name="x" type="Property">P3</source_id></Item></Relationships></Item>
+<Item type="Property" id="P4"><name>id</name><Relationships><Item type="Grid Event" id="GE4"><source_id>P4</source_id></Item><Item type="Other" id="GE5"><source_id>P4</source_id></Item></Relationships></Item>
+<Item type="Property" id="P5"><name>behavior|state</name><source_id>IT1</source_id><Relationships><Item type="Grid Event" id="GE6"><source_id keyed_name="k">P5</source_id></Item></Relationships></Item>
+<Item type="Property" id="P6"><name>team_id</name><Relationships><Item type="Grid Event" id="GE7"><source_id/></Item></Relationships></Item>
+</Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
