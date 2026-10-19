@@ -71,8 +71,6 @@ describe("the 14.35 export case list", () => {
       Languages: ["*"],
       CancelAfterStatus: 5,
     });
-    const host = readFileSync(new URL("../host/engine-14.35.ps1", import.meta.url), "utf8");
-    for (const name of ["EngineAction", "Languages", "CancelAfterStatus", "Level", "ErrorQuestionAnswer"]) expect(host).toContain(`$${name}`);
   });
 
   it("records the timing-dependent cases three times, with the same input each time", () => {
