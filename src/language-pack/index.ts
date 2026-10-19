@@ -8,5 +8,5 @@ export type { Translations } from "./edit-item.js";
 export { toLowerInvariant } from "./invariant-lower.js";
 export { languagePackImport } from "./lp-import.js";
 export type { LanguagePackImportOptions } from "./lp-import.js";
-export { LP_ENGINES, LanguagePackPreprocessor, getItemCount, itemTypeName, leftBehindTempFolder } from "./preprocessor.js";
+export { LP_ENGINES, LanguagePackPreprocessor, getItemCount, itemTypeName, itemTypeNameWithoutExtension, leftBehindTempFolder } from "./preprocessor.js";
 export type { LanguagePackOptions } from "./preprocessor.js";

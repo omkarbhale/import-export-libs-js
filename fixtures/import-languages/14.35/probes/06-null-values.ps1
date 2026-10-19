@@ -4,11 +4,12 @@
 $i18n = 'xmlns:i18n="http://www.aras.com/I18N"'
 function Lbl([string]$lang, [string]$text) { "<i18n:label $i18n xml:lang=""$lang"">$text</i18n:label>" }
 $script:propAnswer = $null; $script:langAnswer = $null
-function Run([string]$label, [string]$xml, [string]$propAnswer, [string]$langAnswer = $DefaultLangsSfx, [int[]]$ver = @(12, 0, 9, 24090, 0), [switch]$batch, [bool]$merge = $false) {
-  $script:propAnswer = $propAnswer; $script:langAnswer = $langAnswer
+function Run([string]$label, [string]$xml, [string]$propAnswer, [string]$langAnswer = $DefaultLangsSfx, [int[]]$ver = @(12, 0, 9, 24090, 0), [switch]$batch, [bool]$merge = $false, [switch]$sqlFault) {
+  $script:propAnswer = $propAnswer; $script:langAnswer = $langAnswer; $script:sqlFault = $sqlFault.IsPresent
   $w = New-World; $script:w = $w
   $respond = {
     param($r)
+    if ($r -like '<sql>*' -and $script:sqlFault) { return (Fault '5' 'sql boom') }
     if ($r -like '*type="Language"*action="get"*') { return $script:langAnswer }
     if ($r -like '*type="Property"*action="get"*select="id[[]is_not_null()[]]*') { return $script:propAnswer }
     return (Model-Respond $script:w $r)
@@ -59,6 +60,9 @@ Run 'child-with-other-prefix' (PropItem '<x:label xmlns:x="urn:x" xml:lang="de">
 Run 'only-plain-children-nothing-is-sent' (PropItem '<default_value>dv</default_value><data_type>string</data_type>') (PropGet 'source_id')
 Run 'empty-lang-attribute-skipped' (PropItem ('<label xml:lang="">x</label>' + (Lbl 'de' 'y'))) (PropGet 'source_id')
 Run 'element-with-nested-markup' (PropItem ('<i18n:label ' + $i18n + ' xml:lang="de">a<b>b</b>c</i18n:label>')) (PropGet 'source_id')
+Run 'sql-fault' $std (PropGet 'source_id') $DefaultLangsSfx @(12, 0, 9, 24090, 0) -sqlFault
+Run 'text-child-in-the-item' (PropItem ('text<default_value>dv</default_value>' + $lbl2)) (PropGet 'source_id')
+Run 'comment-child-in-the-item' (PropItem ('<!--c-->' + $lbl2)) (PropGet 'source_id')
 Run 'batch-mode-sql-still-sent' $std (PropGet 'source_id') $DefaultLangsSfx @(12, 0, 9, 24090, 0) -batch
 Run 'batch-mode-other-property-not-sent' $std (PropGet 'label') $DefaultLangsSfx @(12, 0, 9, 24090, 0) -batch
 Run 'merge-mode-edit-item' $std (PropGet 'source_id') $DefaultLangsSfx @(12, 0, 9, 24090, 0) -merge $true

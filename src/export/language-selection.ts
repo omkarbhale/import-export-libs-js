@@ -39,24 +39,30 @@ export async function throwIfNoSelectedLanguagesInDatabase(helper: CItemHelper, 
 }
 
 /**
- * The language work of `ImportExportManager`'s constructor for a context (LP-110), after the checks and the manifest handling:
+ * The language work of `ImportExportManager`'s constructor for a context (LP-110), after the checks, the manifest handling and, for an
+ * import, the scan of the manifest's packages (IMP-610):
  *
- * 1. In a language mode, a list that is exactly `["*"]` becomes the codes of the server's languages (LP-111).
+ * 1. A list that is exactly `["*"]` becomes the codes of the server's languages in a language mode (LP-111), and the codes the
+ *    packages use in an import (IMP-620, `usedByImport`).
  * 2. In a language mode the list becomes the entries other than `en`, compared exactly (LP-112). A null list throws
  *    `ArgumentNullException` (LP-113).
- * 3. The installed-language check runs on the list (LP-114), for every action.
+ * 3. The installed-language check runs on the list (LP-114, IMP-621), for every action.
  *
  * The list is assigned to the context the caller passed, not to a copy, so a constructor that throws leaves it as it stood when it
- * threw. The import side of the list, the scan of the manifest's packages and the expansion of `*` for an import, is the import
- * area's (`IMP-610` to `IMP-623`) and is not done here.
+ * threw.
  *
- * @spec LP-110 LP-111 LP-112 LP-113 LP-181
+ * @spec LP-110 LP-111 LP-112 LP-113 LP-181 IMP-620 IMP-621
  */
-export async function resolveLanguages(context: SolutionUpgradeContext, helper: CItemHelper): Promise<void> {
+export async function resolveLanguages(
+  context: SolutionUpgradeContext,
+  helper: CItemHelper,
+  usedByImport?: () => string[],
+): Promise<void> {
   const languageMode = isLanguageMode(context.action);
   const languages = context.languages;
-  if (languages !== null && languages.length === 1 && languages[0] === "*" && languageMode) {
-    context.languages = await installedCodes(helper);
+  if (languages !== null && languages.length === 1 && languages[0] === "*") {
+    if (languageMode) context.languages = await installedCodes(helper);
+    else if (context.action === "Import" && usedByImport !== undefined) context.languages = usedByImport();
   }
   if (languageMode) {
     if (context.languages === null) throw new ArgumentNullException("source");

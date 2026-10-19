@@ -714,6 +714,22 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Behaviour:** the `UPDATE innovator.PROPERTY` statement of the lpimport branch puts the translated text between `N'` and `'` without doubling an apostrophe, and the column name, suffix and property id unquoted or unescaped. A translation with an apostrophe makes invalid SQL.
 - **Why it is a bug:** a correct engine would double the apostrophes or use parameters.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::SetLocalizedValueViaApplySqlRequest`.
+- **Versions:** 14.35.
+
+## LP-045: a failed SQL update is reported as a parse error of the SQL text
+
+- **Behaviour:** `CItemHelper.applySQL` makes its `CItemException` from the request text indented as XML. The request is the `UPDATE` statement of the lpimport branch, which is not XML, so the exception that leaves it is the parser's `XmlException` (`Data at the root level is invalid. Line 2, position 5.`), which `CImportItems.Import` wraps as `... Can't merge item {where} Property`. The server's fault is lost.
+- **Why it is a bug:** a correct engine would report the server's fault code and text.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::applySQL`, `Aras.Tools.SolutionUpgrade.CItemException::.ctor(string, Item)` and its `GetPrettyXml`.
+- **Versions:** 14.35.
+
+## LP-046: a child of a generated item that is not an element stops the SQL update
+
+- **Behaviour:** the loop over the children of the item casts each to `XmlElement`, so a text node, comment, CDATA section or processing instruction among them throws `System.InvalidCastException` when it is reached.
+- **Why it is a bug:** a correct engine would skip nodes that are not elements.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CImportItems::SetLocalizedValueViaApplySqlRequest`.
+- **Versions:** 14.35.
+
 ## LP-151: an item that writes no file is logged as exported
 
 - **Behaviour:** in `ExportLanguageResourcesOnly`, an item whose answer has no language element makes `CExportItems.Export` return before it creates the type folder or the file. The caller sees a normal return, so the log gets the line `Item id :{id}  keyed_name : {name}   type : {type} successfully exported` and the status message `Item i of n`, for an item that has no file.

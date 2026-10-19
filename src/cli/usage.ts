@@ -50,6 +50,11 @@ const IMPORT_RUN = `Import:
   --description <text>  Their description
   --merge               Merge into existing items instead of skipping them (--no-merge, the default, skips)
   --os-user <name>      The os_user of the rows (default: DOMAIN\\user on Windows, <host>\\<user> elsewhere)
+  --languages <codes|*> Only 14.35: import only the nodes of these languages, a comma-separated list of codes, or * for every
+                        language the packages use. Each code must be installed in the database. Every package is scanned for
+                        the languages it uses, so a stray malformed *.xml file in any package fails the run (14.35's own
+                        behaviour). The list must include en unless it starts with * (the console host's rule; import-language-pack
+                        does not check it).
 `;
 
 const IMPORT_BATCH_ERRORS = `Engine 14.35 only:

@@ -1,6 +1,7 @@
 import type { XmlDocument as Dom } from "../xml/dom.js";
 import { loadXml as loadDom } from "../xml/parser.js";
 import type { ResponseDocument } from "./fault.js";
+import { DotNetException } from "./dotnet.js";
 import { type XmlElement, childElements, descendantElements, innerText, localName, namespaceUri } from "./mini-xml.js";
 
 const SOAP_ENVELOPE = "http://schemas.xmlsoap.org/soap/envelope/";
@@ -21,6 +22,26 @@ export function resultElement(response: ResponseDocument): XmlElement | undefine
 export function resultItems(response: ResponseDocument): XmlElement[] {
   const result = resultElement(response);
   return result ? childElements(result, "Item") : [];
+}
+
+/**
+ * The one item IOM's `getProperty` and `getID` read from an answer. An answer with no item (a fault, an empty result, a response that is
+ * not an envelope) or with several is the engine's `System.Exception` `Not a single item`.
+ */
+export function singleItem(response: ResponseDocument): XmlElement {
+  const [item, ...more] = response.items;
+  if (item === undefined || more.length > 0) throw new DotNetException("System.Exception", "Not a single item");
+  return item;
+}
+
+/**
+ * IOM's `getItemCount()`: the items of a successful answer, 0 for the fault "no items" (faultcode 0), -1 for any other fault and
+ * for an answer without items.
+ * @spec LP-014
+ */
+export function getItemCount(response: ResponseDocument): number {
+  if (response.isError) return response.isEmpty ? 0 : -1;
+  return response.items.length > 0 ? response.items.length : -1;
 }
 
 /** The text of the first child element called `name`, or undefined when the element has none. */

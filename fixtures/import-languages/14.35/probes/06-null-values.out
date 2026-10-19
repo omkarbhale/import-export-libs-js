@@ -143,6 +143,26 @@ request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" actio
 request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
 request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'abc'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
 document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">a<b>b</b>c</i18n:label></Item>"
+## sql-fault
+doImport => Aras.Tools.SolutionUpgrade.CItemException: "Data at the root level is invalid. Line 2, position 5. Can't merge item [Property].id='P1' Property" [faultcode=-1 faultstring="   at System.Xml.XmlTextReaderImpl.Throw(Exception e)\r\n   at System.Xml.XmlTextReaderImpl.ParseRootLevelWhitespace()\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n   at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String xml)\r\n   at Aras.Tools.SolutionUpgrade.CItemException.GetPrettyXml(String plainXml)\r\n   at Aras.Tools.SolutionUpgrade.CItemException..ctor(String requestAML, Item errorItem)\r\n   at Aras.Tools.SolutionUpgrade.CItemHelper.applySQL(String sqlXml)\r\n   at Aras.Tools.SolutionUpgrade.CImportItems.SetLocalizedValueViaApplySqlRequest(XmlNodeList localizableElements, String targetPropertyId)\r\n   at Aras.Tools.SolutionUpgrade.CImportItems.Import(XmlDocument itemInXml, Boolean mergeMode, Boolean amlBatchMode)" faultdetail="Data at the root level is invalid. Line 2, position 5. Can't merge item [Property].id='P1' Property"]
+    inner System.Xml.XmlException: "Data at the root level is invalid. Line 2, position 5."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+request 4 [ApplySQL] => "<sql><Query>\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='PROP1'</Query></sql>"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## text-child-in-the-item
+doImport => System.InvalidCastException: "Unable to cast object of type 'System.Xml.XmlText' to type 'System.Xml.XmlElement'."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\">text<default_value>dv</default_value><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
+## comment-child-in-the-item
+doImport => System.InvalidCastException: "Unable to cast object of type 'System.Xml.XmlComment' to type 'System.Xml.XmlElement'."
+request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"
+request 2 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"id[is_not_null()], keyed_name[is_not_null()]\" where=\"[Property].id='P1'\" />"
+request 3 [ApplyItem] => "<Item isNew=\"1\" isTemp=\"1\" type=\"Language\" action=\"get\" select=\"code, suffix\" />"
+document after => "<Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"edit\" doGetItem=\"0\" where=\"[Property].id='P1'\"><!--c--><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"de\">Etikett</i18n:label><i18n:label xmlns:i18n=\"http://www.aras.com/I18N\" xml:lang=\"fr\">Libelle</i18n:label></Item>"
 ## batch-mode-sql-still-sent
 doImport => ok
 request 1 [ApplyItem] => "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Property</name></Item>"

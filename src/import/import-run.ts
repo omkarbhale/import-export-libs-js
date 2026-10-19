@@ -27,9 +27,11 @@ import type { SUImportContext } from "./import-context.js";
 import type { ImportHelper } from "./import-helper.js";
 import { ImportWorkItem } from "./import-work-item.js";
 import { getItemsFromPackageDom, isImportableType } from "./items.js";
+import type { LanguageCodesExtractor } from "./language-codes-extractor.js";
 import { loadPackageDom } from "./load-package-dom.js";
 import type { LogWriter } from "./load-package-dom.js";
 import { ReferenceChecker } from "./reference-checks.js";
+import { languagesToSkip, removeSkippedLanguageNodes } from "./skipped-languages.js";
 
 /** The engines whose import run is built; the rest wait for their variant slices. */
 export const IMPORT_RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
@@ -70,6 +72,8 @@ export interface ImportRunHost {
   /** The collected-errors mode's fields, which belong to the manager and outlive a run (IMP-540). */
   readonly collected: CollectedErrors;
   readonly environment: PathEnvironment;
+  /** What the manager's scan found, which 14.35 reads to decide what to leave out of each package (IMP-630); absent where there is no scan. */
+  readonly languageCodes?: LanguageCodesExtractor;
   readonly console: ConsoleWriter;
   now(): Date;
   /** `GetSolutions2Xml` (IMP-405). */
@@ -221,6 +225,8 @@ interface PackageRun {
   readonly batchMode: boolean;
   /** The collected-errors mode of the context, which only 14.35 has (IMP-500). */
   readonly collect: boolean;
+  /** The languages the package uses and the selection leaves out, whose nodes 14.35 deletes from each item (IMP-630). */
+  readonly skippedLanguages: readonly string[];
 }
 
 /**
@@ -438,10 +444,11 @@ export class ImportRun {
    * return (bug IMP-409).
    *
    * In 14.35 the AML batch mode queues the items without Relationships and sends them in one `<AML>` (IMP-511), and the
-   * collected-errors mode gathers the failure of each step and goes on (IMP-542).
+   * collected-errors mode gathers the failure of each step and goes on (IMP-542). 14.35 also deletes the nodes of the languages the
+   * package uses and the selection leaves out, from each item after its checks and before it is sent (IMP-630, IMP-631).
    *
    * @spec IMP-420 IMP-421 IMP-422 IMP-423 IMP-424 IMP-425 IMP-426 IMP-427 IMP-428 IMP-429 IMP-430 IMP-431 IMP-441
-   * @spec IMP-511 IMP-518 IMP-519 IMP-520 IMP-522 IMP-524 IMP-527 IMP-542 IMP-543 IMP-544 IMP-551
+   * @spec IMP-511 IMP-518 IMP-519 IMP-520 IMP-522 IMP-524 IMP-527 IMP-542 IMP-543 IMP-544 IMP-551 IMP-630 IMP-631
    */
   private async importProc(packageName: string, log: PackageLog, importContext: SUImportContext): Promise<void> {
     const { host } = this;
@@ -482,6 +489,11 @@ export class ImportRun {
       sqlItemsDeleted: false,
       batchMode: host.engine === "14.35" && importContext.amlBatchMode,
       collect: this.collecting(importContext),
+      // 14.35 cuts each package with the languages it uses and the selection leaves out (IMP-630)
+      skippedLanguages:
+        host.engine === "14.35" && host.languageCodes !== undefined
+          ? languagesToSkip(host.languageCodes.getUsedLanguagesByPackage(packageName), host.context.languages)
+          : [],
     };
 
     for (const document of items) {
@@ -599,9 +611,10 @@ export class ImportRun {
 
   /**
    * `CheckWorkItem`: the one-time deletion of the package's SQL items (IMP-425), then the reference checks of the item against a
-   * delayed-resolution queue (IMP-100). In the batch mode the queue is the batch queue (IMP-520).
+   * delayed-resolution queue (IMP-100). In the batch mode the queue is the batch queue (IMP-520). 14.35 then deletes the skipped
+   * languages' nodes (IMP-631), again after a batch recovery restores the original text (IMP-632).
    *
-   * @spec IMP-425 IMP-426 IMP-427
+   * @spec IMP-425 IMP-426 IMP-427 IMP-631 IMP-632
    */
   private async checkWorkItem(run: PackageRun, queue: DelayedResolutionManager, workItem: ImportWorkItem): Promise<void> {
     const { importHelper } = this.host;
@@ -612,6 +625,8 @@ export class ImportRun {
       run.log.writeLine(this.message("DoneDeletingSQLItemsOfThePackagePackageNameFromTheDatabase", run.packageName));
     }
     await run.checker.doChecking(queue, workItem.item, run.log, workItem.thoroughCheck);
+    // also after the item's original text is restored by a batch recovery (IMP-631, IMP-632)
+    removeSkippedLanguageNodes(workItem.item, run.skippedLanguages);
   }
 
   /**

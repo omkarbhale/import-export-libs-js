@@ -32,7 +32,7 @@ class FakeConnection implements ServerConnection {
   }
 }
 
-function setup() {
+function setup(engine: "14.0.7" | "14.35" = "14.0.7") {
   const root = mkdtempSync(join(tmpdir(), "libsjs-lp-run-"));
   roots.push(root);
   const tempRoot = join(root, "tmp");
@@ -51,7 +51,7 @@ function setup() {
   context.logFilePath = join(root, "engine.log");
   context.lpPath = join(pack, "ImportConfig.xml");
   context.lpPackage = "PKG";
-  const helper = new CItemHelper(new FakeConnection());
+  const helper = new CItemHelper(new FakeConnection(), { engine });
   helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
   let loggedOut = 0;
   helper.logout = async () => void (loggedOut += 1);
@@ -117,5 +117,51 @@ describe("LP-001 LP-034: a failure after the preprocessor", () => {
     s.context.lpDebug = true;
     await expect(languagePackImport(s.context, null as unknown as SUImportContext, messages, s.helper, s.options)).rejects.toThrow();
     expect(readdirSync(s.tempRoot)).toEqual(["LanguagePack_abcdefgh.xyz"]);
+  });
+});
+
+describe("LP-003 [14.35]: the catch is split", () => {
+  function withConsole(s: ReturnType<typeof setup>) {
+    let text = "";
+    return {
+      options: { ...s.options, console: { write: (chunk: string) => void (text += chunk), writeLine: (chunk = "") => void (text += `${chunk}\r\n`) } },
+      text: () => text,
+    };
+  }
+
+  it("logs a CItemException, writes Error: and its message with no line break, and returns 1 (IMP-621)", async () => {
+    const s = setup("14.35");
+    s.context.languages = ["xx"];
+    const out = withConsole(s);
+    const code = await languagePackImport(s.context, new SUImportContext(), messages, s.helper, out.options);
+    const message =
+      "Some of the selected languages are not installed for current Aras Innovator: xx.\r\nPlease, install missing languages or remove them from import package before proceeding.";
+    expect(code).toBe(1);
+    expect(out.text()).toBe(`Error: ${message}`);
+    expect(readFileSync(s.context.logFilePath as string, "utf8")).toBe(`Aras.Tools.SolutionUpgrade.CItemException: ${message}\r\n`);
+    expect(s.loggedOut()).toBe(1);
+    expect(readdirSync(s.tempRoot)).toEqual([]);
+  });
+
+  it("accepts a selection without en for a language pack, which the host does not check (IMP-640)", async () => {
+    const s = setup("14.35");
+    s.context.languages = ["de"];
+    const out = withConsole(s);
+    await expect(languagePackImport(s.context, null as unknown as SUImportContext, messages, s.helper, out.options)).rejects.toThrow(
+      "Parameter name: importContext",
+    );
+    expect(s.context.languages).toEqual(["de"]);
+  });
+
+  it("logs and throws again every other exception, and the scan of a dotted package name fails the constructor (LP-033, IMP-612)", async () => {
+    const s = setup("14.35");
+    s.context.lpPackage = "My.Pkg";
+    const out = withConsole(s);
+    const failure = await languagePackImport(s.context, new SUImportContext(), messages, s.helper, out.options).catch((error: unknown) => error);
+    expect(failure).toMatchObject({ name: "DirectoryNotFoundException" });
+    expect(out.text()).toBe("");
+    expect(readFileSync(s.context.logFilePath as string, "utf8")).toMatch(/^System\.IO\.DirectoryNotFoundException: Could not find a part of the path '.*Pkg.Import'\.\r\n$/);
+    expect(s.loggedOut()).toBe(1);
+    expect(readdirSync(s.tempRoot)).toEqual([]);
   });
 });

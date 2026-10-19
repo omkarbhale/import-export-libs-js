@@ -8,6 +8,8 @@ import { ArasVersion } from "../client/version.js";
 import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "../export/messages.js";
+import { AggregateException } from "../export/parallel-for-each.js";
+import { exceptionText } from "../language-pack/exception-text.js";
 import { SUImportContext } from "./import-context.js";
 import type { ConsoleWriter } from "./import-run.js";
 import type { Engine } from "../engines.js";
@@ -33,13 +35,13 @@ interface Step {
     cancelAfterStatus?: number;
     amlBatch?: { maxSize?: number };
     collectErrors?: { maxCount?: number };
+    languages?: string[];
   };
   only?: string[];
 }
 
 /**
- * The steps of a recorded case folder. `skip` names the cases that exercise what another slice builds: for 14.35 the `Languages`
- * selection (`IMP-600` to `IMP-640`).
+ * The steps of a recorded case folder. `skip` names the cases that exercise what another slice builds.
  */
 function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false): Step[] {
   return readdirSync(casesDir)
@@ -54,8 +56,6 @@ function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false
       }));
     });
 }
-
-const SKIPPED_IN_14_35 = /^lang-/;
 
 /**
  * Steps whose run differs for a reason outside the import run. `fs-odd-files`: the engine lists `LIBSJS-SCRATCH-Fs_Backup.xmlbak`
@@ -103,7 +103,7 @@ function recordedConsole(hostLog: string): string {
   return afterBanner.slice(0, afterBanner.lastIndexOf("HOST_EXIT"));
 }
 
-function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: ReadonlySet<string>, minimum: number): void {
+function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: ReadonlySet<string>, minimum: number, minimumRefused = 0): void {
   const seen = {
     runs: 0,
     failed: 0,
@@ -111,6 +111,7 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
     merged: 0,
     verbose: 0,
     messages: 0,
+    refused: 0,
   };
 
   describe(`the recorded ${engine} import runs, through ImportSolutions (IMP-400 to IMP-471)`, () => {
@@ -120,8 +121,13 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
 
     it.for(steps.filter((step) => !knownGaps.has(step.name)).map((step) => [step.name, step] as const))("%s", async ([, step]) => {
       const calls = readTranscript(join(step.dir, "transcript.jsonl"), blobs);
-      const recordedLog = readFileSync(join(step.dir, "engine.log"), "utf8");
-      const run = JSON.parse(readFileSync(join(step.dir, "run.json"), "utf8")) as { host: { result: string | null; error: string | null } };
+      // a run refused in the constructor (IMP-612, IMP-621) wrote no log
+      const logFile = join(step.dir, "engine.log");
+      const recordedLog = existsSync(logFile) ? readFileSync(logFile, "utf8") : "";
+      const run = JSON.parse(readFileSync(join(step.dir, "run.json"), "utf8")) as {
+        server: { url: string; database: string; user: string };
+        host: { result: string | null; error: string | null };
+      };
       const recordedMessages = readFileSync(join(step.dir, "messages.jsonl"), "utf8")
         .split("\n")
         .filter((line) => line !== "")
@@ -135,13 +141,14 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
 
       const context = new SolutionUpgradeContext();
       context.action = "Import";
-      context.url = headerValue(recordedLog, "URL");
-      context.dataBase = headerValue(recordedLog, "Database");
-      context.userName = headerValue(recordedLog, "User");
+      context.url = run.server.url;
+      context.dataBase = run.server.database;
+      context.userName = run.server.user;
       context.manifestFile = join(input, "imports.mf");
       context.workingDirectory = input;
       context.logFilePath = logPath;
       context.verbose = step.options.verbose === true;
+      context.languages = step.options.languages ?? null;
 
       const importContext = new SUImportContext();
       importContext.merge = step.options.merge === true;
@@ -176,6 +183,28 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
           }
         },
       });
+      const returned = /^ImportSolutions returned (\d+)$/.exec(run.host.result ?? "")?.[1];
+      // a refused run ends in the constructor, with the exception (IMP-612, IMP-621): the host got no return code
+      if (returned === undefined) {
+        expect(run.host.error, `${step.name}: the engine ended with an exception`).not.toBeNull();
+        let thrown: unknown;
+        try {
+          manager = new ImportExportManager(context, messages, helper, { cwd: work, console: sink, osUser });
+          await manager.importSolutions(manager.manifestFile?.getAllPackageNames() ?? [], new SUImportContext());
+        } catch (error) {
+          thrown = error;
+        }
+        expect(thrown, `${step.name}: the port ended with an exception`).toBeDefined();
+        const [head, inner] = ((run.host.error as string).split("\r\n   at ")[0] as string).split(" ---> ") as [string, string | undefined];
+        expect(exceptionText(thrown), `${step.name}: the exception`).toBe(head);
+        // an AggregateException shows its inner exceptions after `--->` (IMP-612)
+        if (thrown instanceof AggregateException) {
+          expect(thrown.innerExceptions.map(exceptionText), `${step.name}: the inner exceptions`).toEqual([inner]);
+        }
+        expect(connection.consumed, `${step.name}: the requests of the run`).toBe(connection.total);
+        seen.refused += 1;
+        return;
+      }
       manager = new ImportExportManager(context, messages, helper, {
         cwd: work,
         console: sink,
@@ -183,8 +212,6 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
       });
       const packages = step.only ?? manager.manifestFile?.getAllPackageNames() ?? [];
 
-      const returned = /^ImportSolutions returned (\d+)$/.exec(run.host.result ?? "")?.[1];
-      expect(returned, `${step.name}: the engine returned a code`).toBeDefined();
       const code = await manager.importSolutions(packages, importContext);
 
       expect(connection.consumed, `${step.name}: the requests of the run\n${readFileSync(logPath, "utf8").slice(-1500)}`).toBe(
@@ -213,7 +240,8 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
 
     it.skip.for([...knownGaps])("%s differs in the order of the package's files (see KNOWN_LOADER_GAPS)", () => undefined);
 
-    it("reached the failure, cancel, merge and verbose paths", () => {
+    it("reached the failure, cancel, merge, verbose and refused paths", () => {
+      expect(seen.refused).toBeGreaterThanOrEqual(minimumRefused);
       expect(seen.runs).toBeGreaterThan(minimum);
       expect(seen.failed).toBeGreaterThan(0);
       expect(seen.cancelled).toBeGreaterThan(0);
@@ -226,8 +254,9 @@ function replayRuns(engine: Engine, steps: Step[], blobs: string, knownGaps: Rea
 replayRuns("14.0.7", stepsOf(CASES), BLOBS, KNOWN_LOADER_GAPS, 40);
 replayRuns(
   "14.35",
-  stepsOf(CASES_14_35, (name) => SKIPPED_IN_14_35.test(name)),
+  stepsOf(CASES_14_35),
   BLOBS_14_35,
   KNOWN_LOADER_GAPS,
   30,
+  3,
 );

@@ -32,6 +32,7 @@ export const IMPORT_OPTIONS = {
   merge: { type: "boolean" },
   "no-merge": { type: "boolean" },
   "os-user": { type: "string" },
+  languages: { type: "string" },
 } as const satisfies OptionSpec;
 
 /** The options of `import` that only engine 14.35 has: the AML batch mode and the collected-errors mode (IMP-500). */
