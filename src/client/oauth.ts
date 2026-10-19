@@ -277,6 +277,88 @@ export async function discover(transport: HttpTransport, discoveryUrl: string): 
   return document;
 }
 
+/** `Version.TryParse` is at least 1.0, as IOM 12 reads `protocol_version`: absent or unparsable counts as 0.0. */
+function protocolVersionSupportsOAuth(value: unknown): boolean {
+  return versionAtLeastOne(typeof value === "string" ? value : undefined);
+}
+
+/**
+ * IOM 12's discovery (WIRE-010): the locations from `OAuthServerDiscovery.aspx`, asked for with the extra header
+ * `Aras-Set-HttpSessionState-Behavior: switch_to_initial`, then the OpenID configuration of each location in turn until one
+ * answers with a document that has a known `protocol_info.protocol_type`. Only the protocol type and version are read; there
+ * is no key set request. The token endpoint is `connect/token` below the location that won. The failures that are not "no
+ * discovery page" are .NET's `WebException`, `JsonReaderException` and `AggregateException` (WIRE-011).
+ *
+ * @spec WIRE-010 WIRE-011
+ */
+export async function discoverIom12(transport: HttpTransport, discoveryUrl: string): Promise<DiscoveryDocument> {
+  let response: TransportResponse;
+  try {
+    response = await transport.send({
+      method: "GET",
+      url: discoveryUrl,
+      headers: [
+        ["Aras-Set-HttpSessionState-Behavior", "switch_to_initial"],
+        ["Host", new URL(discoveryUrl).host],
+      ],
+      responseTimeoutMs: OAUTH_TIMEOUT_MS,
+      readTimeoutMs: NO_READ_LIMIT,
+    });
+  } catch (error) {
+    throw error instanceof TransportError ? new DotNetException("System.Net.WebException", error.message) : error;
+  }
+  if (response.status === 404) throw new DiscoveryNotFound(`The remote server returned an error: (404) ${response.reason}.`);
+  if (response.status < 200 || response.status > 299) {
+    throw new DotNetException("System.Net.WebException", `The remote server returned an error: (${response.status}) ${response.reason}.`);
+  }
+  const body = text(response);
+  if (body.trim() === "") throw new DiscoveryNotFound("The discovery page is empty.");
+  const json = parseJsonObject(body);
+  const locations = Array.isArray(json["locations"]) ? (json["locations"] as unknown[]) : [];
+  const uris = locations.map((l) => stringValue(l as Record<string, unknown>, "uri") ?? "");
+  const host = new URL(discoveryUrl).host.toLowerCase();
+  const hostOf = (uri: string): string => {
+    try {
+      return new URL(uri).host.toLowerCase();
+    } catch {
+      return "";
+    }
+  };
+  const sameHost = [...uris.filter((u) => hostOf(u) === host), ...uris.filter((u) => hostOf(u) !== host)];
+  const remembered = lastAccessibleUrl?.toLowerCase();
+  const ordered = [
+    ...sameHost.filter((l) => l.toLowerCase() === remembered),
+    ...sameHost.filter((l) => l.toLowerCase() !== remembered),
+  ];
+  for (const location of ordered) {
+    try {
+      const base = new URL(location).href;
+      const directory = base.endsWith("/") ? base : `${base}/`;
+      const configuration = await get(transport, new URL(".well-known/openid-configuration", directory).href);
+      if (configuration.status < 200 || configuration.status > 299) continue;
+      const document = parseJsonObject(text(configuration));
+      const info = document["protocol_info"];
+      const type = info !== null && typeof info === "object" ? stringValue(info as Record<string, unknown>, "protocol_type") : undefined;
+      if (type !== "Standard" && type !== "Custom") continue;
+      lastAccessibleUrl = location;
+      return {
+        tokenEndpoint: new URL("connect/token", directory).href,
+        protocolType: type,
+        supportsOAuth: protocolVersionSupportsOAuth(document["protocol_version"]),
+      };
+    } catch {
+      // IOM 12 skips a location that does not answer or whose document it cannot read.
+    }
+  }
+  const inner = ordered.map((location) => ` (Cannot require OAuth server discovery information based on '${location}' url.)`).join("");
+  throw new DotNetException("System.AggregateException", `Cannot require OAuth server discovery information.${inner}`);
+}
+
+/** What a failure inside a .NET task becomes when the caller waits for it: IOM 12's token client (WIRE-012). */
+function oneOrMoreErrors(inner: string): DotNetException {
+  return new DotNetException("System.AggregateException", `One or more errors occurred. (${inner})`);
+}
+
 const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
 
 /** `Uri.EscapeDataString` with `%20` as `+`, which is how IOM form-encodes. */
@@ -295,14 +377,18 @@ function formEncode(value: string): string {
 export class PasswordTokenProvider {
   private readonly digest: PasswordDigest;
 
-  /** Throws like IOM when the database or user name is empty. */
+  /**
+   * Throws like IOM when the database or user name is empty. IOM 12 (`iom12`) accepts an empty user name and leaves `username`
+   * out of the request, and puts `client_id` first (WIRE-012).
+   */
   constructor(
     private readonly transport: HttpTransport,
     private readonly tokenEndpoint: string,
     private readonly credentials: { database: string; userName: string; password: string },
+    private readonly iom12 = false,
   ) {
     if (credentials.database === "") throw new DotNetException("System.ArgumentException", "Database");
-    if (credentials.userName === "") throw new DotNetException("System.ArgumentException", "UserName");
+    if (!iom12 && credentials.userName === "") throw new DotNetException("System.ArgumentException", "UserName");
     this.digest = new PasswordDigest(credentials.password);
   }
 
@@ -321,32 +407,44 @@ export class PasswordTokenProvider {
   }
 
   private async requestToken(): Promise<string> {
-    const body = Buffer.from(
-      [
-        ["grant_type", "password"],
-        ["client_id", "IOMApp"],
-        ["scope", "Innovator"],
-        ["database", this.credentials.database],
-        ["username", this.credentials.userName],
-        ["password", this.digest.value],
-      ]
-        .map(([name, value]) => `${name}=${formEncode(value ?? "")}`)
-        .join("&"),
-      "utf8",
-    );
-    const response = await send(this.transport, {
-      method: "POST",
-      url: this.tokenEndpoint,
-      headers: [
-        ["Accept", "application/json"],
-        ["Content-Type", "application/x-www-form-urlencoded"],
-        ["Host", new URL(this.tokenEndpoint).host],
-        ["Content-Length", String(body.length)],
-      ],
-      body,
-      responseTimeoutMs: OAUTH_TIMEOUT_MS,
-      readTimeoutMs: NO_READ_LIMIT,
-    });
+    const fields: [string, string][] = this.iom12
+      ? [
+          ["client_id", "IOMApp"],
+          ["grant_type", "password"],
+          ["scope", "Innovator"],
+          ...(this.credentials.userName === "" ? [] : [["username", this.credentials.userName] as [string, string]]),
+          ["database", this.credentials.database],
+          ["password", this.digest.value],
+        ]
+      : [
+          ["grant_type", "password"],
+          ["client_id", "IOMApp"],
+          ["scope", "Innovator"],
+          ["database", this.credentials.database],
+          ["username", this.credentials.userName],
+          ["password", this.digest.value],
+        ];
+    const body = Buffer.from(fields.map(([name, value]) => `${name}=${formEncode(value)}`).join("&"), "utf8");
+    let response: TransportResponse;
+    try {
+      response = await send(this.transport, {
+        method: "POST",
+        url: this.tokenEndpoint,
+        headers: [
+          ["Accept", "application/json"],
+          ["Content-Type", "application/x-www-form-urlencoded"],
+          ["Host", new URL(this.tokenEndpoint).host],
+          ["Content-Length", String(body.length)],
+        ],
+        body,
+        responseTimeoutMs: OAUTH_TIMEOUT_MS,
+        readTimeoutMs: NO_READ_LIMIT,
+      });
+    } catch (error) {
+      // IOM 12 runs the request inside a task, so a failure reaches the caller wrapped in an AggregateException
+      if (this.iom12 && error instanceof DotNetException) throw oneOrMoreErrors(error.message);
+      throw error;
+    }
 
     if (response.status !== 200 && response.status !== 400) {
       throw new OAuthServerError("server_error", `(${statusName(response.status)}) ${response.reason}`);
@@ -355,6 +453,7 @@ export class PasswordTokenProvider {
     try {
       json = parseJsonObject(text(response));
     } catch (error) {
+      if (this.iom12) throw oneOrMoreErrors("Invalid JSON response");
       const message = (error as Error).message;
       throw new OAuthServerError(message, message);
     }

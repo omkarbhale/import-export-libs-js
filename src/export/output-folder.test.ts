@@ -108,9 +108,9 @@ describe("CreateOutputDir: the wipe (EXP-415, EXP-416)", () => {
 });
 
 describe("the engines", () => {
-  it("builds the layout of 14.0.7 only", () => {
+  it("builds the layout of 12.0 and 14.0.7 only", () => {
     expect(() => createOutputDir(work, "a.b", env, "14.35")).toThrow("engine 14.35 is not yet supported");
-    expect(() => writeItemFile(work, "T", "a.xml", document("x"), env, "12.0")).toThrow("engine 12.0 is not yet supported");
+    expect(() => writeItemFile(work, "T", "a.xml", document("x"), env, "14.35")).toThrow("engine 14.35 is not yet supported");
   });
 });
 

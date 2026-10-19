@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { formatMessage } from "../io/dotnet-text.js";
 
 /**
@@ -88,14 +89,34 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
 };
 
 /**
+ * The texts the 12.0 engine writes as literals where the template of {@link MESSAGE_TEMPLATES} differs (EXP-504), and the
+ * two it writes in a place 14.0.7 shares: the abort block of `GetSolutions2Xml` without its question, and the first log line of a
+ * failed item, which has one space before `type` (EXP-516). Every other text is the same.
+ *
+ * @spec EXP-504 EXP-507 EXP-516
+ */
+export const MESSAGE_TEMPLATES_12_0: Readonly<Record<string, string>> = {
+  ...MESSAGE_TEMPLATES,
+  ErrorMessageMessage: "          ****ErrorMessage****\r\n       {0}\r\n          *******************",
+  ErrorMessageGetSolutions: "          ****ErrorMessage****\r\nfaultstring: {0}\r\nfaultdetail :{1}\r\nfaultcode: {2}\r\n          *******************",
+  ErrorOfExportingItemIdKeyedNameTypeLog: "Error of exporting Item id :{0}  keyed_name : {1} type : {2}",
+};
+
+/**
  * `ResourceManager.GetMessage(key, args)`: the template of `key` formatted with the invariant culture and the arguments, a null
  * argument as the empty string. A key with no template gives the empty string and formats nothing. Without arguments the template
- * is returned as it is, so a `{0}` in it stays.
+ * is returned as it is, so a `{0}` in it stays. The 12.0 engine has no catalogue and writes its texts as literals: the same
+ * texts but for the few of {@link MESSAGE_TEMPLATES_12_0}.
  *
  * @spec EXP-504
  */
 export function getMessage(key: string, ...args: (string | null | undefined)[]): string {
-  const template = MESSAGE_TEMPLATES[key];
+  return messageFor(DEFAULT_ENGINE, key, ...args);
+}
+
+/** {@link getMessage} for an engine. */
+export function messageFor(engine: Engine, key: string, ...args: (string | null | undefined)[]): string {
+  const template = (engine === "12.0" ? MESSAGE_TEMPLATES_12_0 : MESSAGE_TEMPLATES)[key];
   if (template === undefined) return "";
   return args.length === 0 ? template : formatMessage(template, ...args);
 }

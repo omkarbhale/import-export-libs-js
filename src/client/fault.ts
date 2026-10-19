@@ -166,6 +166,20 @@ export function unknownErrorFault(): ResponseDocument {
 }
 
 /**
+ * IOM 12's item for a login answer with neither a fault nor a user id: faultcode `1`, an empty faultactor and the faultstring
+ * `Failed to login`.
+ *
+ * @spec WIRE-015 WIRE-050
+ */
+export function failedToLoginFault(): ResponseDocument {
+  return ResponseDocument.parse(
+    '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i18n="http://www.aras.com/I18N">' +
+      "<SOAP-ENV:Body><SOAP-ENV:Fault>\r\n\t\t\t<faultcode>1</faultcode>\r\n\t\t\t<faultactor></faultactor>" +
+      "\r\n\t\t\t<faultstring>Failed to login</faultstring></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+  );
+}
+
+/**
  * The value of a property of a single item, as IOM's `getProperty` reads it:
  * the text of its `name` child, the id of a nested item, or null when the
  * element is absent or is blank with `is_null="1"`.

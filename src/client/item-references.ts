@@ -1,3 +1,4 @@
+import type { Engine } from "../engines.js";
 import { ATTRIBUTE_NODE, CDATA_SECTION_NODE, ELEMENT_NODE, TEXT_NODE, innerText as domInnerText, removeChild, setInnerText } from "../xml/dom.js";
 import type { XmlDocument, XmlElement as DomElement, XmlNode } from "../xml/dom.js";
 import { selectNodes, selectSingleNode } from "../xml/xpath.js";
@@ -8,6 +9,7 @@ import { attributeOf, childElements, innerText } from "./mini-xml.js";
 
 /** What the rewrites of a response need of the helper that owns them. */
 export interface ReferencesHost {
+  readonly engine?: Engine;
   readonly lookups: ItemLookups;
 }
 
@@ -110,13 +112,17 @@ export class ItemReferences {
 
   /**
    * `ProcessPropertiesOfTypeItem`: for an item and, below it, every `Item` that is a child of a child element, the values of its
-   * float item properties that hold an id are replaced by the config id of that item.
+   * float item properties that hold an id are replaced by the config id of that item. The 12.0 engine visits only the
+   * `Relationships/Item` children, and stops for an item whose type has no float item properties at all (a faultcode 0 lookup).
    *
    * @spec EXP-116
    */
   async processPropertiesOfTypeItem(item: DomElement): Promise<void> {
     const lookups = this.host.lookups;
-    const rows = await lookups.getCustomFloatPropertiesOfTypeItem(requiredAttribute(item, "type"));
+    const iom12 = this.host.engine === "12.0";
+    const found = await lookups.findCustomFloatProperties(requiredAttribute(item, "type"));
+    if (found === null && iom12) return;
+    const rows = found ?? [];
     for (const row of rows) {
       const dataSource = childElements(row, "data_source")[0];
       if (!dataSource) continue;
@@ -132,6 +138,6 @@ export class ItemReferences {
       const value = domInnerText(property);
       if (isValueId(trimWhiteSpace(value))) setNodeText(property, (await lookups.getConfigId(value, dataSourceName)) ?? "");
     }
-    for (const child of selectNodes("*/Item", item) as DomElement[]) await this.processPropertiesOfTypeItem(child);
+    for (const child of selectNodes(iom12 ? "Relationships/Item" : "*/Item", item) as DomElement[]) await this.processPropertiesOfTypeItem(child);
   }
 }

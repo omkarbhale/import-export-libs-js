@@ -1,6 +1,7 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { PasswordDigest } from "./digest.js";
 import { DotNetException } from "./dotnet.js";
-import { ResponseDocument, iomFault, loadXml, unknownErrorFault } from "./fault.js";
+import { ResponseDocument, failedToLoginFault, iomFault, loadXml, unknownErrorFault } from "./fault.js";
 import {
   childElements,
   descendantElements,
@@ -17,6 +18,7 @@ import {
   PasswordTokenProvider,
   bearerProtocol,
   discover,
+  discoverIom12,
 } from "./oauth.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
 import { type HttpTransport, TransportError, type TransportResponse, nodeTransport } from "./transport.js";
@@ -37,6 +39,8 @@ export interface ConnectionSettings {
   userName: string;
   password: string;
   locale: string;
+  /** The engine whose IOM the connection plays: IOM 12 for `12.0`, IOM 14 for the others (WIRE-003, WIRE-010 to WIRE-015). */
+  engine?: Engine | undefined;
   /** The `TIMEZONE_NAME` sent until `ValidateUser` replaces it; this machine's Windows time zone id when absent (WIRE-005). */
   timeZoneName?: string | undefined;
   transport?: HttpTransport;
@@ -132,12 +136,14 @@ export class HttpServerConnection {
   private timeoutMs = 0;
   private authenticator: Authenticator | undefined;
   private readonly cookies = new CookieJar();
+  private readonly iom12: boolean;
   private readonly urls: ReturnType<typeof serverUrls>;
   private readonly transport: HttpTransport;
   private readonly onCall: ((call: CallRecord) => void) | undefined;
 
   constructor(private readonly settings: ConnectionSettings) {
-    this.urls = serverUrls(settings.url);
+    this.iom12 = (settings.engine ?? DEFAULT_ENGINE) === "12.0";
+    this.urls = serverUrls(settings.url, settings.engine);
     this.transport = settings.transport ?? nodeTransport;
     this.onCall = settings.onCall;
     this.locale = settings.locale;
@@ -207,14 +213,14 @@ export class HttpServerConnection {
     const { database, userName, password } = this.settings;
     let discovered;
     try {
-      discovered = await discover(this.transport, this.urls.discovery);
+      discovered = await (this.iom12 ? discoverIom12 : discover)(this.transport, this.urls.discovery);
     } catch (error) {
       if (!(error instanceof DiscoveryNotFound)) throw error;
     }
     this.authenticator = discovered?.supportsOAuth
       ? {
           kind: "bearer",
-          provider: new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }),
+          provider: new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }, this.iom12),
           protocol: bearerProtocol(discovered.protocolType),
           token: undefined,
         }
@@ -293,7 +299,8 @@ export class HttpServerConnection {
     }
     const validated = await this.callAction("ValidateUser", "<Item/>");
     const id = resultChild(validated, "id");
-    if (!id) return validated.isError ? validated : unknownErrorFault();
+    if (!id) return validated.isError ? validated : this.iom12 ? failedToLoginFault() : unknownErrorFault();
+    if (this.iom12) return this.loginIom12();
     this.userId = innerText(id);
     const user = await this.readUser(this.userId);
     if (user.isError) {
@@ -304,6 +311,21 @@ export class HttpServerConnection {
     if (database && innerText(database) !== "") this.loggedOnDatabase = innerText(database);
     const loginName = resultChild(validated, "login_name");
     if (loginName && innerText(loginName) !== "") this.loggedOnUser = innerText(loginName);
+    return user;
+  }
+
+  /**
+   * IOM 12's `getUserInfo` after a `ValidateUser` that gave an id (WIRE-015): the user id comes from a second call,
+   * `GetCurrentUserID`, and the user record is read as in IOM 14. The database and the login name are not kept.
+   */
+  private async loginIom12(): Promise<ResponseDocument> {
+    const current = await this.callAction("GetCurrentUserID", "<Empty/>");
+    if (current.isError) return current;
+    const result = descendantElements(current.document.root).find((e) => e.name === "Result");
+    if (!result) throw new DotNetException("System.Exception", "Cannot obtain user id");
+    this.userId = innerText(result);
+    const user = await this.readUser(this.userId);
+    if (user.isError) this.userId = undefined;
     return user;
   }
 

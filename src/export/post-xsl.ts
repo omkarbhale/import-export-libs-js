@@ -94,17 +94,22 @@ const FILTER_CLOSE_WRAPPED = "]]]]><![CDATA[></filter_xml>";
 /**
  * `CdataFilterXml(doc, name)`: the `name` child of every `Item` gets its `filter_xml` elements wrapped in CDATA, then its text
  * decoded as HTML. Each assignment of `InnerXml` parses the string again, so the child is rebuilt even when nothing was replaced.
+ * The 12.0 engine's `CdataFilterXmlInMacCondition` wraps the first `<filter_xml>` and the first `</filter_xml>` only.
  *
  * @spec EXP-405 EXP-406
  */
-export function cdataFilterXml(doc: XmlDocument, name: string): void {
+export function cdataFilterXml(doc: XmlDocument, name: string, engine: Engine = DEFAULT_ENGINE): void {
+  const replace =
+    engine === "12.0"
+      ? (text: string, search: string, wrapped: string) => text.replace(search, () => wrapped)
+      : (text: string, search: string, wrapped: string) => text.split(search).join(wrapped);
   for (const node of selectNodes("//Item", doc)) {
     const child = asElement(selectSingleNode(name, node));
     if (!child) continue;
     const source = getInnerXml(child);
-    if (!source.includes(FILTER_OPEN_WRAPPED)) setInnerXml(child, source.split(FILTER_OPEN).join(FILTER_OPEN_WRAPPED));
+    if (!source.includes(FILTER_OPEN_WRAPPED)) setInnerXml(child, replace(source, FILTER_OPEN, FILTER_OPEN_WRAPPED));
     if (!getInnerXml(child).includes(FILTER_CLOSE_WRAPPED)) {
-      setInnerXml(child, getInnerXml(child).split(FILTER_CLOSE).join(FILTER_CLOSE_WRAPPED));
+      setInnerXml(child, replace(getInnerXml(child), FILTER_CLOSE, FILTER_CLOSE_WRAPPED));
     }
     setInnerXml(child, htmlDecode(getInnerXml(child)));
   }

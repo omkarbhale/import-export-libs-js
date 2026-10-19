@@ -3,7 +3,7 @@ import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { RECURSION_LIMIT, StackOverflowException } from "../recursion-limit.js";
 import { ExportItem } from "../export/export-item.js";
 import { formatMessage, isNullOrWhiteSpace } from "../io/dotnet-text.js";
-import type { PathEnvironment } from "../io/host-path.js";
+import { pathEnvironmentFor, type PathEnvironment } from "../io/host-path.js";
 import { ArgumentException, ArgumentNullException, NullReferenceException } from "../io/errors.js";
 import {
   appendChild,
@@ -13,6 +13,7 @@ import {
   selectNodes,
   selectSingleNode,
   xmlDocumentLoad,
+  xmlDocumentLoadFile,
   xmlDocumentSave,
 } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
@@ -20,7 +21,7 @@ import { DuplicateKeyError, NetfxHashtable } from "./netfx-hashtable.js";
 import { isStandardPackage } from "./package-path.js";
 
 /** The engines whose manifest behaviour is implemented; the rest wait for their variant slices. */
-export const MANIFEST_ENGINES: readonly Engine[] = ["14.0.7"];
+export const MANIFEST_ENGINES: readonly Engine[] = ["12.0", "14.0.7"];
 
 export interface ManifestOptions extends PathEnvironment {
   engine?: Engine;
@@ -63,13 +64,19 @@ export class ManifestFile {
 
   /**
    * `new ManifestFile()` when no path is given: an empty `imports` document (MAN-002). `new ManifestFile(path)` reads the
-   * file with `File.ReadAllText` and `LoadXml` after the path rules (MAN-003); a null or empty path fails as .NET does.
+   * file with `File.ReadAllText` and `LoadXml` after the path rules (MAN-003); a null or empty path fails as .NET does. The 12.0
+   * engine calls `XmlDocument.Load(path)` on the path as given.
    */
   constructor(path?: string | null, options: ManifestOptions = {}) {
     const engine = options.engine ?? DEFAULT_ENGINE;
     if (!MANIFEST_ENGINES.includes(engine)) throw new EngineNotSupportedError(engine);
-    this.options = options;
-    this.document = path === undefined ? loadXml("<imports/>", { preserveWhitespace: false }) : xmlDocumentLoad(path, options);
+    this.options = pathEnvironmentFor(options, engine);
+    this.document =
+      path === undefined
+        ? loadXml("<imports/>", { preserveWhitespace: false })
+        : engine === "12.0"
+          ? xmlDocumentLoadFile(path, this.options)
+          : xmlDocumentLoad(path, this.options);
   }
 
   /**

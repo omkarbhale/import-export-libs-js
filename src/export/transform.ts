@@ -14,7 +14,7 @@ import {
   relationshipItems,
   viewFormDeletes,
 } from "./fix-items.js";
-import { OutputWriter } from "./output.js";
+import { CDATA_SECTION_ELEMENTS, CDATA_SECTION_ELEMENTS_12_0, OutputWriter } from "./output.js";
 import {
   attributeOf,
   attributeText,
@@ -42,7 +42,7 @@ import { SYSTEM_IDENTITIES, SYSTEM_PROPERTIES, containsEntry } from "./system-na
  */
 
 /** The engines whose export transform is built; the rest wait for their variant slices. */
-export const TRANSFORM_ENGINES: readonly Engine[] = ["14.0.7"];
+export const TRANSFORM_ENGINES: readonly Engine[] = ["12.0", "14.0.7"];
 
 /** Parent Item type and element name of the properties that hold a Method (EXP-236). */
 const METHOD_PROPERTIES: readonly (readonly [string, string])[] = [
@@ -76,7 +76,7 @@ const REFERENCE_ANCESTORS: readonly string[] = ["FileSelectorTemplate", "FeedTem
  */
 export function transformExport(doc: XmlDocument, engine: Engine = DEFAULT_ENGINE): string {
   if (!TRANSFORM_ENGINES.includes(engine)) throw new EngineNotSupportedError(engine);
-  const transform = new ExportTransform();
+  const transform = new ExportTransform(engine);
   transform.documentNode(doc);
   return transform.output.finish();
 }
@@ -98,7 +98,13 @@ export function applyExportTransform(doc: XmlDocument, engine: Engine = DEFAULT_
 }
 
 class ExportTransform {
-  readonly output = new OutputWriter();
+  readonly output: OutputWriter;
+
+  /** The stylesheet of an engine: 12.0's differs in the CDATA list, the User `pwd_is_set_on` and the Property fix (EXP-200). */
+  constructor(private readonly engine: Engine) {
+    this.output = new OutputWriter(engine === "12.0" ? CDATA_SECTION_ELEMENTS_12_0 : CDATA_SECTION_ELEMENTS);
+  }
+
   /** The document being transformed: the Field fixes select Items anywhere in it (EXP-340). */
   private doc!: XmlDocument;
 
@@ -177,7 +183,7 @@ class ExportTransform {
     if (element.localName === "Body") return this.body(element);
     if (isNamed(element, "Result")) return this.result(element);
     if (isNamed(element, "Item")) return this.item(element);
-    if (isDroppedElement(element)) return;
+    if (isDroppedElement(element, this.engine)) return;
 
     const parent = parentElement(element);
     const owner = parent && isNamed(parent, "Item") ? parent : null;
@@ -530,7 +536,7 @@ class ExportTransform {
    */
   private propertyFix(property: XmlElement): void {
     const out = this.output;
-    const attributes = propertyFixAttributes(property);
+    const attributes = propertyFixAttributes(property, this.engine);
     this.startCopy(property);
     const type = attributeOf(property, "type");
     if (type !== undefined) out.attribute("type", type);

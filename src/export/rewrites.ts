@@ -85,7 +85,7 @@ export class ExportRewrites {
     const resultItem = asElement(selectSingleNode(SOAP_RESULT_ITEM, doc));
     if (resultItem) await this.helper.references.processPropertiesOfTypeItem(resultItem);
     if (typeName === "dr_RelationshipFamily") await this.includeDrRelationshipAsValue(doc);
-    if (typeName === "ac_PolicyAccessItemAttribute") await this.includeDrRelationshipAsValue(doc);
+    if (typeName === "ac_PolicyAccessItemAttribute" && this.helper.engine !== "12.0") await this.includeDrRelationshipAsValue(doc);
     if (typeName === "dac_DomainDefinition") this.indentConditionXmlInDAC(doc);
   }
 
@@ -249,6 +249,7 @@ export class ExportRewrites {
   /**
    * Step 11, for a dr_RelationshipFamily and, by the copy-paste of EXP-118, for an ac_PolicyAccessItemAttribute: each
    * `dr_relationship_id` of the direct relationships is replaced by the dr_Relationship item it names, whose `implementation_query` is re-indented.
+   * The 12.0 engine does this for a dr_RelationshipFamily only, and leaves the `implementation_query` as the server sent it.
    *
    * @spec EXP-051 EXP-117 EXP-118 EXP-121
    */
@@ -259,7 +260,7 @@ export class ExportRewrites {
       setInnerText(drRelationshipId, "");
       const drRelationship = selectSingleNode(RESULT_ITEM, responseDom(await this.requests.fetchDrRelationship(id)));
       if (!drRelationship) continue;
-      const query = selectSingleNode("//implementation_query", drRelationship);
+      const query = this.helper.engine === "12.0" ? null : selectSingleNode("//implementation_query", drRelationship);
       if (query) setInnerText(query as XmlElement, xdocumentToString(innerText(query)));
       appendChild(drRelationshipId, importNode(doc, drRelationship));
     }

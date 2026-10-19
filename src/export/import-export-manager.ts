@@ -12,7 +12,7 @@ import {
   UnauthorizedAccessException,
 } from "../io/errors.js";
 import { NotSupportedException } from "../xml/errors.js";
-import { directoryGetParentFullName, fileExists } from "../io/host-path.js";
+import { directoryGetParentFullName, fileExists, pathEnvironmentFor } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
 import { ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
@@ -22,15 +22,15 @@ import { innerText, selectNodes } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
 import type { SUExportContext, SolutionUpgradeContext } from "./export-context.js";
 import type { ExportItem } from "./export-item.js";
-import { type Message, type MessagesFactory, getMessage } from "./messages.js";
+import { type Message, type MessagesFactory, messageFor } from "./messages.js";
 import { createOutputDir } from "./output-folder.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
 import { packageItem } from "./package-item.js";
 import type { RemovedReference } from "./removed-reference.js";
-import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
+import { RunLog, currentCultureDateTime, invariantDateTime, logInputParameters } from "./run-log.js";
 
 /** The engines whose export run is built; the rest wait for their variant slices. */
-export const RUN_ENGINES: readonly Engine[] = ["14.0.7"];
+export const RUN_ENGINES: readonly Engine[] = ["12.0", "14.0.7"];
 
 /** Where a run is, for `Cancel` (EXP-518). */
 type ProgressState = "idle" | "inProgress" | "cancelled";
@@ -69,6 +69,11 @@ export interface ImportExportManagerOptions extends PathEnvironment {
   console?: ConsoleWriter;
   /** The value of `os_user` in the audit row of an import, or a function that gives it (IMP-452). */
   osUser?: ImportHelperOptions["osUser"];
+  /**
+   * The culture whose general date and time pattern the 12.0 engine's log uses for three of its date-times (EXP-505), as
+   * .NET names it (`en-US`, `en-IN`). The default is the culture of this process. The other engines write the invariant one.
+   */
+  culture?: string;
 }
 
 /**
@@ -112,6 +117,7 @@ export class ImportExportManager {
   private readonly now: () => Date;
   private readonly console: ConsoleWriter;
   private readonly importHelper: ImportHelper;
+  private readonly culture: string | undefined;
   private state: ProgressState = "idle";
 
   /**
@@ -133,9 +139,10 @@ export class ImportExportManager {
     this.engine = itemHelper.engine;
     if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
-    const { now, console, osUser, ...environment } = options;
-    this.environment = environment;
+    const { now, console, osUser, culture, ...environment } = options;
+    this.environment = pathEnvironmentFor(environment, this.engine);
     this.now = now ?? (() => new Date());
+    this.culture = culture;
 
     this.console = console ?? SILENT_CONSOLE;
     this.importHelper = new ImportHelper(itemHelper, osUser === undefined ? {} : { osUser });
@@ -162,8 +169,18 @@ export class ImportExportManager {
     return this.state === "cancelled";
   }
 
+  /** A date-time as the engine concatenates it into the log: invariant, except in three places of the 12.0 engine's. */
   private timestamp(): string {
     return invariantDateTime(this.now());
+  }
+
+  /** `DateTime.Now.ToString()` of the current culture, which the 12.0 engine writes at the head of a package and after a cancel or an abort. */
+  private localTimestamp(): string {
+    return this.engine === "12.0" ? currentCultureDateTime(this.now(), this.culture) : this.timestamp();
+  }
+
+  private message(key: string, ...args: (string | null | undefined)[]): string {
+    return messageFor(this.engine, key, ...args);
   }
 
   /**
@@ -180,14 +197,19 @@ export class ImportExportManager {
     try {
       const response = await this.itemHelper.getSolutions();
       if (response === null) {
-        warning.text = getMessage("TheDatabaseContainsNoPackageDefinitionsPleaseSelectAnotherDatabaseAndTryAgain");
+        warning.text = this.message("TheDatabaseContainsNoPackageDefinitionsPleaseSelectAnotherDatabaseAndTryAgain");
         await warning.execute();
         return null;
       }
       return responseDom(response);
     } catch (thrown) {
       if (!(thrown instanceof CItemException)) throw thrown;
-      const text = getMessage("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, String(thrown.faultcode));
+      const text = this.message(
+        this.engine === "12.0" ? "ErrorMessageGetSolutions" : "ErrorMessageStringDetailCode",
+        thrown.faultstring,
+        thrown.faultdetail,
+        String(thrown.faultcode),
+      );
       error.text = text;
       await error.execute();
       const writer = RunLog.open(this.context?.logFilePath ?? null, this.environment);
@@ -214,13 +236,20 @@ export class ImportExportManager {
     if (selectedItems === null) throw new ArgumentNullException("selItemsTable");
     const selection = selectedItems instanceof NetfxHashtable ? selectedItems : selectionTable(selectedItems);
 
+    // 14.0.7 opens the log first, writes its header and then asks for the package definitions; 12.0 asks first and opens the log
+    // after, with no header (EXP-505 to EXP-508). So `GetSolutions2Xml`'s own writer finds the file free in 12.0 (EXP-541).
+    const early = this.engine === "12.0" ? await this.getSolutions2Xml() : undefined;
     const log = RunLog.open(exportContext.logFilePath, this.environment);
     try {
-      const version = this.itemHelper.innovatorVersion;
-      if (version === undefined) throw new NullReferenceException();
-      log.writeLine(logInputParameters(exportContext, version, this.engine));
-
-      const packages = await this.getSolutions2Xml();
+      let packages: XmlDocument | null;
+      if (this.engine === "12.0") {
+        packages = early ?? null;
+      } else {
+        const version = this.itemHelper.innovatorVersion;
+        if (version === undefined) throw new NullReferenceException();
+        log.writeLine(logInputParameters(exportContext, version, this.engine));
+        packages = await this.getSolutions2Xml();
+      }
       const currentPackage = this.messages.getCurrentPackageMessage();
       const manifest = new ManifestFile(undefined, { ...this.environment, engine: this.engine });
       const refsToExport = new NetfxHashtable<NetfxHashtable<ExportItem>>("the referenced elements to export");
@@ -238,7 +267,7 @@ export class ImportExportManager {
       } catch (thrown) {
         if (!isSystemException(thrown)) throw thrown;
         const warning = this.messages.getWarningMessage();
-        const text = getMessage("ErrorMessageMessage", thrown.message);
+        const text = this.message("ErrorMessageMessage", thrown.message);
         warning.text = text;
         await warning.execute();
         log.writeLine(text);
@@ -280,7 +309,7 @@ export class ImportExportManager {
     }
 
     const directory = createOutputDir(exportContext.workingDirectory, packageName, this.environment, this.engine);
-    currentPackage.text = getMessage("ExportingPackagePackageName", packageName);
+    currentPackage.text = this.message("ExportingPackagePackageName", packageName);
     await currentPackage.execute();
     await this.exportProc(exportContext, directory, items, packageName, log);
   }
@@ -315,8 +344,8 @@ export class ImportExportManager {
     packageName: string,
     log: RunLog,
   ): Promise<void> {
-    log.writeLine(getMessage("ExportSolutionName", packageName));
-    log.writeLine(getMessage("StartOfExecutionDateTime", this.timestamp()));
+    log.writeLine(this.message("ExportSolutionName", packageName));
+    log.writeLine(this.message("StartOfExecutionDateTime", this.localTimestamp()));
     const status = this.messages.getStatusMessage();
     this.itemHelper.folder = directory;
     const excludedRefs = exportContext.refToUnknownPacks === "DoNotRemove" ? null : new NetfxHashtable<RemovedReference>("the removed references");
@@ -324,27 +353,27 @@ export class ImportExportManager {
     let index = 1;
     for (const [, item] of items.entries()) {
       if (this.isCancelled()) {
-        status.text = getMessage("ExportWasCanceledByUser");
+        status.text = this.message("ExportWasCanceledByUser");
         await status.execute();
         log.writeLine(status.text);
-        log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
+        log.writeLine(this.message("EndOfExecutionDateTime", this.localTimestamp()));
         return;
       }
-      status.text = getMessage("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
+      status.text = this.message("ItemIndexOfCountTypeNameKeyedName", String(index), String(count), item.typeName, item.keyedName);
       await status.execute();
       try {
         await packageItem(this.itemHelper, item, packageName, exportContext.level, excludedRefs, this.environment);
-        log.writeLine(getMessage("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
+        log.writeLine(this.message("ItemIdKeyedNameTypeSuccessfullyExported", item.idName, item.keyedName, item.typeName));
       } catch (thrown) {
         if (!(thrown instanceof CItemException)) throw thrown;
-        const failed = getMessage("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
+        const failed = this.message("ErrorOfExportingItemIdKeyedNameType", item.idName, item.keyedName, item.typeName);
         status.text = failed;
         await status.execute();
-        log.writeLine(failed);
+        log.writeLine(this.engine === "12.0" ? this.message("ErrorOfExportingItemIdKeyedNameTypeLog", item.idName, item.keyedName, item.typeName) : failed);
         const code = String(thrown.faultcode);
-        log.writeLine(getMessage("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
+        log.writeLine(this.message("ErrorMessageStringDetailCode", thrown.faultstring, thrown.faultdetail, code));
         const question = this.messages.getErrorMessageQuestion();
-        question.text = getMessage(
+        question.text = this.message(
           "ErrorMessageStringDetailCodeAbortCurrentExportOfSolutionName",
           thrown.faultstring,
           thrown.faultdetail,
@@ -352,8 +381,8 @@ export class ImportExportManager {
           packageName,
         );
         if ((await question.execute()) === true) {
-          log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
-          status.text = getMessage("Completed");
+          log.writeLine(this.message("EndOfExecutionDateTime", this.localTimestamp()));
+          status.text = this.message("Completed");
           await status.execute();
           return;
         }
@@ -364,13 +393,13 @@ export class ImportExportManager {
     if (excludedRefs !== null && excludedRefs.count > 0) {
       for (const removed of excludedRefs.values()) {
         log.writeLine("\n --- REMOVED REFERENCE ---");
-        log.writeLine(getMessage("From", removed.from));
-        log.writeLine(getMessage("To", removed.to));
-        log.writeLine(getMessage("Reason", removed.reason));
+        log.writeLine(this.message("From", removed.from));
+        log.writeLine(this.message("To", removed.to));
+        log.writeLine(this.message("Reason", removed.reason));
       }
       if (exportContext.refToUnknownPacks === "RemoveWithWarning") {
         const warning = this.messages.getWarningMessage();
-        warning.text = getMessage(
+        warning.text = this.message(
           "ThereAreReferencesToUnknownPackagesThatWereRemovedDuringTheExportOfThePackageSolutionNameSeeLogFileForMoreDetailsSearchForWordsRemovedRefError",
           packageName,
           "REMOVED REFERENCE",
@@ -378,8 +407,8 @@ export class ImportExportManager {
         await warning.execute();
       }
     }
-    log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
-    status.text = getMessage("Completed");
+    log.writeLine(this.message("EndOfExecutionDateTime", this.timestamp()));
+    status.text = this.message("Completed");
     await status.execute();
   }
 
@@ -397,7 +426,7 @@ export class ImportExportManager {
     for (const [dependency, items] of refsToExport.entries()) {
       const directory = createOutputDir(exportContext.workingDirectory, dependency, this.environment, this.engine);
       const currentPackage = this.messages.getCurrentPackageMessage();
-      currentPackage.text = getMessage("ExportingReferencedItemsFromPackageName", dependency);
+      currentPackage.text = this.message("ExportingReferencedItemsFromPackageName", dependency);
       await currentPackage.execute();
       await this.exportProc(exportContext, directory, items, dependency, log);
       if (this.isCancelled()) break;

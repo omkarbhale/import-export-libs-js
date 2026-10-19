@@ -9,7 +9,7 @@ import { probeServerVersion } from "./probe.js";
 import { type ArasVersion, VersionRefusal, engineAcceptsServer, enginesAcceptingServer } from "./version.js";
 
 /** The engines whose client behaviour is implemented; the rest wait for their variant slices. */
-export const CLIENT_ENGINES: readonly Engine[] = ["14.0.7"];
+export const CLIENT_ENGINES: readonly Engine[] = ["12.0", "14.0.7"];
 
 /**
  * The request of `getSolutions` (EXP-507): the current package definitions with their groups' elements and their dependencies.
@@ -97,18 +97,23 @@ export class CItemHelper {
 
   /**
    * Logs the connection in, reads the server version and applies the gate. A
-   * connection that is not an IOM one is taken to be logged in already.
+   * connection that is not an IOM one is taken to be logged in already. The 12.0 engine logs in only a connection of exactly
+   * the type `HttpConnectorExtension`: any other, a plain `HttpServerConnection` included, goes straight to the probe (WIRE-017).
    */
   async login(): Promise<void> {
     const connection = this.connection;
-    if (connection instanceof HttpServerConnection) {
+    const logsIn =
+      this.engine === "12.0"
+        ? Object.getPrototypeOf(connection) === HttpConnectorExtension.prototype
+        : connection instanceof HttpServerConnection;
+    if (logsIn && connection instanceof HttpServerConnection) {
       const user = await connection.login();
       if (user.isError) {
         const message = `Failed login to Innovator; original error: ${user.outerXml}`;
         throw new CItemException(-100, message, message);
       }
     }
-    const server = await probeServerVersion(this.inn);
+    const server = await probeServerVersion(this.inn, this.engine);
     this.innovatorVersion = server;
     const accepted = engineAcceptsServer(this.engine, server.major);
     this.versionGate = {
@@ -123,18 +128,20 @@ export class CItemHelper {
 
   /**
    * Applies an item and throws on any fault, faultcode 0 included; callers that
-   * read faultcode 0 as an empty result catch it and test `faultcode`.
+   * read faultcode 0 as an empty result catch it and test `faultcode`. The 12.0 engine builds the exception from the response
+   * alone (WIRE-006, WIRE-051).
    */
   async applyAML(aml: string): Promise<ResponseDocument> {
     const response = await this.inn.applyItem(aml);
-    if (response.isError) throw CItemException.fromRequest(aml, response);
+    if (response.isError) throw this.engine === "12.0" ? CItemException.fromResponse(response) : CItemException.fromRequest(aml, response);
     return response;
   }
 
   /**
    * `getSolutions`: the package definitions of the database, as the answer to {@link GET_SOLUTIONS_AML}. A fault with faultcode 0
    * (no definitions) gives null. Any other fault is rethrown with `Unable to get packages meta.` and the exception's message
-   * (the whole `Server error` text of WIRE-051) added to its detail, with no separator.
+   * (the whole `Server error` text of WIRE-051) added to its detail, with no separator. The 12.0 engine adds
+   * `Unable to get packages meta.` alone (EXP-504).
    *
    * @spec EXP-507
    */
@@ -144,7 +151,7 @@ export class CItemHelper {
     } catch (error) {
       if (!(error instanceof CItemException)) throw error;
       if (error.faultcode === 0) return null;
-      error.faultdetail = `${error.faultdetail ?? ""}Unable to get packages meta.\r\n${error.message}`;
+      error.faultdetail = `${error.faultdetail ?? ""}Unable to get packages meta.${this.engine === "12.0" ? "" : `\r\n${error.message}`}`;
       throw error;
     }
   }

@@ -95,8 +95,8 @@ describe("MAN-003: reading", () => {
     expect(manifestOf('<imports><PACKAGE name="P"/></imports>').getAllPackageNames()).toEqual([]);
   });
 
-  it("is implemented for 14.0.7 only for now", () => {
-    expect(() => new ManifestFile(undefined, { engine: "12.0" })).toThrow(EngineNotSupportedError);
+  it("is implemented for 12.0 and 14.0.7 only for now", () => {
+    expect(() => new ManifestFile(undefined, { engine: "12.0" })).not.toThrow();
     expect(() => new ManifestFile(undefined, { engine: "14.35" })).toThrow(EngineNotSupportedError);
   });
 });

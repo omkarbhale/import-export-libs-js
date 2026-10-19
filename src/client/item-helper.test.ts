@@ -252,8 +252,9 @@ describe("the version gate (WIRE-022 to WIRE-024)", () => {
   });
 
   it("is built only for the engines whose client behaviour exists", () => {
-    expect(CLIENT_ENGINES).toEqual(["14.0.7"]);
-    expect(() => new CItemHelper(connect(withVariables({})), { engine: "12.0" })).toThrow(EngineNotSupportedError);
+    expect(CLIENT_ENGINES).toEqual(["12.0", "14.0.7"]);
+    expect(() => new CItemHelper(connect(withVariables({})), { engine: "12.0" })).not.toThrow();
+    expect(() => new CItemHelper(connect(withVariables({})), { engine: "14.35" })).toThrow(EngineNotSupportedError);
     expect(() => new CItemHelper(connect(withVariables({})), { engine: "14.35" })).toThrow("engine 14.35 is not yet supported");
   });
 });

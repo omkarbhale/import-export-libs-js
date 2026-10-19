@@ -15,7 +15,10 @@ import { ArgumentException, escapeAttributeValue, escapeText, invalidCharacterMe
  * @spec EXP-204 EXP-205 EXP-360 EXP-361
  */
 
-/** The `cdata-section-elements` of 14.0.7's `export.xsl`, in the stylesheet's order. */
+/**
+ * The `cdata-section-elements` of 14.0.7's `export.xsl`, in the stylesheet's order. 12.0's list is the same without
+ * `implementation_query` and `event_data` (EXP-360); see {@link CDATA_SECTION_ELEMENTS_12_0}.
+ */
 export const CDATA_SECTION_ELEMENTS: readonly string[] = [
   "html_code",
   "method_code",
@@ -30,6 +33,11 @@ export const CDATA_SECTION_ELEMENTS: readonly string[] = [
   "condition_xml",
   "event_data",
 ];
+
+/** The `cdata-section-elements` of 12.0's `export.xsl` (EXP-360): ten names, in the stylesheet's order. */
+export const CDATA_SECTION_ELEMENTS_12_0: readonly string[] = CDATA_SECTION_ELEMENTS.filter(
+  (name) => name !== "implementation_query" && name !== "event_data",
+);
 
 /** The prefix-to-URI bindings in scope; the key of the default namespace is the empty string. */
 type Scope = ReadonlyMap<string, string>;

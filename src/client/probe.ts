@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { DotNetException, parseInt32, tryParseInt32 } from "./dotnet.js";
 import { CItemException, ResponseDocument, getProperty } from "./fault.js";
 import type { Innovator } from "./innovator.js";
@@ -50,11 +51,12 @@ function singleItemValue(response: ResponseDocument): string | null {
 
 /**
  * Reads the server version with four requests. A fault with faultcode `0` ("no
- * items") counts as 0 for the service pack, the build and the service update.
+ * items") counts as 0 for the service pack, the build and the service update. The 12.0 engine reads major, minor and service
+ * pack only, with two requests, and the version has no build or service update (WIRE-020, WIRE-021).
  *
  * @spec WIRE-004 WIRE-007 WIRE-020 WIRE-021 WIRE-054
  */
-export async function probeServerVersion(innovator: Innovator): Promise<ArasVersion> {
+export async function probeServerVersion(innovator: Innovator, engine: Engine = DEFAULT_ENGINE): Promise<ArasVersion> {
   const majorMinor = await innovator.applyAML(variablesAml(["VersionMajor", "VersionMinor"]));
   if (majorMinor.isError) throw CItemException.fromResponse(majorMinor);
   const major = variableValue(majorMinor, "VersionMajor");
@@ -68,6 +70,8 @@ export async function probeServerVersion(innovator: Innovator): Promise<ArasVers
     const value = singleItemValue(servicePackResponse);
     servicePack = value === null || value === "" ? 0 : (tryParseInt32(value.replaceAll("SP", "")) ?? 0);
   }
+
+  if (engine === "12.0") return new ArasVersion(parseInt32(major), parseInt32(minor), servicePack, 0, 0);
 
   let build = 0;
   const buildResponse = await innovator.applyAML(variablesAml(["VersionBuild"]));
