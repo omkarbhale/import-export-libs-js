@@ -1,4 +1,5 @@
-import { createMessagesFactory, type MessageChannel, type MessagesFactory, type SentMessage } from "../export/messages.js";
+import type { Engine } from "../engines.js";
+import { createMessagesFactory, type MessageChannel, type MessagesFactory, type OnItemError, type SentMessage } from "../export/messages.js";
 import type { ConsoleWriter } from "../import/import-run.js";
 import type { CliIo } from "./io.js";
 
@@ -30,8 +31,20 @@ export class Reporter {
   /** False while the console has written a partial line (the progress dots), which a message must not run on from. */
   private atLineStart = true;
 
-  constructor(private readonly io: CliIo) {
-    this.messages = createMessagesFactory({ onItemError: "continue", onMessage: (message) => this.message(message) });
+  /**
+   * `onItemError` is the host's answer to the error question (EXP-516), `continue` unless an export says otherwise. An export
+   * names its engine so that 14.35, which does not read the answer, refuses one (EXP-571).
+   */
+  constructor(
+    private readonly io: CliIo,
+    options: { engine?: Engine; onItemError?: OnItemError } = {},
+  ) {
+    const onItemError = options.onItemError ?? (options.engine === "14.35" ? undefined : "continue");
+    this.messages = createMessagesFactory({
+      ...(onItemError === undefined ? {} : { onItemError }),
+      ...(options.engine === undefined ? {} : { engine: options.engine }),
+      onMessage: (message) => this.message(message),
+    });
     this.console = {
       write: (text) => this.consoleText(text),
       writeLine: (text = "") => this.consoleText(`${text}\n`),
