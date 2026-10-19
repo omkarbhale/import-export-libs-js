@@ -85,6 +85,18 @@ export class Exception extends Error {
   }
 }
 
+/** `System.InvalidOperationException`, which wraps the failure of a package in the import (IMP-407). */
+export class InvalidOperationException extends Error {
+  override name = "InvalidOperationException";
+
+  constructor(
+    message: string,
+    readonly innerException?: unknown,
+  ) {
+    super(message, innerException === undefined ? undefined : { cause: innerException });
+  }
+}
+
 /** The manifest's platform limit: a Windows path that the host cannot open (MAN-033). */
 export class PathNotUsableError extends Error {
   override name = "PathNotUsableError";

@@ -24,3 +24,12 @@ export function getItemsFromPackageDom(packageDom: XmlDocument | null): XmlDocum
   }
   return items;
 }
+
+/**
+ * `ExportImportBase.IsImportableType`: false exactly for the type names `Member` and `Server Event` (ordinal, case-sensitive).
+ * Those items are imported but neither counted as adds nor registered in the package definition.
+ * @spec IMP-423 IMP-431
+ */
+export function isImportableType(type: string): boolean {
+  return type !== "Member" && type !== "Server Event";
+}
