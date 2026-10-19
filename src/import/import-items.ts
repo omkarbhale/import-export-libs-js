@@ -80,8 +80,9 @@ export class ImportItems {
   /**
    * `Import(itemInXml, mergeMode, amlBatchMode)`. A null reference, an `XmlException` and an `XPathException` leave as a
    * `CItemException` with faultcode -1 that names the item (IMP-304); every other exception leaves as it is. With `amlBatchMode`
- * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353),
- * and in the AML batch mode `Import` prepares the document and returns without sending it (IMP-512).
+   * the call does everything but the last step: the document holds what would have been sent (IMP-512).
+   *
+   * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-317 IMP-340 IMP-512 LP-042
    */
   async import(itemInXml: XmlDocument, mergeMode: boolean, amlBatchMode = false): Promise<void> {
     const documentElement = documentElementOf(itemInXml);
