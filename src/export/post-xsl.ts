@@ -25,6 +25,9 @@ const SOAP_ENV_DECLARATION = 'xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/en
 
 const SOAP = "http://schemas.xmlsoap.org/soap/envelope/";
 
+/** The namespace of the server's `xmlns:i18n` declaration, which 14.35 keeps (EXP-410). */
+const I18N_NAMESPACE = "http://www.aras.com/I18N";
+
 /** The `Result` of an answer: the envelope's `Body` child, with both in the SOAP namespace or none (EXP-403). */
 const RESULT =
   `*[local-name()='Envelope' and (namespace-uri()='${SOAP}' or namespace-uri()='')]` +
@@ -153,14 +156,19 @@ export async function replaceReferencesToPolyLists(doc: XmlDocument, lookups: It
 /**
  * `RemoveNamespaceNodes`: every attribute of an `Item` in no namespace whose prefix is not empty goes: the declarations
  * `xmlns:i18n` and `xmlns:SOAP-ENV`, `xml:lang`, and attributes of any other namespace. The test for a null prefix never
- * holds, because .NET gives an unprefixed attribute the prefix `""`.
+ * holds, because .NET gives an unprefixed attribute the prefix `""`. In 14.35 an attribute stays when its local name is `i18n` or
+ * its value is exactly `http://www.aras.com/I18N`, so `xmlns:i18n` is kept on the top-level Items (EXP-410).
  *
  * @spec EXP-410 EXP-411
  */
-export function removeNamespaceNodes(doc: XmlDocument): void {
+export function removeNamespaceNodes(doc: XmlDocument, engine: Engine = DEFAULT_ENGINE): void {
+  const keepsI18n = engine === "14.35";
   for (const node of selectNodes("//Item", doc)) {
     const item = node as XmlElement;
-    const prefixed = attributesOf(item).filter((attribute) => trimWhiteSpace(attribute.prefix ?? "").length > 0);
+    const prefixed = attributesOf(item).filter(
+      (attribute) =>
+        trimWhiteSpace(attribute.prefix ?? "").length > 0 && !(keepsI18n && (attribute.localName === "i18n" || attribute.value === I18N_NAMESPACE)),
+    );
     for (const attribute of prefixed) item.removeAttributeNode(attribute);
   }
 }

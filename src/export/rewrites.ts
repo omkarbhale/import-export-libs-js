@@ -55,6 +55,26 @@ const attributeValue = (element: XmlElement, name: string): string | undefined =
 /** A node the path selected, as an element. */
 const asElement = (node: XmlNode | null): XmlElement | null => node as XmlElement | null;
 
+/** For every `element_type` of the database's package definitions, the `element_id`s of its PackageElements (EXP-550). */
+export type PackageElementMap = Map<string, Set<string | null>>;
+
+/**
+ * 14.35's `RemoveSeparatelyExportedRelationships` (EXP-170): the relationship Items of the root Items whose type is a key of
+ * `packageElements` and whose id is in that key's set are removed from their parent, because the package lists them as elements of
+ * their own. Only `//Result/Item/Relationships/Item` is looked at: an unprefixed `Result` in no namespace, a root Item, its
+ * `Relationships`, and the Items directly in it. `type` and `id` are compared exactly, and a missing attribute reads as the empty
+ * string. The selection is taken once, so every match goes. Nothing is sent, and the white space around a removed Item stays.
+ *
+ * @spec EXP-170
+ */
+export function removeSeparatelyExportedRelationships(doc: XmlDocument, packageElements: PackageElementMap): void {
+  for (const node of selectNodes("//Result/Item/Relationships/Item", doc)) {
+    const relationship = node as XmlElement;
+    const ids = packageElements.get(attributeValue(relationship, "type") ?? "");
+    if (ids?.has(attributeValue(relationship, "id") ?? "") && relationship.parentNode) removeChild(relationship.parentNode, relationship);
+  }
+}
+
 /**
  * The rewrites `CExportItems.Export` makes to the server's answer between the fetch and `export.xsl` (steps 5 to 12 of EXP-100),
  * each on the answer's DOM, in place. The follow-up fetches go through the `CExportItems` requests and the lookups through the
@@ -63,18 +83,21 @@ const asElement = (node: XmlNode | null): XmlElement | null => node as XmlElemen
  * @spec EXP-100 EXP-101
  */
 export class ExportRewrites {
+  /** `packageElements` is 14.35's map for step 4a (EXP-170); 14.0.7 has no such step. */
   constructor(
     private readonly helper: CItemHelper,
     private readonly requests: RewriteRequests,
+    private readonly packageElements: PackageElementMap | null = null,
   ) {}
 
   /**
    * Steps 5 to 12, in order, each only when its condition holds. `versionable` is the answer of `IsVersionable` for the item's
-   * type, which the fetch already asked for.
+   * type, which the fetch already asked for. 14.35 runs step 4a (EXP-170) first, on every item.
    *
-   * @spec EXP-100
+   * @spec EXP-100 EXP-170
    */
   async rewrite(doc: XmlDocument, typeName: string, versionable: boolean): Promise<void> {
+    if (this.packageElements !== null) removeSeparatelyExportedRelationships(doc, this.packageElements);
     await this.removeSpecialRelationshipsIfNeed(typeName, doc);
     this.processXProperties(doc);
     if (versionable) this.replaceIdWithConfigId(doc);

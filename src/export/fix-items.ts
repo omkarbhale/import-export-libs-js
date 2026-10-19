@@ -52,17 +52,20 @@ export function keyedProperties(itemType: XmlElement): XmlElement[] {
 
 /**
  * The modified system Properties M: each Property once, in document order, selected by its name and values (a) or by having
- * content in its own `Relationships` (b).
- * @spec EXP-322 EXP-323 EXP-392
+ * content in its own `Relationships` (b). In 14.35 (a) has one more alternative for each of the 32 names: a Property whose own
+ * `export_has_translations` attribute is exactly `1` is selected whatever its values are (EXP-381). The three dated names still need
+ * the ItemType to be versionable.
+ * @spec EXP-322 EXP-323 EXP-381 EXP-392
  */
-export function modifiedSystemProperties(itemType: XmlElement): XmlElement[] {
+export function modifiedSystemProperties(itemType: XmlElement, flaggedTranslations = false): XmlElement[] {
   const versionable = childElements(itemType, "is_versionable").some((e) => innerText(e) === "1");
   return relationshipItems(itemType, "Property").filter((property) => {
+    const flagged = flaggedTranslations && attributeOf(property, "export_has_translations") === "1";
     const byValues = childElements(property, "name").some((name) => {
       const key = innerText(name);
       if (!Object.hasOwn(STOCK_ROWS, key)) return false;
       const row = STOCK_ROWS[key]!;
-      return (!row.versionable || versionable) && deviatesFromStock(property, row);
+      return (!row.versionable || versionable) && (flagged || deviatesFromStock(property, row));
     });
     if (byValues) return true;
     // `Relationships[child::node()]`: any node counts, whitespace and comments too (EXP-392)

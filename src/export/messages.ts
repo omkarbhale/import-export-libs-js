@@ -1,3 +1,4 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { formatMessage } from "../io/dotnet-text.js";
 
 /**
@@ -90,6 +91,17 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
 };
 
 /**
+ * The templates of 14.35 that differ from {@link MESSAGE_TEMPLATES} for an export (EXP-504): `ErrorMessageMessage` is two tabs, the
+ * banner and the message on a line of its own. Every other template is the same.
+ *
+ * @spec EXP-504
+ */
+export const MESSAGE_TEMPLATES_1435: Readonly<Record<string, string>> = {
+  ...MESSAGE_TEMPLATES,
+  ErrorMessageMessage: "\t\t****ErrorMessage****\r\n{0}",
+};
+
+/**
  * `ResourceManager.GetMessage(key, args)`: the template of `key` formatted with the invariant culture and the arguments, a null
  * argument as the empty string. A key with no template gives the empty string and formats nothing. Without arguments the template
  * is returned as it is, so a `{0}` in it stays.
@@ -97,7 +109,12 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
  * @spec EXP-504
  */
 export function getMessage(key: string, ...args: (string | null | undefined)[]): string {
-  const template = MESSAGE_TEMPLATES[key];
+  return getMessageFor(DEFAULT_ENGINE, key, ...args);
+}
+
+/** {@link getMessage} with the catalogue of an engine. */
+export function getMessageFor(engine: Engine, key: string, ...args: (string | null | undefined)[]): string {
+  const template = (engine === "14.35" ? MESSAGE_TEMPLATES_1435 : MESSAGE_TEMPLATES)[key];
   if (template === undefined) return "";
   return args.length === 0 ? template : formatMessage(template, ...args);
 }
@@ -142,8 +159,35 @@ export type OnItemError = "continue" | "abort-package";
 export interface MessageOptions {
   /** Called for every message, in the order the engine sends them. */
   onMessage?: (message: SentMessage) => void | Promise<void>;
-  /** The answer to the error question. The default is `continue`. */
+  /** The answer to the error question. The default is `continue`. 14.35 never reads the answer, so it refuses the option (EXP-571). */
   onItemError?: OnItemError;
+  /** The engine the messages are for; the default is 14.0.7. */
+  engine?: Engine;
+}
+
+/** An option that an engine has nothing to act on. */
+export class OptionNotSupportedError extends Error {
+  override name = "OptionNotSupportedError";
+
+  constructor(
+    readonly option: string,
+    readonly engine: Engine,
+    reason: string,
+  ) {
+    super(`${option} is not supported with engine ${engine}: ${reason}`);
+  }
+}
+
+/**
+ * The library's `--on-item-error` has nothing to act on in 14.35: the failed-item handler sends the abort question, never reads
+ * the answer, and stops the whole export (EXP-555, EXP-571). Setting it for that engine is refused, rather than ignored.
+ *
+ * @spec EXP-571
+ */
+export function checkOnItemError(engine: Engine, onItemError: OnItemError | undefined): void {
+  if (engine === "14.35" && onItemError !== undefined) {
+    throw new OptionNotSupportedError("--on-item-error", engine, "the engine stops the whole export at the first failed item and does not read the answer");
+  }
 }
 
 class ChannelMessage extends Message {
@@ -162,10 +206,12 @@ class ChannelMessage extends Message {
 
 /**
  * The messages factory of the library: every message goes to `onMessage`, and the error question is answered by `onItemError`.
+ * For 14.35 the option is refused (EXP-571) and the question is answered `no`, which the engine does not read.
  *
- * @spec EXP-503
+ * @spec EXP-503 EXP-571
  */
 export function createMessagesFactory(options: MessageOptions = {}): MessagesFactory {
+  checkOnItemError(options.engine ?? DEFAULT_ENGINE, options.onItemError);
   const make = (channel: MessageChannel): Message => new ChannelMessage(channel, options);
   return {
     getCurrentPackageMessage: () => make("currentPackage"),

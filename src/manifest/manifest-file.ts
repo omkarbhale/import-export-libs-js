@@ -19,8 +19,12 @@ import type { XmlDocument, XmlElement } from "../xml/index.js";
 import { DuplicateKeyError, NetfxHashtable } from "./netfx-hashtable.js";
 import { isStandardPackage } from "./package-path.js";
 
-/** The engines whose manifest behaviour is implemented; the rest wait for their variant slices. */
-export const MANIFEST_ENGINES: readonly Engine[] = ["14.0.7"];
+/**
+ * The engines whose manifest behaviour is implemented; the rest wait for their variant slices. The manifest rules have no 14.35
+ * variant but `GetPackagePath` (MAN-030, the import's package folder), so 14.35 shares the code of 14.0.7; the import slice of 14.35 adds
+ * that one.
+ */
+export const MANIFEST_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 export interface ManifestOptions extends PathEnvironment {
   engine?: Engine;
