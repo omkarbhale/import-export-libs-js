@@ -564,3 +564,11 @@ What is sent before the items (login, probe, package definition and dependency l
 
 [14.35] Held, and the held surface grew. `HttpConnectorExtension` is the same (the nine-argument constructor with its certificate defaults, whose find value is empty, and `Login()` that installs a certificate only when one is set) plus a constructor taking an IOM token provider and a protocol type. `CertificateUtils` changes how it selects certificates: `GetClientCertificates` now takes the certificates in the current user's `My` store that are valid at the current time and have a private key, and keeps those whose key usage includes non-repudiation or whose enhanced key usage includes client authentication (1.3.6.1.5.5.7.3.2); 14.0.7 took the ones with key usage non-repudiation that were valid. `IsCertificateRequired` now refuses a null URI, and `FindCertificate` is unchanged. `SolutionUpgradeContext` keeps the five certificate settings. None is ported: see `roadmap/hold/certificate-login.md`, which records the selection rules for the day they are. `ConsoleUpgrade.exe.config` has its client-certificate provider section commented out in both builds.
 
+
+### WIRE-091: The server-path helper of the GUI hosts is not ported
+
+[14.0.7] `InnovatorServer.GetInnovatorServerPath(url)` turns a server URL into the path of the SOAP page. A null URL counts as empty. A URL that ends with `InnovatorServer.aspx` (compared case-insensitively) is returned as it stands; any other gets `/` appended unless it ends with one, and then `Server/InnovatorServer.aspx`. Only the GUI hosts reference it, `import.exe` and `export.exe` (checked against the member references of the three 14.0.7 host executables: `ConsoleUpgrade.exe` has none). The library's CLI plays the role of the console host (WIRE-002), which hands the URL as given to the connection, and IOM derives the base itself (WIRE-003), so the helper has no caller and is not ported.
+
+[12.0] The method does not exist in the 12.0 build.
+
+[14.35] The same method, referenced by the same two GUI hosts (`import.exe` and `export.exe`; `ConsoleUpgrade.exe` has no reference). Not ported for the same reason; the 14.35 build's body is compared when that build is mapped.
