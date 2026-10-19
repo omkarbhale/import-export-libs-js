@@ -2565,7 +2565,18 @@
             "bodySha256": "c1887b825a9a377ddf127bc52006910c5bda7a80eb61f9abdbda92c836cbd600",
             "textSha256": "6beb6232886eadd6aae32b9fb1ad465a6e64b3f10f2c40857d2383d014819a1a"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-700",
+            "EXP-701",
+            "EXP-702",
+            "EXP-703",
+            "EXP-704"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.generateHashtableFromManifest",
+            "src/export/manifest-selection.ts#packageTableFromSolutions"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetImportableItemsCount",
@@ -7426,7 +7437,18 @@
             "bodySha256": "8dae2e810e8e056eb90ea8fbc7fa6a20c48c6913d2fec25ffeee2368274949ef",
             "textSha256": "0556ed52dd394545a22461b27c94a8aec7bc8960948672a926ee0cdd54d9fbdd"
           },
-          "status": "unmapped"
+          "status": "mapped",
+          "rules": [
+            "EXP-700",
+            "EXP-701",
+            "EXP-702",
+            "EXP-703",
+            "EXP-704"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.generateHashtableFromManifest",
+            "src/export/manifest-selection.ts#packageTableFromSolutions"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetImportableItemsCount",
@@ -10398,7 +10420,7 @@
             "LP-124",
             "LP-140",
             "LP-145",
-                        "LP-151",
+            "LP-151",
             "LP-182"
           ],
           "symbols": [
@@ -15522,8 +15544,18 @@
             "bodySha256": "b53a2f6b0bdafed72b9a5aafc7141cc5d6cfba38373556625acfa0f178a28c76",
             "textSha256": "2201c80014ea93a48c21d58b0d8eaa9e79ea21b28d175b9b9edd472414d2155a"
           },
-          "status": "unmapped",
-          "rules": []
+          "status": "mapped",
+          "rules": [
+            "EXP-700",
+            "EXP-701",
+            "EXP-702",
+            "EXP-703",
+            "EXP-704"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.generateHashtableFromManifest",
+            "src/export/manifest-selection.ts#packageTableFromSolutions"
+          ]
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.ImportExportManager::GetImportableItemsCount",

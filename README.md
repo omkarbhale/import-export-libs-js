@@ -20,7 +20,7 @@ npm install git+ssh://git@github.com/omkarbhale/import-export-libs-js.git
 
 | Command | What it does |
 |---|---|
-| `aras-pkg export <outDir> [Type:id…]` | Exports items into a folder with an `imports.mf`. The items are arguments, `-` for one per line on standard input, or `--package <name>` (repeatable) for whole packages. Each item's package is found on the server; an item in no package is refused by name and nothing is exported. |
+| `aras-pkg export <outDir> [Type:id…]` | Exports items into a folder with an `imports.mf`. The items are arguments, `-` for one per line on standard input, or `--package <name>` (repeatable) for whole packages. Each item's package is found on the server; an item in no package is refused by name and nothing is exported. Aras's console tool's three selections are also modes of `export`: `--use-import <manifest>` (the items an import manifest's package folders would add; 14.0.7), `--from-manifest <manifest>` (all elements of the database's packages the manifest names) and `--all-packages`. |
 | `aras-pkg import <manifest> [--package <name>…]` | Imports the packages of an `imports.mf`, in dependency order. |
 | `aras-pkg plan import <manifest> [--package <name>…]` | Offline: the order an import follows and, per package, the item sequence, the repeats and every item the import silently drops. |
 | `aras-pkg import-language-pack <lppath> --lp-package <name>` | Imports a language pack (`ImportConfig.xml`) as a package. Not on `--engine 12.0`. |
@@ -37,7 +37,7 @@ echo "$PASSWORD" | aras-pkg import ./imports.mf --password-stdin --release R1 --
 - **Options.** `--release`, `--description`, `--merge`, `--os-user`, `--verbose`, `--log <path>` (default `./aras-pkg-<command>-<date>.log`), `--timeout <ms>` (write `--timeout=-1` for no limit) and `--skip-version-check` (run an engine against a server outside its window; a refusal names the engines that fit).
 - **Output.** Engine messages go to standard error, one `[INFO]`, `[WARN]`, `[ERROR]` or `[PKG]` line each, with the engine's own console text between them. The summary goes to standard output, as `key: value` lines or as JSON with `--json`, and includes the engine used.
 - **Exit codes.** `0` done; `1` failed (the engine returned failure, the login or the version gate refused, or an exception ended the run); `2` done, but the engine sent at least one error message; `64` usage error (nothing was sent to the server).
-- **Checked before the server is contacted.** The options parse, the manifest exists, every `--package` is in it, and the log folder can be made. For `export`: every item is `Type:id`, the output path can be a folder, and the options are valid.
+- **Checked before the server is contacted.** The options parse, the manifest exists, every `--package` is in it, and the log folder can be made. For `export`: every item is `Type:id` (or one of the three console modes is chosen, its manifest exists), the output path can be a folder, and the options are valid.
 
 ## Develop
 

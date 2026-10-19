@@ -4,7 +4,9 @@ import type { Engine } from "../engines.js";
 import { SUExportContext } from "../export/export-context.js";
 import type { ReferencesToUnknownPackages } from "../export/export-context.js";
 import { ImportExportManager, RUN_ENGINES } from "../export/import-export-manager.js";
+import type { SelectionTable } from "../export/import-export-manager.js";
 import type { OnItemError } from "../export/messages.js";
+import { USE_IMPORT_ENGINES, allPackagesTable, fromManifestTable, useImportTable } from "./console-modes.js";
 import { EXIT, exitCodeOf } from "./exit.js";
 import {
   type RequestedItem,
@@ -39,8 +41,33 @@ const UNKNOWN_REFERENCE_MODES: Readonly<Record<string, ReferencesToUnknownPackag
   "do-not-remove": "DoNotRemove",
 };
 
-/** Where the items of a run come from (HOST-001). */
-type Source = { kind: "items"; items: RequestedItem[] } | { kind: "stdin"; items: RequestedItem[] } | { kind: "packages"; names: string[] };
+/** Where the items of a run come from (HOST-001, HOST-100). */
+type Source =
+  | { kind: "items"; items: RequestedItem[] }
+  | { kind: "stdin"; items: RequestedItem[] }
+  | { kind: "packages"; names: string[] }
+  | { kind: "use-import"; manifest: string }
+  | { kind: "from-manifest"; manifest: string }
+  | { kind: "all-packages" };
+
+/** The sources that are the console tool's modes: they build the engine's table themselves (HOST-100). */
+type ConsoleSource = Extract<Source, { kind: "use-import" | "from-manifest" | "all-packages" }>;
+
+const isConsoleSource = (source: Source): source is ConsoleSource =>
+  source.kind === "use-import" || source.kind === "from-manifest" || source.kind === "all-packages";
+
+/**
+ * The manifest of `--use-import` or `--from-manifest`, as an absolute path to a file that exists. A missing file is a usage error:
+ * the console tool would fall back to every package, and the CLI asks for that with `--all-packages` (HOST-101).
+ *
+ * @spec HOST-101
+ */
+function resolveManifest(option: string, path: string, io: CliIo): string {
+  if (path === "") throw new UsageError(`${option} needs the path of a manifest`);
+  const absolute = resolve(io.cwd(), path);
+  if (!existsSync(absolute) || !statSync(absolute).isFile()) throw new UsageError(`${option} '${path}': the manifest file does not exist`);
+  return absolute;
+}
 
 /**
  * The output folder as the engine's working directory: absolute, and only checked for being a folder that can exist. It need not
@@ -60,13 +87,30 @@ function resolveOutDir(outDir: string, io: CliIo): string {
 }
 
 /**
- * The one source of the items: arguments, `-` for standard input, or `--package` (HOST-001 to HOST-004). Standard input is read
- * here, after the arguments have been checked and before any request.
+ * The one source of the items: arguments, `-` for standard input, `--package`, or one of the console tool's modes (HOST-001 to
+ * HOST-004, HOST-100). Standard input is read here, after the arguments have been checked and before any request.
  *
- * @spec HOST-001 HOST-003 HOST-004
+ * @spec HOST-001 HOST-003 HOST-004 HOST-100 HOST-101
  */
 async function resolveSource(rest: readonly string[], values: OptionValues, io: CliIo): Promise<Source> {
   const packages = listOf(values, "package");
+  const useImport = stringOf(values, "use-import");
+  const fromManifest = stringOf(values, "from-manifest");
+  const allPackages = flagOf(values, "all-packages");
+  const modes = [
+    ...(useImport === undefined ? [] : ["--use-import"]),
+    ...(fromManifest === undefined ? [] : ["--from-manifest"]),
+    ...(allPackages ? ["--all-packages"] : []),
+  ];
+  if (modes.length > 0) {
+    if (modes.length > 1) throw new UsageError(`${modes.join(" and ")} cannot be combined: each chooses what to export`);
+    if (rest.length > 0 || packages.length > 0) {
+      throw new UsageError(`${modes[0]} cannot be combined with items, '-' or --package: it chooses what to export`);
+    }
+    if (useImport !== undefined) return { kind: "use-import", manifest: resolveManifest("--use-import", useImport, io) };
+    if (fromManifest !== undefined) return { kind: "from-manifest", manifest: resolveManifest("--from-manifest", fromManifest, io) };
+    return { kind: "all-packages" };
+  }
   if (packages.length > 0) {
     if (rest.length > 0) throw new UsageError("--package cannot be combined with items or '-'");
     if (packages.includes("")) throw new UsageError("--package needs a package name");
@@ -75,7 +119,9 @@ async function resolveSource(rest: readonly string[], values: OptionValues, io: 
     return { kind: "packages", names: packages };
   }
   if (rest.length === 0) {
-    throw new UsageError("export needs the items to export: Type:id arguments, '-' for standard input, or --package <name>");
+    throw new UsageError(
+      "export needs the items to export: Type:id arguments, '-' for standard input, --package <name>, --use-import <manifest>, --from-manifest <manifest> or --all-packages",
+    );
   }
   if (rest.includes("-")) {
     if (rest.length > 1) throw new UsageError("'-' (standard input) cannot be combined with other items");
@@ -107,6 +153,22 @@ function exportOptions(values: OptionValues, engine: Engine): { context: SUExpor
   return { context, onItemError: answer };
 }
 
+/**
+ * The table of a console mode, chosen by the source (HOST-110, HOST-120, HOST-121).
+ *
+ * @spec HOST-110 HOST-120 HOST-121
+ */
+async function consoleSelection(source: ConsoleSource, manager: ImportExportManager, logFilePath: string | null, engine: Engine): Promise<SelectionTable> {
+  if (source.kind === "use-import") return useImportTable(source.manifest, { engine, logFilePath });
+  if (source.kind === "from-manifest") return fromManifestTable(manager, source.manifest, false);
+  return allPackagesTable(manager);
+}
+
+/** The packages of a console mode's table in the order the engine enumerates them, empty ones included (HOST-130). */
+function describeTable(table: SelectionTable | undefined): Array<{ name: string; items: number }> {
+  return table === undefined ? [] : [...table.entries()].map(([name, inner]) => ({ name, items: inner.count }));
+}
+
 function exportText(summary: Summary, packages: ReadonlyArray<{ name: string; items: number }>): string {
   const flat: Summary = { ...summary, packages: packages.length, items: packages.reduce((total, entry) => total + entry.items, 0) };
   const lines = summaryText(flat);
@@ -117,14 +179,18 @@ function exportText(summary: Summary, packages: ReadonlyArray<{ name: string; it
 
 /**
  * `export <outDir> [Type:id…] | - | --package <name>…`: the local checks of HOST-005, then the host sequence of HOST-009 — context,
- * login, the selection of HOST-010 to HOST-022, `ExportSolutions`, logout.
+ * login, the selection of HOST-010 to HOST-022, `ExportSolutions`, logout. The console modes build the manager first and ask it
+ * for the table (HOST-102).
  *
- * @spec HOST-001 HOST-005 HOST-009 HOST-030
+ * @spec HOST-001 HOST-005 HOST-009 HOST-030 HOST-102 HOST-130
  */
 export async function exportCommand(args: readonly string[], io: CliIo): Promise<number> {
   const { values, positionals } = parseOptions(args, {
     ...CONNECTION_OPTIONS,
     package: { type: "string", multiple: true },
+    "use-import": { type: "string" },
+    "from-manifest": { type: "string" },
+    "all-packages": { type: "boolean" },
     level: { type: "string" },
     "export-referenced": { type: "boolean" },
     "unknown-references": { type: "string" },
@@ -141,6 +207,7 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
   const source = await resolveSource(rest, values, io);
   const { context, onItemError } = exportOptions(values, engine);
   requireEngine(engine, RUN_ENGINES);
+  if (source.kind === "use-import") requireEngine(engine, USE_IMPORT_ENGINES);
   const connection = await resolveConnection(values, io);
   const logPath = resolveLogPath(values, "export", io);
 
@@ -153,6 +220,9 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
   context.verbose = flagOf(values, "verbose");
   context.logFilePath = logPath;
   context.timeout = connection.timeout;
+  // the console tool names its manifest in the context, which the engine's constructor reads (HOST-102)
+  if (isConsoleSource(source) && source.kind !== "all-packages") context.manifestFile = source.manifest;
+  context.useImport = source.kind === "use-import";
 
   const reporter = new Reporter(io, { engine, ...(onItemError === undefined ? {} : { onItemError }) });
   let returnCode: number = EXIT.failed;
@@ -160,14 +230,23 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
   let refusal: SelectionRefused | undefined;
   let server: string | undefined;
   let selection: SelectionOutcome | undefined;
+  let consoleTable: SelectionTable | undefined;
   try {
     const helper = await openSession(engine, connection, io, reporter);
     server = helper.innovatorVersion?.fullString;
     try {
-      selection = source.kind === "packages" ? await resolvePackages(helper, source.names) : await resolveItems(helper, source.items);
-      for (const warning of selection.warnings) reporter.warn(warning);
-      const manager = new ImportExportManager(context, reporter.messages, helper, { console: reporter.console, now: io.now });
-      await manager.exportSolutions(context, selection.insertions);
+      const managerOptions = { console: reporter.console, now: io.now };
+      if (isConsoleSource(source)) {
+        // ConsoleUpgrade builds the manager first, and its modes ask it for the table (HOST-102)
+        const manager = new ImportExportManager(context, reporter.messages, helper, managerOptions);
+        consoleTable = await consoleSelection(source, manager, context.logFilePath, engine);
+        await manager.exportSolutions(context, consoleTable);
+      } else {
+        selection = source.kind === "packages" ? await resolvePackages(helper, source.names) : await resolveItems(helper, source.items);
+        for (const warning of selection.warnings) reporter.warn(warning);
+        const manager = new ImportExportManager(context, reporter.messages, helper, managerOptions);
+        await manager.exportSolutions(context, selection.insertions);
+      }
       returnCode = EXIT.ok;
     } finally {
       await helper.logout();
@@ -184,7 +263,7 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
   }
 
   const exitCode = refusal !== undefined || failure !== undefined ? EXIT.failed : exitCodeOf(returnCode, reporter.counts.errors);
-  const packages = refusal === undefined ? (selection?.packages ?? []) : [];
+  const packages = refusal === undefined ? (selection?.packages ?? describeTable(consoleTable)) : [];
   const { info, warnings, errors, packages: packageMessages } = reporter.counts;
   const summary: Summary = {
     command: "export",

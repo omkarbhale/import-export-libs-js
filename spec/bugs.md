@@ -852,3 +852,17 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the same question is put to the server twice, and the message can name codes that differ from the ones that made the check fail if the answers differ. A correct engine would enumerate once.
 - **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ThrowIfNoSelectedLanguagesInDatabase`.
 - **Versions:** 14.35.
+
+## EXP-702: a package name with an apostrophe makes GenerateHashtableFromManifest fail for every package
+
+- **Behaviour:** the method asks the manifest `//package[@name='{name}']` for the name of every package definition of the database, with the name written into the XPath unescaped. A definition whose name holds an apostrophe makes the expression invalid, and the call ends with `System.Xml.XPath.XPathException` (`'//package[@name='it's']' has an invalid token.`), whether or not the manifest names that package. The element query of the same method and of the console tool's all-packages loop (EXP-703, HOST-121) has the same defect.
+- **Why it is a bug:** one such package name in the database makes `--from-manifest` and `--all-packages` unusable. A correct engine would escape the name or compare it in code.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::GenerateHashtableFromManifest`.
+- **Versions:** 12.0, 14.0.7, 14.35.
+
+## EXP-704: a database with no package definitions ends GenerateHashtableFromManifest with a null reference
+
+- **Behaviour:** when the database holds no package definitions, `GetSolutions2Xml` sends its warning and returns null, and the method queries the null document: `System.NullReferenceException` (`Object reference not set to an instance of an object.`). The console tool's all-packages loop does the same.
+- **Why it is a bug:** the warning says what is wrong, and the exception hides it. A correct engine would return an empty table.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::GenerateHashtableFromManifest`.
+- **Versions:** 12.0, 14.0.7, 14.35.

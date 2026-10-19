@@ -100,12 +100,17 @@ ${COMMON}`;
 export const EXPORT_USAGE = `Usage: aras-pkg export <outDir> [Type:id…] [options]
        aras-pkg export <outDir> - [options]
        aras-pkg export <outDir> --package <name> [--package <name>…] [options]
+       aras-pkg export <outDir> --use-import <manifest> | --from-manifest <manifest> | --all-packages [options]
 
 Exports items into <outDir>, grouped by the package each belongs to, with an imports.mf that imports them again. The items
 come from exactly one of:
   Type:id…              the items named as arguments (the id is split off at the first colon)
   -                     the items on standard input, one Type:id per line
   --package <name>      every element of the named package (repeatable); an unknown name is refused with suggestions
+  --use-import <manifest>   the items the package folders of an import manifest would add (Aras's console tool, useimport; 14.0.7)
+  --from-manifest <manifest>  every element of the database's packages that the manifest names (the manifest must exist)
+  --all-packages        every element of every package of the database
+The last three are the modes of Aras's console tool and cannot be combined with each other, with items or with --package.
 Each item's package is found on the server (PackageElement, PackageGroup, PackageDefinition). An item in no package, or not
 found, is refused by name and nothing is exported. <outDir> is used as it is: it need not exist or be empty, and the engine
 deletes the subfolder of each package it exports before writing it.
