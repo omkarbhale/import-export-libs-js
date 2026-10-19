@@ -33,7 +33,7 @@
             "bodySha256": "3ac147e917ba706d825ee13765e65e6da9249327e499f821f7045428d3e268a9",
             "textSha256": "9b4006ec639e11e9947da986ceabec23a7d3b9afdd51ea5a545079ae19926c23"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-423",
             "EXP-424",
@@ -41,6 +41,10 @@
             "EXP-426",
             "EXP-427",
             "EXP-428"
+          ],
+          "symbols": [
+            "src/xml/save.ts#xmlDocumentSaveWithSettings",
+            "src/xml/save.ts#encodeItemFile"
           ]
         },
         {
@@ -53,9 +57,12 @@
             "bodySha256": "1e90f2cbcc2ac1f11bb2be007329b304db74a1a65c9d957cff60f531882e2204",
             "textSha256": "f465fba589fc1c6b0f59045e788c83484f48135fc49336f64a97de9ea7709017"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -68,9 +75,12 @@
             "bodySha256": "a9db3a5012c2988b2d719908f534235d7e3b62fa3bc219cb625b904ac394ef04",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -83,9 +93,12 @@
             "bodySha256": "fc7570822398716ae2142c23eb4ebc75ef675998fc0f4672e81fd647dabe9b4d",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -98,9 +111,12 @@
             "bodySha256": "28eaa8d5e99b445f5fb223e2ae24136fb819cf88ae0b5e95cef710a147e9116f",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -113,9 +129,12 @@
             "bodySha256": "67c105e7f6e09bb34b82d4fc5dbda2bbc1133e2471f0a4ac6913a75a773be786",
             "textSha256": "6e889198f167741124d678ad5d5040ed12f001b83cbf05329367515a36ca5f9a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -128,9 +147,12 @@
             "bodySha256": "57bb851cbff7efcc33e4ffb600f897577848c5da25d5c58c8bf79e1ed6301c34",
             "textSha256": "a56a13939723ff94f6d0bf03139359c486baf072f3eaa0a5c8bdaeae5692b940"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -143,9 +165,12 @@
             "bodySha256": "1a48b540581f2c5fa8f51ce2ca04c378ed0b485205c6753f8db290d112e5d719",
             "textSha256": "cf729037078e7d107e95621c9ded5312bb2936bdc106d865c314473c4abb649b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/version.ts#ArasVersion"
           ]
         },
         {
@@ -158,9 +183,12 @@
             "bodySha256": "59a674f405b174811985160d66665041329b1d638daa87a3184204f3f6469ae7",
             "textSha256": "3b2940e9b5ca42541c3fa509f515bb2da0e65fd3f9a1a1c537b76f1c57386f8b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-001"
+          ],
+          "symbols": [
+            "src/export/cexport-items.ts#CExportItems"
           ]
         },
         {
@@ -173,9 +201,12 @@
             "bodySha256": "7f385526a9064c06f1401343baf3a55d10c76d9daec13bde8603aeee2dc582d6",
             "textSha256": "0d645864668fbef81c86e0c8031433c31756d4bce3600db6b2b2de0a56f343f9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-024"
+          ],
+          "symbols": [
+            "src/export/request-bodies.ts#itemTypeBody"
           ]
         },
         {
@@ -188,9 +219,12 @@
             "bodySha256": "b190e480748b4789315a09a60c948044bba8b269a5b218cc030d4084f1a530ee",
             "textSha256": "db7c921733506435e7d2b0451002776ddfe71154626aa7b61ec9f6d4a878827e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-025"
+          ],
+          "symbols": [
+            "src/export/request-bodies.ts#cmfBody"
           ]
         },
         {
@@ -203,10 +237,13 @@
             "bodySha256": "ed71094a77eb89c8ad45d80fe355b1826fd966154ef885e887b6f649715af67b",
             "textSha256": "b215ac82313920b37257ab0d92e5f2a631a932e0b3010deae5f608bfb665b65d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-405",
             "EXP-406"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#cdataFilterXml"
           ]
         },
         {
@@ -219,7 +256,7 @@
             "bodySha256": "9dc6b01a19b31f19bbab07b05743002983e03043af5e0295b37a616770176938",
             "textSha256": "1a0840f6dfbdd8dcd414739736372c93b17ca86fef5b47f28d01fa08cd83b979"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-001",
             "EXP-002",
@@ -235,6 +272,14 @@
             "EXP-418",
             "EXP-419",
             "EXP-423"
+          ],
+          "symbols": [
+            "src/export/cexport-items.ts#CExportItems.export",
+            "src/export/cexport-items.ts#CExportItems.fetch",
+            "src/export/cexport-items.ts#CExportItems.rewrite",
+            "src/export/export-item.ts#exportFileName",
+            "src/export/export-errors.ts#guardExport",
+            "src/export/output-folder.ts#writeItemFile"
           ]
         },
         {
@@ -247,9 +292,12 @@
             "bodySha256": "28a712767fa49ad398cfb0043f564baef3d93dc01ae4d3dbae7a3701722fbf1c",
             "textSha256": "01bae4662a0188ad43c975ec93940dbfd55191f95c79aa9385fd300f57083b35"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-023"
+          ],
+          "symbols": [
+            "src/export/main-fetch.ts#defaultSelect"
           ]
         },
         {
@@ -262,10 +310,13 @@
             "bodySha256": "ca0453d1b551993208f114ba2a49ddce451c5086f67ca13adf853e36122d37df",
             "textSha256": "4464339902902a93a2b876e4f9b70db7bc737e55e1d1c169f7cf3f3018f7bfd0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-119",
             "EXP-120"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.indentConditionXmlInDAC"
           ]
         },
         {
@@ -278,10 +329,13 @@
             "bodySha256": "062bf7d39a6d673a7d281917ad7446b70a5ca9c1d8571cc343d10d52d842ce9b",
             "textSha256": "5c6f2828a4c3bb328d50201f02bbace1ba220e803080d1b2338c5660d143dd45"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-051",
             "EXP-117"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.includeDrRelationshipAsValue"
           ]
         },
         {
@@ -294,11 +348,14 @@
             "bodySha256": "19518ea10c58c486c4b4f8b8ed00b0822c162cf365257c3e377f4a8ee7647da3",
             "textSha256": "99e71fdb53b2ce86b0f76beb1b0aba32c71fd250883d8a8a94d5e0f9ff63ca4f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-050",
             "EXP-111",
             "EXP-112"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.processForm"
           ]
         },
         {
@@ -311,11 +368,14 @@
             "bodySha256": "5f98f896329623e9a886d5153b5660aa50bea31cef348914cca1c77416d1d72f",
             "textSha256": "dc93035b727b06056c49ec5d5a0e92efa45fdd85f4f6e7465ae0da5a76e51553"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-049",
             "EXP-108",
             "EXP-109"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.processRelationshipType"
           ]
         },
         {
@@ -328,9 +388,12 @@
             "bodySha256": "3e451245bfb75c8a310805c6c4249abb9fde3b489aced7667845ef66c85b89b7",
             "textSha256": "afd6653af99069dd103b35919bc5cf0a7fa3052f5f13d1e7a961b154d4ff500a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-110"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.processSequence"
           ]
         },
         {
@@ -343,9 +406,12 @@
             "bodySha256": "ba15481126c324f1b3317f26ec2612834d5b618a78fdcfc5d8a84e82c99e54f1",
             "textSha256": "f8d315af0dfd01a2dbe7ff8e3fbe02cf4051954842d346d58fd69caf6dcf1a2f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-106"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.processXProperties"
           ]
         },
         {
@@ -358,11 +424,14 @@
             "bodySha256": "660069953b7881e2abe6561af0e8486d266e815abe6e6d775eb11a60947ffa77",
             "textSha256": "0532aba5f4424a70174ca20dc34126788edee5163468f010ac8aa9c0c504a6fa"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-048",
             "EXP-103",
             "EXP-104"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.removeAutoGeneratedRelationships"
           ]
         },
         {
@@ -375,10 +444,13 @@
             "bodySha256": "eef907aa4dd718ffcc65c5d009d92e7b280c7379c5392d20f2bbdc6f1e453422",
             "textSha256": "f9470f10fe0171989578b4d3a733a3aa337d8d049ddc0e5959cac5daa821183b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-403",
             "EXP-404"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removePermissionIdWhenItMatchesToDefaultPermission"
           ]
         },
         {
@@ -391,9 +463,12 @@
             "bodySha256": "e72cb828b7235980bb439f4c55678b332b5e63e23c8787d02a19d4552c33888a",
             "textSha256": "0b897896d209ed0c98f82e007f9e2135c54ccbd16610e43d06af05df277107d3"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-104"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#removeRelationshipHelper"
           ]
         },
         {
@@ -406,9 +481,12 @@
             "bodySha256": "78397711744dc4fa463eb1e5e2faf50e276ddb391babbc8ca0c504994a82bcae",
             "textSha256": "39f72227234031f231d953f3a9492ae487bab99574e01e3b10e62f0008324330"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-105"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.removeRelationshipsByType"
           ]
         },
         {
@@ -421,11 +499,14 @@
             "bodySha256": "d291916f867110aeaef447dba4a617911e536f4315504c6c71bb9ee7d543a425",
             "textSha256": "92f0a6fd906267740ef810d45a7b71723bfec8f1bbdcc09e003be2e194c4ead3"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-100",
             "EXP-103",
             "EXP-105"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.removeSpecialRelationshipsIfNeed"
           ]
         },
         {
@@ -438,9 +519,12 @@
             "bodySha256": "a175e0248c53137344d467d3f08563cd37b9128e614f4a8524f823416f55d4b5",
             "textSha256": "c09e20720b200ca9f4cfce035f7106fce03e361eeb02e35f58c2bb718c2c6ece"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-105"
+          ],
+          "symbols": [
+            "src/export/rewrites.ts#ExportRewrites.removeSystemRelationshipsFromXTree"
           ]
         },
         {
@@ -528,10 +612,13 @@
             "bodySha256": "d7a25645edb61a02cdd279cf6c7aaf2d3bd69b3dae9028b95cac304802c55620",
             "textSha256": "e3a8c7af6e4ac86f8b57112e35100d78813f8bc77eb08bc88557695342583eb5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-051",
             "WIRE-052"
+          ],
+          "symbols": [
+            "src/client/fault.ts#CItemException.fromResponse"
           ]
         },
         {
@@ -544,7 +631,7 @@
             "bodySha256": "b4931c5bcfe3459dadad2a410e4910af59329bd90d3bb4aca7a5289fa54a9498",
             "textSha256": "8c656366fd43da28ce1db4e5daf3ca97d128ef477aa0805376af73d7aae965bb"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-407",
             "IMP-445",
@@ -552,6 +639,9 @@
             "IMP-460",
             "WIRE-051",
             "WIRE-052"
+          ],
+          "symbols": [
+            "src/client/fault.ts#CItemException"
           ]
         },
         {
@@ -923,12 +1013,15 @@
             "bodySha256": "ac247beebe7dc917004bdd654746172d28a07b6cd33063da59f38349e780370d",
             "textSha256": "0e28c69a3180b240911af8a1beb6c663e2c4a0b70cdbbc6a0d7c4ab6ae2daf0c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-042",
             "EXP-114",
             "IMP-429",
             "IMP-448"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getConfigId"
           ]
         },
         {
@@ -941,11 +1034,14 @@
             "bodySha256": "27a39ec26ad64f61e1aa81889c2ee592aadac93fcf6485de0c581f14afbf8327",
             "textSha256": "3e25f1fa4cd3bca1d479327ad6218c2d3aec0d8049b525674044109729d492e2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-041",
             "EXP-114",
             "IMP-321"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCurrentIdByUniqueKey"
           ]
         },
         {
@@ -958,12 +1054,15 @@
             "bodySha256": "b10cd1606e21c79ce0b8220488b19710ec8533604ca70b229f0753a6f94f0f4d",
             "textSha256": "177d1016c7a665026b99d64053489fc4f9dea33bb0bd1714d6d127d8c03f355a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-011",
             "EXP-055",
             "IMP-151",
             "IMP-320"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCurrentIdOfVersion"
           ]
         },
         {
@@ -976,10 +1075,13 @@
             "bodySha256": "d6a976c63e98bdad46a28cfa938066a0a0874b59e13a4bb85f772c493a2c6023",
             "textSha256": "0e486eb6e1bbbfbd2efeaddc3e4ca0eba68603bf333057278d0b926efde2ee2f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-022",
             "WIRE-023"
+          ],
+          "symbols": [
+            "src/client/version.ts#currentUtilityVersion"
           ]
         },
         {
@@ -992,12 +1094,15 @@
             "bodySha256": "cda9034be9771326e3690037dac8b7eb37808f68975a8989943f9579937e57d9",
             "textSha256": "cf84ebf3a8ec4ddc910662347f95a653d137614c85f9df83dae4246bf5325d07"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-044",
             "EXP-055",
             "EXP-116"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getCustomFloatPropertiesOfTypeItem"
           ]
         },
         {
@@ -1027,13 +1132,16 @@
             "bodySha256": "42b487882d5f71958c56fbcbc07bd168a91088c31526f743a5dcb66d00bba79c",
             "textSha256": "4289b91f7e6146706da78d96dc057ea4ac33d60ec3fe73993c91b77701aef455"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-004",
             "WIRE-007",
             "WIRE-020",
             "WIRE-021",
             "WIRE-054"
+          ],
+          "symbols": [
+            "src/client/probe.ts#probeServerVersion"
           ]
         },
         {
@@ -1046,10 +1154,13 @@
             "bodySha256": "e1ee90318d637ea07d7061404cd2c146491ecbf5fb5caa4c6a8c3dc2b3c8c873",
             "textSha256": "c2ae9ec7d3c24b10a968ddb1e555c78ac783dfc395425d23de54787fc566c912"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-045"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getItemTypeWithDefaultPermission"
           ]
         },
         {
@@ -1062,12 +1173,15 @@
             "bodySha256": "4f6563bd5bb8c9245ff97921f4b5133a685104928b5c23790b905f9e4cf55570",
             "textSha256": "d452996987053d2b923694ce2dbb4b3d979b5c228ed67822bc1db5d2f630f7da"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-031",
             "EXP-040",
             "IMP-132",
             "IMP-170"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getItemType"
           ]
         },
         {
@@ -1113,10 +1227,13 @@
             "bodySha256": "1107669e5f97a94d51d15beffbf39abf9a292b7da42da0b48dad34b38c4c5405",
             "textSha256": "284c55eda8ccc14176c020228f203468d26f2bd8b2627489028bdd72316cbbd6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-031",
             "IMP-132"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getMetaDataInfo"
           ]
         },
         {
@@ -1192,12 +1309,15 @@
             "bodySha256": "ac80e8180599464f2116a8da4341d72425125800da4ad679578a3591f968855f",
             "textSha256": "32d6a6125b58e740425d08dd4a16dec3ccdf488d0619f0ea45daa4d3b36e2629"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-046",
             "EXP-047",
             "EXP-408",
             "EXP-409"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getPolytypeNames"
           ]
         },
         {
@@ -1210,11 +1330,14 @@
             "bodySha256": "de25ba81c8b341e790cc67a7cb92223dd96ea2745b61c6d70f45489fb6e4dcf4",
             "textSha256": "32b235fbd8d971e614dc18c7f6133e12511a0dd6644a52e022ab7028c2c57436"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-114",
             "EXP-605",
             "EXP-618"
+          ],
+          "symbols": [
+            "src/client/item-references.ts#ItemReferences.getRelatedItemConfigId"
           ]
         },
         {
@@ -1227,12 +1350,15 @@
             "bodySha256": "c5835f59082027f0e061781e1ac77168500951fec1bcf580b8c08c482482106b",
             "textSha256": "32ba87e474d78ffc5f9e8e0ed4602814a8f26f5a8a78cd8720011cf855db99dd"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-031",
             "EXP-040",
             "IMP-132",
             "IMP-150"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getRelationshipType"
           ]
         },
         {
@@ -1258,7 +1384,7 @@
             "bodySha256": "34aacf40abe59c629f24b741702d11efbc45fefa5cbc714e26e170065a2d3e70",
             "textSha256": "8ff2cb369e2c0668c2d4c2960948a725afaa642784461a4a8107381991d70a21"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-031",
@@ -1266,6 +1392,9 @@
             "IMP-102",
             "IMP-132",
             "IMP-180"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getTypeAmlInner"
           ]
         },
         {
@@ -1278,12 +1407,15 @@
             "bodySha256": "c75e7e06f793a7b3d2a6f59e0fb89a3968cca860eabc6cb3c2a0c90be337a587",
             "textSha256": "e1f4ec4a37fb0127e32601bc9550c65b406b819940fa0b52deb49c912325e15c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-030",
             "EXP-041",
             "EXP-114",
             "IMP-321"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getUniqueProperties"
           ]
         },
         {
@@ -1313,9 +1445,12 @@
             "bodySha256": "80875a88b1be3312f35701b3ecf21eefc7bb9661d0749ee378f86d9c4ae537a6",
             "textSha256": "19db5bbe12a74ad746c3679f44ae558d4e017bb97db51ae78981f389f7c2a5d5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-116"
+          ],
+          "symbols": [
+            "src/client/item-references.ts#isValueId"
           ]
         },
         {
@@ -1328,13 +1463,16 @@
             "bodySha256": "409a119c73019fa3045dd990b04c0ae18739bbc6d44c2ba76153b8521278b2ba",
             "textSha256": "50615985c43c60cb275233ce369bbdf87e84ed95dbf954d9d32f1c8f1c2c1d96"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-010",
             "IMP-170",
             "IMP-302",
             "IMP-311",
             "IMP-429"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.isVersionable"
           ]
         },
         {
@@ -1380,7 +1518,7 @@
             "bodySha256": "4714e3a015852b333622045434a62d0d8c5918db9489ba0b89cf4d1aa54c48c5",
             "textSha256": "f79cd4005d7e42ca32cf24e42ee2b8bbab44dcf97bac64051b5e6bee114300ab"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-003",
             "WIRE-010",
@@ -1394,6 +1532,10 @@
             "WIRE-023",
             "WIRE-024",
             "WIRE-055"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.login",
+            "src/client/version.ts#VersionRefusal"
           ]
         },
         {
@@ -1406,10 +1548,13 @@
             "bodySha256": "21548fe3213953061b6bebe3c9a8ddf80e2dd15dfe82182ea162e2ebcf0e2e7d",
             "textSha256": "5aa222a3a3652538837e76d85b6893cab1969b65968f49881f1db728f4fe22a5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-001",
             "EXP-515"
+          ],
+          "symbols": [
+            "src/export/package-item.ts#packageItem"
           ]
         },
         {
@@ -1422,9 +1567,12 @@
             "bodySha256": "45e0cf2362702f03748688bf52e146b5eaa7cf96f1b6bbd00ab5408e7733d936",
             "textSha256": "d19f62bfb01088d7f8f1b7cd2b775e7680717475f9876a3bc7cde43ee10837bc"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-116"
+          ],
+          "symbols": [
+            "src/client/item-references.ts#ItemReferences.processPropertiesOfTypeItem"
           ]
         },
         {
@@ -1456,9 +1604,12 @@
             "bodySha256": "c1d4712824b0fffa824820c512712a798f7b4f8983552372bb950dc77ec6d875",
             "textSha256": "32c57ffdd3987cdf131bf0163d0efcaaeb5a682971530c50fa799d77018cb0c9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-412"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removeEmptyRelationships"
           ]
         },
         {
@@ -1471,10 +1622,13 @@
             "bodySha256": "47b7d383caa15254d818e50b4d0703addb4d42fd428cd073f57bbc625dcc40c6",
             "textSha256": "8953a12d1de588a0ad6bd61cbbd595d74b68333e3dffebacedf03cb039afe848"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-410",
             "EXP-411"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#removeNamespaceNodes"
           ]
         },
         {
@@ -1526,9 +1680,12 @@
             "bodySha256": "a1b285b050b60730fab400c85dbe8edf33d2ef47c48b9c6d923bc25e6a2b7231",
             "textSha256": "126930b2d1a98fad04d8949400543b0d078e7df87908db08750043c177df9fb1"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-407"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#replaceReferencesToPolyLists"
           ]
         },
         {
@@ -1607,7 +1764,7 @@
             "bodySha256": "f50f47aaa7285a34d86c7c4f88b8bbd3e5609b5b7fe71d015636c4a0c4c96d0a",
             "textSha256": "be9010402d14a08e559b44668322c8a7dce414128e6439326bf78780ec7d4770"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-004",
             "WIRE-005",
@@ -1617,6 +1774,10 @@
             "WIRE-030",
             "WIRE-050",
             "WIRE-053"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.applyAML",
+            "src/client/innovator.ts#Innovator.applyItem"
           ]
         },
         {
@@ -1629,10 +1790,14 @@
             "bodySha256": "9a0b6df59a4d9a01ca6358c763793086defeb4819de876d30380de75acbd0fd5",
             "textSha256": "42923d2300a518105ba88541d72bcf744ae7f8c9254fedd826d15dbae63a4fb8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-003",
             "EXP-407"
+          ],
+          "symbols": [
+            "src/export/post-xsl.ts#createAttr",
+            "src/client/request-text.ts#element"
           ]
         },
         {
@@ -1660,10 +1825,13 @@
             "bodySha256": "b7ff8699ff460ce1c1cd8af01a8d8dbcbd4d07bf6b9a7754bd24d299e93758d0",
             "textSha256": "0b6fbe7ac0ca6f0f4bf779e72d832db74bd876920ceeb20a13b7ab8f1470c1ad"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-043",
             "EXP-109"
+          ],
+          "symbols": [
+            "src/client/item-lookups.ts#ItemLookups.getDepencyLevel"
           ]
         },
         {
@@ -1708,10 +1876,13 @@
             "bodySha256": "5c40629b24c25f8ce996b2746831643680bdcc944b60e3082884fd905a3ff951",
             "textSha256": "e096c7397a40570dbedddb66fca8f16e088de2da7751fbafd7d9a437f40ad6c7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-507",
             "IMP-405"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.getSolutions"
           ]
         },
         {
@@ -1724,10 +1895,13 @@
             "bodySha256": "b7ebe7aedc77b4801ded13c1acb15ca51d05d845e6b59318342e586f83d2a417",
             "textSha256": "b7b980790482621fe90e1b9043bf8a307c1d9d3d3e7c57efce2ce69361bc731a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-513",
             "EXP-515"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.folder"
           ]
         },
         {
@@ -1740,9 +1914,12 @@
             "bodySha256": "ade509ddbc4537ba79d1e22fdac81f0f219f23d8cd55fc94e7264d15105180d4",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.inn"
           ]
         },
         {
@@ -1755,10 +1932,13 @@
             "bodySha256": "e001fe2a715e6812049028f4fe9b6d349879e3f324ab6785725ce6c7a158de62",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.innovatorVersion"
           ]
         },
         {
@@ -1786,10 +1966,14 @@
             "bodySha256": "8a381e574366448d3464be294d4fddbefc46663641d556955fe1e020a0bf5343",
             "textSha256": "37254b5541faf16cbdf54dd5c08df5fc73520e5943ffd33693ddf1a0fa7eb974"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-002",
             "WIRE-040"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.logout",
+            "src/client/connection.ts#HttpServerConnection.logout"
           ]
         },
         {
@@ -1802,10 +1986,13 @@
             "bodySha256": "6e08990c7470a5e10e05149e94404423b7f1bd2f61fdbdaa2dc14c5fc272b95e",
             "textSha256": "2ffe0a16138264b6ca48e87299f90ae8a8bcd06e4a4642c415277eeeb213d6f6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-113",
             "EXP-115"
+          ],
+          "symbols": [
+            "src/client/item-references.ts#ItemReferences.processIndependentRelatedItems"
           ]
         },
         {
@@ -1818,10 +2005,11 @@
             "bodySha256": "d169634e5c38d073557700ddcebd9361af69d693382c87f4eecd3f814bbbfb8b",
             "textSha256": "ea53a626b4f78990a998624dac667cc39a863cc65bf1182a207022e0fb9a7a13"
           },
-          "status": "unmapped",
+          "status": "not-ported",
           "rules": [
             "WIRE-001"
-          ]
+          ],
+          "reason": "CItemHelper.Cookie is set to null at construction and never read (WIRE-001), and the library's connection keeps its own cookies (WIRE-005)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.CItemHelper::set_Folder",
@@ -1833,10 +2021,13 @@
             "bodySha256": "39c6a6a1a272840995a3f83ef733b6a6771c1e1a4910e735f8efc4a7b5bc8b53",
             "textSha256": "b7b980790482621fe90e1b9043bf8a307c1d9d3d3e7c57efce2ce69361bc731a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-513",
             "EXP-515"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.folder"
           ]
         },
         {
@@ -1849,9 +2040,12 @@
             "bodySha256": "86a9d45dd8b09da9cabace742fb1b349338ba150da9a1ddf331e4bf5d6a0d992",
             "textSha256": "97a206c8fdf0a046bf02569749cde82e72699fcffbafb72bae9777fa3ec130d7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.inn"
           ]
         },
         {
@@ -1864,10 +2058,13 @@
             "bodySha256": "29402fe8701d054cc404eb291f06c199001688dcaba98dde07de2cb093ffce36",
             "textSha256": "48a319b95c64631ff477a4c1f4c933fb0715116e9749e9dbdd9aeb1755ce5b20"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-001",
             "WIRE-021"
+          ],
+          "symbols": [
+            "src/client/item-helper.ts#CItemHelper.innovatorVersion"
           ]
         },
         {
@@ -2005,10 +2202,13 @@
             "bodySha256": "f82b3acd2bfc664f1eb8933f8f95e22ce8e8239eb44dd49cb9f981a433e372c7",
             "textSha256": "1c9349468790d06dd6003f20a2b513d1aae22b7818b51806545eb1eb397b185a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-030",
             "MAN-033"
+          ],
+          "symbols": [
+            "src/manifest/package-path.ts#getPackagePath"
           ]
         },
         {
@@ -2021,11 +2221,14 @@
             "bodySha256": "bbdcebdb4fa421677023ae83bc5b1ebb02dd322f497bfca9a18cadb8f95ac772",
             "textSha256": "34ca5c9384d1d00ba10a9f3eb0aec34a52d3e029878cb8cd23eefcb11d98b6b4"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-413",
             "EXP-616",
             "MAN-031"
+          ],
+          "symbols": [
+            "src/manifest/package-path.ts#isCorePackage"
           ]
         },
         {
@@ -2038,10 +2241,13 @@
             "bodySha256": "92af585254ff21ec7a77be79584ce44299267a37265c692fecf5f3f9df80ee43",
             "textSha256": "1c0c9546282c1411c0bd527e99285a692a09811ef7ae97fb7521b62133deae5a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-413",
             "MAN-031"
+          ],
+          "symbols": [
+            "src/manifest/package-path.ts#isDefaultPackage"
           ]
         },
         {
@@ -2070,10 +2276,13 @@
             "bodySha256": "02f1e1f67ee1b31ea2a52eab18f9980637e1a1e4a61a55cd19c0aeb135a8c12d",
             "textSha256": "2c78d5c08ca245a32c076c4f61af0b3d4daf215e3c2c8171726e8fda9f8b45a2"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-413",
             "MAN-031"
+          ],
+          "symbols": [
+            "src/manifest/package-path.ts#isStandardPackage"
           ]
         },
         {
@@ -2086,10 +2295,13 @@
             "bodySha256": "5b4570f57b19af9e074844f57925d6c05709f318c2de8df968508dabb5099241",
             "textSha256": "f27f14153aa4fd59efaf06a26d06231fe46bb903640dd143c897a5c3f95a80ef"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-002",
             "EXP-500"
+          ],
+          "symbols": [
+            "src/export/export-item.ts#ExportItem"
           ]
         },
         {
@@ -2102,10 +2314,13 @@
             "bodySha256": "8cac4d08f7bda9b6ff8dcfc76db0cb1cf05c75c541899b54719890258f53c329",
             "textSha256": "d5a23a18eed6e5308bafb64ebf9ddda8c0aa44ea6d65943aecc1eca45d01419f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-002",
             "EXP-500"
+          ],
+          "symbols": [
+            "src/export/export-item.ts#ExportItem.toString"
           ]
         },
         {
@@ -2118,10 +2333,13 @@
             "bodySha256": "119aa09828e99275a791318148277767d6c8e68e38bca7b618808d5fef3bcf0a",
             "textSha256": "c95c7c329fcfa966a70fa4dbd93f4ed2c6326e97212740acee429ffed2713dae"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "WIRE-002",
             "WIRE-005"
+          ],
+          "symbols": [
+            "src/client/connection.ts#HttpConnectorExtension"
           ]
         },
         {
@@ -2134,12 +2352,15 @@
             "bodySha256": "63812ae1e3dffa358b9853809f473ab4ffad174cf29a71aafd8751cd20edf61b",
             "textSha256": "6da39a53b28821f6d4c71f81065457e67609c9674b7095dec29ad6206cbea162"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-502",
             "IMP-402",
             "LP-004",
             "WIRE-031"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager"
           ]
         },
         {
@@ -2152,9 +2373,12 @@
             "bodySha256": "a8393bc8f27624c717a9f67fab541309c64b3c6d79324d161b686b71ba1d6e5a",
             "textSha256": "ac244877c1c654abb554e008f95a2690d79c529b82ab41ad080e50770660dd44"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-512"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.addToRefsForExport"
           ]
         },
         {
@@ -2183,9 +2407,12 @@
             "bodySha256": "ba5a234ae6b6a25a65c7f87e841cff65c1c322039ad05615f3683a66668e68d6",
             "textSha256": "55a20969333d377bde696a01cc01dfbe26db9dd90ee0b871b1a6fc134ae8a036"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-032"
+          ],
+          "symbols": [
+            "src/manifest/solution-path.ts#getSolutionPath"
           ]
         },
         {
@@ -2214,10 +2441,13 @@
             "bodySha256": "ea42131d17ab8fb489f9f042e8e8b8a4dba5825dd3f8b75b68644d15f23d0ce3",
             "textSha256": "629732667b9e17a0a2c530d075b631f294a0899ccfd3466be9e8193f5bd38b55"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-518",
             "IMP-409"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.cancel"
           ]
         },
         {
@@ -2230,11 +2460,15 @@
             "bodySha256": "062aab0e9b9d5194fe686232ae3ac3278ae1954792ece97daccf0ee64f8cda6a",
             "textSha256": "b76cbb4d7cdfc4f78d1e3aca5838c72bac4c694181993795b155f08864f853b8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-414",
             "EXP-415",
             "EXP-416"
+          ],
+          "symbols": [
+            "src/export/output-folder.ts#createOutputDir",
+            "src/export/output-folder.ts#outputFolderName"
           ]
         },
         {
@@ -2247,7 +2481,7 @@
             "bodySha256": "80e43e8f006892c70a368c7580e0d0860841e4790ac2c9a5d54dd88549a30ed4",
             "textSha256": "4652d1a4770eb4c5e2b4335c1fb2e2fbb5e79e39bac9da1b01db5baaf021e4b8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "EXP-513",
@@ -2260,6 +2494,9 @@
             "EXP-612",
             "EXP-613",
             "EXP-614"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportProc"
           ]
         },
         {
@@ -2272,12 +2509,15 @@
             "bodySha256": "1e340a1914973426426104e7f6e9c1c8454aca697489e0c0d319e8144dcb8c01",
             "textSha256": "b392b0f48121ee81559c0ecbfa5f4a5988d2c5ad96afb866c92f6b1f31ae10ab"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-518",
             "EXP-519",
             "EXP-540",
             "EXP-543"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportReferencedElements"
           ]
         },
         {
@@ -2290,7 +2530,7 @@
             "bodySha256": "884cab282b3f4886c7fd4e62d963fd39b837251a1bee49d378185b35c1f28519",
             "textSha256": "8ee6c7e7351ef3094a5b98c835d5272f55ee5074d2abe56a8b7e739b8e26bb6e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-500",
             "EXP-503",
@@ -2309,6 +2549,10 @@
             "EXP-542",
             "EXP-543",
             "EXP-544"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.exportSolutions",
+            "src/export/import-export-manager.ts#selectionTable"
           ]
         },
         {
@@ -2364,11 +2608,14 @@
             "bodySha256": "909110dea15c07d4f6ca9fc5ffcfb7f5307d7d5bc86883b1f09ea119ff7b32b2",
             "textSha256": "1ce9ea4d91fded9c07e7c1bdc2c01f4d70aba8cdce999cdd1e3fa02b32954f49"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "IMP-420",
             "LP-033",
             "MAN-032"
+          ],
+          "symbols": [
+            "src/manifest/solution-path.ts#getSolutionPath"
           ]
         },
         {
@@ -2381,13 +2628,16 @@
             "bodySha256": "601db6917892c0b339785ab6d078d8b4384b92b6eb00495642212e79a1b1c526",
             "textSha256": "7d51c45e71b350d7676df26abee184a0e8e98fb3713af5b037e2d321b3a4cbac"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "EXP-507",
             "EXP-541",
             "IMP-405",
             "IMP-410"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.getSolutions2Xml"
           ]
         },
         {
@@ -2535,9 +2785,12 @@
             "bodySha256": "4e26998c9b041f608bf96758bf9b5d62bf52e328765ea6083549d9c2d8ac797d",
             "textSha256": "9cee56a3ec47edfcee5b04f44762535f8f6aab6d205f262cbf83f3004ca2b7db"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-502"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.itemHelper"
           ]
         },
         {
@@ -2550,9 +2803,12 @@
             "bodySha256": "d992cd2c26573dd416ee6bb7c2c54671c6a0d3f62e0b4377963557023f38813a",
             "textSha256": "6a1d863fda61c8eee186706072941e80ed772f8271bfa7443419aeec64e2d570"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-502"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.manifestFile"
           ]
         },
         {
@@ -2565,10 +2821,13 @@
             "bodySha256": "cd9d1a085c2c988d7f600850855578c4ae26cb04bcbfe37daaccbbf6e7f091ba",
             "textSha256": "78b29fd3fb9f0f52d9dae60c5b4ce63d9a1aec9837069af7e1755a2111bafb3c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-511",
             "MAN-002"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile"
           ]
         },
         {
@@ -2581,9 +2840,12 @@
             "bodySha256": "3f10ea1623fa436eaf0462f792d48935ec14d7484490f1a5d9375cccc625b1da",
             "textSha256": "666bab67e44bf57da9b1069bfaad62819d9a6640bfd33cfd9d555ed811812e3a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-003"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile"
           ]
         },
         {
@@ -2596,12 +2858,15 @@
             "bodySha256": "0d82ac65c741abf2728e211567bafafbfc17c538be583ce0b1c934d4a151d14e",
             "textSha256": "bb51a5e49c9c1e75d88460a05796a58746cbd3313639f913f2cce6b6a66a3843"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-511",
             "EXP-544",
             "MAN-012",
             "MAN-014"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.addDependsOn"
           ]
         },
         {
@@ -2614,7 +2879,7 @@
             "bodySha256": "e734b8c1c150717306b77df3393efae489affd7934191e0d7e64fb8177069597",
             "textSha256": "8992fb89e358de50bc8df2e5e816771bd98504b2e08f2890f2f4d5390582c29a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-511",
             "EXP-544",
@@ -2623,6 +2888,9 @@
             "MAN-010",
             "MAN-011",
             "MAN-014"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.addPackage"
           ]
         },
         {
@@ -2635,12 +2903,15 @@
             "bodySha256": "41715d327c7e128a362c3511ac6ea36cdcf78f1a5d0738a1178b377944cf4498",
             "textSha256": "644d8713043e8dfc608c915430e1042493d6459f9a07bcc4e1de0abdec18c1fd"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-511",
             "EXP-544",
             "MAN-013",
             "MAN-014"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.addReferencedElement"
           ]
         },
         {
@@ -2653,9 +2924,12 @@
             "bodySha256": "218b82c7f768671625c5d017521654ad856cae79518c0f8cc36228912539677e",
             "textSha256": "9134a4d9e3830290ebfecd0acc71d87a01e7a8e7f74adb93f98d2bb12d3d7bad"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getAllDependsOnNames"
           ]
         },
         {
@@ -2668,9 +2942,12 @@
             "bodySha256": "2bda32ccc6b052b66e20548a689b99aa5c9ad86d6bc251ef4d16f46a097354ac",
             "textSha256": "d52bc4d85114646a7692e94ba4feeba7dda810a0dd02e8372443e9d9c8003253"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getAllPackageNames"
           ]
         },
         {
@@ -2683,9 +2960,12 @@
             "bodySha256": "95dcfa257b903c9be77d54f1f334627849c92ba23496762c08cb2303b83f743c",
             "textSha256": "ddf8d3b10b5303693e5c73007c77abbdd0ab7c06212e6e95c2824f829f72a2c0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getDependsOn"
           ]
         },
         {
@@ -2698,11 +2978,15 @@
             "bodySha256": "6c8df70d1d35b5c1379d4b735e4c5a7022160eb3ce83c7332be9caaafa57bfa8",
             "textSha256": "8d08d73472748155790febfcd54f2d8fd45d6913a26e4c51fe645db9a7597346"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-016",
             "MAN-017",
             "MAN-018"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getDependsOnInfo",
+            "src/manifest/netfx-hashtable.ts#NetfxHashtable"
           ]
         },
         {
@@ -2715,9 +2999,12 @@
             "bodySha256": "a217624740b2f169b15b50ccfa2b1ef210af6e6691a75802fbc57198c570c20f",
             "textSha256": "9bc874e62b58048c3768fa2f6a117edf57e2aa7ccc07acb6747f09a48a7f8411"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getPackageDependencies"
           ]
         },
         {
@@ -2730,11 +3017,14 @@
             "bodySha256": "a9b98f527d28690d99c1f3abfe4ec51af6bb369918a8483e13f0dd729f3a588c",
             "textSha256": "6e309edfe4288ee3dd4a29cdc8586892835781024c65dee74144d4cdc0535e1a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-020",
             "MAN-021",
             "MAN-024"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getPackageNamesInImportOrder"
           ]
         },
         {
@@ -2747,9 +3037,12 @@
             "bodySha256": "f3e52c82fc533cb4f3e17ffa2e44bb7ed9c1c9869b4ed3328bd67fbacdb3ea39",
             "textSha256": "3dabe783395207cb59bbd42c3202f407502d285dab67dd18c8f572b0d7526ce0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getPackageNode"
           ]
         },
         {
@@ -2762,9 +3055,12 @@
             "bodySha256": "d955c0580b9d1fdd33403fa7e41c0e533c0e26f6238ab7131bfe6fe78a9e3864",
             "textSha256": "dd605a3ddf83d28afa9636df33fb9a93e1fbf419b40a91fc4ca14ad479fba810"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-015"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.getReferencedElements"
           ]
         },
         {
@@ -2777,11 +3073,14 @@
             "bodySha256": "843f0d9f3061729f7fabdf2ef412d50545f194effc764a8b3d440cf082f713e1",
             "textSha256": "93c9a9048b945acc1e86fb76a5c6b76f9f718333de9a60b2f0408b9294d37be8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "MAN-022",
             "MAN-023",
             "MAN-025"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#PackageOrdering.moveToOrderedList"
           ]
         },
         {
@@ -2794,10 +3093,13 @@
             "bodySha256": "aebc40146b8c459aaa258aa5133a04e54d2bfea406fb2ca0d7f57afc101fb56c",
             "textSha256": "ba8390a56e9e96b5f39c075b17a5be78ec8b4cb2e11beef4188374c1756c7c53"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-032",
             "MAN-006"
+          ],
+          "symbols": [
+            "src/manifest/manifest-file.ts#ManifestFile.save"
           ]
         },
         {
@@ -2809,10 +3111,13 @@
             "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
             "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "IMP-471"
+          ],
+          "symbols": [
+            "src/export/messages.ts#Message"
           ]
         },
         {
@@ -2825,10 +3130,13 @@
             "bodySha256": "ce3753328c4efa9f3e982ae7dd17967bb169071d09dcf00f53d22311d36e2a57",
             "textSha256": "ef048fe3928c1c0c173fef5ef6a6e3e2a7b538fe98fe69ec9d3992550fdf6b1e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "IMP-471"
+          ],
+          "symbols": [
+            "src/export/messages.ts#Message.text"
           ]
         },
         {
@@ -2841,10 +3149,13 @@
             "bodySha256": "1d2ecdb733948a871c3045076af5763b458aeeab37ec4c069d412488703f50d4",
             "textSha256": "ef048fe3928c1c0c173fef5ef6a6e3e2a7b538fe98fe69ec9d3992550fdf6b1e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-503",
             "IMP-471"
+          ],
+          "symbols": [
+            "src/export/messages.ts#Message.text"
           ]
         },
         {
@@ -2857,11 +3168,14 @@
             "bodySha256": "f18c8b5887eacd16e9c9599f81ac1a9a602ba6b481ee80c08f5d0e0c546d012d",
             "textSha256": "d6cc723524e6e29d04e22c950a957ec43a8f448d4868a9bbad9eaeb9e6ad4a4c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-052",
             "EXP-509",
             "IMP-440"
+          ],
+          "symbols": [
+            "src/export/package-definition-manager.ts#PackageDefinitionManager.open"
           ]
         },
         {
@@ -2937,12 +3251,15 @@
             "bodySha256": "d3dac9b1073b34072214f561c7b846ed4c024ade1bb4fb630862bc9df4869d3c",
             "textSha256": "01555071dfade31970d55e3f007036bb44e5a6b0d4ff8fe3e5dcc0a9f3ecdc78"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-053",
             "EXP-055",
             "EXP-510",
             "EXP-542"
+          ],
+          "symbols": [
+            "src/export/package-definition-manager.ts#PackageDefinitionManager.findReferencedElements"
           ]
         },
         {
@@ -2955,13 +3272,16 @@
             "bodySha256": "18db880d297003f79a6c49b3ef71ff352cb7215811f4645bab4c24f19d296c85",
             "textSha256": "0d4084a547f819f7a249073b27d16239a48c48c685d8e2ef2fc9e9d955cd8325"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-052",
             "EXP-055",
             "EXP-509",
             "EXP-542",
             "IMP-440"
+          ],
+          "symbols": [
+            "src/export/package-definition-manager.ts#PackageDefinitionManager.open"
           ]
         },
         {
@@ -3033,9 +3353,12 @@
             "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
             "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext"
           ]
         },
         {
@@ -3048,10 +3371,13 @@
             "bodySha256": "64b8b2ec91ae67f46f06f40980e54ef0967bec1dc77b229206710b3d066b0bb9",
             "textSha256": "c1217fbc3b60a88a4bd0b6d8433ee73e9ea54683ae2a4099d6535466bd1b64b0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "EXP-600"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.refToUnknownPacks"
           ]
         },
         {
@@ -3064,9 +3390,12 @@
             "bodySha256": "8fe624a5d7cbebf5b84555022f36c9231f0343cd12fa7d6ed299927474c4a14b",
             "textSha256": "93b66b5842c2a28fc590ac1af8f29281cc100d5ec26abba53ea3bcd23b882d56"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.useImport"
           ]
         },
         {
@@ -3079,9 +3408,12 @@
             "bodySha256": "b2165cfa408406b7bcdc5e554389bb7123ed00b62d680fe8de35d6486f9deeca",
             "textSha256": "faff10f7f40959209600ea69ad118272640f4de4f9ea9323c812e1c1b6b94401"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.exportReferencedItems"
           ]
         },
         {
@@ -3094,9 +3426,12 @@
             "bodySha256": "1ba1500981d2c517ce5d6304377e74f88b067f99a7bb381da6cace2f08b9830c",
             "textSha256": "77a4e772a6a3cf989d106c417eb3e0668763de9ffcac0e7c92079bff1cae7939"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.level"
           ]
         },
         {
@@ -3109,10 +3444,13 @@
             "bodySha256": "5101e7d9d4cff84c265c5437f5bab9791b00bd6c3e3bd4242bb3e77c417b60c9",
             "textSha256": "c1217fbc3b60a88a4bd0b6d8433ee73e9ea54683ae2a4099d6535466bd1b64b0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "EXP-600"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.refToUnknownPacks"
           ]
         },
         {
@@ -3125,9 +3463,12 @@
             "bodySha256": "8dde82c81c640604e59a249d25b61a42ab4b3151f98d6957e248482e336882f3",
             "textSha256": "93b66b5842c2a28fc590ac1af8f29281cc100d5ec26abba53ea3bcd23b882d56"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.useImport"
           ]
         },
         {
@@ -3140,9 +3481,12 @@
             "bodySha256": "0bce8f129e7fcfd08a010b56ceef5664e9a20d968be36787081341287407755b",
             "textSha256": "faff10f7f40959209600ea69ad118272640f4de4f9ea9323c812e1c1b6b94401"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.exportReferencedItems"
           ]
         },
         {
@@ -3155,9 +3499,12 @@
             "bodySha256": "c81d5e431329321383f81650c08333f0d561ad7525bce7dd2ac2668a5dfe9154",
             "textSha256": "77a4e772a6a3cf989d106c417eb3e0668763de9ffcac0e7c92079bff1cae7939"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SUExportContext.level"
           ]
         },
         {
@@ -3328,10 +3675,13 @@
             "ilSha256": "591764543e9639068f02926f1ae8c3340f19c84114cd904b140fe9b5841d0c3b",
             "bodySha256": "3dd4c24be87274170634c5ff8b71899b7381401fc612366749d1ab4313012fa5"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext"
           ]
         },
         {
@@ -3344,10 +3694,13 @@
             "bodySha256": "175fad01b608bd108bdf45a877a05284461f6329c7972336b16c4b2561d78762",
             "textSha256": "f4105b199351b6eb75fdf745e2e828de1428a50f93544112d60ca6189d0939a9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.action"
           ]
         },
         {
@@ -3360,10 +3713,13 @@
             "bodySha256": "c511d5c19f938d2178a86f66c218bbc883218d3c3c3a0cebb4815c046f962f0f",
             "textSha256": "60c16b959e0371fbe31288bd206638438f478f979c51a9b1d70dd1cee19d3555"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.dataBase"
           ]
         },
         {
@@ -3376,10 +3732,13 @@
             "bodySha256": "afcd922df8c4d830554ca53c7b8e031cf695efacbe0004e7eacd2d22b059c19d",
             "textSha256": "45f6d3aca04a3e500a9e4bd0257addfb2c71c569a31e674b2fbf1ca676e2f800"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.logFilePath"
           ]
         },
         {
@@ -3392,10 +3751,13 @@
             "bodySha256": "0f1575c8585e0730e1244baf3dc1f3cc7c6b9fdce11b60a4c13c431ade88557d",
             "textSha256": "e238e59d830a1811e4e7e71f5dcd57377ec58f7754eb3198324ca10b09dbd7d0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.manifestFile"
           ]
         },
         {
@@ -3408,10 +3770,13 @@
             "bodySha256": "41f6129228ce7c6968f4c10ff764cae9710cae3b4f67afe9adad8150f3557032",
             "textSha256": "4d49a632ef5311cfeb4fd839d1540ebfa00293c2fac9b1ecbaa3229bef02a477"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.password"
           ]
         },
         {
@@ -3424,11 +3789,14 @@
             "bodySha256": "06ee1d399950967243a980df5f207adcbca8bbcf82fb5de2a04b233ffd88a627",
             "textSha256": "0c7e43057c35ca3714470e61c49ce77958bda43cbd44d1eb5e4eb1e155f386a6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480",
             "WIRE-031"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.timeout"
           ]
         },
         {
@@ -3441,10 +3809,13 @@
             "bodySha256": "5e2a6f058b32ca2b5ae56e3f1c4252129c5364d45087d8110a4e379bfff1ed41",
             "textSha256": "fa3efab935e3bdc6a5ab696867313a49aef6d9be5721e350a96f088e1d12b2f4"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.url"
           ]
         },
         {
@@ -3457,10 +3828,13 @@
             "bodySha256": "2bef66ab4d0078dddb0a9b241e77080f3d8e59cdcafb0b014981c11b7aba7b0d",
             "textSha256": "90a68a7dc2df93f8deaeb89e70d3045ac9d2c5e454037c6eb1bc8cb440e9ebf6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.userName"
           ]
         },
         {
@@ -3473,10 +3847,13 @@
             "bodySha256": "f843b0c083bc093df64202535eb3f6d65c4ec3c06d0bc7cbf26f480ff39b8ca2",
             "textSha256": "d7dd0de2f72992da6d5feb7f9e8814d578793531c65ffbebbf37417ce56e8431"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.verbose"
           ]
         },
         {
@@ -3489,10 +3866,13 @@
             "bodySha256": "4621341e718b78337269a1e2baeda3d21e12f833f83ad9c3528337dd972715ce",
             "textSha256": "62b3eb02e9de76356ea8733171e87c4533abda4f417b768703583af448f02eba"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.workingDirectory"
           ]
         },
         {
@@ -3505,10 +3885,13 @@
             "bodySha256": "fa34a3c94f24be514a5917a3935edd9bb07f4edc489bea34f218a5191a3aa987",
             "textSha256": "f4105b199351b6eb75fdf745e2e828de1428a50f93544112d60ca6189d0939a9"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.action"
           ]
         },
         {
@@ -3521,10 +3904,13 @@
             "bodySha256": "3853e72764c685e371f88bf6f0e78910cbb7e909330a53fe7d90fe8b790cdbec",
             "textSha256": "60c16b959e0371fbe31288bd206638438f478f979c51a9b1d70dd1cee19d3555"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.dataBase"
           ]
         },
         {
@@ -3537,10 +3923,13 @@
             "bodySha256": "b357d0afef2726336f56f243811c60f9780a11b24184cd944fc861b56dc38a1e",
             "textSha256": "45f6d3aca04a3e500a9e4bd0257addfb2c71c569a31e674b2fbf1ca676e2f800"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.logFilePath"
           ]
         },
         {
@@ -3553,10 +3942,13 @@
             "bodySha256": "e0092c1e83a8476509ff4a20bff8fb4f8f28390fa2f0f439a622b1e1f049a9b6",
             "textSha256": "e238e59d830a1811e4e7e71f5dcd57377ec58f7754eb3198324ca10b09dbd7d0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.manifestFile"
           ]
         },
         {
@@ -3569,10 +3961,13 @@
             "bodySha256": "06b895ac7cb89a153b6b9159e0df864a071e54a25165c60ebd8bc7db683868fd",
             "textSha256": "4d49a632ef5311cfeb4fd839d1540ebfa00293c2fac9b1ecbaa3229bef02a477"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.password"
           ]
         },
         {
@@ -3585,11 +3980,14 @@
             "bodySha256": "f9905214bb1b63e57c35e6c869f5a3d23ca8c2b731e6dfed52c3887c35a62fba",
             "textSha256": "0c7e43057c35ca3714470e61c49ce77958bda43cbd44d1eb5e4eb1e155f386a6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480",
             "WIRE-031"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.timeout"
           ]
         },
         {
@@ -3602,10 +4000,13 @@
             "bodySha256": "d6de88f7cab23460889ad328197bf473127c6b04fb47b81944ec994ca6b9e55b",
             "textSha256": "fa3efab935e3bdc6a5ab696867313a49aef6d9be5721e350a96f088e1d12b2f4"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.url"
           ]
         },
         {
@@ -3618,10 +4019,13 @@
             "bodySha256": "382698cae6a258536640fdb2ebfcf2048262e2210f91078a18ba75a9db848476",
             "textSha256": "90a68a7dc2df93f8deaeb89e70d3045ac9d2c5e454037c6eb1bc8cb440e9ebf6"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.userName"
           ]
         },
         {
@@ -3634,10 +4038,13 @@
             "bodySha256": "6e06ab81feffe59683cd1dd0a90c66bb1800b4acbd1d447ead792fcf43480d55",
             "textSha256": "d7dd0de2f72992da6d5feb7f9e8814d578793531c65ffbebbf37417ce56e8431"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.verbose"
           ]
         },
         {
@@ -3650,10 +4057,13 @@
             "bodySha256": "1eedd36af4287bc7ad1fb2d8b625e21ae060494420fea4ecdd408611d79a22f0",
             "textSha256": "62b3eb02e9de76356ea8733171e87c4533abda4f417b768703583af448f02eba"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "EXP-501",
             "IMP-480"
+          ],
+          "symbols": [
+            "src/export/export-context.ts#SolutionUpgradeContext.workingDirectory"
           ]
         }
       ]

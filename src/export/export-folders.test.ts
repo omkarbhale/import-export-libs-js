@@ -3,11 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { createOutputDir } from "./output-folder.js";
-import { CASES, caseNames, replayCase } from "./replay-cases.js";
+import { REPLAYED_ENGINES, exportCases, replayCase } from "./replay-cases.js";
 import type { Case } from "./replay-cases.js";
 
 /**
- * The recorded 14.0.7 export cases, exported by the port through the whole of `CExportItems.export` and written to disk: the
+ * The recorded export cases (14.0.7 and 12.0), exported by the port through the whole of `CExportItems.export` and written to disk: the
  * folder it leaves is compared with the folder the engine left (`output/` of the case), file by file and byte for byte. The
  * manifest `imports.mf` belongs to the export run (`export-run.md`). The removal of references to unknown packages needs the run's
  * table and log, so the cases that ask for a removal mode are replayed by `run-replay.test.ts`.
@@ -33,31 +33,34 @@ function tree(root: string, prefix = ""): string[] {
     .sort();
 }
 
-const readsFromTheRun = (name: string): Case => JSON.parse(readFileSync(join(CASES, name, "case.json"), "utf8")) as Case;
-
-describe("the recorded 14.0.7 export cases, written to disk (EXP-400 to EXP-428)", () => {
+describe.each(REPLAYED_ENGINES)("the recorded %s export cases, written to disk (EXP-400 to EXP-428)", (engine) => {
+  const cases = exportCases(engine);
   let compared = 0;
   let files = 0;
 
-  it.each(caseNames)("%s", async (name) => {
-    const input = readsFromTheRun(name);
+  it.each(cases.names)("%s", async (name) => {
+    const input = JSON.parse(readFileSync(join(cases.dir, name, "case.json"), "utf8")) as Case;
     const mode = input.options.refToUnknownPacks;
     if (mode === "RemoveSilently" || mode === "RemoveWithWarning") return;
     const working = mkdtempSync(join(tmpdir(), "libsjs-export-"));
     roots.push(working);
     const environment = { cwd: working };
-    await replayCase(name, {
-      environment,
-      beginPackage: (packageName, helper) => {
-        helper.folder = createOutputDir(working, packageName, environment);
+    await replayCase(
+      name,
+      {
+        environment,
+        beginPackage: (packageName, helper) => {
+          helper.folder = createOutputDir(working, packageName, environment, engine);
+        },
+        exportItem: async (exporter, item, level) => {
+          await exporter.export(item, level);
+          return undefined;
+        },
       },
-      exportItem: async (exporter, item, level) => {
-        await exporter.export(item, level);
-        return undefined;
-      },
-    });
+      engine,
+    );
 
-    const expected = join(CASES, name, "output");
+    const expected = join(cases.dir, name, "output");
     const made = tree(working);
     expect(made, `${name}: the folders and files`).toEqual(tree(expected));
     for (const path of made.filter((entry) => !entry.endsWith("/"))) {

@@ -5,6 +5,7 @@ import { readTranscript, type TranscriptCall } from "../../oracle/src/transcript
 import { CItemException, ResponseDocument } from "../client/fault.js";
 import type { ServerConnection } from "../client/innovator.js";
 import { CItemHelper } from "../client/item-helper.js";
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import { ArasVersion } from "../client/version.js";
 import type { XmlDocument } from "../xml/index.js";
@@ -13,15 +14,39 @@ import { ExportItem } from "./export-item.js";
 import { PackageDefinitionManager } from "./package-definition-manager.js";
 
 /**
- * Replays the recorded 14.0.7 export cases (tickets 24 and 67) against the port, for the tests of the export. The port fetches
+ * Replays the recorded export cases (tickets 24, 67 and, for 12.0, 48) against the port, for the tests of the export. The port fetches
  * each item of a case from the case's own input; every request it sends must be a request the engine recorded, byte for byte,
  * with the same action, and the requests of one item must come in the recorded order. By default the items go through the
  * fetch and the rewrites of `export-prexsl.md`; a test can run them through the whole of `Export` instead and write the files.
  * Whatever the replay leaves over belongs to the host (`export-unknown-refs.md`, `export-run.md`).
  */
-export const CASES = new URL("../../fixtures/14.0.7/export/", import.meta.url).pathname;
-const BLOBS = join(CASES, "_blobs");
-const LOGIN_CALLS = 6;
+
+/** The recorded cases of an engine: where they are, their names, and how many calls of a transcript are the login and the probe. */
+export interface ExportCases {
+  readonly engine: Engine;
+  readonly dir: string;
+  readonly blobs: string;
+  readonly names: string[];
+  /** ValidateUser, the user record and the probe: 6 calls on 14.0.7; 12.0 adds GetCurrentUserID and probes with two requests, so 5. */
+  readonly loginCalls: number;
+}
+
+export function exportCases(engine: Engine): ExportCases {
+  const dir = new URL(`../../fixtures/${engine}/export/`, import.meta.url).pathname;
+  return {
+    engine,
+    dir,
+    blobs: join(dir, "_blobs"),
+    names: readdirSync(dir).filter((name) => existsSync(join(dir, name, "transcript.jsonl"))),
+    loginCalls: engine === "12.0" ? 5 : 6,
+  };
+}
+
+/** The engines whose recorded export cases the tests replay. */
+export const REPLAYED_ENGINES: readonly Engine[] = ["14.0.7", "12.0"];
+
+const DEFAULT_CASES = exportCases(DEFAULT_ENGINE);
+export const CASES = DEFAULT_CASES.dir;
 
 export interface Case {
   id: string;
@@ -30,7 +55,7 @@ export interface Case {
   expectsError: boolean;
 }
 
-export const caseNames = readdirSync(CASES).filter((name) => existsSync(join(CASES, name, "transcript.jsonl")));
+export const caseNames = DEFAULT_CASES.names;
 
 /** The recorded answers, handed back to whichever request equals the recorded one and was not answered yet. */
 class ReplayConnection implements ServerConnection {
@@ -39,8 +64,11 @@ class ReplayConnection implements ServerConnection {
   /** The index of the recorded call each request of the port was answered with, in the order the port sent them. */
   readonly order: number[] = [];
 
-  constructor(private readonly calls: TranscriptCall[]) {
-    this.consumed = calls.map((_, index) => index < LOGIN_CALLS);
+  constructor(
+    private readonly calls: TranscriptCall[],
+    loginCalls: number,
+  ) {
+    this.consumed = calls.map((_, index) => index < loginCalls);
   }
 
   async callAction(action: string, request: string): Promise<ResponseDocument> {
@@ -152,11 +180,12 @@ function groupByPackage(entries: Array<{ item: CaseItem; name: string }>): Array
   return groups;
 }
 
-export async function replayCase(name: string, hooks: ReplayHooks = {}): Promise<Replay> {
-  const input = JSON.parse(readFileSync(join(CASES, name, "case.json"), "utf8")) as Case;
-  const calls = readTranscript(join(CASES, name, "transcript.jsonl"), BLOBS);
-  const connection = new ReplayConnection(calls);
-  const helper = new CItemHelper(connection);
+export async function replayCase(name: string, hooks: ReplayHooks = {}, engine: Engine = DEFAULT_ENGINE): Promise<Replay> {
+  const { dir, blobs, loginCalls: LOGIN_CALLS } = exportCases(engine);
+  const input = JSON.parse(readFileSync(join(dir, name, "case.json"), "utf8")) as Case;
+  const calls = readTranscript(join(dir, name, "transcript.jsonl"), blobs);
+  const connection = new ReplayConnection(calls, LOGIN_CALLS);
+  const helper = new CItemHelper(connection, { engine });
   helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
   const exporter = new CExportItems(helper, hooks.environment);
 

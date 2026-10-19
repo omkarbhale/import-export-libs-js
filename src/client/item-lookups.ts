@@ -17,7 +17,7 @@ export interface LookupLog {
 
 /** What the lookups need of the helper that owns them. */
 export interface LookupHost {
-  /** The engine whose cache rules apply (EXP-030, EXP-064); the default is 14.0.7. */
+  /** The engine whose cache rules (EXP-030, EXP-064) and texts apply; the default is 14.0.7. */
   readonly engine?: Engine;
   readonly inn: Innovator;
   readonly innovatorVersion: ArasVersion | undefined;
@@ -394,8 +394,8 @@ export class ItemLookups {
       } catch (error) {
         if (error instanceof CItemException) return level;
         if (isXmlException(error) || isXPathException(error)) {
-          // The engine appends a text it looks up under a key with a leading space, so it is always empty.
-          throw new CItemException(-1, stackText(error), error.message);
+          // 14.0.7 appends a text it looks up under a key with a leading space, so it is always empty; 12.0's works.
+          throw new CItemException(-1, stackText(error), this.host.engine === "12.0" ? `${error.message} Unable to get depency level for RelationshipType.` : error.message);
         }
         throw error;
       }
@@ -418,6 +418,16 @@ export class ItemLookups {
    * @spec EXP-030 EXP-044 EXP-055 EXP-064
    */
   async getCustomFloatPropertiesOfTypeItem(type: string): Promise<XmlElement[]> {
+    return (await this.findCustomFloatProperties(type)) ?? [];
+  }
+
+  /**
+   * The same lookup, with "no items" (faultcode 0) told apart from an answer that has no rows: it is null. The 12.0 engine's
+   * float-property step ends on a null (EXP-116). The failure text lacks the closing quote in 12.0 (EXP-044).
+   *
+   * @spec EXP-030 EXP-044 EXP-055 EXP-116
+   */
+  async findCustomFloatProperties(type: string): Promise<XmlElement[] | null> {
     const names = FLOAT_PROPERTY_EXCLUSIONS.map((name) => `<name condition='not like'>${name}</name>`).join("");
     const aml =
       `<Item type='ItemType' action='get' levels='1' select='id'><name>${type}</name><Relationships>` +
@@ -441,8 +451,8 @@ export class ItemLookups {
       this.requestedItems.set(aml, response);
       return relationshipRows(response);
     } catch (error) {
-      if (error instanceof CItemException && error.faultcode === 0) return [];
-      throw wrapped(error, `Failed to process properties of type 'Item' for ItemType '${type}'`);
+      if (error instanceof CItemException && error.faultcode === 0) return null;
+      throw wrapped(error, `Failed to process properties of type 'Item' for ItemType '${type}${this.host.engine === "12.0" ? "" : "'"}`);
     }
   }
 

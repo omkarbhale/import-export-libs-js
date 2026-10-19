@@ -9,7 +9,7 @@ import {
   PathTooLongException,
   UnauthorizedAccessException,
 } from "./errors.js";
-import { normalizeLongPath } from "./host-path.js";
+import { getFullPath, normalizeLongPath } from "./host-path.js";
 import type { PathEnvironment } from "./host-path.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
 
@@ -71,16 +71,25 @@ interface ModelPath {
  * trailing dot and keeps its spaces (a folder `Sp ` cannot be reached, though `Sp` is made by creating it).
  */
 function modelPath(path: string, environment: PathEnvironment, creating: boolean): ModelPath {
-  const normalized = normalizeLongPath(path, environment) as string;
   const cwd = environment.cwd ?? process.cwd();
   const platform = environment.platform ?? process.platform;
+  const unnormalized = environment.normalizePaths === false;
+  // the 12.0 engine passes the path on as built: .NET still refuses an illegal one, but there is no trimming and no length rule
+  if (unnormalized) getFullPath(path, cwd);
+  const normalized = unnormalized ? path : (normalizeLongPath(path, environment) as string);
   const prefixed = normalized.startsWith("\\\\?\\") ? normalized.slice(4) : normalized;
   const trailingSeparator = !creating && /[\\/]$/.test(prefixed);
   const parts = prefixed.split(/[\\/]/).filter((part) => part !== "");
 
   let base: string;
   let drive = "";
-  if (/^[A-Za-z]:/.test(prefixed)) {
+  const unc = unnormalized && /^[\\/]{2}(?![?\\/])/.test(prefixed);
+  if (unc) {
+    // a UNC path keeps its server and share (EXP-422); there is no such volume on a host that is not Windows
+    if (platform !== "win32") throw new PathNotUsableError(prefixed);
+    const [server = "", share = ""] = parts.splice(0, 2);
+    base = `\\\\${server}\\${share}\\`;
+  } else if (/^[A-Za-z]:/.test(prefixed)) {
     if (platform !== "win32") throw new PathNotUsableError(prefixed);
     drive = `${(prefixed.charAt(0)).toUpperCase()}:`;
     base = `${drive}\\`;

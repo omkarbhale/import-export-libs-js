@@ -106,9 +106,9 @@ describe("transformExport", () => {
     expect(transformExport(envelope("<Fault/>"))).toBe("");
   });
 
-  it("is built for 14.0.7 and 14.35, and not yet for 12.0", () => {
+  it("is built for 12.0, 14.0.7 and 14.35", () => {
     const doc = envelope("<Result><Item type='A' id='1'/></Result>");
-    expect(() => transformExport(doc, "12.0")).toThrow("engine 12.0 is not yet supported");
+    expect(transformExport(doc, "12.0")).toBe(transformExport(doc, "14.0.7"));
     expect(transformExport(doc, "14.0.7")).toBe('<AML><Item type="A" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" /></AML>');
   });
 });

@@ -92,8 +92,8 @@ export class CExportItems {
       const lookups = this.helper.lookups;
       const transformed = applyXsl(rewritten, this.helper.engine);
       await removePermissionIdWhenItMatchesToDefaultPermission(transformed, lookups);
-      if (item.typeName === "mp_MacPolicy") cdataFilterXml(transformed, "condition_xml");
-      if (item.typeName === "dr_RelationshipFamily") cdataFilterXml(transformed, "implementation_query");
+      if (item.typeName === "mp_MacPolicy") cdataFilterXml(transformed, "condition_xml", this.helper.engine);
+      if (item.typeName === "dr_RelationshipFamily" && this.helper.engine !== "12.0") cdataFilterXml(transformed, "implementation_query");
       await replaceReferencesToPolyLists(transformed, lookups);
       if (removeUnknownReferences) await removeUnknownReferences(transformed);
       removeNamespaceNodes(transformed, this.helper.engine);
@@ -146,7 +146,7 @@ export class CExportItems {
       const idName = item.idName ?? "";
       const versionable = await lookups.isVersionable(typeName);
       const id = versionable ? await lookups.getCurrentIdOfVersion(idName, typeName) : idName;
-      const request = mainFetchRequest(typeName, id, level, this.helper.innovatorVersion);
+      const request = mainFetchRequest(typeName, id, level, this.helper.innovatorVersion, this.helper.engine);
       return { fileName, versionable, id, request, response: await this.helper.applyAML(request) };
     });
   }
