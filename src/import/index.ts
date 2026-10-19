@@ -1,7 +1,8 @@
 /**
  * Import: package loading and the `build.xsl` ordering (`IMP-001` to `IMP-099`), the plan `plan import` reports, and the
  * reference checks (`IMP-100` to `IMP-199`), the delayed resolution they queue (`IMP-200` to `IMP-299`), and the merge and versionable
- * processing (`IMP-300` to `IMP-399`).
+ * processing (`IMP-300` to `IMP-399`), and the run itself with the package registration, the audit row and the SQL items (`IMP-400` to
+ * `IMP-499`).
  */
 export { groupAddedIdsByType } from "./add-order.js";
 export { applyBuildXsl, renderBuildOutput } from "./build-output.js";
@@ -12,7 +13,7 @@ export { ImportItems } from "./import-items.js";
 export type { MergeHelper } from "./import-items.js";
 export { ImportLookups } from "./import-lookups.js";
 export type { MergeHost } from "./import-lookups.js";
-export { getItemsFromPackageDom } from "./items.js";
+export { getItemsFromPackageDom, isImportableType } from "./items.js";
 export { loadPackage, loadPackageDom, skippedFileWarning } from "./load-package-dom.js";
 export type { LoadPackageOptions, LoadedPackage, LogWriter, PackageFile } from "./load-package-dom.js";
 export { compareNtfsNames, ntfsOrderKey, sortNtfsNames } from "./ntfs-order.js";
@@ -31,3 +32,8 @@ export {
 export type { DelayedResolutionHelper } from "./delayed-resolution.js";
 export { ReferenceChecker } from "./reference-checks.js";
 export type { CheckHost, DelayedResolution, UnresolvedReference } from "./reference-checks.js";
+export { SUImportContext } from "./import-context.js";
+export { ImportHelper, defaultOsUser } from "./import-helper.js";
+export type { ImportHelperOptions } from "./import-helper.js";
+export { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, getImportableItemsCount, importInputParameters, logError } from "./import-run.js";
+export type { ConsoleWriter, ImportRunHost, ProgressState } from "./import-run.js";

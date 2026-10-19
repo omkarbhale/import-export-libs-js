@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, resolve, win32 } from "node:path";
+import { dirname, posix, resolve, win32 } from "node:path";
 import { isWhiteSpace } from "./dotnet-text.js";
 import {
   ArgumentException,
@@ -117,6 +117,18 @@ export function fileExists(path: string | null, environment: PathEnvironment = {
   } catch {
     return false;
   }
+}
+
+/**
+ * `IOWrapper.DirectoryGetParentFullName`: `Directory.GetParent(path).FullName`, the full path of the folder that holds the
+ * file or folder at `path`. A relative path is resolved against the current directory. A Windows path (a drive or a leading
+ * `\`) keeps its Windows form on every host; any other path is a host path.
+ * @spec IMP-402
+ */
+export function directoryGetParentFullName(path: string, environment: PathEnvironment = {}): string {
+  const platform = environment.platform ?? process.platform;
+  if (platform === "win32" || /^[A-Za-z]:|^\\/.test(path)) return win32.dirname(getFullPath(path, environment.cwd ?? process.cwd()));
+  return posix.dirname(posix.resolve(environment.cwd ?? process.cwd(), path));
 }
 
 /** Turns a Node file-system failure into the exception .NET raises for the same failure. */

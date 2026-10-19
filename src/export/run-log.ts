@@ -62,6 +62,11 @@ export class RunLog {
     return new RunLog(descriptor, key);
   }
 
+  /** `Write(text)`: the text as it is, with no line end. */
+  write(text: string): void {
+    this.pending.push(text);
+  }
+
   /** `WriteLine(text)`: the text and a CRLF. */
   writeLine(text = ""): void {
     this.pending.push(text, "\r\n");

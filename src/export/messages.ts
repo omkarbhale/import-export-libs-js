@@ -35,6 +35,47 @@ export const MESSAGE_TEMPLATES: Readonly<Record<string, string>> = {
   ErrorMessageFailedToFindReferencedElementsForPackageName: "{0}; Failed to find referenced elements for package '{1}'",
   ReferencedElementDoesnotHaveElementNameSet: "Referenced element doesn't have '{0}' set",
   EmptyDependencyPackageMessage: "Name of 'dependson' package can't be 'null' or empty",
+  // The import's templates (IMP-470).
+  ImportPackageName: "       ****Import   {0}****",
+  ImportWithMergeOptionPackageName: "       ****Import with merge option {0}****",
+  BuildingSolution: "Building  solution",
+  AddingPackageDefinintionForPackageName: "Adding PackageDefinintion for {0}",
+  WARNINGImportingPackageNamePackageWarn: "WARNING (importing '{0}' package): {1}",
+  ItemOfTypeWithIdIsNotAddedAsAReferencedElementForPackageBecauseTheItemWasNotFoundInTheTargetDatabase:
+    "Item of type '{0}' with id '{1}' is not added as a referenced element for package '{2}' because the item was not found in the target database",
+  ProcessingActionKeyIdType: "Processing ({0}) {1}",
+  FileFullNameFullName: "File full name '{0}'",
+  ImportingKeyedNameTypeNumberOfCount: "Importing {0}  type {1}   {2}  of  {3}",
+  PostActions: "Post actions",
+  ItemSuccessfullySkippedKeyIdType: "Item successfully skipped {0}",
+  DeleteSQLItemsOfThePackagePackageNameFromTheDatabase: "##### Delete SQL Items of the package '{0}' from the database #####",
+  DoneDeletingSQLItemsOfThePackagePackageNameFromTheDatabase: "##### Done deleting SQL Items of the package '{0}' from the database #####",
+  WarningTryToResolve: "          ****Warning! Import of an item failed. Trying to resolve the error... ****\r\n       {0}",
+  ItemSuccessfullyAppliedActionKeyIdType: "Item successfully applied({0}) {1}",
+  AddingItemIntoPackageDefinitionWthIdAndType: "Adding item into PackageDefinition with id = {0} and type = {1}",
+  GettingConfigIdOfVersionableItemIdType: "Getting config_id  of versionable item  id  {0} type {1}",
+  ItemSuccessfullyAddedInPackdefinitionIdType: "Item successfully added in packdefinition  id  {0} type {1}",
+  ItemAlreadyExistInPackdefinitionIdType: "Item already exist in packdefinition  id  {0} type {1}",
+  DelayedResolutionOfUnresolvedReferences: "Delayed resolution of unresolved references ...",
+  ImportWasCanceledByUser: "Import was canceled by user",
+  StartOfImportingPackages: "Start of importing packages",
+  UpdatingPackageNamePackageToInprogressReleaseStatus: "Updating '{0}' package to 'inprogress' release status",
+  UpdatingPackageNamePackageToSuccessReleaseStatus: "Updating '{0}' package to success release status",
+  UpdatingPackageNamePackageToFailedReleaseStatus: "Updating '{0}' package to failed release status",
+  ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus:
+    "Import package '{0}' failed with message:\n\n{1}\nUpdating {2} to failed release status",
+  ErrorMessageMessageEnd: "\t\t****ErrorMessage****\r\n{0}\r\n\t\t********************",
+  CanInitGroupInPackageDefinition: " Can init group in PackageDefinition.",
+  UnableToGetLabelOfTypeItemType: " Unable to get label of {0} ItemType.",
+  UnableToToCheckWhetheItemIsLocked: " Unable to to check whether item is locked.",
+  ThePackageAlreadyContainsThePackageElementWithNameAndIdButOfDifferentTypeDBTypeGroupIdBeingImportedTypeGroupId:
+    "The package '{0}' already contains the PackageElement with name='{1}' and id='{2}' but of different type: DB - type='{3}', group_id='{4}';   being imported - type='{5}', group_id='{6}'",
+  ItemHasNoType: "Item has no type",
+  TheFollowingItemHasNoType: "The following item has no type - {0}",
+  ItemHasNoID: "Item has no ID",
+  TheFollowingItemHaNoIdAndCannotBeDeleted: "The following item has no id and can't be deleted - {0}",
+  // `CannotAddInstanceOfDatabaseUpgradeItemType` is stored under a key with a leading space in the engine, so its lookup finds
+  // nothing (IMP-453); it has no entry here on purpose.
 };
 
 /**

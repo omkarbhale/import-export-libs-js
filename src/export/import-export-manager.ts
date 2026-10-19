@@ -12,8 +12,11 @@ import {
   UnauthorizedAccessException,
 } from "../io/errors.js";
 import { NotSupportedException } from "../xml/errors.js";
-import { fileExists } from "../io/host-path.js";
+import { directoryGetParentFullName, fileExists } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
+import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
+import { ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
+import type { SUImportContext } from "../import/import-context.js";
 import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
 import { innerText, selectNodes } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
@@ -67,6 +70,10 @@ export interface ImportExportManagerOptions extends PathEnvironment {
   now?: () => Date;
   /** Supplies the removal of references to unknown packages, asked for when the context's mode is not `DoNotRemove` (EXP-514). */
   unknownReferences?: UnknownReferenceRemovalProvider;
+  /** The host's standard output, which an import writes its banner, progress and completion to (IMP-421). Nothing by default. */
+  console?: ConsoleWriter;
+  /** The value of `os_user` in the audit row of an import, or a function that gives it (IMP-452). */
+  osUser?: ImportHelperOptions["osUser"];
 }
 
 /**
@@ -92,27 +99,34 @@ function isSystemException(error: unknown): error is Error {
 
 /**
  * The engine's `ImportExportManager`, export half: `ExportSolutions` and what it calls (EXP-500 to EXP-520). It is built around a
- * logged-in helper, a context and a messages factory, and runs one export at a time. The import half is built by the import slices.
+ * logged-in helper, a context and a messages factory, and runs one export at a time. The import half is `importSolutions`, which runs `ImportRun`.
  *
  * @spec EXP-500 EXP-502 EXP-503 EXP-507 EXP-508 EXP-509 EXP-510 EXP-511 EXP-512 EXP-513 EXP-514 EXP-515 EXP-516 EXP-517 EXP-518
- * @spec EXP-519 EXP-520 EXP-540 EXP-541 EXP-542 EXP-543 EXP-544
+ * @spec EXP-519 EXP-520 EXP-540 EXP-541 EXP-542 EXP-543 EXP-544 IMP-402 IMP-405 IMP-409 IMP-410
  */
 export class ImportExportManager {
   /** The manifest the context named, loaded by the constructor when the file exists; an export never uses it. */
   readonly manifestFile: ManifestFile | null;
   readonly itemHelper: CItemHelper;
+  /** The folder of the manifest, which an import resolves package paths against; the working directory for an export (EXP-502, IMP-402). */
+  readonly manifestDirectory: string | null;
   /** What the engine's `IOWrapper` is to the port: the host the files are written on (its current directory and platform). */
   readonly environment: PathEnvironment;
 
   private readonly engine: Engine;
   private readonly now: () => Date;
   private readonly unknownReferences: UnknownReferenceRemovalProvider | undefined;
+  private readonly console: ConsoleWriter;
+  private readonly importHelper: ImportHelper;
   private state: ProgressState = "idle";
 
   /**
    * An export manager. A null `itemHelper` is checked first, then a null `context`. The constructor takes the working directory as
    * the manifest directory, applies the context's timeout to the connection (WIRE-031), and loads the manifest the context names
    * when that file exists: a file that is not well-formed XML fails the constructor. `messagesFactory` is not checked.
+   *
+   * For an import (`Action` is `Import`) the manifest must exist, or the constructor throws a `CItemException` before anything
+   * else is done, and the manifest directory is the manifest's parent folder (IMP-402).
    */
   constructor(
     private readonly context: SolutionUpgradeContext | null,
@@ -125,13 +139,21 @@ export class ImportExportManager {
     this.engine = itemHelper.engine;
     if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
-    const { now, unknownReferences, ...environment } = options;
+    const { now, unknownReferences, console, osUser, ...environment } = options;
     this.environment = environment;
     this.now = now ?? (() => new Date());
     this.unknownReferences = unknownReferences;
 
-    itemHelper.applyTimeout(context.timeout);
+    this.console = console ?? SILENT_CONSOLE;
+    this.importHelper = new ImportHelper(itemHelper, osUser === undefined ? {} : { osUser });
+
     const manifestPath = context.manifestFile;
+    const isImport = context.action === "Import";
+    if (isImport && !fileExists(manifestPath, this.environment)) {
+      throw new CItemException(-1, "", `Manifest file '${manifestPath ?? ""}' doesn't exist`);
+    }
+    this.manifestDirectory = isImport && manifestPath !== null ? directoryGetParentFullName(manifestPath, this.environment) : context.workingDirectory;
+    itemHelper.applyTimeout(context.timeout);
     this.manifestFile =
       manifestPath !== null && manifestPath !== "" && fileExists(manifestPath, this.environment)
         ? new ManifestFile(manifestPath, { ...this.environment, engine: this.engine })
@@ -387,5 +409,34 @@ export class ImportExportManager {
       await this.exportProc(exportContext, directory, items, dependency, log);
       if (this.isCancelled()) break;
     }
+  }
+
+  /**
+   * `ImportSolutions(packagesToImportList, importContext)`: the whole import of one or more packages of the manifest, in
+   * dependency order. Returns 0 when every package ended (a cancelled one included, bug IMP-409) and 1 for an empty list or the
+   * first failure. A null context throws `ArgumentNullException` before anything else happens (IMP-400).
+   *
+   * @spec IMP-400
+   */
+  async importSolutions(packages: readonly (string | null)[] | null, importContext: SUImportContext | null): Promise<number> {
+    if (importContext === null) throw new ArgumentNullException("importContext");
+    const run = new ImportRun({
+      engine: this.engine,
+      context: this.context as SolutionUpgradeContext,
+      messages: this.messages,
+      itemHelper: this.itemHelper,
+      importHelper: this.importHelper,
+      manifestFile: this.manifestFile,
+      manifestDirectory: this.manifestDirectory,
+      environment: this.environment,
+      console: this.console,
+      now: this.now,
+      getSolutions2Xml: () => this.getSolutions2Xml(),
+      getState: () => this.state,
+      setState: (state) => {
+        this.state = state;
+      },
+    });
+    return run.importSolutions(packages, importContext);
   }
 }
