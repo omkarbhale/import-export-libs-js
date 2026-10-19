@@ -1,6 +1,6 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { allPackagesTable, fromManifestTable, useImportTable } from "../../../src/cli/console-modes.js";
 import type { SelectionTable } from "../../../src/export/import-export-manager.js";
 import type { Engine } from "../../../src/engines.js";
@@ -71,16 +71,15 @@ const describeEnd = (outcome: RunOutcome): string =>
  * A fresh folder for the port's package files whose path is as long as the oracle's `input/` folder (`…\\oracle\\runs\\<run id>\\input`).
  * A path reaches the engine's package log (the warning for a file without a root tag), and 12.0 reads the in-memory log only up to
  * `1024 × ⌊(N − 1) / 1024⌋` UTF-16 code units (IMP-406): a path of another length would move the cut, a difference of the harness
- * and not of the engine. The caller removes the folder's parent (`dirname`) when the step is done.
+ * and not of the engine. The caller removes `root`, the folder made for it, when the step is done.
  */
-export function inputDirLikeOracle(engine: Engine, command: string, base = tmpdir()): string {
+export function inputDirLikeOracle(engine: Engine, command: string, base = tmpdir()): { input: string; root: string } {
   const target = winJoin(oracleWindowsRoot(), "runs", runId(engine, command), "input").length;
   const root = mkdtempSync(join(base, "libsjs-parity-in-"));
   const pad = target - root.length - "//input".length;
-  if (pad < 1) return join(root, "input");
-  const dir = join(root, "p".repeat(pad), "input");
-  mkdirSync(dir, { recursive: true });
-  return dir;
+  const input = pad < 1 ? join(root, "input") : join(root, "p".repeat(pad), "input");
+  mkdirSync(input, { recursive: true });
+  return { input, root };
 }
 
 /** A compared run with the differences found by a comparison of its own. */
@@ -293,7 +292,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
   try {
     for (const [i, step] of c.steps.entries()) {
       const dir = join(env.out, c.id, `step-${i + 1}`, "port");
-      const input = inputDirLikeOracle(env.engine, "import");
+      const { input, root } = inputDirLikeOracle(env.engine, "import");
       writePackages(input, step.packages);
       let run;
       try {
@@ -304,7 +303,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
           join(dir, "work"),
         );
       } finally {
-        rmSync(dirname(dirname(input)), { recursive: true, force: true });
+        rmSync(root, { recursive: true, force: true });
       }
       portCreated.push(...run.preRunCreated, ...run.created);
       writePortRun(dir, run.outcome);
