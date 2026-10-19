@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" id="IT1"><name>Foo</name><is_versionable>0</is_versionable><is_versionable>1</is_versionable><Relationships><Item type="Property" id="P1"><name>release_date</name></Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

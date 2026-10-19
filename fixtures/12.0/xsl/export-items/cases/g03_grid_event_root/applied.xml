@@ -1,0 +1,1 @@
+<AML><Item type="Property" id="P1" action="add"><name>state</name><source_id keyed_name="T" type="ItemType">IT1</source_id><Relationships><Item type="Grid Event" id="GE1" action="add"><source_id><Item type="Property" action="get" select="id"><name>state</name><source_id>IT1</source_id></Item></source_id></Item></Relationships></Item></AML>

@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><a><![CDATA[]]></a><b><![CDATA[]]><![CDATA[]]></b><c>x<![CDATA[]]></c><d><![CDATA[]]><e/></d><f><![CDATA[]]>y</f></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

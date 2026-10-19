@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Item Action" id="IA1"><related_id keyed_name="SolutionConfig Export" type="Action">A1</related_id></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

@@ -1,0 +1,1086 @@
+{
+  "pairs": [
+    {
+      "left": "12.0",
+      "right": "14.0.7",
+      "cases": 89,
+      "identical": [
+        "e01-change-controlled-item",
+        "e02-part-itemtype",
+        "e02-part-removewithwarning",
+        "e03-cad-itemtype",
+        "e04-design-to-goal",
+        "e05-affected-item",
+        "e06-scopecachedependency-donotremove",
+        "e06-scopecachedependency-removesilently",
+        "e06-scopecachedependency-removewithwarning",
+        "e07-form-itemtype",
+        "e09-presentableitems",
+        "e10-activity-assignment",
+        "e11-cmf-elementbinding",
+        "e12-field-event",
+        "e13-cmf-computedpropertydependency",
+        "e14-level-2-ignored",
+        "e14-list",
+        "e15-sequence",
+        "e16-method-by-config-id",
+        "e17-method-middle-generation",
+        "e18-form-system-fields",
+        "e19-form-one-system-field",
+        "e20-workflow-map-ecn",
+        "e21-workflow-map-system-owner",
+        "e22-life-cycle-map-creator",
+        "e23-life-cycle-map-owner",
+        "e24-grid",
+        "e25-identity-non-system",
+        "e26-identity-system-no-package",
+        "e27-permission",
+        "e28-action",
+        "e29-action-colon-keyed-name",
+        "e30-report-method",
+        "e31-report-cdata",
+        "e32-item-report",
+        "e33-user",
+        "e34-preference",
+        "e35-variable-value-equals-default",
+        "e36-variable-both-empty",
+        "e37-variable-differ",
+        "e38-variable-empty-value",
+        "e39-usermessage",
+        "e40-workflow-promotion-error-no",
+        "e40-workflow-promotion-error-yes",
+        "e43-xclassificationtree",
+        "e44-xpropertydefinition",
+        "e47-dr-relationshipfamily",
+        "e48-qry-querydefinition",
+        "e49-rb-treegridviewdefinition",
+        "e50-mp-macpolicy",
+        "e51-sql",
+        "e52-float-item-property",
+        "e53-level-1",
+        "e53-level-2",
+        "e53-level-3",
+        "e53-level-default",
+        "e53-level-empty",
+        "e54-list-no-package",
+        "e55-lists-no-package-pair",
+        "e56-tp-xmlschemaelement",
+        "opt-timeout-30000",
+        "opt-timeout-default",
+        "opt-timeout-minus-1",
+        "opt-use-import",
+        "opt-verbose",
+        "p1-order-admin-core-cui",
+        "p1-order-cui-core-admin",
+        "p1-order-six-forward",
+        "p1-order-six-reverse",
+        "p2-cui-default-missing-dependencies",
+        "p2-cui-default-referenced-items",
+        "p2-part-referenced-items",
+        "p3-absent-package",
+        "p4-folder-mapping",
+        "p5-ref-both-on",
+        "p5-ref-off",
+        "p5-ref-on",
+        "s6-cmf-content-type",
+        "s6-cmf-tabular-view",
+        "s6-dac-domain",
+        "s7-xp-empty",
+        "s7-xp-values",
+        "s8-coll-ab",
+        "s8-coll-ba"
+      ],
+      "output": {
+        "e08-change-controlled-relationship": [
+          {
+            "path": "PLM/Import/ItemType/Change Controlled Relationship.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 3,
+            "linesOnlyRight": 3
+          }
+        ],
+        "s6-ac-attribute": [
+          {
+            "path": "LIBSJS-SCRATCH-ACCESS/Import/ac_PolicyAccessItemAttribute/LIBSJS_SCRATCH_AcAttribute.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 1,
+            "linesOnlyRight": 38
+          }
+        ],
+        "s6-cmf-itemtype": [
+          {
+            "path": "LIBSJS-SCRATCH-SPECIAL/Import/ItemType/LIBSJS_SCRATCH_CMFIT.xml",
+            "kind": "changed",
+            "idsOnly": true,
+            "linesOnlyLeft": 1,
+            "linesOnlyRight": 1
+          }
+        ],
+        "s6-dr-family": [
+          {
+            "path": "LIBSJS-SCRATCH-SPECIAL/Import/dr_RelationshipFamily/LIBSJS-SCRATCH-DrFamily.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 32,
+            "linesOnlyRight": 32
+          }
+        ],
+        "s6-mac-two-filters": [
+          {
+            "path": "LIBSJS-SCRATCH-SPECIAL/Import/mp_MacPolicy/LIBSJS-SCRATCH-SPECIAL-MacPolicy_1.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 1,
+            "linesOnlyRight": 1
+          }
+        ]
+      },
+      "hostExit": {},
+      "calls": {
+        "left": 2796,
+        "right": 3281
+      },
+      "requests": [
+        {
+          "text": "ApplyAML <AML><Item type=\"Variable\" action=\"get\" select=\"name, value\"><name></name></Item></AML>",
+          "left": 89,
+          "right": 267
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name></name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type></data_type><item_behavior></item_behavior><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name></Item></Relationships></Item>",
+          "left": 462,
+          "right": 809
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name></name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default></is_default></Item></Relationships></Item>",
+          "left": 467,
+          "right": 468
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name></name></Item>",
+          "left": 351,
+          "right": 398
+        },
+        {
+          "text": "ApplyItem <Item type=\"ac_PolicyAccessItemAttribute\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"ac_PolicyAccessItemAttribute\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item type=\"dr_Relationship\" action=\"get\" id=\"<ID>\" />",
+          "left": 2,
+          "right": 3
+        },
+        {
+          "text": "GetCurrentUserID <Empty />",
+          "left": 89,
+          "right": 0
+        }
+      ],
+      "messages": [
+        {
+          "text": "errorQuestion:           ****ErrorMessage****\r\nfaultstring: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: \r\n<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Promotion</name></Item>\r\n]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :Unable to get definition of System.Xml.XmlAttribute: Workflow Promotion\r\nfaultcode: 0\r\n          *******************\r\n\r\n  Abort current export of com.aras.innovator.core ?",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "errorQuestion:           ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Workflow Promotion</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: \r\n<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Promotion</name></Item>\r\n]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :Unable to get definition of System.Xml.XmlAttribute: Workflow Promotion\r\nfaultcode: 0\r\n          *******************\r\n\r\n  Abort current export of com.aras.innovator.core ?",
+          "left": 0,
+          "right": 2
+        }
+      ],
+      "log": [
+        {
+          "text": "",
+          "left": 95,
+          "right": 188
+        },
+        {
+          "text": "Action: Export",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Database: 12sp9",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Error of exporting Item id :00000000000000000000000000000001  keyed_name : Nope Promotion    type : Workflow Promotion",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Error of exporting Item id :00000000000000000000000000000001  keyed_name : Nope Promotion type : Workflow Promotion",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "Export level: ",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "Export level: 1",
+          "left": 0,
+          "right": 85
+        },
+        {
+          "text": "Export level: 2",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Export level: 3",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "Export referenced items: False",
+          "left": 0,
+          "right": 85
+        },
+        {
+          "text": "Export referenced items: True",
+          "left": 0,
+          "right": 4
+        },
+        {
+          "text": "Export unknown packages action: DoNotRemove",
+          "left": 0,
+          "right": 86
+        },
+        {
+          "text": "Export unknown packages action: RemoveSilently",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "Export unknown packages action: RemoveWithWarning",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Export using import structure: False",
+          "left": 0,
+          "right": 88
+        },
+        {
+          "text": "Export using import structure: True",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "Innovator version: 12.0 SP9 Build 24090",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Language pack name: ",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Language pack: ",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Log file: <path>",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Manifest file: ",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "Request: <Item type='ItemType' select='is_versionable' action='get'><name>Workflow Promotion</name></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: ",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Tool version: 14.0.7.35492",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "URL: http://localhost/12sp9",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "User: admin",
+          "left": 0,
+          "right": 14
+        },
+        {
+          "text": "User: root",
+          "left": 0,
+          "right": 75
+        },
+        {
+          "text": "Working directory: <path>",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "faultstring: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: ",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "faultstring: Server error",
+          "left": 0,
+          "right": 2
+        }
+      ]
+    },
+    {
+      "left": "14.0.7",
+      "right": "14.35",
+      "cases": 89,
+      "identical": [
+        "e01-change-controlled-item",
+        "e02-part-itemtype",
+        "e02-part-removewithwarning",
+        "e03-cad-itemtype",
+        "e04-design-to-goal",
+        "e05-affected-item",
+        "e06-scopecachedependency-donotremove",
+        "e06-scopecachedependency-removesilently",
+        "e06-scopecachedependency-removewithwarning",
+        "e08-change-controlled-relationship",
+        "e10-activity-assignment",
+        "e11-cmf-elementbinding",
+        "e12-field-event",
+        "e13-cmf-computedpropertydependency",
+        "e14-level-2-ignored",
+        "e14-list",
+        "e15-sequence",
+        "e16-method-by-config-id",
+        "e17-method-middle-generation",
+        "e18-form-system-fields",
+        "e19-form-one-system-field",
+        "e20-workflow-map-ecn",
+        "e21-workflow-map-system-owner",
+        "e22-life-cycle-map-creator",
+        "e23-life-cycle-map-owner",
+        "e24-grid",
+        "e25-identity-non-system",
+        "e26-identity-system-no-package",
+        "e27-permission",
+        "e28-action",
+        "e29-action-colon-keyed-name",
+        "e30-report-method",
+        "e31-report-cdata",
+        "e32-item-report",
+        "e33-user",
+        "e35-variable-value-equals-default",
+        "e36-variable-both-empty",
+        "e37-variable-differ",
+        "e38-variable-empty-value",
+        "e39-usermessage",
+        "e40-workflow-promotion-error-no",
+        "e40-workflow-promotion-error-yes",
+        "e43-xclassificationtree",
+        "e44-xpropertydefinition",
+        "e47-dr-relationshipfamily",
+        "e48-qry-querydefinition",
+        "e49-rb-treegridviewdefinition",
+        "e50-mp-macpolicy",
+        "e51-sql",
+        "e52-float-item-property",
+        "e53-level-1",
+        "e53-level-2",
+        "e53-level-3",
+        "e53-level-default",
+        "e53-level-empty",
+        "e54-list-no-package",
+        "e55-lists-no-package-pair",
+        "e56-tp-xmlschemaelement",
+        "opt-timeout-30000",
+        "opt-timeout-default",
+        "opt-timeout-minus-1",
+        "opt-use-import",
+        "opt-verbose",
+        "p2-cui-default-missing-dependencies",
+        "p2-cui-default-referenced-items",
+        "p2-part-referenced-items",
+        "p3-absent-package",
+        "p4-folder-mapping",
+        "p5-ref-both-on",
+        "p5-ref-off",
+        "p5-ref-on",
+        "s6-ac-attribute",
+        "s6-cmf-content-type",
+        "s6-cmf-tabular-view",
+        "s6-dac-domain",
+        "s6-dr-family",
+        "s6-mac-two-filters",
+        "s7-xp-empty",
+        "s7-xp-values",
+        "s8-coll-ab",
+        "s8-coll-ba"
+      ],
+      "output": {
+        "e07-form-itemtype": [
+          {
+            "path": "com/aras/innovator/core/Form/ItemType.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 10,
+            "linesOnlyRight": 0
+          }
+        ],
+        "e09-presentableitems": [
+          {
+            "path": "com/aras/innovator/cui/ItemType/PresentableItems.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 9,
+            "linesOnlyRight": 0
+          }
+        ],
+        "e34-preference": [
+          {
+            "path": "com/aras/innovator/preferences/Preference/507A16AA36F94513AD7EC1F948B5B48F.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 80,
+            "linesOnlyRight": 0
+          }
+        ],
+        "p1-order-admin-core-cui": [
+          {
+            "path": "com/aras/innovator/cui/ItemType/PresentableItems.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 9,
+            "linesOnlyRight": 0
+          }
+        ],
+        "p1-order-cui-core-admin": [
+          {
+            "path": "com/aras/innovator/cui/ItemType/PresentableItems.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 9,
+            "linesOnlyRight": 0
+          }
+        ],
+        "p1-order-six-forward": [
+          {
+            "path": "com/aras/innovator/cui/ItemType/PresentableItems.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 9,
+            "linesOnlyRight": 0
+          }
+        ],
+        "p1-order-six-reverse": [
+          {
+            "path": "com/aras/innovator/cui/ItemType/PresentableItems.xml",
+            "kind": "changed",
+            "idsOnly": false,
+            "linesOnlyLeft": 9,
+            "linesOnlyRight": 0
+          }
+        ],
+        "s6-cmf-itemtype": [
+          {
+            "path": "LIBSJS-SCRATCH-SPECIAL/Import/ItemType/LIBSJS_SCRATCH_CMFIT.xml",
+            "kind": "changed",
+            "idsOnly": true,
+            "linesOnlyLeft": 1,
+            "linesOnlyRight": 1
+          }
+        ]
+      },
+      "hostExit": {},
+      "calls": {
+        "left": 3281,
+        "right": 3346
+      },
+      "requests": [
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Action\" action=\"get\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarButton\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSection\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionDependency\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionItem\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 3
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSection\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionDependency\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionItem\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarItem\" action=\"get\" /></related_id></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSection\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionDependency\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Permission\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Activity\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Variable\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplateView\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"FeedTemplate\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Action\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Report\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Map\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle State\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Transition\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"xPropertyDefinition\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"PresentationConfiguration\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"cui_PresentConfigWinSection\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"PresentationCommandBarSection\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Exclusion\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Hide In\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Hide Related In\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Relationship Grid Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Relationship View\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Form\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Body\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Form Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Frameset\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"xPropertyDefinition\" action=\"get\" /></related_id></Item></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarSectionItem\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"CommandBarItem\" action=\"get\" /></related_id></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Form\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Body\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Field\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Field Event\" action=\"get\" /></Relationships></Item></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Form Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Frameset\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Frame\" action=\"get\" /></Relationships></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 9
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Grid\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Configurable Grid Event\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Grid Column\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Column Event\" action=\"get\" /></Relationships></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 10
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 4
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" related_expand=\"0\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 5
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\" select=\"id\"><name></name><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" select=\"data_source\"><name></name></Item></Relationships></Item>",
+          "left": 0,
+          "right": 300
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 17
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"LIBSJS_SCRATCH_XIT\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"LIBSJS_SCRATCH_XIT_xClass\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Map\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle State\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"State EMail\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"EMail Message\" action=\"get\" /></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"State Distribution\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"State Notification\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Transition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Transition EMail\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"EMail Message\" action=\"get\" /></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Transition Distribution\" action=\"get\" /></Relationships></Item></Relationships></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"List\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Filter Value\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Value\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 10
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 4
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Permission\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Access\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Preference\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"cmf_ContentTypeGridLayout\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Core_GlobalLayout\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Core_ItemGridLayout\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Core_RelGridLayout\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Core_SearchCountModeException\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"ES_Settings\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"ES_SettingsTopFacets\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"PE_MainPreferences\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"SelfServiceReportSettings\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"SelfServiceReportFeatured\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"SSVC_Preferences\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" select=\"name\"><source_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><name></name></Item></source_id></Item>",
+          "left": 0,
+          "right": 300
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Exclusion\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Hide In\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Hide Related In\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Relationship Grid Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Relationship View\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 4
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Report\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"SQL\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"SQL Dependencies\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Sequence\" action=\"get\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"User\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Alias\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Old Password\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ReadPriority\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Vault\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"ConversionServerPriority\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ReplicationRule\" action=\"get\" /></Relationships></Item></related_id></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"UserMessage\" action=\"get\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Variable\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 14
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Activity\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template Assignment\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Identity\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template EMail\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"EMail Message\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template Method\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template Task\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template Transition\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Life Cycle Transition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Transition EMail\" action=\"get\" /></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Activity Template Variable\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Path\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Path Post\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Path Pre\" action=\"get\" /></Relationships></Item></Relationships></Item></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"Workflow Map Variable\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"ac_PolicyAccessItemAttribute\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"ac_PolicyAccessAttrDefinition\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"cmf_ContentType\" action=\"get\"><Relationships><Item type=\"cmf_ContentTypeView\" action=\"get\" /><Item type=\"cmf_ElementType\" action=\"get\"><Relationships><Item type=\"cmf_ElementAllowedPermission\" action=\"get\" /><Item type=\"cmf_ElementBinding\" action=\"get\"><Relationships><Item type=\"cmf_PropertyBinding\" action=\"get\" /></Relationships></Item><Item type=\"cmf_PropertyType\" action=\"get\"><Relationships><Item type=\"cmf_ComputedProperty\" action=\"get\" /><Item type=\"cmf_PropertyAllowedPermission\" action=\"get\" /></Relationships></Item></Relationships></Item><Item type=\"cmf_ContentTypeExportRel\" action=\"get\" /><Item type=\"cmf_DocumentLifeCycleState\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"cmf_TabularView\" action=\"get\"><Relationships><Item type=\"cmf_TabularViewColumn\" action=\"get\"><Relationships><Item type=\"cmf_AdditionalPropertyType\" action=\"get\" /></Relationships></Item><Item type=\"cmf_TabularViewHeaderRows\" action=\"get\"><related_id><Item type=\"cmf_TabularViewHeaderRow\" action=\"get\"><Relationships><Item type=\"cmf_TabularViewColumnGroups\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"cmf_TabularViewTree\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"dac_DomainDefinition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"dac_SubdomainPolicy\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"dac_SubdomainPermission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"dac_UI_SubdomainPermission\" action=\"get\" /></Relationships></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"dr_RelationshipFamily\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"dr_FamilyElement\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"dr_FamilyElement qry_QueryItem\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"dr_FamilyEventHandler\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"dr_UI_RelationshipFamily\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"fr_RepresentationType\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"fr_RepType_Characteristic\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"fr_SupportedFileType\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"mp_MacPolicy\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"mp_MacCondition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"mp_MacPolicyControlledType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"mp_MacPolicyExemptIdentity\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryDefinition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryDefinitionEvent\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"Method\" action=\"get\" /></related_id></Item><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryItem\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryItemSelectProperty\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryItemSortProperty\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryParameter\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"qry_QueryReference\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"rb_TreeGridViewDefinition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"rb_ColumnDefinition\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"rb_ColumnMapping\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"rb_LocalStyle\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"rb_LocalStyleDefinition\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"rb_ParameterViewModel\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"rb_QueryDefinitionParameterMap\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"rb_TreeRowDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"rb_TreeRowReference\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"rb_UI_CellEditor\" action=\"get\" /></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"tp_XmlSchemaElement\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"xClassificationTree\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"xClass\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"xClass_Classification_Perm\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xClass_xProperty_Flatten\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xClass_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xClass_xPropValue_Perm\" action=\"get\" /></Relationships></Item><Item isNew=\"1\" isTemp=\"1\" type=\"xClassificationTree_ItemType\" action=\"get\"><related_id><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType\" action=\"get\"><Relationships><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Permission\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Allowed Workflow\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Can Add\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Client Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"DiscussionTemplate\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Implements\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Inherited Server Events\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Action\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Item Report\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType Life Cycle\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ItemType_xPropertyDefinition\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"ITPresentationConfiguration\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Morphae\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Property\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"RelationshipType\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"Server Event\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC Access\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"TOC View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"View\" action=\"get\" /><Item isNew=\"1\" isTemp=\"1\" type=\"xItemTypeAllowedProperty\" action=\"get\" /></Relationships></Item></related_id></Item></Relationships><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item isNew=\"1\" isTemp=\"1\" type=\"xPropertyDefinition\" action=\"get\" select=\",xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "ApplyItem <Item type=\"Action\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"CommandBarButton\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"CommandBarSection\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 3,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"CommandBarSection\" action=\"get\" levels=\"2\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"CommandBarSection\" action=\"get\" levels=\"3\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Form\" action=\"get\" levels=\"3\"><id><ID></id></Item>",
+          "left": 9,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Grid\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 10,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Identity\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 4,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Item Report\" action=\"get\" levels=\"0\" related_expand=\"0\"><id><ID></id></Item>",
+          "left": 5,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" action=\"get\" levels=\"1\" select=\"id\"><name></name><Relationships><Item type=\"Property\" select=\"name, data_type, data_source\" action=\"get\"><data_type></data_type><item_behavior></item_behavior><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name><name condition=\"not like\"></name></Item></Relationships></Item>",
+          "left": 809,
+          "right": 414
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" action=\"get\" select=\"id, is_relationship, use_src_access\"><name></name><Relationships><Item type=\"Allowed Permission\" action=\"get\" select=\"related_id(id)\"><is_default></is_default></Item></Relationships></Item>",
+          "left": 468,
+          "right": 348
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" action=\"get\"><id><ID></id><Relationships><Item type=\"DiscussionTemplate\" action=\"get\"><Relationships><Item type=\"FeedTemplate\" action=\"get\"><Relationships><Item type=\"FileSelectorTemplate\" action=\"get\" /></Relationships></Item><Item type=\"DiscussionTemplateView\" action=\"get\"><related_id><Item type=\"SSVCPresentationConfiguration\" action=\"get\" /></related_id></Item></Relationships></Item><Item type=\"ITPresentationConfiguration\" action=\"get\" related_expand=\"0\" /><Item type=\"Property\" action=\"get\"><Relationships><Item type=\"Grid Event\" action=\"get\" /></Relationships></Item><Item type=\"RelationshipType\" action=\"get\" /><Item type=\"View\" action=\"get\"><related_id><Item type=\"Form\" action=\"get\"><Relationships><Item type=\"Body\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Server Event\" action=\"get\" /><Item type=\"Item Action\" action=\"get\" /><Item type=\"ItemType Life Cycle\" action=\"get\" /><Item type=\"Allowed Workflow\" action=\"get\" /><Item type=\"TOC Access\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"TOC View\" action=\"get\" /><Item type=\"Client Event\" action=\"get\" /><Item type=\"Can Add\" action=\"get\"><related_id><Item type=\"Identity\" action=\"get\"><Relationships><Item type=\"Member\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Allowed Permission\" action=\"get\"><related_id><Item type=\"Permission\" action=\"get\"><Relationships><Item type=\"Access\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"Item Report\" action=\"get\" /><Item type=\"Morphae\" action=\"get\" /><Item type=\"ItemType_xPropertyDefinition\" action=\"get\" /></Relationships></Item>",
+          "left": 17,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"ItemType\" select=\"is_dependent, is_versionable\" action=\"get\"><name></name></Item>",
+          "left": 80,
+          "right": 70
+        },
+        {
+          "text": "ApplyItem <Item type=\"LIBSJS_SCRATCH_XIT\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Life Cycle Map\" action=\"get\" levels=\"3\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"List\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 10,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Method\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 4,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Permission\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Preference\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"RelationshipType\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 4,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"RelationshipType\" select=\"behavior\" action=\"get\"><name></name></Item>",
+          "left": 79,
+          "right": 69
+        },
+        {
+          "text": "ApplyItem <Item type=\"Report\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"SQL\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Sequence\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"User\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"UserMessage\" action=\"get\" levels=\"1\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Variable\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 14,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"Workflow Map\" action=\"get\" levels=\"3\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"ac_PolicyAccessItemAttribute\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"cmf_ContentType\" action=\"get\"><id><ID></id><Relationships><Item type=\"cmf_ContentTypeView\" action=\"get\" /><Item type=\"cmf_ElementType\" action=\"get\"><Relationships><Item type=\"cmf_ElementAllowedPermission\" action=\"get\" /><Item type=\"cmf_ElementBinding\" action=\"get\"><Relationships><Item type=\"cmf_PropertyBinding\" action=\"get\" /></Relationships></Item><Item type=\"cmf_PropertyType\" action=\"get\"><Relationships><Item type=\"cmf_ComputedProperty\" action=\"get\" /><Item type=\"cmf_PropertyAllowedPermission\" action=\"get\" /></Relationships></Item></Relationships></Item><Item type=\"cmf_ContentTypeExportRel\" action=\"get\" /><Item type=\"cmf_DocumentLifeCycleState\" action=\"get\" /></Relationships></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"cmf_TabularView\" action=\"get\"><id><ID></id><Relationships><Item type=\"cmf_TabularViewColumn\" action=\"get\"><Relationships><Item type=\"cmf_AdditionalPropertyType\" action=\"get\" /></Relationships></Item><Item type=\"cmf_TabularViewHeaderRows\" action=\"get\"><related_id><Item type=\"cmf_TabularViewHeaderRow\" action=\"get\"><Relationships><Item type=\"cmf_TabularViewColumnGroups\" action=\"get\" /></Relationships></Item></related_id></Item><Item type=\"cmf_TabularViewTree\" action=\"get\" /></Relationships></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"dac_DomainDefinition\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"dr_RelationshipFamily\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"fr_RepresentationType\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"mp_MacPolicy\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"qry_QueryDefinition\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"rb_TreeGridViewDefinition\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"tp_XmlSchemaElement\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"xClassificationTree\" action=\"get\" levels=\"2\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "ApplyItem <Item type=\"xPropertyDefinition\" action=\"get\" levels=\"1\" select=\"xp-*($value, @explicit, @permission_id), *[is_not_null()]\"><id><ID></id></Item>",
+          "left": 1,
+          "right": 0
+        }
+      ],
+      "messages": [
+        {
+          "text": "errorQuestion:           ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest (formatted):\r\n<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\">\r\n  <name>Workflow Promotion</name>\r\n</Item>\r\n\r\nResponse (formatted):\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <SOAP-ENV:Body>\r\n    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">\r\n      <faultcode>0</faultcode>\r\n      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>\r\n      <detail>\r\n        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>\r\n        <af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: \r\n<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Promotion</name></Item>\r\n]]></af:legacy_faultstring>\r\n      </detail>\r\n    </SOAP-ENV:Fault>\r\n  </SOAP-ENV:Body>\r\n</SOAP-ENV:Envelope>\r\nfaultdetail :Unable to get definition of System.Xml.XmlAttribute: Workflow Promotion\r\nfaultcode: 0\r\n          *******************\r\n\r\n  Abort current export of com.aras.innovator.core ?",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "errorQuestion:           ****ErrorMessage****\r\nfaultstring: Server error\r\n\r\nRequest: <Item type='ItemType' select='is_versionable' action='get'><name>Workflow Promotion</name></Item>\r\n\r\nResponce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: \r\n<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\"><name>Workflow Promotion</name></Item>\r\n]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\nfaultdetail :Unable to get definition of System.Xml.XmlAttribute: Workflow Promotion\r\nfaultcode: 0\r\n          *******************\r\n\r\n  Abort current export of com.aras.innovator.core ?",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "status: Item 1 of 2: List - LIBSJS-SCRATCH-REFDEP-List_1",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "status: Item 1 of 2: List - True/False",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "status: Item 1 of 2: Workflow Promotion - Nope Promotion",
+          "left": 0,
+          "right": 1
+        },
+        {
+          "text": "status: Item 2 of 2: List - LIBSJS-SCRATCH-REFDEP-List_1",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "status: Item 2 of 2: List - True/False",
+          "left": 1,
+          "right": 0
+        },
+        {
+          "text": "status: Item 2 of 2: Workflow Promotion - Nope Promotion",
+          "left": 1,
+          "right": 0
+        }
+      ],
+      "log": [
+        {
+          "text": "        <af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "        <af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: ",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "      </detail>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "      <detail>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "      <faultcode>0</faultcode>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "      <faultstring><![CDATA[No items of type ItemType found.]]></faultstring>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "    </SOAP-ENV:Fault>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "    <SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\">",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "  </SOAP-ENV:Body>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "  <SOAP-ENV:Body>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "  <name>Workflow Promotion</name>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "</Item>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "</SOAP-ENV:Envelope>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "<Item type=\"ItemType\" select=\"is_versionable\" action=\"get\">",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Item id :F288A3345225407EACBC936191097BCD  keyed_name : Activity Template   type : Form successfully exported",
+          "left": 7,
+          "right": 6
+        },
+        {
+          "text": "Request (formatted):",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Request: <Item type='ItemType' select='is_versionable' action='get'><name>Workflow Promotion</name></Item>",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "Responce: <SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><SOAP-ENV:Fault xmlns:af=\"http://www.aras.com/InnovatorFault\"><faultcode>0</faultcode><faultstring><![CDATA[No items of type ItemType found.]]></faultstring><detail><af:legacy_detail><![CDATA[No items of type ItemType found.]]></af:legacy_detail><af:legacy_faultstring><![CDATA[No items of type 'ItemType' found using the criteria: ",
+          "left": 2,
+          "right": 0
+        },
+        {
+          "text": "Response (formatted):",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "Tool version: 14.0.7.35492",
+          "left": 89,
+          "right": 0
+        },
+        {
+          "text": "Tool version: 14.35.0.43890",
+          "left": 0,
+          "right": 89
+        },
+        {
+          "text": "User: admin",
+          "left": 14,
+          "right": 0
+        },
+        {
+          "text": "User: root",
+          "left": 75,
+          "right": 89
+        },
+        {
+          "text": "]]></af:legacy_faultstring>",
+          "left": 0,
+          "right": 2
+        },
+        {
+          "text": "]]></af:legacy_faultstring></detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>",
+          "left": 2,
+          "right": 0
+        }
+      ]
+    }
+  ]
+}

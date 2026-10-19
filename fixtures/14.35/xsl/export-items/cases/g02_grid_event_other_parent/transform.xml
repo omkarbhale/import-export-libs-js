@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships><Item type="Grid Event" id="GE1" action="add"><source_id keyed_name="state" type="Property">P1</source_id></Item></Relationships></Item></AML>

@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="F1" action="add"><Relationships /></Item><Item type="Member" id="M1" action="add" xmlns:i18n="urn:i"><n xmlns:z="urn:z">v</n></Item><Item type="ItemType" id="F1" action="edit"><Relationships><Item type="Morphae" id="MO1" action="add" xmlns:i18n="urn:i"><n xmlns:z="urn:z">v</n></Item></Relationships></Item></AML>

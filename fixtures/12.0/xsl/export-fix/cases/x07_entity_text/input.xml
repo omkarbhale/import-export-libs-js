@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Variable" id="V1"><name>n</name><value>a&amp;b&lt;</value><default_value>a&amp;b&lt;</default_value></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

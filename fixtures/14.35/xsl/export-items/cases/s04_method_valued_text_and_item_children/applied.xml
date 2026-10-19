@@ -1,0 +1,1 @@
+<AML><Item type="Report" id="R" action="add"><method keyed_name="k"><Item type="Method" action="get" select="id"><name>k</name></Item></method><method keyed_name=""><Item type="Method" action="get" select="id"><name></name></Item></method></Item></AML>

@@ -12,6 +12,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`lock-diff-12.0.md`](lock-diff-12.0.md) accounts for the REA lock diff between the 12.0 and 14.0.7 builds (wayfinder ticket 46).
 
+[`engine-diffs.md`](engine-diffs.md) reads the live three-engine export diffs on dev (wayfinder ticket 64): which differences the code reading predicted are confirmed, which dev cannot show, and where each is pinned.
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).

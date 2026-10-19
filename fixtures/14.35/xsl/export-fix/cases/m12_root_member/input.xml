@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Member" id="M1"><Relationships><Item type="Member" id="M2"/></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

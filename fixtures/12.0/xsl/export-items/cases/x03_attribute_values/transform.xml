@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="a&amp;b&lt;c&gt;&quot;d'e&#x9;f&#xA;g&#xD;h" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><n a="&amp;&lt;&gt;&quot;'&#x9;&#xA;&#xD;  " /></Item></AML>

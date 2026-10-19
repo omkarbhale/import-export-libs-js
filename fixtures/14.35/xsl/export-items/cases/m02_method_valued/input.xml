@@ -1,0 +1,13 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><Relationships>
+<Item type="Report" id="R1"><method keyed_name="rm" type="Method">M1</method></Item>
+<Item type="Action" id="A1"><method keyed_name="am" type="Method">M2</method><on_complete keyed_name="oc" type="Method">M3</on_complete></Item>
+<Item type="View" id="V1"><method keyed_name="vm" type="Method">M4</method></Item>
+<Item type="Life Cycle Transition" id="L1"><pre_action keyed_name="pre" type="Method">P1</pre_action><post_action keyed_name="post" type="Method">P2</post_action><method keyed_name="notme" type="Method">P3</method></Item>
+<Item type="tp_XmlSchemaElement" id="T1"><content_generator keyed_name="cg" type="Method">C1</content_generator></Item>
+<Item type="Other" id="O1"><method keyed_name="x" type="Method">O</method></Item>
+<Item type="Report" id="R2"><method is_null="1"/></Item>
+<Item type="Report" id="R3"><method/></Item>
+<Item type="Report" id="R4"><method type="Method">NOKN</method></Item>
+<Item type="Report" id="R5"><method keyed_name="a&amp;b &lt;c&gt;" type="Method" extra="e">M5</method></Item>
+<Item type="Report" id="R6"><method keyed_name="kn" type="Method"><Item type="Method" id="MI"><name>inner</name></Item></method></Item>
+</Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

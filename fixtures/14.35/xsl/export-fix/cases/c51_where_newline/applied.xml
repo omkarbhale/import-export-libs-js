@@ -1,0 +1,2 @@
+<AML><Item type="ItemType" id="I&#xA;D" action="add"><name>N
+M	x</name></Item><Item type="View" action="delete" where="source_id='I&#xA;D'" /><Item type="Form" action="delete" where="name='N&#xD;&#xA;M	x'" /></AML>

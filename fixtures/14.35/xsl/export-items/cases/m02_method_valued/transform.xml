@@ -1,0 +1,13 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships>
+<Item type="Report" id="R1" action="add"><method keyed_name="rm" type="Method"><Item type="Method" action="get" select="id"><name>rm</name></Item></method></Item>
+<Item type="Action" id="A1" action="add"><method keyed_name="am" type="Method"><Item type="Method" action="get" select="id"><name>am</name></Item></method><on_complete keyed_name="oc" type="Method"><Item type="Method" action="get" select="id"><name>oc</name></Item></on_complete></Item>
+<Item type="View" id="V1" action="add"><method keyed_name="vm" type="Method"><Item type="Method" action="get" select="id"><name>vm</name></Item></method></Item>
+<Item type="Life Cycle Transition" id="L1" action="add"><pre_action keyed_name="pre" type="Method"><Item type="Method" action="get" select="id"><name>pre</name></Item></pre_action><post_action keyed_name="post" type="Method"><Item type="Method" action="get" select="id"><name>post</name></Item></post_action><method keyed_name="notme" type="Method">P3</method></Item>
+<Item type="tp_XmlSchemaElement" id="T1" action="add"><content_generator keyed_name="cg" type="Method"><Item type="Method" action="get" select="id"><name>cg</name></Item></content_generator></Item>
+<Item type="Other" id="O1" action="add"><method keyed_name="x" type="Method">O</method></Item>
+<Item type="Report" id="R2" action="add" />
+<Item type="Report" id="R3" action="add"><method><Item type="Method" action="get" select="id"><name></name></Item></method></Item>
+<Item type="Report" id="R4" action="add"><method type="Method"><Item type="Method" action="get" select="id"><name></name></Item></method></Item>
+<Item type="Report" id="R5" action="add"><method keyed_name="a&amp;b &lt;c&gt;" type="Method" extra="e"><Item type="Method" action="get" select="id"><name>a&amp;b &lt;c&gt;</name></Item></method></Item>
+<Item type="Report" id="R6" action="add"><method keyed_name="kn" type="Method"><Item type="Method" action="get" select="id"><name>kn</name></Item></method></Item>
+</Relationships></Item></AML>

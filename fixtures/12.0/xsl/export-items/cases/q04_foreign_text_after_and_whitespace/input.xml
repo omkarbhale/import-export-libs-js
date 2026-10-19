@@ -1,0 +1,4 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="IT1"><Relationships>
+<Item type="Property" id="PA"><name>pa</name><data_source name="DA">A</data_source></Item>
+<Item type="Property" id="PF"><data_type> foreign </data_type><data_source>A</data_source></Item>
+<Item type="Property" id="PG"><data_type>foreign</data_type>t1<data_source a="1" b="2">A</data_source>t2<foreign_property>x</foreign_property>t3</Item></Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

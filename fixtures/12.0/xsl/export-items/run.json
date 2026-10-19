@@ -1,0 +1,1067 @@
+{
+  "engine": "12.0",
+  "command": "xsl",
+  "toolset": {
+    "digest": "7c0ff3fd7ebf",
+    "source": "Desktop\\ImportExport\\12\\Import",
+    "libs": {
+      "version": "12.0.0.13341",
+      "mvid": "73656177-796f-4071-beb9-1ff7e94a9e63"
+    },
+    "iom": {
+      "version": "12.0.0.13341",
+      "mvid": "fb3cb197-f92d-491a-86fc-4c564e852e74"
+    }
+  },
+  "xsl": "export.xsl",
+  "stylesheet": {
+    "resource": "export.xsl",
+    "bytes": 32930,
+    "sha256": "8971fb8f12a439acad233b95735c49d7105177521fb142ab356ec24e3311ee75"
+  },
+  "preserveWhitespace": true,
+  "culture": "en-IN",
+  "clr": "4.0.30319.42000",
+  "startedAt": "2026-10-19T05:43:20.142Z",
+  "finishedAt": "2026-10-19T05:43:24.332Z",
+  "cases": [
+    {
+      "name": "c01_reference",
+      "inputSha256": "a520660bec21ab1109b92b750fbb0dc7da9996e236d464655bbbdc206dc667a3",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "']]>' is not allowed in character data. Line 1, position 311."
+      },
+      "source": "c01_reference.xml"
+    },
+    {
+      "name": "c02_reference_nobracket",
+      "inputSha256": "d9f7cd648d63f7a309e544647bc11598f03a9aa1561318dc1e1be8a4af55469b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "c02_reference_nobracket.xml"
+    },
+    {
+      "name": "c03_reference_bracket",
+      "inputSha256": "33244ecab6a641fda4f814d169469dd52b8671acda504c34b15cbe9cfa914e03",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "']]>' is not allowed in character data. Line 1, position 294."
+      },
+      "source": "c03_reference_bracket.xml"
+    },
+    {
+      "name": "c04_reference_wrong_place",
+      "inputSha256": "8e6e53663e825e544779be78c8d110263be5bd7b1704d812d05b93c066ddd7ff",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "c04_reference_wrong_place.xml"
+    },
+    {
+      "name": "c05_reference_root_not_itemtype",
+      "inputSha256": "c2d5f236b0cb876bfab91b28379e88eb5f0a3e7b21423aeec1c2ded986fbc6f3",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "c05_reference_root_not_itemtype.xml"
+    },
+    {
+      "name": "d01_member_morphae",
+      "inputSha256": "2276eb99cb46267e397bfadacdc203517319d0ec5dfa29418e47a80dfafd0baa",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d01_member_morphae.xml"
+    },
+    {
+      "name": "d02_only_dropped_children",
+      "inputSha256": "54f24f1a28fd4357a72da0e4a0c94273e005e6451ae579c7ba8e672ff89b9851",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d02_only_dropped_children.xml"
+    },
+    {
+      "name": "d03_root_member",
+      "inputSha256": "ff90513f8e694367a6bebdbb7dca682674da78d487da03ff860d8a347829cc0b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d03_root_member.xml"
+    },
+    {
+      "name": "d04_solutionconfig",
+      "inputSha256": "49e1c9a4e047af42a01bbfc3f499e691b6936acd3686e68e8d3c31d4624ceb5f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d04_solutionconfig.xml"
+    },
+    {
+      "name": "d05_solutionconfig_root",
+      "inputSha256": "52b16bfb32f7ec85aa3403b99e433e6d018157e3d773fb803aa9df5bb575fa74",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d05_solutionconfig_root.xml"
+    },
+    {
+      "name": "d06_reltype_drop",
+      "inputSha256": "39b357355470eed4bdbefcd0f2795584b0ac30465ba5e2be7c95fe117e10bf13",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d06_reltype_drop.xml"
+    },
+    {
+      "name": "d07_reltype_not_under_itemtype",
+      "inputSha256": "f80b352007636206d72b7b1e260b54ca306f3625a4aa31d9533c139a67d222fe",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d07_reltype_not_under_itemtype.xml"
+    },
+    {
+      "name": "d08_reltype_deep",
+      "inputSha256": "da1378488344cd47bb27fd640acea69f57525d5899a7069ad1e620d99d2d275f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d08_reltype_deep.xml"
+    },
+    {
+      "name": "d09_reltype_root_with_relationship_id",
+      "inputSha256": "61146015cdbee9229a49cb5838d060631be63c069445d720070899bf0e2878ce",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d09_reltype_root_with_relationship_id.xml"
+    },
+    {
+      "name": "d10_related_itemtype",
+      "inputSha256": "52da39ccd94ac06e29a91b3c0a0991c750a446a9580624d2c3732bbfcd90a50c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "d10_related_itemtype.xml"
+    },
+    {
+      "name": "e01_ref_empty",
+      "inputSha256": "0a497079f311eeab1570625f4235c5b13e411bac30b8cab028b46a39caf74141",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e01_ref_empty.xml"
+    },
+    {
+      "name": "e02_empty_text",
+      "inputSha256": "637c2d8c1b2b90740af3c1cc935bdc5f0811309cb03de4417b4d3ec7c9301952",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e02_empty_text.xml"
+    },
+    {
+      "name": "e03_prio",
+      "inputSha256": "c18d7d3e11e0ed14c5d414131ed44b741d53211fe5aa06290eade01d987111cf",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e03_prio.xml"
+    },
+    {
+      "name": "e04_item_in_result_named",
+      "inputSha256": "352d76556cfe4c2a3a9c0399100b47f0fe26de52a3cfdc465c779e8064d02e94",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e04_item_in_result_named.xml"
+    },
+    {
+      "name": "e05_member_in_morphae_ctx",
+      "inputSha256": "6ce5924845af45c5abe7b06e6c3cf870db8e08aba409bdc0dd7a37b1431a6701",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e05_member_in_morphae_ctx.xml"
+    },
+    {
+      "name": "e06_attr_variants",
+      "inputSha256": "244071a1a8f96c9e0ddc759d76be259f24754a9b28fd325743356e33c0e49f5b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e06_attr_variants.xml"
+    },
+    {
+      "name": "e07_propertytype_system_names",
+      "inputSha256": "ab1e5b92553fbd93465189be346dc1459f2e13f84c6da51988a73da5b6f88d09",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e07_propertytype_system_names.xml"
+    },
+    {
+      "name": "e08_more_system",
+      "inputSha256": "f155f6855fc3046f5d9a38d14a244265079975c8dfd6ea7d57f6e3fbbfdceb9c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e08_more_system.xml"
+    },
+    {
+      "name": "e09_value_of_empty",
+      "inputSha256": "31628aef48e12f25d15bfaae19324d941aa66eb288c42bf2b966449b36eb975f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e09_value_of_empty.xml"
+    },
+    {
+      "name": "e10_text_root_children",
+      "inputSha256": "8ce9b5a8af478f4d47566e068cc06579ac68c809a7b45fec4afa71e482a41cec",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e10_text_root_children.xml"
+    },
+    {
+      "name": "e11_identity_ws",
+      "inputSha256": "f227f84c008af5d49125fcc242fdbc1fc835a0f4a11f0eb9ecd5e9f6f66a72bc",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e11_identity_ws.xml"
+    },
+    {
+      "name": "e12_propertytype_two_prop",
+      "inputSha256": "531e6dd501d36ceede673a992aec06ad136231bde48e8fdfd0ea48d819fac3d5",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "e12_propertytype_two_prop.xml"
+    },
+    {
+      "name": "f01_foreign",
+      "inputSha256": "93d3b332672fd9b37ae3bf4cd3d30d2a092fd3ce341b7301ef4c6ab5ba073bed",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "f01_foreign.xml"
+    },
+    {
+      "name": "f02_foreign_edge",
+      "inputSha256": "4449df7154f64a0607e54ce6b37d91e9773b46c4ba17609c96cd65ccf98dc00f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "f02_foreign_edge.xml"
+    },
+    {
+      "name": "f03_foreign_root",
+      "inputSha256": "155cc68c859175bf15384c801430e392d1e063763ad1ee4682c28e87545c1e9e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "f03_foreign_root.xml"
+    },
+    {
+      "name": "g01_grid_event",
+      "inputSha256": "91699a5b5929b5c99774653c5f548b26b05822fc282a75b387f1eec7bd53af91",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "g01_grid_event.xml"
+    },
+    {
+      "name": "g02_grid_event_other_parent",
+      "inputSha256": "c7aa641bd83dc83e3785c380af39b3b92f350dcd48938d0102aa962011254018",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "g02_grid_event_other_parent.xml"
+    },
+    {
+      "name": "g03_grid_event_root",
+      "inputSha256": "89a484664f705d8e88d4930a68af7d0587f3ce166e983cdcf8f03a78b5c3e13a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "g03_grid_event_root.xml"
+    },
+    {
+      "name": "h01_container_only_empty_identity",
+      "inputSha256": "8b3f699d1c66f9252c9bc22fa5ae463b8444c4af3a7821702690c276c85b3d1d",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "h01_container_only_empty_identity.xml"
+    },
+    {
+      "name": "h02_empty_text_sources",
+      "inputSha256": "2c2375308d59ca567aee99027847d97479b11a2d50f18fe06298979ab6931d08",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "h02_empty_text_sources.xml"
+    },
+    {
+      "name": "h03_comment_only_children",
+      "inputSha256": "1e05392aa5046c9e638d245f5e4c5375d729d06b73432d99166a28e843b515fa",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "h03_comment_only_children.xml"
+    },
+    {
+      "name": "h04_root_text_only_value",
+      "inputSha256": "271ab4618e6c5bc8271c9f5394038b7a5023b122ebff70acd902ef0d29c4098a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "h04_root_text_only_value.xml"
+    },
+    {
+      "name": "h05_field_ws",
+      "inputSha256": "76ae3cac80b53c8732a14a8a1abe0f817e887662a2939abadb8f9427a085d3ec",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "h05_field_ws.xml"
+    },
+    {
+      "name": "i01_nested_identity",
+      "inputSha256": "8817449021cad99f5f7b7be1906d887d69a69b283aed40329b1c067921e4bfb6",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i01_nested_identity.xml"
+    },
+    {
+      "name": "i02_identity_substring",
+      "inputSha256": "f588d5116ae118dbcceeb36048dc7d31038e3a9a0f893b7151f36659a462538a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i02_identity_substring.xml"
+    },
+    {
+      "name": "i03_identity_all_six",
+      "inputSha256": "6eea46f6ca957e719e9d12762f3c4a70e525d11e6cdd8c1ae8579ec4c076cc38",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i03_identity_all_six.xml"
+    },
+    {
+      "name": "i04_identity_in_related_id",
+      "inputSha256": "88565d20e9ac9839d0c39516543277d3187ecad35c9a69467cf9d58433c84fa1",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i04_identity_in_related_id.xml"
+    },
+    {
+      "name": "i05_root_identity",
+      "inputSha256": "56986da85d386103f241c403e055db809d77abc40109d88449b2195584630246",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i05_root_identity.xml"
+    },
+    {
+      "name": "i06_identity_valued_props",
+      "inputSha256": "7078907c407a690b90841d82bc044e0769305294262f53d957af91077f35496e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i06_identity_valued_props.xml"
+    },
+    {
+      "name": "i07_identity_prop_edge",
+      "inputSha256": "7932355e5a48f515e65d97882d6f2b1a0bafe723f0b8cb986077d2112ed2ee26",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i07_identity_prop_edge.xml"
+    },
+    {
+      "name": "i08_identity_prop_on_root",
+      "inputSha256": "efd317847b70ca439e7fc5c5ac8826f2b83b263a4735628e30aee4ad670cf062",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "i08_identity_prop_on_root.xml"
+    },
+    {
+      "name": "m01_nested_method",
+      "inputSha256": "97edc50b24c3429d511fd8e047bb6da91bb092dc3e4d179bfba4f91822db8cd7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "m01_nested_method.xml"
+    },
+    {
+      "name": "m02_method_valued",
+      "inputSha256": "e1e5a3a95bff3b40d46b6e120e36406aad2a096e9d151fe098628075b612834c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "m02_method_valued.xml"
+    },
+    {
+      "name": "m03_method_prop_on_root",
+      "inputSha256": "3f133723b4663f1683593077863b152faf875c1db07792f23d031920f14c69c0",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "m03_method_prop_on_root.xml"
+    },
+    {
+      "name": "m04_root_method",
+      "inputSha256": "143e47c4e24dc44627fff65d0c52072bb1bc743ef5a3f58049cb878e5376f52f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "m04_root_method.xml"
+    },
+    {
+      "name": "m05_method_in_relat_attrs",
+      "inputSha256": "3548cea3dac06fc6f40e98f8f196ba0313ab5bd3e78571d84c776b7f2e8934b0",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "m05_method_in_relat_attrs.xml"
+    },
+    {
+      "name": "n01_root_three_ns",
+      "inputSha256": "55dfee7f7fc83337a98fa32a9a6421ff9d62dda33205a2c5c48fd4be1e4f1c1e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n01_root_three_ns.xml"
+    },
+    {
+      "name": "n02_prefixed_element",
+      "inputSha256": "acc71409a581c289c4094c9d6d9d626c8da0f6280f6e5979e8848e8d0dcbbfa5",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n02_prefixed_element.xml"
+    },
+    {
+      "name": "n03_default_namespace_element",
+      "inputSha256": "3230d1bc6c0c5b7a3a98e1e53607c420f9645eeaf4a8990345097e84378ee39d",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n03_default_namespace_element.xml"
+    },
+    {
+      "name": "n04_literal_in_default_namespace",
+      "inputSha256": "636045689de626aed95f132a986a56c9621267d7c937a9fb0a70dc5e6aa65090",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n04_literal_in_default_namespace.xml"
+    },
+    {
+      "name": "n05_prefix_rebound",
+      "inputSha256": "4fcfcf7d8e675a385eb3719025cf02e7cc5c84bba29cabea3ca026ab8b664c13",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n05_prefix_rebound.xml"
+    },
+    {
+      "name": "n06_same_binding_not_repeated",
+      "inputSha256": "b78634a29bae2b6f295cf67267e8d3ce506526dce8833f7bc53ebf54f6a8f053",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n06_same_binding_not_repeated.xml"
+    },
+    {
+      "name": "n07_envelope_extra_ns",
+      "inputSha256": "6ae657f6a63faf29e5862d0075afa1dacd5b059ed5524a0b5885e559cd387fea",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n07_envelope_extra_ns.xml"
+    },
+    {
+      "name": "n07b_envelope_default_namespace",
+      "inputSha256": "5e52311f3e88fea843ac61cfe7a4e24e9a3e2e4d602149f5b838f0afba1012aa",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "n07b_envelope_default_namespace.xml"
+    },
+    {
+      "name": "n08_default_undeclared",
+      "inputSha256": "e3821f006bdfe37d6898fddf9899fe2561b8257d134aeecb23cd402630bc9370",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n08_default_undeclared.xml"
+    },
+    {
+      "name": "n09_identity_valued_with_ns",
+      "inputSha256": "e5c7d8de60ee77c001f282d5d6fef801fc3a7ff4758d1c61eb8cd019f457c0e7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n09_identity_valued_with_ns.xml"
+    },
+    {
+      "name": "n10_item_in_default_namespace",
+      "inputSha256": "e211ff271ae37c36dd8e913ec8cd47a9e1adf7181faec231751025d36ecfd8c1",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "n10_item_in_default_namespace.xml"
+    },
+    {
+      "name": "n11_attribute_prefix_declared_on_element",
+      "inputSha256": "6a2025b6d2caaa8fc2c81e1fc4943629398ab1afdc87b377ecf15b97e200eaa1",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n11_attribute_prefix_declared_on_element.xml"
+    },
+    {
+      "name": "n12_root_in_prefix_namespace",
+      "inputSha256": "4005df7407ffde3c599e69e6b795cd93506246387b9a2dba2103cea0d1a87fa9",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n12_root_in_prefix_namespace.xml"
+    },
+    {
+      "name": "n13_xml_attributes",
+      "inputSha256": "51c186155a5573f84df939be6dddc21f56a8f6bb9ab8c4274fea6c251aedd59e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n13_xml_attributes.xml"
+    },
+    {
+      "name": "n14_xmlns_attribute_on_root_items_sibling_scope",
+      "inputSha256": "0c94910089f50666e2ea6ca75e3cab1783cc5bf8490479e7b8106bec6889a10c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n14_xmlns_attribute_on_root_items_sibling_scope.xml"
+    },
+    {
+      "name": "n15_namespace_order",
+      "inputSha256": "d67d5a9abb34600264f9f7364395c4f3b5008702b5f0a189c4ec9feaeb9866ec",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n15_namespace_order.xml"
+    },
+    {
+      "name": "n16_namespace_overridden",
+      "inputSha256": "67c7f69fc8a53cd451b091346cfba4d9ac0e1e16d7900a98b6d73117cd3550ee",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n16_namespace_overridden.xml"
+    },
+    {
+      "name": "n17_default_namespace_scope",
+      "inputSha256": "5febdf6eb9767620be771f28d8e7f22005b270cc7678d971abaa83551beea58b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "n17_default_namespace_scope.xml"
+    },
+    {
+      "name": "p01_field",
+      "inputSha256": "a9514651fe417f491f3a4d7a8668a51fa33e01f61f7e710aaafdaa32d077d109",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "p01_field.xml"
+    },
+    {
+      "name": "p02_field_edge",
+      "inputSha256": "9c272cb77f89a56e6d454327b3a6b3ece3da244f4b9c42566be72b3d98e14554",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "p02_field_edge.xml"
+    },
+    {
+      "name": "p03_field_root",
+      "inputSha256": "8c33930de06c7e6f5b93ba1fa803b51e330ba8d50ef73d26d91ddfbbe9fa3276",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "p03_field_root.xml"
+    },
+    {
+      "name": "p04_field_root_system",
+      "inputSha256": "5b722451e65759e785f1d89d2e5fc5cf555d71d9c877e47cafe1231565e994b3",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "p04_field_root_system.xml"
+    },
+    {
+      "name": "q01_foreign_first_match_without_name",
+      "inputSha256": "cdcf7c07ff40edc7f434c5a8f9802c55402d0c31e85360c9daa05b48b26debc3",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q01_foreign_first_match_without_name.xml"
+    },
+    {
+      "name": "q02_foreign_matching_siblings",
+      "inputSha256": "74f1231eff6e4c779b5db2eed378e4127f65a02d711382ddd834696486cce87f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q02_foreign_matching_siblings.xml"
+    },
+    {
+      "name": "q03_foreign_two_data_sources",
+      "inputSha256": "7bee20aeeb149b950271e18c7021c6c5dea190b122752e7669a92bd63b2bd284",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q03_foreign_two_data_sources.xml"
+    },
+    {
+      "name": "q04_foreign_text_after_and_whitespace",
+      "inputSha256": "440f9b68261e5dc53f9b75a6fb4148d630430b15583ca263d04d6d21d7ba2e67",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q04_foreign_text_after_and_whitespace.xml"
+    },
+    {
+      "name": "q05_foreign_root_property",
+      "inputSha256": "247994d84975899fdee115cac52c0cd828b3da06031a9a56cfd2ad6ddab4785e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q05_foreign_root_property.xml"
+    },
+    {
+      "name": "q06_field_two_properties_first_unnamed",
+      "inputSha256": "af5a0882c7589edd47dabf274b883b44c43281c9e76dd43d994f6023b9089833",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q06_field_two_properties_first_unnamed.xml"
+    },
+    {
+      "name": "q07_field_system_name_variants",
+      "inputSha256": "6f6b2e49683afcba99b61869c64b2f54787aec68e5dad46026f02af8006c48e9",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q07_field_system_name_variants.xml"
+    },
+    {
+      "name": "q08_grid_event_names",
+      "inputSha256": "30a04cd07682a3c07569ba5b571d7308b41c49c2f601a56ae08e501573592e75",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 356."
+      },
+      "source": "q08_grid_event_names.xml"
+    },
+    {
+      "name": "q09_grid_event_two_names",
+      "inputSha256": "5e1015eee06fa49ada7e3ab60d7945c6ace11e548fb7d5a17abbb354362e7d3a",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 256."
+      },
+      "source": "q09_grid_event_two_names.xml"
+    },
+    {
+      "name": "q10_grid_event_other_places",
+      "inputSha256": "9e28039f4b933124067e8cc236e49542c3a52fa79f75a6ab224d41e154b472ed",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 887."
+      },
+      "source": "q10_grid_event_other_places.xml"
+    },
+    {
+      "name": "q11_foreign_lookup_first_match_without_name",
+      "inputSha256": "05e459e5e7caa00728283d6048019da3410151892440851962c723ac53c5d183",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q11_foreign_lookup_first_match_without_name.xml"
+    },
+    {
+      "name": "q12_foreign_lookup_two_data_sources",
+      "inputSha256": "a99cd4747cf169b54e13698f8c23d5152ffb08858cdf12dac181025a8338b52a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q12_foreign_lookup_two_data_sources.xml"
+    },
+    {
+      "name": "q13_foreign_lookup_not_equal",
+      "inputSha256": "f4dbe5dca9a5cd49c50b747586ffa485c8b038e0bfb5562d6bf573237faf4edc",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "q13_foreign_lookup_not_equal.xml"
+    },
+    {
+      "name": "r01_root_attrs",
+      "inputSha256": "e471582c3f9c6ecc6e328df5252039db31f7b16ba4f7c74dc80d26566db74ed6",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r01_root_attrs.xml"
+    },
+    {
+      "name": "r02_root_no_depl",
+      "inputSha256": "8ce060ba13ca8fe31e9d145ed0f105dede497558eaef38717177d225097e3f4d",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r02_root_no_depl.xml"
+    },
+    {
+      "name": "r03_two_items",
+      "inputSha256": "70144c64fb58791310b7b66ef64a13bae3a829a2b75044ea5740655fde2894ee",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 70."
+      },
+      "source": "r03_two_items.xml"
+    },
+    {
+      "name": "r04_no_item",
+      "inputSha256": "998777b67aae1d4be3f56d07239fa9ff5aab04d5b9ddf48556bc10598349d6b7",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "r04_no_item.xml"
+    },
+    {
+      "name": "r05_no_ns_envelope",
+      "inputSha256": "0265a3f7ded2278ab06fc767e6b1ccf5751ebb4f4512d0d64a0d8df9ec0c6034",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r05_no_ns_envelope.xml"
+    },
+    {
+      "name": "r06_prefixed_result",
+      "inputSha256": "9c5373dbe528adfe3e71afa99de35ac5df1e51597f3d53c4c1a7c22b550c3ea9",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "r06_prefixed_result.xml"
+    },
+    {
+      "name": "r07_other_root",
+      "inputSha256": "a225cdb4a2f91f8c7dcd7947070b532d25e44808fe3f4f651a66e111cf792f68",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "Root element is missing."
+      },
+      "source": "r07_other_root.xml"
+    },
+    {
+      "name": "r08_other_ns_envelope",
+      "inputSha256": "f4dd6ad0a4010695ff38fd03d1e9cb6be61b71cf3f64fefe83cd79fe5534d694",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r08_other_ns_envelope.xml"
+    },
+    {
+      "name": "r09_nested_item_attrs",
+      "inputSha256": "de940a4551c4e8d656c5397bfa1a35035c5cf624c5de3c3353efe6f224c5f3eb",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r09_nested_item_attrs.xml"
+    },
+    {
+      "name": "r10_comments_pi_cdata",
+      "inputSha256": "03fc6f0db17f0310df5064a8f22cae732fa98d330b4d6c57d1645952629ce8cc",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r10_comments_pi_cdata.xml"
+    },
+    {
+      "name": "r11_whitespace",
+      "inputSha256": "b2194eb64288585c8308c72a885b39868df087590830a0a677cfd6ffe05089d9",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r11_whitespace.xml"
+    },
+    {
+      "name": "r12_text_attr_escapes",
+      "inputSha256": "0a6221144951e85caa2b64b8d824211a69adb69525edecd3ed842145a6e72e3e",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r12_text_attr_escapes.xml"
+    },
+    {
+      "name": "r13_root_ns_decl_inner",
+      "inputSha256": "38fd34fa7492d8767429aaed70771817c8befccec76257f13d74509464721a67",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r13_root_ns_decl_inner.xml"
+    },
+    {
+      "name": "r14_id_missing_type_missing",
+      "inputSha256": "5ef86c2685cac9292e9f12b678ecaf3cf43d9a6e6004bbe1b4d7a13754456641",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r14_id_missing_type_missing.xml"
+    },
+    {
+      "name": "r15_root_action_dropped",
+      "inputSha256": "1de2a64171a9c9aa0eb789defa4c3ea43e1bcd30b97ef769059556b7a1846687",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r15_root_action_dropped.xml"
+    },
+    {
+      "name": "r16_empty_item",
+      "inputSha256": "8e3ba4b368839bf3569a3ea874a568a14c0e450bd90453cc477d1aa9f640e079",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r16_empty_item.xml"
+    },
+    {
+      "name": "r17_empty_vs_open",
+      "inputSha256": "a5d3c2274ee4a4ff68e687276839597b1196b69941ef57cba82c9197604faa17",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "r17_empty_vs_open.xml"
+    },
+    {
+      "name": "s01_identity_first_keyed_name_wins",
+      "inputSha256": "b721d09d9b8f5978f25365ae3a39616129c08a1e108acbfd2a53a8bd6c3f54d7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s01_identity_first_keyed_name_wins.xml"
+    },
+    {
+      "name": "s02_identity_valued_text_forms",
+      "inputSha256": "16378429e75b7c369df670cc705939a8a0556c921884ff56fa3c5cac90854143",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s02_identity_valued_text_forms.xml"
+    },
+    {
+      "name": "s03_method_first_name",
+      "inputSha256": "42b5e21c0f9cd95564e273e00b1fc66bea7ae774640099701d7f3a1a71a18013",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s03_method_first_name.xml"
+    },
+    {
+      "name": "s04_method_valued_text_and_item_children",
+      "inputSha256": "caaa19949e1769ea39e94b3aff1742d274b537a0168f5a8937b5901ef8215da1",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s04_method_valued_text_and_item_children.xml"
+    },
+    {
+      "name": "s05_method_valued_all_parents",
+      "inputSha256": "8346037edaa8d7dbad5e1f38fd071f26765e761a32ddc78b3fc81cd41282d8e3",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s05_method_valued_all_parents.xml"
+    },
+    {
+      "name": "s06_identity_valued_all_parents",
+      "inputSha256": "ba174c82b56d54b1e90b92c1cde8576cd3b7fcc8ef38baa943d9092c272bf344",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "s06_identity_valued_all_parents.xml"
+    },
+    {
+      "name": "s07_root_identity_method_member",
+      "inputSha256": "ca3bd32aecfcc07c673af086bb63a5f5219924e39eb62ea42396e028cd0b28f4",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 110."
+      },
+      "source": "s07_root_identity_method_member.xml"
+    },
+    {
+      "name": "t01_item_action_variants",
+      "inputSha256": "74134c7ad2e2306ae487b96a457bb15773d8ebbc00a5e6f0433e088d25ad836f",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "t01_item_action_variants.xml"
+    },
+    {
+      "name": "t02_reltype_places",
+      "inputSha256": "8befdffdba4b4e4d9324e1cf088d1b2a2d3d4a646a7166d60b6a593e7ed7aeea",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "t02_reltype_places.xml"
+    },
+    {
+      "name": "t03_reltype_in_nested_itemtype",
+      "inputSha256": "5271cdf3bcaed691d4b70dc31a09543235de79310b80ae3193f824a4d7f10770",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "t03_reltype_in_nested_itemtype.xml"
+    },
+    {
+      "name": "t04_related_id_itemtypes",
+      "inputSha256": "381157f301c61434546c022aaf931101a6536b8f5893ca2982b2d0d3ced448d9",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "t04_related_id_itemtypes.xml"
+    },
+    {
+      "name": "t05_reference_chain_places",
+      "inputSha256": "eeb262ef2aab168307c82136759b114b6cf8c8cfc8cc8611d6ec212930c5fe0d",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "t05_reference_chain_places.xml"
+    },
+    {
+      "name": "t06_reference_values",
+      "inputSha256": "2362e18dbb1b8743f9f512410a31f563bf9602ddaf35e363b0fd641eff1ddb3f",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "']]>' is not allowed in character data. Line 4, position 321."
+      },
+      "source": "t06_reference_values.xml"
+    },
+    {
+      "name": "t07_reference_missing_link",
+      "inputSha256": "e8bc3a074457d949dcb778092ec82f7f8ad58f0610ee4941e339fb918f2cba7f",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 602."
+      },
+      "source": "t07_reference_missing_link.xml"
+    },
+    {
+      "name": "t08_reference_invalid_characters",
+      "inputSha256": "97648c61fa2eb8c640e96121d519adca369c60f76d6de24a4dc2c04966e51fe8",
+      "transformError": {
+        "type": "System.ArgumentException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+      },
+      "appliedError": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "message": "'\u0001', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.",
+        "cause": {
+          "type": "System.ArgumentException",
+          "message": "'\u0001', hexadecimal value 0x01, is an invalid character."
+        }
+      },
+      "source": "t08_reference_invalid_characters.xml"
+    },
+    {
+      "name": "t09_reference_unpaired_surrogate",
+      "inputSha256": "93f1562b0e6ad1be8a3b31255e4a7181f42fb1648bcaf8939e88132604f63d45",
+      "transformError": {
+        "type": "System.ArgumentException",
+        "message": "The surrogate pair (0xD800, 0x62) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF)."
+      },
+      "appliedError": {
+        "type": "Aras.Tools.SolutionUpgrade.CItemException",
+        "message": "The surrogate pair (0xD800, 0x62) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF). Error of  applying export.xsl.",
+        "cause": {
+          "type": "System.ArgumentException",
+          "message": "The surrogate pair (0xD800, 0x62) is invalid. A high surrogate character (0xD800 - 0xDBFF) must always be paired with a low surrogate character (0xDC00 - 0xDFFF)."
+        }
+      },
+      "source": "t09_reference_unpaired_surrogate.xml"
+    },
+    {
+      "name": "w01_nested_envelope_body",
+      "inputSha256": "8db6bb8d2ace17dfbbd55b1bf91bad66b0261e517220e0d3b5c17610cf14910c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w01_nested_envelope_body.xml"
+    },
+    {
+      "name": "w02_nested_prefixed_envelope",
+      "inputSha256": "bb4b4965e94c4e59e44076a8d524c288f8ef24c7644c1edc65de1759a26697f6",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w02_nested_prefixed_envelope.xml"
+    },
+    {
+      "name": "w03_result_siblings",
+      "inputSha256": "132dcd96d5cebe1a0a6454a8eba750e55d0128784f9f2e0e698929bad033cdc5",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 51."
+      },
+      "source": "w03_result_siblings.xml"
+    },
+    {
+      "name": "w04_body_without_namespace_prefix_result",
+      "inputSha256": "a53c5fd02d4a221cb0b6c54237d6828fa5bc441349acd6d8d7646bc310b366f7",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w04_body_without_namespace_prefix_result.xml"
+    },
+    {
+      "name": "w05_two_envelopes",
+      "inputSha256": "8e3ba4b368839bf3569a3ea874a568a14c0e450bd90453cc477d1aa9f640e079",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w05_two_envelopes.xml"
+    },
+    {
+      "name": "w06_two_bodies",
+      "inputSha256": "3b5087bb41b9ffa103c05acf607f0e964e3274f0b5580801331bfe9352f0d1bf",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 51."
+      },
+      "source": "w06_two_bodies.xml"
+    },
+    {
+      "name": "w07_nested_result_in_prefixed_parent",
+      "inputSha256": "582677c7373ffdc9685e0a5da91ec93c8e1ac99642e2347b9b73882dff196dc0",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w07_nested_result_in_prefixed_parent.xml"
+    },
+    {
+      "name": "w08_identity_under_prefixed_result_name",
+      "inputSha256": "4719a34ee9e0aefd24d8639d20e71d4a30f780ec851aa9c74ff3757a0b97c72a",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w08_identity_under_prefixed_result_name.xml"
+    },
+    {
+      "name": "w09_identity_method_in_nested_result",
+      "inputSha256": "0122a62d8011bd25b831c8d071b884be0ec5a603cd64fba4706ad93e8f54343d",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "w09_identity_method_in_nested_result.xml"
+    },
+    {
+      "name": "x01_text_between_items",
+      "inputSha256": "8f651d80ff947c5d92d1f8c141bea1dd794302407692bfc1f61d8211a3ca04a0",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x01_text_between_items.xml"
+    },
+    {
+      "name": "x01b_text_between_items",
+      "inputSha256": "be2a16f541c23ec39f311189db9b1e33d5e34319b71128b4a6577d611ecc2c3c",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x01b_text_between_items.xml"
+    },
+    {
+      "name": "x02_comments_in_replaced",
+      "inputSha256": "7a84b541a5b982eaf43578dee421f24266857eff461965180f339abe01c80675",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x02_comments_in_replaced.xml"
+    },
+    {
+      "name": "x03_attribute_values",
+      "inputSha256": "d94c5124e33b2b4cf39a3e673544726df2127aed273ac6a74e93951c5f93f24b",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x03_attribute_values.xml"
+    },
+    {
+      "name": "x04_text_specials",
+      "inputSha256": "cdb6d5ae1e0cc6bed6a5be0654b22b6c6b1258bc48aa082a7cfcd0772cacc588",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x04_text_specials.xml"
+    },
+    {
+      "name": "x05_empty_cdata_variants",
+      "inputSha256": "a0fe48084c6e59c814e25665b880421b7920dadaaf228343a16b5bc2190a5e74",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x05_empty_cdata_variants.xml"
+    },
+    {
+      "name": "x06_cdata_elements_edge",
+      "inputSha256": "8e3c370723a5909e317214775502af6a0a1ee131e5a3c1b69a9729b00c049921",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x06_cdata_elements_edge.xml"
+    },
+    {
+      "name": "x07_root_attrs_odd",
+      "inputSha256": "2916dfbd14d0e23d3972cbb7a17bae3c3ab93e5b1eff41d649952e91f5738ba5",
+      "transform": "transform.xml",
+      "appliedError": {
+        "type": "System.Xml.XmlException",
+        "message": "There are multiple root elements. Line 1, position 80."
+      },
+      "source": "x07_root_attrs_odd.xml"
+    },
+    {
+      "name": "x08_dependency_level_order",
+      "inputSha256": "fc80dba7df612e49255cabdfe9a5b4286253218a516b9346cd0021d9951a1e14",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x08_dependency_level_order.xml"
+    },
+    {
+      "name": "x09_nested_item_odd_attrs",
+      "inputSha256": "6b04347f26609526c39c0e7f84dc5e720c77f18a57e5d8071c8611965e0bcddd",
+      "transform": "transform.xml",
+      "applied": "applied.xml",
+      "source": "x09_nested_item_odd_attrs.xml"
+    }
+  ],
+  "scrubbed": {}
+}

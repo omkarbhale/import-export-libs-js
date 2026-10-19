@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="F1" action="add"><Relationships /></Item><Item type="Member" action="add" /><Item type="ItemType" id="F1" action="edit"><Relationships><Item type="Morphae" action="add" /></Relationships></Item></AML>

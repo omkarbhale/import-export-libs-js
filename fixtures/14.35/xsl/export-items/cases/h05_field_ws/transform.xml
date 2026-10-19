@@ -1,0 +1,2 @@
+<AML><Item type="Form" id="F" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><Relationships><Item type="Field" id="FL" action="add"><propertytype_id>
+</propertytype_id></Item><Item type="Field" id="FL2" action="add"><propertytype_id keyed_name="n" type="Property">PQ</propertytype_id></Item></Relationships></Item></AML>

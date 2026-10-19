@@ -1,0 +1,1 @@
+<AML><Item type="A" id="1" action="add"><Relationships xmlns="urn:d"><Item type="Method" action="get" select="id" xmlns=""><name>n</name></Item><Item type="Identity" action="get" select="id" xmlns=""><name>World</name></Item></Relationships></Item></AML>

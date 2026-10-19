@@ -1,0 +1,1 @@
+<AML><Item type="Identity" id="I1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><name>World</name><Relationships /></Item><Item type="Member" id="MM" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><related_id keyed_name="Bob" type="User">U1</related_id></Item></AML>

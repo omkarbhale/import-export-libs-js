@@ -1,0 +1,1 @@
+<AML><Item type="ItemType" id="IT1" action="add"><name>Foo</name><is_versionable>1</is_versionable><Relationships /></Item><Item type="View" action="delete" where="source_id='IT1'" /><Item type="Form" action="delete" where="name='Foo'" /></AML>

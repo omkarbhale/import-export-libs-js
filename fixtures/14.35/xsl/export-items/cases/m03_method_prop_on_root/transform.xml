@@ -1,0 +1,1 @@
+<AML><Item type="Report" id="R1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><method keyed_name="rm" type="Method"><Item type="Method" action="get" select="id"><name>rm</name></Item></method></Item></AML>

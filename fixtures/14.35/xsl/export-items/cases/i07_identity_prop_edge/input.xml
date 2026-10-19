@@ -1,0 +1,9 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="Foo" id="1"><Relationships>
+<Item type="View" id="V1"><role is_null="1"/></Item>
+<Item type="View" id="V2"><role/></Item>
+<Item type="View" id="V3"><role type="Identity">R3</role></Item>
+<Item type="View" id="V4"><role keyed_name="World" type="Identity" is_null="0"> R4 </role></Item>
+<Item type="View" id="V5"><role keyed_name="World|Creator" type="Identity">R5</role></Item>
+<Item type="View" id="V6"><role keyed_name="Acme" type="Identity" z="1"><Item type="Identity" id="NI"><name>nested</name></Item></role></Item>
+<Item type="View" id="V7"><role keyed_name="World" type="Identity"><Item type="Identity" id="NI2"><name>n2</name></Item></role></Item>
+</Relationships></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>

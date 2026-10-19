@@ -1,0 +1,1 @@
+<AML><Item type="Foo" id="1" action="add" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><event_data><![CDATA[a<b>&c]]></event_data></Item></AML>

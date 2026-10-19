@@ -32,6 +32,7 @@
     "oracle:export-cases": "tsx oracle/src/record-export-cases.ts",
     "oracle:export-scratch-cases": "tsx oracle/src/record-export-scratch-cases.ts",
     "oracle:import-cases": "tsx oracle/src/record-import-cases.ts",
+    "oracle:engine-diff": "tsx oracle/src/record-engine-diff.ts",
     "oracle:dbpatch-cases": "tsx oracle/src/record-dbpatch-cases.ts",
     "oracle:lp-cases": "tsx oracle/src/record-lp-cases.ts",
     "prepare": "tsup",

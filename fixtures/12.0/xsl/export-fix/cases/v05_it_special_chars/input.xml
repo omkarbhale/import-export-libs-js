@@ -1,0 +1,1 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><Result><Item type="ItemType" id="I&amp;&lt;&quot;'D"><name>F&amp;o&lt;o&quot;'"x</name></Item></Result></SOAP-ENV:Body></SOAP-ENV:Envelope>
