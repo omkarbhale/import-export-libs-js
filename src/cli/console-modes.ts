@@ -19,13 +19,12 @@ import type { XmlElement } from "../xml/index.js";
  */
 
 /**
- * The engines whose package loading is built, which `--use-import` runs: 14.0.7's. 12.0's loading differs (encodings, the warning
- * text; wayfinder ticket 50) and 14.35's `build.xsl` ordering is not built yet (ticket 60), so the CLI offers the mode for those
- * when their slices land (HOST-113).
+ * The engines whose package loading the CLI offers `--use-import` for: 12.0's and 14.0.7's. 14.35's loading is built, but its
+ * mode waits for the slice that enables it (HOST-113).
  *
  * @spec HOST-113
  */
-export const USE_IMPORT_ENGINES: readonly Engine[] = ["14.0.7"];
+export const USE_IMPORT_ENGINES: readonly Engine[] = ["12.0", "14.0.7"];
 
 /** What `--use-import` needs besides the manifest: the engine, the host's file system and the log the conflicts go to. */
 export interface UseImportOptions extends PathEnvironment {

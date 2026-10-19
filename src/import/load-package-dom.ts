@@ -2,10 +2,12 @@ import { CItemException } from "../client/fault.js";
 import { DEFAULT_ENGINE } from "../engines.js";
 import type { Engine } from "../engines.js";
 import { IOException } from "../io/errors.js";
+import { pathEnvironmentFor } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ELEMENT_NODE, documentElementOf } from "../xml/dom.js";
 import type { XmlDocument, XmlElement } from "../xml/dom.js";
 import { XmlException } from "../xml/errors.js";
+import { decodeXmlFile } from "../xml/load-file.js";
 import { loadXml } from "../xml/parser.js";
 import { readAllText } from "../xml/read-text.js";
 import { outerXml } from "../xml/writer-legacy.js";
@@ -52,10 +54,16 @@ export interface LoadedPackage {
 
 const UNABLE_TO_GET_FILES = " Unable to get solutions files by path in .mf file ";
 const UNABLE_TO_LOAD = " Unable to load ";
+/** 12.0 has two spaces after `load` (IMP-011). */
+const UNABLE_TO_LOAD_12_0 = " Unable to load  ";
 const UNABLE_TO_APPLY_BUILD_XSL = " Unable to apply build.xsl.";
 
-/** The warning for a file without `AML/Item`. */
-export function skippedFileWarning(path: string): string {
+/**
+ * The warning for a file without `AML/Item`.
+ * @spec IMP-008
+ */
+export function skippedFileWarning(path: string, engine: Engine = DEFAULT_ENGINE): string {
+  if (engine === "12.0") return `WARNING: File '${path}' doesn't have root tag 'AML/Item'. File is skipped.`;
   return `WARNING: File '${path}' doesn't have any items by next xpath : 'AML/Item'. File is skipped.`;
 }
 
@@ -92,7 +100,7 @@ function firstItemOf(doc: XmlDocument): XmlElement | null {
  */
 export function loadPackage(solutionPath: string, logWriter: LogWriter, options: LoadPackageOptions = {}): LoadedPackage {
   const engine = options.engine ?? DEFAULT_ENGINE;
-  const environment = options.environment ?? {};
+  const environment = pathEnvironmentFor(options.environment ?? {}, engine);
   let directories: string[];
   try {
     directories = directoryGetDirectories(solutionPath, environment);
@@ -107,23 +115,25 @@ export function loadPackage(solutionPath: string, logWriter: LogWriter, options:
     for (const directory of directories) {
       for (const path of directoryGetXmlFiles(directory, environment)) {
         current = path;
-        const doc = loadXml(readAllText(readListedFile(path)), { preserveWhitespace: false });
+        // IMP-007: 12.0's `XmlDocument.Load(path)` decodes the file itself; 14.0.7 reads text first
+        const bytes = readListedFile(path);
+        const doc = loadXml(engine === "12.0" ? decodeXmlFile(bytes) : readAllText(bytes), { preserveWhitespace: false });
         const info = newFileInfo(path, environment);
         const item = firstItemOf(doc);
         const tempKeyName = withoutExtension(info.name);
         if (!item) {
-          logWriter.writeLine(skippedFileWarning(path));
+          logWriter.writeLine(skippedFileWarning(path, engine));
           files.push({ path, fullName: info.fullName, tempKeyName, skipped: true });
           continue;
         }
         item.setAttribute("tempKeyName", tempKeyName);
-        item.setAttribute("tempFullName", info.fullName);
+        if (engine !== "12.0") item.setAttribute("tempFullName", info.fullName);
         parts.push(outerXml(doc));
         files.push({ path, fullName: info.fullName, tempKeyName, skipped: false });
       }
     }
   } catch (error) {
-    if (error instanceof IOException) throw wrapped(error, UNABLE_TO_LOAD + current);
+    if (error instanceof IOException) throw wrapped(error, (engine === "12.0" ? UNABLE_TO_LOAD_12_0 : UNABLE_TO_LOAD) + current);
     throw error;
   }
   try {

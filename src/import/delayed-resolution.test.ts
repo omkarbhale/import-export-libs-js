@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { DotNetException } from "../client/dotnet.js";
-import { EngineNotSupportedError } from "../client/item-helper.js";
 import type { XmlDocument, XmlNode } from "../xml/dom.js";
 import { XmlException } from "../xml/errors.js";
 import { loadXml } from "../xml/parser.js";
@@ -52,11 +51,9 @@ function failure(manager: DelayedResolutionManager, references: UnresolvedRefere
 const innerTypeName = (error: WrongFormatOfTheAmlException): string => (error.innerException as DotNetException).typeName;
 
 describe("DelayedResolutionManager: the manager and its queue (IMP-200)", () => {
-  it("starts with an empty queue and is built for 14.0.7 and 14.35 only", () => {
+  it("starts with an empty queue and is built for every engine", () => {
     expect(new DelayedResolutionManager().queue).toEqual([]);
-    expect(new DelayedResolutionManager("14.0.7").engine).toBe("14.0.7");
-    expect(new DelayedResolutionManager("14.35").engine).toBe("14.35");
-    expect(() => new DelayedResolutionManager("12.0")).toThrow(EngineNotSupportedError);
+    for (const engine of ["12.0", "14.0.7", "14.35"] as const) expect(new DelayedResolutionManager(engine).engine).toBe(engine);
   });
 
   it("keeps the entries of every item of the package in the order they were added, without deduplicating", () => {

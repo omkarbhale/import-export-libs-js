@@ -11,6 +11,8 @@ import { testIo } from "./test-io.js";
 
 const INPUT = (name: string) => new URL(`../../fixtures/14.0.7/import/${name}/input/imports.mf`, import.meta.url).pathname;
 
+const INPUT_12_0 = (name: string) => new URL(`../../fixtures/12.0/import/${name}/input/imports.mf`, import.meta.url).pathname;
+
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
@@ -107,10 +109,18 @@ describe("what plan import refuses", () => {
     expect(t.stderr()).toContain("the manifest has no package 'NOPE'; it has LIBSJS-SCRATCH-DEL");
   });
 
-  it.for(["12.0"])("engine %s is not yet supported (exit 1)", async (engine) => {
-    const { code, t } = await plan([INPUT("s4-del/step-2"), "--engine", engine]);
-    expect(code).toBe(EXIT.failed);
-    expect(t.stderr()).toContain(`engine ${engine} is not yet supported`);
+  it("plans a package with the stylesheet of engine 12.0: the ac_PolicyAccessItemAttribute delete is kept, the promote item dropped (IMP-022, IMP-029)", async () => {
+    const { code, t } = await plan([INPUT_12_0("r11-ac-attribute-actions/step-1"), "--engine", "12.0", "--json"]);
+    expect(code).toBe(EXIT.ok);
+    const summary = JSON.parse(t.stdout()) as { engine: string; packages: { sequence: { type: string; action: string; group: string }[]; dropped: unknown[] }[] };
+    expect(summary.engine).toBe("12.0");
+    const kept = summary.packages.flatMap((pkg) => pkg.sequence).filter((entry) => entry.type === "ac_PolicyAccessItemAttribute");
+    expect(kept.length).toBeGreaterThan(0);
+    expect(kept.every((entry) => entry.group === "G53")).toBe(true);
+    expect(kept.map((entry) => entry.action)).toContain("delete");
+    const promote = await plan([INPUT_12_0("s4-mp-promote/step-1"), "--engine", "12.0"]);
+    expect(promote.t.stdout()).toContain("mp_PromoteItem");
+    expect(promote.t.stdout()).toContain("action not selected for this type");
   });
 
   it("has no connection options: a plan is offline", async () => {

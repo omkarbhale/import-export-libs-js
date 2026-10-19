@@ -18,6 +18,7 @@ import { TypeNameOutsideRepertoireError } from "./nls-word-sort.js";
 
 const LOAD_DIR = fileURLToPath(new URL("../../fixtures/import-load/", import.meta.url));
 const XSL_DIR = fileURLToPath(new URL("../../fixtures/14.0.7/xsl/build/", import.meta.url));
+const XSL_DIR_12_0 = fileURLToPath(new URL("../../fixtures/12.0/xsl/build/", import.meta.url));
 const XSL_DIR_14_35 = fileURLToPath(new URL("../../fixtures/14.35/xsl/build/", import.meta.url));
 
 interface ProbeCase {
@@ -100,6 +101,11 @@ describe("IMP-020 to IMP-033: build.xsl ordering replays the 14.35 stylesheet (G
   replay("build-xsl-cui.cases.json", "build-xsl-cui.out.14.35.txt", "14.35");
 });
 
+describe("IMP-020 to IMP-029: build.xsl ordering replays the 12.0 stylesheet (fifty-one groups, no G45, no G48)", () => {
+  replay("build-xsl.cases.json", "build-xsl.12.0.out.txt", "12.0");
+  replay("build-xsl.12.0-extra.cases.json", "build-xsl.12.0-extra.out.txt", "12.0");
+});
+
 function recordedRuns(engine: Engine, dir: string): void {
   describe(`IMP-014: ticket 68's recorded build.xsl runs (${engine})`, () => {
     const OUTSIDE_REPERTOIRE_CASE = "sort-type-names";
@@ -158,6 +164,7 @@ function recordedRuns(engine: Engine, dir: string): void {
   });
 }
 
+recordedRuns("12.0", XSL_DIR_12_0);
 recordedRuns("14.0.7", XSL_DIR);
 recordedRuns("14.35", XSL_DIR_14_35);
 
@@ -220,10 +227,18 @@ describe("IMP-026 and IMP-029: the plan", () => {
     ]);
   });
 
-  it("refuses the engines whose stylesheet is not built", () => {
-    expect(() => planOf("<AML/>").engine).not.toThrow();
+  it("plans every engine's stylesheet", () => {
     const wrapper = loadXml("<AML/>", { preserveWhitespace: false });
-    expect(() => planBuildOrder(wrapper, "14.35")).not.toThrow();
-    expect(() => planBuildOrder(wrapper, "12.0")).toThrow(/not built yet/);
+    for (const engine of ["12.0", "14.0.7", "14.35"] as const) expect(planBuildOrder(wrapper, engine).engine).toBe(engine);
+  });
+
+  it("drops a promote item and lists the unlisted ac_PolicyAccessItemAttribute in 12.0 (IMP-022, IMP-029)", () => {
+    const wrapper = loadXml(
+      "<AML><AML><Item type='mp_MacPolicy' action='mp_PromoteItem' id='P'/><Item type='ac_PolicyAccessItemAttribute' action='delete' id='D'/></AML></AML>",
+      { preserveWhitespace: false },
+    );
+    const plan = planBuildOrder(wrapper, "12.0");
+    expect(plan.entries.map((entry) => [entry.item.element.getAttribute("id"), entry.group])).toEqual([["D", "G53"]]);
+    expect(plan.dropped.map((drop) => [drop.item.element.getAttribute("id"), drop.reason])).toEqual([["P", "action not selected for this type"]]);
   });
 });

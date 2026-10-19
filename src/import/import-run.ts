@@ -4,7 +4,7 @@ import type { CItemHelper } from "../client/item-helper.js";
 import { DEFAULT_ENGINE, ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import type { SolutionUpgradeContext } from "../export/export-context.js";
-import { type Message, type MessageCatalogue, type MessagesFactory, catalogueOf } from "../export/messages.js";
+import { type Message, type MessageCatalogue, type MessagesFactory, importCatalogueOf } from "../export/messages.js";
 import { PackageDefinitionManager } from "../export/package-definition-manager.js";
 import { AggregateException } from "../export/parallel-for-each.js";
 import { RunLog, formatWithArgs, invariantDateTime } from "../export/run-log.js";
@@ -34,7 +34,7 @@ import { ReferenceChecker } from "./reference-checks.js";
 import { languagesToSkip, removeSkippedLanguageNodes } from "./skipped-languages.js";
 
 /** The engines whose import run is built; the rest wait for their variant slices. */
-export const IMPORT_RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+export const IMPORT_RUN_ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
 
 /** Where a run is, for `Cancel` (IMP-409). */
 export type ProgressState = "idle" | "inProgress" | "cancelled";
@@ -82,16 +82,35 @@ export interface ImportRunHost {
   setState(state: ProgressState): void;
 }
 
-/** The in-memory log of one package: a `StreamWriter` over a `MemoryStream` (IMP-406). */
+/** The buffer of a `StreamWriter` that has no size given: 1024 characters (IMP-412). */
+const STREAM_WRITER_BUFFER = 1024;
+
+/**
+ * The in-memory log of one package: a `StreamWriter` over a `MemoryStream` (IMP-406). The 12.0 engine reads the stream without
+ * flushing the writer, so only the full buffers the writer has passed on are there (IMP-412).
+ */
 class PackageLog implements LogWriter {
   private readonly parts: string[] = [];
+
+  constructor(private readonly flushesBeforeRead = true) {}
 
   writeLine(text = ""): void {
     this.parts.push(text, "\r\n");
   }
 
+  /**
+   * What the stream holds when it is read: everything, or in 12.0 the first `1024 × ⌊(N − 1) / 1024⌋` UTF-16 code units of the `N`
+   * written. A high surrogate that ends the last block stays in the encoder and is lost with the tail.
+   *
+   * @spec IMP-406 IMP-412
+   */
   get text(): string {
-    return this.parts.join("");
+    const all = this.parts.join("");
+    if (this.flushesBeforeRead) return all;
+    const cut = all.length <= STREAM_WRITER_BUFFER ? 0 : STREAM_WRITER_BUFFER * Math.floor((all.length - 1) / STREAM_WRITER_BUFFER);
+    const kept = all.slice(0, cut);
+    const last = kept.charCodeAt(kept.length - 1);
+    return last >= 0xd800 && last <= 0xdbff ? kept.slice(0, -1) : kept;
   }
 }
 
@@ -158,12 +177,20 @@ export function importInputParameters(context: SolutionUpgradeContext, importCon
 
 /**
  * `LogError`: the error block of a failed run, written to the log (IMP-407). In 14.35 it first turns `AutoFlush` on for the log
- * writer, so what follows reaches the file at once; the port writes the log when it is disposed, which is the same text.
+ * writer, so what follows reaches the file at once; the port writes the log when it is disposed, which is the same text. The 12.0
+ * engine makes three writes: a line that starts with an LF, the message with no line end, and the closing line, so the stars follow
+ * the message directly. Only the run's log is written that way: 12.0 collects no errors.
  *
  * @spec IMP-407 IMP-470
  */
 export function logError(error: Error, log: LogWriter, engine: Engine = DEFAULT_ENGINE): void {
-  log.writeLine(catalogueOf(engine)("ErrorMessageMessageEnd", error.message));
+  if (engine === "12.0") {
+    log.writeLine("\n\t\t****ErrorMessage****");
+    (log as RunLog).write(error.message);
+    log.writeLine("\t\t********************");
+    return;
+  }
+  log.writeLine(importCatalogueOf(engine)("ErrorMessageMessageEnd", error.message));
 }
 
 /**
@@ -245,7 +272,7 @@ export class ImportRun {
 
   constructor(private readonly host: ImportRunHost) {
     if (!IMPORT_RUN_ENGINES.includes(host.engine)) throw new EngineNotSupportedError(host.engine);
-    this.message = catalogueOf(host.engine);
+    this.message = importCatalogueOf(host.engine);
   }
 
   private timestamp(): string {
@@ -274,9 +301,12 @@ export class ImportRun {
     const collect = this.collecting(importContext);
     try {
       try {
-        const version = host.itemHelper.innovatorVersion;
-        if (version === undefined) throw new NullReferenceException();
-        log.writeLine(importInputParameters(host.context, importContext, version.fullString, ENGINE_ASSEMBLY_VERSIONS[host.engine]));
+        // IMP-403: 12.0 writes no header and never reads the server version
+        if (host.engine !== "12.0") {
+          const version = host.itemHelper.innovatorVersion;
+          if (version === undefined) throw new NullReferenceException();
+          log.writeLine(importInputParameters(host.context, importContext, version.fullString, ENGINE_ASSEMBLY_VERSIONS[host.engine]));
+        }
         log.writeLine(this.message("StartOfImportingPackages"));
         const solutions = await host.getSolutions2Xml();
         const warnings: string[] = [];
@@ -345,7 +375,7 @@ export class ImportRun {
     const { host } = this;
     const { importHelper, collected } = host;
     const collect = this.collecting(importContext);
-    const log = new PackageLog();
+    const log = new PackageLog(host.engine !== "12.0");
     try {
       log.writeLine(this.message("StartOfExecutionDateTime", this.timestamp()));
       try {
@@ -381,12 +411,12 @@ export class ImportRun {
           this.packageExceptions().push(writeError);
           aggregate = new AggregateException([...this.packageExceptions()]);
         }
-        const failure = new InvalidOperationException(`\r\n${this.failedText(packageName, aggregate)}\r\n`, aggregate);
+        const failure = new InvalidOperationException(this.failedText(packageName, aggregate), aggregate);
         collected.exceptions.push(failure);
         if (host.getState() === "cancelled" || this.thresholdExceeded(importContext)) throw new AggregateException([...collected.exceptions]);
       } else {
         await importHelper.writeReleaseData(packageName, 2, importContext.release, importContext.description);
-        throw new InvalidOperationException(`\r\n${this.failedText(packageName, error as Error)}\r\n`, error);
+        throw new InvalidOperationException(this.failedText(packageName, error as Error), error);
       }
     } finally {
       log.writeLine(this.message("EndOfExecutionDateTime", this.timestamp()));
@@ -394,9 +424,13 @@ export class ImportRun {
     }
   }
 
-  /** The text of `ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus` for a failed package (IMP-407). */
+  /**
+   * The text of `ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus` for a failed package, which is the
+   * message of its exception (IMP-407): 14.0.7 and 14.35 put CRLF around the template, 12.0's template carries its own LF.
+   */
   private failedText(packageName: string, error: Error): string {
-    return this.message("ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus", packageName, error.message, packageName);
+    const text = this.message("ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus", packageName, error.message, packageName);
+    return this.host.engine === "12.0" ? text : `\r\n${text}\r\n`;
   }
 
   /**
@@ -456,10 +490,14 @@ export class ImportRun {
     const verbose = host.context.verbose;
     // `_importWorkItemsList.Clear()` and the package's own list of collected errors (IMP-540)
     host.collected.packageExceptions = [];
+    const is12 = host.engine === "12.0";
+    // IMP-421: 12.0's console writes start with an LF and end no line; the others end the line
+    const consoleWrite = (text: string): void => (is12 ? console.write(`\n${text}`) : console.writeLine(text));
     const banner = this.message(importContext.merge ? "ImportWithMergeOptionPackageName" : "ImportPackageName", packageName);
-    console.writeLine(banner);
+    // the console banner of 12.0 has seven spaces also when the package log's has six
+    consoleWrite(is12 && !importContext.merge ? ` ${banner}` : banner);
     log.writeLine(banner);
-    if (verbose) console.writeLine(this.message("BuildingSolution"));
+    if (verbose) consoleWrite(this.message("BuildingSolution"));
     const status = host.messages.getStatusMessage();
     await send(status, this.message("BuildingSolution"));
     if (host.manifestFile === null) throw new NullReferenceException();
@@ -561,10 +599,13 @@ export class ImportRun {
       }
     }
     await send(status, this.message("DelayedResolutionOfUnresolvedReferences"));
-    console.writeLine(this.message("DelayedResolutionOfUnresolvedReferences"));
+    // IMP-421: 12.0 ends the first of these two with a line end and the second with none
+    if (is12) console.writeLine(`\n${this.message("DelayedResolutionOfUnresolvedReferences")}`);
+    else console.writeLine(this.message("DelayedResolutionOfUnresolvedReferences"));
     try {
       await run.delayedResolution.executeDelayedResolution(itemHelper, log);
-      console.writeLine(this.message("Completed"));
+      if (is12) console.write(`\n${this.message("Completed")}`);
+      else console.writeLine(this.message("Completed"));
       log.writeLine(this.message("Completed"));
       await send(status, this.message("Completed"));
     } catch (error) {
@@ -584,24 +625,27 @@ export class ImportRun {
     const { console } = host;
     const verbose = host.context.verbose;
     const highlight = host.collected.count > 0;
+    const is12 = host.engine === "12.0";
+    const consoleWrite = (text: string): void => (is12 ? console.write(`\n${text}`) : console.writeLine(text));
     try {
       if (highlight) console.setHighlight?.(true);
       const { action, workItemType: type, originalKeyedName: keyedName } = workItem;
       run.log.writeLine(this.message("ProcessingActionKeyIdType", action, workItem.keyIdType));
-      run.log.writeLine(this.message("FileFullNameFullName", workItem.originalFullFileName));
+      // IMP-422: 12.0 stamps no path on the item, so it has no line for it
+      if (!is12) run.log.writeLine(this.message("FileFullNameFullName", workItem.originalFullFileName));
       if (action === "add" && isImportableType(type)) {
         run.currentNumber += 1;
         const count = String(run.currentNumber);
         const total = String(run.importableItemsCount);
         await send(run.status, this.message("ItemIndexOfCountTypeNameKeyedName", count, total, type, keyedName));
         if (verbose) {
-          console.writeLine(this.message("ImportingKeyedNameTypeNumberOfCount", keyedName, type, count, total));
+          consoleWrite(this.message("ImportingKeyedNameTypeNumberOfCount", keyedName, type, count, total));
         } else {
           console.write(".");
           if (run.currentNumber % 60 === 0) console.write("\n");
         }
       } else {
-        if (verbose) console.writeLine(this.message("PostActions"));
+        if (verbose) consoleWrite(this.message("PostActions"));
         await send(run.status, this.message("PostActions"));
       }
     } finally {
@@ -657,9 +701,22 @@ export class ImportRun {
     try {
       await importHelper.lookups.doImport(workItem.item, run.importContext.merge);
     } catch (error) {
-      if (!(error instanceof CItemException) || workItem.thoroughCheck) throw error;
-      await send(host.messages.getWarningMessage(), this.message("WarningTryToResolve", error.message));
-      await run.checker.doChecking(run.delayedResolution, workItem.item, run.log, true);
+      if (host.engine === "12.0") {
+        // IMP-427: 12.0 sends an error for every failed doImport and has no warning for the retry
+        if (!(error instanceof CItemException)) throw error;
+        await send(host.messages.getErrorMessage(), this.message("ErrorMessageItem", error.message));
+        if (workItem.thoroughCheck) throw error;
+        try {
+          await run.checker.doChecking(run.delayedResolution, workItem.item, run.log, true);
+        } catch (recheck) {
+          if (recheck instanceof CItemException) await send(host.messages.getErrorMessage(), this.message("ErrorMessageItem", recheck.message));
+          throw recheck;
+        }
+      } else {
+        if (!(error instanceof CItemException) || workItem.thoroughCheck) throw error;
+        await send(host.messages.getWarningMessage(), this.message("WarningTryToResolve", error.message));
+        await run.checker.doChecking(run.delayedResolution, workItem.item, run.log, true);
+      }
       await importHelper.lookups.doImport(workItem.item, run.importContext.merge);
     }
     workItem.id = getAttribute(workItem.itemNode, "id");

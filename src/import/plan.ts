@@ -116,7 +116,7 @@ export function describeLoadedPackage(packageFolder: string, loaded: LoadedPacka
   }));
   const skipped: PlanSkippedFile[] = loaded.files
     .filter((file) => file.skipped)
-    .map((file) => ({ file: file.path, warning: skippedFileWarning(file.path) }));
+    .map((file) => ({ file: file.path, warning: skippedFileWarning(file.path, loaded.engine) }));
   return { engine: loaded.engine, packageFolder, sequence, repeats, dropped, skipped, warnings };
 }
 

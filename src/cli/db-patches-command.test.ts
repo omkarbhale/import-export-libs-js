@@ -102,7 +102,8 @@ describe("apply-db-patches, replaying apply/step-1: the no-op patch applied (DBP
     expect(t.stdout()).toContain(`patchesFolder: ${work}\n`);
     expect(t.stdout()).toContain("toolName: Libs\n");
     expect(t.stdout()).toContain("server: 12.0 SP9 Build 24090\n");
-    expect(t.stdout()).not.toContain("pw");
+    // the folder is a random temporary name, which can contain "pw" by chance
+    expect(t.stdout().split(work).join("")).not.toContain("pw");
   });
 
   it("prints the summary as JSON with --json", async () => {

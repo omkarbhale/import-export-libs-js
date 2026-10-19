@@ -25,7 +25,7 @@ Conventions: **an item** is a pair of an ItemType name and an id. **The table** 
 
 Giving none of the sources, or more than one of them, is a usage error (exit 64): `export needs the items to export: …`. A second `-`, or `-` together with items, is the same error. `--help` prints the usage and exits 0.
 
-[12.0] Same command line. The engine is not yet supported by the export (HOST-008).
+[12.0] Same command line.
 
 [14.35] Same.
 
@@ -110,7 +110,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 [14.0.7] The command runs on `14.0.7`, and on the other engines too, now that their export slices have landed.
 
-[12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built). The one exception is `--use-import`, which loads package folders and is not offered yet (HOST-113).
+[12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built), `--use-import` included now that the 12.0 loading of package folders is (wayfinder ticket 50, HOST-113).
 
 [14.35] The command runs as for 14.0.7. Parallelism (wayfinder ticket 59) and the language-resource modes (ticket 61) are not options of this command yet.
 
