@@ -1,7 +1,10 @@
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { PasswordDigest } from "./digest.js";
 import { DotNetException } from "./dotnet.js";
+import { CLIENT_ENGINES, EngineNotSupportedError } from "./engine-support.js";
 import { ResponseDocument, iomFault, loadXml, unknownErrorFault } from "./fault.js";
 import {
+  attributeOf,
   childElements,
   descendantElements,
   documentOuterXml,
@@ -15,9 +18,11 @@ import {
   DiscoveryNotFound,
   OAuthServerError,
   PasswordTokenProvider,
+  type TokenProvider,
   bearerProtocol,
   discover,
 } from "./oauth.js";
+import { Iom15PasswordTokenProvider } from "./oauth-iom15.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
 import { type HttpTransport, TransportError, type TransportResponse, nodeTransport } from "./transport.js";
 import { serverUrls } from "./url.js";
@@ -32,6 +37,8 @@ export interface CallRecord {
 }
 
 export interface ConnectionSettings {
+  /** The engine whose IOM this connection reproduces: IOM 14 for `14.0.7`, IOM 15 for `14.35`. Default `14.0.7`. */
+  engine?: Engine;
   url: string;
   database: string;
   userName: string;
@@ -46,7 +53,7 @@ export interface ConnectionSettings {
 type Authenticator =
   | {
       kind: "bearer";
-      provider: PasswordTokenProvider;
+      provider: TokenProvider;
       protocol: ReturnType<typeof bearerProtocol>;
       token: string | undefined;
     }
@@ -115,13 +122,27 @@ function authenticationSchema(response: ResponseDocument): { present: boolean; m
 }
 
 /**
+ * IOM 15's `IsReadonlyRequest`: an `ApplyItem` whose root `Item` has `readOnly="1"`, or an `ApplyAML` in which every
+ * `/AML/Item` has it (so also one with no such item). The action name is compared exactly.
+ */
+function isReadOnlyRequest(action: string, request: XmlDocument): boolean {
+  const root = request.root;
+  const flagged = (item: XmlElement): boolean => attributeOf(item, "readOnly") === "1";
+  if (action === "ApplyItem") return root.name === "Item" && flagged(root);
+  if (action === "ApplyAML") return root.name !== "AML" || childElements(root, "Item").every(flagged);
+  return false;
+}
+
+/**
  * IOM's `HttpServerConnection`, as the engine uses it: password login, then
  * SOAP calls that never throw for transport problems and answer with a fault
  * instead.
  *
  * @spec WIRE-003 WIRE-004 WIRE-005 WIRE-010 WIRE-011 WIRE-012 WIRE-013 WIRE-015 WIRE-016 WIRE-018 WIRE-030 WIRE-040 WIRE-050
+ * WIRE-060
  */
 export class HttpServerConnection {
+  readonly engine: Engine;
   locale: string;
   timeZoneName: string;
   /** The user id, the database and the login name that the last successful login returned. */
@@ -137,6 +158,8 @@ export class HttpServerConnection {
   private readonly onCall: ((call: CallRecord) => void) | undefined;
 
   constructor(private readonly settings: ConnectionSettings) {
+    this.engine = settings.engine ?? DEFAULT_ENGINE;
+    if (!CLIENT_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.urls = serverUrls(settings.url);
     this.transport = settings.transport ?? nodeTransport;
     this.onCall = settings.onCall;
@@ -172,9 +195,10 @@ export class HttpServerConnection {
 
   private async callActionImpl(action: string, request: XmlDocument): Promise<ResponseDocument> {
     const body = Buffer.from(`${XML_DECLARATION}${outerXml(request.root)}`, "utf8");
+    const readOnly = this.engine === "14.35" && isReadOnlyRequest(action, request);
     let response: ResponseDocument;
     try {
-      response = await this.exchange(action, body);
+      response = await this.exchange(action, body, readOnly);
       const schema = authenticationSchema(response);
       if (schema.present && this.updateAuthenticator(schema.mode)) return await this.callActionImpl(action, request);
     } catch (error) {
@@ -214,7 +238,10 @@ export class HttpServerConnection {
     this.authenticator = discovered?.supportsOAuth
       ? {
           kind: "bearer",
-          provider: new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }),
+          provider:
+            this.engine === "14.35"
+              ? new Iom15PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password })
+              : new PasswordTokenProvider(this.transport, discovered.tokenEndpoint, { database, userName, password }),
           protocol: bearerProtocol(discovered.protocolType),
           token: undefined,
         }
@@ -229,7 +256,7 @@ export class HttpServerConnection {
     return true;
   }
 
-  private async exchange(action: string, body: Buffer): Promise<ResponseDocument> {
+  private async exchange(action: string, body: Buffer, readOnly: boolean): Promise<ResponseDocument> {
     const authenticator = await this.resolveAuthenticator();
     let renewToken = false;
     for (;;) {
@@ -237,10 +264,12 @@ export class HttpServerConnection {
         ["Content-Type", "text/xml"],
         ["LOCALE", this.locale],
         ["TIMEZONE_NAME", this.timeZoneName],
-        ["SOAPAction", action],
       ];
+      if (readOnly) headers.push(["Aras-Request-ReadOnly", "1"]);
+      headers.push(["SOAPAction", action]);
       if (authenticator.kind === "bearer") {
         if (authenticator.token === undefined || renewToken) authenticator.token = await authenticator.provider.getAccessToken();
+        if (authenticator.token === "") throw new DotNetException("System.ArgumentException", "Token value can not be null or empty.");
         headers.push([authenticator.protocol.header, `Bearer ${authenticator.token}`]);
       } else {
         headers.push(

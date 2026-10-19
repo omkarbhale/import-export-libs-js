@@ -11,7 +11,9 @@ import {
   parseXml,
   XmlParseError,
 } from "./mini-xml.js";
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { DotNetException, tryParseInt32 } from "./dotnet.js";
+import { prettyXml } from "./pretty-xml.js";
 
 const SOAP_ENVELOPE = "http://schemas.xmlsoap.org/soap/envelope/";
 
@@ -209,14 +211,20 @@ export class CItemException extends Error {
     this.name = "CItemException";
   }
 
-  /** Built from a fault response alone: the response's whole outer XML is the text and the message. */
-  static fromResponse(response: ResponseDocument): CItemException {
-    return CItemException.fromFault(response.outerXml, response);
+  /**
+   * Built from a fault response alone: the response's whole outer XML is the text and the message (`[14.35]`: indented).
+   */
+  static fromResponse(response: ResponseDocument, engine: Engine = DEFAULT_ENGINE): CItemException {
+    return CItemException.fromFault(engine === "14.35" ? prettyXml(response.outerXml) : response.outerXml, response);
   }
 
-  /** Built from the request that was sent and the fault it got back. */
-  static fromRequest(request: string, response: ResponseDocument): CItemException {
-    return CItemException.fromFault(`Server error\r\n\r\nRequest: ${request}\r\n\r\nResponce: ${response.outerXml}`, response);
+  /** Built from the request that was sent and the fault it got back (`[14.35]`: both indented, and the spelling corrected). */
+  static fromRequest(request: string, response: ResponseDocument, engine: Engine = DEFAULT_ENGINE): CItemException {
+    const text =
+      engine === "14.35"
+        ? `Server error\r\n\r\nRequest (formatted):\r\n${prettyXml(request)}\r\n\r\nResponse (formatted):\r\n${prettyXml(response.outerXml)}`
+        : `Server error\r\n\r\nRequest: ${request}\r\n\r\nResponce: ${response.outerXml}`;
+    return CItemException.fromFault(text, response);
   }
 
   private static fromFault(text: string, response: ResponseDocument): CItemException {

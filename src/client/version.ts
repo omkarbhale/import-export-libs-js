@@ -53,6 +53,8 @@ export function enginesAcceptingServer(serverMajor: number): Engine[] {
  * It is the engine's own `CItemException` (WIRE-024), so its code, text and
  * message are the engine's; `hint` is the library's addition.
  *
+ * `[14.0.7]` names the type of both versions, which have no text form; `[14.35]` writes both as WIRE-022's text.
+ *
  * @spec WIRE-023 WIRE-024
  */
 export class VersionRefusal extends CItemException {
@@ -63,16 +65,19 @@ export class VersionRefusal extends CItemException {
     readonly engine: Engine,
     readonly serverVersion: ArasVersion,
   ) {
-    const text = `You are trying to use incompatible utility of version ${ArasVersion.TYPE_NAME} with innovator version ${ArasVersion.TYPE_NAME}.`;
-    super(0, text, null);
+    const [utility, server] =
+      engine === "14.35"
+        ? [currentUtilityVersion(engine).fullString, serverVersion.fullString]
+        : [ArasVersion.TYPE_NAME, ArasVersion.TYPE_NAME];
+    super(0, `You are trying to use incompatible utility of version ${utility} with innovator version ${server}.`, null);
     this.name = "VersionRefusal";
     this.fittingEngines = enginesAcceptingServer(serverVersion.major);
-    const server = `${serverVersion.major}.${serverVersion.minor}`;
+    const major = `${serverVersion.major}.${serverVersion.minor}`;
     this.hint =
       this.fittingEngines.length > 0
-        ? `Engine ${engine} does not accept Aras server ${server}. Engines that accept it: ${this.fittingEngines.join(", ")}. ` +
+        ? `Engine ${engine} does not accept Aras server ${major}. Engines that accept it: ${this.fittingEngines.join(", ")}. ` +
           `Use --engine with one of them, or --skip-version-check to run ${engine} anyway.`
-        : `Engine ${engine} does not accept Aras server ${server}, and no engine of this library does. ` +
+        : `Engine ${engine} does not accept Aras server ${major}, and no engine of this library does. ` +
           `Use --skip-version-check to run ${engine} anyway.`;
   }
 }
