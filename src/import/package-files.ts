@@ -130,6 +130,27 @@ export function directoryGetXmlFiles(path: string, environment: PathEnvironment 
 }
 
 /**
+ * `IOWrapper.DirectoryGetFiles(path, "*.xml", SearchOption.AllDirectories)` (IMP-611): the files the pattern matches (IMP-003) in the
+ * folder and in every folder below it, at any depth. The order is not defined by .NET; the port lists each folder in NTFS order,
+ * the folder's own files first and then its subfolders'. A missing folder throws `DirectoryNotFoundException` and a path that is a
+ * file throws `IOException`, both from the listing and before any file is read.
+ * @spec IMP-611 IMP-612
+ */
+export function directoryGetXmlFilesRecursive(path: string, environment: PathEnvironment = {}): string[] {
+  const separator = separatorOf(environment);
+  const files: string[] = [];
+  const visit = (folder: string): void => {
+    const { host, entries } = listEntries(folder, environment);
+    const shown = shownFolder(host);
+    const names = (keep: (entry: Dirent) => boolean): string[] => entries.filter(keep).map((entry) => entry.name).sort(compareNtfsNames);
+    for (const name of names((entry) => matchesXmlPattern(entry.name) && isFile(entry, host))) files.push(combine(shown, name, separator));
+    for (const name of names((entry) => isDirectory(entry, host))) visit(combine(shown, name, separator));
+  };
+  visit(path);
+  return files;
+}
+
+/**
  * `new FileInfo(path)` as the import reads it: `Name` is the last segment of the path, `FullName` the absolute path.
  * @spec IMP-005 IMP-009
  */

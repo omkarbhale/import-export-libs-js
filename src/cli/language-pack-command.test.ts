@@ -15,6 +15,7 @@ import { testIo } from "./test-io.js";
  */
 
 const CASES = new URL("../../fixtures/14.0.7/language-pack/", import.meta.url).pathname;
+const CASES_14_35 = new URL("../../fixtures/14.35/language-pack/", import.meta.url).pathname;
 const TAGS = { status: "INFO", warning: "WARN", error: "ERROR", currentPackage: "PKG", errorQuestion: "ERROR" } as const;
 const TAGGED = /^\[(INFO|WARN|ERROR|PKG)\] /;
 
@@ -37,10 +38,10 @@ afterEach(() => {
 
 const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
 
-async function importLanguagePack(name: string, extra: string[] = []) {
-  const dir = join(CASES, name);
+async function importLanguagePack(name: string, extra: string[] = [], cases = CASES) {
+  const dir = join(cases, name);
   const definition = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as { lpPackage: string; lpDebug: boolean };
-  const calls = readTranscript(join(dir, "transcript.jsonl"), join(CASES, "_blobs"));
+  const calls = readTranscript(join(dir, "transcript.jsonl"), join(cases, "_blobs"));
   const recordedLog = readFileSync(join(dir, "engine.log"), "utf8");
   const osUser = /<os_user>([^<]*)<\/os_user>/.exec(calls.map((call) => call.request).join("\n"))?.[1] ?? "";
   const server = new RecordedServer(calls);
@@ -99,6 +100,18 @@ describe.for(["lp01", "lp02", "lp03", "lp04", "lp05"].map((name) => [name] as co
   });
 });
 
+describe.for([["lp06", "de"], ["lp07", "*"]] as const)("import-language-pack on 14.35, replaying %s with --languages %s", ([name, languages]) => {
+  it("exits 0 and sends the recorded requests: the pack is cut to the selection (IMP-640)", async () => {
+    const { code, t, server, expected } = await importLanguagePack(name, ["--engine", "14.35", "--languages", languages], CASES_14_35);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.ok);
+    expect(t.stderr().split("\n").filter((line) => TAGGED.test(line))).toEqual(expected);
+    expect(t.stdout()).toContain(`engine: 14.35\nresult: success\nexitCode: 0\n`);
+    expect(t.stdout()).toContain(`languages: ${languages}\n`);
+  });
+});
+
 describe("what import-language-pack refuses", () => {
   const base = ["--url", "http://h/x", "--database", "d", "--user", "u"];
 
@@ -119,12 +132,6 @@ describe("what import-language-pack refuses", () => {
   it("engine 12.0 from ARAS_PKG_ENGINE, too", async () => {
     const t = testIo({ env: { ARAS_PASSWORD: "pw", ARAS_PKG_ENGINE: "12.0" } });
     expect(await run(["import-language-pack", "ImportConfig.xml", "--lp-package", "P", ...base], t.io)).toBe(EXIT.usage);
-  });
-
-  it("engine 14.35, whose import is not built yet: not yet supported (1)", async () => {
-    const { code, t } = await refused(["import-language-pack", "ImportConfig.xml", "--lp-package", "P", ...base, "--engine", "14.35"]);
-    expect(code).toBe(EXIT.failed);
-    expect(t.stderr()).toContain("engine 14.35 is not yet supported");
   });
 
   it("a missing language pack or package name", async () => {

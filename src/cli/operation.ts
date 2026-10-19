@@ -1,6 +1,7 @@
 import type { CItemHelper } from "../client/item-helper.js";
 import { VersionRefusal } from "../client/version.js";
 import type { Engine } from "../engines.js";
+import { AggregateException } from "../export/parallel-for-each.js";
 import { leftBehindTempFolder } from "../language-pack/index.js";
 import { EXIT, exitCodeOf } from "./exit.js";
 import type { CliIo } from "./io.js";
@@ -17,9 +18,13 @@ export interface OperationSettings {
   logPath: string;
 }
 
-/** The text a failure shows: the message, and for a refused server the engines that would take it. */
+/**
+ * The text a failure shows: the message, and for a refused server the engines that would take it. An `AggregateException` has only
+ * the message `One or more errors occurred.`, so the messages of its inner exceptions follow (the 14.35 scan of a package, IMP-612).
+ */
 export function describe(error: unknown): string {
   if (error instanceof VersionRefusal) return `${error.message}\n${error.hint}`;
+  if (error instanceof AggregateException) return [error.message, ...error.innerExceptions.map(describe)].join("\n");
   return error instanceof Error ? error.message : String(error);
 }
 

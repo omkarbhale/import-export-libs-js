@@ -5,6 +5,7 @@ import { ImportExportManager } from "../export/import-export-manager.js";
 import { IMPORT_RUN_ENGINES, SUImportContext } from "../import/index.js";
 import { LP_ENGINES, languagePackImport } from "../language-pack/index.js";
 import { MANIFEST_ENGINES, ManifestFile } from "../manifest/index.js";
+import { hostLanguageList, hostLanguageProblem } from "../export/language-host.js";
 import { EXIT } from "./exit.js";
 import type { CliIo } from "./io.js";
 import {
@@ -38,17 +39,43 @@ interface ImportSettings {
   osUser: string | undefined;
   json: boolean;
   logPath: string;
+  /** The text of `--languages`, when it was given. */
+  languages: string | undefined;
+}
+
+/**
+ * `--languages`: the selection of languages of a 14.35 import (IMP-600, IMP-601). The text is split as the console host splits
+ * `langs=` (commas, empty entries dropped, exact duplicates removed); a list that is not empty, does not start with `*` and has no `en`
+ * is refused as the host refuses it, except for a language-pack import, where the host does not check it. Engines other than 14.35 have no
+ * such setting.
+ *
+ * @spec IMP-600 IMP-601 IMP-602
+ */
+function resolveLanguages(values: OptionValues, engine: Engine, checkEn: boolean): string[] | null {
+  const given = stringOf(values, "languages");
+  if (given === undefined) return null;
+  if (engine !== "14.35") {
+    throw new UsageError(`--languages needs --engine 14.35; engine ${engine} has no language selection on import (IMP-600)`);
+  }
+  if (given === "") throw new UsageError("--languages needs a list of language codes, or *");
+  const list = hostLanguageList(given);
+  if (checkEn && hostLanguageProblem("Import", list) !== null) {
+    throw new UsageError("--languages must include en, unless the list starts with * (the console host refuses it, IMP-601)");
+  }
+  return list;
 }
 
 /**
  * The settings of an import run from the command line (IMP-480 steps 1 and 4): the shared context with the connection, the log
  * and `Verbose`, and the import context with the merge flag, the release and the description (IMP-401), and for 14.35 the batch and
- * collected-errors settings (IMP-500).
+ * collected-errors settings (IMP-500). A 14.35 run may carry a `--languages` selection, which the manager checks and applies (IMP-600
+ * to IMP-635).
  *
- * @spec IMP-401 IMP-480 IMP-500
+ * @spec IMP-401 IMP-480 IMP-500 IMP-600
  */
 async function importSettings(command: string, action: string, values: OptionValues, io: CliIo, engine: Engine): Promise<ImportSettings> {
   if (flagOf(values, "merge") && flagOf(values, "no-merge")) throw new UsageError("--merge and --no-merge cannot be used together");
+  const languages = resolveLanguages(values, engine, action === "Import");
   const importContext = new SUImportContext();
   applyBatchErrorOptions(values, importContext, engine);
   const connection = await resolveConnection(values, io);
@@ -64,12 +91,22 @@ async function importSettings(command: string, action: string, values: OptionVal
   context.verbose = flagOf(values, "verbose");
   context.logFilePath = logPath;
   context.timeout = connection.timeout;
+  context.languages = languages;
 
   importContext.merge = flagOf(values, "merge");
   importContext.release = stringOf(values, "release") ?? null;
   importContext.description = stringOf(values, "description") ?? null;
 
-  return { engine, connection, context, importContext, osUser: stringOf(values, "os-user"), json: flagOf(values, "json"), logPath };
+  return {
+    engine,
+    connection,
+    context,
+    importContext,
+    osUser: stringOf(values, "os-user"),
+    json: flagOf(values, "json"),
+    logPath,
+    languages: stringOf(values, "languages"),
+  };
 }
 
 /**
@@ -145,6 +182,7 @@ export async function importCommand(args: readonly string[], io: CliIo): Promise
     packages: names,
     merge: importContext.merge,
     batch: importContext.amlBatchMode ? { size: importContext.amlBatchMaxSize } : undefined,
+    languages: settings.languages,
     collectErrors: importContext.collectImportErrors ? { limit: importContext.collectImportErrorsMaxCount } : undefined,
   };
   return runOperation(io, settings, "import", facts, async (helper, reporter) => {
@@ -193,7 +231,7 @@ export async function languagePackCommand(args: readonly string[], io: CliIo): P
   settings.context.lpPackage = lpPackage;
   settings.context.lpDebug = flagOf(values, "lp-debug");
 
-  return runOperation(io, settings, "import-language-pack", { languagePack: lpPath, package: lpPackage }, (helper, reporter) =>
+  return runOperation(io, settings, "import-language-pack", { languagePack: lpPath, package: lpPackage, languages: settings.languages }, (helper, reporter) =>
     // `languagePackImport` logs the helper out itself (LP-001 step 7).
     languagePackImport(settings.context, settings.importContext, reporter.messages, helper, {
       console: reporter.console,

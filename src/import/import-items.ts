@@ -1,10 +1,13 @@
-import { isNullReference, isXPathException, isXmlException, nullReference } from "../client/dotnet.js";
-import { CItemException, type ResponseDocument, stackText } from "../client/fault.js";
+import { singleItem } from "../client/answer.js";
+import { DotNetException, isNullReference, isXPathException, isXmlException, nullReference } from "../client/dotnet.js";
+import { CItemException, type ResponseDocument, getProperty, stackText } from "../client/fault.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
-import { type XmlDocument, type XmlElement, documentElementOf, innerText, removeChild } from "../xml/dom.js";
+import { attributeOf } from "../client/mini-xml.js";
+import { ELEMENT_NODE, type XmlDocument, type XmlElement, documentElementOf, innerText, removeChild } from "../xml/dom.js";
 import { loadXml } from "../xml/parser.js";
 import { selectNodes, selectSingleNode } from "../xml/xpath.js";
 import { outerXml } from "../xml/writer-legacy.js";
+import { KeyNotFoundException } from "../io/errors.js";
 import { RESULT_PATH } from "./answer-path.js";
 
 /**
@@ -20,6 +23,19 @@ export interface MergeHelper {
   existRelItemInCurVer(type: string, sourceId: string, relatedId: string): Promise<boolean>;
 }
 
+/**
+ * What 14.35's `CImportItems` asks of the helper for a generated `Property` item (LP-042, LP-043): the lookup of the property, the
+ * languages with their suffixes, and the SQL update. `ImportLookups` is the one implementation.
+ */
+export interface LanguagePackHelper {
+  /** `GetPropertyItemWithRequiredProps(where)`: the `Property` get; a fault with faultcode 0 is swallowed and the error item returned. */
+  getPropertyItemWithRequiredProps(where: string): Promise<ResponseDocument>;
+  /** `GetLanguagesWithSuffixes()`: the `Language` get as a dictionary from code to suffix, which is null when the answer has none. */
+  getLanguagesWithSuffixes(): Promise<Map<string, string | null>>;
+  /** `CItemHelper.applySQL(sql)`: throws for a fault. */
+  applySql(sql: string): Promise<void>;
+}
+
 /** The faultcode and the texts of the errors `Import` raises itself (IMP-301, IMP-302). */
 const ITEMS_MUST_HAVE_TYPE = ["Items must have 'type' set", "Error - empty 'type'"] as const;
 const ITEMS_MUST_HAVE_ID_OR_WHERE = ["Items must have 'id' or 'where' set", "Error - empty 'id' or 'where'"] as const;
@@ -30,6 +46,9 @@ const MP_MAC_CONDITION = "mp_MacCondition";
 /** The keyed name of the system properties of a change controlled relationship (IMP-315). */
 const CHANGE_CONTROLLED_RELATIONSHIP = "Change Controlled Relationship";
 const CHANGE_CONTROLLED_SYSTEM_PROPERTIES = ["related_id", "sort_order", "source_id"];
+
+/** The .NET type names of the nodes a `foreach (XmlElement …)` over the children of an item can stop at (LP-043). */
+const NODE_TYPE_NAMES: Readonly<Record<number, string>> = { 3: "XmlText", 4: "XmlCDataSection", 7: "XmlProcessingInstruction", 8: "XmlComment" };
 
 /** `XmlElement.GetAttribute(name)`: the value, or the empty string for a missing attribute. */
 const getAttribute = (element: XmlElement, name: string): string => element.getAttributeNode(name)?.value ?? "";
@@ -44,23 +63,25 @@ const asElements = (nodes: ReturnType<typeof selectNodes>): XmlElement[] => node
  * Values read from the document go into the requests and the XPath texts unescaped, as the engine does (AGENTS.md rule 7).
  *
  * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353),
- * and in the AML batch mode `Import` prepares the document and returns without sending it (IMP-512).
+ * and in the AML batch mode `Import` prepares the document and returns without sending it (IMP-512). On a server that needs the
+ * null-value handling (LP-040) it also sends the translations of a generated `Property` item for a system property by SQL (LP-042,
+ * LP-043); `languagePack` is then the helper that does it, and absent otherwise.
  *
  * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-315 IMP-316 IMP-317 IMP-330 IMP-331 IMP-332 IMP-333 IMP-340
- * @spec IMP-353
+ * @spec IMP-353 LP-042 LP-043 LP-044
  */
 export class ImportItems {
   constructor(
     private readonly helper: MergeHelper,
     private readonly engine: Engine = DEFAULT_ENGINE,
+    private readonly languagePack?: LanguagePackHelper,
   ) {}
 
   /**
    * `Import(itemInXml, mergeMode, amlBatchMode)`. A null reference, an `XmlException` and an `XPathException` leave as a
    * `CItemException` with faultcode -1 that names the item (IMP-304); every other exception leaves as it is. With `amlBatchMode`
-   * the call does everything but the last step: the document holds what would have been sent (IMP-512).
-   *
-   * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-317 IMP-340 IMP-512
+ * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353),
+ * and in the AML batch mode `Import` prepares the document and returns without sending it (IMP-512).
    */
   async import(itemInXml: XmlDocument, mergeMode: boolean, amlBatchMode = false): Promise<void> {
     const documentElement = documentElementOf(itemInXml);
@@ -84,12 +105,65 @@ export class ImportItems {
       }
       if (mergeMode) await this.merge(itemInXml);
       if (versionable) await this.processVersionableItem(documentElement);
+      if (this.languagePack !== undefined && type === "Property" && getAttribute(documentElement, "context_action") === "lpimport") {
+        if (await this.setPropertyLabelsBySql(itemInXml, documentElement, text)) return;
+      }
       if (!amlBatchMode) await this.helper.applyAML(outerXml(itemInXml));
     } catch (error) {
       if (isNullReference(error) || isXmlException(error) || isXPathException(error)) {
         throw new CItemException(-1, stackText(error), `${error.message} Can't merge item ${text} ${type}`, error);
       }
       throw error;
+    }
+  }
+
+  /**
+   * The branch of a generated `Property` item (LP-042): the `context_action` mark is removed, and the property is looked up by the item's
+   * `id`, or its `where`. When it is a system property of a relationship type (`keyed_name` exactly `source_id` or `related_id`) the
+   * translations are written by SQL (LP-043) and the item is not sent; the answer is then true. Any other property carries on to the
+   * send, without the mark.
+   *
+   * @spec LP-042
+   */
+  private async setPropertyLabelsBySql(itemInXml: XmlDocument, root: XmlElement, where: string): Promise<boolean> {
+    const helper = this.languagePack as LanguagePackHelper;
+    root.removeAttribute("context_action");
+    const found = singleItem(await helper.getPropertyItemWithRequiredProps(where));
+    const keyedName = getProperty(found, "keyed_name");
+    if (keyedName !== "source_id" && keyedName !== "related_id") return false;
+    await this.setLocalizedValueViaApplySqlRequest(itemInXml, attributeOf(found, "id") ?? "");
+    return true;
+  }
+
+  /**
+   * `SetLocalizedValueViaApplySqlRequest(localizableElements, targetPropertyId)`: for each child of the document's first node with a non-empty
+   * `xml:lang`, the column `[{local name}{suffix}] = N'{inner text}'`; one `UPDATE innovator.PROPERTY` for them all, or nothing when there is
+   * none (LP-043). Values, names, suffixes and the id go into the statement as they are (LP-044). The loop casts each child to an element, so a
+   * text or a comment child is an `InvalidCastException` when it is reached.
+   *
+   * @spec LP-043 LP-044 LP-046
+   */
+  private async setLocalizedValueViaApplySqlRequest(itemInXml: XmlDocument, targetPropertyId: string): Promise<void> {
+    const helper = this.languagePack as LanguagePackHelper;
+    const columns: string[] = [];
+    const suffixes = await helper.getLanguagesWithSuffixes();
+    const first = itemInXml.firstChild;
+    if (first === null) throw nullReference();
+    for (let child = first.firstChild; child !== null; child = child.nextSibling) {
+      if (child.nodeType !== ELEMENT_NODE) {
+        throw new DotNetException(
+          "System.InvalidCastException",
+          `Unable to cast object of type 'System.Xml.${NODE_TYPE_NAMES[child.nodeType] ?? "XmlLinkedNode"}' to type 'System.Xml.XmlElement'.`,
+        );
+      }
+      const element = child as XmlElement;
+      const language = getAttribute(element, "xml:lang");
+      if (language === "") continue;
+      if (!suffixes.has(language)) throw new KeyNotFoundException();
+      columns.push(`[${element.localName}${suffixes.get(language) ?? ""}] = N'${innerText(element)}'`);
+    }
+    if (columns.length > 0) {
+      await helper.applySql(`\r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET ${columns.join(",")}\r\n\t\t\t\tWHERE id='${targetPropertyId}'`);
     }
   }
 

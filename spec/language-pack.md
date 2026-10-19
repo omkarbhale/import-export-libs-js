@@ -1,6 +1,6 @@
 # Language-pack import
 
-Language-pack import (`lpimport`) turns a folder of translations that Aras exported into an ordinary import. `LanguagePackPreprocessor` reads the pack's configuration and its per-ItemType files, asks the server which languages it has, and writes a temporary package whose files are `edit` items that set the translated values. The host then imports that package like any other. This document specifies the preprocessor, the temporary package it makes, and the call sequence of the host that drives it. The rules are `LP-001` to `LP-099`. 14.35's changes to the preprocessor and to the import of its output are `[14.35]` variants of the rules below and the rules `LP-040` to `LP-044`. The language-resource export of 14.35 is `LP-100` onwards, in `language-export.md`.
+Language-pack import (`lpimport`) turns a folder of translations that Aras exported into an ordinary import. `LanguagePackPreprocessor` reads the pack's configuration and its per-ItemType files, asks the server which languages it has, and writes a temporary package whose files are `edit` items that set the translated values. The host then imports that package like any other. This document specifies the preprocessor, the temporary package it makes, and the call sequence of the host that drives it. The rules are `LP-001` to `LP-099`. 14.35's changes to the preprocessor and to the import of its output are `[14.35]` variants of the rules below and the rules `LP-040` to `LP-046`. The language-resource export of 14.35 is `LP-100` onwards, in `language-export.md`.
 
 Sources:
 
@@ -439,14 +439,14 @@ The merge handling before the branch is unchanged: for an `edit` item with `wher
 [14.35] The update of LP-042 step 3 is built from the children of the document's first node (`itemInXml.FirstChild`, the `Item`), in document order:
 
 1. the engine asks for the languages: `newItem("Language", "get")` with `select` = `code, suffix` (with a space; the preprocessor's request has none, LP-014), applies it, and swallows a faultcode 0; any other fault is thrown. It builds a dictionary from `getProperty("code")` to `getProperty("suffix")`, one entry for each of the answer's items. A duplicate code throws `System.ArgumentException` (`An item with the same key has already been added.`), a missing `code` throws `System.ArgumentNullException` (`Value cannot be null.\r\nParameter name: key`); a missing `suffix` is stored as null and is written as an empty suffix (probed `language-get-duplicate-code`, `language-get-item-without-code`, `language-get-item-without-suffix`). The request is made once for each update, not cached. A failed "no items" answer gives an empty dictionary (probed `language-get-no-items`);
-2. for each child **element** with a non-empty `xml:lang` attribute (read as the attribute named `xml:lang`; a child with an empty value is skipped, a child with none is skipped, and so are `default_value`, `data_source` and `data_type`), it builds `[{local name}{suffix of the language}] = N'{inner text}'`. The local name has no prefix (`i18n:label` gives `label`); the suffix is looked up by the **exact** code, and a code that is not in the dictionary throws `System.Collections.Generic.KeyNotFoundException` (`The given key was not present in the dictionary.`; probed `language-not-in-the-answer`, and an uppercase `DE` against an installed `de`). The inner text is the element's `InnerText`, with markup of nested elements dropped and entities decoded (probed `element-with-nested-markup`). The empty string is written as `N''` and replaces the value;
+2. for each child with a non-empty `xml:lang` attribute (a child that is not an element stops the update, LP-046) (read as the attribute named `xml:lang`; a child with an empty value is skipped, a child with none is skipped, and so are `default_value`, `data_source` and `data_type`), it builds `[{local name}{suffix of the language}] = N'{inner text}'`. The local name has no prefix (`i18n:label` gives `label`); the suffix is looked up by the **exact** code, and a code that is not in the dictionary throws `System.Collections.Generic.KeyNotFoundException` (`The given key was not present in the dictionary.`; probed `language-not-in-the-answer`, and an uppercase `DE` against an installed `de`). The inner text is the element's `InnerText`, with markup of nested elements dropped and entities decoded (probed `element-with-nested-markup`). The empty string is written as `N''` and replaces the value;
 3. when there is at least one such column, it sends `applySQL` of
 
 ```text
 \r\n\t\t\t\tUPDATE innovator.PROPERTY\r\n\t\t\t\tSET [label_de] = N'Etikett',[label_fr] = N'Libelle'\r\n\t\t\t\tWHERE id='{id of the property}'
 ```
 
-where the columns are joined with `,` (no space) and the id is `getID()` of the property answer of LP-042 step 2 (the server's id, not the row's). IOM sends it as an `ApplySQL` request whose body is `<sql><Query>…</Query></sql>`, with the text XML-escaped. A fault is thrown as a `CItemException` (`CItemHelper.applySQL` throws one for an error item). When there is no such column, nothing is sent (probed `only-plain-children-nothing-is-sent`): an item whose children are only the three system values is dropped without a trace, after its two lookups.
+where the columns are joined with `,` (no space) and the id is `getID()` of the property answer of LP-042 step 2 (the server's id, not the row's). IOM sends it as an `ApplySQL` request whose body is `<sql><Query>…</Query></sql>`, with the text XML-escaped. A fault is not reported as the server's (LP-045). When there is no such column, nothing is sent (probed `only-plain-children-nothing-is-sent`): an item whose children are only the three system values is dropped without a trace, after its two lookups.
 
 The effect for a property named `source_id` or `related_id` (the system properties of a relationship type, which `edit` through AML would reset): only the translated labels change, and the system values are not touched.
 
@@ -459,6 +459,26 @@ The effect for a property named `source_id` or `related_id` (the system properti
 [14.35] The inner text goes between `N'` and `'` without doubling an apostrophe, and the local name and the suffix are put into `[…]` unescaped, as is the property id. Reproduced exactly (`AGENTS.md` rule 7). A value with an apostrophe makes the statement invalid SQL (or, with a crafted value, other SQL): `O'Brien & <b> N'x` gives `SET [label_de] = N'O'Brien & <b> N'x'` after the server decodes the XML (probed `value-with-quote-amp-lt`, where the recorded body shows the escaped `&amp;` and `&lt;`, which the server decodes). Every value is written as an `N'…'` literal, and non-ASCII characters are sent as they are (probed `value-non-ascii`). A language pack with an apostrophe in a translation of a `source_id` or `related_id` property therefore fails or misbehaves on the server, after the earlier items were imported.
 
 Registered in `bugs.md`: a correct engine would double the apostrophes, or use parameters.
+
+[14.0.7] Not present.
+
+[12.0] There is no language-pack import.
+
+### LP-045: A failed SQL update is reported as a parse error of the SQL text (bug)
+
+[14.35] `CItemHelper.applySQL(sql)` builds its `CItemException` for an error answer with the request text first indented as XML (`CItemException.GetPrettyXml`, WIRE-051), and the request here is the SQL statement of LP-043, which is not XML. So the exception that leaves `applySQL` is the parser's `System.Xml.XmlException` for the statement, whatever the server said: `Data at the root level is invalid. Line 2, position 5.` (the statement starts with a line break and four tabs, then `UPDATE`). `Import` wraps it as it wraps any `XmlException` (IMP-304): `CItemException` with faultcode `-1` and the message `Data at the root level is invalid. Line 2, position 5. Can't merge item {where of the item} Property`; the inner exception is the `XmlException`. The server's fault code and text are lost. Probed (`06-null-values`, `sql-fault`: the stub answered faultcode 5, `sql boom`). The lpimport host (LP-003) catches it as a `CItemException`, so the run returns 1.
+
+Registered in `bugs.md`: a correct engine would report the server's fault.
+
+[14.0.7] Not present.
+
+[12.0] There is no language-pack import.
+
+### LP-046: A child of the item that is not an element stops the SQL update (bug)
+
+[14.35] The loop of LP-043 step 2 is `foreach (XmlElement child in item.ChildNodes)`, which casts every child node. A text node, a comment, a CDATA section or a processing instruction among the children throws `System.InvalidCastException` (`Unable to cast object of type 'System.Xml.XmlText' to type 'System.Xml.XmlElement'.`, with `XmlComment`, `XmlCDataSection` or `XmlProcessingInstruction` for the others) when the loop reaches it, after the `Language` get of LP-043 step 1 and before anything is sent; the children before it were only read. Nothing wraps it (IMP-304), so the import of the package fails with it. The generated items have only elements; a hand-written one can have more. Probed (`06-null-values`, `text-child-in-the-item`, `comment-child-in-the-item`).
+
+Registered in `bugs.md`: a correct engine would skip nodes that are not elements.
 
 [14.0.7] Not present.
 

@@ -53,7 +53,7 @@ The host passes the array unchanged to the manager through `Languages`. `Console
 
 [14.35] The GUI tool `import.exe` builds its `SolutionUpgradeContext` with `Languages` = the checked entries of a list box. The list is filled whenever the selection of packages changes with `LanguageCodesExtractor.GetUsedLanguagesByPackages` of the checked packages (IMP-615), `en` moved to the front and always checked; the user cannot uncheck it. So a GUI import always includes `en` and only languages that the checked packages use. The scan that feeds it (`ExtractLanguageCodesFromPackages`) is the same one the constructor runs (IMP-610).
 
-The library has no GUI. It reproduces the engine behaviour the GUI relies on (IMP-610 to IMP-635), not the list box. A library user chooses the selection with the CLI option the CLI tickets define, and gets the same checks as the console host.
+The library has no GUI. It reproduces the engine behaviour the GUI relies on (IMP-610 to IMP-635), not the list box. A library user chooses the selection with the CLI option `--languages <codes|*>` of `import` and `import-language-pack` (IMP-480), which reads the list as IMP-601 does and refuses what the console host refuses, and gets the same checks of the engine as the console host.
 
 [14.0.7] `import.exe` has no language list.
 

@@ -17,6 +17,7 @@ const TYPE_NAMES: Readonly<Record<string, string>> = {
   NotSupportedException: "System.NotSupportedException",
   InvalidOperationException: "System.InvalidOperationException",
   Exception: "System.Exception",
+  AggregateException: "System.AggregateException",
 };
 
 /** The full .NET type name of an exception, as `Exception.GetType().FullName` gives it. */

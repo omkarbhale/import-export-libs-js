@@ -19,7 +19,10 @@ const LANGUAGE_GET = '<Item isNew="1" isTemp="1" type="Language" action="get" se
  * (the manager's check does, LP-114). A Language without a `code` throws the unwrapped `NullReferenceException` (LP-181), after the
  * request, as the iterator does on reaching that item.
  *
- * @spec LP-115 LP-180 LP-181
+ * An error answer of any code, an answer with no items and a response that is not an envelope give no languages and no exception, so a
+ * failed get makes every selected language look "not installed" (IMP-622, bug IMP-623).
+ *
+ * @spec LP-115 LP-180 LP-181 IMP-622 IMP-623
  */
 export async function getLanguagesFromInnovator(inn: Innovator): Promise<LanguageInfo[]> {
   const response = await inn.applyItem(LANGUAGE_GET);

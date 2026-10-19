@@ -92,13 +92,22 @@ function i18nElement(doc: XmlDocument, name: string, value: string, code: string
 }
 
 /**
+ * What 14.35 puts on the `edit` item of a `Property` row before its translations (LP-041): the attribute `context_action="lpimport"`,
+ * which the import looks for, and the system values the server has for the property, each as a plain element, in this order.
+ */
+export interface SystemValues {
+  readonly values: ReadonlyArray<readonly [name: string, value: string]>;
+}
+
+/**
  * The `edit` item of one row, as IOM's `newItem(type, "edit")` with `doGetItem` `0` and the translated values set, before its
  * `where` is known: `<Item isNew="1" isTemp="1" type="{type}" action="edit" doGetItem="0">` and, for each property of the table
  * in its order and each language in the property's order, a value that is not the empty string as an `i18n` element. An empty
- * type gives an item without `type` and `action`. Returns null when no value was set, which drops the item.
- * @spec LP-024
+ * type gives an item without `type` and `action`. Returns null when no value was set, which drops the item. The system values of
+ * 14.35's `Property` rows come first and do not count as a value (LP-041).
+ * @spec LP-024 LP-041
  */
-export function createEditItem(itemType: string, parameters: ReadonlyMap<string, Translations>): XmlElement | null {
+export function createEditItem(itemType: string, parameters: ReadonlyMap<string, Translations>, system?: SystemValues): XmlElement | null {
   const doc = createXmlDocument();
   const item = createElement(doc, "Item");
   item.setAttribute("isNew", "1");
@@ -108,6 +117,14 @@ export function createEditItem(itemType: string, parameters: ReadonlyMap<string,
     item.setAttribute("action", "edit");
   }
   item.setAttribute("doGetItem", "0");
+  if (system !== undefined) {
+    item.setAttribute("context_action", "lpimport");
+    for (const [name, value] of system.values) {
+      const element = createElement(doc, name);
+      appendChild(element, doc.createTextNode(value));
+      appendChild(item, element);
+    }
+  }
   let any = false;
   for (const [name, translations] of parameters) {
     for (const [code, value] of translations) {

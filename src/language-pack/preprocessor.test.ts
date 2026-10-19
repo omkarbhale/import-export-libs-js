@@ -111,7 +111,7 @@ describe("the object the preprocessor leaves for the host (LP-032, LP-036)", () 
 });
 
 describe("the engine parameter (LP-001)", () => {
-  it.each(["12.0", "14.35"] as const)("refuses engine %s, which has no language-pack import in this slice", async (engine) => {
+  it.each(["12.0"] as const)("refuses engine %s, which has no language-pack import", async (engine) => {
     const s = setup();
     const helper = { engine } as unknown as CItemHelper;
     await expect(LanguagePackPreprocessor.create(helper, new ManifestFile(undefined, { engine: "14.0.7" }), s.config, "PKG", false, s.options)).rejects.toThrow(

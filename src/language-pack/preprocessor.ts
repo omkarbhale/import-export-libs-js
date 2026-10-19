@@ -1,5 +1,8 @@
-import { getProperty } from "../client/fault.js";
+import { getItemCount, singleItem } from "../client/answer.js";
+import { CItemException, getProperty } from "../client/fault.js";
 import type { ResponseDocument } from "../client/fault.js";
+import { needToHandleNullPropertyValues } from "../client/null-values.js";
+import { IomItem } from "../export/iom-item.js";
 import type { XmlElement as ResponseItem } from "../client/mini-xml.js";
 import { EngineNotSupportedError, type CItemHelper } from "../client/item-helper.js";
 import type { Engine } from "../engines.js";
@@ -19,20 +22,26 @@ import {
   loadXml,
   outerXml,
   selectNodes,
+  selectSingleNode,
   xmlDocumentLoad,
 } from "../xml/index.js";
 import type { XmlElement } from "../xml/index.js";
 import { getItemTypes, getRequestedLanguages } from "./config.js";
-import { createEditItem, getUpdateParameters, getWhereParameters, whereClause } from "./edit-item.js";
+import { type SystemValues, createEditItem, getUpdateParameters, getWhereParameters, whereClause } from "./edit-item.js";
 
-/** The engines whose language-pack import is built. 12.0 has none (LP-001); 14.35's variants are a later slice. */
-export const LP_ENGINES: readonly Engine[] = ["14.0.7"];
+/** The engines whose language-pack import is built. 12.0 has none (LP-001). */
+export const LP_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+
+export { getItemCount };
 
 const MANIFEST_FILE_NAME = "imports.mf";
 const PACKAGE_PREFIX = "LanguagePack_";
 
 /** The `Language` get of the preprocessor, as IOM writes it (LP-014). */
 const LANGUAGE_GET = '<Item isNew="1" isTemp="1" type="Language" action="get" select="code,suffix" />';
+
+/** The values 14.35 asks the server for, for each `Property` row (LP-041). */
+const SYSTEM_PROPERTIES = ["default_value", "data_source", "data_type"] as const;
 
 export interface LanguagePackOptions extends PathEnvironment {
   /** `Path.GetTempPath()`, a Windows path string ending in `\`; the default is the host's temp folder. */
@@ -54,25 +63,20 @@ export function leftBehindTempFolder(error: unknown): string | undefined {
 }
 
 /**
- * IOM's `getItemCount()`: the items of a successful answer, 0 for the fault "no items" (faultcode 0), -1 for any other fault and
- * for an answer without items.
- * @spec LP-014
- */
-export function getItemCount(response: ResponseDocument): number {
-  if (response.isError) return response.isEmpty ? 0 : -1;
-  return response.items.length > 0 ? response.items.length : -1;
-}
-
-/**
  * The engine's `LanguagePackPreprocessor`: turns a language pack (a configuration file and a folder `xml` of per-ItemType row
  * files) into a temporary package of `edit` items, `<temp>\LanguagePack_<random>\<package>\Import\Fixes\<ItemType>.xml`, and a
  * manifest `<temp>\LanguagePack_<random>\imports.mf` that names it. The engine does all of it in the constructor; the port has an
  * asynchronous server call in it, so {@link LanguagePackPreprocessor.create} stands for the constructor.
  *
- * @spec LP-001 LP-003 LP-029 LP-035 LP-036
+ * 14.35 reads the server's version when it is built, and for a server below 14.0 SP22 asks the server for the values of each `Property`
+ * row first (LP-040, LP-041).
+ *
+ * @spec LP-001 LP-003 LP-029 LP-035 LP-036 LP-040 LP-041
  */
 export class LanguagePackPreprocessor {
   private lpDebug = false;
+  /** 14.35: whether the server needs the null-value handling (LP-040); false for 14.0.7, which has none. */
+  private handleNullPropertyValues = false;
   private tempManifestDirectoryPath = "";
   private readonly packages: string[] = [];
 
@@ -99,6 +103,8 @@ export class LanguagePackPreprocessor {
     if (manifestFile === null) throw new ArgumentNullException("manifestFile");
     if (!LP_ENGINES.includes(helper.engine)) throw new EngineNotSupportedError(helper.engine);
     const preprocessor = new LanguagePackPreprocessor(helper, manifestFile, options);
+    // 14.35 reads the version before it looks at the path, so an unread version fails an empty path too (LP-029, LP-036)
+    if (helper.engine === "14.35") preprocessor.handleNullPropertyValues = needToHandleNullPropertyValues(helper.innovatorVersion);
     if (lpPath !== null && lpPath !== "") {
       preprocessor.lpDebug = lpDebug;
       try {
@@ -198,10 +204,40 @@ export class LanguagePackPreprocessor {
   }
 
   /**
+   * `GetSystemPropertiesValueIfHave(...)` and the reading of its answer (LP-041): the `Property` row is looked up by its attributes (the
+   * where parameters, each as a property of the request), and `default_value`, `data_source` and `data_type` are taken from the one item it
+   * answers, those that have a value. A fault other than "no items" is thrown as the engine's `CItemException`; "no items", an empty
+   * answer and two answers leave `getProperty` with `Not a single item` (bug LP-041). An attribute with a prefix cannot be a property
+   * name: IOM's XPath refuses it before anything is sent.
+   *
+   * @spec LP-041
+   */
+  private async getSystemValues(whereParameters: ReadonlyMap<string, string>): Promise<SystemValues> {
+    const request = IomItem.newItem("Property", "get");
+    request.setAttribute("select", SYSTEM_PROPERTIES.map((name) => `${name}[is_not_null()]`).join(", "));
+    const probe = loadXml("<Item/>", { preserveWhitespace: false });
+    for (const [name, value] of whereParameters) {
+      selectSingleNode(name, probe);
+      request.setProperty(name, value);
+    }
+    const response = await this.helper.inn.applyItem(request.toXml());
+    if (response.isError) {
+      const error = CItemException.fromResponse(response, "14.35");
+      if (error.faultcode !== 0) throw error;
+    }
+    const values: Array<readonly [string, string]> = [];
+    for (const name of SYSTEM_PROPERTIES) {
+      const value = getProperty(singleItem(response), name);
+      if (value !== null) values.push([name, value]);
+    }
+    return { values };
+  }
+
+  /**
    * `CopyLanguagePack(packageFolderPath, languageConfigPath)`: reads the configuration, asks the server for its languages, lists
    * the row files of the `xml` folder next to the configuration, and writes `<Fixes>\<ItemType>.xml` for every file that selects
    * a translated item. The files are handled one after the other, each whole before the next, and nothing is rolled back.
-   * @spec LP-010 LP-011 LP-012 LP-014 LP-020 LP-021 LP-022 LP-023 LP-024 LP-025 LP-026 LP-027
+   * @spec LP-010 LP-011 LP-012 LP-014 LP-020 LP-021 LP-022 LP-023 LP-024 LP-025 LP-026 LP-027 LP-041
    */
   private async copyLanguagePack(packageFolderPath: string, languageConfigPath: string): Promise<void> {
     if (!fileExists(languageConfigPath, this.options)) {
@@ -214,7 +250,7 @@ export class LanguagePackPreprocessor {
     const supportedLanguages = await this.getSupportedLanguages(requestedLanguages);
     const xmlFolder = pathCombineAll(getDirectoryName(languageConfigPath), "xml");
     for (const file of directoryGetXmlFiles(xmlFolder, this.options)) {
-      const name = itemTypeName(file);
+      const name = this.helper.engine === "14.35" ? itemTypeNameWithoutExtension(file) : itemTypeName(file);
       if (itemTypes.size > 0 && !itemTypes.has(name)) continue;
       const requestedProps = itemTypes.get(name);
       if (requestedProps === undefined) throw new KeyNotFoundException();
@@ -226,7 +262,9 @@ export class LanguagePackPreprocessor {
         const itemNode = node as XmlElement;
         const updateParameters = getUpdateParameters(itemNode, requestedProps, supportedLanguages);
         const whereParameters = getWhereParameters(itemNode);
-        const item = createEditItem(name, updateParameters);
+        // the ask comes before the item is known to be empty, so a `Property` row without a translation still sends it (LP-041)
+        const system = this.handleNullPropertyValues && name === "Property" ? await this.getSystemValues(whereParameters) : undefined;
+        const item = createEditItem(name, updateParameters, system);
         if (item === null) continue;
         item.setAttribute("where", whereClause(name, whereParameters));
         appendChild(aml, importNode(output, item));
@@ -237,6 +275,17 @@ export class LanguagePackPreprocessor {
       }
     }
   }
+}
+
+/**
+ * 14.35's item type of a row file, `Path.GetFileNameWithoutExtension`: the file name cut at its last dot, so `Foo.xmlbak` and `Foo.XML` are
+ * `Foo`, and `Foo.xml.xml` is `Foo.xml` (LP-020).
+ * @spec LP-020
+ */
+export function itemTypeNameWithoutExtension(path: string): string {
+  const name = path.slice(Math.max(path.lastIndexOf("\\"), path.lastIndexOf("/")) + 1);
+  const dot = name.lastIndexOf(".");
+  return dot < 0 ? name : name.slice(0, dot);
 }
 
 /**

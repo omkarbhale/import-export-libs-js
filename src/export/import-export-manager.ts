@@ -14,13 +14,14 @@ import {
 } from "../io/errors.js";
 import { NotSupportedException } from "../xml/errors.js";
 import { directoryGetParentFullName, fileExists, pathEnvironmentFor } from "../io/host-path.js";
-import { pathCombine } from "../io/win-path.js";
+import { getDirectoryName, pathCombine } from "../io/win-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
+import { LanguageCodesExtractor } from "../import/language-codes-extractor.js";
 import { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
 import { CollectedErrors } from "../import/collected-errors.js";
 import type { SUImportContext } from "../import/import-context.js";
-import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
+import { DuplicateKeyError, ManifestFile, NetfxHashtable, getSolutionPath } from "../manifest/index.js";
 import { DB_PATCH_ENGINES, DbPatchApplication, DbPatchesNotInEngineError, type DBUpdateConfig } from "../db-patches/index.js";
 import { innerText, selectNodes } from "../xml/index.js";
 import type { XmlDocument, XmlElement } from "../xml/index.js";
@@ -176,6 +177,13 @@ export class ImportExportManager {
   private run: ExportRunState = { requestDictionary: null, packageElementIdsByElementType: null };
   /** The language work of the engine's constructor (LP-110), started once; see {@link ImportExportManager.prepare}. */
   private prepared: Promise<void> | null = null;
+  /**
+   * What the constructor's scan found, which an import reads (IMP-613). The engine's is one static object shared by every manager of
+   * the process; this manager has its own cache, which differs only for a caller that runs a manager after another rebuilt the cache.
+   *
+   * @spec IMP-613
+   */
+  readonly languageCodes: LanguageCodesExtractor;
 
   /**
    * An export manager. A null `itemHelper` is checked first, then a null `context`. The constructor takes the working directory as
@@ -217,6 +225,25 @@ export class ImportExportManager {
         ? new ManifestFile(manifestPath, { ...this.environment, engine: this.engine })
         : null;
     this.osUser = osUser;
+    this.languageCodes = new LanguageCodesExtractor(this.environment);
+    if (this.engine === "14.35" && isImport) this.scanLanguages();
+  }
+
+  /**
+   * 14.35's constructor scans every package of the manifest, in its order, for the languages the files use, whatever `Languages` is
+   * and whether or not the import will use the package (IMP-610). The folder is resolved against the directory of the manifest path as
+   * given, and each package is built when the scan reaches it. A failure ends the constructor (IMP-612).
+   *
+   * @spec IMP-610 IMP-611 IMP-612 IMP-613
+   */
+  private scanLanguages(): void {
+    const manifest = this.manifestFile;
+    if (manifest === null) throw new NullReferenceException();
+    const manifestDirectory = getDirectoryName(this.context?.manifestFile ?? null);
+    const packages = function* (engine: Engine): Iterable<{ name: string; folderPath: string }> {
+      for (const name of manifest.getAllPackageNames()) yield { name, folderPath: getSolutionPath(name, manifestDirectory, manifest, engine) };
+    };
+    this.languageCodes.extractLanguageCodesFromPackages(packages(this.engine));
   }
 
   /**
@@ -241,7 +268,7 @@ export class ImportExportManager {
    * made with `new` still checks its languages before it does anything else, but the error then comes from the first run. Engines
    * without the setting do nothing, except that a language mode is refused: 14.0.7 and 12.0 have no such action (LP-100).
    *
-   * @spec LP-100 LP-110
+   * @spec LP-100 LP-110 IMP-620 IMP-621
    */
   prepare(): Promise<void> {
     this.prepared ??= this.resolveLanguages();
@@ -253,7 +280,9 @@ export class ImportExportManager {
       if (isLanguageMode(this.context?.action ?? "")) throw new EngineNotSupportedError(this.engine);
       return;
     }
-    await resolveLanguages(this.context as SolutionUpgradeContext, this.itemHelper);
+    await resolveLanguages(this.context as SolutionUpgradeContext, this.itemHelper, () =>
+      this.languageCodes.getUsedLanguagesByPackages(this.manifestFile?.getAllPackageNames() ?? []),
+    );
   }
 
   /** `Cancel()`: the run is cancelled at the next place that looks (EXP-518). A cancel before a run starts is overwritten by it. */
@@ -720,6 +749,7 @@ export class ImportExportManager {
       manifestFile: this.manifestFile,
       manifestDirectory: this.manifestDirectory,
       environment: this.environment,
+      languageCodes: this.languageCodes,
       console: this.console,
       now: this.now,
       getSolutions2Xml: () => this.getSolutions2Xml(),

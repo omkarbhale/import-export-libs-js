@@ -1,16 +1,21 @@
-import { CItemException } from "../client/fault.js";
+import { getItemCount } from "../client/answer.js";
+import { CItemException, type ResponseDocument, getProperty } from "../client/fault.js";
 import type { CItemHelper } from "../client/item-helper.js";
+import { needToHandleNullPropertyValues } from "../client/null-values.js";
+import { IomItem } from "../export/iom-item.js";
+import { ArgumentException, ArgumentNullException } from "../io/errors.js";
 import { type XmlDocument, type XmlElement, setInnerText } from "../xml/dom.js";
 import { selectNodes } from "../xml/xpath.js";
-import { ArgumentNullException } from "../io/errors.js";
 import type { SUImportContext } from "./import-context.js";
-import { ImportItems, type MergeHelper } from "./import-items.js";
+import { ImportItems, type LanguagePackHelper, type MergeHelper } from "./import-items.js";
 
 /** What the merge side of the helper needs of it: its requests and the lookups with their cache. */
-export type MergeHost = Pick<CItemHelper, "applyAML" | "lookups" | "engine">;
+export type MergeHost = Pick<CItemHelper, "applyAML" | "lookups" | "engine" | "inn" | "innovatorVersion">;
 
 const ITEM_MUST_HAVE_ID_AND_TYPE = ["Item with action \"add\" must have 'id' and 'type' set", "Error - empty 'id' or 'type'"] as const;
 const ITEM_TYPE_IS_NOT_VERSIONABLE = ["Item type is not versionable", "Error - item type is not versionable"] as const;
+
+type XmlElementOfAnswer = Parameters<typeof getProperty>[0];
 
 /** `XmlElement.GetAttribute(name)`: the value, or the empty string for a missing attribute. */
 const getAttribute = (element: XmlElement, name: string): string => element.getAttributeNode(name)?.value ?? "";
@@ -27,7 +32,7 @@ function moveRelationshipsTo(item: XmlElement, id: string): void {
  *
  * @spec IMP-300 IMP-311 IMP-313 IMP-320 IMP-322 IMP-334 IMP-350 IMP-351 IMP-352
  */
-export class ImportLookups implements MergeHelper {
+export class ImportLookups implements MergeHelper, LanguagePackHelper {
   constructor(private readonly host: MergeHost) {}
 
   applyAML(aml: string): ReturnType<MergeHost["applyAML"]> {
@@ -41,13 +46,15 @@ export class ImportLookups implements MergeHelper {
 
   /**
    * `doImport(item, mergeMode)`: runs `CImportItems.Import` on the item document with the run's merge flag, which sends the item
-   * (IMP-300). A null document is an `ArgumentNullException` for `itemInXml`.
+   * (IMP-300). A null document is an `ArgumentNullException` for `itemInXml`. 14.35 reads the server's version when it makes the
+   * `CImportItems`, and takes the language-pack branch on a server that needs it (LP-040, LP-042); a helper with no version is a null
+   * reference there, outside the exception handler of `Import`.
    *
-   * @spec IMP-300
+   * @spec IMP-300 LP-040 LP-042
    */
-  doImport(itemInXml: XmlDocument | null, mergeMode: boolean): Promise<void> {
+  doImport(itemInXml: XmlDocument | null, mergeMode: boolean, amlBatchMode = false): Promise<void> {
     if (itemInXml === null) throw new ArgumentNullException("itemInXml");
-    return new ImportItems(this, this.host.engine).import(itemInXml, mergeMode, false);
+    return this.importItems().import(itemInXml, mergeMode, amlBatchMode);
   }
 
   /**
@@ -60,7 +67,72 @@ export class ImportLookups implements MergeHelper {
   doImportInContext(itemInXml: XmlDocument | null, importContext: SUImportContext | null): Promise<void> {
     if (itemInXml === null) throw new ArgumentNullException("itemInXml");
     if (importContext === null) throw new ArgumentNullException("importContext");
-    return new ImportItems(this, this.host.engine).import(itemInXml, importContext.merge, importContext.amlBatchMode);
+    return this.importItems().import(itemInXml, importContext.merge, importContext.amlBatchMode);
+  }
+
+  /** The `CImportItems` of a `doImport`, with the language-pack helper on a 14.35 server that needs it (LP-040). */
+  private importItems(): ImportItems {
+    const handleNullValues = this.host.engine === "14.35" && needToHandleNullPropertyValues(this.host.innovatorVersion);
+    return new ImportItems(this, this.host.engine, handleNullValues ? this : undefined);
+  }
+
+  /**
+   * `GetPropertyItemWithRequiredProps(where)`: the `Property` with that `where`, asked for its `id` and `keyed_name`. A fault other than
+   * "no items" is thrown as the engine's `CItemException` made from the answer alone; that one is swallowed and the error item is what
+   * the caller reads (LP-042, bug LP-041).
+   *
+   * @spec LP-042
+   */
+  async getPropertyItemWithRequiredProps(where: string): Promise<ResponseDocument> {
+    const request = IomItem.newItem("Property", "get");
+    request.setAttribute("select", "id[is_not_null()], keyed_name[is_not_null()]");
+    request.setAttribute("where", where);
+    return this.swallowNoItems(await this.host.inn.applyItem(request.toXml()));
+  }
+
+  /**
+   * `GetLanguagesWithSuffixes()`: the `Language` get with `code, suffix`, as a dictionary from code to suffix. "No items" gives an empty
+   * one, another fault is thrown. A `Language` with no `code` is an `ArgumentNullException` and a code twice is an `ArgumentException`;
+   * a missing suffix is null (LP-043). The request is made for every update.
+   *
+   * @spec LP-043
+   */
+  async getLanguagesWithSuffixes(): Promise<Map<string, string | null>> {
+    const request = IomItem.newItem("Language", "get");
+    request.setAttribute("select", "code, suffix");
+    const response = this.swallowNoItems(await this.host.inn.applyItem(request.toXml()));
+    const suffixes = new Map<string, string | null>();
+    const count = getItemCount(response);
+    for (let i = 0; i < count; i += 1) {
+      const item = response.items[i] as XmlElementOfAnswer;
+      const code = getProperty(item, "code");
+      if (code === null) throw new ArgumentNullException("key");
+      if (suffixes.has(code)) throw new ArgumentException("An item with the same key has already been added.");
+      suffixes.set(code, getProperty(item, "suffix"));
+    }
+    return suffixes;
+  }
+
+  /**
+   * `CItemHelper.applySQL(sql)`: one `ApplySQL` request. A fault is thrown as a `CItemException` made from the SQL text taken as the
+   * request, which the engine first loads as XML to indent it: the text is not XML, so what is thrown is the parser's `XmlException`
+   * (`Data at the root level is invalid. Line 2, position 5.` for the statement of LP-043), and `Import` wraps that as it wraps any
+   * (IMP-304). Probed (`06-null-values`, `sql-fault`, bug LP-045).
+   *
+   * @spec LP-043 LP-045
+   */
+  async applySql(sql: string): Promise<void> {
+    const response = await this.host.inn.applySql(sql);
+    if (response.isError) throw CItemException.fromRequest(sql, response, "14.35");
+  }
+
+  /** The `try`/`catch` of the two lookups: an error answer is thrown as a `CItemException` unless its faultcode is 0, which is swallowed. */
+  private swallowNoItems(response: ResponseDocument): ResponseDocument {
+    if (response.isError) {
+      const error = CItemException.fromResponse(response, "14.35");
+      if (error.faultcode !== 0) throw error;
+    }
+    return response;
   }
 
   /**
