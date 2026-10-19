@@ -351,6 +351,13 @@ The coverage test checks that every heading here names a rule defined in an area
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetDependsOnPackageNames`.
 - **Versions:** 12.0, 14.0.7.
 
+## EXP-620: a failed list of non-core packages is cached empty
+
+- **Behaviour:** the list of non-core package names of the unknown-package removal is created empty before the request that fills it. If that request fails, the item that needed it fails, and every later check in the same run finds an empty list: no candidate package is fetched and no reference belongs to an unknown package, so the references stay in the files without any message.
+- **Why it is a bug:** the failure should not be cached; the next use should ask again, as it does for the other three lookups.
+- **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetNonCorePackageNames`.
+- **Versions:** 12.0, 14.0.7.
+
 ## IMP-211: a relationship owner addressed by where is queued with the text System.Xml.XmlAttribute
 
 - **Behaviour:** when the owner of a missing related item has a `where` attribute and no `id`, the queued delayed edit reads ` where='System.Xml.XmlAttribute'`. The real `where` clause is lost.

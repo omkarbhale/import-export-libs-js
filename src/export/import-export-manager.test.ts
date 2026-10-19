@@ -13,7 +13,8 @@ import { SUExportContext } from "./export-context.js";
 import { ExportItem } from "./export-item.js";
 import { ImportExportManager, type SelectionInsertions } from "./import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "./messages.js";
-import { UnknownReferenceRemovalMissing, packageItem } from "./package-item.js";
+import { packageItem } from "./package-item.js";
+import { RemovedReference } from "./removed-reference.js";
 
 vi.mock("./package-item.js", async (original) => ({
   ...(await original<typeof import("./package-item.js")>()),
@@ -426,26 +427,22 @@ describe("the items of a package (EXP-514 to EXP-517)", () => {
     expect(run.exported.map((entry) => entry.id)).toContain("IO2");
   });
 
-  it("writes the removed references and warns only in RemoveWithWarning, and asks the supplied removal for each item (EXP-517)", async () => {
-    const removal = vi.fn((_helper, packageName: string, excluded: NetfxHashtable<{ from: string; to: string; reason: string }>) => {
-      return async () => {
-        excluded.set(`${packageName}-1`, { from: "[a].[ItemType].X", to: "[b].[Method].Y", reason: "the item type" });
-      };
-    });
+  it("writes the removed references and warns only in RemoveWithWarning, and hands each item the table (EXP-613, EXP-614)", async () => {
     const selection: SelectionInsertions = [one("pkg.a", "A1")];
     for (const mode of ["RemoveSilently", "RemoveWithWarning"] as const) {
       const run = start({ known: ["pkg.a"] }, (context) => {
         context.refToUnknownPacks = mode;
       });
-      vi.mocked(packageItem).mockImplementation(async (h, exportItem, packageName, level, excluded, provider) => {
+      vi.mocked(packageItem).mockImplementation(async (_h, _exportItem, packageName, _level, excluded) => {
         expect(excluded).not.toBeNull();
-        await provider?.(h, packageName, excluded as never)(undefined as never);
+        excluded?.set(`${packageName}-1`, new RemovedReference("[a].[ItemType].X", "[b].[Method].Y", "item"));
         return "";
       });
-      Object.assign(run.manager, { unknownReferences: removal });
       await run.manager.exportSolutions(run.context, selection);
       expect(run.log()).toContain(
-        `\n --- REMOVED REFERENCE ---\r\nFrom:\t[a].[ItemType].X\r\nTo:\t[b].[Method].Y\r\nReason:\tthe item type\r\nend of execution : ${STAMP}\r\n`,
+        "\n --- REMOVED REFERENCE ---\r\nFrom:\t[a].[ItemType].X\r\nTo:\t[b].[Method].Y\r\n" +
+          "Reason:\tThe item contains a reference to an item that belongs to an unknown package " +
+          `(i.e. neither a core package nor a package that the package depends on)\r\nend of execution : ${STAMP}\r\n`,
       );
       expect(text(run, "warning")).toEqual(
         mode === "RemoveWithWarning"
@@ -453,16 +450,6 @@ describe("the items of a package (EXP-514 to EXP-517)", () => {
           : [],
       );
     }
-  });
-
-  it("runs the real packageItem into a failure when removal is asked for and none was supplied", async () => {
-    const original = await vi.importActual<typeof import("./package-item.js")>("./package-item.js");
-    const run = start({ known: ["pkg.a"] }, (context) => {
-      context.refToUnknownPacks = "RemoveSilently";
-    });
-    vi.mocked(packageItem).mockImplementation(original.packageItem);
-    await expect(run.manager.exportSolutions(run.context, [one("pkg.a", "A1")])).rejects.toBeInstanceOf(UnknownReferenceRemovalMissing);
-    expect(run.manifest()).toContain('<package name="pkg.a"');
   });
 });
 

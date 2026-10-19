@@ -9,8 +9,8 @@ import type { Case } from "./replay-cases.js";
 /**
  * The recorded 14.0.7 export cases, exported by the port through the whole of `CExportItems.export` and written to disk: the
  * folder it leaves is compared with the folder the engine left (`output/` of the case), file by file and byte for byte. The
- * manifest `imports.mf` belongs to the export run (`export-run.md`), and the removal of references to unknown packages to its
- * own area (`export-unknown-refs.md`), so a case that asks for a removal mode waits for those.
+ * manifest `imports.mf` belongs to the export run (`export-run.md`). The removal of references to unknown packages needs the run's
+ * table and log, so the cases that ask for a removal mode are replayed by `run-replay.test.ts`.
  */
 const roots: string[] = [];
 afterAll(() => {

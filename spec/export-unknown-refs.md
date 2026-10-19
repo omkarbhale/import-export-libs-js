@@ -163,13 +163,19 @@ An id that belongs to a core package or to a dependency of `p` is therefore neve
 
 [14.0.7] Four caches serve the lookups: element-id sets by package name (R1), relationship type ids by name (R2), the non-core name list (R3) and dependency names by package name (R4 and R5). None expires. The first three are emptied whenever a `CItemHelper` is constructed, so each run starts clean. The fourth is not (EXP-619). All are shared by every package exported in the run: a referenced package's export reuses what the main package's export loaded, and the dependency list of each package name is asked once.
 
-An error in a lookup is not cached: the next use asks again.
+An error in the lookups of R1, R2, R4 and R5 is not cached: the next use asks again. The list of R3 is the exception (EXP-620).
 
 [12.0] Same as 14.0.7.
 
 ### EXP-619: The dependency cache outlives the run (bug)
 
 [14.0.7] The dependency cache is a `static readonly` table that no constructor resets. A second run in the same process that exports a package whose dependencies were read in an earlier run reuses the old list, even when the database or the connection changed. The CLI runs once per process, so it never shows; a library caller that exports twice in one process sees it. The port keeps this cache at module level, shared by all runs of one process, and does not reset it. Registered in `bugs.md`.
+
+[12.0] Same as 14.0.7.
+
+### EXP-620: A failed list of non-core packages is cached empty (bug)
+
+[14.0.7] The list of R3 is created before the request is sent and filled after the answer. When R3 fails (a transport error, a fault of any code), the empty list stays as the cache for the run, so the failure reaches the first check that needed the list and every later check sees no candidate packages: nothing more is fetched and nothing more belongs to an unknown package. The port keeps the list in the same order of events. Registered in `bugs.md`.
 
 [12.0] Same as 14.0.7.
 
@@ -296,7 +302,7 @@ The `NullReferenceException` cases of this area are: a relationship item with no
 
 ### EXP-616: The core package test
 
-[14.0.7] A package name is a core package when it starts with `com.aras.innovator.` and does not start with `com.aras.innovator.solution.`, both prefix tests case-sensitive. (The engine uses the current-culture `StartsWith`; replays on the oracle's culture (en-IN) of names with soft hyphens, zero-width spaces, NUL and other case gave the ordinal answer each time, so the port compares ordinally.) The name `com.aras.innovator.solution.` itself is non-core, and `com.aras.innovator.` followed by any other text is core; every `com.aras.defaults.*` name is non-core here. `IsStandardPackage` and the output directory layout, which treat `com.aras.defaults.*` as standard, are specified with the file layout (ticket 15).
+[14.0.7] A package name is a core package when it starts with `com.aras.innovator.` and does not start with `com.aras.innovator.solution.`, both prefix tests case-sensitive. The test is `ExportImportBase.IsCorePackage`, the same method the manifest uses, so it is the culture-sensitive `StartsWith` of MAN-031 with the code point differences recorded there, not an ordinal comparison (the replay of ordinary names cannot tell them apart; the soft hyphen and the other ignorable code points of MAN-031 can). The name `com.aras.innovator.solution.` itself is non-core, and `com.aras.innovator.` followed by any other text is core; every `com.aras.defaults.*` name is non-core here. `IsStandardPackage` and the output directory layout, which treat `com.aras.defaults.*` as standard, are specified with the file layout (ticket 15).
 
 [12.0] Same as 14.0.7.
 
