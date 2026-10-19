@@ -80,7 +80,7 @@ Ticket 64. It compares the export fixtures of 12.0 and 14.0.7, and of 14.0.7 and
 ## Live parity
 
 ```sh
-ARAS_PASSWORD=… npm run parity -- --engine 14.0.7                 # the whole catalogue (not the slow cases)
+ARAS_PASSWORD=… npm run parity -- --engine 14.0.7                 # the whole catalogue (not the slow cases); --engine 12.0 the 12.0 one
 ARAS_PASSWORD=… npm run parity -- --engine 14.0.7 --case e24-grid,s0-mini-merge
 ARAS_PASSWORD=… npm run parity -- --engine 14.0.7 --kind import   # export, scratch-export, import, language-pack, console-mode
 npm run parity -- --list                                          # the catalogue; no server, no password
@@ -93,9 +93,9 @@ Ticket 44. For each case the script runs the oracle (the vendored `Libs.dll` thr
 - the engine log, the messages by channel and the console text;
 - how the run ended: the value `ImportSolutions` returned, the exception that ended the host (its type and message, without the stack), and the host's exit code.
 
-**What is normalised, and nothing else** (`oracle/src/parity/normalize.ts`): the ids the server assigned during the run (each side's run makes its own PackageDefinition and PackageGroup ids; they are numbered in order of first appearance), the date-times of the log, and the header lines and `File full name` paths that name a run's own folders. A difference in anything else is a difference.
+**What is normalised, and nothing else** (`oracle/src/parity/normalize.ts`): the ids the server assigned during the run (each side's run makes its own PackageDefinition and PackageGroup ids; they are numbered in order of first appearance), the date-times of the log, and the header lines, `File full name` paths and skipped-file warnings that name a run's own folders. A difference in anything else is a difference.
 
-**The catalogue** (`npm run parity -- --list`) is every recorded 14.0.7 case, as code: ticket 05's export catalogue and option matrix (`export-cases.ts`, which includes the three unknown-package reference modes `RemoveSilently`, `RemoveWithWarning` and `DoNotRemove`), the scratch-seeded export cases of ticket 67 (`export-scratch-cases.ts`), the import cases of ticket 25 (`import-cases.ts`), ticket 45's language-pack cases, and the console export modes of ticket 66 (`parity/cases.ts`). The case `mode-all-packages` exports every package of dev, about ten thousand items, so it runs only when named with `--case` or `--include-slow`.
+**The catalogue** (`npm run parity -- --list`, with `--engine 12.0` for 12.0) is every recorded case of the engine, as code (12.0 has the same families but no language-pack cases, and its import list adds the `r*` cases that pin its variant rules): ticket 05's export catalogue and option matrix (`export-cases.ts`, which includes the three unknown-package reference modes `RemoveSilently`, `RemoveWithWarning` and `DoNotRemove`), the scratch-seeded export cases of ticket 67 (`export-scratch-cases.ts`), the import cases of ticket 25 (`import-cases.ts`), ticket 45's language-pack cases, and the console export modes of ticket 66 (`parity/cases.ts`). The case `mode-all-packages` exports every package of dev, about ten thousand items, so it runs only when named with `--case` or `--include-slow`.
 
 **What it changes on dev.** Exports are reads. Everything else touches `LIBSJS-SCRATCH-*` packages and items only, as AGENTS.md says:
 
@@ -106,6 +106,8 @@ Ticket 44. For each case the script runs the oracle (the vendored `Libs.dll` thr
 - Before it starts, the script refuses a dev that already has a PackageDefinition or DatabaseUpgrade named `LIBSJS-SCRATCH-*`.
 
 The port connects through a subclass of `HttpConnectorExtension`, as the oracle host connects through its own subclass of IOM's `HttpServerConnection`: `CItemHelper.Logout` logs off only the exact type (WIRE-040), so neither side sends a `Logoff`.
+
+**12.0 differs in three ways the harness mirrors.** Its `CItemHelper.Login()` logs in only a connection of exactly the type `HttpConnectorExtension` (WIRE-017), so the oracle host logs in first with IOM 12's login (`ValidateUser`, `GetCurrentUserID`, the user read) and the port's session does the same before the helper's version probe. Its log writes three date-times in the current culture (EXP-505), which on the Windows host is `en-IN` (`dd-MM-yyyy HH:mm:ss`), so the port is given that culture (`ORACLE_HOST_CULTURE`). And it reads a package's in-memory log only up to `1024 × ⌊(N − 1) / 1024⌋` UTF-16 code units (IMP-406), a cut that moves with the length of any path in the log (the warning for a file without a root tag), so the port's package folder is made as long as the oracle's `input/` folder (`inputDirLikeOracle` in `oracle/src/parity/runners.ts`). `oracle/host/engine-12.0.ps1` also takes the console-mode parameters, so 12.0's own `ConsoleUpgrade.exe` runs for the `console-mode` cases. The run is recorded in `roadmap/live-parity-12.0.md`.
 
 **A difference** is printed with the first requests, lines or bytes that differ, and its folders are kept in `--out` (default `oracle/out/parity-<engine>-<time>/<case>/`): `oracle/` is the oracle's recorded run, in the layout of every fixture, and `port/` is the port's, in the same layout. An equal case's folders are removed (`--keep-all` keeps them). Each difference becomes a fixture (`fixtures/14.0.7/parity/`), then a fix or a newly registered bug (`spec/bugs.md`). `report.json` in the folder lists every case. The roadmap record of a run is `roadmap/live-parity-14.0.7.md`.
 

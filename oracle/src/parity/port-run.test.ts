@@ -19,8 +19,10 @@ import { readOracleOutcome } from "./outcome.js";
 
 vi.setConfig({ testTimeout: 180_000 });
 
-const LOGIN_CALLS = 6;
+/** The calls a login makes before the engine's own: the fake server's, so the comparison starts after them. */
+const LOGIN_CALLS: Record<"12.0" | "14.0.7", number> = { "12.0": 5, "14.0.7": 6 };
 const FIXTURES = new URL("../../../fixtures/14.0.7/", import.meta.url).pathname;
+const FIXTURES_12 = new URL("../../../fixtures/12.0/", import.meta.url).pathname;
 
 beforeEach(() => packageCaches.dependsOn.clear());
 
@@ -28,14 +30,14 @@ interface RunFile {
   params: { Url: string; Database: string; User: string };
 }
 
-function serverFor(dir: string, blobs: string): { server: PortServer; recorded: RecordedServer } {
+function serverFor(dir: string, blobs: string, engine: "12.0" | "14.0.7" = "14.0.7"): { server: PortServer; recorded: RecordedServer } {
   const run = JSON.parse(readFileSync(join(dir, "run.json"), "utf8")) as RunFile;
-  const recorded = new RecordedServer(readTranscript(join(dir, "transcript.jsonl"), blobs));
+  const recorded = new RecordedServer(readTranscript(join(dir, "transcript.jsonl"), blobs), engine);
   const transport = new FakeTransport(recorded.handler);
   return {
     recorded,
     server: {
-      engine: "14.0.7",
+      engine,
       url: "http://dev.example/12sp9",
       logUrl: run.params.Url,
       database: run.params.Database,
@@ -74,7 +76,7 @@ describe("the port's export runner against recorded 14.0.7 export cases", () => 
     const port = { ...run, files: new Map([...run.files!].filter(([path]) => !path.endsWith("/"))) };
 
     expect(recorded.mismatches, "the requests the recording does not hold").toEqual([]);
-    expect(describeDifferences(diffOutcomes(oracle, port, { skipCalls: LOGIN_CALLS }))).toEqual([]);
+    expect(describeDifferences(diffOutcomes(oracle, port, { skipCalls: LOGIN_CALLS["14.0.7"] }))).toEqual([]);
     expect(port.calls.length).toBe(oracle.calls.length);
   });
 });
@@ -108,7 +110,7 @@ describe("the port's import runner against recorded 14.0.7 import steps", () => 
     );
 
     expect(recorded.mismatches, "the requests the recording does not hold").toEqual([]);
-    expect(describeDifferences(diffOutcomes(oracle, outcome, { skipCalls: LOGIN_CALLS }))).toEqual([]);
+    expect(describeDifferences(diffOutcomes(oracle, outcome, { skipCalls: LOGIN_CALLS["14.0.7"] }))).toEqual([]);
   });
 });
 
@@ -122,6 +124,54 @@ describe("the port's language-pack runner against recorded 14.0.7 lpimport runs"
     const { outcome } = await runPortLanguagePack(server, { lpDir: join(dir, "lp"), lpPackage: definition.lpPackage, lpDebug: definition.lpDebug }, osUserOf(oracle.calls));
 
     expect(recorded.mismatches, "the requests the recording does not hold").toEqual([]);
-    expect(describeDifferences(diffOutcomes(oracle, outcome, { skipCalls: LOGIN_CALLS }))).toEqual([]);
+    expect(describeDifferences(diffOutcomes(oracle, outcome, { skipCalls: LOGIN_CALLS["14.0.7"] }))).toEqual([]);
+  });
+});
+
+const EXPORTS_12 = ["e24-grid", "e14-list", "p3-absent-package", "e40-workflow-promotion-error-yes", "e06-scopecachedependency-removewithwarning", "s6-dr-family"];
+
+describe("the port's export runner against recorded 12.0 export cases", () => {
+  it.for(EXPORTS_12.map((name) => [name] as const))("%s", async ([name]) => {
+    const dir = join(FIXTURES_12, "export", name);
+    const blobs = join(FIXTURES_12, "export", "_blobs");
+    const input = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as ExportCaseFile;
+    const { server, recorded } = serverFor(dir, blobs, "12.0");
+    const oracle = readOracleOutcome(dir, { filesFrom: "output", blobs });
+    const run = await runPortExport(server, { selection: selectionOf(input.packages), options: input.options });
+    const port = { ...run, files: new Map([...run.files!].filter(([path]) => !path.endsWith("/"))) };
+
+    expect(recorded.mismatches, "the requests the recording does not hold").toEqual([]);
+    expect(describeDifferences(diffOutcomes(oracle, port, { skipCalls: LOGIN_CALLS["12.0"] }))).toEqual([]);
+    expect(port.calls.length).toBe(oracle.calls.length);
+  });
+});
+
+const IMPORTS_12: ReadonlyArray<readonly [string, number]> = [
+  ["s0-mini-defaults", 1],
+  ["s0-mini-merge", 1],
+  ["s4-del-refused", 1],
+  ["s4-mp-promote", 1],
+  ["r11-ac-attribute-actions", 1],
+  ["r15-latin1-file", 1],
+  ["s3-unres-delayed", 1],
+];
+
+describe("the port's import runner against recorded 12.0 import steps", () => {
+  it.for(IMPORTS_12.map((entry) => [...entry] as [string, number]))("%s step %i", async ([name, stepNumber]) => {
+    const caseDir = join(FIXTURES_12, "import", name);
+    const dir = join(caseDir, `step-${stepNumber}`);
+    const blobs = join(FIXTURES_12, "import", "_blobs");
+    const definition = JSON.parse(readFileSync(join(caseDir, "case.json"), "utf8")) as ImportCaseFile;
+    const step = definition.steps[stepNumber - 1]!;
+    const { server, recorded } = serverFor(dir, blobs, "12.0");
+    const oracle = readOracleOutcome(dir, { blobs });
+    const { outcome } = await runPortImport(
+      server,
+      { inputDir: join(dir, "input"), options: step.options, ...(step.only === undefined ? {} : { only: step.only }) },
+      osUserOf(oracle.calls),
+    );
+
+    expect(recorded.mismatches, "the requests the recording does not hold").toEqual([]);
+    expect(describeDifferences(diffOutcomes(oracle, outcome, { skipCalls: LOGIN_CALLS["12.0"] }))).toEqual([]);
   });
 });

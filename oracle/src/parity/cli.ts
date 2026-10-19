@@ -30,7 +30,7 @@ import {
 /** The address WSL reaches the dev instance at; the oracle's Windows side calls the same server `localhost`. */
 const WSL_DEV_URL = "http://172.19.0.1/12sp9";
 
-const USAGE = `Usage: npm run parity -- [--engine 14.0.7|14.35] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
+const USAGE = `Usage: npm run parity -- [--engine 12.0|14.0.7|14.35] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
                            [--out <folder>] [--keep-all] [--url <dev url>]
 
 Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, and

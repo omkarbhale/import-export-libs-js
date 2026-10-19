@@ -83,6 +83,8 @@ function comparable(log: string, recordedInput: string, input: string, logPath: 
     .replace(/^(File full name )'(.*)'(\r?)$/gm, (_, label: string, path: string, end: string) => `${label}'${inputRelative(path)}'${end}`)
     .replace(/^(WARNING: File )'(.*)'( doesn't have )/gm, (_, label: string, path: string, rest: string) => `${label}'${inputRelative(path)}'${rest}`)
     .replace(CLOCK, "<time>")
+    // 12.0 cuts a package's log mid-line (IMP-412): a date-time that the cut leaves incomplete still depends on the day of the run
+    .replace(/(of execution : )\d[\d/: -]*$/, "$1<time>")
     .replace(TIME_SPAN, "$1<span>")
     .split(logPath === "" ? "\u0000" : logPath)
     .join("<log>");

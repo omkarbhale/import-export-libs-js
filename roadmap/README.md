@@ -14,7 +14,9 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`engine-diffs.md`](engine-diffs.md) reads the live three-engine export diffs on dev (wayfinder ticket 64): which differences the code reading predicted are confirmed, which dev cannot show, and where each is pinned.
 
-[`live-parity-14.0.7.md`](live-parity-14.0.7.md) records the live run of the port against the DLL on dev for 14.0.7 (wayfinder ticket 44): 131 of 137 cases equal, one known difference, five language-pack cases skipped.
+[`live-parity-14.0.7.md`](live-parity-14.0.7.md) records the live run of the port against the DLL on dev for 14.0.7 (wayfinder ticket 44): 131 of 137 cases equal, one known difference (`fs-odd-files`, since closed), five language-pack cases skipped.
+
+[`live-parity-12.0.md`](live-parity-12.0.md) records the same run for 12.0 (the reopening of ticket 44).
 
 [`live-parity-14.35-export.md`](live-parity-14.35-export.md) records the live run of the port against the DLL on dev for 14.35's export side (wayfinder ticket 76, part A): 124 of 134 cases equal, no difference, ten language-resource cases skipped because dev has no Languages `de` and `fr`.
 

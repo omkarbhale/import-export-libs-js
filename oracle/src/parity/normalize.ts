@@ -104,6 +104,7 @@ export function normalizeLog(log: string, assigned: ReadonlyMap<string, string>)
           : `<other>/${normal.slice(normal.lastIndexOf("/") + 1)}`;
       return `File full name '${rest}'${end}`;
     })
+    .replace(/^(WARNING: File ')(.*)(' doesn't have .*File is skipped\.\r?)$/gm, (_all, head: string, path: string, tail: string) => `${head}<input>/${slashed(path).replace(/^.*?\/input\//, "")}${tail}`)
     .replace(CLOCK, "<time>")
     .replace(ELAPSED, "<elapsed>");
   const replaced = working === "" ? out : out.split(working).join("<working>");
