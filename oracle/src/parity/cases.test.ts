@@ -32,7 +32,28 @@ describe("the 14.0.7 catalogue", () => {
 
   it("has the language-pack cases of 14.0.7 only", () => {
     expect(languagePackCases("14.0.7").map((c) => c.id)).toEqual(["lp01", "lp02", "lp03", "lp04", "lp05"]);
-    expect(catalogue("12.0")).toEqual([]);
+    expect(languagePackCases("12.0")).toEqual([]);
+    expect(languagePackCases("14.35")).toEqual([]);
+  });
+});
+
+describe("the 12.0 catalogue", () => {
+  const entries = catalogue("12.0");
+
+  it("has one entry per recorded case of every family but language packs, with unique ids", () => {
+    expect(duplicateIds(entries)).toEqual([]);
+    const count = (kind: string) => entries.filter((e) => e.kind === kind).length;
+    expect(count("export")).toBe(EXPORT_CASES.length);
+    expect(count("scratch-export")).toBe(SCRATCH_EXPORT_CASES.length);
+    expect(count("import")).toBe(casesFor("12.0").length);
+    expect(count("language-pack")).toBe(0);
+    expect(count("console-mode")).toBe(CONSOLE_MODE_CASES.length);
+  });
+
+  it("includes the cases that pin 12.0's own variant rules", () => {
+    const imports = entries.filter((e) => e.kind === "import").map((e) => e.id);
+    expect(imports).toEqual(expect.arrayContaining(["r11-ac-attribute-actions", "r15-latin1-file", "r15-utf16-no-bom"]));
+    expect(entries.filter((e) => e.slow === true).map((e) => e.id)).toEqual(["mode-all-packages"]);
   });
 });
 

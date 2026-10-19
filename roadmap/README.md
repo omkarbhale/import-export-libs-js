@@ -16,6 +16,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`live-parity-14.0.7.md`](live-parity-14.0.7.md) records the live run of the port against the DLL on dev for 14.0.7 (wayfinder ticket 44): 131 of 137 cases equal, one known difference, five language-pack cases skipped.
 
+[`live-parity-12.0.md`](live-parity-12.0.md) records the same run for 12.0 (the reopening of ticket 44).
+
 [`live-parity-14.35-export.md`](live-parity-14.35-export.md) records the live run of the port against the DLL on dev for 14.35's export side (wayfinder ticket 76, part A): 124 of 134 cases equal, no difference, ten language-resource cases skipped because dev has no Languages `de` and `fr`.
 
 [`live-parity-14.35.md`](live-parity-14.35.md) records the rest of 14.35's live run (wayfinder ticket 76, part B): the import side, the DB patch, the rerun of the export side and the completion of the engine. 66 of 71 import cases equal, one port difference found and fixed, five cases skipped for the Languages dev lacks.

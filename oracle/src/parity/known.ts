@@ -10,4 +10,5 @@ export interface KnownDifference {
   followUp: string;
 }
 
+/** None now: `fs-odd-files`, listed here for 14.0.7 until ticket 36's 8.3 short-name ordering (IMP-003, IMP-004), is equal on 12.0 and 14.0.7 (`roadmap/live-parity-12.0.md`). */
 export const KNOWN_DIFFERENCES: Readonly<Record<string, KnownDifference>> = {};
