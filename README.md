@@ -4,7 +4,7 @@ A readable TypeScript re-implementation of Aras Innovator's package import/expor
 
 It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341), **14.0.7** (14.0.7.35492, the default) and **14.35** (14.35.0.43890).
 
-**Status: in progress.** The 14.0.7 engine is built for import, language-pack import and the offline import plan; export and the other two engines are still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
+**Status: in progress.** The 14.0.7 engine is built for import, language-pack import and the offline import plan, and 14.35 for DB patch application; export and the rest of the other two engines are still to come. An engine whose slice has not landed reports `engine <v> is not yet supported`.
 
 ## Install
 
@@ -23,6 +23,7 @@ npm install git+ssh://git@github.com/omkarbhale/import-export-libs-js.git
 | `aras-pkg import <manifest> [--package <name>…]` | Imports the packages of an `imports.mf`, in dependency order. |
 | `aras-pkg plan import <manifest> [--package <name>…]` | Offline: the order an import follows and, per package, the item sequence, the repeats and every item the import silently drops. |
 | `aras-pkg import-language-pack <lppath> --lp-package <name>` | Imports a language pack (`ImportConfig.xml`) as a package. Not on `--engine 12.0`. |
+| `aras-pkg apply-db-patches <manifest> [--patches-folder <dir>] [--tool-name <text>]` | Applies the database update patches an updates manifest lists, through the server's `ApplyUpdate` action. Only `--engine 14.35`, and only the login `root`: both are refused before anything is sent. Exit `1` when any patch was refused. |
 
 ```sh
 export ARAS_URL=http://aras.example/InnovatorServer ARAS_DATABASE=InnovatorSolutions ARAS_USER=admin

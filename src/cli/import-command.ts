@@ -1,13 +1,11 @@
 import { existsSync, statSync } from "node:fs";
-import { CItemHelper } from "../client/item-helper.js";
-import { VersionRefusal } from "../client/version.js";
 import type { Engine } from "../engines.js";
 import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
 import { IMPORT_RUN_ENGINES, SUImportContext } from "../import/index.js";
-import { LP_ENGINES, languagePackImport, leftBehindTempFolder } from "../language-pack/index.js";
+import { LP_ENGINES, languagePackImport } from "../language-pack/index.js";
 import { MANIFEST_ENGINES, ManifestFile } from "../manifest/index.js";
-import { EXIT, exitCodeOf } from "./exit.js";
+import { EXIT } from "./exit.js";
 import type { CliIo } from "./io.js";
 import {
   CONNECTION_OPTIONS,
@@ -23,19 +21,11 @@ import {
   resolveLogPath,
   stringOf,
 } from "./options.js";
-import { Reporter } from "./reporter.js";
-import { openSession } from "./session.js";
-import { type Summary, printSummary } from "./summary.js";
+import { runOperation } from "./operation.js";
 import { IMPORT_USAGE, LANGUAGE_PACK_USAGE, UsageError } from "./usage.js";
 
 /** The engines `import` runs: those whose client, manifest and import run are all built. */
 const IMPORT_ENGINES: readonly Engine[] = IMPORT_RUN_ENGINES.filter((engine) => MANIFEST_ENGINES.includes(engine));
-
-/** The text a failure shows: the message, and for a refused server the engines that would take it. */
-function describe(error: unknown): string {
-  if (error instanceof VersionRefusal) return `${error.message}\n${error.hint}`;
-  return error instanceof Error ? error.message : String(error);
-}
 
 /** What `import` and `import-language-pack` share: the context of the import, and its summary. */
 interface ImportSettings {
@@ -78,51 +68,6 @@ async function importSettings(command: string, action: string, values: OptionVal
   return { engine, connection, context, importContext, osUser: stringOf(values, "os-user"), json: flagOf(values, "json"), logPath };
 }
 
-/**
- * Runs one operation on a logged-in helper and reports it: the engine's messages to standard error as they come, the summary to
- * standard output at the end, and the exit code (0, 1 or 2). A login that fails or an exception that ends the run is reported as a
- * failure with the engine and the command in the summary.
- */
-async function execute(
-  io: CliIo,
-  settings: ImportSettings,
-  command: string,
-  facts: Summary,
-  operation: (helper: CItemHelper, reporter: Reporter) => Promise<number>,
-): Promise<number> {
-  const reporter = new Reporter(io);
-  let returnCode: number = EXIT.failed;
-  let failure: string | undefined;
-  let server: string | undefined;
-  try {
-    const helper = await openSession(settings.engine, settings.connection, io, reporter);
-    server = helper.innovatorVersion?.fullString;
-    returnCode = await operation(helper, reporter);
-  } catch (error) {
-    failure = describe(error);
-    reporter.error(failure);
-    const left = leftBehindTempFolder(error);
-    if (left !== undefined) reporter.warn(`The temporary package was left at ${left}`);
-  }
-  const exitCode = failure === undefined ? exitCodeOf(returnCode, reporter.counts.errors) : EXIT.failed;
-  const { info, warnings, errors, packages } = reporter.counts;
-  printSummary(io, settings.json, {
-    command,
-    engine: settings.engine,
-    result: exitCode === EXIT.ok ? "success" : exitCode === EXIT.engineErrors ? "completed with engine errors" : "failed",
-    exitCode,
-    url: settings.connection.url,
-    database: settings.connection.database,
-    user: settings.connection.user,
-    server,
-    ...facts,
-    log: settings.logPath,
-    messages: { info, warnings, errors, packages },
-    error: failure,
-  });
-  return exitCode;
-}
-
 /** The manifest of an import, read before anything is sent: a missing file and an unknown package are refused here. */
 function readManifest(path: string, engine: Engine, requested: readonly string[]): { manifest: ManifestFile; names: string[] } {
   if (!existsSync(path) || !statSync(path).isFile()) throw new UsageError(`the manifest '${path}' does not exist`);
@@ -160,7 +105,7 @@ export async function importCommand(args: readonly string[], io: CliIo): Promise
   const settings = await importSettings("import", "Import", values, io, engine);
   settings.context.manifestFile = manifestPath;
 
-  return execute(io, settings, "import", { manifest: manifestPath, packages: names, merge: settings.importContext.merge }, async (helper, reporter) => {
+  return runOperation(io, settings, "import", { manifest: manifestPath, packages: names, merge: settings.importContext.merge }, async (helper, reporter) => {
     try {
       const manager = new ImportExportManager(settings.context, reporter.messages, helper, {
         console: reporter.console,
@@ -206,7 +151,7 @@ export async function languagePackCommand(args: readonly string[], io: CliIo): P
   settings.context.lpPackage = lpPackage;
   settings.context.lpDebug = flagOf(values, "lp-debug");
 
-  return execute(io, settings, "import-language-pack", { languagePack: lpPath, package: lpPackage }, (helper, reporter) =>
+  return runOperation(io, settings, "import-language-pack", { languagePack: lpPath, package: lpPackage }, (helper, reporter) =>
     // `languagePackImport` logs the helper out itself (LP-001 step 7).
     languagePackImport(settings.context, settings.importContext, reporter.messages, helper, {
       console: reporter.console,

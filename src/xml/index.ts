@@ -21,7 +21,7 @@ export { loadXml, parseFragment } from "./parser.js";
 export type { LoadOptions } from "./parser.js";
 export { readAllText, xmlDocumentLoad } from "./read-text.js";
 export { encodeItemFile, xmlDocumentSave, xmlDocumentSaveWithSettings } from "./save.js";
-export { xdocumentToString } from "./xdocument.js";
+export { xdocumentToString, xelementParseToString } from "./xdocument.js";
 export { evaluate, selectNodes, selectSingleNode } from "./xpath.js";
 export type { XPathValue } from "./xpath.js";
 export { innerXml, outerXml, saveBytes } from "./writer-legacy.js";

@@ -13082,9 +13082,12 @@
             "bodySha256": "ae240a2dd862c41dea70a9b674fef342d26300000ae183d3d9636eeda09c0643",
             "textSha256": "39a5efcc3cc12dc22a9cee6f3e3194d8fde096c2c21c0a0a468abe931534c14e"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-002"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#DBUpdateConfig.dbPatchesFolderPath"
           ]
         },
         {
@@ -13097,9 +13100,12 @@
             "bodySha256": "747c6af7b60e42901f7e1a89ec274ee0289d3c392cb9d766a25e05e2b2297c69",
             "textSha256": "2375aef683e720231e854482602f1be655501976aaa16377b35cbbaecc0787f8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-002"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#DBUpdateConfig.dbUpdatedManifestFilePath"
           ]
         },
         {
@@ -13112,9 +13118,12 @@
             "bodySha256": "dc77946b9e9661f555a751aa2ccbb25f2038109e50a20d85f84c616fea1378ee",
             "textSha256": "1a4ce2bfc8fd86d4b953ada6b1ce204f8ccae0db07f7feef36d5b22ea04cf26d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-002"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#DBUpdateConfig.toolName"
           ]
         },
         {
@@ -13126,9 +13135,12 @@
             "ilSha256": "fe9619501a37a65d05dd3e2e9caf19532a5c7977c5aee181b91d430dd9ff8c63",
             "bodySha256": "10d02b6f0bf17fe8b1e18ee245b3994ec19c932fe60b0b5ffc2c9e7f7e045d28"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13141,9 +13153,12 @@
             "bodySha256": "a372af799553901a30fd0d455b7e01d8782c26a2b511d9b19cffb845a879cf67",
             "textSha256": "7798a8b1a7c207cf754039d0dd90c9562ed6b3d0a20cd837e81cfd15719d9f2f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13156,9 +13171,12 @@
             "bodySha256": "03ecd3c15c51b48ab8c27d261954e5b8b94b232a164a6d6d21df0fc2ed3499f9",
             "textSha256": "c77581c0f4ebfa2163c922cba8f65d67feb89e20bd6dbde9e785f250120560aa"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13171,9 +13189,12 @@
             "bodySha256": "fec5d9ec25e03e2842e81bf6a7c059bc3844a0ad43d5acf47578d1525c67c239",
             "textSha256": "ed17316d89c5247e8add10733979b6635efba18731fcbf42e0634c170ce1dc40"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13186,9 +13207,12 @@
             "bodySha256": "e7f31efde011836c4d68bd1026f061abd3df3f99e5fcc67663080a56feb0e385",
             "textSha256": "9d6147c4910bde6beef2ca4fcf9051c380865027410fb9a5b778d892c9597df7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13201,9 +13225,12 @@
             "bodySha256": "f36ecbc63adcd619c6f7d7a2e1ff53a0694962dc163cf54b24ea5f70b0907370",
             "textSha256": "7798a8b1a7c207cf754039d0dd90c9562ed6b3d0a20cd837e81cfd15719d9f2f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13216,9 +13243,12 @@
             "bodySha256": "f03b45b786bdda34a184c32fec8a073e32192fd65c9a6ae1fe113d73976a836b",
             "textSha256": "c77581c0f4ebfa2163c922cba8f65d67feb89e20bd6dbde9e785f250120560aa"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13231,9 +13261,12 @@
             "bodySha256": "037879f9503c2853058615c67ac43f0cfa4d3bf207948c005f4e9571c52711b7",
             "textSha256": "ed17316d89c5247e8add10733979b6635efba18731fcbf42e0634c170ce1dc40"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13246,9 +13279,12 @@
             "bodySha256": "4735819ea09db0927d3c8a16bc8ae7113f947c15a996f67e34ba228bae2471e1",
             "textSha256": "4acb2f8c79b703f83bb42b5a157b5d936789cf821cf2340c13f3a3799c434d0b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13261,9 +13297,12 @@
             "bodySha256": "302c5d7f7dacd05ade19511f8e18c2ba7974f118c0d09e3e06386670a7560e5d",
             "textSha256": "9d6147c4910bde6beef2ca4fcf9051c380865027410fb9a5b778d892c9597df7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#UpdateNode"
           ]
         },
         {
@@ -13919,10 +13958,14 @@
             "bodySha256": "c396cc9862af131127746bda978a09c55f5f8e86e3df3609e5e19071693c6607",
             "textSha256": "3182faf92d651640316d2de856ea3b9c6a4cc5d54d93e8021e046d7276ea2a3d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
+            "DBP-040",
             "IMP-402",
             "LP-010"
+          ],
+          "symbols": [
+            "src/io/host-path.ts#fileExists"
           ]
         },
         {
@@ -14008,10 +14051,14 @@
             "bodySha256": "1828e88a50fd0e9cdae556e112bbaa329404ae891703408c3ddaf33a00da1fa4",
             "textSha256": "359d813a77597c0b9951dd20b95911d60e3ce110688f18b6ea7397433be90312"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
+            "DBP-040",
             "LP-031",
             "LP-032"
+          ],
+          "symbols": [
+            "src/io/win-path.ts#pathCombineAll"
           ]
         },
         {
@@ -14070,8 +14117,10 @@
             "bodySha256": "a15d51839ba1f2a61b30d35bce2e1e438597ebe23219ac0643d578d3c207d7f2",
             "textSha256": "23d10f67ac062d281134c8bfcc73ec3ee78b4a90dd9e247e6bd2c5e33d5fef70"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
+            "DBP-020",
+            "DBP-040",
             "IMP-007",
             "IMP-016",
             "IMP-017",
@@ -14079,6 +14128,9 @@
             "IMP-611",
             "LP-010",
             "LP-022"
+          ],
+          "symbols": [
+            "src/xml/read-text.ts#xmlDocumentLoad"
           ]
         },
         {
@@ -14184,9 +14236,13 @@
             "bodySha256": "ab516a0006385f357ee42967541ceb4fdef580a290e8f5fc24740cb0e188c201",
             "textSha256": "d475244ec5a6022c9c849be6f1e8a5278c3d290ec55ea0beff5175183856a74f"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#readUpdateNodes",
+            "src/db-patches/config.ts#inRunOrder"
           ]
         },
         {
@@ -14199,9 +14255,13 @@
             "bodySha256": "002e46df502a93c917a15728ee7e3b2fedee85f6c4261ca7a6fb5be4c5606908",
             "textSha256": "67dce3089dcaddc67083a715db982a3e2fee29224ee5adfec56829886334f96d"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-022"
+          ],
+          "symbols": [
+            "src/db-patches/config.ts#readUpdateNodes",
+            "src/db-patches/config.ts#inRunOrder"
           ]
         },
         {
@@ -14395,16 +14455,20 @@
             "bodySha256": "6b8245e78acd3c1151a3ea9dfcee4503fac60fe44ac8573b5cfce3fc53b4c2ee",
             "textSha256": "a164c4480e647e951ee7c95ba0be0f40939d40fd48b749598098e61d9e56f366"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-001",
             "DBP-002",
             "DBP-003",
             "DBP-004",
+            "DBP-005",
             "DBP-010",
+            "DBP-011",
+            "DBP-012",
             "DBP-020",
             "DBP-021",
             "DBP-022",
+            "DBP-030",
             "DBP-031",
             "DBP-040",
             "DBP-041",
@@ -14422,6 +14486,11 @@
             "DBP-092",
             "DBP-093",
             "DBP-094"
+          ],
+          "symbols": [
+            "src/export/import-export-manager.ts#ImportExportManager.applyDBUpdateManifest",
+            "src/db-patches/apply.ts#DbPatchApplication.applyDBUpdateManifest",
+            "src/db-patches/config.ts#targetRelease"
           ]
         },
         {
@@ -14479,10 +14548,13 @@
             "bodySha256": "5448f38b653c8c2fa645346fc81c779ac4d9a35a287bb7f806fade35a05bb49b",
             "textSha256": "e90d4e523c508dd61339fb711be30139f0652c37e6e6fad15a8a111c445001bf"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-012",
             "WIRE-004"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.callAction"
           ]
         },
         {
@@ -14555,10 +14627,13 @@
             "bodySha256": "82118aaa7f75f9d5980289f42f963591279064d2404ddbdf48926deec0954380",
             "textSha256": "99c6d79f92a2f97095e45dbee07686c0788c368b36bb24d1138c48f10a0f3ef0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-030",
             "DBP-031"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.createOrGetDatabaseUpgradeItemId"
           ]
         },
         {
@@ -15004,11 +15079,16 @@
             "bodySha256": "ebf5bfc425401ba5ee9a854128e61075ee4cc5ba604c5ea1c223b272900516bd",
             "textSha256": "16fdb948fdd4b4120970a31b8bdccd2d23abbd34836b31aa037af9b2d1ef4ee8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-005",
             "EXP-506",
             "IMP-403"
+          ],
+          "symbols": [
+            "src/export/run-log.ts#logInputParameters",
+            "src/import/import-run.ts#importInputParameters",
+            "src/db-patches/apply.ts#DbPatchApplication.logInputParameters"
           ]
         },
         {
@@ -15021,9 +15101,12 @@
             "bodySha256": "4ea548fb255a043ce7a2b0e6e4064f17f594cdadeca2f268aa318cb6005baf1b",
             "textSha256": "be60c69a3115bc49d5d5fa5a4fecfd26f449c6d295248f106a808b66a0e08362"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-004"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.logTrace"
           ]
         },
         {
@@ -15119,9 +15202,12 @@
             "bodySha256": "cb6a2117ecbc002142ccb26965b683de0d881acac4ff273359c1b6d8a28860f2",
             "textSha256": "8fea2b974d8158dca39a93d0825bfc567efa049e18a3d7c46c2874516a7a176a"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-003"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.validateInputParameters"
           ]
         },
         {
@@ -15134,10 +15220,13 @@
             "bodySha256": "f74f27637a878931dcefcd002e8b7a439b232bc63a23e4aa6edeaadc19f18d3d",
             "textSha256": "318ea26da5ecaa283219334b694edf75606fb02c3c40123c88c4c97998416ddb"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-011",
             "DBP-050"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.validateRootUser"
           ]
         },
         {
@@ -15150,9 +15239,13 @@
             "bodySha256": "83b635fede3629feb83174c58089edcc08050dd2b43c28febfdef227a24db314",
             "textSha256": "2e16c14fe0e352cae053f43cea6782794562cbb8f9471d5e5edbc0c9f9e0ed4b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "DBP-004"
+          ],
+          "symbols": [
+            "src/db-patches/apply.ts#DbPatchApplication.xmlToPrettyXml",
+            "src/xml/xdocument.ts#xelementParseToString"
           ]
         },
         {

@@ -1,6 +1,6 @@
 # DB patch application (14.35)
 
-This document specifies `ImportExportManager.ApplyDBUpdateManifest`, the 14.35 operation that applies a set of database update patches to an Aras server and records them in the server's own bookkeeping items. It exists only in 14.35 among the three engines. The command that exposes it, `apply-db-patches <manifest>`, is built by ticket 63 and is valid only with `--engine 14.35`.
+This document specifies `ImportExportManager.ApplyDBUpdateManifest`, the 14.35 operation that applies a set of database update patches to an Aras server and records them in the server's own bookkeeping items. It exists only in 14.35 among the three engines. The command that exposes it, `apply-db-patches <manifest>`, is specified in DBP-080 and is valid only with `--engine 14.35`.
 
 Sources:
 
@@ -17,7 +17,7 @@ Ticket 72 wired the oracle (`npm run oracle -- --engine 14.35 dbpatch`, `oracle/
 
 [14.35] `IImportExportManager.ApplyDBUpdateManifest(DBUpdateConfig config)` is a public member of `ImportExportManager` and of its interface. It returns `void`. What a host can observe is the exceptions that escape, the messages sent on the channels of EXP-503, the log file, and the server's state. A patch that fails does not throw (DBP-040 to DBP-044), so a caller that wants to know must look at the `error` channel, as DBP-002's reference host does.
 
-[12.0] [14.0.7] The member does not exist in these builds (their `Libs.dll` has no `DBPatches` namespace), so there is nothing to specify. The CLI refuses the command for them (ticket 63).
+[12.0] [14.0.7] The member does not exist in these builds (their `Libs.dll` has no `DBPatches` namespace), so there is nothing to specify. The CLI refuses the command for them (DBP-080).
 
 The manager is the one of EXP-502, built around a logged-in helper, a context and a message factory. `ApplyDBUpdateManifest` reads these context settings: `UserName` (DBP-010), `LogFilePath` (EXP-505), and for the log header (DBP-005) `Action`, `ManifestFile`, `WorkingDirectory`, `Url`, `DataBase`, `LPPath` and `LPPackage`. It never reads `Password`, `Timeout` (the constructor applied it, WIRE-031) or `Verbose`.
 
@@ -47,7 +47,7 @@ No 14.35 host calls the operation (ticket 71; `ConsoleUpgrade.exe` reaches only 
 - `DBPatchesFolderPath` is the manifest's own directory, overridable with `--patches-folder <dir>`;
 - `ToolName` is **`Libs`**, the engine's own default. Aras Update's `Aras Update` names that tool, and the port is not Aras Update. `--tool-name <text>` overrides it. A different value changes only the `description` of the row the run creates; a row that already exists keeps its description (DBP-030);
 - `Action` in the log header (DBP-005) is `ImportDPPatch`, as the reference host sets it;
-- the exit status of the command is failure when any text was sent on the `error` channel or an exception escaped, as in the reference host. Ticket 63 builds that.
+- the exit status of the command is failure when any text was sent on the `error` channel or an exception escaped, as in the reference host (DBP-080).
 
 *Observed:* from the decompile of `ArasUpdateCore.dll`'s `ImportDBPatchType`; not run.
 
@@ -65,7 +65,7 @@ No 14.35 host calls the operation (ticket 71; `ConsoleUpgrade.exe` reaches only 
 
 Any exception in steps 3 to 7 is caught by one handler: it sends `error` with the exception's `Message`, writes the same text to the log, and rethrows. The `finally` always sends `status` "End of importing DB packages." and `status` "End time: {now}". The log writer is disposed after that, which flushes it. So a refused run (non-root, missing path) leaves a log with the header, the two start lines, the error text and the two end lines, and sends no request to the server.
 
-The port keeps all of this order. Refusing a non-`root` user before sending anything (ticket 63) is therefore not a deviation: the engine sends nothing either, after the login the host did.
+The port keeps all of this order. Refusing a non-`root` user before sending anything (the command, DBP-081) is therefore not a deviation: the engine sends nothing either, after the login the host did.
 
 *Observed* for the refused run (fixture `non-root`): the log holds the header, `Start of importing DB packages.`, `Start time: …`, the refusal text, `End of importing DB packages.` and `End time: …`; the messages are `status`, `status`, `error`, `status`, `status` in that order; the only calls are the host's login (six: `ValidateUser`, the user's `ApplyItem`, four `ApplyAML` for the version). The rest of this order is *inferred from the code*.
 
@@ -378,6 +378,27 @@ The "Applied Updates" ItemType, on dev, holds items such as `IR-072068` (`up_num
 5. **Cases.** `non-root`: the `admin` login (DBP-010, no request after login). `apply`: the success run, and a second run of the same patch before the cleanup (the existing-row path of DBP-030 and the already-applied fault of DBP-042). A run whose patch is refused by the server is a failed run: the host exits 1 because a text went to the `error` channel, though no exception escaped (DBP-050).
 
 *Design; built by ticket 72 (`oracle/src/dbpatch.ts`, the `dbpatch` command, `oracle/dbpatch/`).*
+
+## The command
+
+### DBP-080: `apply-db-patches <manifest>` is the library's host of the operation
+
+[14.35] The command is the host of DBP-002, with the sequence of WIRE-002: the context, the connection and login with the version probe and gate, the manager, `ApplyDBUpdateManifest`, and logoff. The context has `Action = ImportDPPatch`, the URL, database, user, password, current directory as the working directory, `Verbose`, the log path and the timeout, and no manifest file and no language pack. The two paths and the tool name are DBP-002's: `<manifest>` as given, `--patches-folder` or the manifest's own folder, `--tool-name` or `Libs`. The `os_user` of DBP-030 can be set with `--os-user`, as the import commands do (IMP-452).
+
+The engine's messages go to standard error as `[INFO]` (`status`), `[WARN]` (`warning`) and `[ERROR]` (`error`) lines, one per message, as the other commands do; a DB patch run sends no `currentPackage`. The summary on standard output names the manifest, the patches folder and the tool name, and the engine used.
+
+The exit status is 0 when no `error` message was sent and no exception escaped, and 1 when either happened, as in the reference host (DBP-002). A refused patch is therefore 1 though the engine did not throw (DBP-050, bug DBP-094); there is no status 2 for this command, because an error message here is the failure and not a side issue of a completed run. A login that fails, a version refusal and an unreadable manifest are 1 as well. A usage error is 64.
+
+[12.0] [14.0.7] The engine has no such operation (DBP-001). The command is refused as a usage error, exit 64, before any connection is made. The default engine is 14.0.7, so the command needs `--engine 14.35` (or `ARAS_PKG_ENGINE=14.35`).
+
+### DBP-081: The command refuses what the engine would refuse, before it sends anything
+
+[14.35] Three things are refused as usage errors (64) before the login, so no request is made:
+
+- a `--user` other than `root`, compared as an ordinal string (DBP-010). The engine refuses it too, but only after the host's login, which the command does not make. The engine's own refusal stays in the library: a caller that gives the manager another `UserName` gets it (DBP-010);
+- a `<manifest>` that is not an existing file, and a patches folder that is not an existing folder. The engine finds these only after the four requests of DBP-011 (DBP-020, DBP-040); a command-line host can find them first.
+
+Every other failure is the engine's own and is reported as its messages and the exit status of DBP-080.
 
 ## Reproduced bugs
 

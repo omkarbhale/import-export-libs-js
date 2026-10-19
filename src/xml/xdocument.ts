@@ -1,3 +1,4 @@
+import { ELEMENT_NODE, childrenOf, removeChild } from "./dom.js";
 import { loadXml } from "./parser.js";
 import { writeDocument } from "./writer-xmlwriter.js";
 
@@ -13,4 +14,20 @@ import { writeDocument } from "./writer-xmlwriter.js";
 export function xdocumentToString(text: string, options: { disableFormatting?: boolean } = {}): string {
   const doc = loadXml(text, { preserveWhitespace: false, xmlReader: true });
   return writeDocument(doc, { indentChars: options.disableFormatting ? null : "  ", conformance: "document" });
+}
+
+/**
+ * `XElement.Parse(text).ToString()`, which the DB patch run uses to format the requests and responses it sends to the host
+ * (DBP-004). It reads and writes as {@link xdocumentToString} does: all insignificant white space is dropped, two spaces per level,
+ * no XML declaration, `<x />` for an element written `<x/>` and `<x></x>` for one written that way. `XElement` takes the root
+ * element alone, so a comment, a processing instruction or a DOCTYPE around it is not written.
+ *
+ * @spec DBP-004
+ */
+export function xelementParseToString(text: string): string {
+  const doc = loadXml(text, { preserveWhitespace: false, xmlReader: true });
+  for (const node of childrenOf(doc)) {
+    if (node.nodeType !== ELEMENT_NODE) removeChild(doc, node);
+  }
+  return writeDocument(doc, { indentChars: "  ", conformance: "document" });
 }
