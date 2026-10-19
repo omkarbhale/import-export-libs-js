@@ -37,8 +37,21 @@ export class IOException extends Error {
 export class FileNotFoundException extends IOException {
   override name = "FileNotFoundException";
 
-  constructor(readonly fileName: string) {
-    super(`Could not find file '${fileName}'.`);
+  /** `message` replaces the file system's own text for a caller that throws the exception with a message of its own (LP-010). */
+  constructor(
+    readonly fileName: string,
+    message?: string,
+  ) {
+    super(message ?? `Could not find file '${fileName}'.`);
+  }
+}
+
+/** `System.Collections.Generic.KeyNotFoundException`: the indexer of a `Dictionary` for a key it does not hold (LP-021, LP-043). */
+export class KeyNotFoundException extends Error {
+  override name = "KeyNotFoundException";
+
+  constructor() {
+    super("The given key was not present in the dictionary.");
   }
 }
 

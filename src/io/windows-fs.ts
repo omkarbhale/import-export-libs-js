@@ -275,3 +275,12 @@ export function writeVolumeFile(path: string | null, data: Uint8Array, environme
     throw error;
   }
 }
+
+/**
+ * `IOWrapper.FileWriteAllText(path, contents)`: `File.WriteAllText`, the text as UTF-8 without a byte-order mark, an existing
+ * file overwritten. The path is read as a path on a Windows volume (EXP-420, EXP-421).
+ * @spec LP-026
+ */
+export function fileWriteAllText(path: string | null, contents: string, environment: PathEnvironment = {}): void {
+  writeVolumeFile(path, Buffer.from(contents, "utf8"), environment);
+}

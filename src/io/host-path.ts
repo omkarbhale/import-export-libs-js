@@ -94,13 +94,14 @@ export function getFullPath(path: string, cwd: string): string {
  * Turns a Windows path string into the path the host opens (MAN-033). On Windows that is `NormalizeLongPath`; on other
  * platforms the path must be relative or rooted by `\` only, and every `\` becomes `/`. A drive or a `\\host` share has no
  * meaning there, and the layer stops with {@link PathNotUsableError}. A null or empty path is returned as it is.
- * @spec MAN-004 MAN-005 MAN-033
+ * @spec MAN-004 MAN-005 MAN-033 LP-010
  */
 export function toHostPath(path: string | null, environment: PathEnvironment = {}): string | null {
   if (path === null || path.length === 0) return path;
   if ((environment.platform ?? process.platform) === "win32") return normalizeLongPath(path, environment);
   if (/^[A-Za-z]:/.test(path) || path.startsWith("\\\\")) throw new PathNotUsableError(path);
-  return path.replace(/\\/g, "/");
+  // Windows resolves `.` and `..` segments in the text before it opens anything, so `x\..\f` reaches `f` although `x` does not exist
+  return posix.normalize(path.replace(/\\/g, "/"));
 }
 
 const EMPTY_PATH = "Empty path name is not legal.";
@@ -121,13 +122,14 @@ export function fileExists(path: string | null, environment: PathEnvironment = {
 
 /**
  * `IOWrapper.DirectoryGetParentFullName`: `Directory.GetParent(path).FullName`, the full path of the folder that holds the
- * file or folder at `path`. A relative path is resolved against the current directory. A Windows path (a drive or a leading
- * `\`) keeps its Windows form on every host; any other path is a host path.
- * @spec IMP-402
+ * file or folder at `path`. A relative path is resolved against the current directory. A Windows path (a drive, or a `\`
+ * anywhere in it: the engine joins the names of a path with `\`, so `/tmp/pack\imports.mf` is one) keeps its Windows form on
+ * every host; any other path is a host path.
+ * @spec IMP-402 LP-004
  */
 export function directoryGetParentFullName(path: string, environment: PathEnvironment = {}): string {
   const platform = environment.platform ?? process.platform;
-  if (platform === "win32" || /^[A-Za-z]:|^\\/.test(path)) return win32.dirname(getFullPath(path, environment.cwd ?? process.cwd()));
+  if (platform === "win32" || /^[A-Za-z]:|\\/.test(path)) return win32.dirname(getFullPath(path, environment.cwd ?? process.cwd()));
   return posix.dirname(posix.resolve(environment.cwd ?? process.cwd(), path));
 }
 

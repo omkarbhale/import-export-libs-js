@@ -157,3 +157,33 @@ export function stepOptions(caseDir: string, index: number): { merge: boolean; f
   const options = definition.steps[index]?.options ?? {};
   return { merge: options.merge === true, fast: options.fast === true };
 }
+
+/** The requests of a login, which the replays of a whole run do not send again: `ValidateUser`, the user lookup and the version probe. */
+export const LOGIN_CALLS = 6;
+
+/** Answers each request with the next recorded call, which must be the same request. */
+export class SequentialConnection implements ServerConnection {
+  private next = LOGIN_CALLS;
+
+  constructor(private readonly calls: TranscriptCall[]) {}
+
+  get consumed(): number {
+    return this.next - LOGIN_CALLS;
+  }
+
+  get total(): number {
+    return this.calls.length - LOGIN_CALLS;
+  }
+
+  async callAction(action: string, request: string): Promise<ResponseDocument> {
+    const wire = documentOuterXml(parseXml(request));
+    const call = this.calls[this.next];
+    if (call?.action !== action || call.request !== wire) {
+      throw new Error(
+        `request ${this.next - LOGIN_CALLS + 1} differs from the recorded one:\nsent:     ${action} ${wire.slice(0, 600)}\nrecorded: ${call?.action} ${call?.request.slice(0, 600)}`,
+      );
+    }
+    this.next += 1;
+    return ResponseDocument.parse(call.response ?? "");
+  }
+}

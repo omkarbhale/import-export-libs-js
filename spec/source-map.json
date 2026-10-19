@@ -6583,9 +6583,12 @@
             "bodySha256": "48ba9c0c8ba3993b9127368bce30b8516267723f00b159e9d1da3a0ca5f57fc5",
             "textSha256": "53d29126e7c4d61e0f263a79ec086f733361d4f5110fa5fb2379059c7c7eda6b"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-026"
+          ],
+          "symbols": [
+            "src/io/windows-fs.ts#fileWriteAllText"
           ]
         },
         {
@@ -6659,10 +6662,13 @@
             "bodySha256": "f61bb72c1165b986cc19ae1fd45735d2b6f318c5285a9c493f10c06e762b1955",
             "textSha256": "359d813a77597c0b9951dd20b95911d60e3ce110688f18b6ea7397433be90312"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-031",
             "LP-032"
+          ],
+          "symbols": [
+            "src/io/win-path.ts#pathCombineAll"
           ]
         },
         {
@@ -6675,10 +6681,13 @@
             "bodySha256": "cb25aa7ef9f1e3dd5abec18e7438a51d75fc4b98ffff1920764272509cda7f78",
             "textSha256": "4710a97b49191f0e4fe736cbaba8317291f05991bb4fdc613a543e07ce35a973"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-010",
             "LP-020"
+          ],
+          "symbols": [
+            "src/io/win-path.ts#getDirectoryName"
           ]
         },
         {
@@ -6691,9 +6700,12 @@
             "bodySha256": "b7031565c30e6cb923f28deafb2c2e846ccbc9469fb60e62a588a24331672666",
             "textSha256": "82f0fa145f5fafc79fe18edc87e678d4bed2325d7cb8a3af3d6f758e1d09b249"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-030"
+          ],
+          "symbols": [
+            "src/io/temp-path.ts#pathGetRandomFileName"
           ]
         },
         {
@@ -6706,9 +6718,12 @@
             "bodySha256": "639bbd55f568a3bddb30c98da115b1b9716c08285b46b4c1980440631c8b802b",
             "textSha256": "19d041ac375a0698561448c6384ac951c353d83833c0147d9586d1e6f0088bf0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-030"
+          ],
+          "symbols": [
+            "src/io/temp-path.ts#pathGetTempPath"
           ]
         },
         {
@@ -7333,13 +7348,16 @@
             "bodySha256": "58eb5c79838f8aeee8c7cb7cbba912cf6d2f3c954b379362ba51359b3bf719ff",
             "textSha256": "b38be11bdf36cd6aa52eeb4e105060aaf910e95b456f0475921b3c5b421aaaf7"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-001",
             "LP-003",
             "LP-029",
             "LP-035",
             "LP-036"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.create"
           ]
         },
         {
@@ -7352,7 +7370,7 @@
             "bodySha256": "9df164b61c0352530a929a2ec9d92f93aa7578e208fd62d060187943f765e67b",
             "textSha256": "892aa1246a34ec4f44f98ceadabb3b8042afb9ed11219674d24fdad759dfa0a0"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-010",
             "LP-015",
@@ -7363,6 +7381,11 @@
             "LP-025",
             "LP-026",
             "LP-027"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.copyLanguagePack",
+            "src/language-pack/edit-item.ts#createEditItem",
+            "src/language-pack/preprocessor.ts#itemTypeName"
           ]
         },
         {
@@ -7375,7 +7398,7 @@
             "bodySha256": "b189d9370f08053d1d16833f0d188c4dee799a9e14dc13d7bbdfff94f28f687f",
             "textSha256": "f24e7cb9d7e9d3b6a38dc28e5a25a3ad0bb6b09810ff3599ebfed378214d2466"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-029",
             "LP-030",
@@ -7383,6 +7406,9 @@
             "LP-032",
             "LP-033",
             "LP-035"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.copyToTempDirectory"
           ]
         },
         {
@@ -7395,9 +7421,12 @@
             "bodySha256": "82ea58b122eeda1b123bf45c5aa11e8df1d766be08338efbec82aab69c7157d8",
             "textSha256": "8e5b7ba45e1da63ebd2fef214301fada1a0942db0c9e0b87597ec6b59b6dc539"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-034"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.dispose"
           ]
         },
         {
@@ -7410,10 +7439,13 @@
             "bodySha256": "17fee802a0a14f6a04b613aa15ee804de14a8361cd0e27a9cf581a0056c92f32",
             "textSha256": "d64700c670934f63a219645b492fa89889ed663534d18aa169f7a70fcd701fbb"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-012",
             "LP-013"
+          ],
+          "symbols": [
+            "src/language-pack/config.ts#getItemTypes"
           ]
         },
         {
@@ -7426,11 +7458,14 @@
             "bodySha256": "2297c6b00367ceea902856dfc80bacae2d2c20d35e65b5af69718a59d5d25370",
             "textSha256": "22d69d5f7aea40f3a9a18f42e15d8cd649acfa03f7e408a66f9b42e68fbd6701"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-011",
             "LP-013",
             "LP-015"
+          ],
+          "symbols": [
+            "src/language-pack/config.ts#getRequestedLanguages"
           ]
         },
         {
@@ -7443,10 +7478,14 @@
             "bodySha256": "1a9fef60c6c4858e4343166e4a1f4bfec62609460675f56e38d17312cde31c05",
             "textSha256": "2788a8a9f92934919f8446b4fe964daa92b5aa3b76cb8be6708b788550e296f8"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-014",
             "LP-015"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.getSupportedLanguages",
+            "src/language-pack/preprocessor.ts#getItemCount"
           ]
         },
         {
@@ -7459,9 +7498,12 @@
             "bodySha256": "9c8b2432aa2578ee7304f38c70226eaed150a4806d21de968aada33c441186c6",
             "textSha256": "72be76b633f625222a046826061b5a09fa71d031eebfee4f97d0e32a719cd14c"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-030"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.getTemporaryDirectory"
           ]
         },
         {
@@ -7474,10 +7516,13 @@
             "bodySha256": "12ce26fdb8abf85aaaddb962b3711e05b88f74f10e07bbb6aca637307a3237bf",
             "textSha256": "3767c56ce6d641be2c87a5a2b15d9dc44c06f90d223c92e821826cf6e2bbe563"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-015",
             "LP-023"
+          ],
+          "symbols": [
+            "src/language-pack/edit-item.ts#getUpdateParameters"
           ]
         },
         {
@@ -7490,10 +7535,14 @@
             "bodySha256": "1d81de0ac27b332ff4243eeaa9e98775c5341efa77f9a8b475f8fe553d611de4",
             "textSha256": "b9181ce7e22112421ca00414d43b4a477a92cfb12af76da8c952e785b65b0699"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-015",
             "LP-025"
+          ],
+          "symbols": [
+            "src/language-pack/edit-item.ts#getWhereParameters",
+            "src/language-pack/edit-item.ts#whereClause"
           ]
         },
         {
@@ -7506,10 +7555,13 @@
             "bodySha256": "01a5b6d20484f56019e56c9e9faea26efb7a805a1399f60c02d066aa4de60883",
             "textSha256": "f8af07481b742df0cbc92225ce5beaf7fdfa411bf73035565fa106c5a09b5151"
           },
-          "status": "unmapped",
+          "status": "mapped",
           "rules": [
             "LP-032",
             "LP-036"
+          ],
+          "symbols": [
+            "src/language-pack/preprocessor.ts#LanguagePackPreprocessor.tempManifestFilePath"
           ]
         },
         {

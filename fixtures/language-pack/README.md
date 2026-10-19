@@ -16,6 +16,10 @@ Recorded on Windows PowerShell 5.1 (.NET Framework 4.8), NTFS, on 2026-10-19. Th
 
 Each case prints a `## label` line, then `name => value` lines with strings escaped as in `common.ps1` (`\r`, `\n`, `\t`, `\uXXXX`, `\\`, `\"`). Rule text cites a case by its label.
 
+## Replayed by
+
+`src/language-pack/probes.test.ts` rebuilds the cases of `01-config-and-languages`, `02-rows-and-aml` and `03-failures-package-cleanup` as language-pack folders, runs the port's preprocessor on them against the same scripted `Language` answers, and compares the lines it prints with the `.out` files. `src/language-pack/preprocessor.test.ts` replays `04-resolve-and-iom`. Cases that need a Windows drive path (`pkg-colon`, `pkg-rooted-path`), the process's current directory (`path-bare-file-name`) or a file held open (`Dispose with a locked file`) are not replayed. One case of the script is not what it says: `server-no-en` passes `@(@('de','_de'))`, which PowerShell flattens, so the server answered two languages, `d` and `_`, and the recorded output is that of this answer.
+
 ## Re-running
 
 Run on Windows with 64-bit Windows PowerShell 5.1. .NET refuses DLLs from `\\wsl.localhost`, so stage the files first. `probes/run.sh <probe>.ps1` (in WSL) does steps 2 and 3 for a probe:

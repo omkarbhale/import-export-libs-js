@@ -3,17 +3,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { readTranscript, type TranscriptCall } from "../../oracle/src/transcript.js";
-import { ResponseDocument } from "../client/fault.js";
-import type { ServerConnection } from "../client/innovator.js";
 import { CItemHelper } from "../client/item-helper.js";
-import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import { ArasVersion } from "../client/version.js";
 import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "../export/messages.js";
 import { SUImportContext } from "./import-context.js";
 import type { ConsoleWriter } from "./import-run.js";
-import { BLOBS, CASES } from "./transcript-replay.js";
+import { BLOBS, CASES, SequentialConnection } from "./transcript-replay.js";
 
 /**
  * The recorded 14.0.7 import runs (ticket 25), replayed through the whole of `ImportSolutions` (IMP-400 to IMP-471). Each case
@@ -22,7 +19,6 @@ import { BLOBS, CASES } from "./transcript-replay.js";
  * messages, write the recorded log and console text, and return what the engine returned. The log differs from the recording
  * only where the run's own paths and clock come in, which are replaced on both sides.
  */
-const LOGIN_CALLS = 6;
 
 interface Step {
   name: string;
@@ -61,33 +57,6 @@ const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
-
-/** Answers each request with the next recorded call, which must be the same request. */
-class SequentialConnection implements ServerConnection {
-  private next = LOGIN_CALLS;
-
-  constructor(private readonly calls: TranscriptCall[]) {}
-
-  get consumed(): number {
-    return this.next - LOGIN_CALLS;
-  }
-
-  get total(): number {
-    return this.calls.length - LOGIN_CALLS;
-  }
-
-  async callAction(action: string, request: string): Promise<ResponseDocument> {
-    const wire = documentOuterXml(parseXml(request));
-    const call = this.calls[this.next];
-    if (call?.action !== action || call.request !== wire) {
-      throw new Error(
-        `request ${this.next - LOGIN_CALLS + 1} differs from the recorded one:\nsent:     ${action} ${wire.slice(0, 600)}\nrecorded: ${call?.action} ${call?.request.slice(0, 600)}`,
-      );
-    }
-    this.next += 1;
-    return ResponseDocument.parse(call.response ?? "");
-  }
-}
 
 /** The header line `Label: value` of the recorded log, which holds the host's settings. */
 const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
