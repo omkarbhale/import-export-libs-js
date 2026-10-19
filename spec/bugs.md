@@ -845,3 +845,10 @@ The coverage test checks that every heading here names a rule defined in an area
 - **Why it is a bug:** the walk has no guard against a chain that returns to a type it has already visited.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::getDepencyLevel`.
 - **Versions:** 12.0, 14.0.7, 14.35.
+
+## LP-187: a failed installed-language check asks the server twice
+
+- **Behaviour:** `ThrowIfNoSelectedLanguagesInDatabase` builds the missing codes as a lazy `Except` over the server's languages and enumerates it twice when something is missing: `Any()` sends the Language request, and `string.Join` sends it again to write the message. A check that passes sends it once.
+- **Why it is a bug:** the same question is put to the server twice, and the message can name codes that differ from the ones that made the check fail if the answers differ. A correct engine would enumerate once.
+- **C# location:** `Aras.Tools.SolutionUpgrade.ImportExportManager::ThrowIfNoSelectedLanguagesInDatabase`.
+- **Versions:** 14.35.

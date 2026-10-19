@@ -152,7 +152,7 @@ Observed order under en-US (`01-extractor.out`, `sort-order`, `sort-order-realis
 - when the packages use no language the result is an empty array, and the rest of the import behaves as for an empty selection (IMP-635; probed `languages-star-package-without-languages`: `[]`, no request);
 - `en` is in the result when some package uses it. It is not added otherwise, and nothing is removed;
 - any other array containing `*` is not expanded: `["*", "de"]`, `["de", "*"]` and `["*", "*"]` are used as they are, and the installed check names `*` as not installed (probed, IMP-621);
-- for an `Action` other than `Import`, `*` is left as it is (ticket 54 adds its own expansion for the language-resource exports).
+- for an `Action` other than `Import`, `*` is left as it is (the language-resource exports have their own expansion, LP-111).
 
 The expanded codes are lower case (IMP-614), so they match the installed ones (IMP-622). They can still contain a code the database lacks: `*` over a package that uses `es` when `es` is not installed fails the next check (probed `languages-star-not-installed`).
 

@@ -5,7 +5,9 @@ import type { CItemHelper } from "../client/item-helper.js";
 import { attributeOf, childElements } from "../client/mini-xml.js";
 import { IomItem } from "./iom-item.js";
 import { defaultSelect, requestedLevel, serverMajorOf } from "./main-fetch.js";
-import { cmfBody, itemTypeBody } from "./request-bodies.js";
+import { LANGUAGE_RESOURCES_ONLY, isLanguageMode } from "./export-context.js";
+import { type LanguageRequests, PLAIN_EXPORT, documentSelects, nodeSelect, rowSelect } from "./language-requests.js";
+import { type Body, cmfBodyOf, itemTypeBodyOf } from "./request-bodies.js";
 
 /**
  * The request template of each type for one `ExportSolutions` call: the engine's `ConcurrentDictionary<string, Lazy<Item>>`. A
@@ -35,10 +37,16 @@ const TREE_DEPTHS: ReadonlyMap<string, number> = new Map<string, number>([
  *
  * @spec EXP-060 EXP-062
  */
-export function requestTemplate(dictionary: RequestDictionary, helper: CItemHelper, typeName: string, level: string | null | undefined): Promise<IomItem> {
+export function requestTemplate(
+  dictionary: RequestDictionary,
+  helper: CItemHelper,
+  typeName: string,
+  level: string | null | undefined,
+  mode: LanguageRequests = PLAIN_EXPORT,
+): Promise<IomItem> {
   let template = dictionary.get(typeName);
   if (template === undefined) {
-    template = buildTemplate(helper, typeName, level);
+    template = buildTemplate(helper, typeName, level, mode);
     // A rejection that nobody awaits yet is not a failure of the run: the first item awaits it, and a later item awaits it again.
     template.catch(() => undefined);
     dictionary.set(typeName, template);
@@ -48,33 +56,45 @@ export function requestTemplate(dictionary: RequestDictionary, helper: CItemHelp
 
 /**
  * The factory of the dictionary: the switch of EXP-021 builds the template of the type as an IOM `Item`. A type with a tree sends
- * the tree's lookups now (EXP-061); `ItemType` and the cmf types carry their body; `Item Report` is bare with `related_expand`.
+ * the tree's lookups now (EXP-061); `ItemType` and the cmf types carry their body; `Item Report` is bare with `related_expand`. In a
+ * language mode the tree nodes and the body elements get the selects of LP-122 to LP-125, and the default select is added to the
+ * types with no row of their own unless the mode is `ExportLanguageResourcesOnly` (LP-124).
  *
- * @spec EXP-021 EXP-022 EXP-023 EXP-024 EXP-025 EXP-026 EXP-065
+ * @spec EXP-021 EXP-022 EXP-023 EXP-024 EXP-025 EXP-026 EXP-065 LP-124 LP-125
  */
-async function buildTemplate(helper: CItemHelper, typeName: string, level: string | null | undefined): Promise<IomItem> {
+async function buildTemplate(helper: CItemHelper, typeName: string, level: string | null | undefined, mode: LanguageRequests): Promise<IomItem> {
   if (typeName === "Item Report") {
-    const item = IomItem.newItem(typeName, "get");
+    const item = await relationshipsRequestByLevel(helper, typeName, 0, 0, mode);
     item.setAttribute("related_expand", "0");
     return item;
   }
   const depth = TREE_DEPTHS.get(typeName);
-  if (depth !== undefined) return relationshipsRequestByLevel(helper, typeName, depth, 0);
-  if (typeName === "ItemType") {
-    const item = IomItem.newItem(typeName, "get");
-    item.appendRaw(itemTypeBody(serverMajorOf(helper.innovatorVersion)));
-    return item;
-  }
-  if (typeName === "cmf_ContentType" || typeName === "cmf_TabularView") {
-    const item = IomItem.newItem(typeName, "get");
-    item.appendRaw(cmfBody(typeName));
-    return item;
-  }
+  if (depth !== undefined) return relationshipsRequestByLevel(helper, typeName, depth, 0, mode);
+  if (typeName === "ItemType") return itemWithBody(helper, typeName, itemTypeBodyOf(serverMajorOf(helper.innovatorVersion)), mode);
+  if (typeName === "cmf_ContentType" || typeName === "cmf_TabularView") return itemWithBody(helper, typeName, cmfBodyOf(typeName), mode);
   // a type with no row of its own: the level is an integer, and the parse is the first thing the template does (EXP-022)
   const parsed = parseInt32(requestedLevel(level));
-  const item = await relationshipsRequestByLevel(helper, typeName, parsed, 0);
-  const select = defaultSelect(helper.innovatorVersion);
+  const item = await relationshipsRequestByLevel(helper, typeName, parsed, 0, mode);
+  const select = mode.action === LANGUAGE_RESOURCES_ONLY ? undefined : defaultSelect(helper.innovatorVersion);
   if (select !== undefined) item.setAttribute("select", [item.getAttribute("select") ?? "", select].join(","));
+  return item;
+}
+
+/**
+ * A request item made from a body document (EXP-024, EXP-025): the `Relationships` of the body, and in a language mode the `select`
+ * of every element of the document, the root first, each with its own lookup (LP-125).
+ *
+ * @spec LP-125
+ */
+async function itemWithBody(helper: CItemHelper, typeName: string, body: Body, mode: LanguageRequests): Promise<IomItem> {
+  const item = IomItem.newItem(typeName, "get");
+  if (!isLanguageMode(mode.action)) {
+    item.appendRaw(body.text());
+    return item;
+  }
+  const [rootSelect, ...bodySelects] = await documentSelects(helper, [typeName, ...body.types], mode);
+  if (rootSelect !== undefined) item.setAttribute("select", rootSelect);
+  item.appendRaw(body.text(bodySelects));
   return item;
 }
 
@@ -82,20 +102,27 @@ async function buildTemplate(helper: CItemHelper, typeName: string, level: strin
  * `GetRelationshipsRequestByLevel(typeName, depth, current, …)`: the tree of `typeName`, down to `depth` (EXP-061). `current` is
  * counted up first; past `depth` the node is returned bare. Otherwise two lookups are sent with `Item.apply()`, which never
  * throws for a fault: the related type of the item gets its own tree as `related_id`, and each relationship type is added to the node
- * as a tree, or bare at the last depth. A fault leaves the node without that part and the export goes on.
+ * as a tree, or bare at the last depth. A fault leaves the node without that part and the export goes on. In a language mode the node
+ * gets the select of LP-122 or LP-123 between the two lookups, and each row gets its own before it is added or expanded.
  *
- * @spec EXP-061
+ * @spec EXP-061 LP-122 LP-123 LP-126
  */
-async function relationshipsRequestByLevel(helper: CItemHelper, typeName: string | null, depth: number, current: number): Promise<IomItem> {
+export async function relationshipsRequestByLevel(helper: CItemHelper, typeName: string | null, depth: number, current: number, mode: LanguageRequests): Promise<IomItem> {
   const node = IomItem.newItem(typeName, "get");
   const level = current + 1;
   if (level > depth) return node;
 
   const related = await relatedTypeName(helper, typeName);
-  if (related !== null) node.setPropertyItem("related_id", await relationshipsRequestByLevel(helper, related, depth, current));
+  if (related !== null) node.setPropertyItem("related_id", await relationshipsRequestByLevel(helper, related, depth, current, mode));
+
+  const select = await nodeSelect(helper, typeName, mode);
+  if (select !== undefined) node.setAttribute("select", select);
 
   for (const relationship of await relationshipTypeNames(helper, typeName)) {
-    node.addRelationship(level < depth ? await relationshipsRequestByLevel(helper, relationship, depth, level) : IomItem.newItem(relationship, "get"));
+    const row = IomItem.newItem(relationship, "get");
+    const rowSelectText = await rowSelect(helper, relationship, mode);
+    if (rowSelectText !== undefined) row.setAttribute("select", rowSelectText);
+    node.addRelationship(level < depth ? await relationshipsRequestByLevel(helper, relationship, depth, level, mode) : row);
   }
   return node;
 }

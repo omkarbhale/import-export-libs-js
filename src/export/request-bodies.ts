@@ -16,15 +16,28 @@ const leaf = (type: string): BodyItem => ({ type });
 const withRelationships = (type: string, ...relationships: BodyItem[]): BodyItem => ({ type, relationships });
 const withRelatedId = (type: string, relatedId: BodyItem): BodyItem => ({ type, relatedId });
 
-function serialize(item: BodyItem): string {
+/**
+ * The `select` of each `Item` of a body, taken one by one in document order (LP-125). An item with no entry, or an undefined one,
+ * keeps the attributes it has.
+ */
+type Selects = Iterator<string | undefined>;
+
+function serialize(item: BodyItem, selects?: Selects): string {
   const attributes: Array<[string, string]> = [
     ["type", item.type],
     ["action", "get"],
   ];
   if (item.noRelatedExpand) attributes.push(["related_expand", "0"]);
-  const related = item.relatedId ? element("related_id", [], serialize(item.relatedId)) : "";
-  const relationships = item.relationships ? element("Relationships", [], item.relationships.map(serialize).join("")) : "";
+  const select = selects?.next().value;
+  if (select !== undefined) attributes.push(["select", select]);
+  const related = item.relatedId ? element("related_id", [], serialize(item.relatedId, selects)) : "";
+  const relationships = item.relationships ? element("Relationships", [], item.relationships.map((child) => serialize(child, selects)).join("")) : "";
   return element("Item", attributes, related === "" && relationships === "" ? undefined : related + relationships);
+}
+
+/** The types of the `Item` elements of a body in document order: an item, then its `related_id`, then its relationships. */
+function typesInDocumentOrder(items: readonly BodyItem[]): string[] {
+  return items.flatMap((item) => [item.type, ...typesInDocumentOrder(item.relatedId ? [item.relatedId] : []), ...typesInDocumentOrder(item.relationships ?? [])]);
 }
 
 const memberOfIdentity = withRelationships("Identity", leaf("Member"));
@@ -53,7 +66,24 @@ const ITEM_TYPE_BODY_HEAD: readonly BodyItem[] = [
   leaf("Morphae"),
 ];
 
-const relationships = (items: readonly BodyItem[]): string => element("Relationships", [], items.map(serialize).join(""));
+const relationships = (items: readonly BodyItem[], selects?: Selects): string =>
+  element("Relationships", [], items.map((item) => serialize(item, selects)).join(""));
+
+/**
+ * A body of request items together with what the language modes need to put a `select` on each of its `Item` elements (LP-125):
+ * the types in the order the engine visits them, and the text once the selects are known.
+ */
+export interface Body {
+  /** The `type` of every `Item` of the body, in document order. */
+  readonly types: readonly string[];
+  /** The `Relationships` element, with `selects[i]` set on the i-th `Item` when it is defined. */
+  text(selects?: ReadonlyArray<string | undefined>): string;
+}
+
+const asBody = (items: readonly BodyItem[]): Body => ({
+  types: typesInDocumentOrder(items),
+  text: (selects) => relationships(items, selects?.values()),
+});
 
 /**
  * The `Relationships` element of an ItemType fetch (EXP-024). A server below major version 11 gets the older body,
@@ -62,8 +92,13 @@ const relationships = (items: readonly BodyItem[]): string => element("Relations
  * @spec EXP-024
  */
 export function itemTypeBody(serverMajor: number): string {
-  if (serverMajor < 11) return relationships(ITEM_TYPE_BODY_HEAD);
-  return relationships([DISCUSSION_TEMPLATE, IT_PRESENTATION_CONFIGURATION, ...ITEM_TYPE_BODY_HEAD, leaf("ItemType_xPropertyDefinition")]);
+  return itemTypeBodyOf(serverMajor).text();
+}
+
+/** {@link itemTypeBody} as a body whose items can take a `select` each (LP-125). */
+export function itemTypeBodyOf(serverMajor: number): Body {
+  if (serverMajor < 11) return asBody(ITEM_TYPE_BODY_HEAD);
+  return asBody([DISCUSSION_TEMPLATE, IT_PRESENTATION_CONFIGURATION, ...ITEM_TYPE_BODY_HEAD, leaf("ItemType_xPropertyDefinition")]);
 }
 
 const CONTENT_TYPE_BODY: readonly BodyItem[] = [
@@ -90,5 +125,10 @@ const TABULAR_VIEW_BODY: readonly BodyItem[] = [
  * @spec EXP-025
  */
 export function cmfBody(typeName: "cmf_ContentType" | "cmf_TabularView"): string {
-  return relationships(typeName === "cmf_ContentType" ? CONTENT_TYPE_BODY : TABULAR_VIEW_BODY);
+  return cmfBodyOf(typeName).text();
+}
+
+/** {@link cmfBody} as a body whose items can take a `select` each (LP-125). */
+export function cmfBodyOf(typeName: "cmf_ContentType" | "cmf_TabularView"): Body {
+  return asBody(typeName === "cmf_ContentType" ? CONTENT_TYPE_BODY : TABULAR_VIEW_BODY);
 }
