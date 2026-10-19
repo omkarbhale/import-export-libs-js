@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ResponseDocument } from "../client/fault.js";
 import { CItemHelper } from "../client/item-helper.js";
 import { StubConnection, stubResult } from "../client/stub-connection.js";
+import { ArasVersion } from "../client/version.js";
 import { ArgumentNullException } from "../io/errors.js";
 import { documentElementOf } from "../xml/dom.js";
 import type { XmlDocument, XmlElement } from "../xml/dom.js";
@@ -187,6 +188,8 @@ describe("ImportLookups.doImport and doImportInContext (IMP-300, IMP-512)", () =
       wire.includes('select="is_versionable"') ? stubResult('<Item type="ItemType"><is_versionable>0</is_versionable></Item>') : stubResult(""),
     );
     const helper = new CItemHelper(connection, { engine: "14.35" });
+    // a logged-in helper has read the server's version, which 14.35's CImportItems reads when it is made (LP-040)
+    helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
     return { lookups: new ImportLookups(helper), requests: connection.requests };
   }
   const doc = () => parse('<Item type="List" id="L1" action="add"/>');
@@ -207,6 +210,11 @@ describe("ImportLookups.doImport and doImportInContext (IMP-300, IMP-512)", () =
     context.amlBatchMode = false;
     await subject.doImportInContext(doc(), context);
     expect(requests.at(-1)).toBe('<Item type="List" id="L1" action="add" />');
+  });
+
+  it("14.35's CImportItems reads the server version when it is made, so a helper that has not logged in is a null reference (LP-040)", () => {
+    const helper = new CItemHelper(new StubConnection(() => stubResult("")), { engine: "14.35" });
+    expect(() => new ImportLookups(helper).doImport(doc(), false)).toThrow(expect.objectContaining({ typeName: "System.NullReferenceException" }));
   });
 
   it("refuses a null document first and then a null context, naming the parameter", () => {
