@@ -248,7 +248,7 @@ The handler of step 3 is the one around steps 1 and 2 as well, so a faultcode `0
 
 The port tests the behavior for `float` ordinally, which differs from the engine's culture-sensitive `IndexOf` only for a behavior with a character the collation ignores inside the word (such as `fl\u00ADoat`): the engine finds it and the port does not.
 
-[12.0] Same: the same selection, request, versionable test, behavior lookup and `__find_latest_generation_` marker.
+[12.0] Same selection, request, versionable test, behavior lookup and `__find_latest_generation_` marker. The log words after the request have **three** leading spaces: `   was obtained from server` and `   was obtained from cache` (observed in every 12.0 import case that has a plain `related_id`, `import/s1-base` among them: 57 of 57 related-item checks; 14.0.7 writes two).
 
 [14.35] Same selection, requests and decisions as 14.0.7 (the request of step 1, the `IsVersionable` and behavior lookups only for a versionable related type, the `float` test, the marker attribute and the 10001 record), with the cache differences of `IMP-102`: a hit writes nothing after `checking for related items` and the request, a miss writes `  was obtained from server` before sending (`IMP-181`). The handler removes the entry of the `get` for any `CItemException`, including one raised by the `IsVersionable` or behavior lookups after the `get` succeeded, so that `get` is sent again next time.
 

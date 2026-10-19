@@ -5,7 +5,7 @@ import { CItemException, type ResponseDocument, stackText } from "../client/faul
 import type { CItemHelper } from "../client/item-helper.js";
 import { type XmlElement as AnswerElement, attributeOf, childElements, innerText, localName, namespaceUri } from "../client/mini-xml.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
-import { getMessage } from "../export/messages.js";
+import { getMessage, importCatalogueOf } from "../export/messages.js";
 import { ArgumentNullException } from "../io/errors.js";
 import type { XmlElement } from "../xml/dom.js";
 import { selectSingleNode } from "../xml/xpath.js";
@@ -85,6 +85,8 @@ export class ImportHelper {
   async getLabelOfItemType(type: string): Promise<string> {
     const aml = `<Item action='get' select='label' type='ItemType' language='en'><name>${type}</name></Item>`;
     const suffix = getMessage("UnableToGetLabelOfTypeItemType", type);
+    // IMP-447: 12.0 adds the same text to a rethrown CItemException without the closing period
+    const rethrownSuffix = this.host.engine === "12.0" ? suffix.replace(/\.$/, "") : suffix;
     const lookups = this.host.lookups;
     try {
       let answer: ResponseDocument;
@@ -108,7 +110,7 @@ export class ImportHelper {
         lookups.lazy.tryRemove(aml);
       }
       if (error instanceof CItemException) {
-        error.faultdetail = (error.faultdetail ?? "") + suffix;
+        error.faultdetail = (error.faultdetail ?? "") + rethrownSuffix;
         throw error;
       }
       if (isXmlException(error) || isXPathException(error) || isNullReference(error)) throw wrapped(error, suffix);
@@ -208,8 +210,10 @@ export class ImportHelper {
       try {
         answer = await this.host.applyAML(add);
       } catch (failed) {
-        // the catalogue key of this text has a leading space in the engine, so the suffix is empty (IMP-453)
-        if (failed instanceof CItemException) failed.faultdetail = (failed.faultdetail ?? "") + getMessage("CannotAddInstanceOfDatabaseUpgradeItemType");
+        // the catalogue key of this text has a leading space in 14.0.7, so the suffix is empty there; 12.0 writes the text itself (IMP-453)
+        if (failed instanceof CItemException) {
+          failed.faultdetail = (failed.faultdetail ?? "") + importCatalogueOf(this.host.engine)("CannotAddInstanceOfDatabaseUpgradeItemType");
+        }
         throw failed;
       }
       return requiredId(firstItemOfType(answer, "DatabaseUpgrade"));

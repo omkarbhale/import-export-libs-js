@@ -11,7 +11,7 @@ import { loadXml } from "../xml/parser.js";
 import { selectSingleNode } from "../xml/xpath.js";
 import { outerXml } from "../xml/writer-legacy.js";
 import { ExportItem } from "./export-item.js";
-import { getMessage } from "./messages.js";
+import { getMessage, importCatalogueOf } from "./messages.js";
 
 /**
  * The engine's `PackageDefinitionManager`. Export looks up the current definition of a package (`doCreate` is false, so a
@@ -195,7 +195,7 @@ export class PackageDefinitionManager {
       const elementType = item === undefined ? undefined : childText(item, "element_type");
       if (sourceId === undefined || elementType === undefined) throw nullReference();
       if (sourceId !== groupId || elementType !== type) {
-        const message = getMessage(
+        const message = importCatalogueOf(this.helper.engine)(
           "ThePackageAlreadyContainsThePackageElementWithNameAndIdButOfDifferentTypeDBTypeGroupIdBeingImportedTypeGroupId",
           this.name,
           keyedName,

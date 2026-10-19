@@ -137,7 +137,7 @@ The exit code is that of HOST-009. A run of a mode has no refusal by name: the m
 
 Nothing is sent to the server. The import's `build.xsl` ordering and the loading rules (IMP-001 to IMP-015) apply as for `import`, so a package folder that cannot be loaded fails here as it does for an import (observed `ui-fs-xml-declaration--step-1--input`: `CItemException` `Unexpected XML declaration. … Unable to apply build.xsl.`; `ui-missing-package-folder`: `Could not find a part of the path '…\NoSuchFolder'. Unable to get solutions files by path in .mf file …`; `ui-missing-manifest`: `FileNotFoundException`).
 
-[12.0] Same loop, with the 12.0 file handling: `Path.GetDirectoryName` and `new StreamWriter(logFile, true)` on the raw paths (no normalisation, EXP-505 `[12.0]`), and the 12.0 loading of the package folders (IMP-005 and IMP-008 `[12.0]`: encodings honoured, another text for a skipped file). Observed in `fixtures/export-modes/12.0-probe.json` (`ui-r15-latin1-file--step-1--input` fails with `Invalid character in the given encoding. Line 3, position 21.`; the warning reads `doesn't have root tag 'AML/Item'`). The port loads package folders with 14.0.7's rules only, so the mode is not offered for 12.0 (HOST-113).
+[12.0] Same loop, with the 12.0 file handling: `Path.GetDirectoryName` and `new StreamWriter(logFile, true)` on the raw paths (no normalisation, EXP-505 `[12.0]`), and the 12.0 loading of the package folders (IMP-005 and IMP-008 `[12.0]`: encodings honoured, another text for a skipped file). Observed in `fixtures/export-modes/12.0-probe.json` (`ui-r15-latin1-file--step-1--input` fails with `Invalid character in the given encoding. Line 3, position 21.`; the warning reads `doesn't have root tag 'AML/Item'`). The port loads 12.0's package folders with the 12.0 rules (wayfinder ticket 50), so the mode is offered for 12.0 (HOST-113).
 
 [14.35] Same loop, with 14.35's file handling (`IOWrapper` with the normalisation inlined) and 14.35's loading of package folders. The port's 14.35 loading is not built yet (wayfinder ticket 60), so the mode is not offered for 14.35 (HOST-113).
 
@@ -184,7 +184,7 @@ A repeated package name in the manifest is read twice and then fails: the second
 
 [14.0.7] The mode runs on 14.0.7.
 
-[12.0] The CLI reports `engine 12.0 is not yet supported` for `--use-import` (exit 1), after the local checks of HOST-005. The slice that builds the 12.0 import-side loading (wayfinder ticket 50) enables it. `--from-manifest` and `--all-packages` run on 12.0: they read only the answer of the package-definition request.
+[12.0] The mode runs on 12.0, with 12.0's loading of package folders (IMP-005 to IMP-011 `[12.0]`). `--from-manifest` and `--all-packages` run on 12.0 too: they read only the answer of the package-definition request.
 
 [14.35] The CLI reports `engine 14.35 is not yet supported` for `--use-import`, until the 14.35 import slice (ticket 60) builds its loading of package folders. `--from-manifest` and `--all-packages` run on 14.35.
 

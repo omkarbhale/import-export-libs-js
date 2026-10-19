@@ -145,8 +145,8 @@ describe("export --use-import (HOST-110 to HOST-113)", () => {
     expect(log.indexOf("Conflict:")).toBeLessThan(log.indexOf("Tool version:"));
   });
 
-  it("is not offered for an engine whose package loading is not built", async () => {
-    for (const engine of ["12.0", "14.35"]) {
+  it("is not offered for an engine whose package loading the CLI does not offer it for", async () => {
+    for (const engine of ["14.35"]) {
       const work = scratch();
       const t = testIo({ env: { ARAS_PASSWORD: "pw" }, cwd: work });
       const code = await run(["export", join(work, "out"), "--use-import", importFolder(work), "--engine", engine, "--url", "http://x", "--database", "d", "--user", "u"], t.io);

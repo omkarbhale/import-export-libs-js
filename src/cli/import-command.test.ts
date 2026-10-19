@@ -7,7 +7,7 @@ import { readTranscript } from "../../oracle/src/transcript.js";
 import { run } from "../cli-run.js";
 import { FakeTransport, devServer, header, respond, soapFault } from "../client/fake-transport.js";
 import type { Engine } from "../engines.js";
-import { BLOBS, BLOBS_14_35, CASES, CASES_14_35 } from "../import/transcript-replay.js";
+import { BLOBS, BLOBS_12_0, BLOBS_14_35, CASES, CASES_12_0, CASES_14_35 } from "../import/transcript-replay.js";
 import { EXIT } from "./exit.js";
 import { RecordedServer } from "./replay-transport.js";
 import { type TestIo, testIo } from "./test-io.js";
@@ -49,14 +49,14 @@ interface Step {
 }
 
 function step(name: string, index: number, engine: Engine = "14.0.7"): Step {
-  const cases = engine === "14.35" ? CASES_14_35 : CASES;
+  const cases = engine === "14.35" ? CASES_14_35 : engine === "12.0" ? CASES_12_0 : CASES;
   const definition = JSON.parse(readFileSync(join(cases, name, "case.json"), "utf8")) as { steps: Pick<Step, "options">[] };
   return {
     name: `${name}/step-${index}`,
     dir: join(cases, name, `step-${index}`),
     options: definition.steps[index - 1]?.options ?? {},
     engine,
-    blobs: engine === "14.35" ? BLOBS_14_35 : BLOBS,
+    blobs: engine === "14.35" ? BLOBS_14_35 : engine === "12.0" ? BLOBS_12_0 : BLOBS,
   };
 }
 
@@ -68,19 +68,22 @@ async function importStep(recorded: Step, extra: string[] = []) {
   const calls = readTranscript(join(recorded.dir, "transcript.jsonl"), recorded.blobs);
   const recordedLog = readFileSync(join(recorded.dir, "engine.log"), "utf8");
   const osUser = /<os_user>([^<]*)<\/os_user>/.exec(calls.map((call) => call.request).join("\n"))?.[1] ?? "";
-  const server = new RecordedServer(calls);
+  const server = new RecordedServer(calls, recorded.engine);
   const transport = new FakeTransport(server.handler);
   const work = scratch();
   const logPath = join(work, "engine.log");
   const t = testIo({ env: { ARAS_PASSWORD: "pw" }, transport, cwd: work });
   const { options } = recorded;
+  // 12.0 writes no header to its log, so its connection settings come from the run's record
+  const recordedRun = JSON.parse(readFileSync(join(recorded.dir, "run.json"), "utf8")) as { server: { url: string; database: string; user: string } };
+  const connection = recorded.engine === "12.0" ? recordedRun.server : { url: headerValue(recordedLog, "URL"), database: headerValue(recordedLog, "Database"), user: headerValue(recordedLog, "User") };
   const args = [
     "import",
     join(recorded.dir, "input", "imports.mf"),
-    ...(recorded.engine === "14.35" ? ["--engine", "14.35"] : []),
+    ...(recorded.engine === "14.0.7" ? [] : ["--engine", recorded.engine]),
     ...(options.amlBatch === undefined ? [] : ["--batch", "--batch-max", String(options.amlBatch.maxSize ?? 0)]),
     ...(options.collectErrors === undefined ? [] : ["--collect-errors", "--max-errors", String(options.collectErrors.maxCount ?? 0)]),
-    ...["--url", headerValue(recordedLog, "URL"), "--database", headerValue(recordedLog, "Database"), "--user", headerValue(recordedLog, "User")],
+    ...["--url", connection.url, "--database", connection.database, "--user", connection.user],
     ...["--time-zone", "UTC", "--log", logPath, "--os-user", osUser],
     ...(options.merge === true ? ["--merge"] : []),
     ...(options.verbose === true ? ["--verbose"] : []),
@@ -129,7 +132,8 @@ describe.for(SUCCESS.map((recorded) => [recorded.name, recorded] as const))("imp
     expect(t.stdout()).toMatch(/^command: import\nengine: 14\.0\.7\nresult: success\nexitCode: 0\n/);
     expect(t.stdout()).toContain("server: 12.0 SP9 Build 24090\n");
     expect(t.stdout()).toMatch(/\nmessages: \d+ info, 0 warnings, 0 errors, 0 packages\n/);
-    expect(t.stdout()).not.toContain("pw");
+    // the log path holds a random temporary name, which can contain "pw" by chance
+    expect(t.stdout().replace(/^log: .*$/m, "")).not.toContain("pw");
   });
 });
 
@@ -142,6 +146,38 @@ describe.for(FAILURE.map((recorded) => [recorded.name, recorded] as const))("imp
     expect(taggedLines(t)).toEqual(expectedLines(recorded));
     expect(taggedLines(t).some((line) => line.startsWith("[ERROR] "))).toBe(true);
     expect(t.stdout()).toMatch(/\nresult: failed\nexitCode: 1\n/);
+  });
+});
+
+describe("import --engine 12.0, replaying the 12.0 runs of ticket 48 (IMP-480, WIRE-002)", () => {
+  const success = step("s0-mini-defaults", 1, "12.0");
+  const merge = step("s0-mini-merge", 1, "12.0");
+  const failure = step("s4-del-refused", 2, "12.0");
+
+  it.for([success, merge])("exits 0, sends the recorded requests and messages, and logs out: %o", async (recorded) => {
+    const { code, t, server, transport } = await importStep(recorded);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.ok);
+    expect(taggedLines(t)).toEqual(expectedLines(recorded));
+    expect(header(transport.requests.at(-1) as never, "SOAPAction")).toBe("Logoff");
+    expect(t.stdout()).toMatch(/^command: import\nengine: 12\.0\nresult: success\nexitCode: 0\n/);
+  });
+
+  it("writes the log without a header: the start line comes first, and the package block is cut at the buffer (IMP-403, IMP-412)", async () => {
+    const { logPath } = await importStep(success);
+    const log = readFileSync(logPath, "utf8");
+    expect(log.startsWith("Start of importing packages\r\n")).toBe(true);
+    expect(log).not.toContain("Tool version");
+  });
+
+  it("exits 1 with the recorded error messages of the failing item and of the run (IMP-407, IMP-427)", async () => {
+    const { code, t, server } = await importStep(failure);
+    expect(server.mismatches).toEqual([]);
+    expect(server.consumed).toBe(server.total);
+    expect(code).toBe(EXIT.failed);
+    expect(taggedLines(t)).toEqual(expectedLines(failure));
+    expect(taggedLines(t).filter((line) => line.startsWith("[ERROR] "))).toHaveLength(2);
   });
 });
 
@@ -163,7 +199,7 @@ describe("import --json", () => {
       messages: { warnings: 0, errors: 0 },
     });
     expect(summary).not.toHaveProperty("error");
-    expect(JSON.stringify(summary)).not.toContain("pw");
+    expect(JSON.stringify({ ...summary, log: undefined })).not.toContain("pw");
   });
 
   it("takes the engine from ARAS_PKG_ENGINE and the connection from the environment", async () => {
@@ -353,10 +389,10 @@ describe("what is refused before any request is made", () => {
     expect(code).toBe(EXIT.usage);
   });
 
-  it.for(["12.0"])("engine %s, whose import is not built yet, is reported as not yet supported (exit 1)", async (engine) => {
-    const { code, t } = await refused(["import", manifest, ...base, "--engine", engine]);
-    expect(code).toBe(EXIT.failed);
-    expect(t.stderr()).toContain(`engine ${engine} is not yet supported`);
+  it("engine 12.0 has no language-pack import (LP-001)", async () => {
+    const { code, t } = await refused(["import-language-pack", manifest, ...base, "--lp-package", "LIBSJS-SCRATCH-LP", "--engine", "12.0"]);
+    expect(code).toBe(EXIT.usage);
+    expect(t.stderr()).toContain("engine 12.0 has no language-pack import (LP-001)");
   });
 });
 

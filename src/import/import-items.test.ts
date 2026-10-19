@@ -42,16 +42,27 @@ interface ProbeCase {
   existRelThrown?: ProbeThrown | null;
 }
 
-const probe = JSON.parse(readFileSync(new URL("../../fixtures/import-merge/14.0.7-probe/results.json", import.meta.url), "utf8")) as {
+interface Probe {
   engine: string;
   scenarios: Record<string, Record<string, ProbeCase>>;
-};
+}
 
-const expected = (group: string, name: string): ProbeCase => {
-  const found = probe.scenarios[group]?.[name];
-  if (!found) throw new Error(`the probe has no scenario ${group}/${name}`);
+type ProbedEngine = "14.0.7" | "12.0";
+
+const readProbe = (folder: string): Probe =>
+  JSON.parse(readFileSync(new URL(`../../fixtures/import-merge/${folder}/results.json`, import.meta.url), "utf8")) as Probe;
+
+/** The merge probes of the two engines whose results the replay compares (ticket 21 for 14.0.7, ticket 47 for 12.0). */
+const probes: Record<ProbedEngine, Probe> = { "14.0.7": readProbe("14.0.7-probe"), "12.0": readProbe("12.0-probe") };
+const probe = probes["14.0.7"];
+
+const expectedFor = (engine: ProbedEngine, group: string, name: string): ProbeCase => {
+  const found = probes[engine].scenarios[group]?.[name];
+  if (!found) throw new Error(`the ${engine} probe has no scenario ${group}/${name}`);
   return found;
 };
+
+const expected = (group: string, name: string): ProbeCase => expectedFor("14.0.7", group, name);
 
 /** What the probe wrote down about an exception. */
 function describeThrown(error: unknown): ProbeThrown {
@@ -427,239 +438,245 @@ describe("14.35: a related_id that holds an Item with no id (IMP-332, IMP-333, I
   });
 });
 
-describe("CImportItems.Import against the merge probe of 14.0.7 (IMP-300 to IMP-340)", () => {
-  it("replays the 14.0.7 probe", () => {
-    expect(probe.engine).toBe("14.0.7");
+/** The probe replays: every scenario of an engine's probe run against the port with that engine's rules (IMP-300 to IMP-352). */
+function replayProbe(engine: ProbedEngine): void {
+  describe(`CImportItems.Import against the merge probe of ${engine} (IMP-300 to IMP-340)`, () => {
+    it("replays the probe of the engine", () => {
+      expect(probes[engine].engine).toBe(engine);
+    });
+
+    it.each(scenarios.map((scenario) => [`${scenario.group}/${scenario.name}`, scenario] as const))("%s", async (label, scenario) => {
+      const probed = expectedFor(engine, scenario.group, scenario.name);
+      const helper = new StubHelper();
+      scenario.setup?.(helper);
+      const document = loadXml(scenario.xml, { preserveWhitespace: false });
+      const thrown = await caught(() => new ImportItems(helper, engine).import(document, scenario.merge));
+      expect(helper.calls, label).toEqual(probed.calls);
+      expectThrown(thrown, probed.thrown, label);
+      expect(outerXml(document), label).toBe(probed.documentAfter);
+    });
   });
 
-  it.each(scenarios.map((scenario) => [`${scenario.group}/${scenario.name}`, scenario] as const))("%s", async (label, scenario) => {
-    const probed = expected(scenario.group, scenario.name);
-    const helper = new StubHelper();
-    scenario.setup?.(helper);
-    const document = loadXml(scenario.xml, { preserveWhitespace: false });
-    const thrown = await caught(() => new ImportItems(helper).import(document, scenario.merge));
-    expect(helper.calls, label).toEqual(probed.calls);
-    expectThrown(thrown, probed.thrown, label);
-    expect(outerXml(document), label).toBe(probed.documentAfter);
-  });
-});
+  /** The `Version-Script` of the probe: a stub connection that answers the lookups of a versionable type. */
+  type CurrentState = "current" | "old" | "missing" | "missingConfigFound" | "error" | "nocfg";
+  const noItemsFault = (text: string, code = "0"): string => stubFault(code, text);
+  function versionScript(versionable: boolean, state: CurrentState, latest = "LATEST"): (wire: string) => string | undefined {
+    return (wire) => {
+      if (like(wire, '*select="is_versionable"*')) {
+        return envelope(`<Item type="ItemType" id="X"><is_versionable>${versionable ? "1" : "0"}</is_versionable></Item>`);
+      }
+      if (like(wire, '*select="config_id, is_current"*')) {
+        if (state === "current") return envelope(`<Item type="Part" id="A"><config_id>CFG</config_id><is_current>1</is_current></Item>`);
+        if (state === "old") return envelope(`<Item type="Part" id="A"><config_id>CFG</config_id><is_current>0</is_current></Item>`);
+        if (state === "missing" || state === "missingConfigFound") return noItemsFault("No items of type Part found.");
+        if (state === "error") return noItemsFault("boom", "999");
+        if (state === "nocfg") return envelope(`<Item type="Part" id="A"><is_current>0</is_current></Item>`);
+      }
+      if (like(wire, '*select="id"*<config_id>*')) {
+        if (state === "missing") return noItemsFault("No items of type Part found.");
+        return envelope(`<Item type="Part" id="${latest}"><id>${latest}</id></Item>`);
+      }
+      if (like(wire, "*is_keyed*")) {
+        return envelope(`<Item type="ItemType" id="IT"><Relationships><Item type="Property" id="P1"><name>item_number</name></Item></Relationships></Item>`);
+      }
+      if (like(wire, "*item_number*")) return envelope(`<Item type="Part" id="KEYID"><id>KEYID</id></Item>`);
+      return undefined;
+    };
+  }
 
-/** The `Version-Script` of the probe: a stub connection that answers the lookups of a versionable type. */
-type CurrentState = "current" | "old" | "missing" | "missingConfigFound" | "error" | "nocfg";
-const noItemsFault = (text: string, code = "0"): string => stubFault(code, text);
-function versionScript(versionable: boolean, state: CurrentState, latest = "LATEST"): (wire: string) => string | undefined {
-  return (wire) => {
-    if (like(wire, '*select="is_versionable"*')) {
-      return envelope(`<Item type="ItemType" id="X"><is_versionable>${versionable ? "1" : "0"}</is_versionable></Item>`);
-    }
-    if (like(wire, '*select="config_id, is_current"*')) {
-      if (state === "current") return envelope(`<Item type="Part" id="A"><config_id>CFG</config_id><is_current>1</is_current></Item>`);
-      if (state === "old") return envelope(`<Item type="Part" id="A"><config_id>CFG</config_id><is_current>0</is_current></Item>`);
-      if (state === "missing" || state === "missingConfigFound") return noItemsFault("No items of type Part found.");
-      if (state === "error") return noItemsFault("boom", "999");
-      if (state === "nocfg") return envelope(`<Item type="Part" id="A"><is_current>0</is_current></Item>`);
-    }
-    if (like(wire, '*select="id"*<config_id>*')) {
-      if (state === "missing") return noItemsFault("No items of type Part found.");
-      return envelope(`<Item type="Part" id="${latest}"><id>${latest}</id></Item>`);
-    }
-    if (like(wire, "*is_keyed*")) {
-      return envelope(`<Item type="ItemType" id="IT"><Relationships><Item type="Property" id="P1"><name>item_number</name></Item></Relationships></Item>`);
-    }
-    if (like(wire, "*item_number*")) return envelope(`<Item type="Part" id="KEYID"><id>KEYID</id></Item>`);
+  const noKeyProps = (wire: string): string | undefined => {
+    if (like(wire, '*select="is_versionable"*')) return envelope(`<Item type="ItemType" id="X"><is_versionable>1</is_versionable></Item>`);
+    if (like(wire, '*select="config_id, is_current"*')) return noItemsFault("none");
+    if (like(wire, '*select="id"*<config_id>*')) return noItemsFault("none");
+    if (like(wire, "*is_keyed*")) return noItemsFault("none");
     return undefined;
   };
+
+  const partXml = `<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>`;
+
+  function lookupsOver(engine: ProbedEngine, script: (wire: string) => string | undefined): { connection: StubConnection; lookups: ImportLookups } {
+    const connection = new StubConnection((wire) => script(wire));
+    return { connection, lookups: new ImportLookups(new CItemHelper(connection, { engine })) };
+  }
+
+  interface HelperScenario {
+    name: string;
+    xml: string;
+    script: (wire: string) => string | undefined;
+  }
+
+  const setScenarios: HelperScenario[] = [
+    { name: "noId", xml: `<Item type='Part' action='add'/>`, script: versionScript(true, "current") },
+    { name: "noType", xml: `<Item id='A' action='add'/>`, script: versionScript(true, "current") },
+    { name: "emptyId", xml: `<Item type='Part' id='' action='add'/>`, script: versionScript(true, "current") },
+    { name: "notVersionable", xml: partXml, script: versionScript(false, "current") },
+    { name: "alreadyCurrent", xml: partXml, script: versionScript(true, "current") },
+    { name: "oldGeneration", xml: partXml, script: versionScript(true, "old", "LATEST") },
+    { name: "oldGenerationSameIdAsLatest", xml: partXml, script: versionScript(true, "old", "A") },
+    { name: "currentIdLookupMissingConfigFound", xml: partXml, script: versionScript(true, "missingConfigFound") },
+    { name: "notFoundAnywhereFallsToUniqueKey", xml: partXml, script: versionScript(true, "missing") },
+    { name: "currentIdLookupFaultOtherFallsToUniqueKey", xml: partXml, script: versionScript(true, "error") },
+    { name: "currentIdNoConfigIsNotCaught", xml: partXml, script: versionScript(true, "nocfg") },
+    { name: "uniqueKeyNoPropertiesLeavesIdAlone", xml: partXml, script: noKeyProps },
+    { name: "uniqueKeyMissingPropertyThrows", xml: `<Item type='Part' id='A' action='add'><Relationships /></Item>`, script: versionScript(true, "missing") },
+    {
+      name: "relationshipsWithoutSourceId",
+      xml: `<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><related_id>B</related_id></Item></Relationships></Item>`,
+      script: versionScript(true, "old", "LATEST"),
+    },
+    {
+      name: "nestedInRelatedIdUntouched",
+      xml: `<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' id='A'><Relationships><Item type='Y'><source_id>A</source_id></Item></Relationships></Item></related_id></Item></Relationships></Item>`,
+      script: versionScript(true, "old", "LATEST"),
+    },
+  ];
+
+  describe(`CItemHelper.SetItemIdToLastGeneration against the merge probe (IMP-320, IMP-321) (${engine})`, () => {
+    it.each(setScenarios.map((scenario) => [scenario.name, scenario] as const))("%s", async (name, scenario) => {
+      const probed = expectedFor(engine, "S.setItemIdToLastGeneration", name);
+      const { connection, lookups } = lookupsOver(engine, scenario.script);
+      const document: XmlDocument = loadXml(scenario.xml, { preserveWhitespace: false });
+      const thrown = await caught(() => lookups.setItemIdToLastGeneration(documentElementOf(document) as XmlElement));
+      expect(connection.requests, name).toEqual(probed.requests);
+      expectThrown(thrown, probed.thrown, name);
+      expect(outerXml(document), name).toBe(probed.documentAfter);
+    });
+  });
+
+  const plainItem = `<Item type='List' id='L1' action='add'><name>n</name></Item>`;
+  const plainScript =
+    (answer: string): ((wire: string) => string | undefined) =>
+    (wire) =>
+      like(wire, '*select="is_versionable"*') ? envelope(`<Item type="ItemType" id="X"><is_versionable>0</is_versionable></Item>`) : answer;
+
+  const existsScenarios: (HelperScenario & { result?: boolean })[] = [
+    { name: "plainExists", xml: plainItem, script: plainScript(envelope(`<Item type="List" id="L1"><id>L1</id></Item>`)) },
+    { name: "plainMissing", xml: plainItem, script: plainScript(noItemsFault("No items")) },
+    { name: "plainServerError999IsNotExist", xml: plainItem, script: plainScript(noItemsFault("boom", "999")) },
+    { name: "noIdAttribute", xml: `<Item type='List' action='add'/>`, script: () => undefined },
+    { name: "noTypeAttribute", xml: `<Item id='L1' action='add'/>`, script: () => undefined },
+    { name: "emptyIdAttribute", xml: `<Item type='List' id='' action='add'/>`, script: () => undefined },
+    { name: "versionableCurrent", xml: partXml, script: versionScript(true, "current") },
+    { name: "versionableOldGeneration", xml: partXml, script: versionScript(true, "old", "LATEST") },
+    { name: "versionableConfigFoundByLookup", xml: partXml, script: versionScript(true, "missingConfigFound") },
+    { name: "versionableNotFoundUniqueKeyFinds", xml: partXml, script: versionScript(true, "missing") },
+    { name: "versionableNotFoundUniqueKeyNone", xml: partXml, script: noKeyProps },
+    { name: "versionableLookupFault999FallsToUniqueKey", xml: partXml, script: versionScript(true, "error") },
+    { name: "versionableNoConfigNotCaught", xml: partXml, script: versionScript(true, "nocfg") },
+  ];
+
+  describe(`CItemHelper.DoesItemAlreadyExist against the merge probe (IMP-350, IMP-351) (${engine})`, () => {
+    it.each(existsScenarios.map((scenario) => [scenario.name, scenario] as const))("%s", async (name, scenario) => {
+      const probed = expectedFor(engine, "E.doesItemAlreadyExist", name);
+      const { connection, lookups } = lookupsOver(engine, scenario.script);
+      const document = loadXml(scenario.xml, { preserveWhitespace: false });
+      let result: boolean | null = null;
+      const thrown = await caught(async () => {
+        result = await lookups.doesItemAlreadyExist(documentElementOf(document) as XmlElement);
+      });
+      expect(result, name).toBe(probed.result);
+      expect(connection.requests, name).toEqual(probed.requests);
+      expectThrown(thrown, probed.thrown, name);
+      expect(outerXml(document), name).toBe(probed.documentAfter);
+    });
+
+    it("does not offer the IdTypePair overload of the probe (idTypePairIsUsed): it is not reachable", () => {
+      expect(probes[engine].scenarios["E.doesItemAlreadyExist"]?.["idTypePairIsUsed"]).toBeDefined();
+      expect(ImportLookups.prototype.doesItemAlreadyExist.length).toBe(1);
+    });
+
+    it.each([
+      ["merge on never asks", true, `<Item type='List' id='L1' action='add'/>`, false],
+      ["merge off asks about an add", false, `<Item type='List' id='L1' action='add'/>`, true],
+      ["an item without action never skips", false, `<Item type='List' id='L1'/>`, false],
+      ["an edit never skips", false, `<Item type='List' id='L1' action='edit'/>`, false],
+    ])("the skip test of the import loop: %s", async (_name, merge, xml, asks) => {
+      const { connection, lookups } = lookupsOver(engine, plainScript(envelope(`<Item type="List" id="L1"><id>L1</id></Item>`)));
+      const document = loadXml(xml, { preserveWhitespace: false });
+      const skipped = await lookups.skipsExistingAdd(documentElementOf(document) as XmlElement, merge);
+      expect(skipped).toBe(asks);
+      expect(connection.requests.length > 0).toBe(asks);
+    });
+  });
+
+  describe(`CItemHelper.ItemExistById, ExistRelItemInCurVer and Unlock against the merge probe (IMP-322, IMP-334, IMP-352) (${engine})`, () => {
+    const modes: Record<string, (wire: string) => string | undefined> = {
+      found: () => envelope(`<Item type="Part" id="A"><id>A</id></Item>`),
+      missing: () => noItemsFault("No items"),
+      error999: () => noItemsFault("boom", "999"),
+      xmlerror: () => "",
+    };
+
+    it.each(Object.keys(modes))("rel.%s", async (mode) => {
+      const probed = expectedFor(engine, "X.lookups", `rel.${mode}`);
+      const { connection, lookups } = lookupsOver(engine, modes[mode] as (wire: string) => string | undefined);
+      let existById: boolean | null = null;
+      const byIdThrown = await caught(async () => {
+        existById = await lookups.itemExistById("A", "Part");
+      });
+      let existRel: boolean | null = null;
+      const relThrown = await caught(async () => {
+        existRel = await lookups.existRelItemInCurVer("Part BOM", "A", "B");
+      });
+      expect(existById).toBe(probed.itemExistById);
+      expect(existRel).toBe(probed.existRel);
+      expectThrown(byIdThrown, probed.itemExistByIdThrown, "itemExistById");
+      expectThrown(relThrown, probed.existRelThrown, "existRelItemInCurVer");
+      expect(connection.requests).toEqual(probed.requests);
+      expect(connection.actions).toEqual(probed.actions);
+    });
+
+    it("unlock.ok sends one unlock", async () => {
+      const probed = expectedFor(engine, "X.lookups", "unlock.ok");
+      const { connection, lookups } = lookupsOver(engine, () => envelope(`<Item type="Part" id="A"/>`));
+      await lookups.unlock("A", "Part");
+      expect(connection.requests).toEqual(probed.requests);
+      expect(connection.actions).toEqual(probed.actions);
+    });
+
+    it.each([
+      ["unlock.fault", noItemsFault("cannot unlock", "999")],
+      ["unlock.fault0", noItemsFault("No items")],
+    ])("%s throws every fault, faultcode 0 included", async (name, fault) => {
+      const probed = expectedFor(engine, "X.lookups", name);
+      const { connection, lookups } = lookupsOver(engine, () => fault);
+      const thrown = await caught(() => lookups.unlock("A", "Part"));
+      expect(connection.requests).toEqual(probed.requests);
+      expectThrown(thrown, probed.thrown, name);
+    });
+
+    it("rel.unescapedValues puts the ids into the request as they are, so an ampersand does not parse", async () => {
+      const probed = expectedFor(engine, "X.lookups", "rel.unescapedValues");
+      const { connection, lookups } = lookupsOver(engine, () => envelope(""));
+      const thrown = await caught(() => lookups.existRelItemInCurVer("Part BOM", "A'B", "C&D"));
+      expect(connection.requests).toEqual(probed.requests);
+      expectThrown(thrown, probed.thrown, "rel.unescapedValues");
+    });
+
+    it("applyAML.emptyString sends nothing for an empty document", async () => {
+      const probed = expectedFor(engine, "X.lookups", "applyAML.emptyString");
+      const connection = new StubConnection(() => envelope(""));
+      const thrown = await caught(() => new CItemHelper(connection, { engine }).applyAML(""));
+      expect(connection.requests).toEqual(probed.requests);
+      expectThrown(thrown, probed.thrown, "applyAML.emptyString");
+    });
+  });
+
+  describe(`the merge probe of ${engine} is replayed whole`, () => {
+    it("has a counterpart in this file for every scenario of the probe except the IdTypePair one", () => {
+      const here = new Set<string>([
+        ...scenarios.map((scenario) => `${scenario.group}/${scenario.name}`),
+        ...setScenarios.map((scenario) => `S.setItemIdToLastGeneration/${scenario.name}`),
+        ...existsScenarios.map((scenario) => `E.doesItemAlreadyExist/${scenario.name}`),
+        ...["found", "missing", "error999", "xmlerror"].map((mode) => `X.lookups/rel.${mode}`),
+        ...["unlock.ok", "unlock.fault", "unlock.fault0", "rel.unescapedValues", "applyAML.emptyString"].map((name) => `X.lookups/${name}`),
+        "E.doesItemAlreadyExist/idTypePairIsUsed",
+      ]);
+      const probed = Object.entries(probes[engine].scenarios).flatMap(([group, cases]) => Object.keys(cases).map((name) => `${group}/${name}`));
+      expect(probed.filter((name) => !here.has(name))).toEqual([]);
+    });
+  });
 }
 
-const noKeyProps = (wire: string): string | undefined => {
-  if (like(wire, '*select="is_versionable"*')) return envelope(`<Item type="ItemType" id="X"><is_versionable>1</is_versionable></Item>`);
-  if (like(wire, '*select="config_id, is_current"*')) return noItemsFault("none");
-  if (like(wire, '*select="id"*<config_id>*')) return noItemsFault("none");
-  if (like(wire, "*is_keyed*")) return noItemsFault("none");
-  return undefined;
-};
-
-const partXml = `<Item type='Part' id='A' action='add'><item_number>P1</item_number><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id></Item><Item type='Part BOM' id='R2' action='add'><source_id>OTHER</source_id><Relationships><Item type='X' action='add'><source_id>A</source_id></Item></Relationships></Item></Relationships></Item>`;
-
-function lookupsOver(script: (wire: string) => string | undefined): { connection: StubConnection; lookups: ImportLookups } {
-  const connection = new StubConnection((wire) => script(wire));
-  return { connection, lookups: new ImportLookups(new CItemHelper(connection)) };
-}
-
-interface HelperScenario {
-  name: string;
-  xml: string;
-  script: (wire: string) => string | undefined;
-}
-
-const setScenarios: HelperScenario[] = [
-  { name: "noId", xml: `<Item type='Part' action='add'/>`, script: versionScript(true, "current") },
-  { name: "noType", xml: `<Item id='A' action='add'/>`, script: versionScript(true, "current") },
-  { name: "emptyId", xml: `<Item type='Part' id='' action='add'/>`, script: versionScript(true, "current") },
-  { name: "notVersionable", xml: partXml, script: versionScript(false, "current") },
-  { name: "alreadyCurrent", xml: partXml, script: versionScript(true, "current") },
-  { name: "oldGeneration", xml: partXml, script: versionScript(true, "old", "LATEST") },
-  { name: "oldGenerationSameIdAsLatest", xml: partXml, script: versionScript(true, "old", "A") },
-  { name: "currentIdLookupMissingConfigFound", xml: partXml, script: versionScript(true, "missingConfigFound") },
-  { name: "notFoundAnywhereFallsToUniqueKey", xml: partXml, script: versionScript(true, "missing") },
-  { name: "currentIdLookupFaultOtherFallsToUniqueKey", xml: partXml, script: versionScript(true, "error") },
-  { name: "currentIdNoConfigIsNotCaught", xml: partXml, script: versionScript(true, "nocfg") },
-  { name: "uniqueKeyNoPropertiesLeavesIdAlone", xml: partXml, script: noKeyProps },
-  { name: "uniqueKeyMissingPropertyThrows", xml: `<Item type='Part' id='A' action='add'><Relationships /></Item>`, script: versionScript(true, "missing") },
-  {
-    name: "relationshipsWithoutSourceId",
-    xml: `<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><related_id>B</related_id></Item></Relationships></Item>`,
-    script: versionScript(true, "old", "LATEST"),
-  },
-  {
-    name: "nestedInRelatedIdUntouched",
-    xml: `<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' id='R1' action='add'><source_id>A</source_id><related_id><Item type='Part' id='A'><Relationships><Item type='Y'><source_id>A</source_id></Item></Relationships></Item></related_id></Item></Relationships></Item>`,
-    script: versionScript(true, "old", "LATEST"),
-  },
-];
-
-describe("CItemHelper.SetItemIdToLastGeneration against the merge probe (IMP-320, IMP-321)", () => {
-  it.each(setScenarios.map((scenario) => [scenario.name, scenario] as const))("%s", async (name, scenario) => {
-    const probed = expected("S.setItemIdToLastGeneration", name);
-    const { connection, lookups } = lookupsOver(scenario.script);
-    const document: XmlDocument = loadXml(scenario.xml, { preserveWhitespace: false });
-    const thrown = await caught(() => lookups.setItemIdToLastGeneration(documentElementOf(document) as XmlElement));
-    expect(connection.requests, name).toEqual(probed.requests);
-    expectThrown(thrown, probed.thrown, name);
-    expect(outerXml(document), name).toBe(probed.documentAfter);
-  });
-});
-
-const plainItem = `<Item type='List' id='L1' action='add'><name>n</name></Item>`;
-const plainScript =
-  (answer: string): ((wire: string) => string | undefined) =>
-  (wire) =>
-    like(wire, '*select="is_versionable"*') ? envelope(`<Item type="ItemType" id="X"><is_versionable>0</is_versionable></Item>`) : answer;
-
-const existsScenarios: (HelperScenario & { result?: boolean })[] = [
-  { name: "plainExists", xml: plainItem, script: plainScript(envelope(`<Item type="List" id="L1"><id>L1</id></Item>`)) },
-  { name: "plainMissing", xml: plainItem, script: plainScript(noItemsFault("No items")) },
-  { name: "plainServerError999IsNotExist", xml: plainItem, script: plainScript(noItemsFault("boom", "999")) },
-  { name: "noIdAttribute", xml: `<Item type='List' action='add'/>`, script: () => undefined },
-  { name: "noTypeAttribute", xml: `<Item id='L1' action='add'/>`, script: () => undefined },
-  { name: "emptyIdAttribute", xml: `<Item type='List' id='' action='add'/>`, script: () => undefined },
-  { name: "versionableCurrent", xml: partXml, script: versionScript(true, "current") },
-  { name: "versionableOldGeneration", xml: partXml, script: versionScript(true, "old", "LATEST") },
-  { name: "versionableConfigFoundByLookup", xml: partXml, script: versionScript(true, "missingConfigFound") },
-  { name: "versionableNotFoundUniqueKeyFinds", xml: partXml, script: versionScript(true, "missing") },
-  { name: "versionableNotFoundUniqueKeyNone", xml: partXml, script: noKeyProps },
-  { name: "versionableLookupFault999FallsToUniqueKey", xml: partXml, script: versionScript(true, "error") },
-  { name: "versionableNoConfigNotCaught", xml: partXml, script: versionScript(true, "nocfg") },
-];
-
-describe("CItemHelper.DoesItemAlreadyExist against the merge probe (IMP-350, IMP-351)", () => {
-  it.each(existsScenarios.map((scenario) => [scenario.name, scenario] as const))("%s", async (name, scenario) => {
-    const probed = expected("E.doesItemAlreadyExist", name);
-    const { connection, lookups } = lookupsOver(scenario.script);
-    const document = loadXml(scenario.xml, { preserveWhitespace: false });
-    let result: boolean | null = null;
-    const thrown = await caught(async () => {
-      result = await lookups.doesItemAlreadyExist(documentElementOf(document) as XmlElement);
-    });
-    expect(result, name).toBe(probed.result);
-    expect(connection.requests, name).toEqual(probed.requests);
-    expectThrown(thrown, probed.thrown, name);
-    expect(outerXml(document), name).toBe(probed.documentAfter);
-  });
-
-  it("does not offer the IdTypePair overload of the probe (idTypePairIsUsed): it is not reachable", () => {
-    expect(probe.scenarios["E.doesItemAlreadyExist"]?.["idTypePairIsUsed"]).toBeDefined();
-    expect(ImportLookups.prototype.doesItemAlreadyExist.length).toBe(1);
-  });
-
-  it.each([
-    ["merge on never asks", true, `<Item type='List' id='L1' action='add'/>`, false],
-    ["merge off asks about an add", false, `<Item type='List' id='L1' action='add'/>`, true],
-    ["an item without action never skips", false, `<Item type='List' id='L1'/>`, false],
-    ["an edit never skips", false, `<Item type='List' id='L1' action='edit'/>`, false],
-  ])("the skip test of the import loop: %s", async (_name, merge, xml, asks) => {
-    const { connection, lookups } = lookupsOver(plainScript(envelope(`<Item type="List" id="L1"><id>L1</id></Item>`)));
-    const document = loadXml(xml, { preserveWhitespace: false });
-    const skipped = await lookups.skipsExistingAdd(documentElementOf(document) as XmlElement, merge);
-    expect(skipped).toBe(asks);
-    expect(connection.requests.length > 0).toBe(asks);
-  });
-});
-
-describe("CItemHelper.ItemExistById, ExistRelItemInCurVer and Unlock against the merge probe (IMP-322, IMP-334, IMP-352)", () => {
-  const modes: Record<string, (wire: string) => string | undefined> = {
-    found: () => envelope(`<Item type="Part" id="A"><id>A</id></Item>`),
-    missing: () => noItemsFault("No items"),
-    error999: () => noItemsFault("boom", "999"),
-    xmlerror: () => "",
-  };
-
-  it.each(Object.keys(modes))("rel.%s", async (mode) => {
-    const probed = expected("X.lookups", `rel.${mode}`);
-    const { connection, lookups } = lookupsOver(modes[mode] as (wire: string) => string | undefined);
-    let existById: boolean | null = null;
-    const byIdThrown = await caught(async () => {
-      existById = await lookups.itemExistById("A", "Part");
-    });
-    let existRel: boolean | null = null;
-    const relThrown = await caught(async () => {
-      existRel = await lookups.existRelItemInCurVer("Part BOM", "A", "B");
-    });
-    expect(existById).toBe(probed.itemExistById);
-    expect(existRel).toBe(probed.existRel);
-    expectThrown(byIdThrown, probed.itemExistByIdThrown, "itemExistById");
-    expectThrown(relThrown, probed.existRelThrown, "existRelItemInCurVer");
-    expect(connection.requests).toEqual(probed.requests);
-    expect(connection.actions).toEqual(probed.actions);
-  });
-
-  it("unlock.ok sends one unlock", async () => {
-    const probed = expected("X.lookups", "unlock.ok");
-    const { connection, lookups } = lookupsOver(() => envelope(`<Item type="Part" id="A"/>`));
-    await lookups.unlock("A", "Part");
-    expect(connection.requests).toEqual(probed.requests);
-    expect(connection.actions).toEqual(probed.actions);
-  });
-
-  it.each([
-    ["unlock.fault", noItemsFault("cannot unlock", "999")],
-    ["unlock.fault0", noItemsFault("No items")],
-  ])("%s throws every fault, faultcode 0 included", async (name, fault) => {
-    const probed = expected("X.lookups", name);
-    const { connection, lookups } = lookupsOver(() => fault);
-    const thrown = await caught(() => lookups.unlock("A", "Part"));
-    expect(connection.requests).toEqual(probed.requests);
-    expectThrown(thrown, probed.thrown, name);
-  });
-
-  it("rel.unescapedValues puts the ids into the request as they are, so an ampersand does not parse", async () => {
-    const probed = expected("X.lookups", "rel.unescapedValues");
-    const { connection, lookups } = lookupsOver(() => envelope(""));
-    const thrown = await caught(() => lookups.existRelItemInCurVer("Part BOM", "A'B", "C&D"));
-    expect(connection.requests).toEqual(probed.requests);
-    expectThrown(thrown, probed.thrown, "rel.unescapedValues");
-  });
-
-  it("applyAML.emptyString sends nothing for an empty document", async () => {
-    const probed = expected("X.lookups", "applyAML.emptyString");
-    const connection = new StubConnection(() => envelope(""));
-    const thrown = await caught(() => new CItemHelper(connection).applyAML(""));
-    expect(connection.requests).toEqual(probed.requests);
-    expectThrown(thrown, probed.thrown, "applyAML.emptyString");
-  });
-});
-
-describe("the merge probe is replayed whole", () => {
-  it("has a counterpart in this file for every scenario of the probe except the IdTypePair one", () => {
-    const here = new Set<string>([
-      ...scenarios.map((scenario) => `${scenario.group}/${scenario.name}`),
-      ...setScenarios.map((scenario) => `S.setItemIdToLastGeneration/${scenario.name}`),
-      ...existsScenarios.map((scenario) => `E.doesItemAlreadyExist/${scenario.name}`),
-      ...["found", "missing", "error999", "xmlerror"].map((mode) => `X.lookups/rel.${mode}`),
-      ...["unlock.ok", "unlock.fault", "unlock.fault0", "rel.unescapedValues", "applyAML.emptyString"].map((name) => `X.lookups/${name}`),
-      "E.doesItemAlreadyExist/idTypePairIsUsed",
-    ]);
-    const probed = Object.entries(probe.scenarios).flatMap(([group, cases]) => Object.keys(cases).map((name) => `${group}/${name}`));
-    expect(probed.filter((name) => !here.has(name))).toEqual([]);
-  });
-});
+replayProbe("14.0.7");
+replayProbe("12.0");

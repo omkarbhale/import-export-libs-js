@@ -110,7 +110,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 [14.0.7] The command runs on `14.0.7`, and on the other engines too, now that their export slices have landed.
 
-[12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built). The one exception is `--use-import`, which loads package folders and is not offered yet (HOST-113).
+[12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built), `--use-import` included now that the 12.0 loading of package folders is (wayfinder ticket 50, HOST-113).
 
 [14.35] The command runs as for 14.0.7. Parallelism (wayfinder ticket 59) and the language-resource modes (ticket 61) are not options of this command yet.
 

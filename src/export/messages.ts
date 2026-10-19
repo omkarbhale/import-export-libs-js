@@ -139,6 +139,44 @@ export const MESSAGE_TEMPLATES_12_0: Readonly<Record<string, string>> = {
 };
 
 /**
+ * The texts the 12.0 engine's import writes as literals where they differ from {@link MESSAGE_TEMPLATES} or from the export's
+ * 12.0 texts (IMP-470). `ErrorMessageMessage` is the error block of a failed run (IMP-407) and `ErrorMessageItem` the one of a
+ * failed item (IMP-427), which is the text 14.0.7 uses for its run; the export's `ErrorMessageMessage` is another text. The
+ * keys of 14.0.7 that 12.0 has no text for (`FileFullNameFullName`, `WarningTryToResolve`) are not here, and 12.0 never asks for them.
+ *
+ * @spec IMP-407 IMP-427 IMP-445 IMP-453 IMP-470
+ */
+export const MESSAGE_TEMPLATES_12_0_IMPORT: Readonly<Record<string, string>> = {
+  ...MESSAGE_TEMPLATES_12_0,
+  ImportPackageName: "      ****Import   {0}****",
+  UpdatingPackageNamePackageToInprogressReleaseStatus: "Updating {0} to 'inprogress' release status",
+  UpdatingPackageNamePackageToSuccessReleaseStatus: "Updating {0} to success release status",
+  UpdatingPackageNamePackageToFailedReleaseStatus: "Updating {0} to failed release status",
+  ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus:
+    "\nImport package {0} failed with message:\n\n{1}\nUpdating {2} to failed release status\n",
+  ErrorMessageMessage: "\t\t****ErrorMessage****\n{0}\t\t**********************",
+  ErrorMessageItem: "          ****ErrorMessage****\r\n       {0}",
+  ThePackageAlreadyContainsThePackageElementWithNameAndIdButOfDifferentTypeDBTypeGroupIdBeingImportedTypeGroupId:
+    "The package '{0}' already contains the PackageElement with id='{2}' but of different type: DB - type='{3}', group_id='{4}';   being imported - type='{5}', group_id='{6}'",
+  CannotAddInstanceOfDatabaseUpgradeItemType: " Can't add instance of databaseUpgrade ItemType.",
+};
+
+/**
+ * The `GetMessage` of an engine's catalogue as the import uses it (IMP-470): {@link catalogueOf}, except that 12.0 has the
+ * texts of {@link MESSAGE_TEMPLATES_12_0_IMPORT}.
+ *
+ * @spec IMP-470
+ */
+export function importCatalogueOf(engine: Engine): MessageCatalogue {
+  if (engine !== "12.0") return catalogueOf(engine);
+  return (key, ...args) => {
+    const template = MESSAGE_TEMPLATES_12_0_IMPORT[key];
+    if (template === undefined) return "";
+    return args.length === 0 ? template : formatMessage(template, ...args);
+  };
+}
+
+/**
  * `ResourceManager.GetMessage(key, args)`: the template of `key` formatted with the invariant culture and the arguments, a null
  * argument as the empty string. A key with no template gives the empty string and formats nothing. Without arguments the template
  * is returned as it is, so a `{0}` in it stays. The 12.0 engine has no catalogue and writes its texts as literals: the same

@@ -19,7 +19,7 @@ import type { LogWriter } from "./load-package-dom.js";
 import type { DelayedResolution, UnresolvedReference } from "./reference-checks.js";
 
 /** The engines whose delayed resolution is built; the rest wait for their variant slices. */
-export const DELAYED_RESOLUTION_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
+export const DELAYED_RESOLUTION_ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
 
 /** `FakedDataSource`: the id a data source or foreign property gets in the imported document (IMP-222). */
 export const FAKED_DATA_SOURCE = "00000000000000000000000000000000";

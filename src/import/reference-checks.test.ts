@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DotNetException } from "../client/dotnet.js";
 import { CItemException } from "../client/fault.js";
 import { CItemHelper } from "../client/item-helper.js";
+import type { Engine } from "../engines.js";
 import { StubConnection, stubFault, stubResult } from "../client/stub-connection.js";
 import { ArgumentNullException } from "../io/errors.js";
 import { documentElementOf } from "../xml/dom.js";
@@ -36,9 +37,9 @@ interface Setup {
 }
 
 /** A checker over a stub server that answers `respond(wire)`, and "no items" to what it has no answer for. */
-function setup(respond: (wire: string) => string | undefined = () => FOUND): Setup {
+function setup(respond: (wire: string) => string | undefined = () => FOUND, engine: Engine = "14.0.7"): Setup {
   const stub = new StubConnection((wire) => respond(wire) ?? NO_ITEMS("Item"));
-  const helper = new CItemHelper(stub);
+  const helper = new CItemHelper(stub, { engine });
   const log: string[] = [];
   return { checker: new ReferenceChecker(helper), helper, stub, log, writer: { writeLine: (text) => log.push(text) } };
 }
@@ -199,6 +200,18 @@ describe("CheckRelationshipItems (IMP-110, IMP-111)", () => {
     await checker.checkRelationshipItems(item, writer, []);
     const nested = selectNodes(".//Item[@type='FeedTemplate' or @type='Other']", item) as XmlElement[];
     expect(nested.map((node) => node.getAttribute("action"))).toEqual(["edit", "merge"]);
+  });
+
+  it("[12.0] makes every nested add a merge, the built-in template's FeedTemplate too (IMP-110)", async () => {
+    const { checker, writer } = setup(() => FOUND, "12.0");
+    const item = doc(
+      forum(BUILT_IN, '<Relationships><Item type="FeedTemplate" action="add"/><Item type="Other" action="add"/><Item type="FeedTemplate" action="edit"/></Relationships>', ' action="add"'),
+    );
+    const unresolved: UnresolvedReference[] = [];
+    await checker.checkRelationshipItems(item, writer, unresolved);
+    const nested = selectNodes(".//Item[@type='FeedTemplate' or @type='Other']", item) as XmlElement[];
+    expect(nested.map((node) => node.getAttribute("action"))).toEqual(["merge", "merge", "edit"]);
+    expect(unresolved.map((entry) => entry.faultcode)).toEqual([10005]);
   });
 
   it("leaves a template without nested items alone and does not queue it", async () => {
@@ -591,6 +604,16 @@ describe("CheckRelatedItems and GetCurrentIdOfVersion (IMP-150, IMP-151)", () =>
     await checker.checkRelatedItems(doc(item(related("old"))), writer, []);
     expect(stub.requests[0]).toBe('<Item type="Part" action="get" levels="0"><id>old</id></Item>');
     expect(log).toEqual(["checking for related items", "<Item type='Part' action='get' levels='0'><id>old</id></Item>", "  was obtained from server"]);
+  });
+
+  it.each([
+    ["14.0.7", "  was obtained from"],
+    ["12.0", "   was obtained from"],
+  ] as const)("%s writes %j before the cache words of this check", async (engine, words) => {
+    const { checker, writer, log } = setup(server({ versionable: false }), engine);
+    await checker.checkRelatedItems(doc(item(related("old"))), writer, []);
+    await checker.checkRelatedItems(doc(item(related("old"))), writer, []);
+    expect(log.filter((line) => line.includes("was obtained"))).toEqual([`${words} server`, `${words} cache`]);
   });
 
   it("moves a floating reference of a versionable type to the current generation", async () => {

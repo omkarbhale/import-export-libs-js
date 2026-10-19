@@ -988,3 +988,129 @@ describe("InvalidOperationException", () => {
     expect([wrapped.message, wrapped.innerException]).toEqual(["outer", inner]);
   });
 });
+
+describe("12.0: the run, its texts and its console (IMP-403 to IMP-412, IMP-421, IMP-422, IMP-427, IMP-470)", () => {
+  const one = (name: string): PackageFixture => ({ files: { "List/a.xml": list(`L-${name}`, `Colors-${name}`) } });
+  const failsAdding = (name: string): Rule => (wire) => (wire.includes(`Colors-${name}`) && wire.includes('action="add"') ? stubFault("5", "boom") : undefined);
+  const START = "Start of importing packages\r\n";
+  /** The package block of the log: what follows the first line, up to the error block. */
+  const afterStart = (log: string): string => log.slice(log.indexOf(START) + START.length);
+
+  it("writes no header and does not read the server version, so a helper that never logged in imports (IMP-403, s37)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: one("A") }, loggedIn: false });
+    expect(await test.run()).toBe(0);
+    expect(test.log().startsWith(START)).toBe(true);
+    expect(test.log()).not.toContain("Tool version");
+  });
+
+  it("keeps only the full 1024-character blocks of a package's log, none for a short one (IMP-412)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: one("A") } });
+    expect(await test.run()).toBe(0);
+    const rest = afterStart(test.log());
+    expect(rest.length % 1024).toBe(0);
+    expect(rest).not.toContain("end of execution");
+    expect(rest).not.toContain("completed");
+    const quiet = harness({ engine: "12.0", packages: { A: {} } });
+    expect(await quiet.run()).toBe(0);
+    expect(quiet.log()).toBe(START);
+  });
+
+  it("writes the console with the LF-first framing and the six-space log banner (IMP-421)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: { files: { "List/a.xml": list("L1", "One"), "List/b.xml": list("L2", "Two") } } } });
+    expect(await test.run()).toBe(0);
+    expect(test.console()).toBe("\n       ****Import   A****\r\n..\nDelayed resolution of unresolved references ...\r\n\ncompleted");
+    const merge = harness({ engine: "12.0", packages: { A: one("A") }, merge: true, verbose: true });
+    expect(await merge.run()).toBe(0);
+    expect(merge.console()).toBe(
+      "\n       ****Import with merge option A****\nBuilding  solution\nImporting a  type List   1  of  1\nDelayed resolution of unresolved references ...\r\n\ncompleted",
+    );
+  });
+
+  it("sends an error for the failed item and another for the run, and writes the three-part block (IMP-407, IMP-427)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: one("A") }, rules: [failsAdding("A")] });
+    expect(await test.run()).toBe(1);
+    const errors = test.texts("error");
+    expect(errors).toHaveLength(2);
+    expect(errors[0]?.startsWith("          ****ErrorMessage****\r\n       ")).toBe(true);
+    expect(errors[1]?.startsWith("\t\t****ErrorMessage****\n")).toBe(true);
+    expect(errors[1]?.endsWith("\t\t**********************")).toBe(true);
+    expect(test.texts("warning").filter((text) => text.includes("Trying to resolve"))).toEqual([]);
+    const log = test.log();
+    expect(log).toContain("\n\t\t****ErrorMessage****\r\n");
+    expect(log.endsWith("\t\t********************\r\n")).toBe(true);
+    expect(test.texts("status")).not.toContain("completed");
+  });
+
+  it("wraps the failure with LF-only ends and names without quotes (IMP-407)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: one("A") }, rules: [failsAdding("A")] });
+    await test.run();
+    const text = test.texts("error")[1] ?? "";
+    expect(text).toContain("\nImport package A failed with message:\n\n");
+    expect(text).toContain("\nUpdating A to failed release status\n\t\t");
+    expect(about(test.requests, "DatabaseUpgrade").filter((wire) => wire.includes("<upgrade_status>2</upgrade_status>"))).toHaveLength(1);
+  });
+
+  it("retries a delete after a failed one with an error message and no warning (IMP-427)", async () => {
+    let attempts = 0;
+    const test = harness({
+      engine: "12.0",
+      packages: { A: { files: { "View/v.xml": '<AML><Item type="View" id="V1" action="delete"><name>v</name></Item></AML>' } } },
+      rules: [
+        (wire) => {
+          if (!wire.includes('type="View"') || !wire.includes('action="delete"')) return undefined;
+          attempts += 1;
+          return attempts === 1 ? stubFault("1", "first") : undefined;
+        },
+      ],
+    });
+    expect(await test.run()).toBe(0);
+    expect(attempts).toBe(2);
+    // the Message of a fault is the response document alone (WIRE-051)
+    const errors = test.texts("error");
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.startsWith("          ****ErrorMessage****\r\n       <SOAP-ENV:Envelope")).toBe(true);
+    expect(errors[0]).toContain("first");
+    expect(test.texts("warning").filter((text) => text.includes("Trying to resolve"))).toEqual([]);
+  });
+
+  describe("the helper's texts (IMP-447, IMP-453)", () => {
+    const helperOf = (rules: Rule[]) => {
+      const connection = new StubConnection((wire) => {
+        for (const rule of rules) {
+          const answer = rule(wire);
+          if (answer !== undefined) return answer;
+        }
+        return modelAnswer(wire);
+      });
+      return new ImportHelper(new CItemHelper(connection, { engine: "12.0" }), { osUser: "T\\u" });
+    };
+
+    it("adds the sentence to the detail of a refused DatabaseUpgrade add", async () => {
+      const refused = helperOf([faultOn('action="add"', "9", "add refused")]);
+      await expect(refused.writeReleaseData("P", 0, "R1", "D1")).rejects.toMatchObject({
+        faultcode: 9,
+        faultdetail: "add refused Can't add instance of databaseUpgrade ItemType.",
+        message: expect.not.stringContaining("Can't add instance"),
+      });
+    });
+
+    it("rethrows a fault of the label lookup without the closing period, and wraps the others with it", async () => {
+      await expect(helperOf([faultOn("language", "0", "none")]).getLabelOfItemType("List")).rejects.toMatchObject({
+        faultcode: 0,
+        faultdetail: expect.stringMatching(/ Unable to get label of List ItemType$/),
+      });
+      await expect(helperOf([(wire) => (wire.includes("language") ? stubResult("") : undefined)]).getLabelOfItemType("List")).rejects.toMatchObject({
+        faultcode: -1,
+        faultdetail: "Object reference not set to an instance of an object. Unable to get label of List ItemType.",
+      });
+    });
+  });
+
+  it("has no File full name line and one Processing line per item (IMP-422)", async () => {
+    const test = harness({ engine: "12.0", packages: { A: { files: { "List/a.xml": list("L1", "One"), "List/b.xml": list("L2", "Two"), "List/c.xml": list("L3", "Three"), "List/d.xml": list("L4", "Four"), "List/e.xml": list("L5", "Five"), "List/f.xml": list("L6", "Six"), "List/g.xml": list("L7", "Seven"), "List/h.xml": list("L8", "Eight"), "List/i.xml": list("L9", "Nine"), "List/j.xml": list("L10", "Ten"), "List/k.xml": list("L11", "Eleven"), "List/l.xml": list("L12", "Twelve") } } } });
+    expect(await test.run()).toBe(0);
+    const log = test.log();
+    expect(log).not.toContain("File full name");
+    expect(log.split("Processing (add)").length - 1).toBeGreaterThan(5);
+  });
+});

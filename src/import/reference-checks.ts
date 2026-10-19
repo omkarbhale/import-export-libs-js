@@ -36,7 +36,7 @@ export interface DelayedResolution {
 }
 
 /** The part of the helper the checks need: its requests, and the lookups with the one cache of the run (IMP-102). */
-export type CheckHost = Pick<CItemHelper, "applyAML" | "lookups">;
+export type CheckHost = Pick<CItemHelper, "applyAML" | "lookups" | "engine">;
 
 const START_OF_REFERENCE_CHECKING = "********** Start of reference checking ************";
 const END_OF_REFERENCE_CHECKING = "************* End of reference checking ************";
@@ -249,7 +249,8 @@ export class ReferenceChecker {
           for (const item of nested) {
             if (getAttribute(item, "action") !== "add") continue;
             let replacement = "merge";
-            if (relationshipType === "DiscussionTemplate" && id === BUILT_IN_DISCUSSION_TEMPLATE) {
+            // IMP-110: 12.0 makes every nested add a merge, the built-in template's FeedTemplates included
+            if (this.host.engine !== "12.0" && relationshipType === "DiscussionTemplate" && id === BUILT_IN_DISCUSSION_TEMPLATE) {
               if (attributeValue(item, "type") === "FeedTemplate") replacement = "edit";
             }
             item.setAttribute("action", replacement);
@@ -415,7 +416,9 @@ export class ReferenceChecker {
       try {
         log.writeLine("checking for related items");
         log.writeLine(request);
-        await this.cachedRequest(request, log, WAS_OBTAINED_FROM_SERVER, WAS_OBTAINED_FROM_CACHE);
+        // IMP-150: 12.0 writes one more space before the words of this check
+        const pad = this.host.engine === "12.0" ? " " : "";
+        await this.cachedRequest(request, log, pad + WAS_OBTAINED_FROM_SERVER, pad + WAS_OBTAINED_FROM_CACHE);
         if (await lookups.isVersionable(type)) {
           if (await this.floats(related)) setInnerText(related, await lookups.getCurrentIdOfVersion(id, type));
         }
