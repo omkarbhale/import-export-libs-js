@@ -148,8 +148,14 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   const portUrl = values.url ?? WSL_DEV_URL;
-  assertDevUrl(portUrl);
-  const password = readPassword();
+  let password: string;
+  try {
+    assertDevUrl(portUrl);
+    password = readPassword();
+  } catch (error) {
+    process.stderr.write(`parity: ${(error as Error).message}\n`);
+    return 64;
+  }
   const user = process.env.ARAS_USER ?? "root";
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
   const out = resolve(values.out ?? join(ORACLE_DIR, "out", `parity-${engine}-${stamp}`));
