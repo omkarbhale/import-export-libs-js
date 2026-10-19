@@ -16,7 +16,7 @@ import { directoryGetParentFullName, fileExists } from "../io/host-path.js";
 import { pathCombine } from "../io/win-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { ImportHelper, type ImportHelperOptions } from "../import/import-helper.js";
-import { ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
+import { IMPORT_RUN_ENGINES, ImportRun, SILENT_CONSOLE, type ConsoleWriter } from "../import/import-run.js";
 import type { SUImportContext } from "../import/import-context.js";
 import { DuplicateKeyError, ManifestFile, NetfxHashtable } from "../manifest/index.js";
 import { innerText, selectNodes } from "../xml/index.js";
@@ -35,7 +35,7 @@ import { ProgressStreamLogger } from "./progress-logger.js";
 import { newRequestDictionary } from "./request-template.js";
 import { RunLog, invariantDateTime, logInputParameters } from "./run-log.js";
 
-/** The engines whose export run is built; the rest wait for their variant slices. */
+/** The engines whose export run is built; the rest wait for their variant slices. The import run has its own list (`IMPORT_RUN_ENGINES`). */
 export const RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 /**
@@ -151,7 +151,7 @@ export class ImportExportManager {
     if (itemHelper === null) throw new ArgumentNullException("itemHelper");
     if (context === null) throw new ArgumentNullException("context");
     this.engine = itemHelper.engine;
-    if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
+    if (!RUN_ENGINES.includes(this.engine) && !IMPORT_RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
     const { now, console, osUser, ...environment } = options;
     this.environment = environment;
@@ -235,6 +235,7 @@ export class ImportExportManager {
    * @spec EXP-500 EXP-505 EXP-506 EXP-508 EXP-520
    */
   async exportSolutions(exportContext: SUExportContext | null, selectedItems: SelectionInsertions | SelectionTable | null): Promise<void> {
+    if (!RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     if (exportContext === null) throw new ArgumentNullException("exportContext");
     if (selectedItems === null) throw new ArgumentNullException("selItemsTable");
     const selection = selectedItems instanceof NetfxHashtable ? selectedItems : selectionTable(selectedItems);

@@ -1,5 +1,6 @@
 import { isNullReference, isXPathException, isXmlException, nullReference } from "../client/dotnet.js";
 import { CItemException, type ResponseDocument, stackText } from "../client/fault.js";
+import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { type XmlDocument, type XmlElement, documentElementOf, innerText, removeChild } from "../xml/dom.js";
 import { loadXml } from "../xml/parser.js";
 import { selectNodes, selectSingleNode } from "../xml/xpath.js";
@@ -42,10 +43,16 @@ const asElements = (nodes: ReturnType<typeof selectNodes>): XmlElement[] => node
  * document (IMP-340). The document is edited in place, so a call that fails after an edit leaves it in the document.
  * Values read from the document go into the requests and the XPath texts unescaped, as the engine does (AGENTS.md rule 7).
  *
+ * 14.35 differs in how a versionable item's relationship with an `Item` under `related_id` is read (IMP-332, IMP-333, IMP-353).
+ *
  * @spec IMP-300 IMP-301 IMP-302 IMP-303 IMP-304 IMP-310 IMP-311 IMP-312 IMP-313 IMP-314 IMP-315 IMP-316 IMP-317 IMP-330 IMP-331 IMP-332 IMP-333 IMP-340
+ * @spec IMP-353
  */
 export class ImportItems {
-  constructor(private readonly helper: MergeHelper) {}
+  constructor(
+    private readonly helper: MergeHelper,
+    private readonly engine: Engine = DEFAULT_ENGINE,
+  ) {}
 
   /**
    * `Import(itemInXml, mergeMode)`. A null reference, an `XmlException` and an `XPathException` leave as a
@@ -137,7 +144,7 @@ export class ImportItems {
    * `ProcessVersionableItem`: each relationship item directly under the root's `Relationships` is matched by its source and
    * its related (or `ref_id`) id, and becomes an `add`, or an `edit` addressed by a `where` (IMP-330 to IMP-333).
    *
-   * @spec IMP-330 IMP-331 IMP-332 IMP-333
+   * @spec IMP-330 IMP-331 IMP-332 IMP-333 IMP-353
    */
   private async processVersionableItem(root: XmlElement): Promise<void> {
     for (const relationship of asElements(selectNodes("Relationships/Item", root))) {
@@ -165,11 +172,19 @@ export class ImportItems {
         relationship.setAttribute("action", "edit");
       } else if (relatedNode !== null) {
         let relatedId: string;
-        if (selectSingleNode("./Item", relatedNode) !== null) {
-          // the id is read from the first attribute among all the Items under related_id, and an Item with none is a null reference (IMP-333)
+        const relatedItem = selectSingleNode("./Item", relatedNode) as XmlElement | null;
+        if (relatedItem !== null) {
+          // the id is read from the first attribute among all the Items under related_id (IMP-332)
           const idNode = selectSingleNode("related_id/Item/@id", relationship);
-          if (idNode === null) throw nullReference();
-          relatedId = innerText(idNode);
+          if (this.engine === "14.35") {
+            // an Item with no id is no fault: a get leaves the relationship alone, any other action is matched on an empty id (IMP-333, IMP-353)
+            relatedId = idNode === null ? "" : innerText(idNode);
+            if (relatedId === "" && relatedItem.getAttributeNode("action")?.value === "get") continue;
+          } else {
+            // an Item with none is a null reference (IMP-333)
+            if (idNode === null) throw nullReference();
+            relatedId = innerText(idNode);
+          }
         } else {
           relatedId = innerText(relatedNode);
         }

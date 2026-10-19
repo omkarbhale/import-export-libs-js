@@ -52,11 +52,11 @@ function failure(manager: DelayedResolutionManager, references: UnresolvedRefere
 const innerTypeName = (error: WrongFormatOfTheAmlException): string => (error.innerException as DotNetException).typeName;
 
 describe("DelayedResolutionManager: the manager and its queue (IMP-200)", () => {
-  it("starts with an empty queue and is built for 14.0.7 only", () => {
+  it("starts with an empty queue and is built for 14.0.7 and 14.35 only", () => {
     expect(new DelayedResolutionManager().queue).toEqual([]);
     expect(new DelayedResolutionManager("14.0.7").engine).toBe("14.0.7");
+    expect(new DelayedResolutionManager("14.35").engine).toBe("14.35");
     expect(() => new DelayedResolutionManager("12.0")).toThrow(EngineNotSupportedError);
-    expect(() => new DelayedResolutionManager("14.35")).toThrow(EngineNotSupportedError);
   });
 
   it("keeps the entries of every item of the package in the order they were added, without deduplicating", () => {
@@ -69,6 +69,87 @@ describe("DelayedResolutionManager: the manager and its queue (IMP-200)", () => 
     }
     expect(manager.queue).toHaveLength(2);
     expect(manager.queue[0]).toBe(manager.queue[1]);
+  });
+});
+
+describe("14.35: the queue holds each entry once (IMP-250, IMP-251)", () => {
+  const relationship = (related: string): string =>
+    `<Item type='Part' id='A' action='add'><Relationships><Item type='Part BOM' action='add'><related_id type='Part'>${related}</related_id></Item></Relationships></Item>`;
+
+  it("drops a second entry equal to a queued one, and still detaches the node (IMP-210)", () => {
+    const manager = new DelayedResolutionManager("14.35");
+    const first = parse(relationship("B"));
+    const second = parse(relationship("B"));
+    run(manager, [ref(10001, at(first, "//related_id"))]);
+    run(manager, [ref(10001, at(second, "//related_id"))]);
+    expect(manager.queue).toHaveLength(1);
+    expect(outerXml(second.documentElement!)).toBe(`<Item type="Part" id="A" action="add"><Relationships></Relationships></Item>`);
+  });
+
+  it("keeps entries that differ in any character", () => {
+    const manager = new DelayedResolutionManager("14.35");
+    run(manager, [ref(10001, at(parse(relationship("B")), "//related_id"))]);
+    run(manager, [ref(10001, at(parse(relationship("C")), "//related_id"))]);
+    expect(manager.queue).toHaveLength(2);
+  });
+
+  it("deduplicates a relationship item (IMP-212) and a data source (IMP-220), and still writes the zero id", () => {
+    const manager = new DelayedResolutionManager("14.35");
+    const template = (): XmlDocument =>
+      parse(`<Item type='ItemType' id='IT' action='add'><Relationships><Item type='Property' id='P1' action='add'><data_type>list</data_type><data_source type='List'>L</data_source></Item></Relationships></Item>`);
+    const a = template();
+    const b = template();
+    run(manager, [ref(10000, at(a, "//data_source"))]);
+    run(manager, [ref(10000, at(b, "//data_source"))]);
+    expect(manager.queue).toHaveLength(1);
+    expect(outerXml(at(b, "//data_source"))).toBe(`<data_source type="List">${FAKED_DATA_SOURCE}</data_source>`);
+
+    const owner = (): XmlDocument =>
+      parse(`<Item type='Part' id='A'><Relationships><Item type='Part BOM' id='R1'><related_id>B</related_id></Item></Relationships></Item>`);
+    const c = owner();
+    const d = owner();
+    run(manager, [ref(10005, at(c, "//Item[@id='R1']"))]);
+    run(manager, [ref(10005, at(d, "//Item[@id='R1']"))]);
+    expect(manager.queue).toHaveLength(2);
+    expect(outerXml(at(d, "//Relationships"))).toBe(`<Relationships></Relationships>`);
+  });
+
+  it("14.0.7 still queues both", () => {
+    const manager = new DelayedResolutionManager("14.0.7");
+    run(manager, [ref(10001, at(parse(relationship("B")), "//related_id"))]);
+    run(manager, [ref(10001, at(parse(relationship("B")), "//related_id"))]);
+    expect(manager.queue).toHaveLength(2);
+  });
+});
+
+describe("14.35: a Property with no id is addressed by its where (IMP-220)", () => {
+  const edit = (property: string): string => {
+    const manager = new DelayedResolutionManager("14.35");
+    const doc = parse(
+      `<Item type='ItemType' id='IT' action='add'><Relationships>${property}</Relationships></Item>`,
+    );
+    run(manager, [ref(10000, at(doc, "//data_source"))]);
+    return manager.queue[0] as string;
+  };
+
+  it("uses the id when there is one", () => {
+    expect(edit(`<Item type='Property' id='P1' where="name='p'"><data_type>text</data_type><data_source>X</data_source></Item>`)).toBe(
+      `<Item type='ItemType' id='IT' action='edit' doGetItem='0'><Relationships><Item type='Property' id='P1' action='edit'><data_source>X</data_source></Item></Relationships></Item>`,
+    );
+  });
+
+  it.each([
+    [`where="name='p1' and source_id='I1'"`, `where="name='p1' and source_id='I1'"`],
+    [`id='' where="a"`, `where="a"`],
+    ["", `where=""`],
+  ])("addresses a Property with attributes %j by %j", (attributes, address) => {
+    expect(edit(`<Item type='Property' ${attributes}><data_type>text</data_type><data_source>X</data_source></Item>`)).toBe(
+      `<Item type='ItemType' id='IT' action='edit' doGetItem='0'><Relationships><Item type='Property' ${address} action='edit'><data_source>X</data_source></Item></Relationships></Item>`,
+    );
+  });
+
+  it("does not escape the where (IMP-204)", () => {
+    expect(edit(`<Item type='Property' where="a&amp;b"><data_type>text</data_type><data_source>X</data_source></Item>`)).toContain(`where="a&b"`);
   });
 });
 

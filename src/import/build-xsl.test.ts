@@ -6,6 +6,7 @@ import { documentElementOf } from "../xml/dom.js";
 import type { XmlDocument, XmlElement } from "../xml/dom.js";
 import { loadXml } from "../xml/parser.js";
 import { outerXml } from "../xml/writer-legacy.js";
+import type { Engine } from "../engines.js";
 import { applyBuildXsl, renderBuildOutput } from "./build-output.js";
 import { planBuildOrder, plainChildren, xpathNumber } from "./build-order.js";
 import { TypeNameOutsideRepertoireError } from "./nls-word-sort.js";
@@ -17,6 +18,7 @@ import { TypeNameOutsideRepertoireError } from "./nls-word-sort.js";
 
 const LOAD_DIR = fileURLToPath(new URL("../../fixtures/import-load/", import.meta.url));
 const XSL_DIR = fileURLToPath(new URL("../../fixtures/14.0.7/xsl/build/", import.meta.url));
+const XSL_DIR_14_35 = fileURLToPath(new URL("../../fixtures/14.35/xsl/build/", import.meta.url));
 
 interface ProbeCase {
   name: string;
@@ -37,7 +39,7 @@ function sections(text: string): string[][] {
 const escapeLineEnds = (text: string): string => text.replace(/\r/g, "\\r").replace(/\n/g, "\\n");
 
 /** What probe.ps1 does for one case: stamps the first item of each part, joins the parts, runs the transform. */
-function runCase(testCase: ProbeCase): string[] {
+function runCase(testCase: ProbeCase, engine: Engine): string[] {
   const lines: string[] = [];
   try {
     const joined: string[] = [];
@@ -54,7 +56,7 @@ function runCase(testCase: ProbeCase): string[] {
       joined.push(outerXml(doc));
     });
     const wrapper = loadXml(`<AML>${joined.join("")}</AML>`, { preserveWhitespace: false });
-    const applied = applyBuildXsl(wrapper, "14.0.7");
+    const applied = applyBuildXsl(wrapper, engine);
     if (testCase.raw) lines.push(`RAW: ${escapeLineEnds(applied.text)}`);
     const root = documentElementOf(applied.document) as XmlElement;
     for (const item of plainChildren(root, "Item")) {
@@ -74,13 +76,13 @@ function expectedLines(lines: string[]): string[] {
   });
 }
 
-function replay(casesFile: string, outFile: string): void {
+function replay(casesFile: string, outFile: string, engine: Engine = "14.0.7"): void {
   const cases = JSON.parse(readFileSync(LOAD_DIR + casesFile, "utf8")) as ProbeCase[];
   const expected = sections(readFileSync(LOAD_DIR + outFile, "utf8"));
   it("has one recorded section per case", () => expect(expected.length).toBe(cases.length));
   cases.forEach((testCase, index) => {
     it(`${testCase.name} (case ${index + 1})`, () => {
-      expect(runCase(testCase)).toEqual(expectedLines(expected[index] ?? []));
+      expect(runCase(testCase, engine)).toEqual(expectedLines(expected[index] ?? []));
     });
   });
 }
@@ -93,61 +95,71 @@ describe("IMP-021 to IMP-029: the two 14.35 types are placed by the unlisted-typ
   replay("build-xsl-cui.cases.json", "build-xsl-cui.out.14.0.7.txt");
 });
 
-describe("IMP-014: ticket 68's recorded build.xsl runs", () => {
-  const OUTSIDE_REPERTOIRE_CASE = "sort-type-names";
-  interface RunCase {
-    name: string;
-    transform?: string;
-    applied?: string;
-    transformError?: { message: string };
-    appliedError?: { message: string; type: string };
-  }
-  const run = JSON.parse(readFileSync(XSL_DIR + "run.json", "utf8")) as { cases: RunCase[] };
-
-  for (const recorded of run.cases) {
-    it(recorded.name, () => {
-      const input = readFileSync(`${XSL_DIR}cases/${recorded.name}/input.xml`, "utf8");
-      const wrapper = loadXml(input, { preserveWhitespace: false });
-      if (recorded.appliedError) {
-        const error = (() => {
-          try {
-            applyBuildXsl(wrapper, "14.0.7");
-          } catch (caught) {
-            return caught as CItemException;
-          }
-          return undefined;
-        })();
-        expect(error).toBeInstanceOf(CItemException);
-        expect(error?.message).toBe(recorded.appliedError.message);
-        expect(error?.faultcode).toBe(-1);
-        expect(() => renderBuildOutput(planBuildOrder(wrapper, "14.0.7"))).toThrow(recorded.transformError?.message ?? "");
-        return;
-      }
-      const transform = readFileSync(`${XSL_DIR}cases/${recorded.name}/${recorded.transform}`, "utf8");
-      const applied = readFileSync(`${XSL_DIR}cases/${recorded.name}/${recorded.applied}`, "utf8");
-      if (recorded.name === OUTSIDE_REPERTOIRE_CASE) {
-        // The recording sorts U+0131 and U+0130, which the weight table of IMP-030 does not hold: planning refuses (IMP-030).
-        expect(() => planBuildOrder(wrapper, "14.0.7")).toThrow(TypeNameOutsideRepertoireError);
-        // Without those two items the order of the rest is the recorded order of the rest.
-        const without = (text: string): string => text.replace(/<Item type="[ıİ]"[^>]*\/>/g, "");
-        const remaining = loadXml(without(input), { preserveWhitespace: false });
-        const orderOf = (xml: string): string[] => [...xml.matchAll(/ n="(\d+)"/g)].map((match) => match[1] as string);
-        expect(orderOf(renderBuildOutput(planBuildOrder(remaining, "14.0.7")).text)).toEqual(orderOf(without(transform)));
-        return;
-      }
-      const rendered = renderBuildOutput(planBuildOrder(wrapper, "14.0.7"));
-      expect(rendered.text).toBe(transform);
-      // `applied` is the document after ApplyXsl reloaded the text, so it is written again by OuterXml.
-      expect(outerXml(applyBuildXsl(wrapper, "14.0.7").document)).toBe(applied);
-    });
-  }
-
-  it("covers every recorded case directory", () => {
-    const directories = readdirSync(XSL_DIR + "cases").sort();
-    expect(directories).toEqual(run.cases.map((c) => c.name).sort());
-    for (const name of directories) expect(existsSync(`${XSL_DIR}cases/${name}/input.xml`)).toBe(true);
-  });
+describe("IMP-020 to IMP-033: build.xsl ordering replays the 14.35 stylesheet (G12a and G12b)", () => {
+  replay("build-xsl.cases.json", "build-xsl.out.14.35.txt", "14.35");
+  replay("build-xsl-cui.cases.json", "build-xsl-cui.out.14.35.txt", "14.35");
 });
+
+function recordedRuns(engine: Engine, dir: string): void {
+  describe(`IMP-014: ticket 68's recorded build.xsl runs (${engine})`, () => {
+    const OUTSIDE_REPERTOIRE_CASE = "sort-type-names";
+    interface RunCase {
+      name: string;
+      transform?: string;
+      applied?: string;
+      transformError?: { message: string };
+      appliedError?: { message: string; type: string };
+    }
+    const run = JSON.parse(readFileSync(dir + "run.json", "utf8")) as { cases: RunCase[] };
+
+    for (const recorded of run.cases) {
+      it(recorded.name, () => {
+        const input = readFileSync(`${dir}cases/${recorded.name}/input.xml`, "utf8");
+        const wrapper = loadXml(input, { preserveWhitespace: false });
+        if (recorded.appliedError) {
+          const error = (() => {
+            try {
+              applyBuildXsl(wrapper, engine);
+            } catch (caught) {
+              return caught as CItemException;
+            }
+            return undefined;
+          })();
+          expect(error).toBeInstanceOf(CItemException);
+          expect(error?.message).toBe(recorded.appliedError.message);
+          expect(error?.faultcode).toBe(-1);
+          expect(() => renderBuildOutput(planBuildOrder(wrapper, engine))).toThrow(recorded.transformError?.message ?? "");
+          return;
+        }
+        const transform = readFileSync(`${dir}cases/${recorded.name}/${recorded.transform}`, "utf8");
+        const applied = readFileSync(`${dir}cases/${recorded.name}/${recorded.applied}`, "utf8");
+        if (recorded.name === OUTSIDE_REPERTOIRE_CASE) {
+          // The recording sorts U+0131 and U+0130, which the weight table of IMP-030 does not hold: planning refuses (IMP-030).
+          expect(() => planBuildOrder(wrapper, engine)).toThrow(TypeNameOutsideRepertoireError);
+          // Without those two items the order of the rest is the recorded order of the rest.
+          const without = (text: string): string => text.replace(/<Item type="[ıİ]"[^>]*\/>/g, "");
+          const remaining = loadXml(without(input), { preserveWhitespace: false });
+          const orderOf = (xml: string): string[] => [...xml.matchAll(/ n="(\d+)"/g)].map((match) => match[1] as string);
+          expect(orderOf(renderBuildOutput(planBuildOrder(remaining, engine)).text)).toEqual(orderOf(without(transform)));
+          return;
+        }
+        const rendered = renderBuildOutput(planBuildOrder(wrapper, engine));
+        expect(rendered.text).toBe(transform);
+        // `applied` is the document after ApplyXsl reloaded the text, so it is written again by OuterXml.
+        expect(outerXml(applyBuildXsl(wrapper, engine).document)).toBe(applied);
+      });
+    }
+
+    it("covers every recorded case directory", () => {
+      const directories = readdirSync(dir + "cases").sort();
+      expect(directories).toEqual(run.cases.map((c) => c.name).sort());
+      for (const name of directories) expect(existsSync(`${dir}cases/${name}/input.xml`)).toBe(true);
+    });
+  });
+}
+
+recordedRuns("14.0.7", XSL_DIR);
+recordedRuns("14.35", XSL_DIR_14_35);
 
 describe("IMP-025: XPath number() of dependencyLevel", () => {
   it.each([
@@ -211,7 +223,7 @@ describe("IMP-026 and IMP-029: the plan", () => {
   it("refuses the engines whose stylesheet is not built", () => {
     expect(() => planOf("<AML/>").engine).not.toThrow();
     const wrapper = loadXml("<AML/>", { preserveWhitespace: false });
-    expect(() => planBuildOrder(wrapper, "14.35")).toThrow(/not built yet/);
+    expect(() => planBuildOrder(wrapper, "14.35")).not.toThrow();
     expect(() => planBuildOrder(wrapper, "12.0")).toThrow(/not built yet/);
   });
 });

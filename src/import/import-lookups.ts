@@ -5,7 +5,7 @@ import { selectNodes } from "../xml/xpath.js";
 import { ImportItems, type MergeHelper } from "./import-items.js";
 
 /** What the merge side of the helper needs of it: its requests and the lookups with their cache. */
-export type MergeHost = Pick<CItemHelper, "applyAML" | "lookups">;
+export type MergeHost = Pick<CItemHelper, "applyAML" | "lookups" | "engine">;
 
 const ITEM_MUST_HAVE_ID_AND_TYPE = ["Item with action \"add\" must have 'id' and 'type' set", "Error - empty 'id' or 'type'"] as const;
 const ITEM_TYPE_IS_NOT_VERSIONABLE = ["Item type is not versionable", "Error - item type is not versionable"] as const;
@@ -43,7 +43,7 @@ export class ImportLookups implements MergeHelper {
    * @spec IMP-300
    */
   doImport(itemInXml: XmlDocument, mergeMode: boolean): Promise<void> {
-    return new ImportItems(this).import(itemInXml, mergeMode);
+    return new ImportItems(this, this.host.engine).import(itemInXml, mergeMode);
   }
 
   /**

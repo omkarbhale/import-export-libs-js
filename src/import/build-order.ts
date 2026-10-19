@@ -14,8 +14,13 @@ import { sortByTypeName } from "./nls-word-sort.js";
  */
 
 /** The `|`-joined names of the stylesheet's two type lists, which its groups test with a substring search (IMP-022). */
-const EDIT_LIST_HEAD =
-  "|List|Sequence|Revision|Variable|Identity|Member|User|Permission|Method|EMail Message|Action|Report|Form|Life Cycle Map|Workflow Map|Grid|xPropertyDefinition|Permission_ItemClassification|Permission_PropertyValue|PresentationConfiguration|";
+const EDIT_LIST_START = "|List|Sequence|Revision|Variable|Identity|Member|User|Permission|Method|EMail Message|Action|Report|";
+const EDIT_LIST_REST =
+  "Form|Life Cycle Map|Workflow Map|Grid|xPropertyDefinition|Permission_ItemClassification|Permission_PropertyValue|PresentationConfiguration|";
+/** 14.35 inserts the two `cui_` types between `Report` and `Form` in both lists (IMP-022). */
+const CUI_TYPES = "cui_Control|cui_WindowSection|";
+const EDIT_LIST_HEAD = `${EDIT_LIST_START}${EDIT_LIST_REST}`;
+const EDIT_LIST_HEAD_14_35 = `${EDIT_LIST_START}${CUI_TYPES}${EDIT_LIST_REST}`;
 const EDIT_LIST_MIDDLE = "Morphae|RelationshipType|";
 const LIST_TAIL = "Metric|Chart|Dashboard|ac_PolicyAccessItemAttribute|mp_PolicyAccessEnvAttribute|mp_MacPolicy|qry_QueryDefinition|dr_RelationshipFamily|dac_DomainDefinition|";
 
@@ -47,9 +52,15 @@ const RULES_14_0_7: EngineRules = {
   unlistedList: `${EDIT_LIST_HEAD}ItemType|${EDIT_LIST_MIDDLE}Field|Property|View|SQL|${LIST_TAIL}${COMMAND_BAR_LIST}`,
 };
 
+const RULES_14_35: EngineRules = {
+  editList: `${EDIT_LIST_HEAD_14_35}${EDIT_LIST_MIDDLE}${LIST_TAIL}${COMMAND_BAR_LIST}`,
+  unlistedList: `${EDIT_LIST_HEAD_14_35}ItemType|${EDIT_LIST_MIDDLE}Field|Property|View|SQL|${LIST_TAIL}${COMMAND_BAR_LIST}`,
+};
+
 function rulesOf(engine: Engine): EngineRules {
   if (engine === "14.0.7") return RULES_14_0_7;
-  throw new NotSupportedException(`The build.xsl ordering of engine ${engine} is not built yet (IMP-020 names its groups); only 14.0.7 is.`);
+  if (engine === "14.35") return RULES_14_35;
+  throw new NotSupportedException(`The build.xsl ordering of engine ${engine} is not built yet (IMP-020 names its groups); only 14.0.7 and 14.35 are.`);
 }
 
 /** The `contains(list, concat('|', @type, '|'))` test of G52 and G53. */
@@ -180,7 +191,7 @@ function hasEarlierAdd(item: FileItem): boolean {
   return item.siblings.slice(0, index).some((other) => isCarryingAdd(other.type, other.action));
 }
 
-function groupTable(): Group[] {
+function groupTable(engine: Engine): Group[] {
   const adds = (id: string, type: string): Group => ({ id, select: addOf(type) });
   const group = (id: string, select: Group["select"]): Group => ({ id, select });
   const commandBarGroups = COMMAND_BAR_TYPES.map((type, index) => adds(`G${String(20 + index)}`, type));
@@ -197,6 +208,8 @@ function groupTable(): Group[] {
     adds("G10", "EMail Message"),
     adds("G11", "Action"),
     adds("G12", "Report"),
+    // IMP-021: 14.35 runs two more groups between G12 and G13
+    ...(engine === "14.35" ? [adds("G12a", "cui_Control"), adds("G12b", "cui_WindowSection")] : []),
     adds("G13", "Form"),
     adds("G14", "Workflow Map"),
     adds("G15", "Life Cycle Map"),
@@ -265,7 +278,7 @@ export function planBuildOrder(wrapper: XmlDocument, engine: Engine): BuildPlan 
     }
   };
 
-  for (const group of groupTable()) {
+  for (const group of groupTable(engine)) {
     for (const item of group.select(fileItems, rules)) emit(item, group.id);
   }
 

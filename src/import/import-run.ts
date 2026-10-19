@@ -1,13 +1,19 @@
 import { nullReference } from "../client/dotnet.js";
 import { CItemException } from "../client/fault.js";
 import type { CItemHelper } from "../client/item-helper.js";
-import { ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
+import { DEFAULT_ENGINE, ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import type { SolutionUpgradeContext } from "../export/export-context.js";
-import { type Message, type MessagesFactory, getMessage } from "../export/messages.js";
+import { type Message, type MessageCatalogue, type MessagesFactory, catalogueOf } from "../export/messages.js";
 import { PackageDefinitionManager } from "../export/package-definition-manager.js";
 import { RunLog, formatWithArgs, invariantDateTime } from "../export/run-log.js";
-import { ArgumentNullException, InvalidOperationException, NullReferenceException, PathNotUsableError } from "../io/errors.js";
+import {
+  ArgumentNullException,
+  InvalidOperationException,
+  NullReferenceException,
+  OperationCanceledException,
+  PathNotUsableError,
+} from "../io/errors.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import type { ManifestFile } from "../manifest/manifest-file.js";
 import { getSolutionPath } from "../manifest/solution-path.js";
@@ -16,13 +22,14 @@ import { selectNodes, selectSingleNode } from "../xml/xpath.js";
 import { DelayedResolutionManager } from "./delayed-resolution.js";
 import type { SUImportContext } from "./import-context.js";
 import type { ImportHelper } from "./import-helper.js";
+import { ImportWorkItem } from "./import-work-item.js";
 import { getItemsFromPackageDom, isImportableType } from "./items.js";
 import { loadPackageDom } from "./load-package-dom.js";
 import type { LogWriter } from "./load-package-dom.js";
 import { ReferenceChecker } from "./reference-checks.js";
 
 /** The engines whose import run is built; the rest wait for their variant slices. */
-export const IMPORT_RUN_ENGINES: readonly Engine[] = ["14.0.7"];
+export const IMPORT_RUN_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 /** Where a run is, for `Cancel` (IMP-409). */
 export type ProgressState = "idle" | "inProgress" | "cancelled";
@@ -136,12 +143,13 @@ export function importInputParameters(context: SolutionUpgradeContext, importCon
 }
 
 /**
- * `LogError`: the error block of a failed run, written to the log (IMP-407).
+ * `LogError`: the error block of a failed run, written to the log (IMP-407). In 14.35 it first turns `AutoFlush` on for the log
+ * writer, so what follows reaches the file at once; the port writes the log when it is disposed, which is the same text.
  *
  * @spec IMP-407 IMP-470
  */
-export function logError(error: Error, log: RunLog): void {
-  log.writeLine(getMessage("ErrorMessageMessageEnd", error.message));
+export function logError(error: Error, log: RunLog, engine: Engine = DEFAULT_ENGINE): void {
+  log.writeLine(catalogueOf(engine)("ErrorMessageMessageEnd", error.message));
 }
 
 /**
@@ -166,8 +174,12 @@ function endsTheRunUnhandled(error: unknown): boolean {
  * @spec IMP-425 IMP-426 IMP-427 IMP-428 IMP-429 IMP-430 IMP-431 IMP-470 IMP-471
  */
 export class ImportRun {
+  /** `ResourceManager.GetMessage` of the engine's catalogue (IMP-470). */
+  private readonly message: MessageCatalogue;
+
   constructor(private readonly host: ImportRunHost) {
     if (!IMPORT_RUN_ENGINES.includes(host.engine)) throw new EngineNotSupportedError(host.engine);
+    this.message = catalogueOf(host.engine);
   }
 
   private timestamp(): string {
@@ -192,7 +204,7 @@ export class ImportRun {
         const version = host.itemHelper.innovatorVersion;
         if (version === undefined) throw new NullReferenceException();
         log.writeLine(importInputParameters(host.context, importContext, version.fullString, ENGINE_ASSEMBLY_VERSIONS[host.engine]));
-        log.writeLine(getMessage("StartOfImportingPackages"));
+        log.writeLine(this.message("StartOfImportingPackages"));
         const solutions = await host.getSolutions2Xml();
         const warnings: string[] = [];
         if (host.manifestFile === null) throw new NullReferenceException();
@@ -203,11 +215,11 @@ export class ImportRun {
       } catch (error) {
         if (endsTheRunUnhandled(error)) throw error;
         const failure = error as Error;
-        logError(failure, log);
-        await send(host.messages.getErrorMessage(), getMessage("ErrorMessageMessage", failure.message));
+        logError(failure, log, host.engine);
+        await send(host.messages.getErrorMessage(), this.message("ErrorMessageMessage", failure.message));
         return 1;
       }
-      await send(status, getMessage("Completed"));
+      await send(status, this.message("Completed"));
       host.setState("idle");
       return 0;
     } finally {
@@ -220,23 +232,30 @@ export class ImportRun {
    * when the package ends, whether it succeeded or failed (IMP-406). A failure writes the failed status, which may fail in
    * turn and then replaces the original error (bug IMP-411), and is wrapped (IMP-407).
    *
+   * In 14.35 the package log is written through to the file and not held until the package ends; the file has the same text
+   * once the package has ended. A cancel is a failure there: when `ImportProc` returns with the state *cancelled* the package
+   * throws an `OperationCanceledException`, and the failure path takes it (IMP-409).
+   *
    * @spec IMP-406 IMP-407 IMP-409 IMP-411
    */
   private async importPackage(importContext: SUImportContext, commonLog: RunLog, packageName: string): Promise<void> {
     const { importHelper } = this.host;
     const log = new PackageLog();
     try {
-      log.writeLine(getMessage("StartOfExecutionDateTime", this.timestamp()));
-      log.writeLine(getMessage("UpdatingPackageNamePackageToInprogressReleaseStatus", packageName));
+      log.writeLine(this.message("StartOfExecutionDateTime", this.timestamp()));
+      log.writeLine(this.message("UpdatingPackageNamePackageToInprogressReleaseStatus", packageName));
       await importHelper.writeReleaseData(packageName, 0, importContext.release, importContext.description);
       await this.importProc(packageName, log, importContext);
-      log.writeLine(getMessage("UpdatingPackageNamePackageToSuccessReleaseStatus", packageName));
+      if (this.host.engine === "14.35" && this.host.getState() === "cancelled") {
+        throw new OperationCanceledException(this.message("ImportWasCanceledByUser"));
+      }
+      log.writeLine(this.message("UpdatingPackageNamePackageToSuccessReleaseStatus", packageName));
       await importHelper.writeReleaseData(packageName, 1, importContext.release, importContext.description);
     } catch (error) {
       if (endsTheRunUnhandled(error)) throw error;
-      log.writeLine(getMessage("UpdatingPackageNamePackageToFailedReleaseStatus", packageName));
+      log.writeLine(this.message("UpdatingPackageNamePackageToFailedReleaseStatus", packageName));
       await importHelper.writeReleaseData(packageName, 2, importContext.release, importContext.description);
-      const text = getMessage(
+      const text = this.message(
         "ImportPackagePackageNameFailedWithMessageUpdatingPackageNameToFailedReleaseStatus",
         packageName,
         (error as Error).message,
@@ -244,7 +263,7 @@ export class ImportRun {
       );
       throw new InvalidOperationException(`\r\n${text}\r\n`, error);
     } finally {
-      log.writeLine(getMessage("EndOfExecutionDateTime", this.timestamp()));
+      log.writeLine(this.message("EndOfExecutionDateTime", this.timestamp()));
       commonLog.write(log.text);
     }
   }
@@ -261,21 +280,21 @@ export class ImportRun {
     const { host } = this;
     const { console, itemHelper, importHelper } = host;
     const verbose = host.context.verbose;
-    const banner = getMessage(importContext.merge ? "ImportWithMergeOptionPackageName" : "ImportPackageName", packageName);
+    const banner = this.message(importContext.merge ? "ImportWithMergeOptionPackageName" : "ImportPackageName", packageName);
     console.writeLine(banner);
     log.writeLine(banner);
-    if (verbose) console.writeLine(getMessage("BuildingSolution"));
+    if (verbose) console.writeLine(this.message("BuildingSolution"));
     const status = host.messages.getStatusMessage();
-    await send(status, getMessage("BuildingSolution"));
+    await send(status, this.message("BuildingSolution"));
     if (host.manifestFile === null) throw new NullReferenceException();
-    const solutionPath = getSolutionPath(packageName, host.manifestDirectory, host.manifestFile);
+    const solutionPath = getSolutionPath(packageName, host.manifestDirectory, host.manifestFile, host.engine);
     const packageDom = loadPackageDom(solutionPath, log, { engine: host.engine, environment: host.environment });
     const items = getItemsFromPackageDom(packageDom);
-    await send(status, getMessage("AddingPackageDefinintionForPackageName", packageName));
+    await send(status, this.message("AddingPackageDefinintionForPackageName", packageName));
     const definition = await PackageDefinitionManager.open(itemHelper, packageName, true);
     const warnings: string[] = [];
     await definition.addDependencyInfo(host.manifestFile.getDependsOnInfo(packageName), warnings);
-    for (const warning of warnings) log.writeLine(getMessage("WARNINGImportingPackageNamePackageWarn", packageName, warning));
+    for (const warning of warnings) log.writeLine(this.message("WARNINGImportingPackageNamePackageWarn", packageName, warning));
 
     const importableItemsCount = getImportableItemsCount(items);
     let count = 0;
@@ -286,81 +305,71 @@ export class ImportRun {
 
     for (const document of items) {
       if (host.getState() === "cancelled") {
-        const text = getMessage("ImportWasCanceledByUser");
+        const text = this.message("ImportWasCanceledByUser");
         await send(status, text);
         log.writeLine(text);
         return;
       }
-      const item = itemOf(document);
-      item.setAttribute("doGetItem", "0");
-      const action = getAttribute(item, "action");
-      let id = getAttribute(item, "id");
-      const type = getAttribute(item, "type");
-      const keyedName = getAttribute(item, "tempKeyName");
-      item.removeAttribute("tempKeyName");
-      const fullName = getAttribute(item, "tempFullName");
-      item.removeAttribute("tempFullName");
-      const keyedPart = keyedName !== "" ? `  keyed_name : ${keyedName}  ` : " ";
-      const idPart = id !== "" ? `  id : ${id}  ` : " ";
-      const typePart = type !== "" ? `  type : ${type}  ` : " ";
-      const descriptor = idPart + keyedPart + typePart;
-      log.writeLine(getMessage("ProcessingActionKeyIdType", action, descriptor));
-      log.writeLine(getMessage("FileFullNameFullName", fullName));
+      const workItem = new ImportWorkItem(document, importContext, host.engine);
+      const { action, workItemType: type, originalKeyedName: keyedName, keyIdType: descriptor } = workItem;
+      log.writeLine(this.message("ProcessingActionKeyIdType", action, descriptor));
+      log.writeLine(this.message("FileFullNameFullName", workItem.originalFullFileName));
 
       if (action === "add" && isImportableType(type)) {
         count += 1;
-        await send(status, getMessage("ItemIndexOfCountTypeNameKeyedName", String(count), String(importableItemsCount), type, keyedName));
+        await send(status, this.message("ItemIndexOfCountTypeNameKeyedName", String(count), String(importableItemsCount), type, keyedName));
         if (verbose) {
-          console.writeLine(getMessage("ImportingKeyedNameTypeNumberOfCount", keyedName, type, String(count), String(importableItemsCount)));
+          console.writeLine(this.message("ImportingKeyedNameTypeNumberOfCount", keyedName, type, String(count), String(importableItemsCount)));
         } else {
           console.write(".");
           if (count % 60 === 0) console.write("\n");
         }
       } else {
-        if (verbose) console.writeLine(getMessage("PostActions"));
-        await send(status, getMessage("PostActions"));
+        if (verbose) console.writeLine(this.message("PostActions"));
+        await send(status, this.message("PostActions"));
       }
 
-      const doFullCheck = action !== "delete";
-      if (await importHelper.lookups.skipsExistingAdd(item, importContext.merge)) {
-        log.writeLine(getMessage("ItemSuccessfullySkippedKeyIdType", descriptor));
+      if (await importHelper.lookups.skipsExistingAdd(workItem.itemNode, importContext.merge)) {
+        log.writeLine(this.message("ItemSuccessfullySkippedKeyIdType", descriptor));
       } else {
         if (equalsIgnoreCase(type, "sql") && !sqlItemsDeleted) {
-          log.writeLine(getMessage("DeleteSQLItemsOfThePackagePackageNameFromTheDatabase", packageName));
+          log.writeLine(this.message("DeleteSQLItemsOfThePackagePackageNameFromTheDatabase", packageName));
           await importHelper.deleteSqlItems(selectNodes("AML/Item", packageDom) as XmlElement[]);
           sqlItemsDeleted = true;
-          log.writeLine(getMessage("DoneDeletingSQLItemsOfThePackagePackageNameFromTheDatabase", packageName));
+          log.writeLine(this.message("DoneDeletingSQLItemsOfThePackagePackageNameFromTheDatabase", packageName));
         }
-        await checker.doChecking(delayedResolution, document, log, doFullCheck);
+        await checker.doChecking(delayedResolution, document, log, workItem.thoroughCheck);
         try {
           await importHelper.lookups.doImport(document, importContext.merge);
         } catch (error) {
-          if (!(error instanceof CItemException) || doFullCheck) throw error;
-          await send(host.messages.getWarningMessage(), getMessage("WarningTryToResolve", error.message));
+          if (!(error instanceof CItemException) || workItem.thoroughCheck) throw error;
+          await send(host.messages.getWarningMessage(), this.message("WarningTryToResolve", error.message));
           await checker.doChecking(delayedResolution, document, log, true);
           await importHelper.lookups.doImport(document, importContext.merge);
         }
-        id = getAttribute(item, "id");
-        log.writeLine(getMessage("ItemSuccessfullyAppliedActionKeyIdType", action, descriptor));
+        workItem.id = getAttribute(workItem.itemNode, "id");
+        log.writeLine(this.message("ItemSuccessfullyAppliedActionKeyIdType", action, descriptor));
       }
 
       if (action === "add" && isImportableType(type)) {
-        log.writeLine(getMessage("AddingItemIntoPackageDefinitionWthIdAndType", id, type));
+        let id = workItem.id;
+        log.writeLine(this.message("AddingItemIntoPackageDefinitionWthIdAndType", id, type));
         if (await itemHelper.lookups.isVersionable(type)) {
-          log.writeLine(getMessage("GettingConfigIdOfVersionableItemIdType", id, type));
+          log.writeLine(this.message("GettingConfigIdOfVersionableItemIdType", id, type));
           id = (await itemHelper.lookups.getConfigId(id, type)) ?? "";
+          workItem.id = id;
         }
         const label = await importHelper.getLabelOfItemType(type);
         const added = await definition.addElement2Group(keyedName, type, label, id);
-        log.writeLine(getMessage(added ? "ItemSuccessfullyAddedInPackdefinitionIdType" : "ItemAlreadyExistInPackdefinitionIdType", id, type));
+        log.writeLine(this.message(added ? "ItemSuccessfullyAddedInPackdefinitionIdType" : "ItemAlreadyExistInPackdefinitionIdType", id, type));
       }
     }
 
-    await send(status, getMessage("DelayedResolutionOfUnresolvedReferences"));
-    console.writeLine(getMessage("DelayedResolutionOfUnresolvedReferences"));
+    await send(status, this.message("DelayedResolutionOfUnresolvedReferences"));
+    console.writeLine(this.message("DelayedResolutionOfUnresolvedReferences"));
     await delayedResolution.executeDelayedResolution(itemHelper, log);
-    console.writeLine(getMessage("Completed"));
-    log.writeLine(getMessage("Completed"));
-    await send(status, getMessage("Completed"));
+    console.writeLine(this.message("Completed"));
+    log.writeLine(this.message("Completed"));
+    await send(status, this.message("Completed"));
   }
 }

@@ -648,7 +648,7 @@ The coverage test checks that every heading here names a rule defined in an area
 
 ## IMP-183: a failed unique-property or group lookup is remembered
 
-- **Behaviour:** `GetUniqueProperties` and the `add` of `GetPackageGroupIdOrCreateIfNotExists` leave their failed lazy request in the cache, and every later lookup of the same string throws the same exception without a request.
+- **Behaviour:** `GetUniqueProperties` and the `add` of `GetPackageGroupIdOrCreateIfNotExists` leave their failed lazy request in the cache, and the next lookup of the same string throws the same exception without a request (the keyed-properties entry stays for the rest of the run; the group lookup removes the add's entry when it rethrows it, so its third call asks again).
 - **Why it is a bug:** a failure, faultcode `0` included, becomes permanent for the helper. The other lookups remove a failed entry.
 - **C# location:** `Aras.Tools.SolutionUpgrade.CItemHelper::GetUniqueProperties`, `GetPackageGroupIdOrCreateIfNotExists`.
 - **Versions:** 14.35.

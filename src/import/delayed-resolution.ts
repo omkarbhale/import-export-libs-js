@@ -19,7 +19,7 @@ import type { LogWriter } from "./load-package-dom.js";
 import type { DelayedResolution, UnresolvedReference } from "./reference-checks.js";
 
 /** The engines whose delayed resolution is built; the rest wait for their variant slices. */
-export const DELAYED_RESOLUTION_ENGINES: readonly Engine[] = ["14.0.7"];
+export const DELAYED_RESOLUTION_ENGINES: readonly Engine[] = ["14.0.7", "14.35"];
 
 /** `FakedDataSource`: the id a data source or foreign property gets in the imported document (IMP-222). */
 export const FAKED_DATA_SOURCE = "00000000000000000000000000000000";
@@ -117,7 +117,10 @@ const getAttribute = (element: XmlElement, name: string): string => element.getA
  * `where` branch for a relationship item is dead code (IMP-213), and the floating-reference replacement never matches
  * (IMP-242).
  *
+ * 14.35 queues each entry once (IMP-251) and addresses a Property that has no `id` by its `where` (IMP-220).
+ *
  * @spec IMP-200 IMP-201 IMP-202 IMP-203 IMP-204 IMP-210 IMP-211 IMP-212 IMP-213 IMP-220 IMP-221 IMP-222 IMP-230 IMP-240 IMP-241 IMP-242 IMP-250
+ * @spec IMP-251
  */
 export class DelayedResolutionManager implements DelayedResolution {
   /** `_mDelayedAmLs`: the queue, the manager's only state (IMP-200). */
@@ -130,6 +133,17 @@ export class DelayedResolutionManager implements DelayedResolution {
   /** The queued entries, in queue order. */
   get queue(): readonly string[] {
     return this.delayedAml;
+  }
+
+  /**
+   * `AddDelayedAmlItem`: appends an entry to the queue. 14.0.7 appends every entry, so two equal ones both run; 14.35 drops an entry
+   * equal (ordinal) to one it already holds (IMP-251). What the caller does around the call happens either way.
+   *
+   * @spec IMP-200 IMP-250 IMP-251
+   */
+  private addDelayedAmlItem(aml: string): void {
+    if (this.engine === "14.35" && this.delayedAml.includes(aml)) return;
+    this.delayedAml.push(aml);
   }
 
   /**
@@ -206,7 +220,7 @@ export class DelayedResolutionManager implements DelayedResolution {
       relationship.setAttribute("action", "add");
       entry += outerXml(relationship);
       entry += "</Relationships></Item>";
-      this.delayedAml.push(entry);
+      this.addDelayedAmlItem(entry);
       (relationship.parentNode as XmlNode).removeChild(relationship);
     });
   }
@@ -225,9 +239,19 @@ export class DelayedResolutionManager implements DelayedResolution {
       entry += " action='edit' doGetItem='0' version='0'><Relationships>";
       entry += outerXml(node);
       entry += "</Relationships></Item>";
-      this.delayedAml.push(entry);
+      this.addDelayedAmlItem(entry);
       container.removeChild(node);
     });
+  }
+
+  /**
+   * How the queued edit addresses its Property (IMP-220): by `id`, as `id=''` when it has none in 14.0.7, and in 14.35 by its own
+   * `where` (double quotes, unescaped) when the `id` is missing or empty.
+   */
+  private propertyAddress(property: XmlElement): string {
+    const id = getAttribute(property, "id");
+    if (this.engine === "14.35" && id === "") return `where="${getAttribute(property, "where")}"`;
+    return `id='${id}'`;
   }
 
   /**
@@ -255,9 +279,9 @@ export class DelayedResolutionManager implements DelayedResolution {
             break;
         }
       }
-      this.delayedAml.push(
+      this.addDelayedAmlItem(
         `<Item type='${getAttribute(owner, "type")}' id='${getAttribute(owner, "id")}' action='edit' doGetItem='0'>` +
-          `<Relationships><Item type='Property' id='${getAttribute(property, "id")}' action='edit'>${text}</Item></Relationships></Item>`,
+          `<Relationships><Item type='Property' ${this.propertyAddress(property)} action='edit'>${text}</Item></Relationships></Item>`,
       );
       setInnerText(fp, FAKED_DATA_SOURCE);
     });

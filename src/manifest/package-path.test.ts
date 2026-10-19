@@ -42,6 +42,54 @@ describe("MAN-030: GetPackagePath replays probe 01 section 1", () => {
   });
 });
 
+describe("MAN-030 [14.35]: GetPackagePath replays the 14.35 probe 01 section 1", () => {
+  const rows = probeSection("01-package-paths.out", "1 GetPackagePath", "14.35").filter((line) => line.startsWith("name="));
+  it("has the rows", () => expect(rows.length).toBe(73));
+
+  for (const row of rows) {
+    const [name, path, folder] = quotedStrings(row) as [string, string, string];
+    it(`name=${JSON.stringify(name)} path=${JSON.stringify(path)} folder=${JSON.stringify(folder)}`, () => {
+      // the probe's null `path` and null `folder` print as empty strings, so they are replayed as empty ones
+      expect(observe(() => getPackagePath(packageNode(name, path), folder, "14.35"))).toEqual(resultOf(row));
+    });
+  }
+
+  it("treats a missing path attribute as blank, and refuses a null package node", () => {
+    expect(getPackagePath(packageNode("com.aras.innovator.core", null), "C:\\m", "14.35")).toBe("C:\\m\\.\\com\\aras\\innovator\\core");
+    expect(getPackagePath(packageNode("NoPath", null), "C:\\m", "14.35")).toBe("C:\\m\\.");
+    expect(() => getPackagePath(null, "C:\\m", "14.35")).toThrow(NullReferenceException);
+  });
+
+  it("refuses a null manifest folder only when the path is not rooted, as before", () => {
+    expect(() => getPackagePath(packageNode("My.Pkg", "x"), null, "14.35")).toThrow("Value cannot be null.\r\nParameter name: path1");
+    expect(getPackagePath(packageNode("My.Pkg", "C:\\abs"), null, "14.35")).toBe("C:\\abs");
+  });
+
+  it("only differs from 14.0.7 for a blank path and for a standard package", () => {
+    for (const row of rows) {
+      const [name, path, folder] = quotedStrings(row) as [string, string, string];
+      if (isStandardPackage(name) || path.trim() === "") continue;
+      expect(observe(() => getPackagePath(packageNode(name, path), folder, "14.35"))).toEqual(
+        observe(() => getPackagePath(packageNode(name, path), folder)),
+      );
+    }
+  });
+});
+
+describe("MAN-031 [14.35]: standard packages replay the 14.35 probe 01 section 2", () => {
+  const rows = probeSection("01-package-paths.out", "2 IsStandard", "14.35").filter((line) => line.startsWith("name="));
+  it("equals the 14.0.7 probe", () => expect(rows).toEqual(probeSection("01-package-paths.out", "2 IsStandard").filter((line) => line.startsWith("name="))));
+  for (const row of rows) {
+    const [name] = quotedStrings(row) as [string];
+    const expected = /standard=(\w+) core=(\w+) default=(\w+)/.exec(row) as RegExpExecArray;
+    it(`name=${JSON.stringify(name)}`, () => {
+      expect([isStandardPackage(name), isCorePackage(name), isDefaultPackage(name)]).toEqual(
+        [expected[1], expected[2], expected[3]].map((word) => word === "True"),
+      );
+    });
+  }
+});
+
 describe("MAN-030: Path.Combine and the rooted test replay probe 08 section 13", () => {
   for (const row of probeSection("08-path-chars-and-edges.out", "13 Combine / IsPathRooted shapes")) {
     const [folder, path] = quotedStrings(row) as [string, string];

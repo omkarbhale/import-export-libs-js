@@ -3,16 +3,19 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /**
- * Reads the `.out` files of `fixtures/manifest/14.0.7/probes/`, which the probe scripts of the real 14.0.7 engine wrote:
+ * Reads the `.out` files of `fixtures/manifest/14.0.7/probes/` (and of `14.35/probes/`), which the probe scripts of the real
+ * 14.0.7 (14.35) engine wrote:
  * one `label => result` line per case, with strings in the script's `Esc` form (`\\`, `\"`, `\r`, `\n`, `\t`, `\uXXXX`).
  * For the tests only.
  */
 
-const PROBES = join(dirname(fileURLToPath(import.meta.url)), "../../fixtures/manifest/14.0.7/probes");
+const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "../../fixtures/manifest");
+const PROBES = join(FIXTURES, "14.0.7/probes");
+const PROBES_14_35 = join(FIXTURES, "14.35/probes");
 
 /** The lines of one `## ` section of a probe output (the lines up to the next `## ` heading). */
-export function probeSection(file: string, heading: string): string[] {
-  const lines = readFileSync(join(PROBES, file), "utf8").split(/\r?\n/);
+export function probeSection(file: string, heading: string, engine: "14.0.7" | "14.35" = "14.0.7"): string[] {
+  const lines = readFileSync(join(engine === "14.35" ? PROBES_14_35 : PROBES, file), "utf8").split(/\r?\n/);
   const start = lines.findIndex((line) => line === `## ${heading}`);
   if (start < 0) throw new Error(`${file} has no section "${heading}"`);
   const rest = lines.slice(start + 1);

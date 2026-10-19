@@ -110,6 +110,11 @@ export class InvalidOperationException extends Error {
   }
 }
 
+/** `System.OperationCanceledException`: what 14.35's `ImportPackage` throws when a cancel ended the package (IMP-409). */
+export class OperationCanceledException extends Error {
+  override name = "OperationCanceledException";
+}
+
 /** The manifest's platform limit: a Windows path that the host cannot open (MAN-033). */
 export class PathNotUsableError extends Error {
   override name = "PathNotUsableError";
