@@ -7336,7 +7336,11 @@
             "bodySha256": "bc31b4c067f1e7e527b971decac3f1d73639d21174c4d6a9602b5512f5f79478",
             "textSha256": "8f54bc4a845836437aadf26333dfea2ceb34ebed4d4220b6e3cc81470ff199f0"
           },
-          "status": "unmapped"
+          "status": "not-ported",
+          "rules": [
+            "WIRE-091"
+          ],
+          "reason": "Referenced only by the GUI hosts import.exe and export.exe, which show the server path. The library's CLI plays the console host, which hands the URL to the connection as given, and IOM derives the SOAP page itself (WIRE-003, WIRE-091)."
         },
         {
           "fullName": "Aras.Tools.SolutionUpgrade.LanguagePackPreprocessor::.ctor",
