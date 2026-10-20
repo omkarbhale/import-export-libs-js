@@ -36,7 +36,7 @@ export function hostLanguageProblem(action: string, languages: readonly string[]
 /**
  * The engine action a value of the CLI's `--language-resources` flag stands for: `only` is `ExportLanguageResourcesOnly` (the reference
  * host's `export-only-translations`) and `with-metadata` is `ExportMetadataWithLanguageResources` (`export-with-translations`). Any
- * other value gives undefined. The `export` command that reads the flag is wayfinder ticket 43's; this is the table it will use (LP-101).
+ * other value gives undefined. The `export` command's `--language-resources` flag uses this table (HOST-031, LP-101).
  *
  * @spec LP-101
  */

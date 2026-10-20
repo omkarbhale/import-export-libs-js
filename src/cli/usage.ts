@@ -134,4 +134,14 @@ Export:
   --unknown-references <m>   remove-silently, remove-with-warning or do-not-remove (default: do-not-remove)
   --on-item-error <answer>   continue (default) or abort-package: the answer to the error question (not on 14.35)
 
+Engine 14.35 only:
+  --parallelism <n>          How many items of a package are exported at once (default: one per logical processor). With 1 the
+                             items run one after another, and none of the engine's timing races can happen (EXP-408, EXP-553).
+  The language-resource export (the console tool's export-only-translations and export-with-translations):
+  --language-resources <m>   only (the item files hold just the translations and what locates them) or with-metadata (the whole
+                             item, with the translations of the languages); needs --languages
+  --languages <codes|*>      A comma-separated list of language codes to export, or * for every language of the server. Each
+                             code must be installed in the database. The list must include en unless it starts with * (the
+                             console host's rule); en itself is not exported, as the engine does.
+
 ${COMMON}`;
