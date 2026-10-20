@@ -1,11 +1,12 @@
 import { existsSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import type { Engine } from "../engines.js";
-import { SUExportContext } from "../export/export-context.js";
+import { EXPORT_ACTION, SUExportContext } from "../export/export-context.js";
 import type { ReferencesToUnknownPackages } from "../export/export-context.js";
 import { ImportExportManager, RUN_ENGINES } from "../export/import-export-manager.js";
 import type { SelectionTable } from "../export/import-export-manager.js";
 import type { OnItemError } from "../export/messages.js";
+import { hostLanguageList, hostLanguageProblem, languageResourcesAction } from "../export/language-host.js";
 import { USE_IMPORT_ENGINES, allPackagesTable, fromManifestTable, useImportTable } from "./console-modes.js";
 import { EXIT, exitCodeOf } from "./exit.js";
 import {
@@ -133,9 +134,55 @@ async function resolveSource(rest: readonly string[], values: OptionValues, io: 
   return { kind: "items", items: parseItems(rest) };
 }
 
-/** @spec HOST-007 HOST-008 */
+/**
+ * `--language-resources` and `--languages` (14.35): the context's `Action` and `Languages`, with the checks `ConsoleUpgrade.exe` makes
+ * on `langs=` before it starts (LP-101). The checks come before any request; the engine's own (LP-110 to LP-115) happen in its
+ * constructor.
+ *
+ * @spec HOST-031 LP-101
+ */
+export function languageOptions(values: OptionValues, engine: Engine): { action: string; languages: string[] | null } {
+  const mode = stringOf(values, "language-resources");
+  const given = stringOf(values, "languages");
+  if (mode === undefined && given === undefined) return { action: EXPORT_ACTION, languages: null };
+  const flag = mode !== undefined ? "--language-resources" : "--languages";
+  if (engine !== "14.35") {
+    throw new UsageError(`${flag} needs --engine 14.35; engine ${engine} has no language-resource export (HOST-031)`);
+  }
+  const action = mode === undefined ? EXPORT_ACTION : languageResourcesAction(mode);
+  if (action === undefined) throw new UsageError(`--language-resources is only or with-metadata, not '${mode}'`);
+  if (given === undefined) {
+    throw new UsageError("--language-resources needs --languages <codes|*>: the list of languages to export cannot be empty (LP-101)");
+  }
+  if (given === "") throw new UsageError("--languages needs a list of language codes, or *");
+  const languages = hostLanguageList(given);
+  if (languages.length === 0) throw new UsageError("--languages needs a list of language codes, or *");
+  if (hostLanguageProblem(action, languages) !== null) {
+    throw new UsageError("--languages must include en, unless the list starts with * (the console host refuses it, LP-101)");
+  }
+  return { action, languages };
+}
+
+/**
+ * `--parallelism <n>` (14.35): how many items of a package are exported at once. An integer of 1 or more, as plain digits; engines that
+ * export one item at a time refuse it, before anything is sent.
+ *
+ * @spec HOST-007
+ */
+export function parallelismOption(values: OptionValues, engine: Engine): number | undefined {
+  const given = stringOf(values, "parallelism");
+  if (given === undefined) return undefined;
+  if (engine !== "14.35") throw new UsageError(`--parallelism needs --engine 14.35; engine ${engine} exports one item at a time (HOST-007)`);
+  if (!/^[1-9][0-9]{0,8}$/.test(given)) throw new UsageError(`--parallelism is a whole number of 1 or more, not '${given}'`);
+  return Number(given);
+}
+
+/** @spec HOST-007 HOST-008 HOST-031 */
 function exportOptions(values: OptionValues, engine: Engine): { context: SUExportContext; onItemError: OnItemError | undefined } {
   const context = new SUExportContext();
+  const { action, languages } = languageOptions(values, engine);
+  context.action = action;
+  context.languages = languages;
   context.level = stringOf(values, "level") ?? null;
   context.exportReferencedItems = flagOf(values, "export-referenced");
   const mode = stringOf(values, "unknown-references");
@@ -195,6 +242,9 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
     "export-referenced": { type: "boolean" },
     "unknown-references": { type: "string" },
     "on-item-error": { type: "string" },
+    "language-resources": { type: "string" },
+    languages: { type: "string" },
+    parallelism: { type: "string" },
   });
   if (flagOf(values, "help")) {
     io.stdout.write(EXPORT_USAGE);
@@ -206,12 +256,12 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
   const outDir = resolveOutDir(folder, io);
   const source = await resolveSource(rest, values, io);
   const { context, onItemError } = exportOptions(values, engine);
+  const parallelism = parallelismOption(values, engine);
   requireEngine(engine, RUN_ENGINES);
   if (source.kind === "use-import") requireEngine(engine, USE_IMPORT_ENGINES);
   const connection = await resolveConnection(values, io);
   const logPath = resolveLogPath(values, "export", io);
 
-  context.action = "Export";
   context.url = connection.url;
   context.dataBase = connection.database;
   context.userName = connection.user;
@@ -235,7 +285,7 @@ export async function exportCommand(args: readonly string[], io: CliIo): Promise
     const helper = await openSession(engine, connection, io, reporter);
     server = helper.innovatorVersion?.fullString;
     try {
-      const managerOptions = { console: reporter.console, now: io.now };
+      const managerOptions = { console: reporter.console, now: io.now, ...(parallelism === undefined ? {} : { parallelism }) };
       if (isConsoleSource(source)) {
         // ConsoleUpgrade builds the manager first, and its modes ask it for the table (HOST-102)
         const manager = new ImportExportManager(context, reporter.messages, helper, managerOptions);

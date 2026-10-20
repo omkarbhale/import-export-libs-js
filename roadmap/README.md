@@ -22,6 +22,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`live-parity-14.35.md`](live-parity-14.35.md) records the rest of 14.35's live run (wayfinder ticket 76, part B): the import side, the DB patch, the rerun of the export side and the completion of the engine. 66 of 71 import cases equal, one port difference found and fixed, five cases skipped for the Languages dev lacks.
 
+[`readiness.md`](readiness.md) is the state when the map ended (wayfinder ticket 65): the final three-engine parity run, what the readiness sweep fixed, and every gap still open with its reason.
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).

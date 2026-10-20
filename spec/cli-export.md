@@ -70,7 +70,7 @@ Standard input can serve only one purpose. `-` together with `--password-stdin` 
 4. the output folder is given and usable (HOST-006);
 5. the items come from exactly one source and are well formed (HOST-001 to HOST-004); standard input is read here;
 6. the export options (HOST-007);
-7. the engine has an export (HOST-008), reported as *not yet supported* with exit 1;
+7. the engine has an export (HOST-008; every engine has one now, so this refuses nothing, and an engine without one would be reported as *not yet supported* with exit 1), and the language-resource flags are valid for it (HOST-031);
 8. the connection settings (`--url`, `--database`, `--user`, the password, `--timeout`), and the log path (its folder is made, as for the other commands).
 
 Nothing about the output folder's contents is checked. A folder that already holds files is not refused, and the engine's own handling of its package folders is reproduced and not pre-empted (HOST-006).
@@ -104,7 +104,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 [12.0] Same as 14.0.7.
 
-[14.35] `--on-item-error` is a usage error when it is given: the engine stops the whole export at the first failed item and does not read the answer (EXP-555, EXP-571). The other flags are the same.
+[14.35] `--on-item-error` is a usage error when it is given: the engine stops the whole export at the first failed item and does not read the answer (EXP-555, EXP-571). The other flags are the same. Three flags are added: `--language-resources` and `--languages` (HOST-031), and `--parallelism <n>`, the number of items of a package that are exported at once (EXP-551): an integer of 1 or more, default one per logical processor (`os.availableParallelism()`). The engine sets no bound of its own, so the flag is the port's way to bound it. The engine's races (EXP-408, EXP-553) depend on it: with `1` the items run one after another and no race can happen. On engines 12.0 and 14.0.7, which export one item at a time, the flag is a usage error naming the engine.
 
 ### HOST-008: the engines that have an export
 
@@ -112,7 +112,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 [12.0] The command runs as for 14.0.7 (the 12.0 export slice, wayfinder ticket 49, is built), `--use-import` included now that the 12.0 loading of package folders is (wayfinder ticket 50, HOST-113).
 
-[14.35] The command runs as for 14.0.7. Parallelism (wayfinder ticket 59) and the language-resource modes (ticket 61) are not options of this command yet.
+[14.35] The command runs as for 14.0.7. The items of a package are exported in parallel (EXP-551), by as many workers as `--parallelism` says, one per logical processor by default (HOST-007). The language-resource modes are chosen with `--language-resources` (HOST-031).
 
 ### HOST-009: the host sequence and the exit code
 
@@ -126,7 +126,7 @@ A value outside the list is a usage error. `--verbose` is accepted and recorded 
 
 The exit code is 0 when the engine sent no `error` message and no exception left the run, 2 when the run ended normally and the engine sent `error` messages (EXP-507), and 1 when the selection was refused, the login failed, or an exception left the run (for example EXP-542). A refusal and a failure each print the summary of HOST-030 with the reason.
 
-[12.0] Not yet supported (HOST-008).
+[12.0] Same sequence.
 
 [14.35] Same sequence.
 
@@ -285,3 +285,26 @@ A package with no element contributes nothing and the command warns `[WARN] pack
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+## Language-resource export (14.35)
+
+### HOST-031: --language-resources and --languages choose the language modes
+
+[14.0.7] Neither flag exists: engines 12.0 and 14.0.7 have no language-resource export (LP-100), and either flag is a usage error naming the engine.
+
+[12.0] Same as 14.0.7.
+
+[14.35] The two modes of LP-100 are chosen as `ConsoleUpgrade.exe` chooses them (LP-101), with the same checks, made before the server is contacted:
+
+| Flag | Setting |
+|---|---|
+| `--language-resources only` | the context's `Action` is `ExportLanguageResourcesOnly`, the host's `export-only-translations` |
+| `--language-resources with-metadata` | `Action` is `ExportMetadataWithLanguageResources`, the host's `export-with-translations` |
+| `--languages <codes\|*>` | the context's `Languages`, the host's `langs=`: the text split on `,`, empty entries dropped, exact duplicates removed, nothing trimmed (LP-101) |
+
+- Any other value of `--language-resources` is a usage error. Without the flag, `Action` is `Export`.
+- A language mode with no `--languages` is a usage error: the host ends the run with `'langs' list can't be empty` (LP-101), and a list that is empty after the split is refused the same way.
+- `--languages` may also be given without `--language-resources`: the action stays `Export` and the engine only checks that each language is installed (LP-110, LP-114).
+- A list that is not empty, does not start with `*` and has no `en` (compared ignoring case) is a usage error, as the host's `'en' language is required` (LP-101). A list that starts with `*` is never checked, so `*,de` is accepted and left to the engine (LP-111).
+- The list is passed to the engine unchanged; the engine resolves `*`, drops `en`, and refuses a language the server does not have (LP-110 to LP-115). A refusal there is the run's failure, exit 1.
+- The command does not restrict the modes by the source of the items (HOST-001, HOST-100): it sets `Action` and `Languages` in the context before the manager is built, whatever builds the table.

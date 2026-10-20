@@ -387,6 +387,13 @@ describe("export, local checks come before any server call (HOST-005)", () => {
     ["an unknown option", ["out", "Part:ABC", "--nope", ...CONNECTION]],
     ["a missing connection setting", ["out", "Part:ABC", "--url", "http://x"]],
     ["--on-item-error on 14.35", ["out", "Part:ABC", "--engine", "14.35", "--on-item-error", "continue", ...CONNECTION]],
+    ["--language-resources on 14.0.7", ["out", "Part:ABC", "--language-resources", "only", "--languages", "*", ...CONNECTION]],
+    ["--languages on 12.0", ["out", "Part:ABC", "--engine", "12.0", "--languages", "en,de", ...CONNECTION]],
+    ["a bad --language-resources", ["out", "Part:ABC", "--engine", "14.35", "--language-resources", "all", "--languages", "*", ...CONNECTION]],
+    ["--language-resources with no --languages", ["out", "Part:ABC", "--engine", "14.35", "--language-resources", "only", ...CONNECTION]],
+    ["an empty --languages", ["out", "Part:ABC", "--engine", "14.35", "--language-resources", "only", "--languages", "", ...CONNECTION]],
+    ["--languages of only commas", ["out", "Part:ABC", "--engine", "14.35", "--language-resources", "only", "--languages", ",,", ...CONNECTION]],
+    ["--languages without en", ["out", "Part:ABC", "--engine", "14.35", "--language-resources", "with-metadata", "--languages", "de,fr", ...CONNECTION]],
   ] as const)("%s is a usage error", async ([, args]) => {
     const { code, t } = await refused([...args], { ARAS_PASSWORD: "pw" }, "Part:ABC\n");
     expect(code).toBe(EXIT.usage);
