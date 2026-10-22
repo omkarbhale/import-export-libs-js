@@ -53,6 +53,8 @@ echo "$PASSWORD" | aras-pkg import ./imports.mf --password-stdin --release R1 --
 
 `import { … } from "import-export-libs-js"` gives the engines without the CLI. The classes keep the names of the engine's own: `CItemHelper` (login, version probe and gate, the lookups), `ImportExportManager` and `CExportItems` for export, `ImportItems` for import, `LanguagePackPreprocessor` and `languagePackImport`, `DbPatchApplication`, and the manifest reader and writer. The CLI in `src/cli/` is a thin host over them and shows how they fit together (`session.ts` opens the connection). Every unit that implements a rule carries an `@spec <RULE-ID>` tag, so `spec/` explains it.
 
+The XML core's loader and item-file writer are public too, for a host that wants to know whether a file is one the engine would write: `readAllText(bytes)` (14.0.7 and 14.35) or `decodeXmlFile(bytes)` (12.0) decodes the bytes of a file, `loadXml(text, { preserveWhitespace: false })` loads the text, as the import does, and `encodeItemFile(doc)` gives the bytes of the item file the engine writes for it. A file round-trips when `encodeItemFile(loadXml(readAllText(bytes), { preserveWhitespace: false }))` equals `bytes`. `XmlDocument` is the type of the loaded document, and the same one `applyExportTransform` and `applyXsl` take.
+
 ## Verify against the real engine
 
 The vendored `Libs.dll` of each engine (`oracle/native/`) can be driven from WSL with Windows PowerShell 5.1, to record fixtures and to compare the port with the DLL on a live dev server:
