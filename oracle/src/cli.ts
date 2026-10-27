@@ -30,7 +30,8 @@ Commands:
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
-Connection (dev only): --url (${DEV_SERVER.url}), --database (${DEV_SERVER.database}),
+Connection (the dev instance, or a leased arashouse slot such as --url http://localhost/ah-12sp9-01
+  --database arashouse_12sp9_01): --url as Windows reaches it (${DEV_SERVER.url}), --database (${DEV_SERVER.database}),
   --user (env ARAS_USER, default root). The password comes from env ARAS_PASSWORD,
   or stdin when it is not a terminal; never from a flag or file. import and lpimport take
   LIBSJS-SCRATCH-* packages and items only, and delete what they created when done.

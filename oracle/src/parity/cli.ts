@@ -5,7 +5,8 @@ import { parseArgs } from "node:util";
 import { DEFAULT_ENGINE, isEngine, type Engine } from "../../../src/engines.js";
 import { casesFor } from "../import-cases.js";
 import { ORACLE_DIR } from "../manifest.js";
-import { DEV_SERVER, assertDevUrl } from "../record.js";
+import { assertLiveTarget, windowsUrl } from "../live-targets.js";
+import { DEV_SERVER } from "../record.js";
 import { readPassword } from "../cli.js";
 import { DBPATCH_CASES } from "../record-dbpatch-cases.js";
 import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, exportCasesOf, seedGroupsOf, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
@@ -31,10 +32,10 @@ import {
 const WSL_DEV_URL = "http://172.19.0.1/12sp9";
 
 const USAGE = `Usage: npm run parity -- [--engine 12.0|14.0.7|14.35] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
-                           [--out <folder>] [--keep-all] [--url <dev url>]
+                           [--out <folder>] [--keep-all] [--url <url>]
 
-Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, and
-diffs, for each case:
+Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, or
+an arashouse lease, and diffs, for each case:
   - the request AML, in order (login included; the envelope and headers are not recorded);
   - the output folder, byte for byte;
   - the engine log, after the date-times, the run's own paths and the ids the server assigned are normalised;
@@ -50,6 +51,9 @@ copies, deleted again by each side), language-pack (needs the Languages de and f
 (--use-import, --from-manifest, --all-packages), dbpatch (14.35 only). A case marked slow runs only when named with --case or with --include-slow.
 Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it created, and the ids are in the report.
 
+The server is --url, else ARAS_URL, else the dev instance (${WSL_DEV_URL}), as WSL reaches it, and its database is ARAS_DATABASE
+(default ${DEV_SERVER.database}); the oracle's Windows side reaches the same path at localhost. Anything but the dev instance or a lease
+that \`arashouse status --json\` shows as leased is refused, so \`arashouse run --lease <id> -- npm run parity -- ...\` runs on a lease.
 The password comes from ARAS_PASSWORD or stdin, as for \`npm run oracle\`; the user from ARAS_USER (default root).
 --out keeps the folders of every case that differs or failed (default oracle/out/parity-<engine>-<time>); --keep-all keeps the
 equal ones too. Exit status: 0 every case equal or skipped, 1 a difference or a failed case, 3 dev was left unclean.
@@ -57,14 +61,14 @@ equal ones too. Exit status: 0 every case equal or skipped, 1 a difference or a 
 
 const KINDS: readonly ParityKind[] = ["export", "scratch-export", "import", "language-pack", "console-mode", "dbpatch"];
 
-/** The scratch packages and packages a run starts from: nothing named `LIBSJS-SCRATCH-*` may exist on dev. */
+/** The scratch packages and packages a run starts from: nothing named `LIBSJS-SCRATCH-*` may exist on the server (dev, or a lease). */
 async function assertNoScratchLeft(server: PortServer): Promise<void> {
   const side = await openSideConnection(server);
   try {
     for (const [type, property] of [["PackageDefinition", "name"], ["DatabaseUpgrade", "name"]] as const) {
       const found = await side.inn.applyItem(`<Item type="${type}" action="get" select="id,${property}"><${property} condition="like">LIBSJS-SCRATCH-*</${property}></Item>`);
       if (!found.isError && found.items.length > 0) {
-        throw new CaseFailure(`dev already has ${found.items.length} ${type} item(s) named LIBSJS-SCRATCH-*: an earlier run left them. Clean them up with \`npm run oracle -- cleanup\` first.`);
+        throw new CaseFailure(`the server already has ${found.items.length} ${type} item(s) named LIBSJS-SCRATCH-*: an earlier run left them. Clean them up with \`npm run oracle -- cleanup\` first.`);
       }
     }
   } finally {
@@ -152,10 +156,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 64;
   }
 
-  const portUrl = values.url ?? WSL_DEV_URL;
+  const portUrl = values.url ?? process.env.ARAS_URL ?? WSL_DEV_URL;
+  const database = process.env.ARAS_DATABASE ?? DEV_SERVER.database;
   let password: string;
   try {
-    assertDevUrl(portUrl);
+    await assertLiveTarget(portUrl, database);
     password = readPassword();
   } catch (error) {
     process.stderr.write(`parity: ${(error as Error).message}\n`);
@@ -165,13 +170,14 @@ export async function main(argv: readonly string[]): Promise<number> {
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..*$/, "");
   const out = resolve(values.out ?? join(ORACLE_DIR, "out", `parity-${engine}-${stamp}`));
   mkdirSync(out, { recursive: true });
-  const port: PortServer = { engine, url: portUrl, logUrl: DEV_SERVER.url, database: DEV_SERVER.database, userName: user, password };
+  const oracleUrl = windowsUrl(portUrl);
+  const port: PortServer = { engine, url: portUrl, logUrl: oracleUrl, database, userName: user, password };
   const env: ParityEnv = {
     engine,
     user,
     password,
-    oracleUrl: DEV_SERVER.url,
-    database: DEV_SERVER.database,
+    oracleUrl,
+    database,
     port,
     out,
     log: (line) => process.stderr.write(`${line}\n`),
