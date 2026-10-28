@@ -57,7 +57,7 @@ A new `Libs.dll` is a fourth engine, and each step is its own PR (one slice, as 
 
 ## Live Aras
 
-- Use the dev instance only. Never contact olm or prod.
+- Use the dev instance or an arashouse lease only (the guard is `oracle/src/live-targets.ts`; details in `oracle/README.md`, "Rules"). Never contact olm or prod.
 - Exports and reads are free.
 - Imports use only `LIBSJS-SCRATCH-*` packages and items (`LIBSJS_SCRATCH_*` for the ItemType, SQL and other item names that Aras limits to word characters, and `xp-LIBSJS_SCRATCH_*` for extended properties, whose names must start with `xp-`). Each run cleans up after itself and reports the ids it created and deleted.
 - The oracle's scratch guard only checks names, not which items the engine will change (it picks them by `id` or `where`). So feed it only this repo's own `LIBSJS-SCRATCH-*` fixture packages. Never feed it a foreign package or language pack whose items carry real ids, `edit`, `merge` or `delete` post-actions, or `--merge` against non-scratch items.
