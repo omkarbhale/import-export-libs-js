@@ -9,6 +9,7 @@ import { DEV_SERVER, record, type HostValue } from "./record.js";
 import { TOOLSET_SOURCES, vendorToolset } from "./vendor.js";
 import { XSL_NAMES, inputsFromPath, inputsFromTranscript, isXslName, recordXsl, type XslInput } from "./xsl.js";
 import { toWslPath, windowsLocalAppData } from "./windows.js";
+import { windowsUrl } from "./live-targets.js";
 
 const USAGE = `Usage: npm run oracle -- [--engine 12.0|14.0.7|14.35] <command> [options]
 
@@ -30,7 +31,9 @@ Commands:
   verify                               check every vendored toolset against manifest.json
   vendor [--from <wsl folder>]         re-copy the toolset and rewrite its manifest entry
 
-Connection (dev only): --url (${DEV_SERVER.url}), --database (${DEV_SERVER.database}),
+Connection (the dev instance, or a leased arashouse slot such as --url http://localhost/ah-12sp9-01
+  --database arashouse_12sp9_01): --url as Windows reaches it, else env ARAS_URL (its path at localhost),
+  else ${DEV_SERVER.url}; --database, else env ARAS_DATABASE, else ${DEV_SERVER.database};
   --user (env ARAS_USER, default root). The password comes from env ARAS_PASSWORD,
   or stdin when it is not a terminal; never from a flag or file. import and lpimport take
   LIBSJS-SCRATCH-* packages and items only, and delete what they created when done.
@@ -270,8 +273,8 @@ export async function main(argv: readonly string[]): Promise<number> {
         const result = await record({
           engine,
           command,
-          url: (values.url as string | undefined) ?? DEV_SERVER.url,
-          database: (values.database as string | undefined) ?? DEV_SERVER.database,
+          url: (values.url as string | undefined) ?? (process.env.ARAS_URL ? windowsUrl(process.env.ARAS_URL) : DEV_SERVER.url),
+          database: (values.database as string | undefined) ?? process.env.ARAS_DATABASE ?? DEV_SERVER.database,
           user: (values.user as string | undefined) ?? process.env.ARAS_USER ?? "root",
           password: readPassword(),
           out,

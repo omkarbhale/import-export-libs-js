@@ -5,12 +5,12 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { exportItem, hostParams, priorCreated } from "./cli.js";
 import {
-  assertDevUrl,
   assertScratchPackages,
   importedPackageNames,
   launcherScript,
   manifestPackageNames,
   psLiteral,
+  record,
 } from "./record.js";
 
 describe("launcher", () => {
@@ -61,10 +61,11 @@ describe("the dbpatch host", () => {
 });
 
 describe("guards", () => {
-  it("allows the dev instance only", () => {
-    expect(() => assertDevUrl("http://localhost/12sp9/")).not.toThrow();
-    expect(() => assertDevUrl("http://172.19.0.1/12sp9")).not.toThrow();
-    expect(() => assertDevUrl("https://olm.example/innovator")).toThrow(/dev instance only/);
+  it("refuses a server that is neither the dev instance nor a lease before it stages anything", async () => {
+    const out = join(tmpdir(), "record-refused-never-made");
+    const req = { engine: "14.0.7", command: "export", user: "root", password: "x", out, params: {} } as const;
+    await expect(record({ ...req, url: "https://olm.example/innovator", database: "InnovatorSolutions" })).rejects.toThrow(/refusing .* dev instance/);
+    await expect(record({ ...req, url: "http://localhost/OLM_Local", database: "OLM_Local" })).rejects.toThrow(/refusing/);
   });
 
   it("imports only scratch packages", () => {

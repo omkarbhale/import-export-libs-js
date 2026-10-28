@@ -82,6 +82,47 @@ describe("oracle import exit status", () => {
   });
 });
 
+describe("oracle connection", () => {
+  beforeEach(() => {
+    vi.stubEnv("ARAS_PASSWORD", "test-only");
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    recorded.result = result(0, { created: [], deleted: [], kept: [], unverified: [] });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  const connection = async (...flags: string[]) => {
+    const { record } = await import("./record.js");
+    vi.mocked(record).mockClear();
+    await main(["import", "/tmp/oracle-cli-test-input", "--out", "/tmp/oracle-cli-test", ...flags]);
+    const req = vi.mocked(record).mock.calls[0]![0];
+    return { url: req.url, database: req.database };
+  };
+
+  it("defaults to the dev instance", async () => {
+    vi.stubEnv("ARAS_URL", undefined);
+    vi.stubEnv("ARAS_DATABASE", undefined);
+    const { DEV_SERVER } = await import("./record.js");
+    expect(await connection()).toEqual({ url: DEV_SERVER.url, database: DEV_SERVER.database });
+  });
+
+  it("falls back to ARAS_URL, as Windows reaches it, and ARAS_DATABASE", async () => {
+    vi.stubEnv("ARAS_URL", "http://172.19.0.1/ah-12sp9-01/");
+    vi.stubEnv("ARAS_DATABASE", "arashouse_12sp9_01");
+    expect(await connection()).toEqual({ url: "http://localhost/ah-12sp9-01", database: "arashouse_12sp9_01" });
+  });
+
+  it("lets the flags win over the environment", async () => {
+    vi.stubEnv("ARAS_URL", "http://172.19.0.1/ah-12sp9-01");
+    vi.stubEnv("ARAS_DATABASE", "arashouse_12sp9_01");
+    expect(await connection("--url", "http://localhost/12sp9", "--database", "12sp9")).toEqual({ url: "http://localhost/12sp9", database: "12sp9" });
+  });
+});
+
 describe("oracle dbpatch", () => {
   let stdout: string;
   let stderr: string;

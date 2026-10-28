@@ -3,15 +3,15 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, write
 import { basename, dirname, join, relative } from "node:path";
 import type { Engine } from "../../src/engines.js";
 import { MANIFEST_SHA256, PATCH_FILE, PATCH_SHA256, assertTestPatch } from "./dbpatch.js";
+import { assertLiveTarget } from "./live-targets.js";
 import { listFiles, readManifest, toolsetDigest } from "./manifest.js";
 import { findSecrets, scrub, secretForms } from "./scrub.js";
 import { stageConsoleTool } from "./console-tool.js";
 import { stageHost, stageToolset, oracleWindowsRoot } from "./stage.js";
 import { runPowerShellFile, toWslPath, winJoin } from "./windows.js";
 
-/** The dev instance as Windows reaches it (WSL reaches the same host as 172.19.0.1). AGENTS.md: dev only. */
+/** The dev instance as Windows reaches it (WSL reaches the same host as 172.19.0.1). The other target is an arashouse lease (`live-targets.ts`). */
 export const DEV_SERVER = { url: "http://localhost/12sp9", database: "12sp9" } as const;
-const DEV_URLS = new Set(["http://localhost/12sp9", "http://172.19.0.1/12sp9"]);
 
 export type HostValue = string | number | boolean | readonly string[];
 
@@ -109,12 +109,6 @@ export function dbpatchHostParams(dbpatch: { manifest: string; toolName: string 
   };
 }
 
-export function assertDevUrl(url: string): void {
-  if (!DEV_URLS.has(url.replace(/\/+$/, ""))) {
-    throw new Error(`refusing ${url}: the oracle talks to the dev instance only (${[...DEV_URLS].join(", ")})`);
-  }
-}
-
 /**
  * Import fixtures touch only LIBSJS-SCRATCH-* packages (AGENTS.md). This is
  * the early check; the host checks the packages and item files the engine
@@ -158,7 +152,7 @@ export function scrubFile(path: string, secrets: readonly string[]): Record<stri
 
 export async function record(req: RecordRequest): Promise<RecordResult> {
   const log = req.log ?? ((t: string) => process.stderr.write(t));
-  assertDevUrl(req.url);
+  await assertLiveTarget(req.url, req.database);
   if (existsSync(req.out) && readdirSync(req.out).length > 0) throw new Error(`${req.out} already exists and is not empty`);
   let dbpatch: { manifest: string; folder: string } | undefined;
   if (req.command === "dbpatch") {

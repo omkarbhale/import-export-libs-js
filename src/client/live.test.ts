@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
+import { resolveLiveTarget, serverMajor } from "../../oracle/src/live-targets.js";
 import { HttpConnectorExtension } from "./connection.js";
 import { md5Digest } from "./digest.js";
 import { CItemHelper } from "./item-helper.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
 
 /**
- * Against the dev instance, read-only: log in, probe the version, pass the gate
- * and log off. It runs only with credentials (AGENTS.md "Live Aras"):
+ * Against the dev instance or an arashouse lease, read-only: log in, probe the
+ * version, pass the gate and log off. It runs only with credentials (AGENTS.md "Live Aras"):
  *
  *   ARAS_PASSWORD=… npx vitest run src/client/live.test.ts
  *
@@ -14,19 +15,21 @@ import { localWindowsTimeZoneId } from "./timezone.js";
  * for that engine the test hands the connection the MD5 hex, as the oracle's host does (`oracle/README.md`, Rules).
  * `ARAS_URL` (default http://172.19.0.1/12sp9 from WSL), `ARAS_DATABASE`
  * (12sp9) and `ARAS_USER` (admin) can change the connection, but only to the
- * dev instance.
+ * dev instance or to a lease that `arashouse status --json` shows as leased
+ * (`oracle/src/live-targets.ts`), as `arashouse run --lease <id> -- npx vitest run …` sets them.
  */
-const DEV_URLS = new Set(["http://localhost/12sp9", "http://172.19.0.1/12sp9"]);
 const password = process.env["ARAS_PASSWORD"];
 const url = process.env["ARAS_URL"] ?? "http://172.19.0.1/12sp9";
+const database = process.env["ARAS_DATABASE"] ?? "12sp9";
 
-describe.skipIf(password === undefined || password === "")("the dev instance", () => {
+describe.skipIf(password === undefined || password === "")("the dev instance or a lease", () => {
   it.each(["14.0.7", "14.35"] as const)("accepts a login of engine %s, reads its version and passes the gate, then logs off", async (engine) => {
-    expect(DEV_URLS.has(url), `${url} is not the dev instance`).toBe(true);
+    const target = await resolveLiveTarget(url, database);
+    expect(target, `${url} (database ${database}) is neither the dev instance nor an arashouse lease`).not.toBeNull();
     const connection = new HttpConnectorExtension({
       engine,
       url,
-      database: process.env["ARAS_DATABASE"] ?? "12sp9",
+      database,
       userName: process.env["ARAS_USER"] ?? "admin",
       password: engine === "14.35" ? md5Digest(password ?? "") : (password ?? ""),
       timeZoneName: localWindowsTimeZoneId(),
@@ -35,7 +38,7 @@ describe.skipIf(password === undefined || password === "")("the dev instance", (
     await helper.login();
     try {
       expect(helper.isConnected).toBe(true);
-      expect(helper.innovatorVersion?.major).toBe(12);
+      expect(helper.innovatorVersion?.major).toBe(serverMajor(target!));
       expect(helper.versionGate).toMatchObject({ engine, accepted: true, skipped: false });
     } finally {
       await helper.logout();
