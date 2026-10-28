@@ -4,7 +4,7 @@ A readable TypeScript re-implementation of Aras Innovator's package import/expor
 
 It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341), **14.0.7** (14.0.7.35492, the default) and **14.35** (14.35.0.43890).
 
-**Status: complete.** All three engines are built and complete in `spec/source-map.json` (every reachable method of each build is mapped or held), and each has live parity on the dev instance (`roadmap/live-parity-*.md`, summed up in `roadmap/readiness.md`). The pieces that are deliberately out of scope are in `roadmap/hold/`, and the gaps still open are listed in `roadmap/readiness.md`.
+**Status: complete.** All three engines are built and complete in `spec/source-map.json` (every reachable method of each build is mapped or held), and each has live parity on the dev instance (`roadmap/live-parity-*.md`, summed up in `roadmap/readiness.md`) and on an arashouse lease of its own server version (`roadmap/live-parity-*-on-leases.md`). The pieces that are deliberately out of scope are in `roadmap/hold/`, and the gaps still open are listed in `roadmap/readiness.md`.
 
 | | 12.0 | 14.0.7 (default) | 14.35 |
 |---|---|---|---|
