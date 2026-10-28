@@ -25,7 +25,7 @@ Rules for this folder:
 - **Bytes are exact.** Files keep the engine's BOM, CRLF line endings and indentation. `.gitattributes` turns off line-ending conversion here, so never re-save these files with an editor.
 - **Credentials are scrubbed.** No password, auth or access token, or password hash is ever committed. `oracle/src/fixtures-scrubbed.test.ts` fails `npm test` if any file here holds credential-shaped text.
 - **14.35 logs compare as a set.** 14.35 exports in parallel, so its log line order is not deterministic.
-- Fixtures are recorded only on the dev instance. Imports use `LIBSJS-SCRATCH-*` packages and items, cleaned up after each run.
+- Fixtures are recorded only on the dev instance or an arashouse lease. Imports use `LIBSJS-SCRATCH-*` packages and items, cleaned up after each run.
 
 `<engine>/xsl/<set>/` holds recordings of that engine's embedded `export.xsl` and `build.xsl` on given documents, made by `npm run oracle -- xsl` (see `oracle/README.md`, "The XSL probe"). Each folder has `run.json` and `cases/<name>/{input.xml,transform.xml,applied.xml}`, and `oracle/src/xsl-fixtures.ts` loads them. The inputs are `oracle/xsl-cases/` plus a recorded response of ticket 24's export. `src/export/transform.test.ts` replays the 14.0.7 `export`, `export-items` and `export-fix` recordings against the export transform. The stylesheets themselves are never committed.
 
