@@ -8,7 +8,7 @@ ARAS_PASSWORD=… npm run oracle -- --engine 14.0.7 export \
   "List:1854A8A75F5940A78369146966674FA6:Report Format Types"
 ```
 
-That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/` (gitignored; pass `--out` to choose). `npm run oracle -- --help` lists every command and option.
+That writes a scrubbed fixture folder to `oracle/out/<engine>-<command>-<time>/` (gitignored; pass `--out` to choose). `npm run oracle -- --help` lists every command and option. The server is `--url` (as Windows reaches it), else `ARAS_URL` with its path at `localhost`, else the dev instance; the database is `--database`, else `ARAS_DATABASE`, else `12sp9`. So `arashouse run --lease <id> -- npm run oracle -- …` records on the lease.
 
 ## Layout
 
