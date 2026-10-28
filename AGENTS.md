@@ -14,8 +14,8 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Test | `npm test` (vitest, includes the spec coverage test) |
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
 | Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
-| Oracle | `npm run oracle -- --engine <v> <export, import, lpimport or dbpatch> ...` records a scrubbed fixture from the real DLLs on dev (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
-| Parity | `npm run parity -- --engine 14.0.7 [--case <id>,…]` (or `--engine 12.0`) runs the oracle and the port on the same inputs against dev and diffs the request AML, output folders, logs, messages and return codes (`oracle/README.md`, "Live parity"). It needs `ARAS_PASSWORD`, touches only `LIBSJS-SCRATCH-*` items and deletes them again, and is not part of the gate. `--list` needs no server. |
+| Oracle | `npm run oracle -- --engine <v> <export, import, lpimport or dbpatch> ...` records a scrubbed fixture from the real DLLs on dev or an arashouse lease (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
+| Parity | `npm run parity -- --engine 14.0.7 [--case <id>,…]` (or `--engine 12.0`) runs the oracle and the port on the same inputs against dev or an arashouse lease and diffs the request AML, output folders, logs, messages and return codes (`oracle/README.md`, "Live parity"). It needs `ARAS_PASSWORD`, touches only `LIBSJS-SCRATCH-*` items and deletes them again, and is not part of the gate. `--list` needs no server. |
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
@@ -57,9 +57,11 @@ A new `Libs.dll` is a fourth engine, and each step is its own PR (one slice, as 
 
 ## Live Aras
 
-- Use the dev instance only. Never contact olm or prod.
+- Use the dev instance or an arashouse lease. Never contact olm or prod. A lease is a disposable instance of one Aras version, taken with `arashouse get <flavor> --holder <task>` and given back with `arashouse return <lease_id>`. Flavor `12sp9` is the server of engine 12.0, `23` of 14.0.7 and `35` of 14.35. Run tools with `arashouse run --lease <lease_id> -- …`, so the URL, database and password reach them only through the environment, and point them only at your own lease. The live test, the oracle and parity refuse any other server (`oracle/README.md`, "Rules"). The commands are in arashouse's `docs/cli.md`.
+- A lease is disposable: take out anything durable (exports, fixtures, logs) before returning it, and assume a returned lease is gone. The leaseholder owns that.
 - Exports and reads are free.
 - Imports use only `LIBSJS-SCRATCH-*` packages and items (`LIBSJS_SCRATCH_*` for the ItemType, SQL and other item names that Aras limits to word characters, and `xp-LIBSJS_SCRATCH_*` for extended properties, whose names must start with `xp-`). Each run cleans up after itself and reports the ids it created and deleted.
 - The oracle's scratch guard only checks names, not which items the engine will change (it picks them by `id` or `where`). So feed it only this repo's own `LIBSJS-SCRATCH-*` fixture packages. Never feed it a foreign package or language pack whose items carry real ids, `edit`, `merge` or `delete` post-actions, or `--merge` against non-scratch items.
-- Clearly non-destructive DB patches are allowed on dev. Anything else goes to the captain first.
+- The scratch rules above apply on a lease too.
+- Clearly non-destructive DB patches are allowed on dev. On a lease the same goes, and still only the oracle's committed no-op test patch (`oracle/dbpatch/`). Anything else goes to the captain first.
 - The password reaches tools only through the environment (`ARAS_PASSWORD`) or stdin, never through a flag or a file.
