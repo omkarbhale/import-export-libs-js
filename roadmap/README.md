@@ -28,6 +28,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`readiness.md`](readiness.md) is the state when the map ended (wayfinder ticket 65): the final three-engine parity run, what the readiness sweep fixed, and every gap still open with its reason.
 
+[`browser-cors-poc.md`](browser-cors-poc.md) records the browser wayfinder's one POC (ticket 15): what a real Aras server (12 SP9, R23, R35) answers a cross-origin page in Chromium, Firefox and WebKit, the server configuration that makes it work, and what the fetch transport must do about credentials, cookies and `statusText`.
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).
