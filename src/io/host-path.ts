@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, posix, resolve, win32 } from "node:path";
 import type { Engine } from "../engines.js";
+import type { HostEnv, HostFs } from "../host/types.js";
 import { isWhiteSpace } from "./dotnet-text.js";
 import {
   ArgumentException,
@@ -29,6 +30,10 @@ export interface PathEnvironment {
    * (EXP-421, MAN-004). The default is true.
    */
   normalizePaths?: boolean;
+  /** The file system the layer reads and writes through (HOST-200); the default is the Node file system. */
+  fs?: HostFs;
+  /** The rest of the machine (HOST-200); the default is the Node process. */
+  host?: HostEnv;
 }
 
 /** The environment as an engine sees it: 12.0 has no path normalisation (EXP-421), the other engines have it. */

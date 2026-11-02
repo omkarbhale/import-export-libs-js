@@ -10,6 +10,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 | [round-4.md](round-4.md) | The 14.35 additions, 14.35's parallel export, build order |
 | [round-5.md](round-5.md) | The confirmed shared understanding, with the captain's corrections |
 
+[`browser-host.md`](browser-host.md) is the decision record for running the library in a browser (D1 to D14, the captain's answers of 2026-11-02, the one POC and the standing acceptance of its tickets). Its rules are `HOST-200` to `HOST-299` in [`spec/browser-host.md`](../spec/browser-host.md).
+
 [`lock-diff-12.0.md`](lock-diff-12.0.md) accounts for the REA lock diff between the 12.0 and 14.0.7 builds (wayfinder ticket 46).
 
 [`engine-diffs.md`](engine-diffs.md) reads the live three-engine export diffs on dev (wayfinder ticket 64): which differences the code reading predicted are confirmed, which dev cannot show, and where each is pinned.
