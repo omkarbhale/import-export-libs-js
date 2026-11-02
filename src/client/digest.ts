@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
 import { DotNetException } from "./dotnet.js";
+import { md5Hex, sha256Hex } from "./hash.js";
 
 export type HashingMode = "MD5" | "SHA256";
 
@@ -19,24 +19,27 @@ export function isSha256Hash(text: string): boolean {
 
 /** IOM's `Md5.ComputeHash`: the lowercase hex of MD5 over the ASCII bytes; a password that already is an MD5 hash is kept. */
 export function md5Digest(password: string): string {
-  return isMd5Hash(password) ? password : createHash("md5").update(asciiBytes(password)).digest("hex");
+  return isMd5Hash(password) ? password : md5Hex(asciiBytes(password));
 }
 
 /** IOM's `Sha256.ComputeHash`: the uppercase hex of SHA-256 over the ASCII bytes; a password that already is one is kept. */
 export function sha256Digest(password: string): string {
-  return isSha256Hash(password) ? password : createHash("sha256").update(asciiBytes(password)).digest("hex").toUpperCase();
+  return isSha256Hash(password) ? password : sha256Hex(asciiBytes(password)).toUpperCase();
 }
 
 /** .NET's `Encoding.ASCII`: every code point above 0x7F, an astral one included, becomes one `?`. */
-function asciiBytes(text: string): Buffer {
-  return Buffer.from(Array.from(text, (c) => ((c.codePointAt(0) ?? 0x3f) < 0x80 ? c : "?")).join(""), "latin1");
+function asciiBytes(text: string): Uint8Array {
+  return Uint8Array.from(Array.from(text, (c) => {
+    const code = c.codePointAt(0) ?? 0x3f;
+    return code < 0x80 ? code : 0x3f;
+  }));
 }
 
 /**
  * The password as the server receives it: a digest in the current hashing mode.
  * A password that already looks like a hash is used as it is.
  *
- * @spec WIRE-014 WIRE-055
+ * @spec WIRE-014 WIRE-055 HOST-240
  */
 export class PasswordDigest {
   private current: HashingMode = "MD5";
