@@ -46,6 +46,8 @@ Verbatim: "1b, 2a (or taken from signed in Aras client if we are in aras client,
 
 Whether a real Aras server (12 SP9, R23, R35) answers a cross-origin browser request cannot be settled by reading code: the `OPTIONS` preflight for the custom headers the client sends (`LOCALE`, `TIMEZONE_NAME`, `SOAPAction`, `AUTHUSER`, `AUTHPASSWORD`, `DATABASE`, `Authorization`, `X-Aras-Authorization`, `Aras-Request-ReadOnly`), the OAuth discovery and token endpoints, `Access-Control-Allow-Credentials` for the `ASP.NET_SessionId` cookie the engine replays today (`spec/wire.md`), and the exposed response headers. If the servers do not allow it and cannot be configured, the browser can only work same-origin or behind a proxy, which changes the product answer to Q1 and the design of the fetch transport. Nothing else is a POC: the VFS, path, digest and Buffer work are fully specifiable from the existing code and fixtures.
 
+The POC's results are recorded in [`browser-cors-poc.md`](browser-cors-poc.md).
+
 ## Standing acceptance of every ticket
 
 1. One PR through the no-mistakes pipeline. `npm run typecheck && npm test` pass; no assertion, case or fixture of an existing test changes to make it pass. The only edit an existing test file may take is an import line when a symbol moves.
