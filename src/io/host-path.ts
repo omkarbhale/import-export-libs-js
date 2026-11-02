@@ -30,9 +30,11 @@ export interface PathEnvironment {
    * (EXP-421, MAN-004). The default is true.
    */
   normalizePaths?: boolean;
-  /** The file system the layer reads and writes through (HOST-200); the default is the Node file system. */
+  /** The file system the layer reads and writes through (HOST-200); the default is the Node file system.
+   * Not honoured yet: nothing reads it until the fs/host seam tickets land. */
   fs?: HostFs;
-  /** The rest of the machine (HOST-200); the default is the Node process. */
+  /** The rest of the machine (HOST-200); the default is the Node process.
+   * Not honoured yet: nothing reads it until the fs/host seam tickets land. */
   host?: HostEnv;
 }
 
