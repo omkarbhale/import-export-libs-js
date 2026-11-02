@@ -75,3 +75,11 @@ An operation not in the table is an error of the host and keeps its own `code`; 
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+## HOST-240: the password digest is computed in-process, in pure TypeScript, identically on every host
+
+[14.0.7] The MD5 and SHA-256 digests of WIRE-014 and WIRE-055 are computed by this library's own synchronous code (`src/client/hash.ts`: RFC 1321 and FIPS 180-4, over bytes, with no dependency, no Node built-in and no `Buffer`), on every host. They do not call `node:crypto` or Web Crypto, because the digest is taken in the constructors of the connection classes, which are synchronous (Web Crypto is asynchronous) and because Web Crypto has no MD5. The result is byte-for-byte what `node:crypto` gives for the same bytes. The text is turned into bytes by .NET's `Encoding.ASCII` as before (every code point above 0x7F, an astral one included, becomes one `?`), and the lowercase or uppercase form, the "already a hash is kept" rule and the `PasswordDigest` errors are those of WIRE-014 and WIRE-055.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
