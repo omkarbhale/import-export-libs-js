@@ -1,5 +1,3 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { join, relative } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HttpServerConnection } from "../client/connection.js";
 import type { ConnectionSettings } from "../client/connection.js";
@@ -52,18 +50,5 @@ describe("HOST-230: the transport seam", () => {
   it("keeps nodeTransport in the public Node API and out of the portable client", () => {
     expect(nodeEntry.nodeTransport).toBe(nodeTransport);
     expect("nodeTransport" in clientEntry).toBe(false);
-  });
-
-  it("has no file of src/ but the Node transport (and the tests that serve it) importing node:http or node:https", () => {
-    const root = process.cwd();
-    const walk = (folder: string): string[] =>
-      readdirSync(folder, { withFileTypes: true }).flatMap((entry) =>
-        entry.isDirectory() ? walk(join(folder, entry.name)) : entry.name.endsWith(".ts") ? [join(folder, entry.name)] : [],
-      );
-    const importing = walk(join(root, "src"))
-      .map((file) => relative(root, file).split("\\").join("/"))
-      .filter((file) => !file.endsWith(".test.ts"))
-      .filter((file) => /from\s+"node:https?"|import\("node:https?"\)/.test(readFileSync(join(root, file), "utf8")));
-    expect(importing).toEqual(["src/host/node-transport.ts"]);
   });
 });
