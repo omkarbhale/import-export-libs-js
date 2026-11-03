@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import type { HostFs, HostFsError } from "../host/types.js";
 import {
   ArgumentException,
   ArgumentNullException,
@@ -8,7 +8,7 @@ import {
   PathTooLongException,
   UnauthorizedAccessException,
 } from "./errors.js";
-import { envOf, getFullPath, normalizeLongPath } from "./host-path.js";
+import { envOf, fsOf, getFullPath, normalizeLongPath } from "./host-path.js";
 import type { PathEnvironment } from "./host-path.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
 import { flavourOf, win32 } from "./path.js";
@@ -138,15 +138,15 @@ interface Entry {
 }
 
 /** The entry of a directory that has this name on the volume: the same spelling if there is one, else the first fold-equal one. */
-function lookup(directory: string, name: string, host: PathFlavour): Entry | undefined {
+function lookup(directory: string, name: string, host: PathFlavour, fs: HostFs): Entry | undefined {
   try {
-    return { name, isDirectory: statSync(host.join(directory, name)).isDirectory() };
+    return { name, isDirectory: fs.stat(host.join(directory, name)).isDirectory };
   } catch {
     // not under this spelling
   }
   let names: string[];
   try {
-    names = readdirSync(directory);
+    names = fs.readdir(directory).map((entry) => entry.name);
   } catch {
     return undefined;
   }
@@ -154,7 +154,7 @@ function lookup(directory: string, name: string, host: PathFlavour): Entry | und
   const found = names.filter((candidate) => ntfsFoldKey(candidate) === key).sort()[0];
   if (found === undefined) return undefined;
   try {
-    return { name: found, isDirectory: statSync(host.join(directory, found)).isDirectory() };
+    return { name: found, isDirectory: fs.stat(host.join(directory, found)).isDirectory };
   } catch {
     return undefined;
   }
@@ -164,11 +164,11 @@ function lookup(directory: string, name: string, host: PathFlavour): Entry | und
 const isDevice = (name: string): boolean => ntfsFoldKey(name) === "NUL";
 
 /** The host directory a walk over the first names reached, or undefined where a name is missing. */
-function walk(model: ModelPath, count: number): string | undefined {
+function walk(model: ModelPath, count: number, fs: HostFs): string | undefined {
   let current = model.base;
   for (const segment of model.segments.slice(0, count)) {
     if (segment.unreachable || isDevice(segment.name)) return undefined;
-    const entry = lookup(current, segment.name, model.host);
+    const entry = lookup(current, segment.name, model.host, fs);
     if (!entry?.isDirectory) return undefined;
     current = model.host.join(current, entry.name);
   }
@@ -190,28 +190,29 @@ function checked(path: string | null, action: string): string | undefined {
 /**
  * `IOWrapper.DirectoryExists`: true for a folder, false for a file, a missing path and a path that Windows cannot reach. A
  * path that is not legal throws as `NormalizeLongPath` does.
- * @spec EXP-420 EXP-421
+ * @spec EXP-420 EXP-421 HOST-210
  */
 export function directoryExists(path: string | null, environment: PathEnvironment = {}): boolean {
   const given = checked(path, "exists");
   if (given === undefined) return false;
   const model = modelPath(given, environment, false);
-  return walk(model, model.segments.length) !== undefined;
+  return walk(model, model.segments.length, fsOf(environment)) !== undefined;
 }
 
 /**
  * `IOWrapper.DirectoryCreateDirectory`: creates the folder and every missing folder above it, and does nothing for one that
  * exists. A name followed by more path that still ends in a space is made without the space and then fails the walk
  * (`DirectoryNotFoundException`); a file where a folder is needed is an `IOException` for the last name.
- * @spec EXP-417 EXP-420 EXP-421
+ * @spec EXP-417 EXP-420 EXP-421 HOST-210
  */
 export function directoryCreateDirectory(path: string | null, environment: PathEnvironment = {}): void {
   const given = checked(path, "create") as string;
   const model = modelPath(given, environment, true);
+  const fs = fsOf(environment);
   let current = model.base;
   for (const [index, segment] of model.segments.entries()) {
     if (isDevice(segment.name)) return;
-    const entry = lookup(current, segment.name, model.host);
+    const entry = lookup(current, segment.name, model.host, fs);
     if (entry?.isDirectory) {
       current = model.host.join(current, entry.name);
       continue;
@@ -223,19 +224,20 @@ export function directoryCreateDirectory(path: string | null, environment: PathE
       throw new DirectoryNotFoundException((model.segments[index + 1] as Segment).text);
     }
     if (segment.unreachable) {
-      current = madeDirectory(model.host.join(current, segment.name.replace(/ +$/, "")));
+      current = madeDirectory(model.host.join(current, segment.name.replace(/ +$/, "")), fs);
       throw new DirectoryNotFoundException((model.segments[index + 1] as Segment).text);
     }
-    current = madeDirectory(model.host.join(current, segment.name));
+    current = madeDirectory(model.host.join(current, segment.name), fs);
   }
 }
 
-function madeDirectory(path: string): string {
+function madeDirectory(path: string, fs: HostFs): string {
   try {
-    mkdirSync(path);
+    fs.mkdir(path);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "EEXIST") return path;
-    if ((error as NodeJS.ErrnoException).code === "EACCES" || (error as NodeJS.ErrnoException).code === "EPERM") {
+    const code = (error as HostFsError).code;
+    if (code === "EEXIST") return path;
+    if (code === "EACCES" || code === "EPERM") {
       throw new UnauthorizedAccessException(path);
     }
     throw error;
@@ -246,19 +248,20 @@ function madeDirectory(path: string): string {
 /**
  * `IOWrapper.DirectoryDelete(path, recursive)`: a missing folder is a `DirectoryNotFoundException`. A file the host will not
  * delete is an `UnauthorizedAccessException` that names the file.
- * @spec EXP-415 EXP-420 EXP-421
+ * @spec EXP-415 EXP-420 EXP-421 HOST-210
  */
 export function directoryDelete(path: string | null, recursive: boolean, environment: PathEnvironment = {}): void {
   const given = checked(path, "delete") as string;
   const model = modelPath(given, environment, false);
-  const directory = walk(model, model.segments.length);
+  const fs = fsOf(environment);
+  const directory = walk(model, model.segments.length, fs);
   if (directory === undefined) throw new DirectoryNotFoundException(model.text);
   try {
-    rmSync(directory, { recursive, force: false });
+    fs.rm(directory, { recursive });
   } catch (error) {
-    const code = (error as NodeJS.ErrnoException).code;
+    const code = (error as HostFsError).code;
     if (code === "EACCES" || code === "EPERM") {
-      throw new UnauthorizedAccessException(model.host.parse((error as NodeJS.ErrnoException).path ?? directory).base);
+      throw new UnauthorizedAccessException(model.host.parse((error as HostFsError).path ?? directory).base);
     }
     throw error;
   }
@@ -268,21 +271,22 @@ export function directoryDelete(path: string | null, recursive: boolean, environ
  * Creates or truncates a file and writes the bytes, as `new StreamWriter(path, false)` does on the volume (EXP-423). The file
  * keeps the spelling it was first created with; a missing folder, a device folder or a name with a trailing space before
  * its file is a `DirectoryNotFoundException`, and a folder where the file should be is an `UnauthorizedAccessException`.
- * @spec EXP-419 EXP-420 EXP-421 EXP-423
+ * @spec EXP-419 EXP-420 EXP-421 EXP-423 HOST-210
  */
 export function writeVolumeFile(path: string | null, data: Uint8Array, environment: PathEnvironment = {}): void {
   const given = checked(path, "write") as string;
   const model = modelPath(given, environment, false);
   const file = model.segments[model.segments.length - 1];
   if (!file) throw new UnauthorizedAccessException(model.text);
-  const directory = walk(model, model.segments.length - 1);
+  const fs = fsOf(environment);
+  const directory = walk(model, model.segments.length - 1, fs);
   if (directory === undefined) throw new DirectoryNotFoundException(model.text);
-  const entry = lookup(directory, file.name, model.host);
+  const entry = lookup(directory, file.name, model.host, fs);
   if (entry?.isDirectory) throw new UnauthorizedAccessException(model.text);
   try {
-    writeFileSync(model.host.join(directory, entry?.name ?? file.name), data);
+    fs.writeFile(model.host.join(directory, entry?.name ?? file.name), data);
   } catch (error) {
-    const code = (error as NodeJS.ErrnoException).code;
+    const code = (error as HostFsError).code;
     if (code === "EACCES" || code === "EPERM") throw new UnauthorizedAccessException(model.text);
     throw error;
   }

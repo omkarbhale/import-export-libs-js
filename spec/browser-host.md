@@ -115,3 +115,21 @@ What the host answers is the host's own: a value that a caller sets for a run (t
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+## HOST-210: the file layer touches files through `HostFs`, and Node's implementation is `node:fs` itself
+
+[14.0.7] Every file the file layer reads, writes, lists, creates or deletes is reached through the `HostFs` (HOST-200) of the `PathEnvironment`, `environment.fs`, and where the environment has none through the default host, `defaultHost().fs`. That covers `fileExists`, `readFileBytes`, `writeFileBytes` and `translateFileError` (the check that the folder of a missing file exists) in `io/host-path.ts`, and every operation of `io/windows-fs.ts`: the lookup of a name, the listing of a folder to find a fold-equal spelling (EXP-420), `directoryExists`, `directoryCreateDirectory` and its single `mkdir`, `directoryDelete`, `writeVolumeFile` and `fileWriteAllText`. A path that these functions open never reaches `node:fs` by another way, so a host that stands in for the disk sees every file touch. The callers that pass the environment to them (the manifest, the output folder, the loader and the saver, the DB-patch host, the language-pack preprocessor) pass the whole of it, `fs` included. The package listing (`import/package-files.ts`) and the log file (`export/run-log.ts`) reach `node:fs` themselves and move to the seam in the next slice.
+
+On Node the default host's file system, `nodeFs` (`src/host/node-fs.ts`), is `node:fs`: `stat` is `statSync`, `readdir` is `readdirSync` with `withFileTypes`, `readFile` is `readFileSync` (a `Buffer`), `writeFile` is `writeFileSync`, `mkdir` is `mkdirSync` without `recursive`, `rm` is `rmSync` with `force` off, `exists` is `existsSync` and `openAppend` is `openSync(path, "a")` with `writeSync` and `closeSync`. It adds no behaviour and catches nothing: a failure is Node's own error, rethrown, so its `code` is the real errno (HOST-201) and its `path` the one Node names, which `directoryDelete` reads to name the file the host refused to delete (EXP-415). A `write` of `AppendHandle` writes all of the bytes or throws; Node's `writeSync` may write fewer, and the handle goes on until all are written. Nothing of what a Node caller can observe changes with the seam: the exceptions, their messages and the files written are those of the code before it.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-211: relative host paths in an exception resolve against the environment's current directory
+
+[14.0.7] The full path that `translateFileError` puts in the exception it builds (`FileNotFoundException`, `DirectoryNotFoundException`, `UnauthorizedAccessException`) is the host path resolved against the current directory of the `PathEnvironment` (`environment.cwd`, and where it has none, `HostEnv.cwd()`; HOST-203), not the current directory of the process, and by the path rules of the environment's platform (HOST-202). The function takes the environment as its fourth argument, which defaults to `{}` (the default host); a caller that has an environment passes it, so that an exception names the same path the rest of the run uses. What the file system does with a relative path it is handed is its own: `HostFs` takes the path as the layer gives it, and a host whose current directory is not the environment's is the caller's mistake, not one the layer corrects.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
