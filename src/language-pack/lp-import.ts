@@ -42,8 +42,14 @@ export async function languagePackImport(
   options: LanguagePackImportOptions = {},
 ): Promise<number> {
   const { tempPath, randomFileName, hostCatch = true, ...managerOptions } = options;
-  const { platform, cwd } = options;
-  const environment: PathEnvironment = { ...(platform === undefined ? {} : { platform }), ...(cwd === undefined ? {} : { cwd }) };
+  // the whole environment of the run, as the manager gets it (HOST-203); `normalizePaths` is left out, which each engine decides itself (EXP-421)
+  const { platform, cwd, fs, host } = options;
+  const environment: PathEnvironment = {
+    ...(platform === undefined ? {} : { platform }),
+    ...(cwd === undefined ? {} : { cwd }),
+    ...(fs === undefined ? {} : { fs }),
+    ...(host === undefined ? {} : { host }),
+  };
   const preprocessorOptions: LanguagePackOptions = {
     ...environment,
     ...(tempPath === undefined ? {} : { tempPath }),

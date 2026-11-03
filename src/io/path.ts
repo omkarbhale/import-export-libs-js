@@ -5,7 +5,7 @@
  * behaviour of Node's `path` module; `path.test.ts` compares every function with it over hand-written edge cases and a
  * generated corpus.
  *
- * Nothing here reads the process: where Node's `resolve` and `relative` consult `process.cwd()`, the functions here take
+ * Nothing here reads the process: where Node's `resolve` and `relative` consult the current directory of the process, the functions here take
  * the current directory as their first argument ({@link PathFlavour.resolveFrom}, {@link PathFlavour.relativeFrom}).
  *
  * @spec HOST-202
@@ -36,7 +36,7 @@ export interface PathFlavour {
   basename(path: string, suffix?: string): string;
   /**
    * Node's `resolve` with the current directory given: the segments are resolved from right to left until an absolute path
-   * is formed, and `cwd` stands in for `process.cwd()` when none is.
+   * is formed, and `cwd` stands in for the current directory of the process when none is.
    */
   resolveFrom(cwd: string, ...segments: string[]): string;
   /** Node's `relative` with the current directory given: the path that leads from `from` to `to`. */

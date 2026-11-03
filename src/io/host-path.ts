@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Engine } from "../engines.js";
+import { defaultHostEnv } from "../host/default-host.js";
 import type { HostEnv, HostFs } from "../host/types.js";
 import { isWhiteSpace } from "./dotnet-text.js";
 import { flavourOf, posix, win32 } from "./path.js";
@@ -21,9 +22,9 @@ import {
 
 /** What the layer needs to know about the host. Tests give both, to follow the Windows rules on another platform. */
 export interface PathEnvironment {
-  /** The host platform; the default is `process.platform`. */
+  /** The platform whose path rules the run follows; the default is the platform of the host environment (HOST-203). */
   platform?: NodeJS.Platform;
-  /** The current directory, a Windows path when the platform is `win32`; the default is `process.cwd()`. */
+  /** The current directory, a Windows path when the platform is `win32`; the default is the current directory of the host environment (HOST-203). */
   cwd?: string;
   /**
    * False when the engine hands every path to the file functions as it built it, with no `NormalizeLongPath`: the 12.0 engine
@@ -33,9 +34,23 @@ export interface PathEnvironment {
   /** The file system the layer reads and writes through (HOST-200); the default is the Node file system.
    * Not honoured yet: nothing reads it until the fs/host seam tickets land. */
   fs?: HostFs;
-  /** The rest of the machine (HOST-200); the default is the Node process.
-   * Not honoured yet: nothing reads it until the fs/host seam tickets land. */
+  /** The rest of the machine (HOST-200, HOST-203); the default is the environment of the running platform (`defaultHostEnv()`). */
   host?: HostEnv;
+}
+
+/**
+ * The platform and the current directory a run follows: the environment's own `platform` and `cwd` where it has them, else the
+ * host's (HOST-203). The host is asked for the current directory only when the environment has none.
+ * @spec HOST-203
+ */
+export function envOf(environment: PathEnvironment): { readonly platform: string; readonly cwd: string } {
+  const host = environment.host ?? defaultHostEnv();
+  return {
+    platform: environment.platform ?? host.platform,
+    get cwd() {
+      return environment.cwd ?? host.cwd();
+    },
+  };
 }
 
 /** The environment as an engine sees it: 12.0 has no path normalisation (EXP-421), the other engines have it. */
@@ -64,7 +79,7 @@ export function normalizeLongPath(path: string | null, environment: PathEnvironm
   const trimmed = path.slice(start);
   const absolute = /^[A-Za-z]:|^[\\/]/.test(trimmed);
   if (trimmed.length >= (absolute ? ABSOLUTE_INPUT_LIMIT : RELATIVE_INPUT_LIMIT)) throw new PathTooLongException();
-  const full = getFullPath(trimmed, environment.cwd ?? process.cwd());
+  const full = getFullPath(trimmed, envOf(environment).cwd);
   return full.length >= LONG_PATH_LIMIT ? `\\\\?\\${full}` : trimmed;
 }
 
@@ -117,7 +132,7 @@ export function getFullPath(path: string, cwd: string): string {
  */
 export function toHostPath(path: string | null, environment: PathEnvironment = {}): string | null {
   if (path === null || path.length === 0) return path;
-  if ((environment.platform ?? process.platform) === "win32") return environment.normalizePaths === false ? path : normalizeLongPath(path, environment);
+  if (envOf(environment).platform === "win32") return environment.normalizePaths === false ? path : normalizeLongPath(path, environment);
   if (/^[A-Za-z]:/.test(path) || path.startsWith("\\\\")) throw new PathNotUsableError(path);
   // Windows resolves `.` and `..` segments in the text before it opens anything, so `x\..\f` reaches `f` although `x` does not exist
   return posix.normalize(path.replace(/\\/g, "/"));
@@ -147,9 +162,9 @@ export function fileExists(path: string | null, environment: PathEnvironment = {
  * @spec IMP-402 LP-004
  */
 export function directoryGetParentFullName(path: string, environment: PathEnvironment = {}): string {
-  const platform = environment.platform ?? process.platform;
-  if (platform === "win32" || /^[A-Za-z]:|\\/.test(path)) return win32.dirname(getFullPath(path, environment.cwd ?? process.cwd()));
-  return posix.dirname(posix.resolveFrom(environment.cwd ?? process.cwd(), path));
+  const env = envOf(environment);
+  if (env.platform === "win32" || /^[A-Za-z]:|\\/.test(path)) return win32.dirname(getFullPath(path, env.cwd));
+  return posix.dirname(posix.resolveFrom(env.cwd, path));
 }
 
 /**
@@ -158,8 +173,9 @@ export function directoryGetParentFullName(path: string, environment: PathEnviro
  */
 export function translateFileError(error: unknown, hostPath: string, forWrite: boolean, environment: PathEnvironment = {}): unknown {
   const code = (error as NodeJS.ErrnoException | undefined)?.code;
-  const host = flavourOf(environment.platform ?? process.platform);
-  const full = host.resolveFrom(environment.cwd ?? process.cwd(), hostPath);
+  const env = envOf(environment);
+  const host = flavourOf(env.platform);
+  const full = host.resolveFrom(env.cwd, hostPath);
   switch (code) {
     case "ENOENT":
       return forWrite || !existsSync(host.dirname(full)) ? new DirectoryNotFoundException(full) : new FileNotFoundException(full);

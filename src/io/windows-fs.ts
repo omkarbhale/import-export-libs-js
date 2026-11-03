@@ -8,7 +8,7 @@ import {
   PathTooLongException,
   UnauthorizedAccessException,
 } from "./errors.js";
-import { getFullPath, normalizeLongPath } from "./host-path.js";
+import { envOf, getFullPath, normalizeLongPath } from "./host-path.js";
 import type { PathEnvironment } from "./host-path.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
 import { flavourOf, win32 } from "./path.js";
@@ -74,8 +74,7 @@ interface ModelPath {
  * trailing dot and keeps its spaces (a folder `Sp ` cannot be reached, though `Sp` is made by creating it).
  */
 function modelPath(path: string, environment: PathEnvironment, creating: boolean): ModelPath {
-  const cwd = environment.cwd ?? process.cwd();
-  const platform = environment.platform ?? process.platform;
+  const { cwd, platform } = envOf(environment);
   const host = flavourOf(platform);
   const unnormalized = environment.normalizePaths === false;
   // the 12.0 engine passes the path on as built: .NET still refuses an illegal one, but there is no trimming and no length rule

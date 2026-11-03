@@ -1,10 +1,11 @@
-import { availableParallelism } from "node:os";
 import { CItemException } from "../client/fault.js";
 import { DotNetException, isNullReference, isXPathException, isXmlException } from "../client/dotnet.js";
 import { responseDom } from "../client/answer.js";
 import { EngineNotSupportedError, type CItemHelper } from "../client/item-helper.js";
 import { TransportError } from "../client/transport.js";
 import type { Engine } from "../engines.js";
+import { defaultHostEnv } from "../host/default-host.js";
+import type { HostEnv } from "../host/types.js";
 import {
   ArgumentException,
   ArgumentNullException,
@@ -41,17 +42,19 @@ import type { RemovedReference } from "./removed-reference.js";
 import { AggregateException, parallelForEach } from "./parallel-for-each.js";
 import { ProgressStreamLogger } from "./progress-logger.js";
 import { newRequestDictionary } from "./request-template.js";
-import { RunLog, currentCultureDateTime, invariantDateTime, logInputParameters } from "./run-log.js";
+import { RunLog, currentCultureDateTime, invariantDateTime, logInputParameters, processCulture } from "./run-log.js";
 
 /** The engines whose export run is built; the rest wait for their variant slices. The import run has its own list (`IMPORT_RUN_ENGINES`). */
 export const RUN_ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
 
 /**
  * How many items of a package 14.35's run has in flight when the host does not say: one worker per logical processor, which is where
- * the engine's `Parallel.ForEach` starts (EXP-551).
+ * the engine's `Parallel.ForEach` starts (EXP-551). The processor count is the host's (HOST-203).
+ *
+ * @spec HOST-203
  */
-export function defaultParallelism(): number {
-  return availableParallelism();
+export function defaultParallelism(host: HostEnv = defaultHostEnv()): number {
+  return host.availableParallelism();
 }
 
 /** Where a run is, for `Cancel` (EXP-518). */
@@ -109,8 +112,8 @@ export interface ImportExportManagerOptions extends PathEnvironment {
  *
  * @spec EXP-551
  */
-function resolveParallelism(engine: Engine, requested: number | undefined): number {
-  if (requested === undefined) return engine === "14.35" ? defaultParallelism() : 1;
+function resolveParallelism(engine: Engine, requested: number | undefined, host: HostEnv | undefined): number {
+  if (requested === undefined) return engine === "14.35" ? defaultParallelism(host) : 1;
   if (!Number.isInteger(requested) || requested < 1) throw new RangeError(`parallelism must be an integer of 1 or more, not ${String(requested)}`);
   if (engine !== "14.35") throw new OptionNotSupportedError("--parallelism", engine, "the engine exports one item at a time");
   return requested;
@@ -205,13 +208,13 @@ export class ImportExportManager {
     if (!RUN_ENGINES.includes(this.engine) && !IMPORT_RUN_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.itemHelper = itemHelper;
     const { now, console, osUser, parallelism, culture, ...environment } = options;
-    this.parallelism = resolveParallelism(this.engine, parallelism);
+    this.parallelism = resolveParallelism(this.engine, parallelism, environment.host);
     this.environment = pathEnvironmentFor(environment, this.engine);
     this.now = now ?? (() => new Date());
     this.culture = culture;
 
     this.console = console ?? SILENT_CONSOLE;
-    this.importHelper = new ImportHelper(itemHelper, osUser === undefined ? {} : { osUser });
+    this.importHelper = new ImportHelper(itemHelper, { ...(osUser === undefined ? {} : { osUser }), ...(environment.host === undefined ? {} : { host: environment.host }) });
 
     const manifestPath = context.manifestFile;
     const isImport = context.action === "Import";
@@ -301,7 +304,7 @@ export class ImportExportManager {
 
   /** `DateTime.Now.ToString()` of the current culture, which the 12.0 engine writes at the head of a package and after a cancel or an abort. */
   private localTimestamp(): string {
-    return this.engine === "12.0" ? currentCultureDateTime(this.now(), this.culture) : this.timestamp();
+    return this.engine === "12.0" ? currentCultureDateTime(this.now(), this.culture ?? processCulture(this.environment.host)) : this.timestamp();
   }
 
   /** `ResourceManager.GetMessage` of the engine's catalogue (EXP-504). */

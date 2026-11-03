@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import type { Dirent } from "node:fs";
-import { toHostPath, translateFileError } from "../io/host-path.js";
+import { envOf, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { DirectoryNotFoundException, IOException, UnauthorizedAccessException } from "../io/errors.js";
 import { flavourOf } from "../io/path.js";
@@ -18,7 +18,7 @@ export interface FileInfo {
 }
 
 function separatorOf(environment: PathEnvironment): string {
-  return (environment.platform ?? process.platform) === "win32" ? "\\" : "/";
+  return envOf(environment).platform === "win32" ? "\\" : "/";
 }
 
 /** The path of an entry as .NET builds it: the folder as it was given, the host separator, the name; no doubled separator. */
@@ -28,7 +28,7 @@ function combine(folder: string, name: string, separator: string): string {
 
 /** `Path.GetFullPath` of a host path as the host's file system words it: against the environment's current directory (HOST-202). */
 function fullName(host: string, environment: PathEnvironment): string {
-  return flavourOf(environment.platform ?? process.platform).resolveFrom(environment.cwd ?? process.cwd(), host);
+  return flavourOf(envOf(environment).platform).resolveFrom(envOf(environment).cwd, host);
 }
 
 /** Turns the failure of listing a folder into the exception .NET raises for it. */
@@ -53,7 +53,7 @@ function translateListError(error: unknown, host: string, environment: PathEnvir
  * that starts with a backslash names a network share, which the path layer refuses (MAN-033).
  */
 function hostFolder(folder: string, environment: PathEnvironment): string {
-  const onWindows = (environment.platform ?? process.platform) === "win32";
+  const onWindows = envOf(environment).platform === "win32";
   // 12.0 hands the folder to the file functions as it is, so a leading `?` stays (IMP-006)
   return toHostPath(onWindows || environment.normalizePaths === false ? folder : folder.replace(/^\?+/, ""), environment) as string;
 }

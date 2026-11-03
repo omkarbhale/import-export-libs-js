@@ -1,4 +1,5 @@
-import { hostname, userInfo } from "node:os";
+import { defaultHostEnv } from "../host/default-host.js";
+import type { HostEnv } from "../host/types.js";
 import { descendantsNamed, resultItems } from "../client/answer.js";
 import { isNullReference, isXPathException, isXmlException, nullReference } from "../client/dotnet.js";
 import { CItemException, type ResponseDocument, stackText } from "../client/fault.js";
@@ -18,6 +19,8 @@ const I18N_NAMESPACE = "http://www.aras.com/I18N";
 export interface ImportHelperOptions {
   /** The value of `os_user`, or a function that gives it at each write (IMP-452). The default is {@link defaultOsUser} of the helper's engine. */
   osUser?: string | (() => string);
+  /** The host environment the default `os_user` is read from (HOST-203); the default is that of the running platform. */
+  host?: HostEnv;
 }
 
 /**
@@ -25,13 +28,16 @@ export interface ImportHelperOptions {
  * `MACHINE\user` for a local account, and the port writes `<hostname>\<user>` on every other host. 14.35 writes
  * `Environment.UserName`, the user name of the process alone, on every host.
  *
- * @spec IMP-452
+ * The account comes from the host environment (`env`, HOST-203); `platform` is the platform whose rules apply and is the host's by
+ * default.
+ *
+ * @spec IMP-452 HOST-203
  */
-export function defaultOsUser(platform: NodeJS.Platform = process.platform, engine: Engine = DEFAULT_ENGINE): string {
-  const user = userInfo().username;
+export function defaultOsUser(platform?: string, engine: Engine = DEFAULT_ENGINE, env: HostEnv = defaultHostEnv()): string {
+  const { user, machine, domain: userDomain } = env.osUser();
   if (engine === "14.35") return user;
-  const domain = platform === "win32" ? process.env.USERDOMAIN : undefined;
-  return `${domain === undefined || domain === "" ? hostname() : domain}\\${user}`;
+  const domain = (platform ?? env.platform) === "win32" ? userDomain : undefined;
+  return `${domain === undefined || domain === "" ? machine : domain}\\${user}`;
 }
 
 /** The first element of the answer, in document order, that is an `Item` of that type (`.//Item[@type='…']`). */
@@ -72,7 +78,7 @@ export class ImportHelper {
   ) {
     this.lookups = new ImportLookups(host);
     const osUser = options.osUser;
-    this.osUser = typeof osUser === "string" ? () => osUser : (osUser ?? (() => defaultOsUser(process.platform, host.engine)));
+    this.osUser = typeof osUser === "string" ? () => osUser : (osUser ?? (() => defaultOsUser(undefined, host.engine, options.host)));
   }
 
   /**

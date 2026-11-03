@@ -154,7 +154,7 @@ export class LanguagePackPreprocessor {
    */
   private getTemporaryDirectory(): string {
     const tempPath = this.options.tempPath ?? pathGetTempPath(this.options);
-    const randomFileName = this.options.randomFileName ?? pathGetRandomFileName;
+    const randomFileName = this.options.randomFileName ?? (() => pathGetRandomFileName(this.options));
     let folder: string;
     do {
       folder = pathCombineAll(tempPath, PACKAGE_PREFIX + randomFileName());
