@@ -1,6 +1,5 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import type { Dirent } from "node:fs";
-import { envOf, toHostPath, translateFileError } from "../io/host-path.js";
+import type { HostDirent, HostFsError } from "../host/types.js";
+import { envOf, fsOf, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { DirectoryNotFoundException, IOException, UnauthorizedAccessException } from "../io/errors.js";
 import { flavourOf } from "../io/path.js";
@@ -8,7 +7,8 @@ import { compareNtfsNames, shortNamesOf } from "./ntfs-order.js";
 
 /**
  * The engine's `IOWrapper` as the import uses it: the immediate subdirectories of a package folder and the files of one
- * of them, in NTFS order on every OS, as the paths `Directory.GetDirectories` and `Directory.GetFiles` give.
+ * of them, in NTFS order on every OS, as the paths `Directory.GetDirectories` and `Directory.GetFiles` give. The folders are listed
+ * and the files read through the environment's `HostFs` (HOST-210), and the order is the engine's, never the host's (HOST-212).
  */
 
 /** `FileInfo.Name` and `FileInfo.FullName` of a package file. */
@@ -33,7 +33,7 @@ function fullName(host: string, environment: PathEnvironment): string {
 
 /** Turns the failure of listing a folder into the exception .NET raises for it. */
 function translateListError(error: unknown, host: string, environment: PathEnvironment): unknown {
-  const code = (error as NodeJS.ErrnoException | undefined)?.code;
+  const code = (error as HostFsError | undefined)?.code;
   switch (code) {
     case "ENOENT":
       return new DirectoryNotFoundException(fullName(host, environment));
@@ -63,31 +63,35 @@ function shownFolder(host: string): string {
   return host.startsWith("\\\\?\\") ? host.slice(4) : host;
 }
 
-function listEntries(folder: string, environment: PathEnvironment): { host: string; entries: Dirent[] } {
+/**
+ * The entries of a folder as the environment's file system lists them, in whatever order it does: every caller sorts them with
+ * `compareNtfsNames` (HOST-212).
+ */
+function listEntries(folder: string, environment: PathEnvironment): { host: string; entries: HostDirent[] } {
   const host = hostFolder(folder, environment);
   try {
-    return { host, entries: readdirSync(host, { withFileTypes: true }) };
+    return { host, entries: fsOf(environment).readdir(host) };
   } catch (error) {
     throw translateListError(error, host, environment);
   }
 }
 
 /** Whether an entry is a directory (a link counts as what it points to). */
-function isDirectory(entry: Dirent, host: string): boolean {
-  if (entry.isDirectory()) return true;
-  if (!entry.isSymbolicLink()) return false;
+function isDirectory(entry: HostDirent, host: string, environment: PathEnvironment): boolean {
+  if (entry.isDirectory) return true;
+  if (!entry.isSymbolicLink) return false;
   try {
-    return statSync(combine(host, entry.name, "/")).isDirectory();
+    return fsOf(environment).stat(combine(host, entry.name, "/")).isDirectory;
   } catch {
     return false;
   }
 }
 
-function isFile(entry: Dirent, host: string): boolean {
-  if (entry.isFile()) return true;
-  if (!entry.isSymbolicLink()) return false;
+function isFile(entry: HostDirent, host: string, environment: PathEnvironment): boolean {
+  if (entry.isFile) return true;
+  if (!entry.isSymbolicLink) return false;
   try {
-    return statSync(combine(host, entry.name, "/")).isFile();
+    return fsOf(environment).stat(combine(host, entry.name, "/")).isFile;
   } catch {
     return false;
   }
@@ -98,13 +102,13 @@ function isFile(entry: Dirent, host: string): boolean {
  * NTFS order, as the folder path joined with the name. The path goes through the engine's path rules first: a leading `\`
  * or `?` is removed, which breaks a UNC path (IMP-006). A missing folder throws `DirectoryNotFoundException`, and a path that
  * is a file throws `IOException`.
- * @spec IMP-002 IMP-004 IMP-005 IMP-006
+ * @spec IMP-002 IMP-004 IMP-005 IMP-006 HOST-210 HOST-212
  */
 export function directoryGetDirectories(path: string, environment: PathEnvironment = {}): string[] {
   const { host, entries } = listEntries(path, environment);
   const separator = separatorOf(environment);
   return entries
-    .filter((entry) => isDirectory(entry, host))
+    .filter((entry) => isDirectory(entry, host, environment))
     .map((entry) => entry.name)
     .sort(compareNtfsNames)
     .map((name) => combine(shownFolder(host), name, separator));
@@ -132,12 +136,12 @@ function matchesByLongName(name: string): boolean {
  *
  * A file whose long name matches is listed at its long name's place. A file that only its short name matches (`a.xmlbak`,
  * short name `A~1.XML`) is listed at the short name's place (IMP-004), so it follows every name that sorts below `~`.
- * @spec IMP-003 IMP-004 IMP-005 IMP-006
+ * @spec IMP-003 IMP-004 IMP-005 IMP-006 HOST-210 HOST-212
  */
 export function directoryGetXmlFiles(path: string, environment: PathEnvironment = {}): string[] {
   const { host, entries } = listEntries(path, environment);
   const separator = separatorOf(environment);
-  const matched = entries.filter((entry) => matchesXmlPattern(entry.name) && isFile(entry, host)).map((entry) => entry.name);
+  const matched = entries.filter((entry) => matchesXmlPattern(entry.name) && isFile(entry, host, environment)).map((entry) => entry.name);
   const shortNames = matched.every(matchesByLongName) ? new Map<string, string>() : shortNamesOf(entries.map((entry) => entry.name));
   const placeOf = (name: string): string => (matchesByLongName(name) ? name : (shortNames.get(name) ?? name));
   return matched
@@ -150,7 +154,7 @@ export function directoryGetXmlFiles(path: string, environment: PathEnvironment 
  * folder and in every folder below it, at any depth. The order is not defined by .NET; the port lists each folder in NTFS order,
  * the folder's own files first and then its subfolders'. A missing folder throws `DirectoryNotFoundException` and a path that is a
  * file throws `IOException`, both from the listing and before any file is read.
- * @spec IMP-611 IMP-612
+ * @spec IMP-611 IMP-612 HOST-210 HOST-212
  */
 export function directoryGetXmlFilesRecursive(path: string, environment: PathEnvironment = {}): string[] {
   const separator = separatorOf(environment);
@@ -158,9 +162,9 @@ export function directoryGetXmlFilesRecursive(path: string, environment: PathEnv
   const visit = (folder: string): void => {
     const { host, entries } = listEntries(folder, environment);
     const shown = shownFolder(host);
-    const names = (keep: (entry: Dirent) => boolean): string[] => entries.filter(keep).map((entry) => entry.name).sort(compareNtfsNames);
-    for (const name of names((entry) => matchesXmlPattern(entry.name) && isFile(entry, host))) files.push(combine(shown, name, separator));
-    for (const name of names((entry) => isDirectory(entry, host))) visit(combine(shown, name, separator));
+    const names = (keep: (entry: HostDirent) => boolean): string[] => entries.filter(keep).map((entry) => entry.name).sort(compareNtfsNames);
+    for (const name of names((entry) => matchesXmlPattern(entry.name) && isFile(entry, host, environment))) files.push(combine(shown, name, separator));
+    for (const name of names((entry) => isDirectory(entry, host, environment))) visit(combine(shown, name, separator));
   };
   visit(path);
   return files;
@@ -176,12 +180,17 @@ export function newFileInfo(path: string, environment: PathEnvironment = {}): Fi
   return { name: path.slice(cut + 1), fullName: fullName(path, environment) };
 }
 
-/** `File.ReadAllBytes` of a listed path, with the exceptions of .NET: a file held open by another process is an `IOException`. */
+/**
+ * `File.ReadAllBytes` of a listed path, with the exceptions of .NET: a file held open by another process is an `IOException`. The
+ * bytes come from the environment's `HostFs` (HOST-210) and are a `Buffer` whatever host gave them.
+ * @spec HOST-210
+ */
 export function readListedFile(path: string, environment: PathEnvironment = {}): Buffer {
   try {
-    return readFileSync(path);
+    const bytes = fsOf(environment).readFile(path);
+    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException | undefined)?.code === "EBUSY") {
+    if ((error as HostFsError | undefined)?.code === "EBUSY") {
       throw new IOException(`The process cannot access the file '${fullName(path, environment)}' because it is being used by another process.`);
     }
     throw translateFileError(error, path, false, environment);
