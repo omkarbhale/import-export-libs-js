@@ -144,3 +144,13 @@ On Node the default host's file system, `nodeFs` (`src/host/node-fs.ts`), is `no
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+## HOST-230: the HTTP transport is a seam; Node's implementation lives in the Node host
+
+[14.0.7] The client is written against `HttpTransport`, and the types of the exchange (`TransportRequest`, `TransportResponse`, `TransportFailure`, `TransportError`, `HttpTransport`) are declared in `src/client/transport.ts`, a file that imports nothing from Node. The Node implementation, `nodeTransport` over `node:http` and `node:https`, is in `src/host/node-transport.ts`, the one file of `src/` that imports `node:http`; its behaviour is the engine's (WIRE-050 and the failure classes of `TransportError`) and is unchanged by being moved. The default host (HOST-203) answers a transport as its `transport` member, `defaultTransport()` in `src/host/default-host.ts`: `nodeTransport` on Node, and nothing in a host that has none.
+
+`HttpServerConnection` uses `settings.transport`, and when that is absent the default host's. When both are absent, which no Node caller can see, the constructor throws `Error("a transport is required in this environment")`, so that a missing transport is a clear error at construction and not a `TypeError` at the first call. The public API of the Node entry is as before: `import { nodeTransport } from "import-export-libs-js"` still works; the portable client exports the types and not the implementation.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.

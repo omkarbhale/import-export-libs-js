@@ -10,7 +10,7 @@ export interface CliIo {
   /** The current directory, which the default log path is made in. */
   cwd(): string;
   now(): Date;
-  /** The HTTP layer of the connection; the default is Node's. */
+  /** The HTTP layer of the connection; the default is the host's (`nodeTransport` on Node). */
   transport?: HttpTransport;
 }
 
