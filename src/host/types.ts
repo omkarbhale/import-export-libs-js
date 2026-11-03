@@ -26,6 +26,15 @@ export interface HostDirent {
   isSymbolicLink: boolean;
 }
 
+/**
+ * The shape of an error a {@link HostFs} method throws (HOST-201): the Node errno `code`, and the `path` the failure names when the
+ * host knows it. The file layer reads these two members and nothing else of an error.
+ */
+export interface HostFsError extends Error {
+  code?: string;
+  path?: string;
+}
+
 /** A file open for appending. */
 export interface AppendHandle {
   /**

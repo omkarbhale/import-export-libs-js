@@ -1,11 +1,22 @@
+import { nodeFs } from "./node-fs.js";
 import { nodeHost } from "./node.js";
-import type { HostEnv } from "./types.js";
+import type { Host, HostEnv } from "./types.js";
 
 /**
- * The environment of the running platform, which a `PathEnvironment` without a `host` falls back to (HOST-203). This is the one
- * module of the core that names the Node implementation, so it is the one a browser build replaces with its own.
+ * The host of the running platform, which a `PathEnvironment` without an `fs` or a `host` falls back to (HOST-200, HOST-203,
+ * HOST-210): on Node, `node:fs` and the process. This is the one module of the core that names the Node implementations, so it is
+ * the one a browser build replaces with its own.
  *
- * The file system half of the default host (`defaultHost()`) arrives with the file seam.
+ * @spec HOST-200 HOST-203 HOST-210
+ */
+export function defaultHost(): Host {
+  return nodeDefaultHost;
+}
+
+const nodeDefaultHost: Host = { fs: nodeFs, env: nodeHost };
+
+/**
+ * The environment half of {@link defaultHost}.
  *
  * @spec HOST-203
  */

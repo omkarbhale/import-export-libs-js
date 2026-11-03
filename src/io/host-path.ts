@@ -1,7 +1,6 @@
-import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Engine } from "../engines.js";
-import { defaultHostEnv } from "../host/default-host.js";
-import type { HostEnv, HostFs } from "../host/types.js";
+import { defaultHost, defaultHostEnv } from "../host/default-host.js";
+import type { HostEnv, HostFs, HostFsError } from "../host/types.js";
 import { isWhiteSpace } from "./dotnet-text.js";
 import { flavourOf, posix, win32 } from "./path.js";
 import {
@@ -31,8 +30,11 @@ export interface PathEnvironment {
    * (EXP-421, MAN-004). The default is true.
    */
   normalizePaths?: boolean;
-  /** The file system the layer reads and writes through (HOST-200); the default is the Node file system.
-   * Not honoured yet: nothing reads it until the fs/host seam tickets land. */
+  /**
+   * The file system the layer reads and writes through (HOST-200, HOST-210); the default is the file system of the default host
+   * (`defaultHost().fs`), the Node file system on Node. The layer in this file and in `windows-fs.ts` honours it; the package listing and
+   * the log file do not yet.
+   */
   fs?: HostFs;
   /** The rest of the machine (HOST-200, HOST-203); the default is the environment of the running platform (`defaultHostEnv()`). */
   host?: HostEnv;
@@ -51,6 +53,14 @@ export function envOf(environment: PathEnvironment): { readonly platform: string
       return environment.cwd ?? host.cwd();
     },
   };
+}
+
+/**
+ * The file system a run reads and writes through: the environment's own `fs` where it has one, else the default host's (HOST-210).
+ * @spec HOST-210
+ */
+export function fsOf(environment: PathEnvironment): HostFs {
+  return environment.fs ?? defaultHost().fs;
 }
 
 /** The environment as an engine sees it: 12.0 has no path normalisation (EXP-421), the other engines have it. */
@@ -143,12 +153,12 @@ const EMPTY_PATH = "Empty path name is not legal.";
 /**
  * `IOWrapper.FileExists`: true for a file, and false for a folder, a missing path, a null or empty path and a path the host
  * cannot name, which `File.Exists` answers with false instead of throwing.
- * @spec EXP-502
+ * @spec EXP-502 HOST-210
  */
 export function fileExists(path: string | null, environment: PathEnvironment = {}): boolean {
   try {
     const host = toHostPath(path, environment);
-    return host !== null && host.length > 0 && statSync(host).isFile();
+    return host !== null && host.length > 0 && fsOf(environment).stat(host).isFile;
   } catch {
     return false;
   }
@@ -168,17 +178,20 @@ export function directoryGetParentFullName(path: string, environment: PathEnviro
 }
 
 /**
- * Turns a Node file-system failure into the exception .NET raises for the same failure. The full path in the exception is the host
- * path resolved against the environment's current directory, by the rules of the host's own file system (HOST-202).
+ * Turns a file-system failure into the exception .NET raises for the same failure, by the error's `code` (HOST-201). The full path
+ * in the exception is the host path resolved against the environment's current directory, not the process's (HOST-211), by the
+ * rules of the host's own file system (HOST-202); whether the folder of a missing file exists is asked of the environment's file
+ * system (HOST-210).
+ * @spec HOST-201 HOST-210 HOST-211
  */
 export function translateFileError(error: unknown, hostPath: string, forWrite: boolean, environment: PathEnvironment = {}): unknown {
-  const code = (error as NodeJS.ErrnoException | undefined)?.code;
+  const code = (error as HostFsError | undefined)?.code;
   const env = envOf(environment);
   const host = flavourOf(env.platform);
   const full = host.resolveFrom(env.cwd, hostPath);
   switch (code) {
     case "ENOENT":
-      return forWrite || !existsSync(host.dirname(full)) ? new DirectoryNotFoundException(full) : new FileNotFoundException(full);
+      return forWrite || !fsOf(environment).exists(host.dirname(full)) ? new DirectoryNotFoundException(full) : new FileNotFoundException(full);
     case "ENOTDIR":
       return new DirectoryNotFoundException(full);
     case "EISDIR":
@@ -193,14 +206,15 @@ export function translateFileError(error: unknown, hostPath: string, forWrite: b
 /**
  * The bytes of a file as `File.ReadAllText` reads them, after the path rules. A null path throws
  * `ArgumentNullException`, an empty one `ArgumentException`, and a missing file or folder the exceptions of .NET.
- * @spec MAN-003 MAN-004 MAN-033
+ * @spec MAN-003 MAN-004 MAN-033 HOST-210
  */
 export function readFileBytes(path: string | null, environment: PathEnvironment = {}): Buffer {
   const host = toHostPath(path, environment);
   if (host === null) throw new ArgumentNullException("path");
   if (host.length === 0) throw new ArgumentException(EMPTY_PATH);
   try {
-    return readFileSync(host);
+    const bytes = fsOf(environment).readFile(host);
+    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   } catch (error) {
     throw translateFileError(error, host, false, environment);
   }
@@ -209,14 +223,14 @@ export function readFileBytes(path: string | null, environment: PathEnvironment 
 /**
  * Creates or truncates a file and writes the bytes, after the path rules. A null path throws `ArgumentNullException`
  * (`Path cannot be null.`), an empty one `ArgumentException`, and a missing folder `DirectoryNotFoundException`.
- * @spec MAN-004 MAN-006 MAN-033
+ * @spec MAN-004 MAN-006 MAN-033 HOST-210
  */
 export function writeFileBytes(path: string | null, data: Uint8Array, environment: PathEnvironment = {}): void {
   const host = toHostPath(path, environment);
   if (host === null) throw new ArgumentNullException("path", "Path cannot be null.");
   if (host.length === 0) throw new ArgumentException(EMPTY_PATH);
   try {
-    writeFileSync(host, data);
+    fsOf(environment).writeFile(host, data);
   } catch (error) {
     throw translateFileError(error, host, true, environment);
   }
