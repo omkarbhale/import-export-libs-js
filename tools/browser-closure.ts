@@ -22,13 +22,18 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 
 /** The entry point whose closure is analysed. */
 export const ENTRY = "src/index.ts";
+/**
+ * Browser-only files that `ENTRY` does not import (the Node entry never ships them), each a root of the analysis besides `ENTRY`:
+ * they are held to the same rule, and what they import joins the closure. `src/browser.ts` replaces this list (ticket 21).
+ */
+export const BROWSER_ROOTS: readonly string[] = ["src/browser/fetch-transport.ts"];
 /** The hand-written ambient declarations that stand in for Node's `Buffer` (ticket 14 replaces them). */
 export const GLOBALS = "src/browser/globals.d.ts";
 export const BROWSER_TSCONFIG = "tsconfig.browser.json";
 export const ALLOWLIST = "tools/browser-closure.allowlist.json";
 
 export interface ClosureAnalysis {
-  /** Every source file of the closure of `ENTRY`, as repo-relative POSIX paths, sorted. */
+  /** Every source file of the closure of `ENTRY` and `BROWSER_ROOTS`, as repo-relative POSIX paths, sorted. */
   closure: string[];
   /** The maximal clean subset, sorted: the files `tsconfig.browser.json` lists (besides `GLOBALS`). */
   clean: string[];
@@ -59,8 +64,8 @@ function isRepoSource(file: string): boolean {
 }
 
 /** The closure of `ENTRY`: every repo source file reachable by import (type-only imports included, as `tsc` follows them too). */
-function closureOf(entry: string, options: ts.CompilerOptions): string[] {
-  const program = ts.createProgram({ rootNames: [path.join(repoRoot, entry)], options });
+function closureOf(entries: readonly string[], options: ts.CompilerOptions): string[] {
+  const program = ts.createProgram({ rootNames: entries.map((entry) => path.join(repoRoot, entry)), options });
   return program
     .getSourceFiles()
     .map((file) => file.fileName)
@@ -119,7 +124,7 @@ function directReason(file: string, program: ts.Program): string | undefined {
 
 export function analyze(): ClosureAnalysis {
   const options = parseOptions(BROWSER_TSCONFIG);
-  const closure = closureOf(ENTRY, parseOptions("tsconfig.json"));
+  const closure = closureOf([ENTRY, ...BROWSER_ROOTS], parseOptions("tsconfig.json"));
   const rootNames = [GLOBALS, ...closure].map((file) => path.join(repoRoot, file));
   const program = ts.createProgram({ rootNames, options });
   const graph = importGraph(closure, options);
@@ -162,7 +167,7 @@ export function browserFilesOf(analysis: ClosureAnalysis): string[] {
 }
 
 export function summary(analysis: ClosureAnalysis): string {
-  const lines = [`${analysis.clean.length} of ${analysis.closure.length} files of the closure of ${ENTRY} are clean; ${Object.keys(analysis.dirty).length} remain:`];
+  const lines = [`${analysis.clean.length} of ${analysis.closure.length} files of the closure of ${[ENTRY, ...BROWSER_ROOTS].join(", ")} are clean; ${Object.keys(analysis.dirty).length} remain:`];
   for (const [file, reason] of Object.entries(analysis.dirty)) lines.push(`  ${file}  ${reason}`);
   return lines.join("\n");
 }

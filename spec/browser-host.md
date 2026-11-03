@@ -154,3 +154,43 @@ On Node the default host's file system, `nodeFs` (`src/host/node-fs.ts`), is `no
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+The browser's implementation is `createFetchTransport` (`src/browser/fetch-transport.ts`), which has the contract of `nodeTransport` where a browser permits it: the request is sent as the engine built it, a status of 400 or above is a response and not an error, and the response carries its status, reason phrase, headers and whole body. Where a browser does not permit it, the differences are HOST-231 (failures), HOST-232 (headers and the reason phrase) and HOST-233 (cookies and credentials). The `fetch` it calls is injectable, so that its code is tested under Node's own `fetch` against a local server (`src/browser/fetch-transport.test.ts`) and in the browsers by the browser suites. Redirects are followed (`redirect: "follow"`; a manual redirect is opaque in a browser), nothing is cached (`cache: "no-store"`), the request is cross-origin capable (`mode: "cors"`), and the body is the request's bytes as they are. The browser caps the connections to one host (six on HTTP/1.1), so 14.35's parallel export (EXP-551) runs as it does elsewhere, only slower; nothing in the transport limits it further. `fetch` decompresses a compressed response itself, as `nodeTransport` does not; no Aras server compresses its answers.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-231: the browser transport's failures and timeouts
+
+[14.0.7] `fetch` rejects with a `TypeError` for a network failure, a refused cross-origin request (CORS), a blocked mixed-content request, a name that does not resolve and a TLS failure alike, and the page cannot tell them apart. The browser transport therefore reports every one of them as `TransportError("refused", "Unable to connect to the remote server", host)`, where `nodeTransport` tells a refused connection from an unresolved name (`"unresolved"`, "The remote name could not be resolved: 'host'") and a failed TLS handshake (`"other"`). A caller that needs the cause reads the browser's console; a facade that reports the error says that a missing CORS entry on the server is the usual one. This is a deviation of the host, not an engine behaviour, and is not in `spec/bugs.md`. A failure while the body is being read (the connection drops, or the browser's own limit is hit) is `TransportError("other", <the error's message>)`, as `nodeTransport` has it.
+
+The two timeouts of the request are kept, with the same error as `nodeTransport` (`TransportError("timeout", "The operation has timed out")`). `responseTimeoutMs`: an abort fires that long after the request is sent if the headers have not arrived. `readTimeoutMs`: the body is read chunk by chunk, and a wait for the next chunk that lasts that long aborts the exchange; a body that streams steadily is never timed out, however long it takes. A value of 0 or less waits for ever (the body is then read in one piece). A timer is cleared as soon as it has done its work, so nothing outlives the exchange.
+
+A caller can cancel the exchange with the `signal` option. The cancel rejects `send` with the signal's own reason (an `AbortError`, as `fetch` raises it), not with a `TransportError`, so that a caller that cancelled is not told that the server could not be reached.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-232: forbidden request headers are dropped, and the reason phrase is filled in
+
+[14.0.7] A browser's `fetch` ignores a request header whose name is forbidden (`Host`, `Cookie`, `Content-Length`, `Connection`, `Expect`, `Accept-Encoding`, `User-Agent`), and sets the real ones itself. The transport drops those names, compared without regard to case, before the call, and nowhere else: the `TransportRequest` the engine built, which the recorded exchanges and the captures pin, keeps them (the connection adds `Host`, `Cookie` and `Content-Length` to every SOAP request, `client/connection.ts`). The other headers go in the order they were given, with their names and values unchanged. The request's `Host` is the URL's, and its `Content-Length` is the body's length, which is what the engine sent.
+
+The header `Aras-Request-ReadOnly` is dropped too unless the caller sets the option `sendReadOnlyHint`. A server whose CORS configuration does not list a header refuses the whole request, with no detail, and R35 as shipped does not list this one; the header is a hint, and no recorded exchange depends on it. The headers of the legacy login (`AUTHUSER`, `AUTHPASSWORD`, `DATABASE`) are sent; a legacy-only server must list them in its `Access-Control-Allow-Headers` (`roadmap/browser-cors-poc.md`).
+
+The response's `reason` is `statusText` when that is not empty. Over HTTP/2, which has no reason phrase, Chromium and Firefox give an empty `statusText`, and the transport fills it from the standard phrase of the status (RFC 9110: the 40 statuses from 200 to 505 that a server answers with, `OK`, `Bad Request`, `Internal Server Error`, …), so that the client's `The remote server returned an error: (500) Internal Server Error.` (WIRE-050) reads as it does on Node. A status the table does not know keeps an empty phrase, as on Node. The client decides by the status number, never by the phrase. The response headers are what `Headers` gives: lower-case names, and repeated headers combined (`Set-Cookie` is not exposed to a page, HOST-233), where `nodeTransport` gives the names as sent and each repeated header apart. A header the server did not list in `Access-Control-Expose-Headers` is not readable cross-origin, and none of the three servers lists any: the engine reads only the body.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-233: cookies and credentials belong to the browser
+
+[14.0.7] A page cannot read `Set-Cookie` or set `Cookie`, so the client's cookie jar (`client/connection.ts`, WIRE-005), which replays what the server set, stays empty in a browser: it is inert, and the transport does nothing for it. The browser keeps its own cookies and sends them as its rules say. The Aras session cookie is not needed: the requests that follow `ValidateUser` carry the bearer token and succeed without it on all three servers (`roadmap/browser-cors-poc.md`), and it cannot work across origins (it is `SameSite=Lax`).
+
+The transport sends `credentials: "omit"` on every request by default. A request with credentials is refused by a server that answers `Access-Control-Allow-Origin: *`, which R23 and R35 do as shipped. A caller whose page is served from the server's own origin sets the option `credentials` to `"same-origin"` (or `"include"` for a server that names the page's origin and allows credentials) and gets the browser's cookies then; nothing else changes.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
