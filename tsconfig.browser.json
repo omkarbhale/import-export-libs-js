@@ -68,6 +68,7 @@
     "src/io/dotnet-text.ts",
     "src/io/errors.ts",
     "src/io/ntfs-upcase-data.ts",
+    "src/io/path.ts",
     "src/io/win-path.ts",
     "src/language-pack/exception-text.ts",
     "src/language-pack/invariant-lower-data.ts",

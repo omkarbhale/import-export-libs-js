@@ -2,7 +2,9 @@ import { closeSync, openSync, writeSync } from "node:fs";
 import { ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
 import type { ArasVersion } from "../client/version.js";
 import { ArgumentException, ArgumentNullException, IOException } from "../io/errors.js";
-import { getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
+import { defaultHostEnv } from "../host/default-host.js";
+import type { HostEnv } from "../host/types.js";
+import { envOf, getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { flavourOf } from "../io/path.js";
 import type { SUExportContext } from "./export-context.js";
@@ -30,9 +32,13 @@ const GENERAL_PATTERNS: Readonly<Record<string, string>> = {
   "de-DE": "dd.MM.yyyy HH:mm:ss",
 };
 
-/** The culture of this process, as `Intl` names it (`en-US`), which the 12.0 engine's date-times follow by default. */
-export function processCulture(): string {
-  return Intl.DateTimeFormat().resolvedOptions().locale;
+/**
+ * The culture of this process, as `Intl` names it (`en-US`), which the 12.0 engine's date-times follow by default: the host's
+ * locale (HOST-203).
+ * @spec HOST-203
+ */
+export function processCulture(host: HostEnv = defaultHostEnv()): string {
+  return host.locale();
 }
 
 /**
@@ -91,9 +97,10 @@ export class RunLog {
     if (path.length === 0) throw new ArgumentException("Empty path name is not legal.");
     const host = toHostPath(path, environment);
     if (host === null) throw new ArgumentNullException("path");
-    const key = flavourOf(environment.platform ?? process.platform).resolveFrom(environment.cwd ?? process.cwd(), host);
+    const env = envOf(environment);
+    const key = flavourOf(env.platform).resolveFrom(env.cwd, host);
     if (held.has(key)) {
-      const full = (environment.platform ?? process.platform) === "win32" ? getFullPath(path, environment.cwd ?? process.cwd()) : key;
+      const full = env.platform === "win32" ? getFullPath(path, env.cwd) : key;
       throw new IOException(`The process cannot access the file '${full}' because it is being used by another process.`);
     }
     let descriptor: number;

@@ -15,6 +15,8 @@ import {
   OperationCanceledException,
   PathNotUsableError,
 } from "../io/errors.js";
+import { defaultHostEnv } from "../host/default-host.js";
+import type { HostEnv } from "../host/types.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import type { ManifestFile } from "../manifest/manifest-file.js";
 import { getSolutionPath } from "../manifest/solution-path.js";
@@ -217,13 +219,18 @@ export function formatTimeSpan(ticks: bigint): string {
   return `${days > 0n ? `${days}.` : ""}${clock}${fraction > 0n ? `.${fraction.toString().padStart(7, "0")}` : ""}`;
 }
 
-/** A stopwatch in 100-nanosecond ticks (`Stopwatch.StartNew`): `elapsed` reads it, `restart` starts it again. */
-function startStopwatch(): { elapsed(): bigint; restart(): void } {
-  let started = process.hrtime.bigint();
+/**
+ * A stopwatch in 100-nanosecond ticks (`Stopwatch.StartNew`): `elapsed` reads it, `restart` starts it again. It runs on the
+ * host's monotonic clock, not on the wall clock (HOST-241).
+ *
+ * @spec HOST-241
+ */
+function startStopwatch(env: HostEnv): { elapsed(): bigint; restart(): void } {
+  let started = env.monotonicNs();
   return {
-    elapsed: () => (process.hrtime.bigint() - started) / 100n,
+    elapsed: () => (env.monotonicNs() - started) / 100n,
     restart: () => {
-      started = process.hrtime.bigint();
+      started = env.monotonicNs();
     },
   };
 }
@@ -758,7 +765,7 @@ export class ImportRun {
     if (!force && run.queue.length < run.importContext.amlBatchMaxSize) return;
     try {
       run.log.writeLine(this.message("TryToBatchAML"));
-      const stopwatch = startStopwatch();
+      const stopwatch = startStopwatch(host.environment.host ?? defaultHostEnv());
       let aml = "<AML>";
       for (const workItem of run.queue) {
         await importHelper.lookups.doImportInContext(workItem.item, run.importContext);

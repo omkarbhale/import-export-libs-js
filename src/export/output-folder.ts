@@ -1,8 +1,9 @@
+import { defaultHostEnv } from "../host/default-host.js";
 import { EngineNotSupportedError } from "../client/item-helper.js";
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
 import { IOException } from "../io/errors.js";
 import { directoryCreateDirectory, directoryDelete, directoryExists, ntfsFoldKey } from "../io/windows-fs.js";
-import { getFullPath, pathEnvironmentFor } from "../io/host-path.js";
+import { envOf, getFullPath, pathEnvironmentFor } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { isStandardPackage } from "../manifest/index.js";
 import { pathCombine } from "../io/win-path.js";
@@ -108,7 +109,7 @@ export function writeItemFile(
 const heldItemFiles = new Set<string>();
 
 /** The turn the writer gives the other workers while it holds the file: the engine's open is not instant, and nor is its write. */
-const yieldTurn = (): Promise<void> => new Promise((resolve) => setImmediate(resolve));
+const yieldTurn = (environment: PathEnvironment): Promise<void> => (environment.host ?? defaultHostEnv()).yieldTurn();
 
 /**
  * {@link writeItemFile} for 14.35's concurrent workers (EXP-419). The engine opens the file for writing with read sharing only, so a
@@ -132,7 +133,7 @@ export async function writeItemFileShared(
   let shown = path;
   let key = path;
   try {
-    shown = getFullPath(path, environment.cwd ?? process.cwd());
+    shown = getFullPath(path, envOf(environment).cwd);
     key = ntfsFoldKey(shown);
   } catch {
     // a path the volume refuses is refused by the write below, with its own exception
@@ -140,7 +141,7 @@ export async function writeItemFileShared(
   if (heldItemFiles.has(key)) throw new IOException(`The process cannot access the file '${shown}' because it is being used by another process.`);
   heldItemFiles.add(key);
   try {
-    await yieldTurn();
+    await yieldTurn(environment);
     return writeItemFile(folder, typeName, fileName, doc, environment, engine);
   } finally {
     heldItemFiles.delete(key);

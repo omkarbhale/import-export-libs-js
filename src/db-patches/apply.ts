@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { defaultHostEnv } from "../host/default-host.js";
 import { attributeOf } from "../client/mini-xml.js";
 import { responseDom } from "../client/answer.js";
 import { DotNetException } from "../client/dotnet.js";
@@ -103,8 +103,8 @@ export class DbPatchApplication {
     this.itemHelper = host.itemHelper;
     this.environment = host.environment;
     this.now = host.now;
-    this.osUser = typeof host.osUser === "string" ? () => host.osUser as string : (host.osUser ?? (() => defaultOsUser()));
-    this.newId = host.newId ?? (() => randomUUID().replace(/-/g, "").toUpperCase());
+    this.osUser = typeof host.osUser === "string" ? () => host.osUser as string : (host.osUser ?? (() => defaultOsUser(undefined, undefined, host.environment.host)));
+    this.newId = host.newId ?? (() => (host.environment.host ?? defaultHostEnv()).randomUuid().replace(/-/g, "").toUpperCase());
   }
 
   private timestamp(): string {

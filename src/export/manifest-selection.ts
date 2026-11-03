@@ -1,7 +1,7 @@
 import { ExportItem } from "./export-item.js";
 import type { SelectionTable } from "./import-export-manager.js";
 import type { Engine } from "../engines.js";
-import { fileExists, normalizeLongPath, pathEnvironmentFor } from "../io/host-path.js";
+import { envOf, fileExists, normalizeLongPath, pathEnvironmentFor } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { NullReferenceException } from "../io/errors.js";
 import { NetfxHashtable } from "../manifest/index.js";
@@ -23,7 +23,7 @@ import type { XmlDocument, XmlElement } from "../xml/index.js";
  */
 export function manifestFileExists(path: string | null, engine: Engine, environment: PathEnvironment): boolean {
   const env = pathEnvironmentFor(environment, engine);
-  if (engine !== "12.0" && (env.platform ?? process.platform) === "win32") normalizeLongPath(path, env);
+  if (engine !== "12.0" && envOf(env).platform === "win32") normalizeLongPath(path, env);
   return fileExists(path, env);
 }
 
