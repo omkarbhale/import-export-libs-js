@@ -82,7 +82,7 @@ export class LanguageCodesExtractor {
     // `Parallel.ForEach` runs every file and gathers the failures of those that fail; the number of them is not defined (IMP-612)
     for (const path of paths) {
       try {
-        const document = loadXml(readAllText(readListedFile(path)), { preserveWhitespace: false });
+        const document = loadXml(readAllText(readListedFile(path, this.environment)), { preserveWhitespace: false });
         // every value is stored lower-cased; the nodes are matched later by the text as written (IMP-614)
         for (const node of selectNodes(LANGUAGE_ATTRIBUTES, document) as XmlAttribute[]) codes.add(toLowerInvariant(node.value));
       } catch (error) {

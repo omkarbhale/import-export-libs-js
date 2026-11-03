@@ -1,5 +1,4 @@
 import { mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { dirname, join, parse, win32 } from "node:path";
 import {
   ArgumentException,
   ArgumentNullException,
@@ -12,6 +11,8 @@ import {
 import { getFullPath, normalizeLongPath } from "./host-path.js";
 import type { PathEnvironment } from "./host-path.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
+import { flavourOf, win32 } from "./path.js";
+import type { PathFlavour } from "./path.js";
 
 /**
  * The file system the export writes into: the engine's `Directory` and `File` calls on a Windows volume, reproduced on any
@@ -58,6 +59,8 @@ interface Segment {
 }
 
 interface ModelPath {
+  /** The path rules of the host's own file system, for the host paths that the walk builds (HOST-202). */
+  host: PathFlavour;
   /** The host directory the names are looked up from. */
   base: string;
   segments: Segment[];
@@ -73,6 +76,7 @@ interface ModelPath {
 function modelPath(path: string, environment: PathEnvironment, creating: boolean): ModelPath {
   const cwd = environment.cwd ?? process.cwd();
   const platform = environment.platform ?? process.platform;
+  const host = flavourOf(platform);
   const unnormalized = environment.normalizePaths === false;
   // the 12.0 engine passes the path on as built: .NET still refuses an illegal one, but there is no trimming and no length rule
   if (unnormalized) getFullPath(path, cwd);
@@ -95,11 +99,11 @@ function modelPath(path: string, environment: PathEnvironment, creating: boolean
     base = `${drive}\\`;
     parts.shift();
   } else if (/^[\\/]/.test(prefixed)) {
-    base = platform === "win32" ? parse(win32.resolve(cwd)).root : "/";
+    base = platform === "win32" ? win32.parse(win32.resolveFrom(cwd)).root : "/";
   } else {
     base = cwd;
   }
-  let baseText = platform === "win32" ? win32.resolve(base) : base.replace(/\//g, "\\");
+  let baseText = platform === "win32" ? win32.resolveFrom(cwd, base) : base.replace(/\//g, "\\");
   baseText = baseText.replace(/\\+$/, "");
 
   const segments: Segment[] = [];
@@ -111,7 +115,7 @@ function modelPath(path: string, environment: PathEnvironment, creating: boolean
         segments.pop();
         raws.pop();
       } else {
-        base = dirname(base);
+        base = host.dirname(base);
         baseText = baseText.slice(0, Math.max(baseText.lastIndexOf("\\"), 0));
       }
       continue;
@@ -126,7 +130,7 @@ function modelPath(path: string, environment: PathEnvironment, creating: boolean
     segments.push({ name, unreachable: !last && name.endsWith(" "), text: `${baseText}\\${raws.join("\\")}` });
   }
   const text = segments.length > 0 ? (segments[segments.length - 1] as Segment).text : baseText || "\\";
-  return { base, segments, text };
+  return { host, base, segments, text };
 }
 
 interface Entry {
@@ -135,9 +139,9 @@ interface Entry {
 }
 
 /** The entry of a directory that has this name on the volume: the same spelling if there is one, else the first fold-equal one. */
-function lookup(directory: string, name: string): Entry | undefined {
+function lookup(directory: string, name: string, host: PathFlavour): Entry | undefined {
   try {
-    return { name, isDirectory: statSync(join(directory, name)).isDirectory() };
+    return { name, isDirectory: statSync(host.join(directory, name)).isDirectory() };
   } catch {
     // not under this spelling
   }
@@ -151,7 +155,7 @@ function lookup(directory: string, name: string): Entry | undefined {
   const found = names.filter((candidate) => ntfsFoldKey(candidate) === key).sort()[0];
   if (found === undefined) return undefined;
   try {
-    return { name: found, isDirectory: statSync(join(directory, found)).isDirectory() };
+    return { name: found, isDirectory: statSync(host.join(directory, found)).isDirectory() };
   } catch {
     return undefined;
   }
@@ -165,9 +169,9 @@ function walk(model: ModelPath, count: number): string | undefined {
   let current = model.base;
   for (const segment of model.segments.slice(0, count)) {
     if (segment.unreachable || isDevice(segment.name)) return undefined;
-    const entry = lookup(current, segment.name);
+    const entry = lookup(current, segment.name, model.host);
     if (!entry?.isDirectory) return undefined;
-    current = join(current, entry.name);
+    current = model.host.join(current, entry.name);
   }
   return current;
 }
@@ -208,9 +212,9 @@ export function directoryCreateDirectory(path: string | null, environment: PathE
   let current = model.base;
   for (const [index, segment] of model.segments.entries()) {
     if (isDevice(segment.name)) return;
-    const entry = lookup(current, segment.name);
+    const entry = lookup(current, segment.name, model.host);
     if (entry?.isDirectory) {
-      current = join(current, entry.name);
+      current = model.host.join(current, entry.name);
       continue;
     }
     if (entry) {
@@ -220,10 +224,10 @@ export function directoryCreateDirectory(path: string | null, environment: PathE
       throw new DirectoryNotFoundException((model.segments[index + 1] as Segment).text);
     }
     if (segment.unreachable) {
-      current = madeDirectory(join(current, segment.name.replace(/ +$/, "")));
+      current = madeDirectory(model.host.join(current, segment.name.replace(/ +$/, "")));
       throw new DirectoryNotFoundException((model.segments[index + 1] as Segment).text);
     }
-    current = madeDirectory(join(current, segment.name));
+    current = madeDirectory(model.host.join(current, segment.name));
   }
 }
 
@@ -255,7 +259,7 @@ export function directoryDelete(path: string | null, recursive: boolean, environ
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     if (code === "EACCES" || code === "EPERM") {
-      throw new UnauthorizedAccessException(parse((error as NodeJS.ErrnoException).path ?? directory).base);
+      throw new UnauthorizedAccessException(model.host.parse((error as NodeJS.ErrnoException).path ?? directory).base);
     }
     throw error;
   }
@@ -274,10 +278,10 @@ export function writeVolumeFile(path: string | null, data: Uint8Array, environme
   if (!file) throw new UnauthorizedAccessException(model.text);
   const directory = walk(model, model.segments.length - 1);
   if (directory === undefined) throw new DirectoryNotFoundException(model.text);
-  const entry = lookup(directory, file.name);
+  const entry = lookup(directory, file.name, model.host);
   if (entry?.isDirectory) throw new UnauthorizedAccessException(model.text);
   try {
-    writeFileSync(join(directory, entry?.name ?? file.name), data);
+    writeFileSync(model.host.join(directory, entry?.name ?? file.name), data);
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
     if (code === "EACCES" || code === "EPERM") throw new UnauthorizedAccessException(model.text);

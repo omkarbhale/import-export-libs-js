@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, posix, resolve, win32 } from "node:path";
 import type { Engine } from "../engines.js";
 import type { HostEnv, HostFs } from "../host/types.js";
 import { isWhiteSpace } from "./dotnet-text.js";
+import { flavourOf, posix, win32 } from "./path.js";
 import {
   ArgumentException,
   ArgumentNullException,
@@ -97,7 +97,7 @@ export function getFullPath(path: string, cwd: string): string {
     input = sameDrive ? win32.join(cwd, path.slice(2)) : `${letter.toUpperCase()}:\\${path.slice(2)}`;
   }
   const folded = input.replace(/\//g, "\\");
-  let full = win32.resolve(cwd, folded);
+  let full = win32.resolveFrom(cwd, folded);
   const root = win32.parse(full).root;
   const rest = full.slice(root.length);
   const segments = rest.split("\\").map((segment, index, all) =>
@@ -149,16 +149,20 @@ export function fileExists(path: string | null, environment: PathEnvironment = {
 export function directoryGetParentFullName(path: string, environment: PathEnvironment = {}): string {
   const platform = environment.platform ?? process.platform;
   if (platform === "win32" || /^[A-Za-z]:|\\/.test(path)) return win32.dirname(getFullPath(path, environment.cwd ?? process.cwd()));
-  return posix.dirname(posix.resolve(environment.cwd ?? process.cwd(), path));
+  return posix.dirname(posix.resolveFrom(environment.cwd ?? process.cwd(), path));
 }
 
-/** Turns a Node file-system failure into the exception .NET raises for the same failure. */
-export function translateFileError(error: unknown, hostPath: string, forWrite: boolean): unknown {
+/**
+ * Turns a Node file-system failure into the exception .NET raises for the same failure. The full path in the exception is the host
+ * path resolved against the environment's current directory, by the rules of the host's own file system (HOST-202).
+ */
+export function translateFileError(error: unknown, hostPath: string, forWrite: boolean, environment: PathEnvironment = {}): unknown {
   const code = (error as NodeJS.ErrnoException | undefined)?.code;
-  const full = resolve(hostPath);
+  const host = flavourOf(environment.platform ?? process.platform);
+  const full = host.resolveFrom(environment.cwd ?? process.cwd(), hostPath);
   switch (code) {
     case "ENOENT":
-      return forWrite || !existsSync(dirname(full)) ? new DirectoryNotFoundException(full) : new FileNotFoundException(full);
+      return forWrite || !existsSync(host.dirname(full)) ? new DirectoryNotFoundException(full) : new FileNotFoundException(full);
     case "ENOTDIR":
       return new DirectoryNotFoundException(full);
     case "EISDIR":
@@ -182,7 +186,7 @@ export function readFileBytes(path: string | null, environment: PathEnvironment 
   try {
     return readFileSync(host);
   } catch (error) {
-    throw translateFileError(error, host, false);
+    throw translateFileError(error, host, false, environment);
   }
 }
 
@@ -198,6 +202,6 @@ export function writeFileBytes(path: string | null, data: Uint8Array, environmen
   try {
     writeFileSync(host, data);
   } catch (error) {
-    throw translateFileError(error, host, true);
+    throw translateFileError(error, host, true, environment);
   }
 }
