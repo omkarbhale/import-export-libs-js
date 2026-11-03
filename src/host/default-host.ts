@@ -1,5 +1,7 @@
+import type { HttpTransport } from "../client/transport.js";
 import { nodeFs } from "./node-fs.js";
 import { nodeHost } from "./node.js";
+import { nodeTransport } from "./node-transport.js";
 import type { Host, HostEnv } from "./types.js";
 
 /**
@@ -13,7 +15,7 @@ export function defaultHost(): Host {
   return nodeDefaultHost;
 }
 
-const nodeDefaultHost: Host = { fs: nodeFs, env: nodeHost };
+const nodeDefaultHost: Host = { fs: nodeFs, env: nodeHost, transport: nodeTransport };
 
 /**
  * The environment half of {@link defaultHost}.
@@ -22,4 +24,14 @@ const nodeDefaultHost: Host = { fs: nodeFs, env: nodeHost };
  */
 export function defaultHostEnv(): HostEnv {
   return nodeHost;
+}
+
+/**
+ * The transport member of the default host (HOST-230): `nodeTransport` on Node. A host without a transport answers `undefined`,
+ * as the browser's does (its `default-host` replacement), and a connection that is then given none refuses to be built.
+ *
+ * @spec HOST-230
+ */
+export function defaultTransport(): HttpTransport | undefined {
+  return nodeDefaultHost.transport;
 }

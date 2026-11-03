@@ -1,4 +1,5 @@
 import { DEFAULT_ENGINE, type Engine } from "../engines.js";
+import { defaultTransport } from "../host/default-host.js";
 import { PasswordDigest } from "./digest.js";
 import { DotNetException } from "./dotnet.js";
 import { CLIENT_ENGINES, EngineNotSupportedError } from "./engine-support.js";
@@ -25,7 +26,7 @@ import {
 } from "./oauth.js";
 import { Iom15PasswordTokenProvider } from "./oauth-iom15.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
-import { type HttpTransport, TransportError, type TransportResponse, nodeTransport } from "./transport.js";
+import { type HttpTransport, TransportError, type TransportResponse } from "./transport.js";
 import { serverUrls } from "./url.js";
 
 /** One call through the connection, as the oracle's recorder sees it. */
@@ -47,6 +48,10 @@ export interface ConnectionSettings {
   locale: string;
   /** The `TIMEZONE_NAME` sent until `ValidateUser` replaces it; this machine's Windows time zone id when absent (WIRE-005). */
   timeZoneName?: string | undefined;
+  /**
+   * The HTTP layer. The default is the default host's transport, `nodeTransport` on Node; where the host has none (a browser build
+   * that has not been given one), the setting is required and the constructor throws (HOST-230).
+   */
   transport?: HttpTransport;
   onCall?: (call: CallRecord) => void;
 }
@@ -139,7 +144,7 @@ function isReadOnlyRequest(action: string, request: XmlDocument): boolean {
  * SOAP calls that never throw for transport problems and answer with a fault
  * instead.
  *
- * @spec WIRE-003 WIRE-004 WIRE-005 WIRE-010 WIRE-011 WIRE-012 WIRE-013 WIRE-015 WIRE-016 WIRE-018 WIRE-030 WIRE-040 WIRE-050
+ * @spec WIRE-003 WIRE-004 WIRE-005 WIRE-010 WIRE-011 WIRE-012 WIRE-013 WIRE-015 WIRE-016 WIRE-018 WIRE-030 WIRE-040 WIRE-050 HOST-230
  * WIRE-060
  */
 export class HttpServerConnection {
@@ -164,7 +169,9 @@ export class HttpServerConnection {
     if (!CLIENT_ENGINES.includes(this.engine)) throw new EngineNotSupportedError(this.engine);
     this.iom12 = this.engine === "12.0";
     this.urls = serverUrls(settings.url, this.engine);
-    this.transport = settings.transport ?? nodeTransport;
+    const transport = settings.transport ?? defaultTransport();
+    if (transport === undefined) throw new Error("a transport is required in this environment");
+    this.transport = transport;
     this.onCall = settings.onCall;
     this.locale = settings.locale;
     this.timeZoneName = settings.timeZoneName ?? localWindowsTimeZoneId();

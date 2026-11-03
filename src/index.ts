@@ -1,6 +1,8 @@
 export { DEFAULT_ENGINE, ENGINE_ASSEMBLY_VERSIONS, ENGINES, isEngine } from "./engines.js";
 export type { Engine } from "./engines.js";
 export * from "./client/index.js";
+// The Node implementation of the HTTP seam is not part of the portable client (HOST-230); the Node entry exports it.
+export { nodeTransport } from "./host/node-transport.js";
 export * from "./manifest/index.js";
 export * from "./export/index.js";
 export * from "./import/index.js";
