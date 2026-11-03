@@ -1,10 +1,10 @@
 import { closeSync, openSync, writeSync } from "node:fs";
-import { resolve } from "node:path";
 import { ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
 import type { ArasVersion } from "../client/version.js";
 import { ArgumentException, ArgumentNullException, IOException } from "../io/errors.js";
 import { getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
+import { flavourOf } from "../io/path.js";
 import type { SUExportContext } from "./export-context.js";
 
 /**
@@ -91,7 +91,7 @@ export class RunLog {
     if (path.length === 0) throw new ArgumentException("Empty path name is not legal.");
     const host = toHostPath(path, environment);
     if (host === null) throw new ArgumentNullException("path");
-    const key = resolve(host);
+    const key = flavourOf(environment.platform ?? process.platform).resolveFrom(environment.cwd ?? process.cwd(), host);
     if (held.has(key)) {
       const full = (environment.platform ?? process.platform) === "win32" ? getFullPath(path, environment.cwd ?? process.cwd()) : key;
       throw new IOException(`The process cannot access the file '${full}' because it is being used by another process.`);
@@ -100,7 +100,7 @@ export class RunLog {
     try {
       descriptor = openSync(host, "a");
     } catch (error) {
-      throw translateFileError(error, host, true);
+      throw translateFileError(error, host, true, environment);
     }
     held.add(key);
     return new RunLog(descriptor, key);

@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { posix } from "../io/path.js";
 import { expect } from "vitest";
 import { readTranscript, type TranscriptCall } from "../../oracle/src/transcript.js";
 import { CItemException, ResponseDocument } from "../client/fault.js";
@@ -36,8 +36,8 @@ export function exportCases(engine: Engine): ExportCases {
   return {
     engine,
     dir,
-    blobs: join(dir, "_blobs"),
-    names: readdirSync(dir).filter((name) => existsSync(join(dir, name, "transcript.jsonl"))),
+    blobs: posix.join(dir, "_blobs"),
+    names: readdirSync(dir).filter((name) => existsSync(posix.join(dir, name, "transcript.jsonl"))),
     loginCalls: engine === "12.0" ? 5 : 6,
   };
 }
@@ -182,8 +182,8 @@ function groupByPackage(entries: Array<{ item: CaseItem; name: string }>): Array
 
 export async function replayCase(name: string, hooks: ReplayHooks = {}, engine: Engine = DEFAULT_ENGINE): Promise<Replay> {
   const { dir, blobs, loginCalls: LOGIN_CALLS } = exportCases(engine);
-  const input = JSON.parse(readFileSync(join(dir, name, "case.json"), "utf8")) as Case;
-  const calls = readTranscript(join(dir, name, "transcript.jsonl"), blobs);
+  const input = JSON.parse(readFileSync(posix.join(dir, name, "case.json"), "utf8")) as Case;
+  const calls = readTranscript(posix.join(dir, name, "transcript.jsonl"), blobs);
   const connection = new ReplayConnection(calls, LOGIN_CALLS);
   const helper = new CItemHelper(connection, { engine });
   helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);

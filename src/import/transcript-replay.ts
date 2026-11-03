@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { posix } from "../io/path.js";
 import type { TranscriptCall } from "../../oracle/src/transcript.js";
 import { ResponseDocument } from "../client/fault.js";
 import type { ServerConnection } from "../client/innovator.js";
@@ -12,13 +12,13 @@ import { documentElementOf } from "../xml/dom.js";
  * answers served back to the port, and the reading of an engine log and of an item the way `ImportProc` reads it.
  */
 export const CASES = new URL("../../fixtures/14.0.7/import/", import.meta.url).pathname;
-export const BLOBS = join(CASES, "_blobs");
+export const BLOBS = posix.join(CASES, "_blobs");
 /** The recorded 12.0 import runs (ticket 48). */
 export const CASES_12_0 = new URL("../../fixtures/12.0/import/", import.meta.url).pathname;
-export const BLOBS_12_0 = join(CASES_12_0, "_blobs");
+export const BLOBS_12_0 = posix.join(CASES_12_0, "_blobs");
 /** The recorded 14.35 import runs (ticket 75). */
 export const CASES_14_35 = new URL("../../fixtures/14.35/import/", import.meta.url).pathname;
-export const BLOBS_14_35 = join(CASES_14_35, "_blobs");
+export const BLOBS_14_35 = posix.join(CASES_14_35, "_blobs");
 
 export const START = "********** Start of reference checking ************";
 export const END = "************* End of reference checking ************";
@@ -149,15 +149,15 @@ export function prepare(doc: XmlDocument): { action: string; descriptor: string 
 
 /** The folder of a package, from the manifest the step's engine read. */
 export const packageFolder = (dir: string, name: string): string => {
-  const mf = readFileSync(join(dir, "input", "imports.mf"), "utf8");
+  const mf = readFileSync(posix.join(dir, "input", "imports.mf"), "utf8");
   const path = new RegExp(`<package name="${name}" path="([^"]*)"`).exec(mf)?.[1];
   if (path === undefined) throw new Error(`${name} is not in the manifest of ${dir}`);
-  return join(dir, "input", ...path.split("\\"));
+  return posix.join(dir, "input", ...path.split("\\"));
 };
 
 /** The options a step of a case ran with. */
 export function stepOptions(caseDir: string, index: number): { merge: boolean; fast: boolean } {
-  const definition = JSON.parse(readFileSync(join(caseDir, "case.json"), "utf8")) as {
+  const definition = JSON.parse(readFileSync(posix.join(caseDir, "case.json"), "utf8")) as {
     steps: { options?: { merge?: boolean; fast?: boolean } }[];
   };
   const options = definition.steps[index]?.options ?? {};

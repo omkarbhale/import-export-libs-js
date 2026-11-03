@@ -116,7 +116,7 @@ export function loadPackage(solutionPath: string, logWriter: LogWriter, options:
       for (const path of directoryGetXmlFiles(directory, environment)) {
         current = path;
         // IMP-007: 12.0's `XmlDocument.Load(path)` decodes the file itself; 14.0.7 reads text first
-        const bytes = readListedFile(path);
+        const bytes = readListedFile(path, environment);
         const doc = loadXml(engine === "12.0" ? decodeXmlFile(bytes) : readAllText(bytes), { preserveWhitespace: false });
         const info = newFileInfo(path, environment);
         const item = firstItemOf(doc);

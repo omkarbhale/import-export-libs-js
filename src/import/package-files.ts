@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import type { Dirent } from "node:fs";
-import { resolve } from "node:path";
 import { toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { DirectoryNotFoundException, IOException, UnauthorizedAccessException } from "../io/errors.js";
+import { flavourOf } from "../io/path.js";
 import { compareNtfsNames, shortNamesOf } from "./ntfs-order.js";
 
 /**
@@ -26,17 +26,22 @@ function combine(folder: string, name: string, separator: string): string {
   return folder.endsWith(separator) || folder.endsWith("/") ? folder + name : folder + separator + name;
 }
 
+/** `Path.GetFullPath` of a host path as the host's file system words it: against the environment's current directory (HOST-202). */
+function fullName(host: string, environment: PathEnvironment): string {
+  return flavourOf(environment.platform ?? process.platform).resolveFrom(environment.cwd ?? process.cwd(), host);
+}
+
 /** Turns the failure of listing a folder into the exception .NET raises for it. */
-function translateListError(error: unknown, host: string): unknown {
+function translateListError(error: unknown, host: string, environment: PathEnvironment): unknown {
   const code = (error as NodeJS.ErrnoException | undefined)?.code;
   switch (code) {
     case "ENOENT":
-      return new DirectoryNotFoundException(resolve(host));
+      return new DirectoryNotFoundException(fullName(host, environment));
     case "ENOTDIR":
       return new IOException("The directory name is invalid.\r\n");
     case "EACCES":
     case "EPERM":
-      return new UnauthorizedAccessException(resolve(host));
+      return new UnauthorizedAccessException(fullName(host, environment));
     default:
       return error;
   }
@@ -63,7 +68,7 @@ function listEntries(folder: string, environment: PathEnvironment): { host: stri
   try {
     return { host, entries: readdirSync(host, { withFileTypes: true }) };
   } catch (error) {
-    throw translateListError(error, host);
+    throw translateListError(error, host, environment);
   }
 }
 
@@ -168,17 +173,17 @@ export function directoryGetXmlFilesRecursive(path: string, environment: PathEnv
 export function newFileInfo(path: string, environment: PathEnvironment = {}): FileInfo {
   const separator = separatorOf(environment);
   const cut = Math.max(path.lastIndexOf(separator), path.lastIndexOf("/"));
-  return { name: path.slice(cut + 1), fullName: resolve(path) };
+  return { name: path.slice(cut + 1), fullName: fullName(path, environment) };
 }
 
 /** `File.ReadAllBytes` of a listed path, with the exceptions of .NET: a file held open by another process is an `IOException`. */
-export function readListedFile(path: string): Buffer {
+export function readListedFile(path: string, environment: PathEnvironment = {}): Buffer {
   try {
     return readFileSync(path);
   } catch (error) {
     if ((error as NodeJS.ErrnoException | undefined)?.code === "EBUSY") {
-      throw new IOException(`The process cannot access the file '${resolve(path)}' because it is being used by another process.`);
+      throw new IOException(`The process cannot access the file '${fullName(path, environment)}' because it is being used by another process.`);
     }
-    throw translateFileError(error, path, false);
+    throw translateFileError(error, path, false, environment);
   }
 }
