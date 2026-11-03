@@ -162,9 +162,12 @@ export interface HostEnv {
    */
   yieldTurn(): Promise<void>;
   /**
-   * The Windows time zone id of the machine (`tzutil /g` on Windows, the CLDR mapping of the local IANA zone elsewhere), or
-   * undefined when the host cannot say. The host's own answer, not a setting of the run.
-   * Node call sites: `client/timezone.ts:27` (`tzutil`), `:30` (`Intl.DateTimeFormat().resolvedOptions().timeZone`).
+   * The Windows time zone id the machine itself reports: `tzutil /g` on Windows, or undefined when the host has none to give
+   * (a browser; the Node host also answers the CLDR mapping of the local IANA zone off Windows, or undefined for an unmapped
+   * zone). `client/timezone.ts` asks for it only on a `win32` platform, and takes the mapping of the IANA zone itself everywhere
+   * else (HOST-242). The raw answer, which may end in a line break: the caller trims it. The host's own answer, not a setting of
+   * the run.
+   * Node call site: `client/timezone.ts:36` (the former `tzutil` call, now `host/node.ts`).
    */
   windowsTimeZoneId(): string | undefined;
   /**
