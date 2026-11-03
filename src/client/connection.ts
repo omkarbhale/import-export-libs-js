@@ -27,6 +27,7 @@ import { Iom15PasswordTokenProvider } from "./oauth-iom15.js";
 import { localWindowsTimeZoneId } from "./timezone.js";
 import { type HttpTransport, TransportError, type TransportResponse, nodeTransport } from "./transport.js";
 import { serverUrls } from "./url.js";
+import { utf8Bytes, utf8Text } from "../io/utf8.js";
 
 /** One call through the connection, as the oracle's recorder sees it. */
 export interface CallRecord {
@@ -197,7 +198,7 @@ export class HttpServerConnection {
   }
 
   private async callActionImpl(action: string, request: XmlDocument): Promise<ResponseDocument> {
-    const body = Buffer.from(`${XML_DECLARATION}${outerXml(request.root)}`, "utf8");
+    const body = utf8Bytes(`${XML_DECLARATION}${outerXml(request.root)}`);
     const readOnly = this.engine === "14.35" && isReadOnlyRequest(action, request);
     let response: ResponseDocument;
     try {
@@ -307,7 +308,7 @@ export class HttpServerConnection {
         }
         throw new DotNetException("System.Net.WebException", `The remote server returned an error: (${response.status}) ${response.reason}.`);
       }
-      const text = Buffer.from(response.body).toString("utf8");
+      const text = utf8Text(response.body);
       return ResponseDocument.parse(text.startsWith("\uFEFF") ? text.slice(1) : text);
     }
   }

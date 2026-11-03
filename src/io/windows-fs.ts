@@ -10,6 +10,7 @@ import {
 } from "./errors.js";
 import { envOf, getFullPath, normalizeLongPath } from "./host-path.js";
 import type { PathEnvironment } from "./host-path.js";
+import { utf8Bytes } from "./utf8.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
 import { flavourOf, win32 } from "./path.js";
 import type { PathFlavour } from "./path.js";
@@ -294,5 +295,5 @@ export function writeVolumeFile(path: string | null, data: Uint8Array, environme
  * @spec LP-026
  */
 export function fileWriteAllText(path: string | null, contents: string, environment: PathEnvironment = {}): void {
-  writeVolumeFile(path, Buffer.from(contents, "utf8"), environment);
+  writeVolumeFile(path, utf8Bytes(contents), environment);
 }

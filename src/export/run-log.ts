@@ -7,6 +7,7 @@ import type { HostEnv } from "../host/types.js";
 import { envOf, getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { flavourOf } from "../io/path.js";
+import { utf8Bytes } from "../io/utf8.js";
 import type { SUExportContext } from "./export-context.js";
 
 /**
@@ -129,7 +130,7 @@ export class RunLog {
     this.closed = true;
     held.delete(this.key);
     try {
-      if (this.pending.length > 0) writeSync(this.descriptor, Buffer.from(this.pending.join(""), "utf8"));
+      if (this.pending.length > 0) writeSync(this.descriptor, utf8Bytes(this.pending.join("")));
     } finally {
       this.pending = [];
       closeSync(this.descriptor);

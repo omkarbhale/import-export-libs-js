@@ -1,4 +1,5 @@
 import type { HttpTransport, TransportRequest, TransportResponse } from "./transport.js";
+import { utf8Bytes, utf8Text } from "../io/utf8.js";
 
 export type FakeHandler = (request: TransportRequest, index: number) => TransportResponse | Promise<TransportResponse>;
 
@@ -23,13 +24,13 @@ export function respond(
     status: options.status ?? 200,
     reason: options.reason ?? "OK",
     headers: options.headers ?? [],
-    body: Buffer.from(body, "utf8"),
+    body: utf8Bytes(body),
   };
 }
 
 /** The body of a request as text. */
 export function bodyText(request: TransportRequest): string {
-  return Buffer.from(request.body ?? new Uint8Array()).toString("utf8");
+  return utf8Text(request.body ?? new Uint8Array());
 }
 
 /** A header's value, matched by name without regard to case. */
