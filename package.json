@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "oracle": "tsx oracle/src/cli.ts",
