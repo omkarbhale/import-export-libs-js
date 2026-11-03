@@ -15,6 +15,7 @@ import {
 import type { XmlDocument, XmlElement, XmlNode } from "./dom.js";
 import { ArgumentException, NotSupportedException } from "./errors.js";
 import { hexValue } from "./chars.js";
+import { utf8Bytes } from "../io/utf8.js";
 
 /**
  * .NET's legacy `XmlTextWriter`, which writes the manifest (`XmlDocument.Save(path)`) and which `OuterXml` and
@@ -288,10 +289,10 @@ function singleByte(text: string, byteOf: (codePoint: number) => number | undefi
 function encode(text: string, encoding: string): Buffer {
   switch (encoding.toLowerCase()) {
     case "":
-      return Buffer.from(text, "utf8");
+      return utf8Bytes(text);
     case "utf-8":
     case "utf8":
-      return Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(text, "utf8")]);
+      return Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), utf8Bytes(text)]);
     case "utf-16":
     case "utf-16le":
     case "unicode":

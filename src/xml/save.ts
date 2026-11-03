@@ -1,4 +1,5 @@
 import { writeFileBytes } from "../io/host-path.js";
+import { utf8Bytes } from "../io/utf8.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { writeVolumeFile } from "../io/windows-fs.js";
 import type { XmlDocument } from "./dom.js";
@@ -15,7 +16,7 @@ const BOM = Buffer.from([0xef, 0xbb, 0xbf]);
  * @spec EXP-423 EXP-424 EXP-425 EXP-426 EXP-427
  */
 export function encodeItemFile(doc: XmlDocument): Buffer {
-  return Buffer.concat([BOM, Buffer.from(writeDocument(doc, ITEM_FILE_SETTINGS), "utf8")]);
+  return Buffer.concat([BOM, utf8Bytes(writeDocument(doc, ITEM_FILE_SETTINGS))]);
 }
 
 /**
@@ -30,7 +31,7 @@ export function xmlDocumentSaveWithSettings(doc: XmlDocument, path: string | nul
     bytes = encodeItemFile(doc);
   } catch (error) {
     if (error instanceof ArgumentException && error.partialOutput !== undefined) {
-      writeVolumeFile(path, Buffer.concat([BOM, Buffer.from(error.partialOutput, "utf8")]), environment);
+      writeVolumeFile(path, Buffer.concat([BOM, utf8Bytes(error.partialOutput)]), environment);
     }
     throw error;
   }

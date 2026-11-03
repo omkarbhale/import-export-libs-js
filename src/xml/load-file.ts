@@ -1,5 +1,6 @@
 import { readFileBytes } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
+import { utf8Text } from "../io/utf8.js";
 import type { XmlDocument } from "./dom.js";
 import { XmlException } from "./errors.js";
 import { loadXml } from "./parser.js";
@@ -101,7 +102,7 @@ function decodeUtf8Strict(bytes: Uint8Array, start: number): string {
       const continuation = bytes[i + k] as number;
       if (continuation < 0x80 || continuation > 0xbf) fail();
     }
-    const decoded = Buffer.from(bytes.subarray(i, i + size)).toString("utf8");
+    const decoded = utf8Text(bytes.subarray(i, i + size));
     text.push(decoded);
     length += decoded.length;
     i += size;

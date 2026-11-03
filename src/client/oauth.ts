@@ -1,5 +1,6 @@
 import { DotNetException } from "./dotnet.js";
 import { PasswordDigest } from "./digest.js";
+import { utf8Bytes, utf8Text } from "../io/utf8.js";
 import {
   type HttpTransport,
   type TransportRequest,
@@ -87,7 +88,7 @@ function statusName(status: number): string {
 }
 
 function text(response: TransportResponse): string {
-  const decoded = Buffer.from(response.body).toString("utf8");
+  const decoded = utf8Text(response.body);
   return decoded.startsWith("\uFEFF") ? decoded.slice(1) : decoded;
 }
 
@@ -391,7 +392,7 @@ export async function postTokenForm(
   fields: ReadonlyArray<readonly [string, string]>,
   iom12 = false,
 ): Promise<TokenAnswer> {
-  const body = Buffer.from(fields.map(([name, value]) => `${name}=${formEncode(value)}`).join("&"), "utf8");
+  const body = utf8Bytes(fields.map(([name, value]) => `${name}=${formEncode(value)}`).join("&"));
   let response: TransportResponse;
   try {
     response = await send(transport, {

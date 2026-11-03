@@ -1,5 +1,6 @@
 import { readFileBytes } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
+import { utf8Text } from "../io/utf8.js";
 import { loadXml } from "./parser.js";
 import type { XmlDocument } from "./dom.js";
 
@@ -81,7 +82,7 @@ function decodeUtf8(bytes: Uint8Array, start: number): string {
           text = i + valid >= length ? "" : REPLACEMENT;
         } else {
           consumed = size;
-          text = Buffer.from(bytes.subarray(i, i + size)).toString("utf8");
+          text = utf8Text(bytes.subarray(i, i + size));
         }
       }
     }
