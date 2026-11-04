@@ -10,7 +10,7 @@ import type { MemoryVfs } from "../host/memory-fs.js";
  * @spec HOST-254
  */
 
-/** One report per file that was put into the tree, in the order they were put. */
+/** One report per file that was put into the tree, in the order they were put; for a zip, in the order of the paths compared by code unit. */
 export interface MountProgress {
   /** The path of the file in the tree, absolute. */
   path: string;

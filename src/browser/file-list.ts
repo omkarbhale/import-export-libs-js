@@ -175,6 +175,7 @@ async function mountZip(file: FileLike, options: MountOptions): Promise<MemoryVf
     throw failure("ENOSPC", `${file.name} is ${file.size} bytes, more than the limit of ${options.maxBytes} bytes`);
   }
   const bytes = new Uint8Array(await file.arrayBuffer());
+  options.signal?.throwIfAborted();
   if (!hasZipMagic(bytes)) throw failure("ERR_MOUNT_NOT_ZIP", `${file.name} has the name of a zip archive and is not one`);
   const { unzip } = options;
   if (unzip === undefined) {
@@ -187,14 +188,22 @@ async function mountZip(file: FileLike, options: MountOptions): Promise<MemoryVf
   if (options.onProgress !== undefined) {
     let files = 0;
     let total = 0;
-    for (const [path, content] of unzipped.snapshot()) {
+    for (const path of filePaths(unzipped, "/").sort()) {
       options.signal?.throwIfAborted();
       files += 1;
-      total += content.length;
-      options.onProgress({ path: posix.join("/", path), files, bytes: total });
+      total += unzipped.readFile(path).length;
+      options.onProgress({ path, files, bytes: total });
     }
   }
   return unzipped;
+}
+
+/** The absolute path of every file below a folder of the tree, in no order. */
+function filePaths(vfs: MemoryVfs, folder: string): string[] {
+  return vfs.readdir(folder).flatMap((entry) => {
+    const path = posix.join(folder, entry.name);
+    return entry.isDirectory ? filePaths(vfs, path) : [path];
+  });
 }
 
 /** The segments of a path as a source gives it: `.` and empty ones dropped, `..` refused (it would leave the tree). */

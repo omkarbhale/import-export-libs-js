@@ -290,11 +290,46 @@ describe("a chosen or dropped zip (HOST-254)", () => {
     const onProgress: MountOptions["onProgress"] = (p) => seen.push(`${p.path}:${p.files}:${p.bytes}`);
     const expected = ["/Pkg/a.xml:1:4", "/Pkg/imports.mf:2:14"];
     await mountFileList([new File([zipBytes], "p.zip")], { unzip, onProgress });
-    expect([...seen].sort()).toEqual(expected);
+    expect(seen).toEqual(expected);
     seen.length = 0;
     const entry: EntryLike = { isFile: true, isDirectory: false, name: "p.zip", file: (success) => success(new File([zipBytes], "p.zip")) };
     await mountDataTransfer(drop([entry]).items, { unzip, onProgress });
-    expect([...seen].sort()).toEqual(expected);
+    expect(seen).toEqual(expected);
+  });
+
+  it("reports a zip's files by sorted path, without copying the whole tree", async () => {
+    class NoSnapshot extends MemoryVfs {
+      override snapshot(): Map<string, Uint8Array> {
+        throw new Error("the reports must not copy the whole tree");
+      }
+    }
+    const unzipped = new NoSnapshot({ "/a/x": "1", "/a-b/x": "22", "/b": "333" });
+    const seen: string[] = [];
+    await mountFileList([new File([zipBytes], "p.zip")], { unzip: () => unzipped, onProgress: (p) => seen.push(`${p.path}:${p.files}:${p.bytes}`) });
+    expect(seen).toEqual(["/a-b/x:1:2", "/a/x:2:3", "/b:3:6"]);
+  });
+
+  it("does not unzip when the signal was aborted during the read", async () => {
+    const controller = new AbortController();
+    const reason = new Error("stop");
+    const file = {
+      name: "p.zip",
+      size: zipBytes.length,
+      arrayBuffer: async () => {
+        controller.abort(reason);
+        return zipBytes.slice().buffer;
+      },
+    };
+    let unzipped = 0;
+    const result = mountFileList([file], {
+      signal: controller.signal,
+      unzip: (bytes, options) => {
+        unzipped += 1;
+        return unzip(bytes, options);
+      },
+    });
+    await expect(result).rejects.toBe(reason);
+    expect(unzipped).toBe(0);
   });
 
   it("stops the zip's reports at the signal", async () => {
