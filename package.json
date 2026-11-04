@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit",
     "test": "vitest run --project node",
     "test:browser": "vitest run --project browser",
-    "test:watch": "vitest",
+    "test:watch": "vitest --project node",
     "oracle": "tsx oracle/src/cli.ts",
     "parity": "tsx oracle/src/parity/cli.ts",
     "oracle:export-cases": "tsx oracle/src/record-export-cases.ts",

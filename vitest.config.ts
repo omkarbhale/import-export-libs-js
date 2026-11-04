@@ -1,16 +1,12 @@
-import { existsSync, readFileSync } from "node:fs";
 import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { fixtureCommands, replaceDefaultHostForVite } from "./tools/browser-vitest.js";
 
 /**
  * Two projects (HOST-263). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
- * files, and the pure suites that `src/browser/pure-tests.json` lists once it exists, in headless Chromium, Firefox and WebKit;
+ * files in headless Chromium, Firefox and WebKit;
  * `npm run test:browser` runs it alone, and a browser failure names the browser.
  */
-// The pure suites (ticket 23) run in the browsers unedited; their list is generated into this file when that ticket lands.
-const PURE_TESTS = "src/browser/pure-tests.json";
-const pureTests: string[] = existsSync(PURE_TESTS) ? (JSON.parse(readFileSync(PURE_TESTS, "utf8")) as string[]) : [];
 
 export default defineConfig({
   test: {
@@ -31,7 +27,7 @@ export default defineConfig({
         optimizeDeps: { include: ["buffer/index.js"] },
         test: {
           name: "browser",
-          include: ["src/**/*.browser.test.ts", ...pureTests],
+          include: ["src/**/*.browser.test.ts"],
           setupFiles: ["src/browser/buffer-setup.browser.ts"],
           // A recorded run is an export or an import over a case of tens of megabytes in a page: slower than on Node.
           testTimeout: 120_000,

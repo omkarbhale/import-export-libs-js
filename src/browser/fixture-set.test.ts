@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -6,13 +7,12 @@ import { FIXTURE_CASES, fixtureBlobPath, fixtureCasePath, transcriptBlobs } from
 
 /**
  * The most the curated fixtures may weigh, which is every case folder of `fixture-set.ts` and the recorded blobs the transcripts
- * of those folders name, each once. It was 34 865 219 bytes when the set was made (6.9 MB of case folders and 16 blobs, 28.0 MB: the
- * list of PackageDefinitions is 2.7 MB, recorded once per engine and operation, and a few cases have one of their own), plus 20 %. Raise it in a pull
- * request that adds cases on purpose, and say so there.
+ * of those folders name, each once. It was 12 718 696 bytes when the set was made (6.8 MB of case folders and 6 blobs, 5.9 MB), plus
+ * 20 %. Raise it in a pull request that adds cases on purpose, and amend map decision D10 (`roadmap/browser-host.md`) there.
  *
  * @spec HOST-263
  */
-const BUDGET_BYTES = 41_838_000;
+const BUDGET_BYTES = 15_263_000;
 
 const root = process.cwd();
 
@@ -56,6 +56,22 @@ describe("HOST-263: the curated fixture set of the browser tests", () => {
         expect(existsSync(join(root, fixtureBlobPath(fixture, sha))), `${file}: blob ${sha}`).toBe(true);
       }
     }
+  });
+
+  it("reads every blob with the bytes the case itself recorded, from one file per hash", () => {
+    const paths = new Map<string, string>();
+    for (const fixture of FIXTURE_CASES) {
+      for (const file of files(fixtureCasePath(fixture)).filter((name) => name.endsWith("/transcript.jsonl"))) {
+        for (const sha of transcriptBlobs(readFileSync(join(root, file), "utf8"))) {
+          const path = fixtureBlobPath(fixture, sha);
+          expect(paths.get(sha) ?? path, `${sha} is read from two files`).toBe(path);
+          if (paths.has(sha)) continue;
+          paths.set(sha, path);
+          expect(createHash("sha256").update(readFileSync(join(root, path))).digest("hex"), path).toBe(sha);
+        }
+      }
+    }
+    expect(paths.size).toBeGreaterThan(0);
   });
 
   it("weighs no more than its budget", () => {

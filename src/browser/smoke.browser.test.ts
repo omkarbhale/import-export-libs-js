@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as bundle from "../browser.js";
 import { md5Digest, PasswordDigest, sha256Digest } from "../client/digest.js";
 import { parseXml } from "../client/mini-xml.js";
-import type { HostFs } from "../host/types.js";
+import { MemoryVfs } from "../host/memory-fs.js";
 import { xmlDocumentSave } from "../xml/save.js";
 import { loadXml } from "../xml/index.js";
 import { Buffer as ShimBuffer } from "./buffer-shim.js";
@@ -13,33 +13,8 @@ import { loadFixtureTree, readFixtureText } from "./test-support.browser.js";
  * digests are computed, XML is parsed and an item file is saved through the environment's file system. It is what proves that the
  * harness itself works (the module replacement, the `Buffer`, the fixture commands) before any replay depends on it.
  *
- * `MemoryVfs` (HOST-214's implementation) has not landed yet, so the file system is the smallest `HostFs` that holds files in a map;
- * the test moves to `MemoryVfs` when it does.
- *
- * @spec HOST-263 HOST-260 HOST-243 HOST-240
+ * @spec HOST-263 HOST-260 HOST-243 HOST-240 HOST-215
  */
-function mapFs(): { fs: HostFs; files: Map<string, Uint8Array> } {
-  const files = new Map<string, Uint8Array>();
-  const unsupported = (op: string) => (): never => {
-    throw Object.assign(new Error(`${op} is not part of this smoke test`), { code: "ENOSYS" });
-  };
-  const fs: HostFs = {
-    stat: unsupported("stat"),
-    readdir: unsupported("readdir"),
-    readFile: (path) => {
-      const bytes = files.get(path);
-      if (bytes === undefined) throw Object.assign(new Error(`ENOENT: ${path}`), { code: "ENOENT", path });
-      return bytes;
-    },
-    writeFile: (path, data) => void files.set(path, data),
-    mkdir: unsupported("mkdir"),
-    rm: unsupported("rm"),
-    exists: (path) => files.has(path),
-    openAppend: unsupported("openAppend"),
-  };
-  return { fs, files };
-}
-
 describe("HOST-263: the browser project's smoke test", () => {
   it("runs in a page of the browser the report names", () => {
     expect(typeof document).toBe("object");
@@ -62,7 +37,7 @@ describe("HOST-263: the browser project's smoke test", () => {
   });
 
   it("makes the browser host with the platform of a browser, and a clock that moves (HOST-243)", () => {
-    const { fs } = mapFs();
+    const fs = new MemoryVfs();
     const host = bundle.createBrowserHost({ fs });
     expect(host.env.platform).toBe("browser");
     expect(host.env.cwd()).toBe("/");
@@ -90,11 +65,11 @@ describe("HOST-263: the browser project's smoke test", () => {
   });
 
   it("saves an item file through the environment's file system, with the engine's bytes", () => {
-    const { fs, files } = mapFs();
+    const fs = new MemoryVfs();
+    fs.mkdir("/out");
     const environment = { fs, host: bundle.createBrowserHost({ fs }).env };
     xmlDocumentSave(loadXml("<AML><Item type='Part'/></AML>", { preserveWhitespace: false }), "/out/a.xml", environment);
-    const bytes = files.get("/out/a.xml");
-    expect(bytes).toBeDefined();
+    const bytes = fs.readFile("/out/a.xml");
     // no byte-order mark from `Save`; the text is the document's
     expect(new TextDecoder().decode(bytes)).toContain("<Item type=\"Part\"");
   });
