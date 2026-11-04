@@ -11,7 +11,8 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Setup | `npm install` (Node ≥ 20.19 for development; the toolchain needs it) |
 | Build | `npm run build` (tsup, to `dist/`) |
 | Typecheck | `npm run typecheck` |
-| Test | `npm test` (vitest, includes the spec coverage test) |
+| Test | `npm test` (vitest, the `node` project only, includes the spec coverage test) |
+| Browser test | `npm run test:browser` (vitest browser mode, the `browser` project: `src/**/*.browser.test.ts` in headless Chromium, Firefox and WebKit through Playwright). Not part of the gate. Install the browsers once with `npx playwright install chromium firefox webkit` (`--with-deps` on a fresh Linux machine). Installed browsers are reused from the Playwright cache; `PLAYWRIGHT_BROWSERS_PATH` points at another one. A failure names its browser. Fixtures reach a page only through the `fixtures/`-restricted commands of `tools/browser-vitest.ts`. To inspect by hand, run `npx vitest watch --project browser` (it serves the runner on its Vite port, 63315 by default) and `chrome-devtools-axi open http://localhost:63315/__vitest_test__/`. |
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
 | Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
 | Oracle | `npm run oracle -- --engine <v> <export, import, lpimport or dbpatch> ...` records a scrubbed fixture from the real DLLs on dev or an arashouse lease (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
@@ -19,7 +20,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
-`.no-mistakes.yaml` pins these two checks: `commands.lint` is `npm run typecheck` and `commands.test` is `npm test`. `.github/workflows/ci.yml` runs the same two on every pull request and on pushes to `main`. It was generated with `no-mistakes ci-workflow`, with the generator's Go toolchain step replaced by Node setup and `npm ci`. If you change the pinned commands, regenerate it with `no-mistakes ci-workflow --force` and reapply that replacement.
+`.no-mistakes.yaml` pins these two checks: `commands.lint` is `npm run typecheck` and `commands.test` is `npm test`. `.github/workflows/ci.yml` runs the same two on every pull request and on pushes to `main`. Its first job (`build-test`) was generated with `no-mistakes ci-workflow`, with the generator's Go toolchain step replaced by Node setup and `npm ci`. A second job, `browser`, is hand-written: Node setup, `npm ci`, `npx playwright install --with-deps chromium firefox webkit` and `npm run test:browser`; it is required on pull requests. If you change the pinned commands, regenerate the file with `no-mistakes ci-workflow --force`, reapply that replacement and reapply the `browser` job.
 
 ## Delivery
 

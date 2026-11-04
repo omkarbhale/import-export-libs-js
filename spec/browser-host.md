@@ -164,6 +164,23 @@ The browser typecheck (`tsconfig.browser.json`, which has no Node types) takes t
 
 [14.35] Same as 14.0.7.
 
+## HOST-263: the browser tests run in real browsers through one vitest project, on the bundle's module graph, and read fixtures only through restricted commands
+
+[14.0.7] The tests that must hold in a browser are the `*.browser.test.ts` files of `src/`, and they run in the `browser` project of `vitest.config.ts`: headless Chromium, Firefox and WebKit through the Playwright provider, one instance of each, so a failure names the browser it happened in. `npm run test:browser` runs that project alone and `npm test` runs the `node` project alone, whose files are the ones it ran before the browser project existed (a `*.browser.test.ts` file is excluded from it), so the browsers are not a prerequisite of the gate. The Playwright browsers are installed by `npx playwright install chromium firefox webkit`, and an installation that is already on the machine is reused (`PLAYWRIGHT_BROWSERS_PATH` names where they are, the default being the Playwright cache of the user).
+
+The code a browser test loads has the graph of the shipped bundle (HOST-260), not the Node one:
+
+- `src/host/default-host.ts` is replaced by `src/host/default-host.browser.ts` (`tools/browser-vitest.ts`, `replaceDefaultHostForVite`, the resolve hook that `tools/browser-bundle.ts` has for esbuild), so no module of the browser graph names `node:*`.
+- The global `Buffer` is the `buffer` package (HOST-262), defined by `src/browser/buffer-setup.browser.ts` before any test file is loaded. A per-file transform cannot inject a global the way the bundler's `inject` does, so the setup file does what that injection does.
+
+A test in a page cannot read the disk, so the recorded fixtures reach it through three commands that the Vitest server runs and the page calls (`tools/browser-vitest.ts`): `readFixtureTree(dir)`, the files under a folder as `{path, bytesBase64}` (paths relative to the folder, in code-unit order), `readFixtureBytes(path)`, one file as base64, and `readFixtureText(path)`, one file as UTF-8 text. A path is the repository-relative path, in POSIX form, and it must start with `fixtures/`, have no `.`, `..` or empty segment and no backslash or NUL, and resolve (links followed) to a place under `fixtures/`; any other path is refused with an error that names the rule. A folder is read without following links. `src/browser/test-support.browser.ts` wraps the commands for a test (`loadFixtureTree`, `readFixtureBytes`, `readFixtureText`). The cases that the browser replays use are listed in `src/browser/fixture-set.ts`, with the recorded blobs their transcripts name, and a test of the Node project holds the list to the disk (every case exists and carries what the replays read) and to a size budget.
+
+The rule is held by `src/browser/smoke.browser.test.ts` (the bundle's imports, the host, the digests and the XML core and an item-file save, in each browser), by `tools/browser-vitest.test.ts` (the path restriction and the replaced module) and by `src/browser/fixture-set.test.ts`.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
 ## HOST-210: the file layer touches files through `HostFs`, and Node's implementation is `node:fs` itself
 
 [14.0.7] Every file the file layer reads, writes, lists, creates or deletes is reached through the `HostFs` (HOST-200) of the `PathEnvironment`, `environment.fs`, and where the environment has none through the default host, `defaultHost().fs`. That covers `fileExists`, `readFileBytes`, `writeFileBytes` and `translateFileError` (the check that the folder of a missing file exists) in `io/host-path.ts`, and every operation of `io/windows-fs.ts`: the lookup of a name, the listing of a folder to find a fold-equal spelling (EXP-420), `directoryExists`, `directoryCreateDirectory` and its single `mkdir`, `directoryDelete`, `writeVolumeFile` and `fileWriteAllText`. A path that these functions open never reaches `node:fs` by another way, so a host that stands in for the disk sees every file touch. The callers that pass the environment to them (the manifest, the output folder, the loader and the saver, the DB-patch host, the language-pack preprocessor) pass the whole of it, `fs` included. The package listing (`import/package-files.ts`) and the log file (`export/run-log.ts`) go through it too (HOST-212, HOST-213), so that no file of the core outside the CLI reaches `node:fs` except the Node implementation `nodeFs` itself.

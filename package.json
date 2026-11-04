@@ -32,7 +32,8 @@
   "scripts": {
     "build": "tsup && tsup --config tsup.browser.config.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --project node",
+    "test:browser": "vitest run --project browser",
     "test:watch": "vitest",
     "oracle": "tsx oracle/src/cli.ts",
     "parity": "tsx oracle/src/parity/cli.ts",
@@ -47,8 +48,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
+    "@vitest/browser-playwright": "4.1.11",
     "ajv": "^8.20.0",
     "buffer": "6.0.3",
+    "playwright": "1.64.1",
     "tsup": "^8.5.1",
     "tsx": "^4.23.15",
     "typescript": "~5.9.3",
