@@ -1,12 +1,13 @@
 import { MemoryVfs } from "../host/memory-fs.js";
 import { posix } from "../io/path.js";
-import type { MountOptions } from "./mount-options.js";
+import { defaultInclude } from "./mount-options.js";
+import type { MountDecision, MountKind, MountOptions } from "./mount-options.js";
 
 /**
  * The adapters for what a page's folder input and a drop give it: the `File`s of an `<input type="file" webkitdirectory>`
  * (`mountFileList`) and the items of a `drop` event (`mountDataTransfer`), which are mounted into the in-memory tree before a run
  * (HOST-254, HOST-255). The library draws no control; the caller owns the input and the drop target and hands over what they
- * yield. A single `.zip` that was chosen or dropped is handed to the zip reader of the options (HOST-254).
+ * yield. A single zip archive that was chosen or dropped is handed to the zip reader of the options (HOST-254).
  *
  * The parameters are written against the small structural types below instead of the DOM's, which a Node build does not have;
  * the real `File`, `DataTransferItemList` and `FileSystemEntry` of a browser satisfy them.
@@ -21,6 +22,8 @@ export interface FileLike {
   /** The path of a file chosen through `webkitdirectory`, from the chosen folder's name (`Folder/sub/a.xml`); empty or absent otherwise. */
   readonly webkitRelativePath?: string;
   arrayBuffer(): Promise<ArrayBuffer>;
+  /** The start of the file, to see whether it is a zip without reading the rest. */
+  slice(start: number, end: number): { arrayBuffer(): Promise<ArrayBuffer> };
 }
 
 /** The part of a `FileSystemDirectoryReader` the walk reads. */
@@ -53,13 +56,14 @@ export interface DataTransferItemsLike {
 interface Raw {
   /** Relative to the root of the tree, with `/`, no leading `/`. */
   path: string;
+  kind: MountKind;
   /** Absent for a folder. */
   file?: FileLike;
 }
 
 /**
  * Mounts the files of a folder input into the tree and returns it. Each file's path is its `webkitRelativePath`; a file with none
- * (a plain multi-file input) is put at the root of the tree under its own name. A single `.zip` goes to `options.unzip` instead
+ * (a plain multi-file input) is put at the root of the tree under its own name. A single zip archive goes to `options.unzip` instead
  * (HOST-254).
  *
  * A file list shows files only, so a folder with no file below it is not in it and is not in the tree (HOST-254).
@@ -72,12 +76,12 @@ interface Raw {
 export async function mountFileList(files: Iterable<FileLike> | null, options: MountOptions = {}): Promise<MemoryVfs> {
   const list = files === null ? [] : [...files];
   const [only] = list;
-  if (only !== undefined && list.length === 1 && isZipName(only.name) && posixPath(only.webkitRelativePath ?? "").length <= 1) {
+  if (only !== undefined && list.length === 1 && posixPath(only.webkitRelativePath ?? "").length <= 1 && (await isZip(only))) {
     return mountZip(only, options);
   }
   const raw: Raw[] = list.map((file) => {
     const relative = posixPath(file.webkitRelativePath ?? "");
-    return { path: (relative.length > 0 ? relative : posixPath(file.name)).join("/"), file };
+    return { path: (relative.length > 0 ? relative : posixPath(file.name)).join("/"), kind: "file", file };
   });
   return commit(raw, options);
 }
@@ -87,7 +91,7 @@ export async function mountFileList(files: Iterable<FileLike> | null, options: M
  * `await`: a browser empties the item list when the handler returns, so the entries are taken synchronously here and walked after
  * (HOST-255).
  *
- * A folder is walked through `webkitGetAsEntry()`, which sees empty folders; an item with no entry is ignored. A single `.zip`
+ * A folder is walked through `webkitGetAsEntry()`, which sees empty folders; an item with no entry is ignored. A single zip archive
  * goes to `options.unzip` (HOST-254).
  *
  * @example
@@ -113,7 +117,10 @@ export function mountDataTransfer(items: DataTransferItemsLike, options: MountOp
 
 async function fromTaken(taken: EntryLike[], options: MountOptions): Promise<MemoryVfs> {
   const [only] = taken;
-  if (only !== undefined && taken.length === 1 && only.isFile && isZipName(only.name)) return mountZip(await entryFile(only), options);
+  if (only !== undefined && taken.length === 1 && only.isFile) {
+    const file = await entryFile(only);
+    if (await isZip(file)) return mountZip(file, options);
+  }
   const raw: Raw[] = [];
   for (const entry of taken) await walk(entry, "", raw, options.signal);
   return commit(raw, options);
@@ -139,11 +146,11 @@ async function walk(entry: EntryLike, parent: string, out: Raw[], signal: AbortS
   const path = parent === "" ? entry.name : `${parent}/${entry.name}`;
   checkSegments(posixPath(entry.name), path);
   if (entry.isFile) {
-    out.push({ path, file: await entryFile(entry) });
+    out.push({ path, kind: "file", file: await entryFile(entry) });
     return;
   }
   if (!entry.isDirectory) return;
-  out.push({ path });
+  out.push({ path, kind: "directory" });
   const reader = entry.createReader?.();
   if (reader === undefined) throw new TypeError(`the entry ${path} is a folder and has no createReader()`);
   for (;;) {
@@ -155,8 +162,9 @@ async function walk(entry: EntryLike, parent: string, out: Raw[], signal: AbortS
 
 // -------------------------------------------------------------------------------------------------------------- the tree
 
-function isZipName(name: string): boolean {
-  return /\.zip$/i.test(name);
+/** A file is a zip archive by its name or by the magic of its first bytes (HOST-254). */
+async function isZip(file: FileLike): Promise<boolean> {
+  return /\.zip$/i.test(file.name) || hasZipMagic(new Uint8Array(await file.slice(0, 4).arrayBuffer()));
 }
 
 /** `PK\x03\x04` (a local file header) or `PK\x05\x06` (the end record of an empty archive). */
@@ -168,19 +176,18 @@ function failure(code: string, message: string): Error {
   return Object.assign(new Error(message), { code });
 }
 
-/** Hands a chosen or dropped `.zip` to the zip reader of the options (HOST-254). */
+/** Hands a chosen or dropped zip archive to the zip reader of the options (HOST-254). */
 async function mountZip(file: FileLike, options: MountOptions): Promise<MemoryVfs> {
   options.signal?.throwIfAborted();
+  const { unzip } = options;
+  if (unzip === undefined) {
+    throw failure("ERR_MOUNT_NO_UNZIP", `${file.name} is a zip archive: pass the zip reader (vfsFromZip) as the unzip option to mount it`);
+  }
   if (options.maxBytes !== undefined && file.size > options.maxBytes) {
     throw failure("ENOSPC", `${file.name} is ${file.size} bytes, more than the limit of ${options.maxBytes} bytes`);
   }
   const bytes = new Uint8Array(await file.arrayBuffer());
   options.signal?.throwIfAborted();
-  if (!hasZipMagic(bytes)) throw failure("ERR_MOUNT_NOT_ZIP", `${file.name} has the name of a zip archive and is not one`);
-  const { unzip } = options;
-  if (unzip === undefined) {
-    throw failure("ERR_MOUNT_NO_UNZIP", `${file.name} is a zip archive: pass the zip reader (vfsFromZip) as the unzip option to mount it`);
-  }
   const zipOptions: { root?: "auto" | "keep"; maxBytes?: number } = {};
   if (options.root !== undefined) zipOptions.root = options.root;
   if (options.maxBytes !== undefined) zipOptions.maxBytes = options.maxBytes;
@@ -225,18 +232,36 @@ function stripRoot(raw: Raw[]): Raw[] {
   const [head] = raw;
   if (head === undefined) return raw;
   const first = head.path.split("/")[0] ?? "";
-  const shared = raw.every((entry) => entry.path === first ? entry.file === undefined : entry.path.startsWith(`${first}/`));
+  const shared = raw.every((entry) => entry.path === first ? entry.kind === "directory" : entry.path.startsWith(`${first}/`));
   if (!shared) return raw;
   return raw.filter((entry) => entry.path !== first).map((entry) => ({ ...entry, path: entry.path.slice(first.length + 1) }));
 }
 
-/** Refuses a source over `maxBytes` before reading, then reads the files and puts them into a new tree. */
+/** Decides every entry, refuses a source over `maxBytes` before reading, then reads the files and puts them into a new tree. */
 async function commit(entries: Raw[], options: MountOptions): Promise<MemoryVfs> {
   const raw = options.root === "auto" ? stripRoot(entries) : entries;
+  const include = options.include ?? defaultInclude;
+
+  const skipped = new Set<string>();
+  const decided: Array<{ entry: Raw; decision: MountDecision }> = [];
+  // folders first: a skipped folder leaves out everything below it
+  for (const entry of [...raw].sort((a, b) => a.path.length - b.path.length)) {
+    const parents = entry.path.split("/").slice(0, -1);
+    if (parents.some((_, index) => skipped.has(parents.slice(0, index + 1).join("/")))) {
+      if (entry.kind === "directory") skipped.add(entry.path);
+      continue;
+    }
+    const decision = include(entry.path, entry.kind, entry.file?.size ?? 0);
+    if (decision === "skip" && entry.kind === "directory") skipped.add(entry.path);
+    else if (decision !== "skip") decided.push({ entry, decision });
+  }
+  // keep the source's order for the files
+  const order = new Map(raw.map((entry, index) => [entry, index]));
+  decided.sort((a, b) => (order.get(a.entry) ?? 0) - (order.get(b.entry) ?? 0));
 
   if (options.maxBytes !== undefined) {
     let total = 0;
-    for (const entry of raw) total += entry.file?.size ?? 0;
+    for (const { entry, decision } of decided) if (decision === "content") total += entry.file?.size ?? 0;
     if (total > options.maxBytes) {
       throw failure("ENOSPC", `the package has ${total} bytes of content to read, more than the limit of ${options.maxBytes} bytes`);
     }
@@ -245,15 +270,16 @@ async function commit(entries: Raw[], options: MountOptions): Promise<MemoryVfs>
   const vfs = new MemoryVfs();
   let files = 0;
   let bytes = 0;
-  for (const entry of raw) {
+  for (const { entry, decision } of decided) {
     options.signal?.throwIfAborted();
     const path = posix.join("/", entry.path);
     if (entry.file === undefined) {
       vfs.mount({ [`${path}/`]: "" });
       continue;
     }
-    const content = new Uint8Array(await entry.file.arrayBuffer());
+    const content = decision === "stub" ? new Uint8Array(0) : new Uint8Array(await entry.file.arrayBuffer());
     vfs.mount({ [path]: content });
+    if (decision === "stub") vfs.markStub(path);
     files += 1;
     bytes += content.length;
     options.onProgress?.({ path, files, bytes });

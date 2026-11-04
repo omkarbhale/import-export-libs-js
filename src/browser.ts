@@ -31,5 +31,6 @@ export type {
   EntryLike,
   FileLike,
 } from "./browser/file-list.js";
-export type { MountOptions, MountProgress, MountUnzip } from "./browser/mount-options.js";
+export { STUB_THRESHOLD, defaultInclude, stubsOf } from "./browser/mount-options.js";
+export type { MountDecision, MountInclude, MountKind, MountOptions, MountProgress, MountUnzip } from "./browser/mount-options.js";
 export { LIBRARY_VERSION } from "./version.js";

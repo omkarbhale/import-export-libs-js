@@ -27,10 +27,13 @@ describe("entry points", () => {
         ...coreNames,
         "LIBRARY_VERSION",
         "MemoryVfs",
+        "STUB_THRESHOLD",
         "createBrowserHost",
         "createFetchTransport",
+        "defaultInclude",
         "mountDataTransfer",
         "mountFileList",
+        "stubsOf",
       ].sort(),
     );
   });

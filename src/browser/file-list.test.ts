@@ -3,6 +3,7 @@ import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { MemoryVfs } from "../host/memory-fs.js";
 import { mountDataTransfer, mountFileList } from "./file-list.js";
+import { STUB_THRESHOLD, defaultInclude, stubsOf } from "./mount-options.js";
 import type { DataTransferItemLike, DataTransferItemsLike, DirectoryReaderLike, EntryLike } from "./file-list.js";
 import type { MountOptions } from "./mount-options.js";
 
@@ -213,11 +214,59 @@ describe("mountFileList (HOST-254)", () => {
     await expect(mountFileList([pickedFile("Pkg/../../x.xml", "x")])).rejects.toMatchObject({ code: "ERR_MOUNT_UNSAFE_PATH" });
   });
 
-  it("reads every file, a large binary too, with its bytes", async () => {
-    const big = new Uint8Array(2 * 1_048_576).fill(7);
-    const result = await mountFileList([pickedFile("P/a.xml", "a"), pickedFile("P/big.bin", big)], { root: "auto" });
-    expect(result.toTree()).toEqual(["a.xml", "big.bin"]);
-    expect(result.readFile("/big.bin")).toEqual(big);
+  it("applies include: skip, stub and content, with the default for large other files", async () => {
+    const big = new Uint8Array(STUB_THRESHOLD + 1);
+    const input = [pickedFile("P/a.xml", "a"), pickedFile("P/big.bin", big), pickedFile("P/big.xml", big), pickedFile("P/small.bin", "s"), pickedFile("P/drop.me", "d")];
+    const result = await mountFileList(input, {
+      root: "auto",
+      include: (path, kind, size) => (path === "drop.me" ? "skip" : defaultInclude(path, kind, size)),
+    });
+    expect(result.toTree()).toEqual(["a.xml", "big.bin", "big.xml", "small.bin"]);
+    expect(result.readFile("/big.bin").length).toBe(0);
+    expect(result.readFile("/big.xml").length).toBe(STUB_THRESHOLD + 1);
+    expect(textOf(result, "/small.bin")).toBe("s");
+    expect([...stubsOf(result)]).toEqual(["/big.bin"]);
+  });
+
+  describe("a stub never goes stale", () => {
+    const stubbed = (): Promise<MemoryVfs> =>
+      mountFileList([pickedFile("P/big.bin", new Uint8Array(STUB_THRESHOLD + 1)), pickedFile("P/sub/other.bin", new Uint8Array(STUB_THRESHOLD + 1))], { root: "auto" });
+
+    it("lists the stubs until they change", async () => {
+      expect([...stubsOf(await stubbed())]).toEqual(["/big.bin", "/sub/other.bin"]);
+    });
+
+    it("is cleared by a re-mount with smaller content", async () => {
+      const tree = await stubbed();
+      tree.mount({ "/big.bin": new Uint8Array(10) });
+      expect([...stubsOf(tree)]).toEqual(["/sub/other.bin"]);
+    });
+
+    it("is cleared by a writeFile, with bytes or empty", async () => {
+      const tree = await stubbed();
+      tree.writeFile("/big.bin", new Uint8Array([1]));
+      tree.writeFile("/sub/other.bin", new Uint8Array(0));
+      expect(stubsOf(tree).size).toBe(0);
+    });
+
+    it("is cleared by an append of bytes, not by an empty one", async () => {
+      const tree = await stubbed();
+      tree.openAppend("/big.bin").close();
+      expect(stubsOf(tree).has("/big.bin")).toBe(true);
+      const handle = tree.openAppend("/big.bin");
+      handle.write(new Uint8Array([1]));
+      handle.close();
+      expect(stubsOf(tree).has("/big.bin")).toBe(false);
+    });
+
+    it("is cleared by rm, of the file or a folder above it, and stays clear when the path is made again", async () => {
+      const tree = await stubbed();
+      tree.rm("/big.bin", { recursive: false });
+      tree.rm("/sub", { recursive: true });
+      expect(stubsOf(tree).size).toBe(0);
+      tree.mount({ "/big.bin": "", "/sub/other.bin": "" });
+      expect(stubsOf(tree).size).toBe(0);
+    });
   });
 
   it("reports progress per file, in order", async () => {
@@ -236,11 +285,15 @@ describe("mountFileList (HOST-254)", () => {
         reads += 1;
         return file.arrayBuffer();
       },
+      slice: (start: number, end: number) => file.slice(start, end),
     }));
     await expect(mountFileList(counted, { maxBytes: 20 })).rejects.toMatchObject({ code: "ENOSPC" });
     expect(reads).toBe(0);
     expect((await mountFileList(counted, { maxBytes: 28 })).size).toBe(28);
     await expect(mountFileList([pickedFile("P/x.bin", new Uint8Array(2))], { maxBytes: 1 })).rejects.toMatchObject({ code: "ENOSPC" });
+    // a stub is not counted
+    const stubbed = await mountFileList([pickedFile("P/x.bin", new Uint8Array(2 * STUB_THRESHOLD))], { maxBytes: 1 });
+    expect(stubbed.size).toBe(0);
   });
 
   it("stops at the signal", async () => {
@@ -319,6 +372,7 @@ describe("a chosen or dropped zip (HOST-254)", () => {
         controller.abort(reason);
         return zipBytes.slice().buffer;
       },
+      slice: () => new File([zipBytes], "p.zip"),
     };
     let unzipped = 0;
     const result = mountFileList([file], {
@@ -339,9 +393,53 @@ describe("a chosen or dropped zip (HOST-254)", () => {
     await expect(result).rejects.toBe(reason);
   });
 
-  it("refuses a .zip that is not a zip, and a zip when there is no reader", async () => {
-    await expect(mountFileList([new File(["not a zip"], "p.zip")], { unzip })).rejects.toMatchObject({ code: "ERR_MOUNT_NOT_ZIP" });
+  it("routes by the extension alone: a .zip that is not a zip fails with the reader's error", async () => {
+    const refusing: NonNullable<MountOptions["unzip"]> = () => {
+      throw new Error("the reader refused it");
+    };
+    await expect(mountFileList([new File(["not a zip"], "p.zip")], { unzip: refusing })).rejects.toThrow("the reader refused it");
+  });
+
+  it("routes by the magic alone, from a file list and a drop, for both magics", async () => {
+    const unzipped = new MemoryVfs({ "/x.xml": "x" });
+    for (const magic of [zipBytes, new Uint8Array([0x50, 0x4b, 5, 6])]) {
+      const file = new File([magic], "package.bin");
+      expect(await mountFileList([file], { unzip: () => unzipped })).toBe(unzipped);
+      const entry: EntryLike = { isFile: true, isDirectory: false, name: file.name, file: (success) => success(file) };
+      expect(await mountDataTransfer(drop([entry]).items, { unzip: () => unzipped })).toBe(unzipped);
+    }
+  });
+
+  it("mounts a file with neither the extension nor the magic as a file", async () => {
+    const never: NonNullable<MountOptions["unzip"]> = () => {
+      throw new Error("not a zip");
+    };
+    const list = await mountFileList([new File(["<AML/>"], "a.xml")], { unzip: never });
+    expect(list.toTree()).toEqual(["a.xml"]);
+    const dropped = await mountDataTransfer(drop([fileEntry("a.xml", "<AML/>")]).items, { unzip: never });
+    expect(dropped.toTree()).toEqual(["a.xml"]);
+  });
+
+  it("reads only the first bytes of a single file that is not a zip and is left as a stub", async () => {
+    const real = new File([new Uint8Array(STUB_THRESHOLD + 1)], "big.bin");
+    let reads = 0;
+    const file = {
+      name: real.name,
+      size: real.size,
+      arrayBuffer: () => {
+        reads += 1;
+        return real.arrayBuffer();
+      },
+      slice: (start: number, end: number) => real.slice(start, end),
+    };
+    const result = await mountFileList([file]);
+    expect(reads).toBe(0);
+    expect([...stubsOf(result)]).toEqual(["/big.bin"]);
+  });
+
+  it("refuses a zip when there is no reader", async () => {
     await expect(mountFileList([new File([zipBytes], "p.zip")])).rejects.toMatchObject({ code: "ERR_MOUNT_NO_UNZIP" });
+    await expect(mountFileList([new File([zipBytes], "p.bin")])).rejects.toMatchObject({ code: "ERR_MOUNT_NO_UNZIP" });
   });
 
   it("refuses a zip over maxBytes without reading it", async () => {
@@ -420,10 +518,15 @@ describe("mountDataTransfer (HOST-255)", () => {
     expect((await mountDataTransfer(items)).toTree()).toEqual(["a.xml"]);
   });
 
-  it("applies the same options as a file list: maxBytes, signal and progress", async () => {
-    const build = (): EntryLike => dirEntry("Pkg", [fileEntry("imports.mf", "<imports/>"), fileEntry("a.xml", "<AML/>")]);
+  it("applies the same options as a file list: include, maxBytes, signal and progress", async () => {
+    const build = (): EntryLike => dirEntry("Pkg", [fileEntry("imports.mf", "<imports/>"), dirEntry("Skip", [fileEntry("z.xml", "z")]), fileEntry("a.xml", "<AML/>")]);
     const seen: string[] = [];
-    await mountDataTransfer(drop([build()]).items, { root: "auto", onProgress: (p) => seen.push(p.path) });
+    const result = await mountDataTransfer(drop([build()]).items, {
+      root: "auto",
+      include: (path, kind) => (kind === "directory" && path === "Skip" ? "skip" : "content"),
+      onProgress: (p) => seen.push(p.path),
+    });
+    expect(result.toTree()).toEqual(["a.xml", "imports.mf"]);
     expect(seen).toEqual(["/imports.mf", "/a.xml"]);
 
     await expect(mountDataTransfer(drop([build()]).items, { maxBytes: 5 })).rejects.toMatchObject({ code: "ENOSPC" });
