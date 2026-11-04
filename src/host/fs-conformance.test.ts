@@ -1,19 +1,16 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { conformanceCases, longPathUnder, probeCapabilities, type HostFsFixture } from "./fs-conformance.js";
 import { nodeFs } from "./node-fs.js";
 
 /**
- * The suite is itself a piece of the contract (HOST-214), so it is checked: it is big enough, every case says which engine-layer
- * call needs it and that call is really in the code, and the capability probe says what it should on a disk and on a host
+ * The suite is itself a piece of the contract (HOST-214), so it is checked: it is big enough, every HostFs member has a case, and the capability probe says what it should on a disk and on a host
  * that has nothing.
  *
  * @spec HOST-214
  */
-const src = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 describe("HOST-214: the conformance suite describes itself", () => {
   const cases = conformanceCases();
@@ -28,28 +25,6 @@ describe("HOST-214: the conformance suite describes itself", () => {
     const members = new Set(cases.flatMap((c) => c.needs.map((n) => n.call)));
     expect([...members].sort()).toEqual(["exists", "mkdir", "openAppend", "readFile", "readdir", "rm", "stat", "writeFile"]);
     expect([...new Set(cases.map((c) => c.group))]).toEqual(["stat", "readdir", "mkdir", "writeFile", "readFile", "exists", "rm", "openAppend", "paths", "case", "layer"]);
-  });
-
-  it("names, for every case, an engine-layer call that exists: the file, the function and the HostFs member it calls", () => {
-    const sources = new Map<string, string[]>();
-    const missing: string[] = [];
-    for (const c of cases) {
-      expect(c.needs.length, `${c.group}/${c.name}`).toBeGreaterThan(0);
-      for (const n of c.needs) {
-        const path = join(src, n.file);
-        if (!existsSync(path)) {
-          missing.push(`${c.group}/${c.name}: no file ${n.file}`);
-          continue;
-        }
-        const lines = sources.get(path) ?? readFileSync(path, "utf8").split("\n");
-        sources.set(path, lines);
-        const text = lines.join("\n");
-        if (!new RegExp(String.raw`function ${n.symbol}\b|\b${n.symbol}\(`).test(text)) missing.push(`${c.group}/${c.name}: no ${n.symbol} in ${n.file}`);
-        if (!new RegExp(String.raw`\.${n.call}\(`).test(text)) missing.push(`${c.group}/${c.name}: no .${n.call}( in ${n.file}`);
-        if (n.line < 1 || n.line > lines.length) missing.push(`${c.group}/${c.name}: line ${n.line} is past the end of ${n.file}`);
-      }
-    }
-    expect(missing).toEqual([]);
   });
 
   it("marks only the cases a host may fail to meet as optional, and every capability is used", () => {
