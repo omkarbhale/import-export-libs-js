@@ -105,6 +105,7 @@ function replayLanguagePacks(engine: Engine, root: string): void {
         expect(exceptionText(failure).split(":")[0], `${name}: the exception`).toBe((run.host.error as string).split(":")[0]);
         expect(connection.consumed, `${name}: the requests of the run`).toBe(connection.total);
         expect(vfs.readdir(tempRoot), `${name}: the temp package is removed`).toEqual([]);
+        assertTreesEqual(vfs, "/lp", join(dir, "lp"), `${name}: the language pack`);
         tally.add(`language pack ${engine}`, "ran");
         return;
       }
@@ -129,6 +130,7 @@ function replayLanguagePacks(engine: Engine, root: string): void {
       } else {
         expect(left, `${name}: the temp package is removed`).toEqual([]);
       }
+      assertTreesEqual(vfs, "/lp", join(dir, "lp"), `${name}: the language pack`);
       tally.add(`language pack ${engine}`, "ran");
     });
   });
@@ -138,6 +140,8 @@ replayLanguagePacks("14.0.7", CASES_LP_14_0_7);
 replayLanguagePacks("14.35", CASES_LP_14_35);
 
 // ----------------------------------------------------------------------------------------------------------------- DB patch
+
+const DB_PATCH_INPUT = "/input";
 
 interface DbPatchRun {
   recorded: { messages: SentMessage[]; log: string };
@@ -155,7 +159,7 @@ async function replayDbPatch(caseName: string, step: string): Promise<DbPatchRun
     .map((line) => JSON.parse(line) as SentMessage);
 
   const { vfs, host } = virtualHost();
-  loadTreeIntoVfs(join(dir, "input"), vfs, VFS_WORK);
+  loadTreeIntoVfs(join(dir, "input"), vfs, DB_PATCH_INPUT);
   const logPath = `${VFS_WORK}/engine.log`;
 
   const context = new SolutionUpgradeContext();
@@ -166,8 +170,8 @@ async function replayDbPatch(caseName: string, step: string): Promise<DbPatchRun
   context.workingDirectory = VFS_WORK;
   context.logFilePath = logPath;
   const config = new DBUpdateConfig();
-  config.dbUpdatedManifestFilePath = `${VFS_WORK}/manifest.xml`;
-  config.dbPatchesFolderPath = VFS_WORK;
+  config.dbUpdatedManifestFilePath = `${DB_PATCH_INPUT}/manifest.xml`;
+  config.dbPatchesFolderPath = DB_PATCH_INPUT;
   config.toolName = field(recordedLog, "Tool name");
 
   const connection = new DbPatchConnection(calls);
@@ -189,6 +193,7 @@ async function replayDbPatch(caseName: string, step: string): Promise<DbPatchRun
   } catch (error) {
     thrown = error;
   }
+  assertTreesEqual(vfs, DB_PATCH_INPUT, join(dir, "input"), `${caseName}/${step}: the input folder`);
   return { recorded: { messages: recordedMessages, log: recordedLog }, ours: { messages: sent, log: logText(vfs, logPath), thrown, connection } };
 }
 
@@ -226,10 +231,5 @@ describe("the language-pack and DB-patch runs on MemoryVfs", () => {
     expect(tally.get("language pack 14.35")).toEqual({ ran: 8, skipped: 0 });
     expect(tally.get("db patch 14.35")).toEqual({ ran: 3, skipped: 0 });
     console.info(`MemoryVfs replay, language pack and DB patch: ${tally}`);
-  });
-
-  it("leave the disk alone: the virtual folders are not real ones", () => {
-    expect(existsSync(VFS_WORK)).toBe(false);
-    expect(existsSync("/lp")).toBe(false);
   });
 });

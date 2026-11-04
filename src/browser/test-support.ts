@@ -48,22 +48,17 @@ export function diskTree(dir: string): string[] {
 
 /**
  * Copies a folder of the disk into the virtual file system below `at` (an absolute POSIX path): every file with its bytes, and every
- * empty folder as an empty folder. `at` itself is made even when the folder is empty. Returns the number of bytes loaded.
+ * empty folder as an empty folder. `at` itself is made even when the folder is empty.
  */
-export function loadTreeIntoVfs(dir: string, vfs: MemoryVfs, at: string): number {
+export function loadTreeIntoVfs(dir: string, vfs: MemoryVfs, at: string): void {
   const files = new Map<string, Uint8Array>();
   const folders: string[] = [];
   walk(dir, "", files, folders);
   const base = at.endsWith("/") ? at : `${at}/`;
   const mount: MountFiles = { [base]: "" };
   for (const folder of folders) mount[`${base}${folder}`] = "";
-  let bytes = 0;
-  for (const [path, content] of files) {
-    mount[`${base}${path}`] = content;
-    bytes += content.length;
-  }
+  for (const [path, content] of files) mount[`${base}${path}`] = content;
   vfs.mount(mount);
-  return bytes;
 }
 
 /** True when the two byte arrays hold the same bytes. */
@@ -90,7 +85,7 @@ export const VFS_WORK = "/work";
  * A host environment that is no machine's: Linux, `/work` as the current directory, `/tmp` as the temp folder, and a fixed account,
  * clock and randomness. A run on it reads nothing from the process (HOST-203).
  */
-export function fakeHostEnv(overrides: Partial<HostEnv> = {}): HostEnv {
+export function fakeHostEnv(): HostEnv {
   return {
     platform: "linux",
     cwd: () => VFS_WORK,
@@ -106,6 +101,5 @@ export function fakeHostEnv(overrides: Partial<HostEnv> = {}): HostEnv {
     yieldTurn: () => Promise.resolve(),
     windowsTimeZoneId: () => undefined,
     locale: () => "en-US",
-    ...overrides,
   };
 }

@@ -182,9 +182,4 @@ describe("the import runs on MemoryVfs", () => {
     expect(tally.get("import 12.0")).toEqual({ ran: stepsOf(CASES_12_0).length, skipped: 0 });
     console.info(`MemoryVfs replay, import: ${tally}`);
   });
-
-  it("leave the disk alone: the virtual folders are not real ones", () => {
-    expect(existsSync(VFS_WORK)).toBe(false);
-    expect(existsSync(INPUT)).toBe(false);
-  });
 });

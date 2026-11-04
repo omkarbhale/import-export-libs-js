@@ -33,8 +33,7 @@ describe("loadTreeIntoVfs and assertTreesEqual (HOST-217)", () => {
   it("loads every file with its bytes and every empty folder, and a loaded tree equals its folder", () => {
     const dir = folder(FILES, ["empty/deeper"]);
     const vfs = new MemoryVfs();
-    const bytes = loadTreeIntoVfs(dir, vfs, "/in");
-    expect(bytes).toBe(10 + 6 + 5);
+    loadTreeIntoVfs(dir, vfs, "/in");
     expect(vfs.stat("/in/empty/deeper").isDirectory).toBe(true);
     expect([...vfs.snapshot("/in").keys()]).toEqual(["a/b/one.xml", "a/two.xml", "imports.mf"]);
     expect(diskTree(dir)).toEqual(["a/", "a/b/", "a/b/one.xml", "a/two.xml", "imports.mf"]);
@@ -79,13 +78,12 @@ describe("loadTreeIntoVfs and assertTreesEqual (HOST-217)", () => {
 });
 
 describe("fakeHostEnv (HOST-203)", () => {
-  it("is a Linux machine in /work with a fixed account, and its members can be replaced", () => {
+  it("is a Linux machine in /work with a fixed account", () => {
     const host = fakeHostEnv();
     expect(host.platform).toBe("linux");
     expect(host.cwd()).toBe("/work");
     expect(host.tmpdir()).toBe("/tmp");
     expect(host.randomBytes(3)).toEqual(Uint8Array.from([11, 48, 85]));
     expect(host.monotonicNs()).toBeLessThan(host.monotonicNs());
-    expect(fakeHostEnv({ locale: () => "en-IN" }).locale()).toBe("en-IN");
   });
 });

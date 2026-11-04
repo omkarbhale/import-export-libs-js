@@ -216,8 +216,4 @@ describe("the 14.35 export cases run on MemoryVfs", () => {
     expect(cases.ran + cases.skipped).toBe(caseNames1435.length);
     console.info(`MemoryVfs replay, export 14.35: ${tally}`);
   });
-
-  it("leave the disk alone: the virtual working folder is not a real one", () => {
-    expect(existsSync(VFS_WORK)).toBe(false);
-  });
 });

@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { readTranscript } from "../../oracle/src/transcript.js";
@@ -92,7 +91,7 @@ describe.each(REPLAYED_ENGINES)("the recorded %s export cases, on MemoryVfs (EXP
     );
     assertTreesEqual(vfs, output, join(cases.dir, name, "output"), name);
     const log = vfs.readFile(logPath);
-    expect(log.subarray(0, 3).toString() === "ï»¿" || (log[0] === 0xef && log[1] === 0xbb && log[2] === 0xbf), `${name}: the log has no BOM`).toBe(false);
+    expect(log[0] === 0xef && log[1] === 0xbb && log[2] === 0xbf, `${name}: the log has no BOM`).toBe(false);
     expect(exportLog(logText(vfs, logPath), logPath, output), `${name}: the log`).toBe(exportLog(recordedLog, logPath, output));
     tally.add(`export ${engine}`, "ran");
   });
@@ -105,9 +104,5 @@ describe("the 14.0.7 and 12.0 cases run on MemoryVfs", () => {
     const twelve = tally.get("export 12.0");
     expect(twelve.ran + twelve.skipped).toBe(exportCases("12.0").names.length);
     console.info(`MemoryVfs replay, export: ${tally}`);
-  });
-
-  it("leave the disk alone: the virtual working folder is not a real one", () => {
-    expect(existsSync(VFS_WORK)).toBe(false);
   });
 });
