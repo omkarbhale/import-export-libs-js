@@ -21,8 +21,21 @@ describe("entry points", () => {
     expect(Object.keys(node)).toHaveLength(NODE_NAMES_BEFORE);
   });
 
-  it("is the core plus the browser host, the fetch transport and the version for the browser", () => {
-    expect(Object.keys(browser).sort()).toEqual([...coreNames, "LIBRARY_VERSION", "createBrowserHost", "createFetchTransport"].sort());
+  it("is the core plus the browser host, the fetch transport, the in-memory tree, the file-list adapters and the version for the browser", () => {
+    expect(Object.keys(browser).sort()).toEqual(
+      [
+        ...coreNames,
+        "LIBRARY_VERSION",
+        "MemoryVfs",
+        "STUB_THRESHOLD",
+        "createBrowserHost",
+        "createFetchTransport",
+        "defaultInclude",
+        "mountDataTransfer",
+        "mountFileList",
+        "stubsOf",
+      ].sort(),
+    );
   });
 
   it("gives the browser entry no Node API", () => {

@@ -16,7 +16,7 @@ import type { AppendHandle, HostDirent, HostFs, HostFsError, HostStat } from "./
  * reuse or change what it wrote or read (the price is a transient second copy of each file while it moves; the memory budget of
  * ticket 31 measures it).
  *
- * @spec HOST-200 HOST-201 HOST-214 HOST-215
+ * @spec HOST-200 HOST-201 HOST-214 HOST-215 HOST-254
  */
 
 /** The settings of a {@link MemoryVfs}. */
@@ -35,6 +35,8 @@ interface FileNode {
   data: Uint8Array;
   /** True once the file has been removed from the tree, so that a handle that is still open appends to nothing, as to an unlinked file. */
   detached: boolean;
+  /** True from {@link MemoryVfs.markStub} until something writes the file: its name is in the tree and its content was never read. */
+  stub?: boolean;
 }
 
 interface DirNode {
@@ -144,6 +146,7 @@ export class MemoryVfs implements HostFs {
     this.#reserve(delta, "write", path);
     // the node is kept and its content replaced, so that an append handle open on the file still stands for it
     found.node.data = copy(data);
+    found.node.stub = false;
     this.#size += delta;
   }
 
@@ -215,6 +218,7 @@ export class MemoryVfs implements HostFs {
           offset += chunk.length;
         }
         file.data = joined;
+        file.stub = false;
         this.#size += pending;
       },
     };
@@ -239,6 +243,21 @@ export class MemoryVfs implements HostFs {
       this.#makeFolders(posix.dirname(path), path);
       this.writeFile(path, bytes);
     }
+  }
+
+  /** Records that a file of the tree is a stub. It stays one until a write reaches it or it leaves the tree. */
+  markStub(path: string): void {
+    const node = this.#existing(this.#locate(path, "open"), "open", path);
+    if (node.kind === "dir") throw fsError("EISDIR", "open", path);
+    node.stub = true;
+  }
+
+  /** The absolute paths of the files that are stubs now, in the order of the paths compared by code unit. */
+  stubs(): string[] {
+    return this.#files("/")
+      .filter(([, file]) => file.stub === true)
+      .map(([path]) => `/${path}`)
+      .sort(compareCodeUnits);
   }
 
   /** Removes everything; the tree is empty again and `size` is 0. A handle still open on a file stands for nothing. */
