@@ -411,8 +411,6 @@ The `globals` option replaces `navigator`, `performance`, `crypto`, `MessageChan
 - **A budget.** `maxBytes` bounds the bytes of content that the mount copies, counted over the files whose decision is `"content"`, and the room the target tree has left (`maxBytes - size` of `into`) bounds it too; every byte is counted as new, also where it replaces a file. A file that would pass the bound is refused before it is read, with an error whose `code` is `ENOSPC` (the facade of the browser API turns it into a message for the caller, HOST-215). A file's size is the `File`'s `size`; the bytes read are what is counted at the end.
 - **All or nothing.** The walk takes a folder at a time and an entry at a time, in the order the handle lists them, and holds what it found; the tree is changed only when the whole walk has succeeded, in one step with no wait in it. A failure of the handle, a refusal by `maxBytes` and an abort by `options.signal` (checked before every entry and after each wait, rejecting with the signal's reason) leave the tree exactly as it was. The one failure after the walk is a clash with what `into` already holds (a file where a folder is needed, or the reverse), which fails as `MemoryVfs.mount` does and leaves what was put before it. `onProgress` is called after each entry with the counts so far (`files`, `directories`, `stubs`, `bytes`) and the path of the entry.
 
-A name that the handle lists and that no path can hold (empty, `.`, `..` or with a `/`) is a `TypeError`; a real handle never lists one.
-
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.

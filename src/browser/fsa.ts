@@ -100,13 +100,6 @@ function checkAborted(signal: AbortSignal | undefined): void {
   signal?.throwIfAborted();
 }
 
-/** A name the handle gave that no path could hold; a real handle never gives one. */
-function checkName(name: string): void {
-  if (name === "" || name === "." || name === ".." || name.includes("/")) {
-    throw new TypeError(`the folder handle listed an entry with a name that is not a file name: ${JSON.stringify(name)}`);
-  }
-}
-
 function noRoom(limit: number, path: string): Error & { code: string } {
   const error: Error & { code: string } = Object.assign(
     new Error(`ENOSPC: no space left, the folder holds more than the ${limit} bytes of content that may be mounted, at '${path}'`),
@@ -148,7 +141,6 @@ export async function mountDirectory(handle: FsaDirectoryHandle, options: MountD
     for await (const entry of folder.values()) listed.push(entry);
     for (const entry of listed) {
       checkAborted(signal);
-      checkName(entry.name);
       const path = `${prefix}${entry.name}`;
       if (entry.kind === "directory") {
         if (include(path, "directory", 0) === "skip") continue;

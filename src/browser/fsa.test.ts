@@ -89,15 +89,6 @@ describe("mountDirectory (HOST-252)", () => {
     expect(handle.contents().get("a.xml")).toEqual(bytesOf(4, 1));
   });
 
-  it("refuses a name that no path can hold", async () => {
-    const handle = new FakeDirectoryHandle("h");
-    handle.values = async function* () {
-      await Promise.resolve();
-      yield { kind: "file" as const, name: "a/b" };
-    };
-    await expect(mountDirectory(handle)).rejects.toThrow(TypeError);
-  });
-
   describe("the default include", () => {
     it("is content for the package files whatever their size, and for small files; a stub for another large file", () => {
       expect(defaultInclude("Import/x", "directory", 0)).toBe("content");
