@@ -2,6 +2,9 @@ import { MemoryVfs } from "../host/memory-fs.js";
 import { posix } from "../io/path.js";
 import { defaultInclude, stubsOf, type MountInclude } from "./mount-options.js";
 
+/** The most files of a folder that a commit writes at once (HOST-253). */
+const WRITES_AT_ONCE = 8;
+
 /**
  * The File System Access adapter: a folder the user (or a page) holds a `FileSystemDirectoryHandle` for, brought into the in-memory
  * tree before a run and written back from it after (map D1). `mountDirectory` walks the handle and copies it into a
@@ -199,8 +202,6 @@ export interface CommitToDirectoryOptions {
   /** Stops the commit: it rejects with a {@link CommitError} that is `aborted` and says what had been written. */
   signal?: AbortSignal;
   onProgress?: (progress: FsaProgress) => void;
-  /** The most files written at once within a folder. Default 8. */
-  concurrency?: number;
 }
 
 /** What a commit wrote. */
@@ -250,21 +251,10 @@ function byName(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
-/** How many stubs (HOST-252) the folder `source` of the tree holds, at any depth. */
-function countStubs(vfs: MemoryVfs, source: string): number {
-  let stubs = 0;
-  for (const entry of vfs.readdir(source)) {
-    const path = posix.join(source, entry.name);
-    if (entry.isDirectory) stubs += countStubs(vfs, path);
-    else if (vfs.stubSize(path) !== undefined) stubs += 1;
-  }
-  return stubs;
-}
-
 /**
  * Writes a folder of an in-memory tree into a directory handle (HOST-253): every folder with `getDirectoryHandle(name, {create:
  * true})` and every file with `getFileHandle(name, {create: true})` and `createWritable()`. A folder is written one at a time, its
- * files up to `concurrency` at a time, then its subfolders. A name the handle refuses is not the end: the rest is written, and the
+ * files up to 8 at a time, then its subfolders. A name the handle refuses is not the end: the rest is written, and the
  * refusals are reported together, as a {@link CommitError}, when nothing else is left. Stubs (HOST-252) are not written.
  *
  * Without `clean`, a file of the target that has the name of one written is replaced and everything else in the target is left alone.
@@ -275,7 +265,6 @@ function countStubs(vfs: MemoryVfs, source: string): number {
  */
 export async function commitToDirectory(vfs: MemoryVfs, handle: FsaDirectoryHandle, options: CommitToDirectoryOptions = {}): Promise<CommitResult> {
   const { signal } = options;
-  const concurrency = Math.max(1, Math.floor(options.concurrency ?? 8));
   const root = posix.resolveFrom(vfs.cwd, options.from ?? "/");
   if (!vfs.stat(root).isDirectory) vfs.readdir(root); // a file: the tree's own ENOTDIR
   const written: CommitResult = { files: 0, directories: 0, bytes: 0, stubs: 0 };
@@ -292,10 +281,11 @@ export async function commitToDirectory(vfs: MemoryVfs, handle: FsaDirectoryHand
   };
 
   if (options.clean === true) {
-    const stubs = countStubs(vfs, root);
-    if (stubs > 0) {
+    const under = root === "/" ? "/" : `${root}/`;
+    const count = [...stubs].filter((path) => path.startsWith(under)).length;
+    if (count > 0) {
       throw new Error(
-        `clean refused, nothing in the target was touched: the tree holds ${stubs} ${stubs === 1 ? "stub" : "stubs"}, whose content is not in the tree and may exist only in the target; a mount never causes the loss of a user's only copy`,
+        `clean refused, nothing in the target was touched: the tree holds ${count} ${count === 1 ? "stub" : "stubs"}, whose content is not in the tree and may exist only in the target; a mount never causes the loss of a user's only copy`,
       );
     }
     const names: string[] = [];
@@ -350,7 +340,7 @@ export async function commitToDirectory(vfs: MemoryVfs, handle: FsaDirectoryHand
         await job();
       }
     };
-    await Promise.all(Array.from({ length: Math.min(concurrency, pending.length) }, worker));
+    await Promise.all(Array.from({ length: Math.min(WRITES_AT_ONCE, pending.length) }, worker));
     for (const entry of folders) {
       if (shouldStop()) return;
       const path = `${prefix}${entry.name}`;

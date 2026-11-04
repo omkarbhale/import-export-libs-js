@@ -247,8 +247,8 @@ describe("commitToDirectory (HOST-253)", () => {
     it("refuses a tree mounted with a stub, naming the count, and leaves the target untouched", async () => {
       const picked = new FakeDirectoryHandle("picked")
         .put("a.xml", "A")
-        .put("manual.pdf", bytesOf(STUB_THRESHOLD_BYTES + 1))
-        .put("deep/er/video.bin", bytesOf(STUB_THRESHOLD_BYTES + 1));
+        .put("manual.pdf", bytesOf(STUB_THRESHOLD + 1))
+        .put("deep/er/video.bin", bytesOf(STUB_THRESHOLD + 1));
       const vfs = await mountDirectory(picked);
       const before = filesOf(picked);
       await expect(commitToDirectory(vfs, picked, { clean: true })).rejects.toThrow(/2 stubs.*a mount never causes the loss of a user's only copy/);
@@ -259,30 +259,33 @@ describe("commitToDirectory (HOST-253)", () => {
 
     it("counts only the stubs under `from`", async () => {
       const vfs = new MemoryVfs({ "/out/a.xml": "A", "/other/b.xml": "B" });
-      vfs.mountStub("/other/big.bin", 5_000_000);
+      addStub(vfs, "/other/big.bin");
       const handle = new FakeDirectoryHandle("target").put("old.txt", "old");
       expect(await commitToDirectory(vfs, handle, { from: "/out", clean: true })).toEqual({ files: 1, directories: 0, bytes: 1, stubs: 0 });
       expect(handle.state.removed).toEqual(["/old.txt"]);
-      vfs.mountStub("/out/sub/big.bin", 5_000_000);
+      addStub(vfs, "/out/sub/big.bin");
       await expect(commitToDirectory(vfs, handle, { from: "/out", clean: true })).rejects.toThrow(/1 stub\b/);
       expect(handle.state.removed).toEqual(["/old.txt"]);
     });
+
+    it("does not count a sibling folder whose name starts the same, and resolves `from` against the tree's cwd", async () => {
+      const vfs = new MemoryVfs({ "/work/out/a.xml": "A" }, { cwd: "/work" });
+      addStub(vfs, "/work/outer/big.bin");
+      const handle = new FakeDirectoryHandle("target");
+      expect(await commitToDirectory(vfs, handle, { from: "out", clean: true })).toMatchObject({ files: 1, stubs: 0 });
+      addStub(vfs, "/work/out/big.bin");
+      await expect(commitToDirectory(vfs, handle, { from: "out", clean: true })).rejects.toThrow(/1 stub\b/);
+    });
   });
 
-  it("writes at most `concurrency` files of a folder at once, and 8 by default", async () => {
+  it("writes at most 8 files of a folder at once", async () => {
     const files: Record<string, string> = {};
     for (let index = 0; index < 40; index += 1) files[`/f${String(index).padStart(2, "0")}.xml`] = "x";
     const vfs = new MemoryVfs(files);
-    const byDefault = new FakeDirectoryHandle("a");
-    await commitToDirectory(vfs, byDefault);
-    expect(byDefault.state.maxOpenWritables).toBe(8);
-    const two = new FakeDirectoryHandle("b");
-    await commitToDirectory(vfs, two, { concurrency: 2 });
-    expect(two.state.maxOpenWritables).toBe(2);
-    const one = new FakeDirectoryHandle("c");
-    await commitToDirectory(vfs, one, { concurrency: 0 });
-    expect(one.state.maxOpenWritables).toBe(1);
-    expect(one.contents().size).toBe(40);
+    const handle = new FakeDirectoryHandle("a");
+    await commitToDirectory(vfs, handle);
+    expect(handle.state.maxOpenWritables).toBe(8);
+    expect(handle.contents().size).toBe(40);
   });
 
   it("writes the rest and reports the refused names together at the end", async () => {
@@ -339,7 +342,6 @@ describe("commitToDirectory (HOST-253)", () => {
     const reason = new DOMException("stop", "AbortError");
     const error = (await commitToDirectory(vfs, handle, {
       signal: controller.signal,
-      concurrency: 1,
       onProgress: (progress) => {
         if (progress.files === 5) controller.abort(reason);
       },
@@ -347,8 +349,10 @@ describe("commitToDirectory (HOST-253)", () => {
     expect(error).toBeInstanceOf(CommitError);
     expect(error.aborted).toBe(true);
     expect(error.cause).toBe(reason);
-    expect(error.written.files).toBe(5);
-    expect(filesOf(handle).size).toBe(5);
+    // the fifth file ends with at most seven others in flight, which finish; nothing starts after them
+    expect(error.written.files).toBeGreaterThanOrEqual(5);
+    expect(error.written.files).toBeLessThanOrEqual(12);
+    expect(filesOf(handle).size).toBe(error.written.files);
     expect(handle.contents().has("sub/")).toBe(false);
     const before = new AbortController();
     before.abort();
