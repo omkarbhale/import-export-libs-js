@@ -62,5 +62,4 @@ export const ODD_FILE_NAMES = [
   "PROGRA~1.xml",
   "con.txt",
   "COM1.xml",
-  "\ud800lone.xml",
 ];

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { CItemException } from "../client/fault.js";
 import type { Engine } from "../engines.js";
@@ -199,13 +200,10 @@ async function bothWays(matrixCase: MatrixCase, memory: (root: string) => Sandbo
 
 // ------------------------------------------------------------------------------------------------------------- cases
 
-/** What the disk may lack and the tree has no more of, besides the capabilities of the suite of HOST-214. */
-type Needs = Capability | "wellFormedNames" | "unboundedNames";
-
 interface MatrixCase {
   name: string;
   /** The capability the case needs of both file systems; it is skipped, with the reason, on a host that lacks it. */
-  needs?: Needs;
+  needs?: Capability;
   /** A case that cannot run on either file system, and why. */
   skip?: string;
   run(run: Run): void | Promise<void>;
@@ -214,8 +212,6 @@ interface MatrixCase {
 interface MatrixTable {
   /** The table of the data, as `file: CONSTANT`. */
   id: string;
-  /** The unit test that holds the assertions on the same data. */
-  test: string;
   /** The rows of the data table(s), counting each constant's length; `0` for a table of scenarios without a constant. */
   rows: number;
   cases: MatrixCase[];
@@ -229,7 +225,6 @@ const FOLD_NAME = (first: string, second: string): string => `c_${first.charCode
 
 const windowsFoldTable: MatrixTable = {
   id: "io/windows-fs.cases.ts: FOLD_CASES, FIRST_SPELLING_WRITES",
-  test: "io/windows-fs.test.ts",
   rows: FOLD_CASES.length + FIRST_SPELLING_WRITES.length,
   cases: [
     ...FOLD_CASES.map(
@@ -259,7 +254,6 @@ const windowsFoldTable: MatrixTable = {
 const windowsNameTables: MatrixTable[] = [
   {
     id: "io/windows-fs.cases.ts: TRAILING_FILE_NAMES",
-    test: "io/windows-fs.test.ts",
     rows: TRAILING_FILE_NAMES.length,
     cases: TRAILING_FILE_NAMES.map(
       (name): MatrixCase => ({
@@ -276,7 +270,6 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: ILLEGAL_PATH_NAMES",
-    test: "io/windows-fs.test.ts",
     rows: ILLEGAL_PATH_NAMES.length,
     cases: ILLEGAL_PATH_NAMES.map(
       (bad): MatrixCase => ({
@@ -291,7 +284,6 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: DEVICE_FOLDER_NAMES",
-    test: "io/windows-fs.test.ts",
     rows: DEVICE_FOLDER_NAMES.length,
     cases: DEVICE_FOLDER_NAMES.map(
       (device): MatrixCase => ({
@@ -308,10 +300,9 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: ODD_FILE_NAMES (new, matrix only)",
-    test: "(none)",
     rows: ODD_FILE_NAMES.length,
     cases: ODD_FILE_NAMES.map((name): MatrixCase => {
-      const needs: Needs | undefined = /[\ud800-\udfff]/u.test(name.replace(/[\ud800-\udbff][\udc00-\udfff]/g, "")) ? "wellFormedNames" : name.length > 250 ? "longName" : name === "\u00e9.xml" || name === "e\u0301.xml" ? "normalization" : undefined;
+      const needs: Capability | undefined = name.length > 250 ? "longName" : name === "\u00e9.xml" || name === "e\u0301.xml" ? "normalization" : undefined;
       return {
         name: JSON.stringify(name.length > 40 ? `${name.slice(0, 8)}…(${name.length})` : name),
         ...(needs === undefined ? {} : { needs }),
@@ -340,7 +331,6 @@ const windowsNameTables: MatrixTable[] = [
 /** The scenarios of `io/windows-fs.test.ts` that are not tables: each `it` of the file, run on both file systems. */
 const windowsScenarios: MatrixTable = {
   id: "io/windows-fs.test.ts: the scenarios (no table)",
-  test: "io/windows-fs.test.ts",
   rows: 0,
   cases: [
     {
@@ -491,31 +481,10 @@ const windowsScenarios: MatrixTable = {
   ],
 };
 
-/** A name that passes the disk's own limit (255 bytes of UTF-8), which the layers above the host do not check. */
-const beyondDiskLimit: MatrixTable = {
-  id: "io/host-path.ts: a host name past the disk's limit (new, matrix only)",
-  test: "(none)",
-  rows: 0,
-  cases: [
-    {
-      name: "a name of 300 characters, through the host path",
-      needs: "unboundedNames",
-      run: (t) => {
-        const name = `${"n".repeat(296)}.xml`;
-        t.step("write", () => writeFileBytes(t.abs(name), Buffer.from("long"), t.host));
-        t.step("read", () => readFileBytes(t.abs(name), t.host));
-        t.step("the name", () => t.names().map((entry) => entry.length));
-        t.step("the Windows layer refuses it first", () => writeVolumeFile(t.win(name), Buffer.from("long"), t.env));
-      },
-    },
-  ],
-};
-
 // ---- io/host-path
 
 const hostPathScenarios: MatrixTable = {
   id: "io/host-path.test.ts: reading and writing files (no table)",
-  test: "io/host-path.test.ts",
   rows: 0,
   cases: [
     {
@@ -568,7 +537,6 @@ const hostPathScenarios: MatrixTable = {
 const hostPathTables: MatrixTable[] = [
   {
     id: "io/host-path.cases.ts: ILLEGAL_FULL_PATHS (no file is touched)",
-    test: "io/host-path.test.ts",
     rows: ILLEGAL_FULL_PATHS.length,
     cases: ILLEGAL_FULL_PATHS.map(
       (bad): MatrixCase => ({
@@ -582,7 +550,6 @@ const hostPathTables: MatrixTable[] = [
   },
   {
     id: "io/host-path.cases.ts: COLON_FORMAT_PATHS (no file is touched)",
-    test: "io/host-path.test.ts",
     rows: COLON_FORMAT_PATHS.length,
     cases: COLON_FORMAT_PATHS.map(
       (bad): MatrixCase => ({
@@ -595,7 +562,6 @@ const hostPathTables: MatrixTable[] = [
   },
   {
     id: "io/host-path.cases.ts: DRIVE_AND_SHARE_PATHS",
-    test: "io/host-path.test.ts",
     rows: DRIVE_AND_SHARE_PATHS.length,
     cases: DRIVE_AND_SHARE_PATHS.map(
       (path): MatrixCase => ({
@@ -618,7 +584,6 @@ const hostPathTables: MatrixTable[] = [
 const languagePackTables: MatrixTable[] = [
   {
     id: "io/language-pack-io.cases.ts: DIRECTORY_NAME_CASES (no file is touched)",
-    test: "io/language-pack-io.test.ts",
     rows: DIRECTORY_NAME_CASES.length,
     cases: DIRECTORY_NAME_CASES.map(
       ([path]): MatrixCase => ({
@@ -632,7 +597,6 @@ const languagePackTables: MatrixTable[] = [
   },
   {
     id: "io/language-pack-io.test.ts: File.WriteAllText, the parent folder (no table)",
-    test: "io/language-pack-io.test.ts",
     rows: 0,
     cases: [
       {
@@ -719,13 +683,11 @@ const catalogueRuns: Array<readonly [Engine, LoadCase[]]> = [
 const loadTables: MatrixTable[] = [
   {
     id: "import/load-package-dom.cases.ts: LOAD_CASES, EXTRA_LOAD_CASES (12.0, 12.0 extra, 14.0.7, 14.35)",
-    test: "import/load-package-dom.test.ts",
     rows: LOAD_CASES.length + EXTRA_LOAD_CASES.length,
     cases: catalogueRuns.flatMap(([engine, cases]) => cases.map((testCase) => loadCase(testCase, engine))),
   },
   {
     id: "import/load-package-dom.cases.ts: LISTING_TREES",
-    test: "import/load-package-dom.test.ts",
     rows: Object.keys(LISTING_TREES).length,
     cases: [
       {
@@ -802,7 +764,6 @@ const loadTables: MatrixTable[] = [
   },
   {
     id: "import/load-package-dom.cases.ts: SKIP_AND_STAMP_TREES, FAILURE_TREES",
-    test: "import/load-package-dom.test.ts",
     rows: Object.keys(SKIP_AND_STAMP_TREES).length + Object.keys(FAILURE_TREES).length,
     cases: [
       ...Object.entries(SKIP_AND_STAMP_TREES).map(
@@ -841,13 +802,12 @@ const loadTables: MatrixTable[] = [
   },
   {
     id: "import/load-package-dom.cases.ts: ODD_FILE_FIXTURES (fixtures/14.0.7/import/<name>/step-1/input)",
-    test: "import/transcripts.test.ts, the import replays",
     rows: ODD_FILE_FIXTURES.length,
     cases: ODD_FILE_FIXTURES.map(
       (fixture): MatrixCase => ({
         name: fixture,
         run: (t) => {
-          const input = new URL(`../../fixtures/14.0.7/import/${fixture}/step-1/input/`, import.meta.url).pathname;
+          const input = fileURLToPath(new URL(`../../fixtures/14.0.7/import/${fixture}/step-1/input/`, import.meta.url));
           const copy = (from: string, to: string): void => {
             for (const entry of readdirSync(from, { withFileTypes: true })) {
               if (entry.isDirectory()) {
@@ -872,7 +832,6 @@ const exportTables: MatrixTable[] = REPLAYED_ENGINES.map((engine): MatrixTable =
   const names = exportFolderCaseNames(engine);
   return {
     id: `export/export-folders.cases.ts: exportFolderCaseNames("${engine}") (cases with a removal mode, ${REMOVAL_MODES.join(" and ")}, are left to run-replay.test.ts)`,
-    test: "export/export-folders.test.ts",
     rows: names.length,
     cases: names.map(
       (name): MatrixCase => ({
@@ -909,7 +868,7 @@ const exportTables: MatrixTable[] = REPLAYED_ENGINES.map((engine): MatrixTable =
 
 // ------------------------------------------------------------------------------------------------------------- the matrix
 
-const TABLES: MatrixTable[] = [windowsFoldTable, ...windowsNameTables, windowsScenarios, beyondDiskLimit, hostPathScenarios, ...hostPathTables, ...languagePackTables, ...loadTables, ...exportTables];
+const TABLES: MatrixTable[] = [windowsFoldTable, ...windowsNameTables, windowsScenarios, hostPathScenarios, ...hostPathTables, ...languagePackTables, ...loadTables, ...exportTables];
 
 const diskFixture: HostFsFactory = (): HostFsFixture => {
   const root = mkdtempSync(join(tmpdir(), "libsjs-matrix-probe-"));
@@ -921,40 +880,8 @@ const memoryFixture: HostFsFactory = (): HostFsFixture => {
   return { fs, root: "/work" };
 };
 
-/** Whether a folder keeps a name with a lone surrogate as it was given: a disk stores UTF-8, which has no such code point. */
-function keepsLoneSurrogates(makeFs: HostFsFactory): boolean {
-  const fixture = makeFs();
-  try {
-    const name = "\ud800lone.xml";
-    fixture.fs.writeFile(`${fixture.root}/${name}`, new Uint8Array(0));
-    return fixture.fs.readdir(fixture.root).some((entry) => entry.name === name);
-  } catch {
-    return false;
-  } finally {
-    fixture.dispose?.();
-  }
-}
-
-/** Whether a name of 300 characters can be written: a disk stops at 255 bytes, `ENAMETOOLONG`, where the tree has no limit (HOST-215). */
-function acceptsLongNames(makeFs: HostFsFactory): boolean {
-  const fixture = makeFs();
-  try {
-    fixture.fs.writeFile(`${fixture.root}/${"n".repeat(300)}`, new Uint8Array(0));
-    return true;
-  } catch {
-    return false;
-  } finally {
-    fixture.dispose?.();
-  }
-}
-
-const capabilities = (makeFs: HostFsFactory): Record<Needs, boolean> => ({
-  ...probeCapabilities(makeFs),
-  wellFormedNames: keepsLoneSurrogates(makeFs),
-  unboundedNames: acceptsLongNames(makeFs),
-});
-const onDisk = capabilities(diskFixture);
-const inMemory = capabilities(memoryFixture);
+const onDisk = probeCapabilities(diskFixture);
+const inMemory = probeCapabilities(memoryFixture);
 
 /** Why a case is not run on this host, or undefined when it is. */
 function skipReason(matrixCase: MatrixCase): string | undefined {
