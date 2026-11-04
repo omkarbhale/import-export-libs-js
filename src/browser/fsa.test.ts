@@ -254,7 +254,10 @@ describe("commitToDirectory (HOST-253)", () => {
       await expect(commitToDirectory(vfs, picked, { clean: true })).rejects.toThrow(/2 stubs.*a mount never causes the loss of a user's only copy/);
       expect(picked.state.removed).toEqual([]);
       expect(picked.state.maxOpenWritables).toBe(0);
-      expect(filesOf(picked)).toEqual(before);
+      // Compared with `Buffer.equals`: `toEqual` walks these megabytes element by element and takes seconds, past the timeout under load.
+      const after = filesOf(picked);
+      expect([...after.keys()]).toEqual([...before.keys()]);
+      for (const [path, bytes] of before) expect(Buffer.from(after.get(path) ?? []).equals(bytes), path).toBe(true);
     });
 
     it("counts only the stubs under `from`", async () => {
