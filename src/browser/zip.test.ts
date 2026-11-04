@@ -361,6 +361,15 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
       expect(vfsFromZip(zip())).not.toBe(vfsFromZip(zip()));
     });
 
+    it("refuses a path that is the other kind in the tree it was given, and leaves the tree as it was", () => {
+      const fileOverFolder = new MemoryVfs({ "/Top": "file" });
+      expectZipError(() => vfsFromZip(rawZip([{ name: "A.xml", data: encode("a") }, { name: "Top/b.xml", data: encode("b") }]), { into: fileOverFolder }), "ZIP_CONFLICT", /"Top"/);
+      expect(fileOverFolder.toTree()).toEqual(["Top"]);
+      const folderOverFile = new MemoryVfs({ "/Top/keep.xml": "k" });
+      expectZipError(() => vfsFromZip(rawZip([{ name: "A.xml", data: encode("a") }, { name: "Top", data: encode("b") }]), { into: folderOverFile }), "ZIP_CONFLICT", /"Top"/);
+      expect(folderOverFile.toTree()).toEqual(["Top/", "Top/keep.xml"]);
+    });
+
     it("refuses a zip over the remaining capacity of the tree before inflating, whatever maxBytes says", () => {
       const fits = new MemoryVfs({ "/old.txt": "1234567" }, { maxBytes: 10 });
       vfsFromZip(zip(), { into: fits });

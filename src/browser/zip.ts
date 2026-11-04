@@ -311,6 +311,14 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
     }
   }
 
+  const vfs = options.into ?? new MemoryVfs();
+  for (const [path, kind] of kinds) {
+    const target = `/${path}`;
+    if (vfs.exists(target) && vfs.stat(target).isDirectory !== (kind === "folder")) {
+      throw new ZipError("ZIP_CONFLICT", `the path ${JSON.stringify(path)} is a ${kind} in this zip and not in the tree it is mounted into`);
+    }
+  }
+
   // what every file will cost, and what it may claim, before anything is inflated
   let total = 0;
   for (const { raw, directory, segments } of kept) {
@@ -323,7 +331,6 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
     }
     total += raw.size;
   }
-  const vfs = options.into ?? new MemoryVfs();
   const limit = Math.min(options.maxBytes ?? DEFAULT_MAX_BYTES, vfs.maxBytes - vfs.size);
   if (total > limit) throw new ZipError("ZIP_TOO_LARGE", `the zip holds ${total} bytes, over the limit of ${limit}`);
 
