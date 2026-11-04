@@ -297,22 +297,11 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
     planned.push({ raw, segments, directory });
   }
 
+  pathKinds(planned);
   const kept = applyRoot(planned, options.root);
 
-  // a path that is a file in one entry and a folder in another
-  const kinds = new Map<string, "file" | "folder">();
-  for (const entry of kept) {
-    for (let depth = 1; depth <= entry.segments.length; depth += 1) {
-      const path = entry.segments.slice(0, depth).join("/");
-      const kind = depth < entry.segments.length || entry.directory ? "folder" : "file";
-      const known = kinds.get(path);
-      if (known !== undefined && known !== kind) throw new ZipError("ZIP_CONFLICT", `the path ${JSON.stringify(path)} is a file and a folder in this zip`);
-      kinds.set(path, kind);
-    }
-  }
-
   const vfs = options.into ?? new MemoryVfs();
-  for (const [path, kind] of kinds) {
+  for (const [path, kind] of pathKinds(kept)) {
     const target = `/${path}`;
     if (vfs.exists(target) && vfs.stat(target).isDirectory !== (kind === "folder")) {
       throw new ZipError("ZIP_CONFLICT", `the path ${JSON.stringify(path)} is a ${kind} in this zip and not in the tree it is mounted into`);
@@ -320,6 +309,8 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
   }
 
   // what every file will cost, and what it may claim, before anything is inflated
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const storedData = new Map<RawEntry, Uint8Array>();
   let total = 0;
   for (const { raw, directory, segments } of kept) {
     if (directory) continue;
@@ -329,21 +320,36 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
     if (raw.method === 0 ? raw.size !== raw.compressedSize : raw.size > (raw.compressedSize + 1) * MAX_DEFLATE_RATIO) {
       throw new ZipError("ZIP_INVALID", `the entry ${label} claims a size of ${raw.size} bytes, which its ${raw.compressedSize} stored bytes cannot hold`);
     }
+    storedData.set(raw, locateData(bytes, view, raw, segments.join("/")));
     total += raw.size;
   }
   const limit = Math.min(options.maxBytes ?? DEFAULT_MAX_BYTES, vfs.maxBytes - vfs.size);
   if (total > limit) throw new ZipError("ZIP_TOO_LARGE", `the zip holds ${total} bytes, over the limit of ${limit}`);
 
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   for (const { raw, segments, directory } of kept) {
     const path = posix.join("/", ...segments);
     if (directory) {
       vfs.mount({ [`${path}/`]: new Uint8Array(0) });
       continue;
     }
-    vfs.mount({ [path]: extract(bytes, view, raw, segments.join("/")) });
+    vfs.mount({ [path]: extract(storedData.get(raw)!, raw, segments.join("/")) });
   }
   return vfs;
+}
+
+/** Every path the entries make, as a file or a folder; a path that is both is refused. */
+function pathKinds(entries: readonly PlannedEntry[]): Map<string, "file" | "folder"> {
+  const kinds = new Map<string, "file" | "folder">();
+  for (const entry of entries) {
+    for (let depth = 1; depth <= entry.segments.length; depth += 1) {
+      const path = entry.segments.slice(0, depth).join("/");
+      const kind = depth < entry.segments.length || entry.directory ? "folder" : "file";
+      const known = kinds.get(path);
+      if (known !== undefined && known !== kind) throw new ZipError("ZIP_CONFLICT", `the path ${JSON.stringify(path)} is a file and a folder in this zip`);
+      kinds.set(path, kind);
+    }
+  }
+  return kinds;
 }
 
 /** Applies `root` to the entries that are kept (HOST-250). */
@@ -357,15 +363,20 @@ function applyRoot(planned: PlannedEntry[], root: "auto" | undefined): PlannedEn
   return planned.filter((entry) => entry.segments.length > 1).map((entry) => ({ ...entry, segments: entry.segments.slice(1) }));
 }
 
-/** Reads and inflates one file entry, and checks it against what the central directory says. */
-function extract(bytes: Uint8Array, view: DataView, entry: RawEntry, label: string): Uint8Array {
-  const { localOffset, compressedSize, size } = entry;
+/** The stored bytes of a file entry, from its local header; refused when they are not where the central directory says. */
+function locateData(bytes: Uint8Array, view: DataView, entry: RawEntry, label: string): Uint8Array {
+  const { localOffset, compressedSize } = entry;
   if (localOffset + 30 > bytes.length || view.getUint32(localOffset, true) !== LOCAL_SIGNATURE) {
     throw new ZipError("ZIP_INVALID", `the entry ${JSON.stringify(label)} has no local header where the central directory says`);
   }
   const start = localOffset + 30 + view.getUint16(localOffset + 26, true) + view.getUint16(localOffset + 28, true);
   if (start + compressedSize > bytes.length) throw new ZipError("ZIP_INVALID", `the data of the entry ${JSON.stringify(label)} runs past the end of the file`);
-  const stored = bytes.subarray(start, start + compressedSize);
+  return bytes.subarray(start, start + compressedSize);
+}
+
+/** Inflates the stored bytes of one file entry, and checks them against what the central directory says. */
+function extract(stored: Uint8Array, entry: RawEntry, label: string): Uint8Array {
+  const { size } = entry;
   let data: Uint8Array;
   if (entry.method === 0) data = stored;
   else {

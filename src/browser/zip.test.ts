@@ -370,6 +370,23 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
       expect(folderOverFile.toTree()).toEqual(["Top/", "Top/keep.xml"]);
     });
 
+    it('refuses a file and a folder at one path even when root: "auto" would strip the file', () => {
+      expectZipError(() => vfsFromZip(rawZip([{ name: "Top", data: encode("t") }, { name: "Top/x.xml", data: encode("x") }]), { root: "auto" }), "ZIP_CONFLICT", /"Top"/);
+    });
+
+    it("refuses an entry with no local header or with data past the end before writing to the tree", () => {
+      const first = { name: "A.xml", data: encode("new") };
+      const noHeader = rawZip([first, { name: "B.xml", data: encode("b") }]);
+      new DataView(noHeader.buffer).setUint32(30 + 5 + 3, 0, true);
+      const pastEnd = rawZip([first, { name: "B.xml", stored: encode("b"), method: 8, compressedSize: 100000, size: 1 }]);
+      for (const zip of [noHeader, pastEnd]) {
+        const into = new MemoryVfs({ "/A.xml": "old" });
+        expectZipError(() => vfsFromZip(zip, { into }), "ZIP_INVALID", /"B\.xml"/);
+        expect(into.toTree()).toEqual(["A.xml"]);
+        expect(text(into.readFile("/A.xml"))).toBe("old");
+      }
+    });
+
     it("refuses a zip over the remaining capacity of the tree before inflating, whatever maxBytes says", () => {
       const fits = new MemoryVfs({ "/old.txt": "1234567" }, { maxBytes: 10 });
       vfsFromZip(zip(), { into: fits });
