@@ -20,5 +20,5 @@
   },
   "include": ["src", "spec", "tools", "oracle/src", "*.ts"],
   // Declares an ambient Buffer for the browser project; with @types/node it would be a duplicate. See tsconfig.browser.json.
-  "exclude": ["src/browser/globals.d.ts"]
+  "exclude": ["src/browser/globals.d.ts", "src/browser/fsa-dom.check.ts"]
 }
