@@ -21,8 +21,11 @@ import {
 
 /** What the layer needs to know about the host. Tests give both, to follow the Windows rules on another platform. */
 export interface PathEnvironment {
-  /** The platform whose path rules the run follows; the default is the platform of the host environment (HOST-203). */
-  platform?: NodeJS.Platform;
+  /**
+   * The platform whose path rules the run follows: `"win32"` for the Windows rules and any other name for the POSIX ones, as for
+   * `HostEnv.platform`; the default is the platform of the host environment (HOST-203).
+   */
+  platform?: string;
   /** The current directory, a Windows path when the platform is `win32`; the default is the current directory of the host environment (HOST-203). */
   cwd?: string;
   /**
@@ -32,8 +35,8 @@ export interface PathEnvironment {
   normalizePaths?: boolean;
   /**
    * The file system the layer reads and writes through (HOST-200, HOST-210); the default is the file system of the default host
-   * (`defaultHost().fs`), the Node file system on Node. The layer in this file and in `windows-fs.ts` honours it; the package listing and
-   * the log file do not yet.
+   * (`defaultHost().fs`), the Node file system on Node. Every file the core touches goes through it: the layer in this file and in
+   * `windows-fs.ts`, the package listing (HOST-212) and the log file (HOST-213).
    */
   fs?: HostFs;
   /** The rest of the machine (HOST-200, HOST-203); the default is the environment of the running platform (`defaultHostEnv()`). */

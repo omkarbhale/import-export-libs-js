@@ -1,10 +1,9 @@
-import { closeSync, openSync, writeSync } from "node:fs";
 import { ENGINE_ASSEMBLY_VERSIONS, type Engine } from "../engines.js";
 import type { ArasVersion } from "../client/version.js";
 import { ArgumentException, ArgumentNullException, IOException } from "../io/errors.js";
 import { defaultHostEnv } from "../host/default-host.js";
-import type { HostEnv } from "../host/types.js";
-import { envOf, getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
+import type { AppendHandle, HostEnv } from "../host/types.js";
+import { envOf, fsOf, getFullPath, toHostPath, translateFileError } from "../io/host-path.js";
 import type { PathEnvironment } from "../io/host-path.js";
 import { flavourOf } from "../io/path.js";
 import { utf8Bytes } from "../io/utf8.js";
@@ -69,22 +68,28 @@ export function currentCultureDateTime(date: Date, culture: string = processCult
   return pattern.replace(/yyyy|MM|M|dd|d|HH|h|mm|ss|tt/g, (field) => fields[field] as string);
 }
 
-/** The host paths of the log files a run holds open. A second writer on one of them fails (EXP-505, EXP-541). */
+/**
+ * The log files a run holds open, by the full path the environment's current directory gives them. A second writer on one of them
+ * fails (EXP-505, EXP-541). The set is the engine's, not the host's: it is process-wide, and it does not depend on what a host does about
+ * two handles on one file (HOST-213).
+ */
 const held = new Set<string>();
 
 /**
  * The log: the engine's `StreamWriter` on `LogFilePath`, opened for append (EXP-505). The file is created when it does not exist,
  * the text is UTF-8 without a BOM with CRLF line ends, and the bytes reach the file when the writer is disposed. While one is open,
- * a second writer on the same path fails with the `IOException` of a sharing violation, which is bug EXP-541.
+ * a second writer on the same path fails with the `IOException` of a sharing violation, which is bug EXP-541. The file is opened
+ * for append through the environment's `HostFs` (HOST-210) and the text is written through the handle when the log is disposed;
+ * the one-writer rule is the log's own and does not ask the host (HOST-213).
  *
- * @spec EXP-505 EXP-541
+ * @spec EXP-505 EXP-541 HOST-210 HOST-213
  */
 export class RunLog {
   private pending: string[] = [];
   private closed = false;
 
   private constructor(
-    private readonly descriptor: number,
+    private readonly handle: AppendHandle,
     private readonly key: string,
   ) {}
 
@@ -104,14 +109,14 @@ export class RunLog {
       const full = env.platform === "win32" ? getFullPath(path, env.cwd) : key;
       throw new IOException(`The process cannot access the file '${full}' because it is being used by another process.`);
     }
-    let descriptor: number;
+    let handle: AppendHandle;
     try {
-      descriptor = openSync(host, "a");
+      handle = fsOf(environment).openAppend(host);
     } catch (error) {
       throw translateFileError(error, host, true, environment);
     }
     held.add(key);
-    return new RunLog(descriptor, key);
+    return new RunLog(handle, key);
   }
 
   /** `Write(text)`: the text as it is, with no line end. */
@@ -130,10 +135,10 @@ export class RunLog {
     this.closed = true;
     held.delete(this.key);
     try {
-      if (this.pending.length > 0) writeSync(this.descriptor, utf8Bytes(this.pending.join("")));
+      if (this.pending.length > 0) this.handle.write(utf8Bytes(this.pending.join("")));
     } finally {
       this.pending = [];
-      closeSync(this.descriptor);
+      this.handle.close();
     }
   }
 }
