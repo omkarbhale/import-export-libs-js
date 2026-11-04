@@ -26,7 +26,7 @@ export const ENTRY = "src/index.ts";
  * Browser-only files that `ENTRY` does not import (the Node entry never ships them), each a root of the analysis besides `ENTRY`:
  * they are held to the same rule, and what they import joins the closure. `src/browser.ts` replaces this list (ticket 21).
  */
-export const BROWSER_ROOTS: readonly string[] = ["src/browser/fetch-transport.ts"];
+export const BROWSER_ROOTS: readonly string[] = ["src/browser/fetch-transport.ts", "src/browser/host.ts", "src/host/default-host.browser.ts"];
 /** The hand-written ambient declarations that stand in for Node's `Buffer` (ticket 14 replaces them). */
 export const GLOBALS = "src/browser/globals.d.ts";
 export const BROWSER_TSCONFIG = "tsconfig.browser.json";

@@ -235,3 +235,39 @@ The table is CLDR 47's `windowsZones.xml` (WIRE-005) with a short list of supple
 | `Antarctica/Troll` | **Documented, not mapped.** CLDR has no Windows zone for it (Troll Station keeps UTC and UTC+2, which no Windows zone does), and an invented one would send a wrong `TIMEZONE_NAME`. A browser or Node whose zone is `Antarctica/Troll` gets `UnmappedTimeZoneError`, and the caller passes the Windows id as `timeZoneName` (`--time-zone`). |
 
 A zone that a later ICU adds and the table lacks fails the test above, which is the prompt to decide it the same way.
+
+## HOST-243: the browser host's values: platform, current directory, temporary folder, parallelism, clock, randomness and yield
+
+[14.0.7] `createBrowserHost(options)` (`src/browser/host.ts`) is the `Host` (HOST-200) of a page, a Worker or a test: the `HostEnv` of `createBrowserEnv`, the `fs` of the options and the `transport` of the options. It imports nothing from Node and reads the page's globals only when a member is used, so that importing the library reads none. `src/host/default-host.browser.ts` is the module that the browser bundle and the browser test configuration put in the place of `src/host/default-host.ts`; it exports the same `defaultHost`, `defaultHostEnv` and `defaultTransport`, answers the host of `createBrowserHost()` made on first use, and imports no `node:*` module.
+
+The members of the `HostEnv` it answers:
+
+| Member | Value |
+|---|---|
+| `platform` | `"browser"`, which every `platform === "win32"` test of the core reads as POSIX (HOST-202), so a path of the engine is relative or rooted by `\`, never a drive letter (HOST-216). |
+| `cwd()` | the `cwd` option, default `"/"`. |
+| `tmpdir()` | `"/tmp"`. |
+| `osUser()` | `{ user, machine: "browser" }` with no `domain`; `user` is the `osUser` option, default `"user"`. The audit row (IMP-452) is `browser\<user>` for 12.0 and 14.0.7 and `<user>` for 14.35. The default is a placeholder so that no run throws for the want of one: the user name is a product-visible value, and the facade of the browser API gives it explicitly. |
+| `availableParallelism()` | `navigator.hardwareConcurrency` when it is a whole number of at least 1, and 4 otherwise (a browser may leave it out, or round it, and a Worker has it as the page does). |
+| `monotonicNs()` | `BigInt(Math.round(performance.now() * 1e6))`: a clock that never goes back, with the page's time origin (HOST-241). |
+| `randomBytes(n)` | `n` bytes from `crypto.getRandomValues`, which works in a page that is not a secure context, filled in pieces of 65 536 bytes, the most one call accepts. |
+| `randomUuid()` | `crypto.randomUUID()` where the page has it (a secure context), else an RFC 4122 version 4 UUID built from `randomBytes(16)`: lower-case, hyphenated, the version nibble `4` and the variant `8`, `9`, `a` or `b`. |
+| `yieldTurn()` | resolves after a `MessageChannel` message has made the round trip, which runs the other tasks that are ready and, unlike `setTimeout`, is not held back by the browser's clamp of nested timers, in a window and in a Worker alike; a page with no `MessageChannel` waits `setTimeout(…, 0)` instead. Each call opens its own channel and closes both ports when the message arrives. |
+| `windowsTimeZoneId()` | `undefined`: a browser has no `tzutil`, so `localWindowsTimeZoneId` takes the mapping of the IANA zone (HOST-242). |
+| `locale()` | `Intl.DateTimeFormat().resolvedOptions().locale`. |
+
+A host made without an `fs` has none to give: its file calls, `exists` included, fail with an error whose `code` is `ENOSYS` and whose message says to pass `fs`. That code is not one of the errno codes of HOST-201 on purpose, so that the file layer does not turn the error into the .NET exception of a missing file and hide the cause. A caller that runs the engine in a browser passes the file system it mounted (the in-memory tree of a later slice), and a host made without a `transport` has the fetch transport (HOST-230).
+
+The `globals` option replaces `navigator`, `performance`, `crypto`, `MessageChannel` and `setTimeout`, one by one, which is how the Node tests run every member with fakes (`src/browser/host.test.ts`) and how the same members run, unfaked, in the browsers (the browser suites).
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-216: a drive-letter or a UNC engine path is refused on every host that is not Windows, the browser's included
+
+[14.0.7] A path of the engine that names a drive (`C:\out`, `C:rel`) or a network share (`\\server\share`) has no meaning on a host whose `platform` is not `win32`, and the file layer refuses it with `PathNotUsableError` (MAN-033) before it reaches the file system: `toHostPath` for a path that is read, and the path model of `io/windows-fs.ts` for a folder that is created, listed or deleted. The browser's `platform` is `"browser"` (HOST-243), so the rule is the one that already holds on Linux and macOS: in a browser a path of the engine is relative, or rooted by `\`, which is the root `/` of the file system that was mounted. A caller of the browser API is told so before the run, by the error, and not by a failure in the middle of it. The error message names the path.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
