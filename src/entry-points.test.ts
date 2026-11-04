@@ -21,7 +21,7 @@ describe("entry points", () => {
     expect(Object.keys(node)).toHaveLength(NODE_NAMES_BEFORE);
   });
 
-  it("is the core plus the browser host, the fetch transport, the in-memory tree, the file-list and directory adapters and the version for the browser", () => {
+  it("is the core plus the browser host, the fetch transport, the in-memory tree, the file-list, directory and zip adapters and the version for the browser", () => {
     expect(Object.keys(browser).sort()).toEqual(
       [
         ...coreNames,
@@ -29,6 +29,7 @@ describe("entry points", () => {
         "LIBRARY_VERSION",
         "MemoryVfs",
         "STUB_THRESHOLD",
+        "ZipError",
         "commitToDirectory",
         "createBrowserHost",
         "createFetchTransport",
@@ -38,6 +39,8 @@ describe("entry points", () => {
         "mountDataTransfer",
         "mountFileList",
         "stubsOf",
+        "vfsFromZip",
+        "vfsToZip",
       ].sort(),
     );
   });
