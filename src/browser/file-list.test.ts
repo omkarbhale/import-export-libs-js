@@ -3,8 +3,7 @@ import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { MemoryVfs } from "../host/memory-fs.js";
 import { mountDataTransfer, mountFileList } from "./file-list.js";
-import type { DataTransferItemLike, DataTransferItemsLike, DirectoryReaderLike, EntryLike, FileLike } from "./file-list.js";
-import { STUB_THRESHOLD, defaultInclude, stubsOf } from "./mount-options.js";
+import type { DataTransferItemLike, DataTransferItemsLike, DirectoryReaderLike, EntryLike } from "./file-list.js";
 import type { MountOptions } from "./mount-options.js";
 
 /** @spec HOST-254 HOST-255 */
@@ -97,12 +96,8 @@ function entryTree(name: string, tree: DiskTree, batch = 100): EntryLike {
 }
 
 /** A fake item list that is emptied when the drop handler returns, as a browser's is (`done()`). */
-function drop(entries: Array<EntryLike | FileLike>): { items: DataTransferItemsLike; done: () => void } {
-  const list: Array<DataTransferItemLike | undefined> = entries.map((entry) =>
-    "isFile" in entry
-      ? { kind: "file", webkitGetAsEntry: () => entry, getAsFile: () => null }
-      : { kind: "file", webkitGetAsEntry: () => null, getAsFile: () => entry },
-  );
+function drop(entries: EntryLike[]): { items: DataTransferItemsLike; done: () => void } {
+  const list: Array<DataTransferItemLike | undefined> = entries.map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry }));
   const items: { length: number; [index: number]: DataTransferItemLike | undefined } = { length: list.length };
   list.forEach((item, index) => {
     items[index] = item;
@@ -195,17 +190,9 @@ describe("mountFileList (HOST-254)", () => {
     expect(flat.toTree()).toEqual(["x.xml"]);
   });
 
-  it("puts a file that has no relative path at the mount point under its name", async () => {
+  it("puts a file that has no relative path at the root of the tree under its name", async () => {
     const plain = new File(["<AML/>"], "a.xml");
     expect((await mountFileList([plain])).toTree()).toEqual(["a.xml"]);
-    expect((await mountFileList([plain], { at: "/work/in" })).toTree("/")).toEqual(["work/", "work/in/", "work/in/a.xml"]);
-  });
-
-  it("mounts into the tree it is given, at a folder, leaving what is there", async () => {
-    const into = new MemoryVfs({ "/keep.txt": "k" });
-    const result = await mountFileList(files(), { into, at: "/pkg", root: "auto" });
-    expect(result).toBe(into);
-    expect(into.toTree()).toEqual(["keep.txt", "pkg/", "pkg/ItemType/", "pkg/ItemType/a.xml", "pkg/ItemType/sub/", "pkg/ItemType/sub/b.xml", "pkg/imports.mf"]);
   });
 
   it("accepts any iterable, null and an empty list", async () => {
@@ -222,26 +209,15 @@ describe("mountFileList (HOST-254)", () => {
     expect(result.exists("/Empty")).toBe(false);
   });
 
-  it("refuses a path that leaves the mount point", async () => {
+  it("refuses a path that leaves the tree", async () => {
     await expect(mountFileList([pickedFile("Pkg/../../x.xml", "x")])).rejects.toMatchObject({ code: "ERR_MOUNT_UNSAFE_PATH" });
   });
 
-  it("refuses a mount point that is not absolute", async () => {
-    await expect(mountFileList(files(), { at: "pkg" })).rejects.toThrow(TypeError);
-  });
-
-  it("applies include: skip, stub and content, with the default for large other files", async () => {
-    const big = new Uint8Array(STUB_THRESHOLD + 1);
-    const input = [pickedFile("P/a.xml", "a"), pickedFile("P/big.bin", big), pickedFile("P/big.xml", big), pickedFile("P/small.bin", "s"), pickedFile("P/drop.me", "d")];
-    const result = await mountFileList(input, {
-      root: "auto",
-      include: (path, kind, size) => (path === "drop.me" ? "skip" : defaultInclude(path, kind, size)),
-    });
-    expect(result.toTree()).toEqual(["a.xml", "big.bin", "big.xml", "small.bin"]);
-    expect(result.readFile("/big.bin").length).toBe(0);
-    expect(result.readFile("/big.xml").length).toBe(STUB_THRESHOLD + 1);
-    expect(textOf(result, "/small.bin")).toBe("s");
-    expect([...stubsOf(result)]).toEqual(["/big.bin"]);
+  it("reads every file, a large binary too, with its bytes", async () => {
+    const big = new Uint8Array(2 * 1_048_576).fill(7);
+    const result = await mountFileList([pickedFile("P/a.xml", "a"), pickedFile("P/big.bin", big)], { root: "auto" });
+    expect(result.toTree()).toEqual(["a.xml", "big.bin"]);
+    expect(result.readFile("/big.bin")).toEqual(big);
   });
 
   it("reports progress per file, in order", async () => {
@@ -264,9 +240,7 @@ describe("mountFileList (HOST-254)", () => {
     await expect(mountFileList(counted, { maxBytes: 20 })).rejects.toMatchObject({ code: "ENOSPC" });
     expect(reads).toBe(0);
     expect((await mountFileList(counted, { maxBytes: 28 })).size).toBe(28);
-    // a stub is not counted
-    const stubbed = await mountFileList([pickedFile("P/x.bin", new Uint8Array(2 * STUB_THRESHOLD))], { maxBytes: 1 });
-    expect(stubbed.size).toBe(0);
+    await expect(mountFileList([pickedFile("P/x.bin", new Uint8Array(2))], { maxBytes: 1 })).rejects.toMatchObject({ code: "ENOSPC" });
   });
 
   it("stops at the signal", async () => {
@@ -304,11 +278,30 @@ describe("a chosen or dropped zip (HOST-254)", () => {
     expect(result.toTree()).toEqual(["Pkg/", "Pkg/a.xml", "Pkg/imports.mf"]);
   });
 
-  it("copies the unzipped tree to a mount point or into a given tree", async () => {
-    const into = new MemoryVfs({ "/other": "o" });
-    const result = await mountFileList([new File([zipBytes], "p.zip")], { unzip, into, at: "/work" });
-    expect(result).toBe(into);
-    expect(into.toTree()).toEqual(["other", "work/", "work/Pkg/", "work/Pkg/a.xml", "work/Pkg/imports.mf"]);
+  it("returns the unzipped tree as it is, with its empty folders", async () => {
+    const unzipped = new MemoryVfs({ "/Pkg/imports.mf": "<imports/>", "/Pkg/Empty/": "" });
+    const result = await mountFileList([new File([zipBytes], "p.zip")], { unzip: () => unzipped });
+    expect(result).toBe(unzipped);
+    expect(result.stat("/Pkg/Empty").isDirectory).toBe(true);
+  });
+
+  it("reports each file of the unzipped tree, cumulatively", async () => {
+    const seen: string[] = [];
+    const onProgress: MountOptions["onProgress"] = (p) => seen.push(`${p.path}:${p.files}:${p.bytes}`);
+    const expected = ["/Pkg/a.xml:1:4", "/Pkg/imports.mf:2:14"];
+    await mountFileList([new File([zipBytes], "p.zip")], { unzip, onProgress });
+    expect([...seen].sort()).toEqual(expected);
+    seen.length = 0;
+    const entry: EntryLike = { isFile: true, isDirectory: false, name: "p.zip", file: (success) => success(new File([zipBytes], "p.zip")) };
+    await mountDataTransfer(drop([entry]).items, { unzip, onProgress });
+    expect([...seen].sort()).toEqual(expected);
+  });
+
+  it("stops the zip's reports at the signal", async () => {
+    const controller = new AbortController();
+    const reason = new Error("stop");
+    const result = mountFileList([new File([zipBytes], "p.zip")], { unzip, signal: controller.signal, onProgress: () => controller.abort(reason) });
+    await expect(result).rejects.toBe(reason);
   });
 
   it("refuses a .zip that is not a zip, and a zip when there is no reader", async () => {
@@ -382,30 +375,21 @@ describe("mountDataTransfer (HOST-255)", () => {
     expect(result.toTree()).toEqual(["A/", "A/x.xml", "loose.xml"]);
   });
 
-  it("uses getAsFile() for a browser that has no entries, and skips items that are not files", async () => {
+  it("ignores an item with no entry and an item that is not a file", async () => {
     const items: DataTransferItemsLike = {
       length: 3,
-      0: { kind: "string", getAsFile: () => null },
-      1: { kind: "file", getAsFile: () => new File(["<AML/>"], "a.xml") },
-      2: { kind: "file", webkitGetAsEntry: () => null, getAsFile: () => null },
+      0: { kind: "string", webkitGetAsEntry: () => fileEntry("text.xml", "t") },
+      1: { kind: "file", webkitGetAsEntry: () => fileEntry("a.xml", "<AML/>") },
+      2: { kind: "file", webkitGetAsEntry: () => null },
     };
     expect((await mountDataTransfer(items)).toTree()).toEqual(["a.xml"]);
   });
 
-  it("applies the same options as a file list: include, at, into, maxBytes, signal and progress", async () => {
-    const build = (): EntryLike => dirEntry("Pkg", [fileEntry("imports.mf", "<imports/>"), dirEntry("Skip", [fileEntry("z.xml", "z")]), fileEntry("a.xml", "<AML/>")]);
+  it("applies the same options as a file list: maxBytes, signal and progress", async () => {
+    const build = (): EntryLike => dirEntry("Pkg", [fileEntry("imports.mf", "<imports/>"), fileEntry("a.xml", "<AML/>")]);
     const seen: string[] = [];
-    const into = new MemoryVfs();
-    const result = await mountDataTransfer(drop([build()]).items, {
-      root: "auto",
-      into,
-      at: "/in",
-      include: (path, kind) => (kind === "directory" && path === "Skip" ? "skip" : "content"),
-      onProgress: (p) => seen.push(p.path),
-    });
-    expect(result).toBe(into);
-    expect(into.toTree()).toEqual(["in/", "in/a.xml", "in/imports.mf"]);
-    expect(seen).toEqual(["/in/imports.mf", "/in/a.xml"]);
+    await mountDataTransfer(drop([build()]).items, { root: "auto", onProgress: (p) => seen.push(p.path) });
+    expect(seen).toEqual(["/imports.mf", "/a.xml"]);
 
     await expect(mountDataTransfer(drop([build()]).items, { maxBytes: 5 })).rejects.toMatchObject({ code: "ENOSPC" });
     await expect(mountDataTransfer(drop([build()]).items, { signal: AbortSignal.abort() })).rejects.toMatchObject({ name: "AbortError" });
@@ -426,7 +410,6 @@ describe("mountDataTransfer (HOST-255)", () => {
         webkitGetAsEntry: () => {
           throw new Error("list is gone");
         },
-        getAsFile: () => null,
       },
     };
     await expect(mountDataTransfer(items)).rejects.toThrow("list is gone");
