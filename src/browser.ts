@@ -21,4 +21,16 @@ export type {
 } from "./browser/host.js";
 export { createFetchTransport } from "./browser/fetch-transport.js";
 export type { FetchCredentials, FetchTransportOptions } from "./browser/fetch-transport.js";
+export { MemoryVfs } from "./host/memory-fs.js";
+export type { MemoryVfsOptions, MountFiles } from "./host/memory-fs.js";
+export { mountDataTransfer, mountFileList } from "./browser/file-list.js";
+export type {
+  DataTransferItemLike,
+  DataTransferItemsLike,
+  DirectoryReaderLike,
+  EntryLike,
+  FileLike,
+} from "./browser/file-list.js";
+export { STUB_THRESHOLD, defaultInclude, stubsOf } from "./browser/mount-options.js";
+export type { MountDecision, MountInclude, MountKind, MountOptions, MountProgress, MountUnzip } from "./browser/mount-options.js";
 export { LIBRARY_VERSION } from "./version.js";
