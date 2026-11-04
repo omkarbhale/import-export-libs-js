@@ -1,14 +1,10 @@
-export { DEFAULT_ENGINE, ENGINE_ASSEMBLY_VERSIONS, ENGINES, isEngine } from "./engines.js";
-export type { Engine } from "./engines.js";
-export * from "./client/index.js";
+/**
+ * The Node entry point: the portable core (`core.ts`) and the Node implementation of the HTTP seam. The Node implementations of the
+ * file system and the environment (`nodeFs`, `nodeHost`) are the default host of the core and need not be passed, so they are not
+ * part of the public API (HOST-260).
+ *
+ * @spec HOST-260 HOST-261
+ */
+export * from "./core.js";
 // The Node implementation of the HTTP seam is not part of the portable client (HOST-230); the Node entry exports it.
 export { nodeTransport } from "./host/node-transport.js";
-export * from "./manifest/index.js";
-export * from "./export/index.js";
-export * from "./import/index.js";
-export * from "./language-pack/index.js";
-export * from "./db-patches/index.js";
-// The XML core's entry points: load an item file's text into the DOM the engine's code works on, and write that DOM back as the
-// engine writes an item file. Loading, then encoding, tells whether a file is one the engine would write byte for byte.
-export { decodeXmlFile, encodeItemFile, loadXml, readAllText } from "./xml/index.js";
-export type { LoadOptions, XmlDocument } from "./xml/index.js";

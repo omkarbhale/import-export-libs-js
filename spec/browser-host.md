@@ -112,6 +112,43 @@ What the host answers is the host's own: a value that a caller sets for a run (t
 
 [14.0.7] Two clocks are in use and they are not the same thing. The elapsed time of a step, which the import writes in the log as a `TimeSpan` (IMP-514), is measured on `HostEnv.monotonicNs`, a clock that never goes back and has an arbitrary origin, so that a change of the system time during a run does not change a duration. The date and time that the log, the audit row and the manifest write are the wall clock, `new Date()` (or the run's `now` option), and stay so: they are not taken from the host, and the host has no member for them.
 
+## HOST-260: the browser entry exposes the portable core and the browser host, and no Node API
+
+[14.0.7] The library has three source entry points, and they differ only in the implementations of the host seam (HOST-200) that they add to one shared surface:
+
+- `src/core.ts` is everything portable: the engine's code (the client, the manifest, export, import, language packs, DB patches, the XML loader and the item-file writer) and the seam's own types, `Host`, `HostFs`, `HostEnv`, `HostFsError`, `HostStat`, `HostDirent`, `AppendHandle` and `PathEnvironment`, so that a caller can write a file system or an environment of its own. It names no `node:*` module and reads no `process`.
+- `src/index.ts`, the Node entry (`dist/index.js`, with `dist/cli.js`), is `core.ts` and `nodeTransport` (HOST-230). Its set of exported names is what it was before the split, with the seam's types added; no function, class or constant was added or removed. The Node file system and environment (`nodeFs`, `nodeHost`) are the default host and are not exported.
+- `src/browser.ts`, the browser entry (`dist/browser.js`), is `core.ts` and `createBrowserHost` with its option types (HOST-243), `createFetchTransport` with its option types (HOST-230 to HOST-233) and `LIBRARY_VERSION`, the version of `package.json`. It has no Node API: `nodeTransport` is not in it, and nothing it reaches imports `node:*`, reads `process` or `__dirname`, or calls `setImmediate`.
+
+What makes that true is one replaced module. `src/host/default-host.ts` is the only module of the core that names the Node implementations (HOST-200), and the browser build resolves it to `src/host/default-host.browser.ts`, which builds the browser host on first use. The bundle does it with an esbuild plugin (`tools/browser-bundle.ts`, `replaceDefaultHost`: esbuild's `alias` maps packages, not files), and the browser typecheck (`tsconfig.browser.json`) does it with `moduleSuffixes` of `.browser` first. The same two settings inject `src/browser/buffer-shim.ts`, which defines the global `Buffer` the core is written against (HOST-262).
+
+The browser bundle is built from `src/browser.ts` as an ES module for browsers (`target es2022`, `platform browser`) in one file, `dist/browser.js`, with its map and `dist/browser.d.ts`. It imports nothing: the two dependencies, `@xmldom/xmldom` and `xpath`, are inlined, with the `buffer` package that the shim re-exports and its two (`base64-js`, `ieee754`), and the licence text of all five is in the comment at the head of the file. It is not minified, so that a consumer's bundler decides that; its size is the budget of the guard below.
+
+The rules above are held by tests, and each fails where it is broken:
+
+- `tools/browser-bundle.test.ts` builds the entry with the options the shipped bundle is built with and fails if an input of the build is a `node:*` module, if the replaced module or a Node module of the host is in the graph, if any of `process`, `__dirname`, `__filename`, `setImmediate` or `global` is a free identifier of the output (esbuild's `define` replaces a reference to a name that nothing in the bundle declares, and only that, so a string or a property of that name does not count), if the output imports anything, or if it exceeds its size budget. It builds without the plugin and requires the build to fail on `node:fs`, so that the plugin is known to do the work. It loads the bundle in Node and runs `createBrowserHost` against fakes. It builds the Node entry as the Node build does and requires `node:http`, `node:https`, `node:fs` and `node:crypto` in it, so that the replacement did not leak into the Node build.
+- `tsc -p tsconfig.browser.json`, whose only root is `src/browser.ts`, compiles the whole closure with no Node types (`types: []`), so that `process`, `NodeJS.*`, `setImmediate` and every `node:*` import are compile errors. `tools/browser-closure.test.ts` names the file when it fails.
+- `src/entry-points.test.ts` requires the Node entry's names to be the core's and `nodeTransport`, and the browser entry's to be the core's and the three above, and the Node entry to have the 198 names it had before.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-261: the package exports a browser condition and a `./browser` subpath
+
+[14.0.7] `package.json` says which file a consumer gets:
+
+- `"."` is `{ "types": "./dist/index.d.ts", "browser": "./dist/browser.js", "import": "./dist/index.js" }`. Conditions are matched in the order written, so a bundler that resolves for browsers takes the `browser` condition and gets the browser bundle, and Node, which does not name `browser`, takes `import` and gets the Node build. `types` is first, as TypeScript requires, and is the Node entry's declarations for both, which are the browser's with `nodeTransport` added.
+- `"./browser"` is `{ "types": "./dist/browser.d.ts", "import": "./dist/browser.js" }`, the explicit way to the browser bundle for a consumer that resolves its own conditions, or that wants it under Node (a test, a Worker host).
+- `"sideEffects": false`: no module of the library has an effect when it is imported (the browser's default host is made on first use, HOST-243), so a bundler may drop what a consumer does not use.
+- `"files"` is `["dist"]`, which holds `index.js`, its shared chunk, `cli.js`, `browser.js` and the declarations.
+
+`npm run build` runs two tsup builds, one after the other: the Node build (`tsup.config.ts`, which cleans `dist/` and is unchanged by the browser entry) and the browser build (`tsup.browser.config.ts`), so that the two never race for the output folder. `prepare` runs both. `tools/browser-bundle.ts` holds what the browser build and its guard test share.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
 ## HOST-262: the browser's `Buffer` is the `buffer` package, proven equal to Node's for every call the core makes
 
 [14.0.7] The core's bytes are `Buffer`s (UTF-8 BOMs, latin1, UTF-16 with `swap16`, single-byte tables, base64): its source calls `Buffer.from`, `Buffer.concat`, `Buffer.alloc`, and the instance members `toString`, `swap16`, `subarray`, `length`, `readUInt16LE` and `writeUInt16LE`. In the browser bundle the global `Buffer` is the `buffer` package (feross, MIT), injected from `src/browser/buffer-shim.ts`; on Node it is Node's own. The two are required to give the same bytes and the same text for every call the source makes. This is proved, not assumed:

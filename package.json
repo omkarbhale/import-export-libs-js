@@ -13,7 +13,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "browser": "./dist/browser.js",
       "import": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
     }
   },
   "bin": {
@@ -23,8 +28,9 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsup --config tsup.browser.config.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -36,7 +42,7 @@
     "oracle:engine-diff": "tsx oracle/src/record-engine-diff.ts",
     "oracle:dbpatch-cases": "tsx oracle/src/record-dbpatch-cases.ts",
     "oracle:lp-cases": "tsx oracle/src/record-lp-cases.ts",
-    "prepare": "tsup",
+    "prepare": "npm run build",
     "rea-map": "tsx tools/rea-map/cli.ts"
   },
   "devDependencies": {

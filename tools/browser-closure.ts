@@ -1,49 +1,39 @@
 /**
- * The browser typecheck ratchet: which files of the library's closure can be compiled without Node's types (map D7).
+ * The browser typecheck ratchet in its final form (map D7, HOST-260): the whole closure of `src/browser.ts` compiles without Node's
+ * types.
  *
- * `tsconfig.browser.json` compiles an explicit `files` list with `types: []`, so `process`, `NodeJS.*`, `setImmediate` and every
- * `node:*` import are compile errors there. This tool computes that list: the closure of `src/index.ts`, minus the files that
- * touch Node directly, minus the files that import those, transitively. It is the maximal clean subset, and it grows as the
- * seam tickets remove Node from the core. Each excluded file is recorded in `tools/browser-closure.allowlist.json` with its
- * reason (`imports:node:fs`, `uses:process`, or `imports:<file>` for a file that is dirty only through a dependency).
+ * `tsconfig.browser.json` compiles `src/browser.ts` with `types: []`, so `process`, `NodeJS.*`, `setImmediate` and every `node:*`
+ * import are compile errors there, and with `moduleSuffixes` of `.browser` first, so that `src/host/default-host.ts` resolves to
+ * `default-host.browser.ts`, as the bundle's plugin does (`tools/browser-bundle.ts`). The ratchet began as an explicit list of the
+ * files that were clean and grew with each seam ticket until it was the one entry. This tool is what remains of it: it names the
+ * files of the closure that touch Node, directly (`imports:node:fs`, `uses:process`) or through a file they import
+ * (`imports:<file>`), so that a regression says where it is, not only that `tsc` failed.
  *
  * Test-only tooling: nothing under `src/` imports it, and it is not part of any bundle.
  *
  *   npx tsx tools/browser-closure.ts           print the summary
- *   npx tsx tools/browser-closure.ts --write   rewrite `files` in tsconfig.browser.json and the allowlist
  */
 import { builtinModules } from "node:module";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-/** The entry point whose closure is analysed. */
-export const ENTRY = "src/index.ts";
-/**
- * Browser-only files that `ENTRY` does not import (the Node entry never ships them), each a root of the analysis besides `ENTRY`:
- * they are held to the same rule, and what they import joins the closure. `src/browser.ts` replaces this list (ticket 21).
- */
-export const BROWSER_ROOTS: readonly string[] = ["src/browser/fetch-transport.ts", "src/browser/host.ts", "src/host/default-host.browser.ts"];
-/** The hand-written ambient declarations that stand in for Node's `Buffer` (ticket 14 replaces them). */
+/** The entry point whose closure is analysed (HOST-260). */
+export const ENTRY = "src/browser.ts";
+/** The hand-written ambient declaration that gives the browser project the `Buffer` of the `buffer` package (HOST-262). */
 export const GLOBALS = "src/browser/globals.d.ts";
 export const BROWSER_TSCONFIG = "tsconfig.browser.json";
-export const ALLOWLIST = "tools/browser-closure.allowlist.json";
 
 export interface ClosureAnalysis {
-  /** Every source file of the closure of `ENTRY` and `BROWSER_ROOTS`, as repo-relative POSIX paths, sorted. */
+  /** Every source file of the closure of `ENTRY` under the browser options, as repo-relative POSIX paths, sorted. */
   closure: string[];
-  /** The maximal clean subset, sorted: the files `tsconfig.browser.json` lists (besides `GLOBALS`). */
+  /** The files of the closure that compile without Node's types, sorted. */
   clean: string[];
-  /** Every other file of the closure, with the reason it is not clean. */
+  /** Every other file of the closure, with the reason it is not clean; empty while the ratchet holds. */
   dirty: Record<string, string>;
-}
-
-export interface Allowlist {
-  entry: string;
-  files: Record<string, string>;
 }
 
 const builtins = new Set(builtinModules.flatMap((name) => [name, `node:${name}`]));
@@ -124,7 +114,7 @@ function directReason(file: string, program: ts.Program): string | undefined {
 
 export function analyze(): ClosureAnalysis {
   const options = parseOptions(BROWSER_TSCONFIG);
-  const closure = closureOf([ENTRY, ...BROWSER_ROOTS], parseOptions("tsconfig.json"));
+  const closure = closureOf([ENTRY], options);
   const rootNames = [GLOBALS, ...closure].map((file) => path.join(repoRoot, file));
   const program = ts.createProgram({ rootNames, options });
   const graph = importGraph(closure, options);
@@ -149,39 +139,17 @@ export function analyze(): ClosureAnalysis {
   return { closure, clean: closure.filter((file) => !dirty[file]), dirty };
 }
 
-export function readAllowlist(): Allowlist {
-  return JSON.parse(readFileSync(path.join(repoRoot, ALLOWLIST), "utf8")) as Allowlist;
-}
-
 export function readBrowserFiles(): string[] {
   const config = ts.readConfigFile(path.join(repoRoot, BROWSER_TSCONFIG), ts.sys.readFile).config as { files?: string[] };
   return (config.files ?? []).map((file) => file.replace(/^\.\//, ""));
 }
 
-export function allowlistOf(analysis: ClosureAnalysis): Allowlist {
-  return { entry: ENTRY, files: Object.fromEntries(Object.entries(analysis.dirty).sort(([a], [b]) => (a < b ? -1 : 1))) };
-}
-
-export function browserFilesOf(analysis: ClosureAnalysis): string[] {
-  return [GLOBALS, ...analysis.clean];
-}
-
 export function summary(analysis: ClosureAnalysis): string {
-  const lines = [`${analysis.clean.length} of ${analysis.closure.length} files of the closure of ${[ENTRY, ...BROWSER_ROOTS].join(", ")} are clean; ${Object.keys(analysis.dirty).length} remain:`];
+  const lines = [`${analysis.clean.length} of ${analysis.closure.length} files of the closure of ${ENTRY} are clean; ${Object.keys(analysis.dirty).length} remain:`];
   for (const [file, reason] of Object.entries(analysis.dirty)) lines.push(`  ${file}  ${reason}`);
   return lines.join("\n");
 }
 
-function write(analysis: ClosureAnalysis): void {
-  const configPath = path.join(repoRoot, BROWSER_TSCONFIG);
-  const config = JSON.parse(readFileSync(configPath, "utf8")) as Record<string, unknown>;
-  config.files = browserFilesOf(analysis);
-  writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
-  writeFileSync(path.join(repoRoot, ALLOWLIST), `${JSON.stringify(allowlistOf(analysis), null, 2)}\n`);
-}
-
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const analysis = analyze();
-  if (process.argv.includes("--write")) write(analysis);
-  console.log(summary(analysis));
+  console.log(summary(analyze()));
 }
