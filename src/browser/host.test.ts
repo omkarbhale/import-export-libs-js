@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { localWindowsTimeZoneId } from "../client/timezone.js";
 import { defaultOsUser } from "../import/import-helper.js";
@@ -264,12 +263,6 @@ describe("HOST-243: default-host.browser", () => {
     expect(browserDefaultHost.defaultHostEnv()).toBe(host.env);
     expect(browserDefaultHost.defaultTransport()).toBe(host.transport);
     expect(host.transport).toBeDefined();
-  });
-
-  it("imports no node: module, in either file", () => {
-    for (const file of ["src/browser/host.ts", "src/host/default-host.browser.ts"]) {
-      expect(readFileSync(file, "utf8"), file).not.toMatch(/from\s+["']node:|require\(\s*["']node:|\bprocess\.|\bBuffer\b/);
-    }
   });
 });
 

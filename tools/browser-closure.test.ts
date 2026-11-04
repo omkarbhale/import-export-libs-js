@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   ALLOWLIST,
+  BROWSER_ROOTS,
   BROWSER_TSCONFIG,
   GLOBALS,
   analyze,
@@ -19,6 +20,11 @@ describe("browser closure ratchet", () => {
 
   it("lists the ambient Buffer declaration first", () => {
     expect(readBrowserFiles()[0]).toBe(GLOBALS);
+  });
+
+  it("keeps every browser root clean, through all it imports", () => {
+    expect(BROWSER_ROOTS.map((file) => [file, analysis.dirty[file]]).filter(([, reason]) => reason !== undefined)).toEqual([]);
+    expect(BROWSER_ROOTS.filter((file) => !analysis.clean.includes(file))).toEqual([]);
   });
 
   it("lists no file that stopped being clean", () => {
