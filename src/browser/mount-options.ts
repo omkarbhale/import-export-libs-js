@@ -47,7 +47,10 @@ export interface MountOptions {
    * `"keep"`: what the caller does with the folder's name is the caller's decision.
    */
   root?: "auto" | "keep";
-  /** Decides per entry. Default {@link defaultInclude}. */
+  /**
+   * Decides per entry of a picked folder or a drop. Default {@link defaultInclude}. It and stubs do not apply to a zip, whose tree
+   * is returned as it is, under `maxBytes`.
+   */
   include?: MountInclude;
   /**
    * The most bytes of content this call may read. It is checked against the sizes of the files to read before the first one is read, and

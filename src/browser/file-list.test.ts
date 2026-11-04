@@ -338,6 +338,22 @@ describe("a chosen or dropped zip (HOST-254)", () => {
     expect(result.stat("/Pkg/Empty").isDirectory).toBe(true);
   });
 
+  it("does not apply include to a zip, and leaves no stubs", async () => {
+    const big = new Uint8Array(STUB_THRESHOLD + 1);
+    const asked: string[] = [];
+    const result = await mountFileList([new File([zipBytes], "p.zip")], {
+      unzip: () => new MemoryVfs({ "/secret.xml": "s", "/big.bin": big }),
+      include: (path) => {
+        asked.push(path);
+        return "skip";
+      },
+    });
+    expect(asked).toEqual([]);
+    expect(result.toTree()).toEqual(["big.bin", "secret.xml"]);
+    expect(result.readFile("/big.bin").length).toBe(big.length);
+    expect(stubsOf(result).size).toBe(0);
+  });
+
   it("reports each file of the unzipped tree, cumulatively", async () => {
     const seen: string[] = [];
     const onProgress: MountOptions["onProgress"] = (p) => seen.push(`${p.path}:${p.files}:${p.bytes}`);
