@@ -242,6 +242,31 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
       expect(vfsFromZip(rawZip([{ name: header, data: encode("a"), extra: field(stale) }])).toTree()).toEqual(["café.xml"]);
     });
 
+    it("takes the Unicode Path field over an ASCII placeholder name, and keeps the placeholder when the checksum is stale", () => {
+      const placeholder = encode("Pkg/?.xml");
+      const field = (path: string, crc: number): Uint8Array => {
+        const target = encode(path);
+        const out = new Uint8Array(4 + 5 + target.length);
+        const view = new DataView(out.buffer);
+        view.setUint16(0, 0x7075, true);
+        view.setUint16(2, 5 + target.length, true);
+        view.setUint8(4, 1);
+        view.setUint32(5, crc, true);
+        out.set(target, 9);
+        return out;
+      };
+      const crc = crcOf(placeholder);
+      const vfs = vfsFromZip(
+        rawZip([
+          { name: placeholder, data: encode("one"), extra: field("Pkg/日本語/名前.xml", crc) },
+          { name: placeholder, data: encode("two"), extra: field("Pkg/日本語/別名.xml", crc) },
+        ]),
+      );
+      expect(text(vfs.readFile("/Pkg/日本語/名前.xml"))).toBe("one");
+      expect(text(vfs.readFile("/Pkg/日本語/別名.xml"))).toBe("two");
+      expect(vfsFromZip(rawZip([{ name: placeholder, data: encode("x"), extra: field("Pkg/名前.xml", crc ^ 1) }])).toTree()).toEqual(["Pkg/", "Pkg/?.xml"]);
+    });
+
     it("reads a name of code page 437 that is not valid UTF-8 as code page 437, and every byte of the table", () => {
       const bytes = Uint8Array.from({ length: 128 }, (_, index) => 0x80 + index);
       const vfs = vfsFromZip(rawZip(Array.from(bytes, (byte) => ({ name: Uint8Array.of(0x61, byte), data: encode("x") }))));
@@ -299,7 +324,7 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
     });
   });
 
-  describe("root, at and into", () => {
+  describe("root and into", () => {
     const zip = (): Uint8Array =>
       rawZip([
         { name: "Top/", data: new Uint8Array(0) },
@@ -323,35 +348,26 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
       expect(vfs.toTree()).toEqual(["B/", "B/c.xml"]);
     });
 
-    it("takes a named folder as the root, and refuses a zip with nothing below it", () => {
-      expect(vfsFromZip(zip(), { root: "Top" }).toTree()).toEqual(["a.xml", "in/", "in/b.xml"]);
-      expect(vfsFromZip(zip(), { root: "Top/in/" }).toTree()).toEqual(["b.xml"]);
-      expectZipError(() => vfsFromZip(zip(), { root: "Nope" }), "ZIP_INVALID", /Nope/);
-    });
-
-    it("mounts under `at`, into a tree it was given, and keeps what the tree held", () => {
-      const into = new MemoryVfs({ "/work/old.txt": "old", "/work/a.xml": "replaced" });
-      const result = vfsFromZip(zip(), { root: "Top", into, at: "/work" });
+    it("mounts at the root of a tree it was given, and keeps what the tree held", () => {
+      const into = new MemoryVfs({ "/old.txt": "old", "/Top/a.xml": "replaced" });
+      const result = vfsFromZip(zip(), { into });
       expect(result).toBe(into);
-      expect(into.toTree()).toEqual(["work/", "work/a.xml", "work/in/", "work/in/b.xml", "work/old.txt"]);
-      expect(text(into.readFile("/work/a.xml"))).toBe("a");
-      expect(text(into.readFile("/work/old.txt"))).toBe("old");
+      expect(into.toTree()).toEqual(["Other/", "Other/c.xml", "Top/", "Top/a.xml", "Top/in/", "Top/in/b.xml", "old.txt"]);
+      expect(text(into.readFile("/Top/a.xml"))).toBe("a");
+      expect(text(into.readFile("/old.txt"))).toBe("old");
     });
 
     it("is a new tree each time without `into`", () => {
       expect(vfsFromZip(zip())).not.toBe(vfsFromZip(zip()));
     });
 
-    it("passes the tree's own ENOSPC as it is", () => {
-      const into = new MemoryVfs(undefined, { maxBytes: 1 });
-      try {
-        vfsFromZip(zip(), { into });
-      } catch (error) {
-        expect(error).not.toBeInstanceOf(ZipError);
-        expect((error as { code?: string }).code).toBe("ENOSPC");
-        return;
-      }
-      expect.unreachable("expected ENOSPC");
+    it("refuses a zip over the remaining capacity of the tree before inflating, whatever maxBytes says", () => {
+      const fits = new MemoryVfs({ "/old.txt": "1234567" }, { maxBytes: 10 });
+      vfsFromZip(zip(), { into: fits });
+      expect(text(fits.readFile("/Top/a.xml"))).toBe("a");
+      const full = new MemoryVfs({ "/old.txt": "12345678" }, { maxBytes: 10 });
+      expectZipError(() => vfsFromZip(zip(), { into: full, maxBytes: Number.POSITIVE_INFINITY }), "ZIP_TOO_LARGE");
+      expect(full.toTree()).toEqual(["old.txt"]);
     });
   });
 
@@ -367,6 +383,19 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
         { name: "b.xml", data: new Uint8Array(5) },
       ]);
       expectZipError(() => vfsFromZip(bomb, { maxBytes: 100 }), "ZIP_TOO_LARGE");
+    });
+
+    it("refuses over 500 MiB by default before inflating, and lets a caller lift or raise the limit", () => {
+      const claimed = 300 * 1024 * 1024;
+      const stored = new Uint8Array(Math.ceil(claimed / 1032));
+      const bomb = rawZip([
+        { name: "a.xml", stored, method: 8, size: claimed },
+        { name: "b.xml", stored, method: 8, size: claimed },
+      ]);
+      expectZipError(() => vfsFromZip(bomb), "ZIP_TOO_LARGE", new RegExp(`${500 * 1024 * 1024}`));
+      // past the limit the stream is inflated, and it is damaged
+      expectZipError(() => vfsFromZip(bomb, { maxBytes: Number.POSITIVE_INFINITY }), "ZIP_INVALID");
+      expectZipError(() => vfsFromZip(bomb, { maxBytes: 2 * claimed }), "ZIP_INVALID");
     });
 
     it("refuses a size no deflate stream could expand to, before reserving it", () => {

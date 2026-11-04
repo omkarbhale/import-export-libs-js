@@ -37,15 +37,16 @@ export class ZipError extends Error {
 /** What {@link vfsFromZip} takes. Every member is optional. */
 export interface VfsFromZipOptions {
   /**
-   * Which part of the zip becomes the root: `"auto"` takes off the one top-level folder a zip of a folder has (and keeps the paths of
-   * a zip that has none); any other value is a folder of the zip, and only what is below it is mounted. Default: the paths as they are.
+   * `"auto"` takes off the one top-level folder a zip of a folder has (and keeps the paths of a zip that has none). Default: the
+   * paths as they are.
    */
-  root?: string;
-  /** The folder of the tree the paths are mounted under, made if missing. Default `/`. */
-  at?: string;
-  /** The tree to mount into. Default: a new one. */
+  root?: "auto";
+  /** The tree to mount into, at its root. Its remaining capacity also bounds the zip. Default: a new one. */
   into?: MemoryVfs;
-  /** The most bytes the kept entries may inflate to, by the central directory; a zip over it is refused before anything is inflated. */
+  /**
+   * The most bytes the kept entries may inflate to, by the central directory; a zip over it is refused before anything is inflated.
+   * Default 500 MiB, the package budget; `Infinity` lifts it.
+   */
   maxBytes?: number;
 }
 
@@ -70,6 +71,7 @@ const MAX32 = 0xffffffff;
 const MAX16 = 0xffff;
 /** The most one deflate stream can expand: a 258-byte match costs two bits. */
 const MAX_DEFLATE_RATIO = 1032;
+const DEFAULT_MAX_BYTES = 500 * 1024 * 1024;
 
 let crcTable: Uint32Array | undefined;
 
@@ -232,12 +234,12 @@ function findExtra(extra: Uint8Array, id: number): Uint8Array | undefined {
 /** The name of an entry as text (HOST-250): the UTF-8 flag, else the Unicode Path field, else UTF-8 if valid, else code page 437. */
 function decodeName(entry: RawEntry): string {
   if (entry.flags & UTF8_FLAG) return lenientUtf8.decode(entry.nameBytes);
-  if (isAscii(entry.nameBytes)) return decodeCp437(entry.nameBytes);
   const unicodePath = findExtra(entry.extra, 0x7075);
   if (unicodePath !== undefined && unicodePath.length > 5 && unicodePath[0] === 1) {
     const stored = new DataView(unicodePath.buffer, unicodePath.byteOffset, unicodePath.byteLength).getUint32(1, true);
     if (stored === crc32(entry.nameBytes)) return lenientUtf8.decode(unicodePath.subarray(5));
   }
+  if (isAscii(entry.nameBytes)) return decodeCp437(entry.nameBytes);
   try {
     return strictUtf8.decode(entry.nameBytes);
   } catch {
@@ -321,16 +323,13 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
     }
     total += raw.size;
   }
-  if (options.maxBytes !== undefined && total > options.maxBytes) {
-    throw new ZipError("ZIP_TOO_LARGE", `the zip holds ${total} bytes, over the limit of ${options.maxBytes}`);
-  }
-
   const vfs = options.into ?? new MemoryVfs();
-  const at = options.at ?? "/";
+  const limit = Math.min(options.maxBytes ?? DEFAULT_MAX_BYTES, vfs.maxBytes - vfs.size);
+  if (total > limit) throw new ZipError("ZIP_TOO_LARGE", `the zip holds ${total} bytes, over the limit of ${limit}`);
+
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (at !== "/") vfs.mount({ [`${at}/`]: new Uint8Array(0) });
   for (const { raw, segments, directory } of kept) {
-    const path = posix.join(at, ...segments);
+    const path = posix.join("/", ...segments);
     if (directory) {
       vfs.mount({ [`${path}/`]: new Uint8Array(0) });
       continue;
@@ -341,22 +340,14 @@ export function vfsFromZip(bytes: Uint8Array, options: VfsFromZipOptions = {}): 
 }
 
 /** Applies `root` to the entries that are kept (HOST-250). */
-function applyRoot(planned: PlannedEntry[], root: string | undefined): PlannedEntry[] {
-  if (root === undefined) return planned;
-  if (root === "auto") {
-    const first = planned[0]?.segments[0];
-    if (first === undefined) return planned;
-    const sameFirst = planned.every((entry) => entry.segments[0] === first);
-    const anyBelow = planned.some((entry) => entry.segments.length > 1);
-    if (!sameFirst || !anyBelow) return planned;
-    return planned.filter((entry) => entry.segments.length > 1).map((entry) => ({ ...entry, segments: entry.segments.slice(1) }));
-  }
-  const prefix = normaliseName(root).segments;
-  const below = planned
-    .filter((entry) => entry.segments.length > prefix.length && prefix.every((segment, index) => entry.segments[index] === segment))
-    .map((entry) => ({ ...entry, segments: entry.segments.slice(prefix.length) }));
-  if (below.length === 0) throw new ZipError("ZIP_INVALID", `the zip has no entry below ${JSON.stringify(root)}`);
-  return below;
+function applyRoot(planned: PlannedEntry[], root: "auto" | undefined): PlannedEntry[] {
+  if (root !== "auto") return planned;
+  const first = planned[0]?.segments[0];
+  if (first === undefined) return planned;
+  const sameFirst = planned.every((entry) => entry.segments[0] === first);
+  const anyBelow = planned.some((entry) => entry.segments.length > 1);
+  if (!sameFirst || !anyBelow) return planned;
+  return planned.filter((entry) => entry.segments.length > 1).map((entry) => ({ ...entry, segments: entry.segments.slice(1) }));
 }
 
 /** Reads and inflates one file entry, and checks it against what the central directory says. */
