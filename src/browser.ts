@@ -31,6 +31,19 @@ export type {
   EntryLike,
   FileLike,
 } from "./browser/file-list.js";
+export { CommitError, commitToDirectory, isFileSystemAccessSupported, mountDirectory } from "./browser/fsa.js";
+export type {
+  CommitFailure,
+  CommitResult,
+  CommitToDirectoryOptions,
+  FsaDirectoryHandle,
+  FsaFile,
+  FsaFileHandle,
+  FsaHandle,
+  FsaProgress,
+  FsaWritable,
+  MountDirectoryOptions,
+} from "./browser/fsa.js";
 export { STUB_THRESHOLD, defaultInclude, stubsOf } from "./browser/mount-options.js";
 export type { MountDecision, MountInclude, MountKind, MountOptions, MountProgress, MountUnzip } from "./browser/mount-options.js";
 export { LIBRARY_VERSION } from "./version.js";
