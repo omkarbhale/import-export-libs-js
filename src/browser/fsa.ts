@@ -199,7 +199,10 @@ export async function mountDirectory(handle: FsaDirectoryHandle, options: MountD
 export interface CommitToDirectoryOptions {
   /** The folder of the tree to write out, relative to the tree's `cwd`. Default `/`. */
   from?: string;
-  /** Empties the target folder first. Default `false`: nothing that is in the target is removed unless the caller says so. */
+  /**
+   * Empties the target folder first; rejects, touching nothing, when the folder written holds stubs. Default `false`: nothing that
+   * is in the target is removed unless the caller says so.
+   */
   clean?: boolean;
   /** Stops the commit: it rejects with a {@link CommitError} that is `aborted` and says what had been written. */
   signal?: AbortSignal;
@@ -255,6 +258,17 @@ function byName(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+/** How many stubs (HOST-252) the folder `source` of the tree holds, at any depth. */
+function countStubs(vfs: MemoryVfs, source: string): number {
+  let stubs = 0;
+  for (const entry of vfs.readdir(source)) {
+    const path = posix.join(source, entry.name);
+    if (entry.isDirectory) stubs += countStubs(vfs, path);
+    else if (vfs.stubSize(path) !== undefined) stubs += 1;
+  }
+  return stubs;
+}
+
 /**
  * Writes a folder of an in-memory tree into a directory handle (HOST-253): every folder with `getDirectoryHandle(name, {create:
  * true})` and every file with `getFileHandle(name, {create: true})` and `createWritable()`. A folder is written one at a time, its
@@ -262,6 +276,8 @@ function byName(a: string, b: string): number {
  * refusals are reported together, as a {@link CommitError}, when nothing else is left. Stubs (HOST-252) are not written.
  *
  * Without `clean`, a file of the target that has the name of one written is replaced and everything else in the target is left alone.
+ * With `clean`, a tree that holds stubs under `from` is refused before the target is touched: emptying the target could delete the
+ * only copy of a stubbed file.
  *
  * @spec HOST-253
  */
@@ -284,6 +300,12 @@ export async function commitToDirectory(vfs: MemoryVfs, handle: FsaDirectoryHand
   };
 
   if (options.clean === true) {
+    const stubs = countStubs(vfs, root);
+    if (stubs > 0) {
+      throw new Error(
+        `clean refused, nothing in the target was touched: the tree holds ${stubs} ${stubs === 1 ? "stub" : "stubs"}, whose content is not in the tree and may exist only in the target; a mount never causes the loss of a user's only copy`,
+      );
+    }
     const names: string[] = [];
     for await (const entry of handle.values()) names.push(entry.name);
     for (const name of names) {

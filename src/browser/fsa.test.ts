@@ -252,6 +252,32 @@ describe("commitToDirectory (HOST-253)", () => {
     expect(text(handle.contents().get("big.bin"))).toBe("the real one");
   });
 
+  describe("clean with stubs", () => {
+    it("refuses a tree mounted with a stub, naming the count, and leaves the target untouched", async () => {
+      const picked = new FakeDirectoryHandle("picked")
+        .put("a.xml", "A")
+        .put("manual.pdf", bytesOf(STUB_THRESHOLD_BYTES + 1))
+        .put("deep/er/video.bin", bytesOf(STUB_THRESHOLD_BYTES + 1));
+      const vfs = await mountDirectory(picked);
+      const before = filesOf(picked);
+      await expect(commitToDirectory(vfs, picked, { clean: true })).rejects.toThrow(/2 stubs.*a mount never causes the loss of a user's only copy/);
+      expect(picked.state.removed).toEqual([]);
+      expect(picked.state.maxOpenWritables).toBe(0);
+      expect(filesOf(picked)).toEqual(before);
+    });
+
+    it("counts only the stubs under `from`", async () => {
+      const vfs = new MemoryVfs({ "/out/a.xml": "A", "/other/b.xml": "B" });
+      vfs.mountStub("/other/big.bin", 5_000_000);
+      const handle = new FakeDirectoryHandle("target").put("old.txt", "old");
+      expect(await commitToDirectory(vfs, handle, { from: "/out", clean: true })).toEqual({ files: 1, directories: 0, bytes: 1, stubs: 0 });
+      expect(handle.state.removed).toEqual(["/old.txt"]);
+      vfs.mountStub("/out/sub/big.bin", 5_000_000);
+      await expect(commitToDirectory(vfs, handle, { from: "/out", clean: true })).rejects.toThrow(/1 stub\b/);
+      expect(handle.state.removed).toEqual(["/old.txt"]);
+    });
+  });
+
   it("writes at most `concurrency` files of a folder at once, and 8 by default", async () => {
     const files: Record<string, string> = {};
     for (let index = 0; index < 40; index += 1) files[`/f${String(index).padStart(2, "0")}.xml`] = "x";
