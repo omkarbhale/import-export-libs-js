@@ -217,7 +217,8 @@ export function readFileBytes(path: string | null, environment: PathEnvironment 
   if (host.length === 0) throw new ArgumentException(EMPTY_PATH);
   try {
     const bytes = fsOf(environment).readFile(host);
-    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    // The cast is for the `buffer` package's typings of the browser project, which take an `ArrayBuffer` only (HOST-262).
+    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer as ArrayBuffer, bytes.byteOffset, bytes.byteLength);
   } catch (error) {
     throw translateFileError(error, host, false, environment);
   }

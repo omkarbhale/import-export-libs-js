@@ -188,7 +188,8 @@ export function newFileInfo(path: string, environment: PathEnvironment = {}): Fi
 export function readListedFile(path: string, environment: PathEnvironment = {}): Buffer {
   try {
     const bytes = fsOf(environment).readFile(path);
-    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    // The cast is for the `buffer` package's typings of the browser project, which take an `ArrayBuffer` only (HOST-262).
+    return Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes.buffer as ArrayBuffer, bytes.byteOffset, bytes.byteLength);
   } catch (error) {
     if ((error as HostFsError | undefined)?.code === "EBUSY") {
       throw new IOException(`The process cannot access the file '${fullName(path, environment)}' because it is being used by another process.`);
