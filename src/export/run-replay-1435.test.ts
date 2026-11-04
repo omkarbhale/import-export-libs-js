@@ -3,14 +3,24 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { type TranscriptCall, readTranscript } from "../../oracle/src/transcript.js";
-import { CItemException, ResponseDocument } from "../client/fault.js";
-import type { ServerConnection } from "../client/innovator.js";
+import { CItemException } from "../client/fault.js";
 import { CItemHelper } from "../client/item-helper.js";
-import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import { ArasVersion } from "../client/version.js";
 import { SUExportContext, type ReferencesToUnknownPackages } from "./export-context.js";
 import { ExportItem } from "./export-item.js";
 import { ImportExportManager, type SelectionInsertions } from "./import-export-manager.js";
+import {
+  type Case1435 as Case,
+  RecordedConnection,
+  comparable1435 as comparable,
+  failingItems,
+  failsInConstructor,
+  headerValue,
+  logParts,
+  maskItems,
+  messageParts,
+  needsRemoval1435 as needsRemoval,
+} from "./replay-support.js";
 import { type SentMessage, createMessagesFactory } from "./messages.js";
 
 /**
@@ -33,15 +43,6 @@ import { type SentMessage, createMessagesFactory } from "./messages.js";
  */
 const CASES = new URL("../../fixtures/14.35/export/", import.meta.url).pathname;
 const BLOBS = join(CASES, "_blobs");
-const LOGIN_CALLS = 6;
-
-interface Case {
-  id: string;
-  packages: Array<{ name: string; items: Array<{ type: string; id: string; keyedName: string }> }>;
-  options: { level?: string; exportReferencedItems?: boolean; refToUnknownPacks?: string; languages?: string[]; engineAction?: string; cancelAfterStatus?: number };
-  expectsError: boolean;
-  result: { error: string | null };
-}
 
 const caseNames = readdirSync(CASES).filter((name) => existsSync(join(CASES, name, "transcript.jsonl")));
 
@@ -49,35 +50,6 @@ const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
-
-/** Answers each request with a recorded call that has the same text and was not used yet. */
-class RecordedConnection implements ServerConnection {
-  private readonly used: boolean[];
-
-  constructor(private readonly calls: TranscriptCall[]) {
-    this.used = calls.map((_, index) => index < LOGIN_CALLS);
-  }
-
-  /**
-   * The recorded requests the port did not send. A repeat of an `is_versionable` lookup that the port did send is not counted: the engine's
-   * workers that start together each ask before the first answer is cached (3 requests for 3 items in `lang-only-de-instances`, 1 in
-   * `lang-only-en-de-instances`), and the port, which runs the items one after the other, asks once.
-   */
-  get leftover(): string[] {
-    const sent = new Set(this.calls.filter((_, index) => this.used[index]).map((call) => call.request));
-    return this.calls
-      .filter((call, index) => !this.used[index] && !(call.request.includes('select="is_versionable"') && sent.has(call.request)))
-      .map((call) => call.request.slice(0, 200));
-  }
-
-  async callAction(action: string, request: string): Promise<ResponseDocument> {
-    const wire = documentOuterXml(parseXml(request));
-    const index = this.calls.findIndex((call, i) => !this.used[i] && call.action === action && call.request === wire);
-    if (index < 0) throw new Error(`the port sent a request the engine did not record: ${action} ${wire.slice(0, 400)}`);
-    this.used[index] = true;
-    return ResponseDocument.parse(this.calls[index]?.response ?? "");
-  }
-}
 
 /** Every file below a folder, as a path with `/`. */
 function files(root: string, prefix = ""): string[] {
@@ -87,94 +59,6 @@ function files(root: string, prefix = ""): string[] {
 }
 
 const read = (name: string, file: string): string => readFileSync(join(CASES, name, file), "utf8");
-const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
-
-const CLOCK = /\d\d\/\d\d\/\d{4} \d\d:\d\d:\d\d/g;
-
-/** The log with what is the run's own replaced: the two paths of the header and every date-time. */
-const comparable = (log: string, logPath: string, workingDirectory: string): string =>
-  log
-    .replace(/^(Log file: ).*(\r)$/m, `$1<log>$2`)
-    .replace(/^(Working directory: ).*(\r)$/m, `$1<working>$2`)
-    .replace(CLOCK, "<time>")
-    .split(logPath)
-    .join("<log>")
-    .split(workingDirectory)
-    .join("<working>");
-
-const SUCCESS = /^Item id :.*successfully exported$/;
-const PACKAGE_HEADER = /^ {9}\*\*\*\*Export .*\*\*\*\*$/;
-
-interface LogParts {
-  header: string;
-  /** One entry per package: its header line, its success lines (sorted), and the other lines with a repeated cancel pair collapsed. */
-  packages: Array<{ header: string; successes: string[]; rest: string[] }>;
-}
-
-/** The log as EXP-558 compares it: the header, and per package the success lines as a set and the other lines in order. */
-function logParts(log: string): LogParts {
-  const end = log.indexOf("\r\n\r\n") + 4;
-  const lines = log.slice(end).split("\r\n");
-  if (lines[lines.length - 1] === "") lines.pop();
-  const packages: LogParts["packages"] = [];
-  for (const line of lines) {
-    if (PACKAGE_HEADER.test(line)) packages.push({ header: line, successes: [], rest: [] });
-    else if (SUCCESS.test(line)) packages[packages.length - 1]?.successes.push(line);
-    else packages[packages.length - 1]?.rest.push(line);
-  }
-  for (const pkg of packages) {
-    pkg.successes.sort();
-    // the cancel text and `end of execution` may come more than once (EXP-557)
-    const collapsed: string[] = [];
-    for (let i = 0; i < pkg.rest.length; i += 1) {
-      const pair = pkg.rest.slice(i, i + 2);
-      const last = collapsed.slice(-2);
-      if (pair[0] === "Export was canceled by user" && pair.length === 2 && last.length === 2 && last[0] === pair[0] && last[1] === pair[1]) {
-        i += 1;
-        continue;
-      }
-      collapsed.push(pkg.rest[i] as string);
-    }
-    pkg.rest = collapsed;
-  }
-  return { header: log.slice(0, end), packages };
-}
-
-const ITEM_STATUS = /^Item \d+ of \d+: (.*)$/;
-
-/** The messages of a run by channel, the status texts of items as a set without their numbers. */
-function messageParts(messages: Array<{ channel: string; text: string }>) {
-  const bychannel = (channel: string) => messages.filter((message) => message.channel === channel).map((message) => message.text);
-  const statuses = bychannel("status");
-  return {
-    currentPackage: bychannel("currentPackage"),
-    warning: bychannel("warning"),
-    error: bychannel("error"),
-    errorQuestion: bychannel("errorQuestion"),
-    items: new Set(statuses.flatMap((text) => ITEM_STATUS.exec(text)?.[1] ?? [])),
-    otherStatus: statuses.filter((text) => !ITEM_STATUS.test(text)),
-  };
-}
-
-/**
- * The ids and keyed names of the items of a case that the server refused (their request has a fault for an answer). Two failures
- * in one package are reported for whichever item the engine's workers reached first (EXP-572), so a text that names a failing item is
- * compared with the item replaced.
- */
-function failingItems(input: Case, calls: TranscriptCall[]): Array<{ id: string; keyedName: string }> {
-  const items = input.packages.flatMap((entry) => entry.items);
-  return items.filter((item) =>
-    calls.some((call) => call.request.includes(`<id>${item.id}</id>`) && (call.response ?? "").includes("<SOAP-ENV:Fault")),
-  );
-}
-
-const maskItems = (text: string, failing: Array<{ id: string; keyedName: string }>): string =>
-  failing.reduce((masked, item) => masked.split(item.id).join("<failing id>").split(item.keyedName).join("<failing name>"), text);
-
-/** The modes that remove references to unknown packages wait for the rules `EXP-600` to `EXP-699`. */
-const needsRemoval = (input: Case): boolean => input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning";
-/** A case whose language list the engine's constructor refused: the run never started, so it left no log, no messages and no files. */
-const failsInConstructor = (input: Case): boolean => input.expectsError && (input.options.engineAction !== undefined || input.options.languages !== undefined);
 
 /** The manager of a case, made as the engine's constructor makes it: with the action and the language list of the case. */
 async function languageManager(input: Case, calls: TranscriptCall[], working: string) {

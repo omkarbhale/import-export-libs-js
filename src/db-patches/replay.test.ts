@@ -1,17 +1,15 @@
-import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { copyFileSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { type TranscriptCall, readTranscript } from "../../oracle/src/transcript.js";
-import { ResponseDocument } from "../client/fault.js";
-import type { ServerConnection } from "../client/innovator.js";
+import { readTranscript } from "../../oracle/src/transcript.js";
 import { CItemHelper } from "../client/item-helper.js";
-import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import { ArasVersion } from "../client/version.js";
 import { SolutionUpgradeContext } from "../export/export-context.js";
 import { ImportExportManager } from "../export/import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "../export/messages.js";
 import { DBUpdateConfig } from "./config.js";
+import { CASES, RecordedConnection, field, masked, steps } from "./replay-support.js";
 
 /**
  * The recorded DB patch runs (`fixtures/14.35/dbpatch/`, ticket 72) replayed through `ApplyDBUpdateManifest` (DBP-001 to DBP-044):
@@ -19,55 +17,10 @@ import { DBUpdateConfig } from "./config.js";
  * leaves are the recorded ones. What the recording machine and the clock decide is masked: the paths, the date-times, and the ids
  * the engine gave the items it added (the port is handed the recorded ones).
  */
-const CASES = new URL("../../fixtures/14.35/dbpatch/", import.meta.url).pathname;
-/** The calls of the host's login (WIRE-002), which the helper made before the recording of the run began. */
-const LOGIN_CALLS = 6;
-
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
-
-/** Serves the calls after the login, in order, and notes every request that is not the next recorded one. */
-class RecordedConnection implements ServerConnection {
-  private next = LOGIN_CALLS;
-  readonly mismatches: string[] = [];
-
-  constructor(private readonly calls: TranscriptCall[]) {}
-
-  get consumed(): number {
-    return this.next - LOGIN_CALLS;
-  }
-
-  get total(): number {
-    return this.calls.length - LOGIN_CALLS;
-  }
-
-  async callAction(action: string, request: string): Promise<ResponseDocument> {
-    const wire = documentOuterXml(parseXml(request));
-    const call = this.calls[this.next];
-    if (call?.action !== action || call.request !== wire) {
-      this.mismatches.push(`call ${this.consumed + 1}: sent ${action} ${wire.slice(0, 300)}\n  recorded ${call?.action} ${call?.request.slice(0, 300)}`);
-      throw new Error("the port sent a request the engine did not record");
-    }
-    this.next += 1;
-    return ResponseDocument.parse(call.response ?? "");
-  }
-}
-
-const CLOCK = /\d\d\/\d\d\/\d{4} \d\d:\d\d:\d\d/g;
-
-/** A log or a message with the parts of the recording machine and the clock replaced. */
-const masked = (text: string): string =>
-  text
-    .replace(CLOCK, "<time>")
-    .replace(/^(Log file: ).*$/m, "$1<log>")
-    .replace(/^(Working directory: ).*$/m, "$1<work>")
-    .replace(/^(DB updated nanifest file path: ).*$/m, "$1<manifest>")
-    .replace(/^(DB pathes folder path: ).*$/m, "$1<folder>")
-    .replace(/^(Loaded \[).*(\] for upgrade to release)/m, "$1<manifest>$2");
-
-const field = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
 
 interface Replayed {
   messages: SentMessage[];
@@ -123,8 +76,6 @@ async function replay(caseName: string, step: string): Promise<{ recorded: { mes
   }
   return { recorded: { messages: recordedMessages, log: recordedLog }, ours: { messages: sent, log: readFileSync(logPath, "utf8"), thrown, connection } };
 }
-
-const steps = (caseName: string): string[] => readdirSync(join(CASES, caseName)).filter((name) => existsSync(join(CASES, caseName, name, "transcript.jsonl")));
 
 describe("the recorded DB patch runs, replayed through ApplyDBUpdateManifest (DBP-001 to DBP-044)", () => {
   describe("non-root: the admin login (DBP-003, DBP-010)", () => {
