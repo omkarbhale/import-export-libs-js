@@ -1113,6 +1113,14 @@ export function probeCapabilities(makeFs: HostFsFactory): Record<Capability, boo
 
 // ------------------------------------------------------------------------------------------------------------------ run
 
+/** The names (`group: case`) of the cases a host with these capabilities runs, and of those it skips. */
+export function planCases(capabilities: Record<Capability, boolean>): { ran: string[]; skipped: string[] } {
+  const ran: string[] = [];
+  const skipped: string[] = [];
+  for (const c of cases) (c.optional !== undefined && !capabilities[c.optional] ? skipped : ran).push(`${c.group}: ${c.name}`);
+  return { ran, skipped };
+}
+
 /**
  * Runs the whole suite against the file system `makeFs` makes (HOST-214). A case marked `optional` is skipped when the probe
  * (once, at collection) finds the host unable to do what it needs: the probe tries the thing on the real host, so a laptop on
