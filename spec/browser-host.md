@@ -194,3 +194,24 @@ The transport sends `credentials: "omit"` on every request by default. A request
 [12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.
+
+## HOST-242: the time zone id comes from the host, and a browser's is the CLDR mapping of its IANA zone
+
+[14.0.7] The `TIMEZONE_NAME` header of a connection that was not given a time zone (WIRE-005) is `localWindowsTimeZoneId` (`src/client/timezone.ts`), which keeps its two paths and takes what it needs from the host environment (HOST-203): its platform is the host's `platform` and, on `win32`, its Windows id is `HostEnv.windowsTimeZoneId()`, with the line break of the answer trimmed. On Node that member is the `tzutil /g` call the code made before the seam (`src/host/node.ts` is the one file of the core that imports `node:child_process`). A `win32` host that has no Windows id to give (`undefined`) falls through to the second path. On every other platform, and so in a browser, whose `platform` is not `win32` and which has no `tzutil`, the id is the CLDR mapping (`WINDOWS_ZONE_IDS`, generated from CLDR 47) of the IANA zone that `Intl.DateTimeFormat().resolvedOptions().timeZone` says; a zone that the table does not know throws `UnmappedTimeZoneError` with its message as before (`pass the Windows id with --time-zone <id>`), and a caller passes `timeZoneName` in the connection settings, which is used as given and never reaches the host.
+
+Every IANA zone that the runtime can report as its own zone (`Intl.supportedValuesOf("timeZone")`, the canonical zones of the ICU of the browser or Node) has an entry in the table, except those listed under "Time zones that the table does not map" below, each with its decision. `src/client/timezone-host.test.ts` fails on a zone of the running ICU that is neither in the table nor listed there; it runs in the browser project too (HOST ticket 23).
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+### Time zones that the table does not map
+
+The table is CLDR 47's `windowsZones.xml` (WIRE-005) with a short list of supplements in the generator (`tools/windows-zones/generate.ts`). Checked against `Intl.supportedValuesOf("timeZone")` of Node 24.18.1 (ICU 78.3, tzdata 2026b), two zones were missing:
+
+| IANA zone | Decision |
+|---|---|
+| `America/Coyhaique` | **Added** to the generator's supplements as `Magallanes Standard Time`, which is what CLDR 48 maps it to (tzdata 2025b made it a zone of its own, after CLDR 47). The supplement is dropped when the table moves to CLDR 48 or later. |
+| `Antarctica/Troll` | **Documented, not mapped.** CLDR has no Windows zone for it (Troll Station keeps UTC and UTC+2, which no Windows zone does), and an invented one would send a wrong `TIMEZONE_NAME`. A browser or Node whose zone is `Antarctica/Troll` gets `UnmappedTimeZoneError`, and the caller passes the Windows id as `timeZoneName` (`--time-zone`). |
+
+A zone that a later ICU adds and the table lacks fails the test above, which is the prompt to decide it the same way.

@@ -9,9 +9,7 @@ import { describe, expect, it } from "vitest";
  *
  * @spec HOST-203
  */
-const ALLOWED: Readonly<Record<string, string>> = {
-  "src/client/timezone.ts": "ticket 08 (time zone host)",
-};
+const ALLOWED: Readonly<Record<string, string>> = {};
 
 const AMBIENT = /\bprocess\.[A-Za-z_]|node:os|node:crypto|\bsetImmediate\b/;
 
