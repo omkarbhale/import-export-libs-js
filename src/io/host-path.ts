@@ -138,7 +138,7 @@ export function getFullPath(path: string, cwd: string): string {
  * engine, which uses the path as built); on other
  * platforms the path must be relative or rooted by `\` only, and every `\` becomes `/`. A drive or a `\\host` share has no
  * meaning there, and the layer stops with {@link PathNotUsableError}. A null or empty path is returned as it is.
- * @spec MAN-004 MAN-005 MAN-033 LP-010
+ * @spec MAN-004 MAN-005 MAN-033 LP-010 HOST-216
  */
 export function toHostPath(path: string | null, environment: PathEnvironment = {}): string | null {
   if (path === null || path.length === 0) return path;

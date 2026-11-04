@@ -15,6 +15,7 @@
   "files": [
     "src/browser/globals.d.ts",
     "src/browser/fetch-transport.ts",
+    "src/browser/host.ts",
     "src/client/answer.ts",
     "src/client/digest.ts",
     "src/client/dotnet.ts",
@@ -56,6 +57,7 @@
     "src/export/removed-reference.ts",
     "src/export/request-bodies.ts",
     "src/export/system-names.ts",
+    "src/host/default-host.browser.ts",
     "src/host/types.ts",
     "src/import/add-order.ts",
     "src/import/answer-path.ts",

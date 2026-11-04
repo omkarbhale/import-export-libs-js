@@ -73,6 +73,7 @@ interface ModelPath {
  * The names of a path. `creating` is `Directory.CreateDirectory`, which drops a trailing separator before it makes the last
  * name, so that a last name with trailing dots or spaces is made without them. A name that a separator follows loses one
  * trailing dot and keeps its spaces (a folder `Sp ` cannot be reached, though `Sp` is made by creating it).
+ * @spec HOST-216
  */
 function modelPath(path: string, environment: PathEnvironment, creating: boolean): ModelPath {
   const { cwd, platform } = envOf(environment);
