@@ -381,12 +381,12 @@ function extract(stored: Uint8Array, entry: RawEntry, label: string): Uint8Array
   if (entry.method === 0) data = stored;
   else {
     try {
-      data = inflateSync(stored, { out: new Uint8Array(size) });
+      data = inflateSync(stored, { out: new Uint8Array(size + 1) });
     } catch (error) {
       throw new ZipError("ZIP_INVALID", `the data of the entry ${JSON.stringify(label)} is damaged: ${(error as Error).message}`);
     }
   }
-  if (data.length !== size) throw new ZipError("ZIP_INVALID", `the entry ${JSON.stringify(label)} inflates to ${data.length} bytes, not the ${size} it declares`);
+  if (data.length !== size) throw new ZipError("ZIP_INVALID", `the entry ${JSON.stringify(label)} does not inflate to the ${size} bytes it declares`);
   if (crc32(data) !== entry.crc) throw new ZipError("ZIP_INVALID", `the entry ${JSON.stringify(label)} does not match its CRC-32`);
   return data;
 }

@@ -438,6 +438,8 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
       expectZipError(() => vfsFromZip(rawZip([{ name: "a", data, stored, method: 8, size: data.length - 3 }])), "ZIP_INVALID");
       expectZipError(() => vfsFromZip(rawZip([{ name: "a", data, stored, method: 8, size: data.length + 3 }])), "ZIP_INVALID", /declares/);
       expectZipError(() => vfsFromZip(rawZip([{ name: "a", data, stored, method: 8, crc: 7 }])), "ZIP_INVALID", /CRC/);
+      const prefix = data.subarray(0, 5);
+      expectZipError(() => vfsFromZip(rawZip([{ name: "a", data: prefix, stored, method: 8 }])), "ZIP_INVALID", /declares/);
       expectZipError(() => vfsFromZip(rawZip([{ name: "a", data, stored: stored.subarray(0, 5), method: 8 }])), "ZIP_INVALID", /damaged|declares/);
       expectZipError(() => vfsFromZip(rawZip([{ name: "a", data: encode("abc"), crc: 1 }])), "ZIP_INVALID", /CRC/);
     });
