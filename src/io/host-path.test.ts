@@ -5,6 +5,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { isWhiteSpace } from "./dotnet-text.js";
 import { ArgumentException, DirectoryNotFoundException, FileNotFoundException, NotSupportedException, PathNotUsableError, UnauthorizedAccessException } from "./errors.js";
 import { normalizeLongPath, readFileBytes, toHostPath, writeFileBytes } from "./host-path.js";
+import { COLON_FORMAT_PATHS, DRIVE_AND_SHARE_PATHS, ILLEGAL_FULL_PATHS } from "./host-path.cases.js";
 import { isPathRooted, pathCombine } from "./win-path.js";
 import { probeSection, quotedStrings, resultOf, observe } from "../manifest/probe-output.js";
 
@@ -61,10 +62,10 @@ describe("MAN-004: NormalizeLongPath", () => {
     expect(() => normalizeLongPath("   ", windows)).toThrow(new ArgumentException("The path is not of a legal form."));
     expect(() => normalizeLongPath("\t", windows)).toThrow("The path is not of a legal form.");
     expect(() => normalizeLongPath("\\\\", windows)).toThrow("The path is not of a legal form.");
-    for (const bad of ["a|b", "a<b", "a>b", 'a"b', "a\tb", "a?b", "a*b", "a\\*\\b"]) {
+    for (const bad of ILLEGAL_FULL_PATHS) {
       expect(() => normalizeLongPath(bad, windows)).toThrow(new ArgumentException("Illegal characters in path."));
     }
-    for (const bad of ["C:\\x:y", ":x", "1:\\x", "ab:\\x", "C::", "C:\\a\\:b"]) {
+    for (const bad of COLON_FORMAT_PATHS) {
       expect(() => normalizeLongPath(bad, windows)).toThrow(new NotSupportedException("The given path's format is not supported."));
     }
     expect(normalizeLongPath("a:b", windows)).toBe("a:b");
@@ -89,7 +90,7 @@ describe("MAN-033: the host path", () => {
   });
 
   it("stops at a drive or a share, which have no meaning there, naming the path", () => {
-    for (const path of ["C:\\abs\\x", "D:rel", "\\\\host\\share\\x"]) {
+    for (const path of DRIVE_AND_SHARE_PATHS) {
       expect(() => toHostPath(path, { platform: "linux" })).toThrow(PathNotUsableError);
       expect(() => toHostPath(path, { platform: "linux" })).toThrow(path);
     }

@@ -1,7 +1,6 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
 import { CItemException } from "../client/fault.js";
 import type { Engine } from "../engines.js";
@@ -17,6 +16,8 @@ import type { LogWriter } from "./load-package-dom.js";
 import { directoryGetDirectories, directoryGetXmlFiles } from "./package-files.js";
 import { plainChildren } from "./build-order.js";
 import { planPackage } from "./plan.js";
+import { EXTRA_LOAD_CASES, FAILURE_TREES, LISTING_TREES, LOAD_CASES, LOAD_FIXTURES, SKIP_AND_STAMP_TREES, WINDOWS_ONLY } from "./load-package-dom.cases.js";
+import type { LoadCase } from "./load-package-dom.cases.js";
 
 /**
  * Replays fixtures/import-load/load-package-dom.out.txt, which the engine's own LoadPackageDom wrote on Windows, against
@@ -24,31 +25,17 @@ import { planPackage } from "./plan.js";
  * a locked file, a UNC path) are not replayed; the rule text carries their result.
  */
 
-const DIR = fileURLToPath(new URL("../../fixtures/import-load/", import.meta.url));
+const DIR = LOAD_FIXTURES;
 
-interface LoadCase {
-  name: string;
-  solutionPath?: string;
-  dirs?: string[];
-  files: { path: string; text?: string; b64?: string }[];
-  relative?: string;
-  trailingSlash?: boolean;
-  longCreate?: boolean;
-  hidden?: string[];
-  lock?: string[];
-  unc?: boolean;
-}
-
-const cases = JSON.parse(readFileSync(DIR + "load-package-dom.cases.json", "utf8")) as LoadCase[];
+const cases = LOAD_CASES;
 const recordedSections = (file: string): string[][] =>
   readFileSync(DIR + file, "utf8")
     .split(/\r?\n(?==== )/)
     .map((section) => section.replace(/^=== [^\n]*\n/, "").replace(/\n$/, "").split("\n"));
 const outSections = recordedSections("load-package-dom.out.txt");
 /** The cases that only 12.0's reader can tell apart (IMP-007), with their recorded sections. */
-const extraCases = JSON.parse(readFileSync(DIR + "load-package-dom.12.0-extra.cases.json", "utf8")) as LoadCase[];
+const extraCases = EXTRA_LOAD_CASES;
 
-const WINDOWS_ONLY = new Set(["hidden", "locked", "unc"]);
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
@@ -177,7 +164,7 @@ describe("IMP-002 to IMP-006: the file listing", () => {
   };
 
   it("lists only the immediate subdirectories, in NTFS order, and the *.xml files of one folder", () => {
-    const root = make({ "loose.xml": "", "b/x.XML": "", "b/y.xmlbak": "", "b/z.txt": "", "b/t.xml.bak": "", "B2/q.xm": "", "a/deep/d.xml": "", "a/.xml": "" });
+    const root = make(LISTING_TREES.mixed);
     mkdirSync(join(root, "c.xml"));
     expect(directoryGetDirectories(root).map((path) => path.slice(root.length + 1))).toEqual(["a", "b", "B2", "c.xml"]);
     expect(directoryGetXmlFiles(join(root, "b")).map((path) => path.slice(root.length + 3))).toEqual(["x.XML", "y.xmlbak"]);
@@ -186,13 +173,7 @@ describe("IMP-002 to IMP-006: the file listing", () => {
   });
 
   it("lists a file that only its short name matches at the short name's place (IMP-003, IMP-004)", () => {
-    const root = make({
-      "p/LIBSJS-SCRATCH-Fs_Backup.xmlbak": "",
-      "p/LIBSJS-SCRATCH-Fs_Plain.xml": "",
-      "p/LIBSJS-SCRATCH-Fs_NoItem.xml": "",
-      "p/LIBSJS-SCRATCH-Fs_Notes.txt": "",
-      "p/Zed.xml": "",
-    });
+    const root = make(LISTING_TREES.shortName);
     expect(directoryGetXmlFiles(join(root, "p")).map((path) => path.slice(root.length + 3))).toEqual([
       "LIBSJS-SCRATCH-Fs_NoItem.xml",
       "LIBSJS-SCRATCH-Fs_Plain.xml",
@@ -202,17 +183,17 @@ describe("IMP-002 to IMP-006: the file listing", () => {
   });
 
   it("numbers clashing short names in the order of the long names (IMP-004)", () => {
-    const root = make({ "p/report-b.xmlz": "", "p/report-a.xmlz": "", "p/report-c.xml": "" });
+    const root = make(LISTING_TREES.shortNameClash);
     expect(directoryGetXmlFiles(join(root, "p")).map((path) => path.slice(root.length + 3))).toEqual(["report-c.xml", "report-a.xmlz", "report-b.xmlz"]);
   });
 
   it("does not double a trailing separator", () => {
-    const root = make({ "d/a.xml": "" });
+    const root = make(LISTING_TREES.oneFolder);
     expect(directoryGetDirectories(`${root}/`)).toEqual([`${root}/d`]);
   });
 
   it("follows a link to a directory and to a file", () => {
-    const root = make({ "real/a.xml": "<AML/>", "target.xml": "<AML/>" });
+    const root = make(LISTING_TREES.linkTargets);
     symlinkSync(join(root, "real"), join(root, "linkdir"));
     symlinkSync(join(root, "target.xml"), join(root, "real", "b.xml"));
     expect(directoryGetDirectories(root).map((path) => path.slice(root.length + 1))).toEqual(["linkdir", "real"]);
@@ -220,7 +201,7 @@ describe("IMP-002 to IMP-006: the file listing", () => {
   });
 
   it("raises DirectoryNotFoundException for a missing folder and IOException for a file", () => {
-    const root = make({ "f.xml": "" });
+    const root = make(LISTING_TREES.onlyFile);
     expect(() => directoryGetDirectories(join(root, "nope"))).toThrow(DirectoryNotFoundException);
     expect(() => directoryGetDirectories(join(root, "nope"))).toThrow(`Could not find a part of the path '${join(root, "nope")}'.`);
     expect(() => directoryGetDirectories(join(root, "f.xml"))).toThrow(IOException);
@@ -228,7 +209,7 @@ describe("IMP-002 to IMP-006: the file listing", () => {
   });
 
   it("removes a leading ? from the folder as the engine's path trim does, also off Windows (IMP-006)", () => {
-    const root = make({ "d/a.xml": "" });
+    const root = make(LISTING_TREES.oneFolder);
     const folder = relative(process.cwd(), root);
     expect(directoryGetDirectories(`??${folder}`)).toEqual([`${folder}/d`]);
   });
@@ -251,7 +232,7 @@ describe("IMP-008, IMP-009: skipped files and stamps", () => {
   };
 
   it("logs one warning per skipped file in file order and keeps reading", () => {
-    const root = package_({ "d/a.xml": "<AML><Foo/></AML>", "d/b.xml": "<aml><Item/></aml>", "d/c.xml": "<AML><Item type='List' action='add' id='ok'/></AML>" });
+    const root = package_(SKIP_AND_STAMP_TREES.skipped);
     const log: string[] = [];
     const loaded = loadPackage(root, { writeLine: (text) => log.push(text) });
     expect(log).toEqual([
@@ -263,7 +244,7 @@ describe("IMP-008, IMP-009: skipped files and stamps", () => {
   });
 
   it("stamps only the first item and keeps the position of an attribute that exists", () => {
-    const root = package_({ "d/c.xmlbak": "<AML><Item tempKeyName='old' type='List' tempFullName='oldf' action='add' id='x'/><Item type='List' action='add' id='y'/></AML>" });
+    const root = package_(SKIP_AND_STAMP_TREES.stampedFirst);
     const items = getItemsFromPackageDom(loadPackageDom(root, { writeLine: () => undefined })).map((doc) => outerXml(doc));
     expect(items).toEqual([
       `<Item tempKeyName="c" type="List" tempFullName="${join(root, "d", "c.xmlbak")}" action="add" id="x" />`,
@@ -272,7 +253,7 @@ describe("IMP-008, IMP-009: skipped files and stamps", () => {
   });
 
   it("takes the stamp from the file name up to its last dot", () => {
-    const root = package_({ "d/a.b.xml": "<AML><Item type='List' action='add' id='1'/></AML>", "d/.xml": "<AML><Item type='List' action='add' id='2'/></AML>" });
+    const root = package_(SKIP_AND_STAMP_TREES.stampFromName);
     const plan = planPackage(root);
     expect(plan.sequence.map((entry) => entry.source.tempKeyName)).toEqual(["", "a.b"]);
   });
@@ -310,14 +291,14 @@ describe("IMP-011: failures", () => {
   });
 
   it("lets a malformed file's XmlException through, naming no file", () => {
-    const root = folder({ "d/a.xml": "<AML><Item></AML>" });
+    const root = folder(FAILURE_TREES.malformed);
     const error = failure(() => loadPackageDom(root, quiet));
     expect(error).toBeInstanceOf(XmlException);
     expect(error.message).toBe("The 'Item' start tag on line 1 position 7 does not match the end tag of 'AML'. Line 1, position 14.");
   });
 
   it("wraps the failure of the joined string with the build.xsl suffix", () => {
-    const root = folder({ "d/a.xml": '<?xml version="1.0"?><AML><Item type="List"/></AML>' });
+    const root = folder(FAILURE_TREES.declarationInside);
     const error = failure(() => loadPackageDom(root, quiet)) as CItemException;
     expect(error).toBeInstanceOf(CItemException);
     expect(error.message).toBe(
@@ -327,21 +308,21 @@ describe("IMP-011: failures", () => {
   });
 
   it("reports a character reference the output writer refuses as the engine's ApplyXsl error", () => {
-    const root = folder({ "d/a.xml": "<AML><Item type='List' action='add' id='x'><name>a&#1;b</name></Item></AML>" });
+    const root = folder(FAILURE_TREES.invalidCharacter);
     const error = failure(() => loadPackageDom(root, quiet)) as CItemException;
     expect(error.message).toBe("'\u0001', hexadecimal value 0x01, is an invalid character. Error of  applying export.xsl.");
     expect(error.cause).toBeInstanceOf(ArgumentException);
   });
 
   it("fails a DOCTYPE with a declaration inside as the port's NotSupportedException, not the engine's XmlException (IMP-016)", () => {
-    const root = folder({ "d/a.xml": '<!DOCTYPE AML [<!ENTITY e "x">]><AML><Item type="List" action="add" id="x"/></AML>' });
+    const root = folder(FAILURE_TREES.doctype);
     const error = failure(() => loadPackageDom(root, quiet));
     expect(error).toBeInstanceOf(NotSupportedException);
     expect(error.message).toMatch(/IMP-016/);
   });
 
   it("loads a package under every engine's stylesheet (12.0 stamps tempKeyName only)", () => {
-    const root = folder({ "d/a.xml": "<AML><Item type='List' action='add' id='x'/></AML>" });
+    const root = folder(FAILURE_TREES.plain);
     const stamped = (engine: Engine): string[] => {
       const document = loadPackageDom(root, quiet, { engine });
       const item = plainChildren(documentElementOf(document) as XmlElement, "Item")[0] as XmlElement;

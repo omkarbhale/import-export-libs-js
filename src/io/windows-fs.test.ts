@@ -2,11 +2,11 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSy
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { unescapeProbe } from "../manifest/probe-output.js";
 import { ArgumentException, DirectoryNotFoundException, IOException, NotSupportedException, PathTooLongException, UnauthorizedAccessException } from "./errors.js";
 import { normalizeLongPath } from "./host-path.js";
 import { NTFS_UPCASE_RUNS } from "./ntfs-upcase-data.js";
 import { directoryCreateDirectory, directoryDelete, directoryExists, ntfsFoldKey, writeVolumeFile } from "./windows-fs.js";
+import { DEVICE_FOLDER_NAMES, FIRST_SPELLING_WRITES, FOLD_CASES, ILLEGAL_PATH_NAMES, TRAILING_FILE_NAMES } from "./windows-fs.cases.js";
 
 const work = mkdtempSync(join(tmpdir(), "libsjs-winfs-"));
 afterAll(() => rmSync(work, { recursive: true, force: true }));
@@ -47,12 +47,7 @@ describe("the NTFS upcase table (EXP-420)", () => {
 });
 
 describe("one name for names the volume folds together (EXP-419, EXP-420)", () => {
-  const cases = readFileSync(new URL("../../fixtures/export-write/probe-14.0.7.txt", import.meta.url), "utf8")
-    .split(/\r?\n/)
-    .flatMap((line) => {
-      const match = /^CASE .* \(U\+([0-9A-F]{4}) \/ U\+([0-9A-F]{4})\) -> files: (.*)$/.exec(line);
-      return match ? [{ first: String.fromCharCode(Number.parseInt(match[1] as string, 16)), second: String.fromCharCode(Number.parseInt(match[2] as string, 16)), files: unescapeProbe(match[3] as string).split(" | ") }] : [];
-    });
+  const cases = FOLD_CASES;
 
   it("has the recorded cases", () => expect(cases.length).toBeGreaterThanOrEqual(12));
 
@@ -67,7 +62,7 @@ describe("one name for names the volume folds together (EXP-419, EXP-420)", () =
 
   it("keeps the spelling of the first creation and the content of the last write (T1)", () => {
     directoryCreateDirectory(at("t1") + "\\", env);
-    for (const [name, text] of [["y.XML", "first"], ["y.Xml", "second"], ["Y.xml", "third"]] as const) writeVolumeFile(at("t1", name), bytes(text), env);
+    for (const [name, text] of FIRST_SPELLING_WRITES) writeVolumeFile(at("t1", name), bytes(text), env);
     expect(readdirSync(join(work, "t1"))).toEqual(["y.XML"]);
     expect(readFileSync(join(work, "t1", "y.XML"), "utf8")).toBe("third");
   });
@@ -83,7 +78,7 @@ describe("one name for names the volume folds together (EXP-419, EXP-420)", () =
 describe("trailing dots and spaces (EXP-420)", () => {
   it("drops them from the last name of a file", () => {
     directoryCreateDirectory(at("w2") + "\\", env);
-    for (const name of ["tr.xml ", "tr.xml.", "tr2.xml   ", "tr3 .xml", "dot.."]) writeVolumeFile(at("w2", name), bytes(name), env);
+    for (const name of TRAILING_FILE_NAMES) writeVolumeFile(at("w2", name), bytes(name), env);
     expect(readdirSync(join(work, "w2")).sort()).toEqual(["dot", "tr.xml", "tr2.xml", "tr3 .xml"]);
   });
 
@@ -123,7 +118,7 @@ describe("the names of a path (EXP-420)", () => {
   });
 
   it("refuses illegal characters and a colon as .NET does", () => {
-    for (const bad of ["a*b", "a?b", 'a"b', "a<b", "a|b"]) expect(() => directoryCreateDirectory(at(bad) + "\\", env)).toThrow(new ArgumentException("Illegal characters in path."));
+    for (const bad of ILLEGAL_PATH_NAMES) expect(() => directoryCreateDirectory(at(bad) + "\\", env)).toThrow(new ArgumentException("Illegal characters in path."));
     expect(() => directoryCreateDirectory(at("a:b") + "\\", env)).toThrow(new NotSupportedException("The given path's format is not supported."));
   });
 
@@ -140,7 +135,7 @@ describe("device names (EXP-417, EXP-420)", () => {
     directoryCreateDirectory(at("dev") + "\\", env);
     expect(() => writeVolumeFile(at("dev", "NUL", "x.xml"), bytes("x"), env)).toThrow(new DirectoryNotFoundException(shown("dev", "NUL", "x.xml")));
     expect(() => writeVolumeFile(at("dev", "nul", "x.xml"), bytes("x"), env)).toThrow(DirectoryNotFoundException);
-    for (const device of ["CON", "aux", "LPT1"]) {
+    for (const device of DEVICE_FOLDER_NAMES) {
       directoryCreateDirectory(at("dev", device) + "\\", env);
       writeVolumeFile(at("dev", device, "x.xml"), bytes("x"), env);
     }
