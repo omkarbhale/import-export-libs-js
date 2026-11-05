@@ -10,6 +10,7 @@ import { posix } from "../io/path.js";
 import type { Engine } from "../engines.js";
 import { OptionError, type OnItemErrorOption, type OperationResult, RunReporter, ensureFolder, readLog, resultOf } from "./api-run.js";
 import type { RunOptions } from "./api-run.js";
+import { clockOf } from "./api-hooks.js";
 import { createBrowserHost } from "./host.js";
 import type { Session } from "./api-session.js";
 
@@ -160,7 +161,7 @@ export async function exportPackages(session: Session, options: ExportOptions): 
       console: reporter.console,
       fs: vfs,
       host: host.env,
-      ...(options.now === undefined ? {} : { now: options.now }),
+      ...clockOf(session),
       ...(options.parallelism === undefined ? {} : { parallelism: options.parallelism }),
     };
     const abort = (): void => manager?.cancel();

@@ -6,7 +6,8 @@ import type { TokenProvider } from "../client/oauth.js";
 import type { HttpTransport } from "../client/transport.js";
 import { type ArasVersion, VersionRefusal, engineAcceptsServer } from "../client/version.js";
 import { DEFAULT_ENGINE, type Engine, isEngine } from "../engines.js";
-import { OptionError } from "./api-run.js";
+import type { ServerConnection } from "../client/innovator.js";
+import { OptionError, RunAbortedError } from "./api-run.js";
 
 /**
  * The session of the browser API (HOST-270): one login of one connection, the engine it runs, and the rule that it serves one
@@ -73,6 +74,16 @@ export function engineForServer(version: Pick<ArasVersion, "major" | "minor">): 
   return DEFAULT_ENGINE;
 }
 
+/** Refuses every call but the logoff once the signal is raised, until the function it answers is called (HOST-272). */
+function gateServerCalls(connection: ServerConnection, signal: AbortSignal): () => void {
+  const send = connection.callAction;
+  connection.callAction = (action, request) =>
+    signal.aborted && action !== "Logoff" ? Promise.reject(new RunAbortedError()) : send.call(connection, action, request);
+  return () => {
+    Reflect.deleteProperty(connection, "callAction");
+  };
+}
+
 /** A logged-in connection and the engine over it (HOST-270). */
 export class Session {
   readonly engine: Engine;
@@ -127,19 +138,25 @@ export class Session {
     await this.helper.logout();
   }
 
+  /** @internal For a flow that always ends with the logoff itself (the language-pack import, LP-001), called as that flow is entered. */
+  markLoggedOff(): void {
+    this.isClosed = true;
+  }
+
   /**
-   * @internal Runs one operation: refuses a closed or busy session, and marks it busy until the operation is over. `logsOff` is for
-   * an operation that ends with the logoff itself (the language-pack import, LP-001), after which the session is closed.
+   * @internal Runs one operation: refuses a closed or busy session, and marks it busy until the operation is over. With `stopCallsOn`,
+   * a server call that starts after the signal is raised is not sent (HOST-272).
    */
-  async run<T>(operation: () => Promise<T>, options: { logsOff?: boolean } = {}): Promise<T> {
+  async run<T>(operation: () => Promise<T>, options: { stopCallsOn?: AbortSignal } = {}): Promise<T> {
     if (this.isClosed) throw new SessionClosedError();
     if (this.isBusy) throw new SessionBusyError();
     this.isBusy = true;
+    const openGate = options.stopCallsOn === undefined ? undefined : gateServerCalls(this.helper.inn.connection, options.stopCallsOn);
     try {
       return await operation();
     } finally {
+      openGate?.();
       this.isBusy = false;
-      if (options.logsOff === true) this.isClosed = true;
     }
   }
 }

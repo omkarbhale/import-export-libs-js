@@ -19,6 +19,7 @@ import type { XmlDocument } from "../xml/index.js";
 import { OptionError, type OperationResult, RunReporter, ensureFolder, readLog, resultOf } from "./api-run.js";
 import type { Operation, RunOptions, RunSummary } from "./api-run.js";
 import type { Session } from "./api-session.js";
+import { clockOf, idsOf } from "./api-hooks.js";
 import { createBrowserHost } from "./host.js";
 import { vfsFromZip } from "./zip.js";
 
@@ -192,7 +193,7 @@ export async function importPackages(session: Session, options: ImportOptions): 
       console: reporter.console,
       osUser: options.osUser ?? session.userName,
       ...environment,
-      ...(options.now === undefined ? {} : { now: options.now }),
+      ...clockOf(session),
     });
     const abort = (): void => manager.cancel();
     options.signal?.addEventListener("abort", abort);
@@ -230,10 +231,10 @@ export async function importLanguagePack(session: Session, options: ImportLangua
   if (!LP_ENGINES.includes(engine) || !IMPORT_ENGINES.includes(engine)) throw new EngineNotSupportedError(engine);
   if (options.lpPackage === "") throw new OptionError("importLanguagePack needs lpPackage, the name of the package");
   const { importContext, languages } = importContextOf(options, engine, false);
+  const tree = treeOf(options.source);
   options.signal?.throwIfAborted();
   return session.run(
     async () => {
-      const tree = treeOf(options.source);
       const host = createBrowserHost({ fs: tree, osUser: options.osUser ?? session.userName });
       const logPath = options.logPath ?? "/aras-pkg-logs/language-pack.log";
       ensureFolder(tree, posix.dirname(logPath));
@@ -253,20 +254,24 @@ export async function importLanguagePack(session: Session, options: ImportLangua
       context.lpDebug = options.lpDebug === true;
 
       const reporter = reporterOf("language-pack", options, session);
+      session.markLoggedOff();
+      let code = 1;
       try {
-        const code = await languagePackImport(context, importContext, reporter.factory, session.helper, {
+        code = await languagePackImport(context, importContext, reporter.factory, session.helper, {
           console: reporter.console,
           osUser: options.osUser ?? session.userName,
           fs: tree,
           host: host.env,
-          ...(options.now === undefined ? {} : { now: options.now }),
+          ...clockOf(session),
         });
-        return finish("language-pack", session, tree, logPath, reporter, code, false, [options.lpPackage]);
+      } catch (error) {
+        if (options.signal?.aborted !== true) throw error;
       } finally {
         reporter.flush();
       }
+      return finish("language-pack", session, tree, logPath, reporter, code, options.signal?.aborted === true, [options.lpPackage]);
     },
-    { logsOff: true },
+    options.signal === undefined ? {} : { stopCallsOn: options.signal },
   );
 }
 
@@ -282,8 +287,6 @@ export interface DbPatchesOptions extends Omit<RunOptions, "vfs"> {
   patchesFolder?: string;
   /** The `description` of the "Applied Updates" row (DBP-030); default the engine's `Libs`. */
   toolName?: string;
-  /** The ids of the rows the application creates; a hook for tests. */
-  newId?: () => string;
 }
 
 /** The only login the engine accepts for this operation (DBP-010). */
@@ -328,22 +331,22 @@ export async function applyDbPatches(session: Session, options: DbPatchesOptions
       osUser: options.osUser ?? session.userName,
       fs: tree,
       host: host.env,
-      ...(options.now === undefined ? {} : { now: options.now }),
+      ...clockOf(session),
     });
     let code = 0;
     try {
       try {
-        await manager.applyDBUpdateManifest(config, options.newId === undefined ? {} : { newId: options.newId });
+        await manager.applyDBUpdateManifest(config, idsOf(session));
       } catch (error) {
         // the engine sent the exception's message on the error channel before it rethrew it (DBP-003); one it could not send is the host's
-        if (reporter.counts.errors === 0) throw error;
+        if (reporter.counts.errors === 0 && options.signal?.aborted !== true) throw error;
       }
       code = reporter.counts.errors > 0 ? 1 : 0;
     } finally {
       reporter.flush();
     }
-    return finish("db-patches", session, tree, logPath, reporter, code, false, []);
-  });
+    return finish("db-patches", session, tree, logPath, reporter, code, options.signal?.aborted === true, []);
+  }, options.signal === undefined ? {} : { stopCallsOn: options.signal });
 }
 
 // ------------------------------------------------------------------------------------------------------------------- plan

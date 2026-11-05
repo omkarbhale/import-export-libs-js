@@ -20,6 +20,7 @@ import {
   vfsFromZip,
   vfsToZip,
 } from "../browser.js";
+import { setRunHooks } from "./api-hooks.js";
 import { LOGIN, engineMessages, recordedMessages, serverOf } from "./api-test-support.js";
 import { type FixtureOperation, fixtureBlobPath } from "./fixture-set.js";
 import { loadFixtureTree, readFixtureText } from "./test-support.browser.js";
@@ -277,9 +278,19 @@ describe("importLanguagePack and applyDbPatches, in the browsers (HOST-272)", ()
     const calls = await transcriptOf(base, "14.35", "dbpatch", `${base}/_blobs`);
     const server = new RecordedDbPatchServer(calls);
     const session = await connect({ ...LOGIN, userName: "root", engine: "14.35", transport: new FakeTransport(server.handler) });
+    let ids = 0;
+    setRunHooks(session, {
+      now: () => new Date(2020, 0, 2, 3, 4, 5),
+      newId: () => {
+        ids += 1;
+        return ids.toString(16).toUpperCase().padStart(32, "0");
+      },
+    });
     const result = await applyDbPatches(session, { source: await treeOf(`${base}/input`), manifestPath: "/manifest.xml", osUser: osUserOf(calls) });
     expect(server.mismatches).toEqual([]);
     expect(server.consumed).toBe(server.total);
     expect(result.summary).toMatchObject({ operation: "db-patches", engine: "14.35", result: "success" });
+    expect(ids).toBeGreaterThan(0);
+    expect(result.log).toContain("01/02/2020 03:04:05");
   });
 });

@@ -54,7 +54,7 @@ export interface RunOptions {
   onMessage?: (message: ApiMessage) => void;
   /** Called for the stages of a run (HOST-273). */
   onProgress?: (event: ProgressEvent) => void;
-  /** An abort before the start rejects the call; during an export or an import it cancels the run (HOST-272). */
+  /** An abort before the start rejects the call; during a run it ends the run at the next safe boundary, with `summary.aborted` (HOST-272). */
   signal?: AbortSignal;
   /** The tree the run reads and writes. Default: a new one for an export, the source for an import (HOST-272). */
   vfs?: MemoryVfs;
@@ -64,8 +64,6 @@ export interface RunOptions {
   logPath?: string;
   /** The `os_user` of the audit row of an import and of a DB patch run (IMP-452); default the login name (HOST-270). */
   osUser?: string;
-  /** The clock of the log's date-times; a hook for tests. */
-  now?: () => Date;
 }
 
 /** The messages by channel, counted as the CLI counts them. */
@@ -106,6 +104,15 @@ export interface OperationResult {
   summary: RunSummary;
 }
 
+/** A server call the abort signal stopped (HOST-272); the operation that started the run turns it into a cancelled result. */
+export class RunAbortedError extends Error {
+  override name = "RunAbortedError";
+
+  constructor() {
+    super("The run was aborted: the request was not sent");
+  }
+}
+
 /** An option the operation cannot take: an unknown value, a combination, or an engine that lacks the feature (HOST-272). */
 export class OptionError extends Error {
   override name = "OptionError";
@@ -127,7 +134,7 @@ class ReportedMessage extends Message {
   }
 }
 
-const ITEM = /^Item (\d+) of (\d+): (\S+) - ([\s\S]*)$/;
+const ITEM = /^Item (\d+) of (\d+): (.+?) - ([\s\S]*)$/;
 const EXPORT_PACKAGE = /^Exporting package ([\s\S]+)$/;
 const IMPORT_BANNER = /^\s*\*{4}Import(?: with merge option)?\s+(.*?)\*{4}\s*$/;
 
@@ -138,8 +145,6 @@ const IMPORT_BANNER = /^\s*\*{4}Import(?: with merge option)?\s+(.*?)\*{4}\s*$/;
 export class RunReporter {
   readonly messages: ApiMessage[] = [];
   readonly counts: MessageCounts = { info: 0, warnings: 0, errors: 0, packages: 0 };
-  /** The packages the run reported, in order, for the summary. */
-  readonly packages: string[] = [];
   readonly factory: MessagesFactory;
   readonly console: ConsoleWriter;
 
@@ -206,7 +211,6 @@ export class RunReporter {
 
   private startPackage(name: string): void {
     this.currentPackage = name;
-    this.packages.push(name);
     this.progress("package");
   }
 

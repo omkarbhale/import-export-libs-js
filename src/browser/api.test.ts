@@ -29,6 +29,8 @@ import {
   applyDbPatches,
   planImport,
 } from "./api.js";
+import { setRunHooks } from "./api-hooks.js";
+import { ZipError } from "./zip.js";
 import { LOGIN, SERVER_URL, type Recorded, engineMessages, recordedMessages as sharedRecordedMessages, serverOf } from "./api-test-support.js";
 import { loadTreeIntoVfs, readDiskFiles } from "./test-support.js";
 import { vfsFromZip, vfsToZip } from "./zip.js";
@@ -265,6 +267,27 @@ describe("exportPackages, HOST-272", () => {
     expect(events[0]).toMatchObject({ operation: "export", package: "com.aras.innovator.solution.PLM" });
     expect(events[1]).toMatchObject({ phase: "item", index: 1, total: 1, item: { type: "ItemType", name: "Design To Goal" }, package: "com.aras.innovator.solution.PLM" });
     expect(lines.map((line) => line.level)).toEqual(["info", "info", "info"]);
+  });
+
+  it("reports an item whose type has spaces, split at the first ' - '", async () => {
+    const name = "e40-workflow-promotion-error-yes";
+    const { input, session, recordedLog } = await exportSession(name, true);
+    const events: ProgressEvent[] = [];
+    await exportPackages(session, {
+      packages: input.packages.map((entry) => entry.name),
+      onProgress: (event) => events.push(event),
+      ...optionsOf(name, recordedLog),
+    });
+    expect(events.filter((event) => event.phase === "item")).toContainEqual(
+      expect.objectContaining({ item: { type: "Workflow Promotion", name: "Nope Promotion" }, index: 2, total: 2 }),
+    );
+  });
+
+  it("takes the log's date-times from the internal clock", async () => {
+    const { input, session, recordedLog } = await exportSession("e27-permission", true);
+    setRunHooks(session, { now: () => new Date(2020, 0, 2, 3, 4, 5) });
+    const result = await exportPackages(session, { packages: input.packages.map((entry) => entry.name), ...optionsOf("e27-permission", recordedLog) });
+    expect(result.log).toContain("01/02/2020 03:04:05");
   });
 
   it("a failing item, answered to continue, completes with engine errors and says what failed", async () => {
@@ -576,6 +599,52 @@ describe("importLanguagePack, replaying the recorded runs (LP-001)", () => {
   });
 });
 
+describe("importLanguagePack, the abort and a source it cannot read (HOST-270, HOST-272)", () => {
+  async function lpSession() {
+    const dir = join(LP_CASES, "lp01");
+    const definition = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as { lpPackage: string; lpDebug: boolean };
+    const calls = readTranscript(join(dir, "transcript.jsonl"), join(LP_CASES, "_blobs"));
+    const transport = new FakeTransport(new RecordedServer(calls).handler);
+    const session = await connect({ ...login, engine: "14.0.7", transport });
+    const source = new MemoryVfs();
+    loadTreeIntoVfs(join(dir, "lp"), source, "/");
+    const osUser = /<os_user>([^<]*)<\/os_user>/.exec(calls.map((call) => call.request).join("\n"))?.[1] ?? "";
+    return { definition, transport, session, source, osUser };
+  }
+
+  it("an abort during the run sends nothing more than the logoff, and ends as cancelled", async () => {
+    const { definition, transport, session, source, osUser } = await lpSession();
+    const controller = new AbortController();
+    let sentAtAbort = 0;
+    const result = await importLanguagePack(session, {
+      source,
+      lpPackage: definition.lpPackage,
+      lpDebug: definition.lpDebug,
+      osUser,
+      signal: controller.signal,
+      onProgress: (event) => {
+        if (event.phase !== "package") return;
+        sentAtAbort = transport.requests.length;
+        controller.abort();
+      },
+    });
+    expect(sentAtAbort).toBeGreaterThan(0);
+    expect(transport.requests.slice(sentAtAbort).map((request) => header(request, "SOAPAction"))).toEqual(["Logoff"]);
+    expect(result.summary).toMatchObject({ aborted: true, result: "cancelled" });
+    expect(session.closed).toBe(true);
+  });
+
+  it("a corrupt zip rejects with nothing sent, and the session stays open and can log off", async () => {
+    const { definition, transport, session } = await lpSession();
+    const sent = transport.requests.length;
+    await expect(importLanguagePack(session, { source: { zip: new Uint8Array([1, 2, 3]) }, lpPackage: definition.lpPackage })).rejects.toBeInstanceOf(ZipError);
+    expect(transport.requests).toHaveLength(sent);
+    expect(session.closed).toBe(false);
+    await session.close();
+    expect(header(transport.requests.at(-1) as never, "SOAPAction")).toBe("Logoff");
+  });
+});
+
 describe("applyDbPatches, replaying the recorded runs (DBP-002)", () => {
   async function applyStep(step: string, user = "root") {
     const dir = join(DBP_CASES, "apply", step);
@@ -600,6 +669,47 @@ describe("applyDbPatches, replaying the recorded runs (DBP-002)", () => {
     expect(normalised(engineMessages(result.messages).map(({ text }) => text))).toEqual(normalised(recordedMessages(dir).map(({ text }) => text)));
     expect(result.summary).toMatchObject({ operation: "db-patches", engine: "14.35", result: "success", returnCode: 0 });
     expect(result.log).toContain("Start of importing DB packages.");
+  });
+
+  it("an abort during the run sends nothing more, ends as cancelled, and leaves the session usable for its logoff", async () => {
+    const dir = join(DBP_CASES, "apply", "step-1");
+    const calls = readTranscript(join(dir, "transcript.jsonl"), join(dir, "_blobs"));
+    const transport = new FakeTransport(new RecordedDbPatchServer(calls).handler);
+    const session = await connect({ ...login, userName: "root", engine: "14.35", transport });
+    const source = new MemoryVfs();
+    loadTreeIntoVfs(join(dir, "input"), source, "/");
+    const controller = new AbortController();
+    let sentAtAbort = 0;
+    const result = await applyDbPatches(session, {
+      source,
+      manifestPath: "/manifest.xml",
+      signal: controller.signal,
+      onMessage: (message) => {
+        if (!message.text.startsWith("Loaded [")) return;
+        sentAtAbort = transport.requests.length;
+        controller.abort();
+      },
+    });
+    expect(sentAtAbort).toBeGreaterThan(0);
+    expect(transport.requests).toHaveLength(sentAtAbort);
+    expect(result.summary).toMatchObject({ aborted: true, result: "cancelled" });
+    expect(session.closed).toBe(false);
+    await session.close();
+    expect(header(transport.requests.at(-1) as never, "SOAPAction")).toBe("Logoff");
+  });
+
+  it("takes the ids of the rows it creates from the internal hook", async () => {
+    const dir = join(DBP_CASES, "apply", "step-1");
+    const calls = readTranscript(join(dir, "transcript.jsonl"), join(dir, "_blobs"));
+    const transport = new FakeTransport(new RecordedDbPatchServer(calls).handler);
+    const session = await connect({ ...login, userName: "root", engine: "14.35", transport });
+    const source = new MemoryVfs();
+    loadTreeIntoVfs(join(dir, "input"), source, "/");
+    const newId = vi.fn(() => "A".repeat(32));
+    setRunHooks(session, { newId });
+    await applyDbPatches(session, { source, manifestPath: "/manifest.xml" });
+    expect(newId).toHaveBeenCalled();
+    expect(transport.requests.map(bodyText).join("\n")).toContain("A".repeat(32));
   });
 
   it("reports the patch the server refuses as a failed run, though no exception escaped (DBP-094)", async () => {
