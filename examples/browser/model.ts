@@ -14,6 +14,16 @@ import { ENGINES } from "../../src/engines.js";
 /** What a control holds: text, or whether a flag is on. */
 export type Values = Record<string, string | boolean>;
 
+/**
+ * What a login that failed at the network level probably means (HOST-281). A browser gives a page the same error for a CORS refusal
+ * as for a dead host, so the engine's text cannot tell them apart: "Unable to connect" is the SOAP endpoint's, and "An error occurred
+ * while sending the request" the OAuth client's. A server that answered, with a refused password say, has neither.
+ */
+export function connectFailureHint(failure: string): string | undefined {
+  if (!/Unable to connect to the remote server|An error occurred while sending the request/.test(failure)) return undefined;
+  return "The server could not be reached, and a browser reports a refused cross-origin request the same way. Check the address, then the likely prerequisite: this page's origin missing from the OAuth server's allowedCorsOrigins, and, on 12 SP9, no CORS headers on the SOAP endpoint. See \"What the server needs\" above.";
+}
+
 export class FormError extends Error {
   override name = "FormError";
 }

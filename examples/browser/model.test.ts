@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   FormError,
   MANIFEST_EXPORT_FOLDER,
+  connectFailureHint,
   connectOptionsOf,
   dbPatchOptionsOf,
   exportOptionsOf,
@@ -136,5 +137,18 @@ describe("importOptionsOf and its siblings", () => {
       toolName: "tool",
       osUser: "root",
     });
+  });
+});
+
+describe("connectFailureHint", () => {
+  it("names the prerequisites for the network-level failures of the SOAP endpoint and of the OAuth client", () => {
+    for (const failure of ["Unable to connect to the remote server", "Failed login to Innovator; original error: <faultstring>An error occurred while sending the request.</faultstring>"]) {
+      expect(connectFailureHint(failure)).toMatch(/allowedCorsOrigins.*12 SP9.*SOAP endpoint/);
+    }
+  });
+
+  it("says nothing when the server answered", () => {
+    expect(connectFailureHint("Failed login to Innovator; original error: Authentication failed for admin")).toBeUndefined();
+    expect(connectFailureHint("The remote server returned an error: (500) Internal Server Error.")).toBeUndefined();
   });
 });

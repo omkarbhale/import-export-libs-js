@@ -26,6 +26,8 @@ const TYPES: Readonly<Record<string, string>> = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
+  // text/plain, because browsers show it in the tab; some download text/markdown
+  ".md": "text/plain; charset=utf-8",
   ".map": "application/json",
   ".json": "application/json",
 };

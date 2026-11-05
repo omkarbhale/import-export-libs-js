@@ -14,6 +14,7 @@ import {
   SELECTIONS,
   type Selection,
   type Values,
+  connectFailureHint,
   connectOptionsOf,
   dbPatchOptionsOf,
   exportOptionsOf,
@@ -232,10 +233,13 @@ class RunView {
     }
   }
 
-  fail(error: unknown): void {
+  /** Shows a failure; one of the login also says which server prerequisite is the likely cause, when it failed at the network level. */
+  fail(error: unknown, duringLogin: boolean): void {
     const name = error instanceof Error ? error.name : "Error";
+    const text = `${name}: ${describeFailure(error)}`;
+    const hint = duringLogin ? connectFailureHint(text) : undefined;
     this.failure.hidden = false;
-    this.failure.textContent = `${name}: ${describeFailure(error)}`;
+    this.failure.textContent = hint === undefined ? text : `${text}\n${hint}`;
   }
 
   showSummary(result: WorkerOperationResult | WorkerExportResult): void {
@@ -301,7 +305,9 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
       h(
         "p",
         { class: "help" },
-        "A page that is not served by the Aras server itself is a cross-origin client. The server's administrator has to list the page's origin in the OAuth server's allowedCorsOrigins (OAuth.config) on every flavour, and, on 12 SP9, add the CORS headers to the SOAP endpoint (Server/web.config). A page embedded in the Aras client needs neither. See roadmap/browser-cors-poc.md.",
+        "A page that is not served by the Aras server itself is a cross-origin client. The server's administrator has to list the page's origin in the OAuth server's allowedCorsOrigins (OAuth.config) on every flavour, and, on 12 SP9, add the CORS headers to the SOAP endpoint (Server/web.config). A page embedded in the Aras client needs neither. The XML, and the reverse proxy that is the alternative: ",
+        h("a", { href: "README.md#server-prerequisites", target: "_blank", rel: "noopener", "data-key": "server-prerequisites" }, "Server prerequisites"),
+        ".",
       ),
     ),
   );
@@ -559,7 +565,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
         if (controller.signal.aborted && error === controller.signal.reason) {
           view.say("The run was cancelled. Nothing was saved.");
         } else {
-          view.fail(error);
+          view.fail(error, session === undefined);
           view.say("The run failed.");
         }
         // the engine's log stays in the Worker with its tree; what the engine said before it failed is what the page has kept

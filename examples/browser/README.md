@@ -14,7 +14,40 @@ npm run example:browser         # builds it and serves it on http://127.0.0.1:80
 npm run example:browser -- --port 8080 --host 127.0.0.1 --no-build
 ```
 
-`dist/` is plain files: serve it from any static server. Over `http:` the page shows a banner (HOST-281). Against a server that is not on the page's origin the Aras administrator must list the page's origin; see `roadmap/browser-cors-poc.md`, section 3.
+`dist/` is plain files, with a copy of this README: serve it from any static server. Over `http:` the page shows a banner (HOST-281).
+
+## Server prerequisites
+
+A page that the Aras server does not serve itself is a cross-origin client, and no server flavour accepts one until its administrator edits the configuration. When they are missing, the browser hides the cause, so a login that fails at the network level names them as the likely one. A page embedded in the Aras client (same origin) needs none of this. The measurements are in `roadmap/browser-cors-poc.md`.
+
+`<origin>` is the page's origin exactly (`scheme://host[:port]`), for example `https://tools.example.com`.
+
+**Every flavour:** in `OAuthServer/OAuth.config`, list the origin under `InnovatorClient`, then let the OAuth application reload:
+
+```xml
+<allowedCorsOrigins>
+    <origin value="<origin>" />
+</allowedCorsOrigins>
+```
+
+**12 SP9 only:** its SOAP endpoint sends no CORS headers. In `Server/web.config`, use this block:
+
+```xml
+<httpProtocol>
+  <customHeaders>
+    <remove name="Access-Control-Allow-Origin" />
+    <remove name="Access-Control-Allow-Headers" />
+    <remove name="Access-Control-Allow-Credentials" />
+    <add name="Access-Control-Allow-Origin" value="<origin>" />   <!-- or "*" -->
+    <add name="Access-Control-Allow-Headers" value="content-type,locale,soapaction,timezone_name,Authorization,X-Aras-Authorization" />
+    <add name="X-Content-Type-Options" value="nosniff" />
+  </customHeaders>
+</httpProtocol>
+```
+
+R23 and R35 ship the SOAP headers this page needs.
+
+**The alternative, with no Aras edit:** a same-origin reverse proxy in front of the Aras server, serving this page and the Aras paths from one origin. The page is then not a cross-origin client. Setting one up is deployment work outside this library.
 
 ## Password and storage
 

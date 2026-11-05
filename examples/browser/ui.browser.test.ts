@@ -475,6 +475,7 @@ describe("abort and failure", () => {
     await run();
     expect(failureText()).toMatch(/^CItemException: Failed login to Innovator/);
     expect(failureText()).toContain("HttpRequestException");
+    expect(failureText()).toMatch(/allowedCorsOrigins.*12 SP9.*SOAP endpoint/);
     expect(key("password").value).toBe("");
     expect(runButton().disabled).toBe(false);
   });
@@ -492,6 +493,11 @@ describe("what the page offers", () => {
     mount({ canPickDirectory: true });
     expect(host?.querySelectorAll('[data-source="picker"]')).toHaveLength(4);
     expect(host?.querySelector('[data-key="sink-pick"]')).not.toBeNull();
+  });
+
+  it("links its server help to the prerequisites in the README that the build copies beside it", () => {
+    mount();
+    expect(q('[data-key="server-prerequisites"]').getAttribute("href")).toBe("README.md#server-prerequisites");
   });
 
   it("warns on an http: page and on no other (HOST-281)", () => {
