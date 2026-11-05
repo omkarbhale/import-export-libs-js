@@ -585,8 +585,9 @@ async function heapNow(): Promise<{ source: string; bytes: number; backingStorag
     }
   }
   if (server.browser === "chromium") {
-    // the DevTools protocol gives the exact size of the JavaScript heap, where `performance.memory` is rounded and updated in steps
+    // the DevTools protocol collects first and gives the exact JavaScript heap and array-buffer backing store, where `performance.memory` is rounded and updated in steps
     try {
+      await cdp().send("HeapProfiler.collectGarbage");
       const usage = (await cdp().send("Runtime.getHeapUsage")) as { usedSize: number; backingStorageSize: number };
       return { source: "cdp Runtime.getHeapUsage, usedSize + backingStorageSize", bytes: usage.usedSize + usage.backingStorageSize, backingStorageBytes: usage.backingStorageSize };
     } catch {
@@ -603,7 +604,7 @@ describe("HOST-266: the largest recorded import, once, in Chromium (the size smo
     async () => {
       const heapBefore = await heapNow();
       const readStart = performance.now();
-      const everything = await loadFixtureTree("fixtures/14.0.7/import");
+      let everything = await loadFixtureTree("fixtures/14.0.7/import");
       const readMs = performance.now() - readStart;
 
       const vfs = virtualFs();
@@ -612,7 +613,9 @@ describe("HOST-266: the largest recorded import, once, in Chromium (the size smo
       const mountMs = performance.now() - mountStart;
       const bytes = everything.reduce((sum, file) => sum + file.bytes.length, 0);
       expect(bytes, "the folder is the one of about 41 MB").toBeGreaterThan(35_000_000);
-      expect(vfs.snapshot("/packages").size, "every file is in the tree").toBe(everything.length);
+      const files = everything.length;
+      expect(vfs.toTree("/packages").filter((path) => !path.endsWith("/")).length, "every file is in the tree").toBe(files);
+      everything = [];
 
       // the largest case of the folder, by its input, its transcript and the blobs it names: run on top of the held tree
       const fixture: FixtureCase = { engine: "14.0.7", operation: "import", name: "s1-instances-versionable", covers: "the largest recorded import" };
@@ -623,12 +626,12 @@ describe("HOST-266: the largest recorded import, once, in Chromium (the size smo
       for (const step of steps) await replayImportStep(fixture, step, { vfs });
       const runMs = performance.now() - runStart;
       const heapAfter = await heapNow();
-      assertTreeMatchesFiles(vfs, "/packages", everything, "the held folder after the run");
+      assertTreeMatchesFiles(vfs, "/packages", await loadFixtureTree("fixtures/14.0.7/import"), "the held folder after the run");
 
       console.info(
         `IMPORT-SIZE-SMOKE ${JSON.stringify({
           browser: server.browser,
-          files: everything.length,
+          files,
           bytes,
           readMs: Math.round(readMs),
           mountMs: Math.round(mountMs),
