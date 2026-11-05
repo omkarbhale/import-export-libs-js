@@ -19,10 +19,10 @@ export const DEFAULT_HOST_BROWSER = "src/host/default-host.browser.ts";
 export const BUFFER_SHIM = "src/browser/buffer-shim.ts";
 
 /**
- * The packages whose code the bundle contains, which is every package the entry reaches (`@xmldom/xmldom` and `xpath`, which are
+ * The packages whose code the bundle contains, which is every package the entry reaches (`@xmldom/xmldom`, `xpath` and `fflate`, which are
  * dependencies, and `buffer` with its two dependencies, which are not). Their licences are kept in the bundle's banner.
  */
-export const BUNDLED_PACKAGES: readonly string[] = ["@xmldom/xmldom", "xpath", "buffer", "base64-js", "ieee754"];
+export const BUNDLED_PACKAGES: readonly string[] = ["@xmldom/xmldom", "xpath", "fflate", "buffer", "base64-js", "ieee754"];
 
 /**
  * An esbuild plugin that gives `src/host/default-host.ts` the contents of `default-host.browser.ts`: the one module of the core
