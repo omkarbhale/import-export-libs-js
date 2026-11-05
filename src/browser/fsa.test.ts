@@ -99,7 +99,7 @@ describe("mountDirectory (HOST-252)", () => {
       expect(defaultInclude("Import/a.bin", "file", STUB_THRESHOLD + 1)).toBe("stub");
     });
 
-    it("makes a stub of a large other file: listed, sized on record, never read, and EIO when the engine reads it", async () => {
+    it("makes a stub of a large other file: listed, never read, and EIO when the engine reads it", async () => {
       const handle = new FakeDirectoryHandle("h")
         .put("Big.xml", bytesOf(STUB_THRESHOLD + 10))
         .put("Files/video.bin", bytesOf(STUB_THRESHOLD + 10))

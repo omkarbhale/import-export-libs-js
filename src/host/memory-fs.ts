@@ -248,7 +248,7 @@ export class MemoryVfs implements HostFs {
     }
   }
 
-  /** Records that a file of the tree is a stub. It stays one until a write reaches it or it leaves the tree. */
+  /** Records that a file of the tree is a stub. It stays one until a full write replaces it or it leaves the tree; an append cannot open it (HOST-252). */
   markStub(path: string): void {
     const node = this.#existing(this.#locate(path, "open"), "open", path);
     if (node.kind === "dir") throw fsError("EISDIR", "open", path);

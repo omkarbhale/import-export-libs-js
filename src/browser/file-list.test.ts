@@ -222,7 +222,7 @@ describe("mountFileList (HOST-254)", () => {
       include: (path, kind, size) => (path === "drop.me" ? "skip" : defaultInclude(path, kind, size)),
     });
     expect(result.toTree()).toEqual(["a.xml", "big.bin", "big.xml", "small.bin"]);
-    expect(result.readFile("/big.bin").length).toBe(0);
+    expect(() => result.readFile("/big.bin")).toThrow(expect.objectContaining({ code: "EIO" }));
     expect(result.readFile("/big.xml").length).toBe(STUB_THRESHOLD + 1);
     expect(textOf(result, "/small.bin")).toBe("s");
     expect([...stubsOf(result)]).toEqual(["/big.bin"]);
@@ -249,13 +249,11 @@ describe("mountFileList (HOST-254)", () => {
       expect(stubsOf(tree).size).toBe(0);
     });
 
-    it("is cleared by an append of bytes, not by an empty one", async () => {
+    it("is not ended by an append, which fails with EIO, but by a full write", async () => {
       const tree = await stubbed();
-      tree.openAppend("/big.bin").close();
+      expect(() => tree.openAppend("/big.bin")).toThrow(expect.objectContaining({ code: "EIO" }));
       expect(stubsOf(tree).has("/big.bin")).toBe(true);
-      const handle = tree.openAppend("/big.bin");
-      handle.write(new Uint8Array([1]));
-      handle.close();
+      tree.writeFile("/big.bin", new Uint8Array([1]));
       expect(stubsOf(tree).has("/big.bin")).toBe(false);
     });
 
