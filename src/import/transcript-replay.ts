@@ -164,40 +164,4 @@ export function stepOptions(caseDir: string, index: number): { merge: boolean; f
   return { merge: options.merge === true, fast: options.fast === true };
 }
 
-/** The requests of a login, which the replays of a whole run do not send again: `ValidateUser`, the user lookup and the version probe. */
-export const LOGIN_CALLS = 6;
-
-/** 12.0's login sends one request less: `GetCurrentUserID` replaces the user lookup, and the probe is two requests (WIRE-017). */
-export const LOGIN_CALLS_12_0 = 5;
-
-/** Answers each request with the next recorded call, which must be the same request. */
-export class SequentialConnection implements ServerConnection {
-  private next: number;
-
-  constructor(
-    private readonly calls: TranscriptCall[],
-    private readonly loginCalls = LOGIN_CALLS,
-  ) {
-    this.next = loginCalls;
-  }
-
-  get consumed(): number {
-    return this.next - this.loginCalls;
-  }
-
-  get total(): number {
-    return this.calls.length - this.loginCalls;
-  }
-
-  async callAction(action: string, request: string): Promise<ResponseDocument> {
-    const wire = documentOuterXml(parseXml(request));
-    const call = this.calls[this.next];
-    if (call?.action !== action || call.request !== wire) {
-      throw new Error(
-        `request ${this.next - this.loginCalls + 1} differs from the recorded one:\nsent:     ${action} ${wire.slice(0, 600)}\nrecorded: ${call?.action} ${call?.request.slice(0, 600)}`,
-      );
-    }
-    this.next += 1;
-    return ResponseDocument.parse(call.response ?? "");
-  }
-}
+export { LOGIN_CALLS, LOGIN_CALLS_12_0, SequentialConnection } from "./sequential-connection.js";

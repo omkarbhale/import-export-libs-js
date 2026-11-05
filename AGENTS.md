@@ -20,7 +20,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
-`.no-mistakes.yaml` pins these two checks: `commands.lint` is `npm run typecheck` and `commands.test` is `npm test`. `.github/workflows/ci.yml` runs the same two on every pull request and on pushes to `main`. Its first job (`build-test`) was generated with `no-mistakes ci-workflow`, with the generator's Go toolchain step replaced by Node setup and `npm ci`. A second job, `browser`, is hand-written: Node setup, `npm ci`, `npx playwright install --with-deps chromium firefox webkit` and `npm run test:browser`; it is required on pull requests. If you change the pinned commands, regenerate the file with `no-mistakes ci-workflow --force`, reapply that replacement and reapply the `browser` job.
+`.no-mistakes.yaml` pins these two checks: `commands.lint` is `npm run typecheck` and `commands.test` is `npm test`. `.github/workflows/ci.yml` runs the same two on every pull request and on pushes to `main`. Its first job (`build-test`) was generated with `no-mistakes ci-workflow`, with the generator's Go toolchain step replaced by Node setup and `npm ci`. A second job, `browser`, is hand-written: Node setup, `npm ci`, `npx playwright install --with-deps chromium firefox webkit` and `npm run test:browser -- --reporter=verbose` (so that the `IMPORT-SIZE-SMOKE` numbers of HOST-266 reach the log); it is required on pull requests. If you change the pinned commands, regenerate the file with `no-mistakes ci-workflow --force`, reapply that replacement and reapply the `browser` job.
 
 ## Delivery
 

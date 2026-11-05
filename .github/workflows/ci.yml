@@ -55,4 +55,4 @@ jobs:
 
       - name: Browser tests
         run: |
-          npm run test:browser
+          npm run test:browser -- --reporter=verbose
