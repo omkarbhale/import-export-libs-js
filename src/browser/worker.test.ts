@@ -328,6 +328,56 @@ describe("importPackages through the Worker (HOST-272, HOST-274)", () => {
     expect(posted).toHaveLength(seen);
   });
 
+  describe("while a drop's only entry never answers", () => {
+    const hanging = [{ kind: "file", webkitGetAsEntry: () => ({ isFile: true, isDirectory: false, name: "a.xml", file: () => undefined }) }];
+
+    async function walking() {
+      const { worker, posted } = start();
+      const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+      const seen = posted.length;
+      return { worker, session, seen, posted, running: worker.importPackages(session, { source: { dataTransfer: hanging as never } }) };
+    }
+
+    it("abort() rejects the call and sends nothing", async () => {
+      const { worker, running, posted, seen } = await walking();
+      worker.abort();
+      await expect(running).rejects.toMatchObject({ name: "AbortError" });
+      expect(posted).toHaveLength(seen);
+    });
+
+    it("a forced dispose rejects the call with WorkerDisposedError", async () => {
+      const { worker, running } = await walking();
+      const assertion = expect(running).rejects.toBeInstanceOf(WorkerDisposedError);
+      await worker.dispose({ force: true });
+      await assertion;
+    });
+  });
+
+  it("abort() during the last step of a walk that then succeeds sends nothing", async () => {
+    const { worker, posted } = start();
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+    const seen = posted.length;
+    let answer: ((file: File) => void) | undefined;
+    const items = [{ kind: "file", webkitGetAsEntry: () => ({ isFile: true, isDirectory: false, name: "a.xml", file: (success: (file: File) => void) => void (answer = success) }) }];
+    const running = worker.importPackages(session, { source: { dataTransfer: items as never } });
+    worker.abort();
+    answer?.(new File([], "a.xml"));
+    await expect(running).rejects.toMatchObject({ name: "AbortError" });
+    expect(posted).toHaveLength(seen);
+  });
+
+  it("a session closed during a walk fails the call with SessionClosedError, and sends no operation", async () => {
+    const { worker, posted } = start();
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+    let answer: ((file: File) => void) | undefined;
+    const items = [{ kind: "file", webkitGetAsEntry: () => ({ isFile: true, isDirectory: false, name: "a.xml", file: (success: (file: File) => void) => void (answer = success) }) }];
+    const running = worker.importPackages(session, { source: { dataTransfer: items as never } });
+    await session.close();
+    answer?.(new File([], "a.xml"));
+    await expect(running).rejects.toBeInstanceOf(SessionClosedError);
+    expect(posted.some((message) => (message as { op?: string }).op === "import")).toBe(false);
+  });
+
   it("imports from a zip that is a File or a Blob, read in the Worker", async () => {
     const { worker } = start();
     const { dir, server, transport, osUser } = importServer("s0-mini-defaults");

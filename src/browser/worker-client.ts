@@ -457,7 +457,9 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     const walk = new AbortController();
     walking.add(walk);
     try {
-      return await walkEntries(taken, signal === undefined ? walk.signal : AbortSignal.any([signal, walk.signal]));
+      const stopping = signal === undefined ? walk.signal : AbortSignal.any([signal, walk.signal]);
+      const stopped = new Promise<never>((_, reject) => stopping.addEventListener("abort", () => reject(stopping.reason), { once: true }));
+      return await Promise.race([walkEntries(taken, stopping), stopped]);
     } finally {
       walking.delete(walk);
     }
@@ -473,6 +475,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     // as the direct call: a closed session fails before anything is sent
     if (session.closed) throw new SessionClosedError();
     const walked = options.source !== undefined && "dataTransfer" in options.source ? await walkDrop(options.source.dataTransfer, options.signal) : [];
+    if (session.closed) throw new SessionClosedError();
     const answerOf = typeof options.onItemError === "function" ? options.onItemError : undefined;
     const wants: CallWants = { message: options.onMessage !== undefined, progress: options.onProgress !== undefined, onItemError: answerOf !== undefined };
     return call<T>(
@@ -569,6 +572,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     },
 
     dispose(disposeOptions = {}) {
+      for (const walk of walking) walk.abort(new WorkerDisposedError("the Worker was disposed"));
       disposing ??= dispose(disposeOptions);
       if (disposeOptions.force === true) {
         // a forced dispose after a graceful one that is still waiting ends the wait
