@@ -126,9 +126,9 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
     const transport: HttpTransport | undefined = wire.transport
       ? {
           send: async (request: TransportRequest) => {
-            // the engine may still read its request after the send; the main thread gets a copy, and gives its response's buffer back
+            // the engine may still read its request after the send; the main thread gets a transferred copy, and gives its response's buffer back
             const copy = { ...request, ...(request.body === undefined ? {} : { body: new Uint8Array(request.body) }) };
-            return (await ask(id, "transport", [copy])) as TransportResponse;
+            return (await ask(id, "transport", [copy], copy.body === undefined ? [] : [copy.body.buffer as ArrayBuffer])) as TransportResponse;
           },
         }
       : undefined;

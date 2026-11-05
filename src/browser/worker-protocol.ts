@@ -102,7 +102,7 @@ export type WireSource =
   | { kind: "zip"; bytes: Uint8Array | WireBlob; maxBytes?: number }
   | { kind: "files"; files: Record<string, Uint8Array | string> }
   | { kind: "file-list"; entries: Array<{ path: string; file: WireBlob }>; options: WorkerMountOptions }
-  | { kind: "directory"; handle: unknown; options: WorkerMountOptions };
+  | { kind: "directory"; handle: unknown; options: Omit<WorkerMountOptions, "root"> };
 
 /** The part of a `Blob` or `File` the Worker reads. */
 export interface WireBlob {

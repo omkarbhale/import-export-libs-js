@@ -616,6 +616,38 @@ describe("dispose and the wire (HOST-274)", () => {
     await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toBeInstanceOf(WorkerDisposedError);
   });
 
+  it("a graceful dispose ends its wait when the Worker crashes during it", async () => {
+    const listeners = new Map<string, (event: unknown) => void>();
+    const broken: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
+    const worker = createEngineWorker({ worker: broken });
+    const done = vi.fn();
+    const disposing = worker.dispose({ timeoutMs: 60_000 }).then(done);
+    listeners.get("error")?.({ message: "gone" });
+    await disposing;
+    expect(done).toHaveBeenCalled();
+  });
+
+  it("transfers a page transport's response body", async () => {
+    const { worker } = start();
+    const inner = serverOf(14, 0);
+    const bodies: Uint8Array[] = [];
+    const session = await worker.connect({
+      ...LOGIN,
+      engine: "14.0.7",
+      transport: {
+        send: async (request) => {
+          const response = await inner.send(request);
+          const body = new Uint8Array(response.body);
+          bodies.push(body);
+          return { ...response, body };
+        },
+      },
+    });
+    expect(session.engine).toBe("14.0.7");
+    expect(bodies.length).toBeGreaterThan(0);
+    await vi.waitFor(() => expect(bodies.every((body) => body.byteLength === 0)).toBe(true));
+  });
+
   it("refuses a Worker of another protocol version, by name, and ends the calls that wait", async () => {
     const listeners = new Map<string, (event: unknown) => void>();
     const other: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };

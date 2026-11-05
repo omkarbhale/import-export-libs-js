@@ -47,7 +47,6 @@ import {
 export interface WorkerLike {
   postMessage(message: unknown, transfer: ArrayBuffer[]): void;
   addEventListener(type: string, listener: (event: unknown) => void): void;
-  removeEventListener?(type: string, listener: (event: unknown) => void): void;
   /** `Worker.terminate()`; a `MessagePort`'s `close()` is used when this is absent. */
   terminate?(): void;
   close?(): void;
@@ -71,13 +70,14 @@ export type WorkerSource =
   | { zip: Uint8Array | BlobLike; maxBytes?: number }
   | { files: Readonly<Record<string, Uint8Array | string>> | ReadonlyMap<string, Uint8Array | string> }
   | { fileList: Iterable<FileLike & BlobLike>; mount?: WorkerMountOptions }
-  | { directory: FsaDirectoryHandle; mount?: WorkerMountOptions };
+  | { directory: FsaDirectoryHandle; mount?: Omit<WorkerMountOptions, "root"> };
 
 /** What {@link EngineWorker.connect} takes: the options of `connect`, with the transport and the token provider staying on the page. */
 export type WorkerConnectOptions = Omit<ConnectOptions, "transport" | "tokenProvider"> & {
   /**
    * An HTTP layer of the page's own. It runs on the main thread: the Worker sends it each request and takes its response. Without
-   * one the Worker sends its own `fetch` requests, which is the default, since a page has no better place for them.
+   * one the Worker sends its own `fetch` requests, which is the default, since a page has no better place for them. The `body` of each response is transferred: the array it returns is empty afterwards, so a
+   * transport that keeps a body returns a copy of it.
    */
   transport?: HttpTransport;
   /** Where the bearer tokens come from instead of the password grant (HOST-271); it runs on the main thread and is asked for each token. */
@@ -254,6 +254,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     stopped = true;
     if (typeof worker.terminate === "function") worker.terminate();
     else worker.close?.();
+    onDisposed?.();
   };
 
   /** Rejects every call that has not finished. */
@@ -551,7 +552,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         // a forced dispose after a graceful one that is still waiting ends the wait
         failAll(new WorkerDisposedError("the Worker was disposed"));
         stop();
-        onDisposed?.();
       }
       return disposing;
     },
