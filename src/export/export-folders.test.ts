@@ -2,6 +2,7 @@ import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
+import { REMOVAL_MODES } from "./export-folders.cases.js";
 import { createOutputDir } from "./output-folder.js";
 import { REPLAYED_ENGINES, exportCases, replayCase } from "./replay-cases.js";
 import type { Case } from "./replay-cases.js";
@@ -41,7 +42,7 @@ describe.each(REPLAYED_ENGINES)("the recorded %s export cases, written to disk (
   it.each(cases.names)("%s", async (name) => {
     const input = JSON.parse(readFileSync(join(cases.dir, name, "case.json"), "utf8")) as Case;
     const mode = input.options.refToUnknownPacks;
-    if (mode === "RemoveSilently" || mode === "RemoveWithWarning") return;
+    if (mode !== undefined && REMOVAL_MODES.includes(mode)) return;
     const working = mkdtempSync(join(tmpdir(), "libsjs-export-"));
     roots.push(working);
     const environment = { cwd: working };

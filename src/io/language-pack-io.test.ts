@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { ArgumentNullException, FileNotFoundException, KeyNotFoundException } from "./errors.js";
 import { directoryGetParentFullName, toHostPath } from "./host-path.js";
+import { DIRECTORY_NAME_CASES } from "./language-pack-io.cases.js";
 import { pathGetRandomFileName, pathGetTempPath } from "./temp-path.js";
 import { getDirectoryName, pathCombineAll } from "./win-path.js";
 import { fileWriteAllText } from "./windows-fs.js";
@@ -36,20 +37,7 @@ describe("LP-031: Path.Combine(params string[])", () => {
 });
 
 describe("LP-010 LP-020: Path.GetDirectoryName", () => {
-  it.each([
-    ["C:\\pack\\ImportConfig.xml", "C:\\pack"],
-    ["C:/pack/ImportConfig.xml", "C:\\pack"],
-    ["C:\\pack\\x\\..\\ImportConfig.xml", "C:\\pack"],
-    ["C:\\pack\\.\\ImportConfig.xml", "C:\\pack"],
-    ["C:\\pack\\\\ImportConfig.xml", "C:\\pack"],
-    ["ImportConfig.xml", ""],
-    ["pack\\ImportConfig.xml", "pack"],
-    ["..\\pack\\ImportConfig.xml", "..\\pack"],
-    ["\\ImportConfig.xml", "\\"],
-    ["C:\\ImportConfig.xml", "C:\\"],
-    ["/home/u/pack/ImportConfig.xml", "\\home\\u\\pack"],
-    ["\\\\server\\share\\ImportConfig.xml", "\\\\server\\share"],
-  ])("%s gives %j", (path, directory) => {
+  it.each(DIRECTORY_NAME_CASES)("%s gives %j", (path, directory) => {
     expect(getDirectoryName(path)).toBe(directory);
   });
 

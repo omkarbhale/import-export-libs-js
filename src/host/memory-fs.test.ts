@@ -456,6 +456,32 @@ describe("MemoryVfs: size of the tree (HOST-215)", () => {
   });
 });
 
+describe("MemoryVfs: what a disk does that the tree does not copy (HOST-215)", () => {
+  it("keeps a name with an unpaired surrogate and lists it exactly as given", () => {
+    const fs = new MemoryVfs();
+    const name = "\ud800lone.xml";
+    fs.writeFile(`/${name}`, new TextEncoder().encode("x"));
+    expect(fs.readdir("/").map((entry) => entry.name)).toEqual([name]);
+    expect(text(fs.readFile(`/${name}`))).toBe("x");
+    expect(() => fs.readFile("/\ufffdlone.xml")).toThrow();
+  });
+
+  it("accepts a name of 300 characters and reads it back", () => {
+    const fs = new MemoryVfs();
+    const name = "n".repeat(300);
+    fs.writeFile(`/${name}`, new TextEncoder().encode("long"));
+    expect(fs.readdir("/").map((entry) => entry.name)).toEqual([name]);
+    expect(text(fs.readFile(`/${name}`))).toBe("long");
+  });
+
+  it("accepts a path far past 255 bytes and reads it back", () => {
+    const path = `/${Array.from({ length: 50 }, () => "d".repeat(100)).join("/")}/f.xml`;
+    const fs = new MemoryVfs({ [path]: "deep" });
+    expect(path.length).toBeGreaterThan(5000);
+    expect(text(fs.readFile(path))).toBe("deep");
+  });
+});
+
 describe("MemoryVfs: Node-free (HOST-215)", () => {
   it("runs with neither `Buffer` nor `process` in the realm", () => {
     const realBuffer = globalThis.Buffer;

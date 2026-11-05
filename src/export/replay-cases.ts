@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { posix } from "../io/path.js";
 import { expect } from "vitest";
 import { readTranscript, type TranscriptCall } from "../../oracle/src/transcript.js";
@@ -32,7 +33,7 @@ export interface ExportCases {
 }
 
 export function exportCases(engine: Engine): ExportCases {
-  const dir = new URL(`../../fixtures/${engine}/export/`, import.meta.url).pathname;
+  const dir = fileURLToPath(new URL(`../../fixtures/${engine}/export/`, import.meta.url));
   return {
     engine,
     dir,

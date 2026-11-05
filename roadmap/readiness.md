@@ -55,7 +55,7 @@ The sweep for features the build tickets promised and no ticket landed:
 
 **Cannot be tested on this dev, and not made testable.**
 - **Language cases that need `de` and `fr`**: the five language-pack cases of 14.0.7, eight of 14.35, 14.35's ten `lang-ml` export cases and its five import cases with language selection (the 23 skipped above). Dev has `en` only, and adding a Language adds a column to every table with a multilingual property, which is not clearly non-destructive, so the script never adds one. The port's side of all of them is replayed offline against the recorded runs (`oracle/src/parity/port-run*.test.ts`), so what is missing is the live comparison on a server with those Languages. The captain excluded them from this reopening (2026-10-20). To close it: add the Languages as `fixtures/14.0.7/language-pack/setup.aml` says, and run `npm run parity -- --engine <v> --kind language-pack,…`.
-- **`hidden`, `locked` and `unc` of the file-loading replay** (nine skips, three per engine, `WINDOWS_ONLY` in `src/import/load-package-dom.test.ts`): they need Windows file attributes, a held file lock and a UNC share. The engine's behaviour for each is recorded in the fixture. A Windows CI job would run them.
+- **`hidden`, `locked` and `unc` of the file-loading replay** (nine skips, three per engine, `WINDOWS_ONLY` in `src/import/load-package-dom.cases.ts`): they need Windows file attributes, a held file lock and a UNC share. The engine's behaviour for each is recorded in the fixture. A Windows CI job would run them.
 - **Two live-server tests** (`src/client/live.test.ts`) skip unless a dev password is in the environment. Parity covers the same ground.
 
 **Differences the port knowingly keeps.**
