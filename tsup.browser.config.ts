@@ -1,11 +1,13 @@
 import { defineConfig } from "tsup";
-import { BROWSER_ENTRY, BUFFER_SHIM, BUNDLED_PACKAGES, licenseBanner, replaceDefaultHost } from "./tools/browser-bundle.js";
+import { BROWSER_ENTRY, BUFFER_SHIM, BUNDLED_PACKAGES, WORKER_ENTRY, licenseBanner, replaceDefaultHost } from "./tools/browser-bundle.js";
 
-// The browser entry (HOST-260): one self-contained ES module, `dist/browser.js`, with its declarations. It is built after the Node
+// The browser entry (HOST-260): one self-contained ES module, `dist/browser.js`, with its declarations, and the Worker's entry
+// (HOST-276), `dist/browser-worker.js`, a second self-contained module that has no declarations and no export. Each carries its own copy
+// of the engine (splitting is off), so that the Worker file loads in a Worker with nothing beside it. It is built after the Node
 // build (`npm run build`), which owns `clean`, so that the two never race for the output folder. `tools/browser-bundle.ts` holds
 // what the guard test builds with, the same plugin and the same injection.
 export default defineConfig({
-  entry: { browser: BROWSER_ENTRY },
+  entry: { browser: BROWSER_ENTRY, "browser-worker": WORKER_ENTRY },
   format: ["esm"],
   target: "es2022",
   platform: "browser",

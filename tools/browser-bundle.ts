@@ -13,6 +13,8 @@ export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)
 
 /** The browser entry point and the module that is replaced for it. */
 export const BROWSER_ENTRY = "src/browser.ts";
+/** The Worker's entry (HOST-276): `dist/browser-worker.js`, built from the same graph with the same plugin and injection. */
+export const WORKER_ENTRY = "src/browser/worker.ts";
 export const DEFAULT_HOST = "src/host/default-host.ts";
 export const DEFAULT_HOST_BROWSER = "src/host/default-host.browser.ts";
 /** The module that defines the global `Buffer` the core is written against (HOST-262). */
@@ -55,10 +57,10 @@ export function licenseBanner(root: string = repoRoot): string {
   return `/*! Third-party code in this bundle, with its licences.\n\n${parts.join("\n\n----\n\n")}\n*/`;
 }
 
-/** What the bundle is built with, esbuild options of `tsup.browser.config.ts` and of the guard test alike. */
-export function browserBundleOptions(root: string = repoRoot): BuildOptions {
+/** What a bundle is built with, esbuild options of `tsup.browser.config.ts` and of the guard test alike: the browser entry's by default, the Worker's with `WORKER_ENTRY`. */
+export function browserBundleOptions(root: string = repoRoot, entry: string = BROWSER_ENTRY): BuildOptions {
   return {
-    entryPoints: [path.join(root, BROWSER_ENTRY)],
+    entryPoints: [path.join(root, entry)],
     bundle: true,
     format: "esm",
     platform: "browser",

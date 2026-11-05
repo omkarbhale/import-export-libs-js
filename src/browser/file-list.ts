@@ -53,7 +53,7 @@ export interface DataTransferItemsLike {
 }
 
 /** An entry of the source before it is put into the tree. */
-interface Raw {
+export interface Raw {
   /** Relative to the root of the tree, with `/`, no leading `/`. */
   path: string;
   kind: MountKind;
@@ -101,28 +101,38 @@ export async function mountFileList(files: Iterable<FileLike> | null, options: M
  * });
  */
 export function mountDataTransfer(items: DataTransferItemsLike, options: MountOptions = {}): Promise<MemoryVfs> {
-  const taken: EntryLike[] = [];
+  let taken: EntryLike[];
   try {
-    for (let index = 0; index < items.length; index++) {
-      const item = items[index];
-      if (item === undefined || item.kind !== "file") continue;
-      const entry = item.webkitGetAsEntry();
-      if (entry !== null) taken.push(entry);
-    }
+    taken = takeEntries(items);
   } catch (error) {
     return Promise.reject(error);
   }
-  return fromTaken(taken, options);
+  return walkEntries(taken, options.signal).then((raw) => mountWalked(raw, options));
 }
 
-async function fromTaken(taken: EntryLike[], options: MountOptions): Promise<MemoryVfs> {
-  const [only] = taken;
-  if (only !== undefined && taken.length === 1 && only.isFile) {
-    const file = await entryFile(only);
-    if (await isZip(file)) return mountZip(file, options);
+/** Takes the entries of a drop's items, synchronously, while the browser still holds them (HOST-255). */
+export function takeEntries(items: DataTransferItemsLike): EntryLike[] {
+  const taken: EntryLike[] = [];
+  for (let index = 0; index < items.length; index++) {
+    const item = items[index];
+    if (item === undefined || item.kind !== "file") continue;
+    const entry = item.webkitGetAsEntry();
+    if (entry !== null) taken.push(entry);
   }
+  return taken;
+}
+
+/** Walks taken entries to their files and folders, reading no content (HOST-255). */
+export async function walkEntries(taken: readonly EntryLike[], signal?: AbortSignal): Promise<Raw[]> {
   const raw: Raw[] = [];
-  for (const entry of taken) await walk(entry, "", raw, options.signal);
+  for (const entry of taken) await walk(entry, "", raw, signal);
+  return raw;
+}
+
+/** Puts walked entries into a new tree; exactly one dropped file that is a zip goes to the zip reader (HOST-254, HOST-255). */
+export async function mountWalked(raw: Raw[], options: MountOptions): Promise<MemoryVfs> {
+  const [only] = raw;
+  if (only?.file !== undefined && raw.length === 1 && (await isZip(only.file))) return mountZip(only.file, options);
   return commit(raw, options);
 }
 

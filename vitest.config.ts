@@ -1,6 +1,6 @@
 import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
-import { fixtureCommands, replaceDefaultHostForVite } from "./tools/browser-vitest.js";
+import { fixtureCommands, replaceDefaultHostForVite, workerCommands } from "./tools/browser-vitest.js";
 import { readSelectionFile } from "./tools/browser-test-selection.js";
 
 /**
@@ -38,7 +38,7 @@ export default defineConfig({
             provider: playwright(),
             headless: true,
             instances: [{ browser: "chromium" }, { browser: "firefox" }, { browser: "webkit" }],
-            commands: fixtureCommands,
+            commands: { ...fixtureCommands, ...workerCommands },
           },
         },
       },

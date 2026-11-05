@@ -4,7 +4,7 @@
  * (HOST-260). A caller builds a host with {@link createBrowserHost}, mounts a file system in it, and passes both in the
  * `PathEnvironment` of a run.
  *
- * @spec HOST-260 HOST-250 HOST-251 HOST-270 HOST-272
+ * @spec HOST-260 HOST-250 HOST-251 HOST-270 HOST-272 HOST-274 HOST-275
  */
 export * from "./core.js";
 export { createBrowserHost } from "./browser/host.js";
@@ -49,6 +49,25 @@ export type { MountDecision, MountInclude, MountKind, MountOptions, MountProgres
 export { ZipError, vfsFromZip, vfsToZip } from "./browser/zip.js";
 export type { VfsFromZipOptions, VfsToZipOptions, ZipErrorCode } from "./browser/zip.js";
 export * from "./browser/api.js";
+export { createEngineWorker } from "./browser/worker-client.js";
+export type {
+  BlobLike,
+  DisposeOptions,
+  EngineWorker,
+  EngineWorkerOptions,
+  WorkerConnectOptions,
+  WorkerDbPatchesOptions,
+  WorkerExportOptions,
+  WorkerExportResult,
+  WorkerImportOptions,
+  WorkerLanguagePackOptions,
+  WorkerLike,
+  WorkerOperationResult,
+  WorkerSession,
+  WorkerSource,
+} from "./browser/worker-client.js";
+export { WORKER_PROTOCOL_VERSION, WorkerCrashedError, WorkerDisposedError, WorkerProtocolError } from "./browser/worker-protocol.js";
+export type { WorkerMountOptions } from "./browser/worker-protocol.js";
 export { SelectionRefused } from "./cli/export-selection.js";
 export type { RequestedItem } from "./cli/export-selection.js";
 export { LIBRARY_VERSION } from "./version.js";
