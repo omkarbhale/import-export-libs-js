@@ -264,6 +264,21 @@ What it offers beyond `HostFs`:
 
 [14.35] Same as 14.0.7.
 
+## HOST-218: a run on the in-memory file system leaves what a run on a disk leaves, byte for byte
+
+[14.0.7] An export, an import, a language-pack import and a DB-patch application give the same result whichever `HostFs` (HOST-200) stands under the file layer. A `PathEnvironment` with `fs` a `MemoryVfs` (HOST-215) and `host` a `HostEnv` that is no machine's (HOST-203) makes every file of the run, the package folder it reads, the output folder it writes, the manifest, the log and the temporary language package, a file of the virtual tree, and the run reads nothing from the process and touches no file of the disk. Given the recorded answers of the server, a recorded case run that way:
+
+- sends the requests the engine sent, in the order the disk replay of the same case accepts, and returns what the engine returned, with the same messages, the same console text and the same return code;
+- leaves an output folder equal to the recorded one: the same files and the same folders that hold a file, each file with the same bytes (`MemoryVfs.toTree` and `snapshot` against the folder of the case);
+- writes a log that equals the recorded log after the same replacement of the run's own paths and date-times as the disk replay applies, and for a 14.35 export compares it in the parts the disk replay compares as a set (EXP-558);
+- leaves a package folder it only reads as it found it, and a language pack's kept temporary package (LP-034) equal to the recorded one.
+
+The cases are those of the disk replays: the 14.0.7 and 12.0 export cases (EXP-500 to EXP-520), the 14.35 export cases at one item at a time and, where the disk replay does it, with eight in flight (EXP-551), the import steps of the three builds (IMP-400 to IMP-471), the language-pack runs of 14.0.7 and 14.35 (LP-001 to LP-036) and the DB-patch steps of 14.35 (DBP-001 to DBP-044). A case that the disk replay leaves out, a 12.0 or 14.35 export that removes references to unknown packages, which wait for EXP-600 to EXP-699, is left out here for the same reason, and the test counts it. The current directory of the virtual run is `/work` on a `linux` platform: no recorded case runs the disk replay with a `win32` platform, so the virtual replay runs none either (the Windows path rules over the virtual tree are those of `fs-matrix.test.ts`, a later slice). The comparisons that the disk replays and these share are in the `replay-support.ts` modules beside them, so that no comparison is written twice.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
 ## HOST-230: the HTTP transport is a seam; Node's implementation lives in the Node host
 
 [14.0.7] The client is written against `HttpTransport`, and the types of the exchange (`TransportRequest`, `TransportResponse`, `TransportFailure`, `TransportError`, `HttpTransport`) are declared in `src/client/transport.ts`, a file that imports nothing from Node. The Node implementation, `nodeTransport` over `node:http` and `node:https`, is in `src/host/node-transport.ts`, the one file of `src/` that imports `node:http`; its behaviour is the engine's (WIRE-050 and the failure classes of `TransportError`) and is unchanged by being moved. The default host (HOST-203) answers a transport as its `transport` member, `defaultTransport()` in `src/host/default-host.ts`: `nodeTransport` on Node, and nothing in a host that has none.

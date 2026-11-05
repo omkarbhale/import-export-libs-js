@@ -9,12 +9,13 @@ import { CItemHelper } from "../client/item-helper.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import { packageCaches } from "../client/package-lookups.js";
 import { ArasVersion } from "../client/version.js";
-import { SUExportContext, type ReferencesToUnknownPackages } from "./export-context.js";
+import { SUExportContext } from "./export-context.js";
 import { ExportItem } from "./export-item.js";
 import { ImportExportManager, type SelectionInsertions } from "./import-export-manager.js";
 import { type SentMessage, createMessagesFactory } from "./messages.js";
 import { REPLAYED_ENGINES, exportCases } from "./replay-cases.js";
-import type { Case, ExportCases } from "./replay-cases.js";
+import type { Case } from "./replay-cases.js";
+import { comparable, needsRemoval, read, settings } from "./replay-support.js";
 import type { Engine } from "../engines.js";
 
 /**
@@ -71,52 +72,6 @@ function tree(root: string, prefix = ""): string[] {
     })
     .sort();
 }
-
-const read = (cases: ExportCases, name: string, file: string): string => readFileSync(join(cases.dir, name, file), "utf8");
-
-/** The header line `Label: value` of the recorded log, which holds the host's settings. */
-const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
-
-/** The date-times of the log: invariant (`MM/dd/yyyy`) and, in the 12.0 engine's, en-IN (`dd-MM-yyyy`) at the head of a package. */
-const CLOCK = /\d\d[/-]\d\d[/-]\d{4} \d\d:\d\d:\d\d/g;
-
-/** The settings the oracle host gave a case: the 14.0.7 log header names them, and 12.0 has no header, so the case's options do. */
-function settings(cases: ExportCases, name: string, input: Case, recordedLog: string): Record<string, unknown> {
-  if (cases.engine !== "12.0") {
-    return {
-      url: headerValue(recordedLog, "URL"),
-      dataBase: headerValue(recordedLog, "Database"),
-      userName: headerValue(recordedLog, "User"),
-      level: headerValue(recordedLog, "Export level"),
-      exportReferencedItems: headerValue(recordedLog, "Export referenced items") === "True",
-      useImport: headerValue(recordedLog, "Export using import structure") === "True",
-      refToUnknownPacks: headerValue(recordedLog, "Export unknown packages action") as ReferencesToUnknownPackages,
-    };
-  }
-  const params = (JSON.parse(read(cases, name, "run.json")) as { params: { Url: string; Database: string; User: string } }).params;
-  return {
-    url: params.Url,
-    dataBase: params.Database,
-    userName: params.User,
-    level: input.options.level ?? "1",
-    exportReferencedItems: input.options.exportReferencedItems ?? false,
-    useImport: (input.options as { useImport?: boolean }).useImport ?? false,
-    refToUnknownPacks: (input.options.refToUnknownPacks ?? "DoNotRemove") as ReferencesToUnknownPackages,
-  };
-}
-
-/** The log with what is the run's own replaced: the two paths of the header and every date-time. */
-const comparable = (log: string, logPath: string, workingDirectory: string): string =>
-  log
-    .replace(/^(Log file: ).*(\r)$/m, `$1<log>$2`)
-    .replace(/^(Working directory: ).*(\r)$/m, `$1<working>$2`)
-    .replace(CLOCK, "<time>")
-    .split(logPath).join("<log>")
-    .split(workingDirectory).join("<working>");
-
-/** The 12.0 cases that remove references to unknown packages wait for the 12.0 variants of `EXP-600` to `EXP-699`. */
-const needsRemoval = (engine: Engine, input: Case): boolean =>
-  engine !== "14.0.7" && (input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning");
 
 describe.each(REPLAYED_ENGINES)("the recorded %s export cases, run through ExportSolutions (EXP-500 to EXP-520, EXP-600 to EXP-620)", (engine: Engine) => {
   const cases = exportCases(engine);

@@ -13,6 +13,7 @@ import { SequentialConnection } from "../import/transcript-replay.js";
 import type { Engine } from "../engines.js";
 import { exceptionText } from "./exception-text.js";
 import { languagePackImport } from "./lp-import.js";
+import { RANDOM, comparable, recordedConsole } from "./replay-support.js";
 
 /**
  * The recorded `lpimport` runs against dev: the five of the 14.0.7 engine (`fixtures/14.0.7/language-pack/lp01` to `lp05`, ticket 45)
@@ -24,33 +25,10 @@ import { languagePackImport } from "./lp-import.js";
  */
 const CASES_14_0_7 = new URL("../../fixtures/14.0.7/language-pack/", import.meta.url).pathname;
 const CASES_14_35 = new URL("../../fixtures/14.35/language-pack/", import.meta.url).pathname;
-const RANDOM = "abcdefgh.xyz";
-
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
-
-const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
-
-const CLOCK = /\d\d\/\d\d\/\d{4} \d\d:\d\d:\d\d/g;
-
-/** The log with what is the run's own replaced: the header's paths, the fixes file, and every date-time. */
-function comparable(log: string): string {
-  return log
-    .replace(/^(Manifest file: ).*(\r)$/m, "$1<manifest>$2")
-    .replace(/^(Log file: ).*(\r)$/m, "$1<log>$2")
-    .replace(/^(Working directory: ).*(\r)$/m, "$1<working>$2")
-    .replace(/^(Language pack: ).*(\r)$/m, "$1<pack>$2")
-    .replace(/^File full name '.*[\\/]([^\\/']+)'(\r?)$/gm, "File full name '<fixes>/$1'$2")
-    .replace(CLOCK, "<time>");
-}
-
-/** What the oracle host wrote to the console: the lines of `host.log` between the engine banner and `HOST_EXIT`. */
-function recordedConsole(hostLog: string): string {
-  const afterBanner = hostLog.slice(hostLog.indexOf("\r\n") + 2);
-  return afterBanner.slice(0, afterBanner.lastIndexOf("HOST_EXIT"));
-}
 
 /** Every file below a folder, by relative path with `/`, with its bytes. */
 function tree(folder: string): Map<string, string> {

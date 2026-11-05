@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -13,6 +13,7 @@ import { exceptionText } from "../language-pack/exception-text.js";
 import { SUImportContext } from "./import-context.js";
 import type { ConsoleWriter } from "./import-run.js";
 import type { Engine } from "../engines.js";
+import { type Step, comparable, headerValue, recordedConsole, stepsOf } from "./replay-support.js";
 import { BLOBS, BLOBS_12_0, BLOBS_14_35, CASES, CASES_12_0, CASES_14_35, LOGIN_CALLS_12_0, SequentialConnection } from "./transcript-replay.js";
 
 /**
@@ -24,77 +25,10 @@ import { BLOBS, BLOBS_12_0, BLOBS_14_35, CASES, CASES_12_0, CASES_14_35, LOGIN_C
  * only where the run's own paths and clock come in, which are replaced on both sides.
  */
 
-interface Step {
-  name: string;
-  dir: string;
-  options: {
-    merge?: boolean;
-    release?: string;
-    description?: string;
-    verbose?: boolean;
-    cancelAfterStatus?: number;
-    amlBatch?: { maxSize?: number };
-    collectErrors?: { maxCount?: number };
-    languages?: string[];
-  };
-  only?: string[];
-}
-
-/**
- * The steps of a recorded case folder. `skip` names the cases that exercise what another slice builds.
- */
-function stepsOf(casesDir: string, skip: (name: string) => boolean = () => false): Step[] {
-  return readdirSync(casesDir)
-    .filter((name) => existsSync(join(casesDir, name, "case.json")) && !skip(name))
-    .flatMap((name) => {
-      const definition = JSON.parse(readFileSync(join(casesDir, name, "case.json"), "utf8")) as { steps: Omit<Step, "name" | "dir">[] };
-      return definition.steps.map((step, index) => ({
-        name: `${name}/step-${index + 1}`,
-        dir: join(casesDir, name, `step-${index + 1}`),
-        options: step.options ?? {},
-        ...(step.only === undefined ? {} : { only: step.only }),
-      }));
-    });
-}
-
 const roots: string[] = [];
 afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
-
-/** The header line `Label: value` of the recorded log, which holds the host's settings. */
-const headerValue = (log: string, label: string): string => new RegExp(`^${label}: (.*)\\r$`, "m").exec(log)?.[1] ?? "";
-
-/** A date-time of the log, or the date alone where 12.0's cut of a package's log falls inside it (IMP-412). */
-const CLOCK = /\d\d\/\d\d\/\d{2,4}(?: \d\d:\d\d:\d\d)?/g;
-/** The time spans of a batch (`TimeSpan.ToString()`), which differ from run to run (IMP-514). */
-const TIME_SPAN = /(\r\n   (?:AML batch|Resolve dependencies) time: )(?:\d+\.)?\d\d:\d\d:\d\d(?:\.\d+)?/g;
-
-/** The log with what is the run's own replaced: the paths of the header, the item files and every date-time. */
-function comparable(log: string, recordedInput: string, input: string, logPath: string): string {
-  const inputRelative = (path: string): string => {
-    const rest = path.startsWith(input) ? path.slice(input.length) : path.startsWith(recordedInput) ? path.slice(recordedInput.length) : path;
-    return `<input>${rest.replace(/\\/g, "/")}`;
-  };
-  return log
-    .replace(/^(Manifest file: ).*(\r)$/m, "$1<manifest>$2")
-    .replace(/^(Log file: ).*(\r)$/m, "$1<log>$2")
-    .replace(/^(Working directory: ).*(\r)$/m, "$1<working>$2")
-    .replace(/^(File full name )'(.*)'(\r?)$/gm, (_, label: string, path: string, end: string) => `${label}'${inputRelative(path)}'${end}`)
-    .replace(/^(WARNING: File )'(.*)'( doesn't have )/gm, (_, label: string, path: string, rest: string) => `${label}'${inputRelative(path)}'${rest}`)
-    .replace(CLOCK, "<time>")
-    // 12.0 cuts a package's log mid-line (IMP-412): a date-time that the cut leaves incomplete still depends on the day of the run
-    .replace(/(of execution : )\d[\d/: -]*$/, "$1<time>")
-    .replace(TIME_SPAN, "$1<span>")
-    .split(logPath === "" ? "\u0000" : logPath)
-    .join("<log>");
-}
-
-/** What the oracle host wrote to the console: the lines of `host.log` between the engine banner and `HOST_EXIT`. */
-function recordedConsole(hostLog: string): string {
-  const afterBanner = hostLog.slice(hostLog.indexOf("\r\n") + 2);
-  return afterBanner.slice(0, afterBanner.lastIndexOf("HOST_EXIT"));
-}
 
 function replayRuns(engine: Engine, steps: Step[], blobs: string, minimum: number, minimumRefused = 0): void {
   const seen = {
