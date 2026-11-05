@@ -56,3 +56,27 @@ jobs:
       - name: Browser tests
         run: |
           npm run test:browser -- --reporter=verbose
+
+  browser-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: |
+          npm ci
+
+      - name: Playwright browsers
+        run: |
+          npx playwright install --with-deps chromium firefox webkit
+
+      # The size budget of HOST-278 at 10 MB: the package is generated, imported and exported through the Worker in each browser. The
+      # larger sizes (50 to 500 MB) are run by hand; roadmap/browser-limits.md has what they measured.
+      - name: Size budget tests
+        run: |
+          LIBSJS_SIZE_MB=10 npm run test:browser:size -- --reporter=verbose
