@@ -2,7 +2,7 @@ import {
   type ApiMessage,
   type ExportResult,
   type FsaDirectoryHandle,
-  type HttpTransport,
+  MemoryVfs,
   type MountProgress,
   type OperationResult,
   type ProgressEvent,
@@ -40,8 +40,6 @@ import { type MountedSource, PACKAGE_BUDGET, canPickDirectory, mountDrop, mountF
 export interface AppDeps {
   /** Where the engine runs. Default: this thread. */
   engine?: EngineClient;
-  /** The HTTP layer handed to `connect`. Default: the browser's `fetch` transport. */
-  transport?: HttpTransport;
   /** Hands a downloaded file to the person. Default: an anchor on a Blob URL. */
   saveFile?: SaveFile;
   /** Opens the folder picker. Default: `showDirectoryPicker`. */
@@ -60,6 +58,14 @@ export interface App {
 type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 const LOG_LINES = 5000;
+
+/** Where each operation writes its log in the tree (the library's defaults, HOST-272). */
+const LOG_PATHS = { export: "/aras-pkg-logs/export.log", import: "/aras-pkg-logs/import.log", "language-pack": "/aras-pkg-logs/language-pack.log", "db-patches": "/aras-pkg-logs/db-patches.log" } as const;
+
+/** The text of a log in the tree, or nothing where the run wrote none. */
+function readLog(tree: MemoryVfs, path: string): string {
+  return tree.exists(path) ? new TextDecoder().decode(tree.readFile(path)) : "";
+}
 
 /** The control of an option. */
 function controlOf(spec: OptionSpec, controls: Map<string, Control>, panel: string): HTMLElement {
@@ -281,7 +287,6 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   let mode: Mode = "export";
   let running: AbortController | undefined;
   let lastLog: string | undefined;
-  let lastZip: { name: string; bytes: Uint8Array } | undefined;
   let sinkHandle: FsaDirectoryHandle | undefined;
 
   const isBusy = (): boolean => running !== undefined;
@@ -456,7 +461,6 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   const runButton = h("button", { type: "button", class: "primary", "data-key": "run" }, "Run");
   const abortButton = h("button", { type: "button", "data-key": "abort", disabled: true }, "Abort");
   const logButton = h("button", { type: "button", "data-key": "download-log", hidden: true }, "Download the run log");
-  const zipButton = h("button", { type: "button", "data-key": "download-zip", hidden: true }, "Download the zip again");
   const formError = h("p", { class: "error", role: "alert", hidden: true });
 
   const values = (): Values => {
@@ -478,6 +482,9 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
 
   /** What a run does, worked out from the form before anything is sent: a form that cannot run is refused here, before the login. */
   interface Plan {
+    /** The tree the run writes its log into, and where: read after a failure too, when the operation never resolved. */
+    logTree: MemoryVfs;
+    logPath: string;
     execute(session: EngineSession, callbacks: Callbacks): Promise<OperationResult>;
     /** Hands the result to the person. */
     deliver(result: OperationResult): Promise<void>;
@@ -496,21 +503,26 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
       if (needsSource && source === undefined) throw new FormError("load the package that holds the manifest first");
       if (sinkFolder.checked && sinkHandle === undefined) throw new FormError("choose the folder to write into first");
       const folder = options.workingDirectory ?? "/export";
+      // the page owns the tree, so that the log is still there when the export fails
+      const tree = needsSource && source !== undefined ? source.tree : new MemoryVfs();
       return {
+        logTree: tree,
+        logPath: LOG_PATHS.export,
         execute: (session, callbacks) => {
           if (needsSource && source !== undefined) resetRunFolders(source);
-          return session.exportPackages({ ...options, ...(source !== undefined && needsSource ? { vfs: source.tree } : {}), ...callbacks });
+          return session.exportPackages({ ...options, vfs: tree, ...callbacks });
         },
         async deliver(result) {
           const exported = result as ExportResult;
-          if (sinkFolder.checked && sinkHandle !== undefined) {
+          if (result.summary.aborted) {
+            // a cancelled export holds only what was written so far; it is not offered, so it cannot be taken for a whole one
+            view.say("The export was cancelled. Nothing was saved.");
+          } else if (sinkFolder.checked && sinkHandle !== undefined) {
             const written = await writeToFolder(exported.vfs, sinkHandle, folder);
             view.say(`Wrote ${written.files} files (${sizeText(written.bytes)}) into ${sinkHandle.name}.`);
           } else {
             const bytes = zipOf(exported.vfs, folder);
-            lastZip = { name: stampedName("export", "zip"), bytes };
-            zipButton.hidden = false;
-            save(lastZip.name, lastZip.bytes, "application/zip");
+            save(stampedName("export", "zip"), bytes, "application/zip");
             view.say(`Exported ${exported.files.size} files; the zip is ${sizeText(bytes.length)}.`);
           }
         },
@@ -519,19 +531,19 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
     const source = sources.get(mode)?.get();
     if (source === undefined) throw new FormError("load the package first: a zip, a folder or a drop");
     const done = (result: OperationResult): Promise<void> => {
-      view.say(`Done: ${result.summary.result}.`);
+      view.say(result.summary.aborted ? "The run was cancelled." : `Done: ${result.summary.result}.`);
       return Promise.resolve();
     };
     if (mode === "import") {
       const options = importOptionsOf(form);
-      return { execute: (session, callbacks) => (resetRunFolders(source), session.importPackages({ ...options, source: source.tree, ...callbacks })), deliver: done };
+      return { logTree: source.tree, logPath: LOG_PATHS.import, execute: (session, callbacks) => (resetRunFolders(source), session.importPackages({ ...options, source: source.tree, ...callbacks })), deliver: done };
     }
     if (mode === "language-pack") {
       const options = languagePackOptionsOf(form);
-      return { execute: (session, callbacks) => (resetRunFolders(source), session.importLanguagePack({ ...options, source: source.tree, ...callbacks })), deliver: done };
+      return { logTree: source.tree, logPath: LOG_PATHS["language-pack"], execute: (session, callbacks) => (resetRunFolders(source), session.importLanguagePack({ ...options, source: source.tree, ...callbacks })), deliver: done };
     }
     const options = dbPatchOptionsOf(form);
-    return { execute: (session, callbacks) => (resetRunFolders(source), session.applyDbPatches({ ...options, source: source.tree, ...callbacks })), deliver: done };
+    return { logTree: source.tree, logPath: LOG_PATHS["db-patches"], execute: (session, callbacks) => (resetRunFolders(source), session.applyDbPatches({ ...options, source: source.tree, ...callbacks })), deliver: done };
   };
 
   const run = async (): Promise<void> => {
@@ -542,18 +554,19 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
     setBusy(true);
     view.reset();
     logButton.hidden = true;
-    zipButton.hidden = true;
     lastLog = undefined;
-    lastZip = undefined;
     let session: EngineSession | undefined;
+    let plan: Plan | undefined;
+    let handedOver = false;
     try {
       const form = values();
       const connect = connectOptionsOf(form);
-      const plan = planOf(form);
+      plan = planOf(form);
       // the password leaves the field and goes to the connection; the field is emptied at once (HOST-281)
+      handedOver = true;
       password.value = "";
       view.say("Connecting…");
-      session = await engine.connect({ ...connect, ...(deps.transport === undefined ? {} : { transport: deps.transport }) });
+      session = await engine.connect(connect);
       view.say(`Connected to ${session.serverVersion}, engine ${session.engine}. Running…`);
       const result = await plan.execute(session, {
         signal: controller.signal,
@@ -572,9 +585,16 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
       } else {
         view.fail(error);
         view.say("The run failed.");
+        // the run log is what the engine wrote before it failed
+        const log = plan === undefined ? "" : readLog(plan.logTree, plan.logPath);
+        if (log !== "") {
+          lastLog = log;
+          logButton.hidden = false;
+        }
       }
     } finally {
-      password.value = "";
+      // a form that was refused never held the password: the person keeps what they typed
+      if (handedOver) password.value = "";
       if (session !== undefined) await session.close().catch(() => undefined);
       running = undefined;
       setBusy(false);
@@ -588,9 +608,6 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   logButton.addEventListener("click", () => {
     if (lastLog !== undefined) save(stampedName("run-log", "log"), new TextEncoder().encode(lastLog), "text/plain");
   });
-  zipButton.addEventListener("click", () => {
-    if (lastZip !== undefined) save(lastZip.name, lastZip.bytes, "application/zip");
-  });
 
   // ---------------------------------------------------------------------------------------------------- the page
 
@@ -602,7 +619,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
     connectionBox,
     tabs,
     ...panels.values(),
-    h("div", { class: "actions" }, runButton, abortButton, logButton, zipButton),
+    h("div", { class: "actions" }, runButton, abortButton, logButton),
     formError,
     view.element,
   );

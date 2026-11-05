@@ -352,7 +352,75 @@ function waitingEngine(): EngineClient {
   };
 }
 
+/** An engine whose operations all end the way `end` says, after writing `log` where the library writes it. */
+function endingEngine(end: "cancelled" | "fails", saved: { exported: number }): EngineClient {
+  return {
+    connect: () =>
+      Promise.resolve({
+        engine: "14.0.7",
+        serverVersion: "14.0.9.1",
+        importLanguagePack: () => Promise.reject(new Error("not used")),
+        applyDbPatches: () => Promise.reject(new Error("not used")),
+        exportPackages: (options) => {
+          saved.exported += 1;
+          const vfs = options.vfs as MemoryVfs;
+          vfs.mkdir("/aras-pkg-logs");
+          vfs.writeFile("/aras-pkg-logs/export.log", new TextEncoder().encode("the engine's log"));
+          vfs.mkdir("/export");
+          vfs.writeFile("/export/partial.xml", new Uint8Array([1]));
+          if (end === "fails") return Promise.reject(new Error("the server refused the item"));
+          return Promise.resolve({
+            vfs,
+            files: new Map([["partial.xml", new Uint8Array([1])]]),
+            log: "the engine's log",
+            messages: [],
+            summary: { operation: "export", engine: "14.0.7", server: "14.0.9.1", result: "cancelled", returnCode: 0, aborted: true, messages: { info: 0, warnings: 0, errors: 0, packages: 0 }, packages: [] },
+          });
+        },
+        importPackages: () => Promise.reject(new Error("not used")),
+        close: () => Promise.resolve(),
+      }),
+  };
+}
+
 describe("abort and failure", () => {
+  it("does not deliver an export that was cancelled, and says so", async () => {
+    const saved = { exported: 0 };
+    const files: string[] = [];
+    mount({ engine: endingEngine("cancelled", saved), saveFile: (name) => files.push(name) });
+    await connectTo("http://unused.example/x");
+    await userEvent.fill(key("packages", "export"), "some.package");
+    await run();
+    expect(saved.exported).toBe(1);
+    expect(files).toEqual([]);
+    expect(q(".run-view .status").textContent).toBe("The export was cancelled. Nothing was saved.");
+    expect(q(".summary").textContent).toContain("cancelled");
+  });
+
+  it("offers the log of a run that failed, and keeps the password the person typed when the form was refused", async () => {
+    const saved = { exported: 0 };
+    const files: Array<{ name: string; text: string }> = [];
+    mount({ engine: endingEngine("fails", saved), saveFile: (name, bytes) => files.push({ name, text: new TextDecoder().decode(bytes) }) });
+    // a form that is refused before anything is sent: no package is named for the export of a manifest
+    await connectTo("http://unused.example/x");
+    await userEvent.selectOptions(key("selection", "export"), "from-manifest");
+    await userEvent.click(runButton());
+    await vi.waitFor(() => expect(q(".actions ~ .error").hidden).toBe(false));
+    expect(key("password").value).toBe("pw-of-the-test-xyz");
+    expect(saved.exported).toBe(0);
+    // a run that fails: the log the engine wrote before it failed
+    await userEvent.selectOptions(key("selection", "export"), "packages");
+    await userEvent.fill(key("packages", "export"), "some.package");
+    await run();
+    expect(failureText()).toContain("the server refused the item");
+    expect(key("password").value).toBe("");
+    expect(q('[data-key="download-log"]').hidden).toBe(false);
+    await userEvent.click(q('[data-key="download-log"]'));
+    expect(files).toHaveLength(1);
+    expect(files[0]?.name).toMatch(/^run-log-.*\.log$/);
+    expect(files[0]?.text).toBe("the engine's log");
+  });
+
   it("raises the run's signal when Abort is pressed, and ends with a cancelled run", async () => {
     mount({ engine: waitingEngine() });
     await connectTo("http://unused.example/x");

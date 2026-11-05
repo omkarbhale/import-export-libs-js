@@ -88,6 +88,9 @@ describe("the static server", () => {
       expect((await fetch(`${url}missing.js`)).status).toBe(404);
       expect((await fetch(`${url}..%2Foutside.txt`)).status).toBe(404);
       expect((await fetch(url, { method: "POST" })).status).toBe(404);
+      // a path that does not decode is a 404, not the end of the server
+      expect((await fetch(`${url}%E0`)).status).toBe(404);
+      expect((await fetch(url)).status).toBe(200);
     } finally {
       http.closeAllConnections();
       http.close();

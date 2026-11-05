@@ -42,24 +42,16 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
 };
 
 /** A static server of one folder. A path that leaves the folder is a 404. */
-export async function serveFolder(
-  folder: string,
-  options: { port?: number; host?: string; /** Files served at a path that is not in the folder, such as a recorded case's package. */ extra?: Readonly<Record<string, { type: string; body: Uint8Array }>> } = {},
-): Promise<{ server: Server; url: string }> {
+export async function serveFolder(folder: string, options: { port?: number; host?: string } = {}): Promise<{ server: Server; url: string }> {
   const root = path.resolve(folder);
   const server = createServer((request, response) => {
-    const url = new URL(request.url ?? "/", "http://localhost");
-    const relative = decodeURIComponent(url.pathname).replace(/^\/+/, "") || "index.html";
-    const file = path.resolve(root, relative);
-    const inside = file === root || file.startsWith(root + path.sep);
-    let body: Buffer | Uint8Array | undefined;
-    const extra = options.extra?.[url.pathname];
-    if (extra !== undefined) {
-      response.writeHead(200, { "Content-Type": extra.type, "Content-Length": extra.body.length, ...SECURITY_HEADERS }).end(request.method === "HEAD" ? undefined : extra.body);
-      return;
-    }
+    let file = root;
+    let body: Buffer | undefined;
     try {
-      if (inside && statSync(file).isFile()) body = readFileSync(file);
+      const url = new URL(request.url ?? "/", "http://localhost");
+      // a path that does not decode (`/%E0`) is as missing as any other
+      file = path.resolve(root, decodeURIComponent(url.pathname).replace(/^\/+/, "") || "index.html");
+      if ((file === root || file.startsWith(root + path.sep)) && statSync(file).isFile()) body = readFileSync(file);
     } catch {
       body = undefined;
     }
@@ -91,9 +83,8 @@ function treeOf(dir: string): MemoryVfs {
 }
 
 /** What to type into the page to run a recorded case, and where its package is as a zip. */
-function printRecipe(replay: ReplayCase, url: string, pageUrl: string): Uint8Array | undefined {
+function printRecipe(replay: ReplayCase, url: string): void {
   const { recipe } = replay;
-  let packageZip: Uint8Array | undefined;
   const lines = [`recorded case ${replay.id}`, `  URL        ${url}`, `  Database   12sp9 (any)`, `  User       ${recipe.userName}`, `  Password   anything`, `  Engine     ${recipe.engine} (choose it: this server answers the login as a 12 SP9 server)`];
   if (recipe.operation === "export") {
     lines.push(`  Mode       Export, "Packages, by name": ${(recipe.packages ?? []).join(", ")}`);
@@ -102,18 +93,15 @@ function printRecipe(replay: ReplayCase, url: string, pageUrl: string): Uint8Arr
     const folder = path.join(os.tmpdir(), "aras-pkg-replay", replay.id.replaceAll("/", "_"));
     mkdirSync(folder, { recursive: true });
     const zip = path.join(folder, "package.zip");
-    packageZip = vfsToZip(treeOf(recipe.inputDir), "/");
-    writeFileSync(zip, packageZip);
+    writeFileSync(zip, vfsToZip(treeOf(recipe.inputDir), "/"));
     lines.push(`  Mode       ${recipe.operation === "import" ? "Import" : recipe.operation === "language-pack" ? "Language pack" : "DB patches"}`);
     lines.push(`  Package    the zip ${zip}, or the folder ${recipe.inputDir}`);
-    lines.push(`             (the zip is also at ${pageUrl}__replay/package.zip, for a driver that cannot open a file dialog)`);
     if (recipe.osUser) lines.push(`  OS user    ${recipe.osUser}`);
     if (recipe.lpPackage !== undefined) lines.push(`  Package name ${recipe.lpPackage}`);
     if (recipe.manifestPath !== undefined) lines.push(`  Manifest   ${recipe.manifestPath}`);
     if (recipe.options !== undefined && Object.keys(recipe.options).length > 0) lines.push(`  Options    ${JSON.stringify(recipe.options)}`);
   }
   console.log(lines.join("\n"));
-  return packageZip;
 }
 
 function argOf(args: string[], name: string): string | undefined {
@@ -127,16 +115,13 @@ async function main(args: string[]): Promise<void> {
   const id = argOf(args, "--replay");
   const replay = id === undefined ? undefined : loadReplayCase(id);
   const replayServer = replay === undefined ? undefined : await startReplayServer(replay, { port: Number(argOf(args, "--replay-port") ?? 8081), host, log: (line) => console.log(`  ${line}`) });
-  const port = Number(argOf(args, "--port") ?? 8080);
-  const pageUrl = `http://${host}:${port}/`;
-  // the recipe is printed once the page's address is known, and the package zip it makes is served by the page's server
-  const zip = replay === undefined || replayServer === undefined ? undefined : printRecipe(replay, replayServer.url, pageUrl);
-  const { url } = await serveFolder(EXAMPLE_DIST, { port, host, ...(zip === undefined ? {} : { extra: { "/__replay/package.zip": { type: "application/zip", body: zip } } }) });
+  if (replay !== undefined && replayServer !== undefined) printRecipe(replay, replayServer.url);
+  const { url } = await serveFolder(EXAMPLE_DIST, { port: Number(argOf(args, "--port") ?? 8080), host });
   console.log(`the page: ${url}`);
   if (replayServer !== undefined) {
     process.on("SIGINT", () => {
       const report = replayServer.report();
-      console.log(`\nthe recording was used ${report.consumed} of ${report.total} requests in the last run; ${report.mismatches.length} did not match`);
+      console.log(`\nthe recording answered ${report.consumed} requests over ${Math.max(report.runs - 1, 0)} finished run(s), ${report.total} per run; ${report.mismatches.length} did not match`);
       process.exit(0);
     });
   }
