@@ -165,7 +165,7 @@ The browser typecheck (`tsconfig.browser.json`, which has no Node types) takes t
 
 [14.35] Same as 14.0.7.
 
-## HOST-263: the browser tests run in real browsers through one vitest project, on the bundle's module graph, and read fixtures only through restricted commands
+## HOST-263: the browser tests run in real browsers through the vitest browser projects, on the bundle's module graph, and read fixtures only through restricted commands
 
 [14.0.7] The tests that must hold in a browser are the `*.browser.test.ts` files of `src/` and the unit tests that HOST-264 selects, and they run in the `browser` project of `vitest.config.ts`: headless Chromium, Firefox and WebKit through the Playwright provider, one instance of each, so a failure names the browser it happened in. `npm run test:browser` runs the browser projects alone (`browser` and `browser-webkit-opfs`, HOST-268) and `npm test` runs the `node` project alone, whose files are the ones it ran before the browser project existed (a `*.browser.test.ts` file is excluded from it), so the browsers are not a prerequisite of the gate. The Playwright browsers are installed by `npx playwright install chromium firefox webkit`, and an installation that is already on the machine is reused (`PLAYWRIGHT_BROWSERS_PATH` names where they are, the default being the Playwright cache of the user).
 

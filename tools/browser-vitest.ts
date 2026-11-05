@@ -1,6 +1,6 @@
 /**
- * What the browser test project of `vitest.config.ts` is made of on the Node side (HOST-263): the module replacement that gives a
- * test the graph of the shipped bundle, and the commands through which a test in a page reads the recorded fixtures. Test-only
+ * What the browser test projects of `vitest.config.ts` are made of on the Node side (HOST-263): the module replacement that gives a
+ * test the graph of the shipped bundle, and the commands through which a test in a page reads the recorded fixtures and chooses or drops files (HOST-267). Test-only
  * tooling: nothing under `src/` imports it.
  */
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
