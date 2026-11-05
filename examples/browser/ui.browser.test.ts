@@ -5,7 +5,7 @@ import { FakeDirectoryHandle } from "../../src/browser/fake-directory-handle.js"
 import { fakeDrop } from "../../src/browser/api-test-support.js";
 import { loadFixtureTree } from "../../src/browser/test-support.browser.js";
 import { packageCaches } from "../../src/client/package-lookups.js";
-import type { StartedReplay, StoppedReplay } from "../../tools/browser-example/replay-types.js";
+import type { BuiltPageRun, StartedReplay, StoppedReplay } from "../../tools/browser-example/replay-types.js";
 import { type App, type AppDeps, mountApp } from "./app.js";
 import { type EngineClient, createWorkerEngine } from "./engine-client.js";
 
@@ -24,6 +24,7 @@ declare module "vitest/browser" {
   interface BrowserCommands {
     startReplay(id: string): Promise<StartedReplay>;
     stopReplay(handle: string): Promise<StoppedReplay>;
+    runBuiltPage(id: string): Promise<BuiltPageRun>;
     workerBundle(): Promise<string>;
   }
 }
@@ -433,6 +434,36 @@ describe("abort and failure", () => {
     expect(q<HTMLButtonElement>('[data-key="abort"]').disabled).toBe(true);
   });
 
+  it("says a run was cancelled, not failed, when Abort is pressed during the login", async () => {
+    let finishLogin = (): void => undefined;
+    const login = new Promise<void>((resolve) => {
+      finishLogin = resolve;
+    });
+    const real = createWorkerEngine({ worker: () => workerUrl });
+    const files: string[] = [];
+    mount({
+      engine: {
+        connect: async (options) => {
+          await login;
+          return real.connect(options);
+        },
+      },
+      saveFile: (name) => files.push(name),
+    });
+    const { url, recipe } = await startReplay(EXPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await userEvent.fill(key("packages", "export"), (recipe.packages as string[]).join("\n"));
+    await userEvent.click(runButton());
+    await vi.waitFor(() => expect(q(".run-view .status").textContent).toBe("Connecting…"));
+    await userEvent.click(q('[data-key="abort"]'));
+    finishLogin();
+    await vi.waitFor(() => expect(runButton().disabled).toBe(false), { timeout: 60_000 });
+    expect(failureText()).toBe("");
+    expect(q(".run-view .status").textContent).toBe("The run was cancelled. Nothing was saved.");
+    expect(files).toEqual([]);
+    expect((await stopReplay()).consumed).toBe(0);
+  });
+
   it("shows a server that cannot be reached as the engine's own error, not as an unhandled rejection", async () => {
     mount();
     const { url, recipe } = await startReplay(IMPORT_CASE);
@@ -494,5 +525,19 @@ describe("what the page offers", () => {
     expect(q('[data-panel="export"]').textContent).toContain("--unknown-references");
     expect(q('[data-panel="language-pack"]').textContent).toContain("--lp-package");
     expect(q('[data-panel="db-patches"]').textContent).toContain("--patches-folder");
+  });
+});
+
+// ------------------------------------------------------------------------------------------------------------ the built folder
+
+describe("the built folder, as a static server serves it", () => {
+  it("runs a recorded export through the default Worker, under the served security headers", async () => {
+    const result = await commands.runBuiltPage(EXPORT_CASE);
+    expect(result.errors).toEqual([]);
+    expect(result.failure).toBe("");
+    expect(result.summary).toContain("success");
+    expect(result.download).toMatch(/^export-\d{8}-\d{6}\.zip$/);
+    expect(result.report.mismatches).toEqual([]);
+    expect(result.report.consumed).toBe(result.report.total);
   });
 });

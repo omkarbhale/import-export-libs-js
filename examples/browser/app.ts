@@ -556,8 +556,12 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
         formError.textContent = error.message;
         view.say("");
       } else {
-        view.fail(error);
-        view.say("The run failed.");
+        if (controller.signal.aborted && error === controller.signal.reason) {
+          view.say("The run was cancelled. Nothing was saved.");
+        } else {
+          view.fail(error);
+          view.say("The run failed.");
+        }
         // the engine's log stays in the Worker with its tree; what the engine said before it failed is what the page has kept
         if (messages.length > 0) {
           lastLog = { name: "messages", text: messages.map((message) => message.text).join("\n") };

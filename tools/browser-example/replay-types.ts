@@ -52,3 +52,12 @@ export interface StoppedReplay extends ReplayStats {
   runs: number;
   requests: string[];
 }
+
+/** What `runBuiltPage` answers with: what the built page showed, what it downloaded and what the server saw. */
+export interface BuiltPageRun {
+  failure: string;
+  summary: string;
+  download: string | undefined;
+  errors: string[];
+  report: StoppedReplay;
+}
