@@ -181,6 +181,26 @@ The rule is held by `src/browser/smoke.browser.test.ts` (the bundle's imports, t
 
 [14.35] Same as 14.0.7.
 
+## HOST-264: the unit tests that reach no Node API run unedited in the browsers, and the places a browser could differ have a test of their own
+
+[14.0.7] The `browser` project (HOST-263) runs, besides the `*.browser.test.ts` files, the `*.test.ts` files of `src/` listed in `src/browser/pure-tests.json`, unedited, in Chromium, Firefox and WebKit. A test file is on the list when its closure is *pure*: the test and every file it imports at run time, with `src/host/default-host.ts` replaced by `default-host.browser.ts` as in the bundle (HOST-260), where
+
+- no module is a Node built-in (with or without the `node:` prefix) and no string literal names one (`vi.mock("node:fs")`);
+- no file lies outside `src/` (`oracle/`, `tools/`, `spec/` and `fixtures/` are Node-side files and data);
+- no file uses a global that only Node has (`process`, `__dirname`, `__filename`, `require`, `setImmediate`, `global`, `module`, `exports`) that it does not declare itself, or locates a module with `import.meta.url`, `import.meta.dirname` or `import.meta.filename`.
+
+`Buffer` is not on that list because the page has the `buffer` package as its `Buffer` (HOST-262). The tests of `spec/`, `tools/` and `oracle/` are Node-side by where they are and are never selected. A test that reads a recorded fixture does so through `node:fs`, so it is not selected; the browser tests that replay fixtures read them through the commands of HOST-263 instead.
+
+`tools/browser-test-selection.ts` computes the list from the import graph (one esbuild run over every test file, whose metafile gives each closure) and `npx tsx tools/browser-test-selection.ts --write` writes the file. A test of the Node project (`tools/browser-test-selection.test.ts`) recomputes the list and fails when the file differs, so a test that became pure, or stopped being pure, is noticed, and it holds the classification to a set of small synthetic test trees.
+
+The tests that would be on the list but read a fixture or a temporary folder, and that cover the places where a browser could differ from Node, have a browser twin in `src/browser/engine-compat.browser.test.ts`, which runs the same expectations over the in-memory tree (HOST-215) and the restricted fixture commands: the byte rules of the XML core on the recorded `read-bytes` vectors of `fixtures/xml-core/vectors.json` (UTF-8 with the engine's replacement rule, UTF-16 and UTF-32 with and without a byte-order mark, lone surrogates), the legacy encodings that an XML declaration may name and that are decoded by `TextDecoder(name)` (Shift_JIS, windows-125x, ISO-8859-x, GBK, GB2312, EUC-KR, EUC-JP, Big5, KOI8-R, macintosh, windows-874, ISO-2022-JP), the failure for a name the browser does not know, which is the engine's `System does not support '<name>' encoding.`, the order of the language codes (`normalize("NFD")`), the NLS word sort and the upper-case table of the recorded fixtures, and the date patterns of the run log with the process culture from `Intl`.
+
+The browsers decode the labels of the WHATWG Encoding Standard, the same as Node's ICU, and all three agreed with Node on every encoding above, so there is no deviation to record: every browser failure that the selection or the twin would show is a defect to fix, and none has been found. If a browser lacked an encoding that the engine accepts, it would be a deviation of this document, listing the encodings, and the loader would raise the engine's failure for it.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
 ## HOST-210: the file layer touches files through `HostFs`, and Node's implementation is `node:fs` itself
 
 [14.0.7] Every file the file layer reads, writes, lists, creates or deletes is reached through the `HostFs` (HOST-200) of the `PathEnvironment`, `environment.fs`, and where the environment has none through the default host, `defaultHost().fs`. That covers `fileExists`, `readFileBytes`, `writeFileBytes` and `translateFileError` (the check that the folder of a missing file exists) in `io/host-path.ts`, and every operation of `io/windows-fs.ts`: the lookup of a name, the listing of a folder to find a fold-equal spelling (EXP-420), `directoryExists`, `directoryCreateDirectory` and its single `mkdir`, `directoryDelete`, `writeVolumeFile` and `fileWriteAllText`. A path that these functions open never reaches `node:fs` by another way, so a host that stands in for the disk sees every file touch. The callers that pass the environment to them (the manifest, the output folder, the loader and the saver, the DB-patch host, the language-pack preprocessor) pass the whole of it, `fs` included. The package listing (`import/package-files.ts`) and the log file (`export/run-log.ts`) go through it too (HOST-212, HOST-213), so that no file of the core outside the CLI reaches `node:fs` except the Node implementation `nodeFs` itself.
