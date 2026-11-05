@@ -5,6 +5,20 @@ import { MemoryVfs } from "../host/memory-fs.js";
 import { LanguageCodesExtractor } from "../import/language-codes-extractor.js";
 import { NTFS_UPPER_RUNS } from "../import/ntfs-upper-data.js";
 import { sortByTypeName } from "../import/nls-word-sort.js";
+import {
+  CDATA_SECTION_NODE,
+  COMMENT_NODE,
+  DOCUMENT_NODE,
+  DOCUMENT_TYPE_NODE,
+  ELEMENT_NODE,
+  PROCESSING_INSTRUCTION_NODE,
+  TEXT_NODE,
+  attributesOf,
+  entityReferenceName,
+  getDeclaration,
+  isEmpty,
+} from "../xml/dom.js";
+import type { XmlDocument, XmlElement, XmlNode } from "../xml/dom.js";
 import { XmlException } from "../xml/errors.js";
 import { decodeXmlFile } from "../xml/load-file.js";
 import { loadXml } from "../xml/parser.js";
@@ -31,6 +45,51 @@ describe("HOST-264: the XML core's byte rules, on the recorded .NET vectors (xml
     expect: { text: string; load: { dump?: string; error?: { type: string; message: string } } };
   }
 
+  /** The same rendering of a loaded tree as `dump` in xml/vectors.test.ts, which is what the recorded vectors hold. */
+  const dump = (doc: XmlDocument): string => {
+    let out = "";
+    const declaration = getDeclaration(doc);
+    if (declaration) out += `X(${declaration.version}|${declaration.encoding}|${declaration.standalone})`;
+    const visit = (node: XmlNode): void => {
+      switch (node.nodeType) {
+        case DOCUMENT_NODE:
+          for (let child = node.firstChild; child; child = child.nextSibling) visit(child);
+          break;
+        case DOCUMENT_TYPE_NODE:
+          out += `D(${(node as unknown as { name: string }).name}|||)`;
+          break;
+        case ELEMENT_NODE: {
+          const element = node as XmlElement;
+          out += `E(${element.tagName}|${element.namespaceURI ?? ""}|${isEmpty(element) ? "1" : "0"}`;
+          for (const attribute of attributesOf(element)) out += `|${attribute.name}=${attribute.namespaceURI ?? ""}=${attribute.value}`;
+          out += "){";
+          for (let child = node.firstChild; child; child = child.nextSibling) visit(child);
+          out += "}";
+          break;
+        }
+        case TEXT_NODE:
+          out += entityReferenceName(node) !== undefined ? `R(${entityReferenceName(node)})` : `T(${(node as unknown as { data: string }).data})`;
+          break;
+        case CDATA_SECTION_NODE:
+          out += `C(${(node as unknown as { data: string }).data})`;
+          break;
+        case COMMENT_NODE:
+          out += `M(${(node as unknown as { data: string }).data})`;
+          break;
+        case PROCESSING_INSTRUCTION_NODE: {
+          const pi = node as unknown as { target: string; data: string };
+          const declared = pi.target === "xml" ? /^version="([^"]*)"(?: encoding="([^"]*)")?(?: standalone="([^"]*)")?$/.exec(pi.data) : null;
+          out += declared ? `X(${declared[1]}|${declared[2] ?? ""}|${declared[3] ?? ""})` : `P(${pi.target}|${pi.data})`;
+          break;
+        }
+        default:
+          out += `?(${node.nodeType})`;
+      }
+    };
+    visit(doc);
+    return out;
+  };
+
   it("decodes every recorded byte sequence to the text .NET gave, and loads it or fails as .NET did", async () => {
     const { vectors } = JSON.parse(await readFixtureText("fixtures/xml-core/vectors.json")) as { vectors: Vector[] };
     // the port refuses a DOCTYPE with an internal subset (IMP-016); xml/vectors.test.ts skips this vector for the same reason
@@ -41,8 +100,9 @@ describe("HOST-264: the XML core's byte rules, on the recorded .NET vectors (xml
       expect(decoded, vector.id).toBe(vector.expect.text);
       const expected = vector.expect.load;
       let failure: Error | undefined;
+      let loaded: XmlDocument | undefined;
       try {
-        loadXml(decoded, { preserveWhitespace: false });
+        loaded = loadXml(decoded, { preserveWhitespace: false });
       } catch (error) {
         failure = error as Error;
       }
@@ -51,6 +111,7 @@ describe("HOST-264: the XML core's byte rules, on the recorded .NET vectors (xml
         expect(failure?.message, vector.id).toBe(expected.error.message);
       } else {
         expect(failure, vector.id).toBeUndefined();
+        expect(dump(loaded as XmlDocument), vector.id).toBe(expected.dump);
       }
     }
   });
