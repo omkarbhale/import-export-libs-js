@@ -256,6 +256,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
   let disposing: Promise<void> | undefined;
   let stopped = false;
   let onDisposed: (() => void) | undefined;
+  let failure: Error | undefined;
 
   const stop = (): void => {
     if (stopped) return;
@@ -273,6 +274,13 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
       call.reject(error);
     }
     handlers.clear();
+  }
+
+  /** The Worker cannot go on: the calls that wait, and every later one, reject with why. */
+  function fail(error: Error): void {
+    if (!stopped) failure = error;
+    failAll(error);
+    stop();
   }
 
   function post(message: ToWorkerBody, transfer: ArrayBuffer[] = []): void {
@@ -313,8 +321,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     const data = (event as { data?: unknown }).data;
     if (!isEnvelope(data)) return;
     if (data.v !== WORKER_PROTOCOL_VERSION) {
-      failAll(new WorkerProtocolError(`the Worker speaks protocol ${data.v}, this library speaks ${WORKER_PROTOCOL_VERSION}: the Worker file and the library are of different versions`));
-      stop();
+      fail(new WorkerProtocolError(`the Worker speaks protocol ${data.v}, this library speaks ${WORKER_PROTOCOL_VERSION}: the Worker file and the library are of different versions`));
       return;
     }
     const message = data as FromWorker;
@@ -364,17 +371,14 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
 
   worker.addEventListener("message", receive);
   // a Worker that fails to start (a missing file, a script error) or sends what cannot be read ends every call that waits for it
-  const crash = (text: string): void => {
-    failAll(new WorkerCrashedError(text));
-    stop();
-  };
-  worker.addEventListener("error", (event) => crash(`the Worker failed: ${describe(event)}`));
-  worker.addEventListener("messageerror", () => crash("the Worker sent a message that could not be read"));
+  worker.addEventListener("error", (event) => fail(new WorkerCrashedError(`the Worker failed: ${describe(event)}`)));
+  worker.addEventListener("messageerror", () => fail(new WorkerCrashedError("the Worker sent a message that could not be read")));
   worker.start?.();
 
   /** Sends one call and returns what it resolves with. `build` makes the message's body and fills the transfer list. */
   function call<T>(op: CallOp, streams: Streams, build: (id: number, bag: TransferBag) => ToWorkerBody, registered?: Handlers, onSessionClosed?: () => void): Promise<T> {
-    if (disposing !== undefined || stopped) return Promise.reject(new WorkerDisposedError("the Worker was disposed"));
+    if (disposing !== undefined) return Promise.reject(new WorkerDisposedError("the Worker was disposed"));
+    if (failure !== undefined) return Promise.reject(failure);
     const { signal } = streams;
     if (signal?.aborted === true) return Promise.reject(signal.reason);
     const id = nextId++;

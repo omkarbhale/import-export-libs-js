@@ -728,7 +728,27 @@ describe("dispose and the wire (HOST-274)", () => {
     listeners.get("messageerror")?.({});
     await expect(waiting).rejects.toMatchObject({ name: "WorkerCrashedError" });
     expect(broken.terminate).toHaveBeenCalled();
+  });
+
+  it("a Worker that failed with nothing waiting gives its cause to later calls, until the page disposes it", async () => {
+    const listeners = new Map<string, (event: unknown) => void>();
+    const broken: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
+    const worker = createEngineWorker({ worker: broken });
+    listeners.get("error")?.({ message: "Failed to load the script" });
+    await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toMatchObject({ name: "WorkerCrashedError", message: expect.stringContaining("Failed to load the script") as string });
+    expect(worker.disposed).toBe(false);
+    await worker.dispose();
     await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toBeInstanceOf(WorkerDisposedError);
+  });
+
+  it("a ready message of another protocol version refuses later calls by name", async () => {
+    const listeners = new Map<string, (event: unknown) => void>();
+    const other: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
+    const worker = createEngineWorker({ worker: other });
+    listeners.get("message")?.({ data: { v: 999, kind: "ready" } });
+    expect(other.terminate).toHaveBeenCalled();
+    await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toBeInstanceOf(WorkerProtocolError);
+    expect(worker.disposed).toBe(false);
   });
 
   it("an abort stops the reading of a file list at the next file, and the call rejects with the caller's reason", async () => {
