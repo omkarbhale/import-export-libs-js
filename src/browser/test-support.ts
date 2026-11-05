@@ -1,8 +1,8 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { expect } from "vitest";
 import { MemoryVfs, type MountFiles } from "../host/memory-fs.js";
 import type { HostEnv } from "../host/types.js";
+import { VFS_WORK, assertFilesEqual, bytesEqual, treeOfPaths } from "./tree-compare.js";
 
 /**
  * What the tests of the in-memory file system share (HOST-218): reading a folder of the fixtures into a {@link MemoryVfs}, and comparing
@@ -36,15 +36,7 @@ export function readDiskFiles(dir: string): Map<string, Uint8Array> {
  * The sorted list of a folder on disk in the format of {@link MemoryVfs.toTree}: every file as a relative path with `/`, and every
  * folder that has a file anywhere below it as its path with a trailing `/`. A folder with no file in it is not listed.
  */
-export function diskTree(dir: string): string[] {
-  const listed = new Set<string>();
-  for (const path of readDiskFiles(dir).keys()) {
-    listed.add(path);
-    const parts = path.split("/");
-    for (let end = 1; end < parts.length; end += 1) listed.add(`${parts.slice(0, end).join("/")}/`);
-  }
-  return [...listed].sort();
-}
+export const diskTree = (dir: string): string[] => treeOfPaths(readDiskFiles(dir).keys());
 
 /**
  * Copies a folder of the disk into the virtual file system below `at` (an absolute POSIX path): every file with its bytes, and every
@@ -61,25 +53,18 @@ export function loadTreeIntoVfs(dir: string, vfs: MemoryVfs, at: string): void {
   vfs.mount(mount);
 }
 
-/** True when the two byte arrays hold the same bytes. */
-export const bytesEqual = (a: Uint8Array, b: Uint8Array): boolean => Buffer.from(a.buffer, a.byteOffset, a.byteLength).equals(b);
+export { bytesEqual };
 
 /**
  * Asserts that the tree below `root` of the virtual file system is the folder `dir` of the disk: the same list of files and folders
  * (as {@link MemoryVfs.toTree} and {@link diskTree} write them) and, for each file, the same bytes. A difference names the file.
+ * The comparison itself is `assertFilesEqual`, which the replays in the browsers use over the files they were sent (HOST-265).
  */
 export function assertTreesEqual(vfs: MemoryVfs, root: string, dir: string, label = dir): void {
-  const wanted = readDiskFiles(dir);
-  expect(vfs.toTree(root), `${label}: the folders and files`).toEqual(diskTree(dir));
-  const made = vfs.snapshot(root);
-  for (const [path, bytes] of wanted) {
-    const actual = made.get(path);
-    expect(actual !== undefined && bytesEqual(actual, bytes), `${label}: ${path} byte for byte`).toBe(true);
-  }
+  assertFilesEqual(vfs, root, readDiskFiles(dir), label);
 }
 
-/** The current directory every virtual run starts in, as the disk replays start in a temp folder. */
-export const VFS_WORK = "/work";
+export { VFS_WORK };
 
 /**
  * A host environment that is no machine's: Linux, `/work` as the current directory, `/tmp` as the temp folder, and a fixed account,

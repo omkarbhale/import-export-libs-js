@@ -4,10 +4,11 @@ import type { ServerConnection } from "../client/innovator.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 
 /**
- * The connection that serves a recorded import run (IMP-400 to IMP-471): each request is answered with the next recorded call,
- * which must be the same request. It reads no file, so the replays in a browser page use it as the disk replays do (HOST-266);
- * it was in `transcript-replay.ts`, which still exports it, and moved here unchanged.
+ * The connection that serves a recorded run (IMP-400 to IMP-471), and the number of requests a login sends: each request is answered
+ * with the next recorded call, which must be the same request. It reads no file, so the replays in a browser page use it as the disk
+ * replays do (HOST-265, HOST-266); it was in `transcript-replay.ts`, which still exports it, and moved here unchanged.
  *
+ * @spec HOST-265
  * @spec HOST-266
  */
 

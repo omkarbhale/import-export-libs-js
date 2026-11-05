@@ -201,6 +201,22 @@ The browsers decode the labels of the WHATWG Encoding Standard, the same as Node
 
 [14.35] Same as 14.0.7.
 
+## HOST-265: the recorded export cases of the curated set run in the browsers and leave what the engine left, byte for byte
+
+[14.0.7] The export cases of `src/browser/fixture-set.ts` (HOST-263), run in a page of Chromium, Firefox and WebKit with the browser host (`createBrowserHost`, HOST-243) over a `MemoryVfs` (HOST-215) as the host and the file system, with the recorded answers of the server, give the same result as the replays on the in-memory file system under Node (HOST-218), which gave the same as the disk replays. The exception is the removal case (`e06-scopecachedependency-removewithwarning`) on 12.0 and 14.35: the Node replays leave it out (HOST-218), so there the browser run is held to the recording alone. Every run starts with the dependency cache cleared, because it outlives a helper (EXP-619):
+
+- the requests, the messages, the log and the output folder compare as HOST-218 says: the folder as the same files and folders that hold a file, each file with the same bytes, and the log after the replacement of the run's own paths and date-times;
+- the case is read only through the fixture commands of HOST-263 (the case folder, and the blobs its transcript names, the 2.7 MB list of package definitions once per page), and the working folder, the log and the output folder are `/work`, `/work/engine.log` and `/work/output` of the virtual tree;
+- the clock is fixed (`now`) and the culture is the one the recorded run had: `en-IN` for the 12.0 engine's date format at the head of a package (EXP-505), which the 14.0.7 cases are given too, as the disk replays give it;
+- the cases are the 14.0.7 and 12.0 ones of the set (a package with item files, relationships, a failing item with each recorded answer to the error question, references to unknown packages removed with a warning), and for 14.35 those and the language resources of instances (`lang-export-de-instances`) and the export of two packages with four items in flight (`x-par-two-packages-run1`, EXP-551), which is run at one item and at four. The test counts the cases, and none is left out;
+- the recorded answer to the error question is given to the run: `true` (`e40-workflow-promotion-error-yes`) as `abort-package` and `false` (`e40-workflow-promotion-error-no`) as `continue` (EXP-516). 14.35 does not read the answer (EXP-555), so its replay gives none. The failing item is the last one of its package in the 14.0.7 and 12.0 recordings, so there the two answers leave the same messages, log and folder, and these cases do not tell them apart;
+- a case that takes more than 30 s of wall time in a browser fails, as a regression alarm and not as a budget; the wall time of each case is written to the console of the run.
+
+The comparison functions are the ones of HOST-218, `replay-compare.ts` and `tree-compare.ts`, which import nothing from Node, so that the page and the Node replays fail on the same differences by the same code. A single flipped byte in one expected output file, a missing file and an extra one each fail the browser run, and the failure names the file; the test holds both comparisons of the 14.0.7 and 12.0 export and of the 14.35 one to it. Each case's output folder is also committed to a zip (`vfsToZip`, HOST-251), read back into a new tree (`vfsFromZip`, HOST-250) and compared with the recording in the same way, inside the wall time of the case; a 14.35 run with a failed item is held to the same rule there, its files a subset of the recording's.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## HOST-266: the recorded import, language-pack and DB-patch runs replay in the browsers with equal output
 
@@ -311,7 +327,7 @@ What it offers beyond `HostFs`:
 - writes a log that equals the recorded log after the same replacement of the run's own paths and date-times as the disk replay applies, and for a 14.35 export compares it in the parts the disk replay compares as a set (EXP-558);
 - leaves a package folder it only reads as it found it, and a language pack's kept temporary package (LP-034) equal to the recorded one.
 
-The cases are those of the disk replays: the 14.0.7 and 12.0 export cases (EXP-500 to EXP-520), the 14.35 export cases at one item at a time and, where the disk replay does it, with eight in flight (EXP-551), the import steps of the three builds (IMP-400 to IMP-471), the language-pack runs of 14.0.7 and 14.35 (LP-001 to LP-036) and the DB-patch steps of 14.35 (DBP-001 to DBP-044). A case that the disk replay leaves out, a 12.0 or 14.35 export that removes references to unknown packages, which wait for EXP-600 to EXP-699, is left out here for the same reason, and the test counts it. The current directory of the virtual run is `/work` on a `linux` platform: no recorded case runs the disk replay with a `win32` platform, so the virtual replay runs none either (the Windows path rules over the virtual tree are those of `fs-matrix.test.ts`, a later slice). The comparisons that the disk replays and these share are in the `replay-support.ts` modules beside them, so that no comparison is written twice.
+The cases are those of the disk replays: the 14.0.7 and 12.0 export cases (EXP-500 to EXP-520), the 14.35 export cases at one item at a time and, where the disk replay does it, with eight in flight (EXP-551), the import steps of the three builds (IMP-400 to IMP-471), the language-pack runs of 14.0.7 and 14.35 (LP-001 to LP-036) and the DB-patch steps of 14.35 (DBP-001 to DBP-044). A case that the disk replay leaves out, a 12.0 or 14.35 export that removes references to unknown packages, is left out here too, and the test counts it; the browser replay runs the curated one on those engines (HOST-265). The current directory of the virtual run is `/work` on a `linux` platform: no recorded case runs the disk replay with a `win32` platform, so the virtual replay runs none either (the Windows path rules over the virtual tree are those of `fs-matrix.test.ts`, a later slice). The comparisons that the disk replays and these share are in the `replay-support.ts` modules beside them and, for what a browser also runs, `src/export/replay-compare.ts` and `src/browser/tree-compare.ts`, so that no comparison is written twice.
 
 [12.0] Same as 14.0.7.
 
