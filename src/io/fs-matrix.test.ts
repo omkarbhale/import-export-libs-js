@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync }
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { CItemException } from "../client/fault.js";
 import type { Engine } from "../engines.js";
 import { REMOVAL_MODES, exportFolderCaseNames } from "../export/export-folders.cases.js";
@@ -212,8 +212,6 @@ interface MatrixCase {
 interface MatrixTable {
   /** The table of the data, as `file: CONSTANT`. */
   id: string;
-  /** The rows of the data table(s), counting each constant's length; `0` for a table of scenarios without a constant. */
-  rows: number;
   cases: MatrixCase[];
 }
 
@@ -225,7 +223,6 @@ const FOLD_NAME = (first: string, second: string): string => `c_${first.charCode
 
 const windowsFoldTable: MatrixTable = {
   id: "io/windows-fs.cases.ts: FOLD_CASES, FIRST_SPELLING_WRITES",
-  rows: FOLD_CASES.length + FIRST_SPELLING_WRITES.length,
   cases: [
     ...FOLD_CASES.map(
       (fold): MatrixCase => ({
@@ -254,7 +251,6 @@ const windowsFoldTable: MatrixTable = {
 const windowsNameTables: MatrixTable[] = [
   {
     id: "io/windows-fs.cases.ts: TRAILING_FILE_NAMES",
-    rows: TRAILING_FILE_NAMES.length,
     cases: TRAILING_FILE_NAMES.map(
       (name): MatrixCase => ({
         name: JSON.stringify(name),
@@ -270,7 +266,6 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: ILLEGAL_PATH_NAMES",
-    rows: ILLEGAL_PATH_NAMES.length,
     cases: ILLEGAL_PATH_NAMES.map(
       (bad): MatrixCase => ({
         name: JSON.stringify(bad),
@@ -284,7 +279,6 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: DEVICE_FOLDER_NAMES",
-    rows: DEVICE_FOLDER_NAMES.length,
     cases: DEVICE_FOLDER_NAMES.map(
       (device): MatrixCase => ({
         name: device,
@@ -300,7 +294,6 @@ const windowsNameTables: MatrixTable[] = [
   },
   {
     id: "io/windows-fs.cases.ts: ODD_FILE_NAMES (new, matrix only)",
-    rows: ODD_FILE_NAMES.length,
     cases: ODD_FILE_NAMES.map((name): MatrixCase => {
       const needs: Capability | undefined = name.length > 250 ? "longName" : name === "\u00e9.xml" || name === "e\u0301.xml" ? "normalization" : undefined;
       return {
@@ -331,7 +324,6 @@ const windowsNameTables: MatrixTable[] = [
 /** The scenarios of `io/windows-fs.test.ts` that are not tables: each `it` of the file, run on both file systems. */
 const windowsScenarios: MatrixTable = {
   id: "io/windows-fs.test.ts: the scenarios (no table)",
-  rows: 0,
   cases: [
     {
       name: "keeps a folder under the spelling it was made with, and finds it through another",
@@ -485,7 +477,6 @@ const windowsScenarios: MatrixTable = {
 
 const hostPathScenarios: MatrixTable = {
   id: "io/host-path.test.ts: reading and writing files (no table)",
-  rows: 0,
   cases: [
     {
       name: "writes and reads a file by an absolute host path",
@@ -537,7 +528,6 @@ const hostPathScenarios: MatrixTable = {
 const hostPathTables: MatrixTable[] = [
   {
     id: "io/host-path.cases.ts: ILLEGAL_FULL_PATHS (no file is touched)",
-    rows: ILLEGAL_FULL_PATHS.length,
     cases: ILLEGAL_FULL_PATHS.map(
       (bad): MatrixCase => ({
         name: JSON.stringify(bad),
@@ -550,7 +540,6 @@ const hostPathTables: MatrixTable[] = [
   },
   {
     id: "io/host-path.cases.ts: COLON_FORMAT_PATHS (no file is touched)",
-    rows: COLON_FORMAT_PATHS.length,
     cases: COLON_FORMAT_PATHS.map(
       (bad): MatrixCase => ({
         name: JSON.stringify(bad),
@@ -562,7 +551,6 @@ const hostPathTables: MatrixTable[] = [
   },
   {
     id: "io/host-path.cases.ts: DRIVE_AND_SHARE_PATHS",
-    rows: DRIVE_AND_SHARE_PATHS.length,
     cases: DRIVE_AND_SHARE_PATHS.map(
       (path): MatrixCase => ({
         name: JSON.stringify(path),
@@ -584,7 +572,6 @@ const hostPathTables: MatrixTable[] = [
 const languagePackTables: MatrixTable[] = [
   {
     id: "io/language-pack-io.cases.ts: DIRECTORY_NAME_CASES (no file is touched)",
-    rows: DIRECTORY_NAME_CASES.length,
     cases: DIRECTORY_NAME_CASES.map(
       ([path]): MatrixCase => ({
         name: JSON.stringify(path),
@@ -597,7 +584,6 @@ const languagePackTables: MatrixTable[] = [
   },
   {
     id: "io/language-pack-io.test.ts: File.WriteAllText, the parent folder (no table)",
-    rows: 0,
     cases: [
       {
         name: "writes UTF-8 without a byte-order mark and overwrites",
@@ -683,12 +669,10 @@ const catalogueRuns: Array<readonly [Engine, LoadCase[]]> = [
 const loadTables: MatrixTable[] = [
   {
     id: "import/load-package-dom.cases.ts: LOAD_CASES, EXTRA_LOAD_CASES (12.0, 12.0 extra, 14.0.7, 14.35)",
-    rows: LOAD_CASES.length + EXTRA_LOAD_CASES.length,
     cases: catalogueRuns.flatMap(([engine, cases]) => cases.map((testCase) => loadCase(testCase, engine))),
   },
   {
     id: "import/load-package-dom.cases.ts: LISTING_TREES",
-    rows: Object.keys(LISTING_TREES).length,
     cases: [
       {
         name: "lists only the immediate subdirectories, in NTFS order, and the *.xml files of one folder",
@@ -764,7 +748,6 @@ const loadTables: MatrixTable[] = [
   },
   {
     id: "import/load-package-dom.cases.ts: SKIP_AND_STAMP_TREES, FAILURE_TREES",
-    rows: Object.keys(SKIP_AND_STAMP_TREES).length + Object.keys(FAILURE_TREES).length,
     cases: [
       ...Object.entries(SKIP_AND_STAMP_TREES).map(
         ([name, files]): MatrixCase => ({
@@ -802,7 +785,6 @@ const loadTables: MatrixTable[] = [
   },
   {
     id: "import/load-package-dom.cases.ts: ODD_FILE_FIXTURES (fixtures/14.0.7/import/<name>/step-1/input)",
-    rows: ODD_FILE_FIXTURES.length,
     cases: ODD_FILE_FIXTURES.map(
       (fixture): MatrixCase => ({
         name: fixture,
@@ -832,7 +814,6 @@ const exportTables: MatrixTable[] = REPLAYED_ENGINES.map((engine): MatrixTable =
   const names = exportFolderCaseNames(engine);
   return {
     id: `export/export-folders.cases.ts: exportFolderCaseNames("${engine}") (cases with a removal mode, ${REMOVAL_MODES.join(" and ")}, are left to run-replay.test.ts)`,
-    rows: names.length,
     cases: names.map(
       (name): MatrixCase => ({
         name,
@@ -892,22 +873,16 @@ function skipReason(matrixCase: MatrixCase): string | undefined {
 }
 
 const skipped: Array<{ table: string; name: string; reason: string }> = [];
-let ran = 0;
 
 describe.skipIf(process.platform === "win32")("HOST-217: the file layer gives the same answer on nodeFs and on MemoryVfs", () => {
-  afterAll(() => {
-    const lines = TABLES.map((table) => `  ${table.id}: ${table.rows} rows, ${table.cases.length} cases, ${table.cases.filter((c) => skipReason(c) !== undefined).length} skipped`);
-    console.info(`fs-matrix: ${ran} cases ran on both file systems\n${lines.join("\n")}\n${skipped.map((s) => `  skipped [${s.table}] ${s.name}: ${s.reason}`).join("\n")}`);
-  });
 
   for (const table of TABLES) {
-    describe(`${table.id} (${table.rows} rows, ${table.cases.length} cases)`, () => {
+    describe(table.id, () => {
       for (const matrixCase of table.cases) {
         const reason = skipReason(matrixCase);
         if (reason !== undefined) skipped.push({ table: table.id, name: matrixCase.name, reason });
         it.skipIf(reason !== undefined)(matrixCase.name, async () => {
           const { disk, memory } = await bothWays(matrixCase);
-          ran += 1;
           expect(disk.steps.length, "the case recorded at least one step").toBeGreaterThan(0);
           expect(memory).toEqual(disk);
         });
