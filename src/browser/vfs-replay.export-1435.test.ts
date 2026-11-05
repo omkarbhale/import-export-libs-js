@@ -29,14 +29,14 @@ import {
 import { CaseCount, logText, virtualHost } from "./vfs-replay-support.js";
 
 /**
- * The recorded 14.35 export cases replayed on the in-memory file system, under Node (HOST-217): every case the disk replays run (`run-replay-1435.test.ts`) is run again
+ * The recorded 14.35 export cases replayed on the in-memory file system, under Node (HOST-218): every case the disk replays run (`run-replay-1435.test.ts`) is run again
  * with `fs` a {@link MemoryVfs} and `host` a fake environment, so that the output folder, the log, the manifest and the package folder
  * never touch the disk. The recorded answers are served by the same connections, and what a run leaves behind is compared with the
  * same recording by the same comparisons, on the virtual tree: the output folder byte for byte (`assertTreesEqual`), the log, the
  * messages and the return code. The replays are in files of their own (`vfs-replay.*.test.ts`), as the disk replays are, so that
  * each runs in a worker of its own.
  *
- * @spec HOST-217 HOST-215 HOST-203
+ * @spec HOST-218 HOST-215 HOST-203
  */
 
 const tally = new CaseCount();

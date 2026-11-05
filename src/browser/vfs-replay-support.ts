@@ -2,10 +2,10 @@ import { MemoryVfs } from "../host/memory-fs.js";
 import { VFS_WORK, fakeHostEnv } from "./test-support.js";
 
 /**
- * What the replays on the in-memory file system share (HOST-217; the `vfs-replay.*.test.ts` files): the virtual host a run gets, the
+ * What the replays on the in-memory file system share (HOST-218; the `vfs-replay.*.test.ts` files): the virtual host a run gets, the
  * text of its log, and the count of the cases a file ran and left out.
  *
- * @spec HOST-217
+ * @spec HOST-218
  */
 
 /** A virtual file system with the working folder of a run in it, and the host that makes it `/work` on Linux. */

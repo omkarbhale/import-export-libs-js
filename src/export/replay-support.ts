@@ -10,7 +10,7 @@ import type { Case, ExportCases } from "./replay-cases.js";
 
 /**
  * What the replays of the recorded export cases share: the disk replays (`run-replay.test.ts`, `run-replay-1435.test.ts`) and the
- * replays on the in-memory file system (`src/browser/vfs-replay.*.test.ts`, HOST-217). Everything here is pure and reads only the
+ * replays on the in-memory file system (`src/browser/vfs-replay.*.test.ts`, HOST-218). Everything here is pure and reads only the
  * recording of a case, never the folder a run writes to, so the same comparison holds whichever file system the run used. These were
  * private to the two disk tests and moved here unchanged.
  */

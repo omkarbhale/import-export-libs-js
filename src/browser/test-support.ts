@@ -5,11 +5,11 @@ import { MemoryVfs, type MountFiles } from "../host/memory-fs.js";
 import type { HostEnv } from "../host/types.js";
 
 /**
- * What the tests of the in-memory file system share (HOST-217): reading a folder of the fixtures into a {@link MemoryVfs}, and comparing
+ * What the tests of the in-memory file system share (HOST-218): reading a folder of the fixtures into a {@link MemoryVfs}, and comparing
  * a tree of the virtual file system with a folder on disk. These read the disk with Node (the browser variant, ticket 22, reads the
  * same fixtures through vitest commands); nothing here is part of the browser bundle.
  *
- * @spec HOST-217
+ * @spec HOST-218
  */
 
 /** Every file below a folder on disk, by its path relative to the folder, written with `/`, with its bytes; and every folder, with a trailing `/`. */

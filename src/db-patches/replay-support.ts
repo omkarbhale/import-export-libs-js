@@ -7,7 +7,7 @@ import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 
 /**
  * What the replays of the recorded DB patch runs share: the disk replay (`replay.test.ts`) and the replay on the in-memory file
- * system (`src/browser/vfs-replay.*.test.ts`, HOST-217). These were private to the disk test and moved here unchanged.
+ * system (`src/browser/vfs-replay.*.test.ts`, HOST-218). These were private to the disk test and moved here unchanged.
  */
 export const CASES = new URL("../../fixtures/14.35/dbpatch/", import.meta.url).pathname;
 /** The calls of the host's login (WIRE-002), which the helper made before the recording of the run began. */

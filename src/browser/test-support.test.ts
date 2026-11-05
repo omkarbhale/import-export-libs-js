@@ -7,8 +7,8 @@ import { assertTreesEqual, diskTree, fakeHostEnv, loadTreeIntoVfs, readDiskFiles
 
 /**
  * The helpers of the in-memory replays compare a virtual tree with a folder of the disk, so they must fail on any difference
- * (HOST-217): one byte, a missing file, an extra file, a missing folder.
- * @spec HOST-217
+ * (HOST-218): one byte, a missing file, an extra file, a missing folder.
+ * @spec HOST-218
  */
 
 const roots: string[] = [];
@@ -29,7 +29,7 @@ function folder(files: Record<string, string | Uint8Array>, folders: string[] = 
 
 const FILES = { "imports.mf": "<imports/>", "a/b/one.xml": "<one/>", "a/two.xml": new Uint8Array([0xef, 0xbb, 0xbf, 0x00, 0xff]) };
 
-describe("loadTreeIntoVfs and assertTreesEqual (HOST-217)", () => {
+describe("loadTreeIntoVfs and assertTreesEqual (HOST-218)", () => {
   it("loads every file with its bytes and every empty folder, and a loaded tree equals its folder", () => {
     const dir = folder(FILES, ["empty/deeper"]);
     const vfs = new MemoryVfs();
