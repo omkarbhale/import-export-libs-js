@@ -4,7 +4,7 @@
  * (HOST-260). A caller builds a host with {@link createBrowserHost}, mounts a file system in it, and passes both in the
  * `PathEnvironment` of a run.
  *
- * @spec HOST-260 HOST-250 HOST-251
+ * @spec HOST-260 HOST-250 HOST-251 HOST-270 HOST-272
  */
 export * from "./core.js";
 export { createBrowserHost } from "./browser/host.js";
@@ -48,4 +48,7 @@ export { STUB_THRESHOLD, defaultInclude, stubsOf } from "./browser/mount-options
 export type { MountDecision, MountInclude, MountKind, MountOptions, MountProgress, MountUnzip } from "./browser/mount-options.js";
 export { ZipError, vfsFromZip, vfsToZip } from "./browser/zip.js";
 export type { VfsFromZipOptions, VfsToZipOptions, ZipErrorCode } from "./browser/zip.js";
+export * from "./browser/api.js";
+export { SelectionRefused } from "./cli/export-selection.js";
+export type { RequestedItem } from "./cli/export-selection.js";
 export { LIBRARY_VERSION } from "./version.js";

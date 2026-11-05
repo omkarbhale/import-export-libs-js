@@ -3,7 +3,6 @@ import { bodyText, devServer, header, respond, type FakeHandler } from "../clien
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import type { TransportRequest } from "../client/transport.js";
 import type { Engine } from "../engines.js";
-import { LOGIN_CALLS, LOGIN_CALLS_12_0 } from "../import/transcript-replay.js";
 
 /** The dev server with `GetCurrentUserID` added, which IOM 12 asks after `ValidateUser`. */
 const iom12Login =
@@ -14,6 +13,13 @@ const iom12Login =
           `<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><GetCurrentUserIDResponse><Result>USER1</Result></GetCurrentUserIDResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>`,
         )
       : server(request, index);
+
+/**
+ * The calls of the host's login in a recording (`LOGIN_CALLS` and `LOGIN_CALLS_12_0` of `import/transcript-replay.ts`, which reads the
+ * disk and so cannot be imported into a browser page; `api.test.ts` holds the two copies equal).
+ */
+const LOGIN_CALLS = 6;
+const LOGIN_CALLS_12_0 = 5;
 
 const DECLARATION = /^<\?xml[^>]*\?>/;
 

@@ -15,6 +15,7 @@ export { getLanguagesFromInnovator } from "./language-lookups.js";
 export type { LanguageInfo } from "./language-lookups.js";
 export type { ReferencesHost } from "./item-references.js";
 export { UnmappedTimeZoneError, localWindowsTimeZoneId } from "./timezone.js";
+export type { TokenProvider } from "./oauth.js";
 export type { HttpTransport, TransportRequest, TransportResponse } from "./transport.js";
 export { serverUrls } from "./url.js";
 export { ArasVersion, VersionRefusal, currentUtilityVersion, engineAcceptsServer, enginesAcceptingServer } from "./version.js";

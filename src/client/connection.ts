@@ -54,6 +54,11 @@ export interface ConnectionSettings {
    * that has not been given one), the setting is required and the constructor throws (HOST-230).
    */
   transport?: HttpTransport;
+  /**
+   * Where the bearer tokens come from, instead of the password grant (HOST-271). The server must offer OAuth; `userName` and
+   * `password` are not read, and may be empty.
+   */
+  tokenProvider?: TokenProvider;
   onCall?: (call: CallRecord) => void;
 }
 
@@ -146,7 +151,7 @@ function isReadOnlyRequest(action: string, request: XmlDocument): boolean {
  * instead.
  *
  * @spec WIRE-003 WIRE-004 WIRE-005 WIRE-010 WIRE-011 WIRE-012 WIRE-013 WIRE-015 WIRE-016 WIRE-018 WIRE-030 WIRE-040 WIRE-050 HOST-230
- * WIRE-060
+ * WIRE-060 HOST-271
  */
 export class HttpServerConnection {
   readonly engine: Engine;
@@ -245,6 +250,16 @@ export class HttpServerConnection {
       discovered = await (this.iom12 ? discoverIom12 : discover)(this.transport, this.urls.discovery);
     } catch (error) {
       if (!(error instanceof DiscoveryNotFound)) throw error;
+    }
+    if (this.settings.tokenProvider !== undefined) {
+      if (!discovered?.supportsOAuth) throw new DotNetException("System.Exception", "a token provider needs a server with OAuth");
+      this.authenticator = {
+        kind: "bearer",
+        provider: this.settings.tokenProvider,
+        protocol: bearerProtocol(discovered.protocolType),
+        token: undefined,
+      };
+      return this.authenticator;
     }
     this.authenticator = discovered?.supportsOAuth
       ? {

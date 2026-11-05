@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256Digest } from "../client/digest.js";
 import { bodyText, header, respond, soapFault, soapResult, type FakeHandler } from "../client/fake-transport.js";
 import { attributeOf, childElements, documentOuterXml, innerText, parseXml, type XmlElement } from "../client/mini-xml.js";
 import type { TransportRequest } from "../client/transport.js";
@@ -16,7 +16,8 @@ export interface ServerItem {
 
 const DECLARATION = /^<\?xml[^>]*\?>/;
 
-const hex = (text: string): string => createHash("sha1").update(text).digest("hex").slice(0, 32).toUpperCase();
+// the ids are the server's own and no recording holds them; the digest is the in-process one, so that this file runs in a browser (HOST-272)
+const hex = (text: string): string => sha256Digest(text).slice(0, 32);
 const escape = (text: string): string => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /**
