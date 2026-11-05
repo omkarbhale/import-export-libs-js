@@ -86,4 +86,4 @@ The POC's results are recorded in [`browser-cors-poc.md`](browser-cors-poc.md).
 
 ## Out of scope
 
-The CLI (`src/cli/**` and its `node:fs` use), `oracle/`, `tools/` and the fixtures tooling stay Node-only. No change to engine behaviour, the spec's engine rules, or `COMPLETE_ENGINES`.
+The CLI (`src/cli/**` and its `node:fs` use, apart from the Node-free selection and console-mode modules the browser API reuses), `oracle/`, `tools/` and the fixtures tooling stay Node-only. No change to engine behaviour, the spec's engine rules, or `COMPLETE_ENGINES`.
