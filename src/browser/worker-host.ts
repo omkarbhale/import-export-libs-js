@@ -10,7 +10,7 @@ import {
   importLanguagePack,
   importPackages,
 } from "./api.js";
-import { mountFileList } from "./file-list.js";
+import { mountFileList, mountWalked } from "./file-list.js";
 import { mountDirectory } from "./fsa.js";
 import type { FsaDirectoryHandle } from "./fsa.js";
 import type { FileLike } from "./file-list.js";
@@ -70,6 +70,13 @@ function fileLikeOf(path: string, file: WireBlob): FileLike {
   return { name: file.name ?? path.slice(path.lastIndexOf("/") + 1), size: file.size, webkitRelativePath: path, arrayBuffer: () => file.arrayBuffer(), slice: (start, end) => file.slice(start, end) };
 }
 
+const listOptionsOf = (mount: WorkerMountOptions, signal: AbortSignal) => ({
+  ...defined<{ root: "auto" | "keep"; maxBytes: number }>({ root: mount.root, maxBytes: mount.maxBytes }),
+  ...includeOf(mount),
+  unzip: vfsFromZip,
+  signal,
+});
+
 const includeOf = (mount: WorkerMountOptions): { include?: MountInclude } => (mount.include === "all" ? { include: () => "content" } : {});
 
 /** The tree a source stands for (HOST-275): the zip mounted with its one top-level folder taken off, the files as they are, a folder input or a directory handle read. */
@@ -83,7 +90,12 @@ async function treeOf(source: WireSource, signal: AbortSignal): Promise<MemoryVf
     case "file-list":
       return mountFileList(
         source.entries.map(({ path, file }) => fileLikeOf(path, file)),
-        { ...defined<{ root: "auto" | "keep"; maxBytes: number }>({ root: source.options.root, maxBytes: source.options.maxBytes }), ...includeOf(source.options), unzip: vfsFromZip, signal },
+        listOptionsOf(source.options, signal),
+      );
+    case "drop":
+      return mountWalked(
+        source.entries.map(({ path, file }) => (file === undefined ? { path, kind: "directory" as const } : { path, kind: "file" as const, file: fileLikeOf(path, file) })),
+        listOptionsOf(source.options, signal),
       );
     case "directory":
       return mountDirectory(source.handle as FsaDirectoryHandle, {

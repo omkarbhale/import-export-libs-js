@@ -6,7 +6,7 @@ import type { ExportOptions, ExportResult } from "./api-export.js";
 import type { DbPatchesOptions, ImportLanguagePackOptions, ImportOptions } from "./api-import.js";
 import { type ConnectOptions, SessionClosedError } from "./api-session.js";
 import type { OperationResult, OnItemErrorOption } from "./api-run.js";
-import type { FileLike } from "./file-list.js";
+import { type DataTransferItemsLike, type FileLike, type Raw, takeEntries, walkEntries } from "./file-list.js";
 import type { FsaDirectoryHandle } from "./fsa.js";
 import type { VfsToZipOptions } from "./zip.js";
 import {
@@ -64,12 +64,15 @@ export interface BlobLike {
 /**
  * Where the files of a call come from, each as a Worker can take it (HOST-275). The buffers of `zip` and `files` are **transferred**,
  * not copied: after the call starts the caller's `Uint8Array`s are empty, and a caller who keeps the bytes passes a copy. A `File`, a `Blob`, a
- * `FileSystemDirectoryHandle` is cloned by the browser, which reads the bytes in the Worker and not on the page.
+ * `FileSystemDirectoryHandle` is cloned by the browser, which reads the bytes in the Worker and not on the page. `dataTransfer` is the
+ * item list of a `drop` event: start the call in the handler, before any `await`; its entries, which cannot be cloned, are walked on the
+ * page, and the Worker reads the `File`s they give.
  */
 export type WorkerSource =
   | { zip: Uint8Array | BlobLike; maxBytes?: number }
   | { files: Readonly<Record<string, Uint8Array | string>> | ReadonlyMap<string, Uint8Array | string> }
   | { fileList: Iterable<FileLike & BlobLike>; mount?: WorkerMountOptions }
+  | { dataTransfer: DataTransferItemsLike; mount?: WorkerMountOptions }
   | { directory: FsaDirectoryHandle; mount?: Omit<WorkerMountOptions, "root"> };
 
 /** What {@link EngineWorker.connect} takes: the options of `connect`, with the transport and the token provider staying on the page. */
@@ -198,7 +201,7 @@ declare const Worker: new (url: URL | string, options?: { type?: "module" | "cla
 const abortError = (): Error => new DOMException("The operation was aborted.", "AbortError");
 
 /** Bytes of a source as the wire takes them, and the buffers to transfer. */
-function wireSource(source: WorkerSource, bag: TransferBag): WireSource {
+function wireSource(source: WorkerSource, bag: TransferBag, walked: readonly Raw[]): WireSource {
   if ("zip" in source) {
     const zip = source.zip;
     return {
@@ -219,6 +222,10 @@ function wireSource(source: WorkerSource, bag: TransferBag): WireSource {
     // a `File` that is cloned loses its `webkitRelativePath`, so the path goes beside it
     const entries = [...source.fileList].map((file) => ({ path: file.webkitRelativePath ?? "", file }));
     return { kind: "file-list", entries, options: source.mount ?? {} };
+  }
+  if ("dataTransfer" in source) {
+    const entries = walked.map(({ path, file }) => (file === undefined ? { path } : { path, file }));
+    return { kind: "drop", entries, options: source.mount ?? {} };
   }
   return { kind: "directory", handle: source.directory, options: source.mount ?? {} };
 }
@@ -244,6 +251,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
   const pending = new Map<number, Pending>();
   const handlers = new Map<number, Handlers>();
   const sessionIds = new WeakMap<object, number>();
+  const walking = new Set<AbortController>();
   let nextId = 1;
   let disposing: Promise<void> | undefined;
   let stopped = false;
@@ -443,6 +451,18 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
   }
   const markClosed = new WeakMap<WorkerSession, () => void>();
 
+  /** Takes a drop's entries before the first wait and walks them on the page; `abort()` and the caller's signal stop the walk. */
+  async function walkDrop(items: DataTransferItemsLike, signal: AbortSignal | undefined): Promise<Raw[]> {
+    const taken = takeEntries(items);
+    const walk = new AbortController();
+    walking.add(walk);
+    try {
+      return await walkEntries(taken, signal === undefined ? walk.signal : AbortSignal.any([signal, walk.signal]));
+    } finally {
+      walking.delete(walk);
+    }
+  }
+
   async function operation<T extends WireResult>(
     op: "export" | "import" | "language-pack" | "db-patches",
     session: WorkerSession,
@@ -452,6 +472,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     const sessionId = idOf(session);
     // as the direct call: a closed session fails before anything is sent
     if (session.closed) throw new SessionClosedError();
+    const walked = options.source !== undefined && "dataTransfer" in options.source ? await walkDrop(options.source.dataTransfer, options.signal) : [];
     const answerOf = typeof options.onItemError === "function" ? options.onItemError : undefined;
     const wants: CallWants = { message: options.onMessage !== undefined, progress: options.onProgress !== undefined, onItemError: answerOf !== undefined };
     return call<T>(
@@ -463,7 +484,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         op,
         session: sessionId,
         options: typeof options.onItemError === "string" ? { ...rest, onItemError: options.onItemError } : rest,
-        ...(options.source === undefined ? {} : { source: wireSource(options.source, bag) }),
+        ...(options.source === undefined ? {} : { source: wireSource(options.source, bag, walked) }),
         wants,
       }),
       answerOf === undefined ? undefined : { onItemError: answerOf },
@@ -540,6 +561,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     applyDbPatches: async (session, patchOptions) => strip(await operation("db-patches", session, patchOptions, plain(patchOptions))),
 
     abort() {
+      for (const walk of walking) walk.abort(abortError());
       for (const [id, entry] of pending) {
         if (entry.op === "connect" || entry.op === "close") continue;
         post({ kind: "abort", id });

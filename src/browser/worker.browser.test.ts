@@ -20,7 +20,7 @@ import {
   vfsFromZip,
   vfsToZip,
 } from "../browser.js";
-import { LOGIN, engineMessages, recordedMessages } from "./api-test-support.js";
+import { LOGIN, engineMessages, fakeDrop, recordedMessages } from "./api-test-support.js";
 import { type FixtureOperation, fixtureBlobPath } from "./fixture-set.js";
 import { loadFixtureTree, readFixtureText } from "./test-support.browser.js";
 
@@ -210,6 +210,18 @@ describe("an import through the Worker equals the direct call (HOST-274, HOST-27
     const byList = await worker.importPackages(two, { source: { fileList, mount: { root: "auto" } }, osUser: second.osUser });
     expect(second.server.mismatches).toEqual([]);
     expect(engineMessages(byList.messages)).toEqual(second.recorded);
+  });
+
+  it("imports from a drop as from a folder input: the entries are walked on the page and the Worker reads the Files", async () => {
+    const worker = await startWorker();
+    const { server, osUser, input, recorded } = await importRecording("14.0.7", "s0-mini-defaults");
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: new FakeTransport(server.handler) });
+    const items = fakeDrop(input.map((file) => ({ path: `Dropped/${file.path}`, bytes: file.bytes })), ["Dropped/empty"]);
+    const running = worker.importPackages(session, { source: { dataTransfer: items, mount: { root: "auto" } }, osUser });
+    (items as unknown as { length: number }).length = 0;
+    const result = await running;
+    expect(server.mismatches).toEqual([]);
+    expect(engineMessages(result.messages)).toEqual(recorded);
   });
 
   // WebKit writes a file of the origin private file system only from a Worker (`createWritable` is not on the page's thread there),

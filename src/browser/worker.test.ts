@@ -14,12 +14,13 @@ import { MemoryVfs } from "../host/memory-fs.js";
 import { BLOBS, CASES as IMPORT_CASES } from "../import/transcript-replay.js";
 import { OptionError, SessionBusyError, SessionClosedError, connect, exportPackages } from "./api.js";
 import type { ApiMessage, ProgressEvent } from "./api.js";
-import { LOGIN, SERVER_URL, engineMessages, recordedMessages as sharedRecordedMessages, serverOf } from "./api-test-support.js";
+import { LOGIN, SERVER_URL, engineMessages, fakeDrop, recordedMessages as sharedRecordedMessages, serverOf } from "./api-test-support.js";
 import { loadTreeIntoVfs, readDiskFiles } from "./test-support.js";
 import { type ServerPort, serveEngine } from "./worker-host.js";
 import { type EngineWorker, type WorkerLike, createEngineWorker } from "./worker-client.js";
 import { WorkerDisposedError, WorkerProtocolError, toWorker } from "./worker-protocol.js";
-import { ZipError, vfsToZip } from "./zip.js";
+import { mountDataTransfer, mountWalked, takeEntries, walkEntries } from "./file-list.js";
+import { ZipError, vfsFromZip, vfsToZip } from "./zip.js";
 
 /**
  * The engine's Worker under Node (HOST-274, HOST-275): the client of `worker-client.ts` and the server of `worker-host.ts` joined by a
@@ -261,6 +262,70 @@ describe("importPackages through the Worker (HOST-272, HOST-274)", () => {
     expect(server.mismatches).toEqual([]);
     expect(engineMessages(result.messages)).toEqual(recordedMessages(dir));
     expect(result.summary.result).toBe("success");
+  });
+
+  it("imports from a drop, whose entries are taken before the handler returns and walked on the page, as from a folder input", async () => {
+    const { worker, posted } = start();
+    const { dir, server, transport, osUser } = importServer("s0-mini-defaults");
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport });
+    const files = [...inputFiles(join(dir, "input"))].map(([path, bytes]) => ({ path: `Dropped${path}`, bytes }));
+    const items = fakeDrop(files, ["Dropped/empty/inner"]) as unknown as { length: number };
+    const running = worker.importPackages(session, { source: { dataTransfer: items as never, mount: { root: "auto" } }, osUser });
+    items.length = 0;
+    const result = await running;
+    expect(server.mismatches).toEqual([]);
+    expect(engineMessages(result.messages)).toEqual(recordedMessages(dir));
+    expect(result.summary.result).toBe("success");
+    const call = posted.find((message) => (message as { op?: string }).op === "import") as { source: { kind: string; entries: Array<{ path: string; file?: File }>; options: unknown } };
+    expect(call.source.kind).toBe("drop");
+    expect(call.source.options).toEqual({ root: "auto" });
+    expect(call.source.entries.find((entry) => entry.path === "Dropped/empty/inner")).toEqual({ path: "Dropped/empty/inner" });
+    expect(call.source.entries.filter((entry) => entry.file !== undefined).map((entry) => entry.path).sort()).toEqual(files.map((file) => file.path).sort());
+  });
+
+  it("mounts what the client sends for a drop as the drop adapter mounts the items: same paths, same empty folders", async () => {
+    const files = [
+      { path: "Pkg/a.xml", bytes: new Uint8Array([1]) },
+      { path: "Pkg/sub/a.xml", bytes: new Uint8Array([2]) },
+    ];
+    const direct = await mountDataTransfer(fakeDrop(files, ["Pkg/empty"]), { root: "auto" });
+    const walked = await walkEntries(takeEntries(fakeDrop(files, ["Pkg/empty"])));
+    const viaWalk = await mountWalked(walked, { root: "auto" });
+    expect(viaWalk.snapshot("/")).toEqual(direct.snapshot("/"));
+    expect(viaWalk.snapshot("/").get("sub/a.xml")).toEqual(new Uint8Array([2]));
+    expect(viaWalk.exists("/empty")).toBe(true);
+    expect(direct.exists("/empty")).toBe(true);
+  });
+
+  it("routes a drop of one zip to the zip reader in the Worker", async () => {
+    const { worker } = start();
+    const { dir, server, transport, osUser } = importServer("s0-mini-defaults");
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport });
+    const tree = new MemoryVfs();
+    loadTreeIntoVfs(join(dir, "input"), tree, "/");
+    const zip = vfsToZip(tree, "/");
+    expect(vfsFromZip(zip).snapshot("/").size).toBeGreaterThan(0);
+    const result = await worker.importPackages(session, { source: { dataTransfer: fakeDrop([{ path: "pkg.zip", bytes: zip }]) }, osUser });
+    expect(server.mismatches).toEqual([]);
+    expect(result.summary.result).toBe("success");
+  });
+
+  it("stops the walk of a drop on abort(), and sends nothing", async () => {
+    const { worker, posted } = start();
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+    const seen = posted.length;
+    let answer: ((file: never) => void) | undefined;
+    const first = { isFile: true, isDirectory: false, name: "a.xml", file: (success: (file: never) => void) => void (answer = success) };
+    const items = [
+      { kind: "file", webkitGetAsEntry: () => first },
+      { kind: "file", webkitGetAsEntry: () => ({ ...first, name: "b.xml", file: () => expect.fail("the walk went on") }) },
+    ];
+    const running = worker.importPackages(session, { source: { dataTransfer: items as never } });
+    await vi.waitFor(() => expect(answer).toBeDefined());
+    worker.abort();
+    answer?.(new File([], "a.xml") as never);
+    await expect(running).rejects.toMatchObject({ name: "AbortError" });
+    expect(posted).toHaveLength(seen);
   });
 
   it("imports from a zip that is a File or a Blob, read in the Worker", async () => {
