@@ -56,7 +56,7 @@ export const comparable = (log: string, logPath: string, workingDirectory: strin
     .split(logPath).join("<log>")
     .split(workingDirectory).join("<working>");
 
-/** The 12.0 cases that remove references to unknown packages wait for the 12.0 variants of `EXP-600` to `EXP-699`. */
+/** The 12.0 cases that remove references to unknown packages, which the Node replays leave out; the browser replay runs the curated one (HOST-265). */
 export const needsRemoval = (engine: Engine, input: Case): boolean =>
   engine !== "14.0.7" && (input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning");
 
@@ -184,7 +184,7 @@ export function failingItems(input: Case1435, calls: TranscriptCall[]): Array<{ 
 export const maskItems = (text: string, failing: Array<{ id: string; keyedName: string }>): string =>
   failing.reduce((masked, item) => masked.split(item.id).join("<failing id>").split(item.keyedName).join("<failing name>"), text);
 
-/** The modes that remove references to unknown packages wait for the rules `EXP-600` to `EXP-699`. */
+/** The modes that remove references to unknown packages, which the Node replays leave out; the browser replay runs the curated case (HOST-265). */
 export const needsRemoval1435 = (input: Case1435): boolean =>
   input.options.refToUnknownPacks === "RemoveSilently" || input.options.refToUnknownPacks === "RemoveWithWarning";
 
