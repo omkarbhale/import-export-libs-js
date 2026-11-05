@@ -572,7 +572,7 @@ describe("HOST-266: the curated cases", () => {
 // -------------------------------------------------------------------------------------------------------------- size smoke
 
 /** The page's heap in bytes and where the number came from, or null where the browser offers none. */
-async function heapNow(): Promise<{ source: string; bytes: number } | null> {
+async function heapNow(): Promise<{ source: string; bytes: number; backingStorageBytes?: number } | null> {
   const measured = performance as unknown as {
     measureUserAgentSpecificMemory?: () => Promise<{ bytes: number }>;
     memory?: { usedJSHeapSize: number };
@@ -587,13 +587,13 @@ async function heapNow(): Promise<{ source: string; bytes: number } | null> {
   if (server.browser === "chromium") {
     // the DevTools protocol gives the exact size of the JavaScript heap, where `performance.memory` is rounded and updated in steps
     try {
-      const usage = (await cdp().send("Runtime.getHeapUsage")) as { usedSize: number };
-      return { source: "cdp Runtime.getHeapUsage", bytes: usage.usedSize };
+      const usage = (await cdp().send("Runtime.getHeapUsage")) as { usedSize: number; backingStorageSize: number };
+      return { source: "cdp Runtime.getHeapUsage, usedSize + backingStorageSize", bytes: usage.usedSize + usage.backingStorageSize, backingStorageBytes: usage.backingStorageSize };
     } catch {
       // no protocol session: fall through to the next source
     }
   }
-  if (typeof measured.memory?.usedJSHeapSize === "number") return { source: "performance.memory", bytes: measured.memory.usedJSHeapSize };
+  if (typeof measured.memory?.usedJSHeapSize === "number") return { source: "performance.memory, without array buffers", bytes: measured.memory.usedJSHeapSize };
   return null;
 }
 
@@ -633,7 +633,13 @@ describe("HOST-266: the largest recorded import, once, in Chromium (the size smo
           readMs: Math.round(readMs),
           mountMs: Math.round(mountMs),
           runMs: Math.round(runMs),
-          heap: { source: heapAfter?.source ?? null, beforeBytes: heapBefore?.bytes ?? null, mountedBytes: heapMounted?.bytes ?? null, afterBytes: heapAfter?.bytes ?? null },
+          heap: {
+            source: heapAfter?.source ?? null,
+            beforeBytes: heapBefore?.bytes ?? null,
+            mountedBytes: heapMounted?.bytes ?? null,
+            afterBytes: heapAfter?.bytes ?? null,
+            backingStorageBytes: { before: heapBefore?.backingStorageBytes ?? null, mounted: heapMounted?.backingStorageBytes ?? null, after: heapAfter?.backingStorageBytes ?? null },
+          },
         })}`,
       );
     },
