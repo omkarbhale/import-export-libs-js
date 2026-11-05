@@ -142,7 +142,7 @@ The rules above are held by tests, and each fails where it is broken:
 - `"./browser"` is `{ "types": "./dist/browser.d.ts", "import": "./dist/browser.js" }`, the explicit way to the browser bundle for a consumer that resolves its own conditions, or that wants it under Node (a test, a Worker host).
 - `"./browser-worker.js"` is `"./dist/browser-worker.js"`, the Worker's file (HOST-276), for a caller whose bundler needs another way to start it than the default URL of HOST-274, such as a `?worker` import.
 - `"sideEffects": false`: no module of the library has an effect when it is imported (the browser's default host is made on first use, HOST-243), so a bundler may drop what a consumer does not use.
-- `"files"` is `["dist"]`, which holds `index.js`, its shared chunk, `cli.js`, `browser.js` and the declarations.
+- `"files"` is `["dist"]`, which holds `index.js`, its shared chunk, `cli.js`, `browser.js`, `browser-worker.js` and the declarations.
 
 `npm run build` runs two tsup builds, one after the other: the Node build (`tsup.config.ts`, which cleans `dist/` and is unchanged by the browser entry) and the browser build (`tsup.browser.config.ts`), so that the two never race for the output folder. `prepare` runs both. `tools/browser-bundle.ts` holds what the browser build and its guard test share.
 
