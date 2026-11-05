@@ -26,6 +26,7 @@ import { createBrowserHost } from "./host.js";
 import { type FixtureCase, fixtureBlobPath, fixtureCasePath, transcriptBlobs } from "./fixture-set.js";
 import { loadFixtureTree, readFixtureText } from "./test-support.browser.js";
 import { VFS_WORK, assertFilesEqual, bytesEqual } from "./tree-compare.js";
+import { vfsFromZip, vfsToZip } from "./zip.js";
 
 /**
  * What the browsers' replays of the recorded export cases share (HOST-265): reading a case through the fixture commands, and running
@@ -110,6 +111,9 @@ function virtualRun(): { vfs: MemoryVfs; host: ReturnType<typeof createBrowserHo
 
 const logText = (vfs: MemoryVfs, path: string): string => utf8.decode(vfs.readFile(path));
 
+/** The output folder committed to a zip and read back into a tree of its own, whose root is the folder. */
+const unzippedOutput = (vfs: MemoryVfs, output: string): MemoryVfs => vfsFromZip(vfsToZip(vfs, output));
+
 /** The 14.0.7 and 12.0 log has no byte-order mark. */
 function expectNoBom(vfs: MemoryVfs, path: string, name: string): void {
   const log = vfs.readFile(path);
@@ -167,7 +171,9 @@ async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise
   expect(sent.map(({ channel, text }) => ({ channel, text })), `${name}: the messages`).toEqual(
     recordedMessages.map(({ channel, text }) => ({ channel, text })),
   );
-  assertFilesEqual(vfs, output, options.expectedOutput ?? loaded.expectedOutput, name);
+  const wanted = options.expectedOutput ?? loaded.expectedOutput;
+  assertFilesEqual(vfs, output, wanted, name);
+  assertFilesEqual(unzippedOutput(vfs, output), "/", wanted, `${name} (unzipped)`);
   expectNoBom(vfs, logPath, name);
   expect(comparable(logText(vfs, logPath), logPath, output), `${name}: the log`).toBe(comparable(recordedLog, logPath, output));
 }
@@ -226,15 +232,19 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
 
   // the output folder: the manifest is fixed, the item files are a set (a prefix of the engine's when an item failed)
   const recordedBytes = options.expectedOutput ?? loaded.expectedOutput;
-  const madeBytes = vfs.snapshot(output);
-  const made = [...madeBytes.keys()].sort();
   const recordedFiles = [...recordedBytes.keys()].sort();
-  if (failed) expect(recordedFiles, `${name}: the files of items the engine ran`).toEqual(expect.arrayContaining(made));
-  else expect(made, `${name}: the files`).toEqual(recordedFiles);
-  for (const path of made) {
-    expect(bytesEqual(madeBytes.get(path) as Uint8Array, recordedBytes.get(path) as Uint8Array), `${name}: ${path} byte for byte`).toBe(true);
-  }
-  expect(made.includes("imports.mf") ? "manifest" : "none", name).toBe(recordedFiles.includes("imports.mf") ? "manifest" : "none");
+  const assertFolder = (tree: MemoryVfs, root: string, label: string): void => {
+    const madeBytes = tree.snapshot(root);
+    const made = [...madeBytes.keys()].sort();
+    if (failed) expect(recordedFiles, `${label}: the files of items the engine ran`).toEqual(expect.arrayContaining(made));
+    else expect(made, `${label}: the files`).toEqual(recordedFiles);
+    for (const path of made) {
+      expect(bytesEqual(madeBytes.get(path) as Uint8Array, recordedBytes.get(path) as Uint8Array), `${label}: ${path} byte for byte`).toBe(true);
+    }
+    expect(made.includes("imports.mf") ? "manifest" : "none", label).toBe(recordedFiles.includes("imports.mf") ? "manifest" : "none");
+  };
+  assertFolder(vfs, output, name);
+  assertFolder(unzippedOutput(vfs, output), "/", `${name} (unzipped)`);
 
   // the requests: every one of the port's was recorded, and a run with no failed item sent all of them
   if (!failed) expect(connection.leftover, `${name}: requests the port did not send`).toEqual([]);
