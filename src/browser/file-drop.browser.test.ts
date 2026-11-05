@@ -43,6 +43,7 @@ function dropTarget(options: Parameters<typeof mountDataTransfer>[1] = {}): { se
       mountDataTransfer((event as DragEvent).dataTransfer?.items as DataTransferItemList, options).then(resolve, reject);
     });
   });
+  mounted.catch(() => undefined);
   return { selector: `#${target.id}`, mounted };
 }
 
