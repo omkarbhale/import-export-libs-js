@@ -21,23 +21,36 @@ describe("entry points", () => {
     expect(Object.keys(node)).toHaveLength(NODE_NAMES_BEFORE);
   });
 
-  it("is the core plus the browser host, the fetch transport, the in-memory tree, the file-list, directory and zip adapters and the version for the browser", () => {
+  it("is the core plus the browser host, the fetch transport, the in-memory tree, the file-list, directory and zip adapters, the session and its four operations, and the version for the browser", () => {
     expect(Object.keys(browser).sort()).toEqual(
       [
         ...coreNames,
         "CommitError",
         "LIBRARY_VERSION",
         "MemoryVfs",
+        "OptionError",
         "STUB_THRESHOLD",
+        "SelectionRefused",
+        "Session",
+        "SessionBusyError",
+        "SessionClosedError",
         "ZipError",
+        "applyDbPatches",
         "commitToDirectory",
+        "connect",
         "createBrowserHost",
         "createFetchTransport",
         "defaultInclude",
+        "describeFailure",
+        "engineForServer",
+        "exportPackages",
+        "importLanguagePack",
+        "importPackages",
         "isFileSystemAccessSupported",
         "mountDirectory",
         "mountDataTransfer",
         "mountFileList",
+        "planImport",
         "stubsOf",
         "vfsFromZip",
         "vfsToZip",
