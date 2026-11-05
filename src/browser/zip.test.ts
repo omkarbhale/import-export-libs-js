@@ -5,6 +5,8 @@ import { unzipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 import { MemoryVfs } from "../host/memory-fs.js";
 import { directoryGetXmlFiles } from "../import/package-files.js";
+import { mountFileList } from "./file-list.js";
+import type { MountUnzip } from "./mount-options.js";
 import { ZipError, vfsFromZip, vfsToZip } from "./zip.js";
 import type { ZipErrorCode } from "./zip.js";
 
@@ -332,6 +334,15 @@ describe("vfsFromZip on zips made by other tools (HOST-250)", () => {
         { name: "Top/in/b.xml", data: encode("b") },
         { name: "Other/c.xml", data: encode("c") },
       ]);
+
+    it('takes root: "keep" as no root, so that it is the unzip of a mount', async () => {
+      const unzip: MountUnzip = vfsFromZip;
+      const oneFolder = rawZip([{ name: "Top/a.xml", data: encode("a") }]);
+      expect(unzip(oneFolder, { root: "keep" }).toTree()).toEqual(["Top/", "Top/a.xml"]);
+      const picked = new File([oneFolder.slice()], "package.zip");
+      expect((await mountFileList([picked], { unzip: vfsFromZip, root: "keep" })).toTree()).toEqual(["Top/", "Top/a.xml"]);
+      expect((await mountFileList([picked], { unzip: vfsFromZip, root: "auto" })).toTree()).toEqual(["a.xml"]);
+    });
 
     it('keeps the paths when there is no root, and does not strip when "auto" finds two top-level names', () => {
       expect(vfsFromZip(zip()).toTree()).toEqual(["Other/", "Other/c.xml", "Top/", "Top/a.xml", "Top/in/", "Top/in/b.xml"]);

@@ -54,7 +54,8 @@ export interface MountOptions {
   include?: MountInclude;
   /**
    * The most bytes of content this call may read. It is checked against the sizes of the files to read before the first one is read, and
-   * a source that needs more is refused with an `ENOSPC` error, so that nothing is half-read. Default unlimited.
+   * a source that needs more is refused with an `ENOSPC` error, so that nothing is half-read. Default unlimited for a picked folder or a drop. A zip goes to `unzip`
+   * with this value, unset when it is unset, so `vfsFromZip` applies its own default of 500 MiB and refuses a larger zip with `ZIP_TOO_LARGE`.
    */
   maxBytes?: number;
   /** Stops the mount at the next file: the promise rejects with the signal's reason. */

@@ -37,10 +37,10 @@ export class ZipError extends Error {
 /** What {@link vfsFromZip} takes. Every member is optional. */
 export interface VfsFromZipOptions {
   /**
-   * `"auto"` takes off the one top-level folder a zip of a folder has (and keeps the paths of a zip that has none). Default: the
-   * paths as they are.
+   * `"auto"` takes off the one top-level folder a zip of a folder has (and keeps the paths of a zip that has none). `"keep"`, the
+   * default, leaves the paths as they are.
    */
-  root?: "auto";
+  root?: "auto" | "keep";
   /** The tree to mount into, at its root. Its remaining capacity also bounds the zip. Default: a new one. */
   into?: MemoryVfs;
   /**
@@ -353,7 +353,7 @@ function pathKinds(entries: readonly PlannedEntry[]): Map<string, "file" | "fold
 }
 
 /** Applies `root` to the entries that are kept (HOST-250). */
-function applyRoot(planned: PlannedEntry[], root: "auto" | undefined): PlannedEntry[] {
+function applyRoot(planned: PlannedEntry[], root: VfsFromZipOptions["root"]): PlannedEntry[] {
   if (root !== "auto") return planned;
   const first = planned[0]?.segments[0];
   if (first === undefined) return planned;
