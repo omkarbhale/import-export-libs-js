@@ -73,7 +73,7 @@ function fileLikeOf(path: string, file: WireBlob): FileLike {
 const includeOf = (mount: WorkerMountOptions): { include?: MountInclude } => (mount.include === "all" ? { include: () => "content" } : {});
 
 /** The tree a source stands for (HOST-275): the zip mounted with its one top-level folder taken off, the files as they are, a folder input or a directory handle read. */
-async function treeOf(source: WireSource): Promise<MemoryVfs> {
+async function treeOf(source: WireSource, signal: AbortSignal): Promise<MemoryVfs> {
   switch (source.kind) {
     case "zip":
       return vfsFromZip(await asBytes(source.bytes), { root: "auto", ...(source.maxBytes === undefined ? {} : { maxBytes: source.maxBytes }) });
@@ -83,12 +83,13 @@ async function treeOf(source: WireSource): Promise<MemoryVfs> {
     case "file-list":
       return mountFileList(
         source.entries.map(({ path, file }) => fileLikeOf(path, file)),
-        { ...defined<{ root: "auto" | "keep"; maxBytes: number }>({ root: source.options.root, maxBytes: source.options.maxBytes }), ...includeOf(source.options), unzip: vfsFromZip },
+        { ...defined<{ root: "auto" | "keep"; maxBytes: number }>({ root: source.options.root, maxBytes: source.options.maxBytes }), ...includeOf(source.options), unzip: vfsFromZip, signal },
       );
     case "directory":
       return mountDirectory(source.handle as FsaDirectoryHandle, {
         ...defined<{ maxBytes: number }>({ maxBytes: source.options.maxBytes }),
         ...includeOf(source.options),
+        signal,
       });
   }
 }
@@ -172,7 +173,7 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
         ...(message.wants.message ? { onMessage: (line: ApiMessage) => post({ kind: "event", id: message.id, event: { type: "message", message: line } }) } : {}),
         ...(message.wants.progress ? { onProgress: (event: ProgressEvent) => post({ kind: "event", id: message.id, event: { type: "progress", progress: event } }) } : {}),
       };
-      const tree = message.source === undefined ? undefined : await treeOf(message.source);
+      const tree = message.source === undefined ? undefined : await treeOf(message.source, controller.signal);
       const given = message.options as Record<string, unknown>;
       let result: OperationResult & { files?: Map<string, Uint8Array> };
       let zipOf: { folder: string; options: VfsToZipOptions } | undefined;

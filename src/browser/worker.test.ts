@@ -616,6 +616,41 @@ describe("dispose and the wire (HOST-274)", () => {
     await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toBeInstanceOf(WorkerDisposedError);
   });
 
+  it("an abort stops the reading of a file list at the next file, and the call rejects with the caller's reason", async () => {
+    const toServer: Array<(event: unknown) => void> = [];
+    const toClient: Array<(event: unknown) => void> = [];
+    const page: WorkerLike = {
+      postMessage: (message) => queueMicrotask(() => toServer.forEach((listener) => listener({ data: message }))),
+      addEventListener: (type, listener) => void (type === "message" && toClient.push(listener)),
+      close: () => undefined,
+    };
+    const port: ServerPort = {
+      postMessage: (message) => queueMicrotask(() => toClient.forEach((listener) => listener({ data: message }))),
+      addEventListener: (_type, listener) => void toServer.push(listener),
+    };
+    const worker = createEngineWorker({ worker: page });
+    serveEngine(port);
+    open.push(worker);
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+    const controller = new AbortController();
+    const reason = new Error("stop reading");
+    let reads = 0;
+    const fileNamed = (name: string) => ({
+      name,
+      size: 1,
+      webkitRelativePath: `Pkg/${name}`,
+      arrayBuffer: async () => {
+        reads += 1;
+        controller.abort(reason);
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        return new ArrayBuffer(1);
+      },
+      slice: () => ({ arrayBuffer: async () => new ArrayBuffer(1) }),
+    });
+    await expect(worker.importPackages(session, { source: { fileList: [fileNamed("a.xml"), fileNamed("b.xml"), fileNamed("c.xml")] }, signal: controller.signal })).rejects.toBe(reason);
+    expect(reads).toBe(1);
+  });
+
   it("a graceful dispose ends its wait when the Worker crashes during it", async () => {
     const listeners = new Map<string, (event: unknown) => void>();
     const broken: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
