@@ -7,7 +7,8 @@ import { lstatSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import path from "node:path";
 import type { Plugin } from "vitest/config";
 import type { BrowserCommand } from "vitest/node";
-import { DEFAULT_HOST, DEFAULT_HOST_BROWSER, repoRoot } from "./browser-bundle.js";
+import { build } from "esbuild";
+import { DEFAULT_HOST, DEFAULT_HOST_BROWSER, WORKER_ENTRY, browserBundleOptions, licenseBanner, repoRoot } from "./browser-bundle.js";
 
 /** A file of a fixture folder, as it crosses from the Vitest server to the page. */
 export interface FixtureFileDto {
@@ -105,4 +106,21 @@ export const fixtureCommands: Record<string, BrowserCommand<[string]>> = {
   readFixtureTree: (_context, dir) => readFixtureTree(dir),
   readFixtureBytes: (_context, file) => readFixtureBytes(file),
   readFixtureText: (_context, file) => readFixtureText(file),
+};
+
+/**
+ * The text of the Worker's bundle, built from `src/browser/worker.ts` with the options the shipped `dist/browser-worker.js` is built with
+ * (HOST-276). A test in a page makes a Blob URL of it and starts a module Worker from that, so that the browsers run the bundle that
+ * ships and not the source: the injected `Buffer`, the replaced host module and the inlined dependencies are all under test.
+ */
+export async function buildWorkerBundle(root: string = repoRoot): Promise<string> {
+  const result = await build({ ...browserBundleOptions(root, WORKER_ENTRY), write: false, outfile: "browser-worker.js", banner: { js: licenseBanner(root) } });
+  const [file] = result.outputFiles;
+  if (file === undefined) throw new Error("the Worker bundle produced no output");
+  return file.text;
+}
+
+/** The command through which a page asks for the Worker's bundle (`workerBundle`); it reads no file of the repository's data. */
+export const workerCommands: Record<string, BrowserCommand<[]>> = {
+  workerBundle: () => buildWorkerBundle(),
 };

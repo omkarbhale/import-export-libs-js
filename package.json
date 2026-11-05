@@ -31,7 +31,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup && tsup --config tsup.browser.config.ts",
-    "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit && tsc -p tsconfig.browser-worker.json --noEmit",
     "test": "vitest run --project node",
     "test:browser": "vitest run --project browser",
     "test:watch": "vitest --project node",

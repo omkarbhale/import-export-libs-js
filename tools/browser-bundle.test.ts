@@ -4,7 +4,8 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
 import { afterAll, describe, expect, it } from "vitest";
-import { browserBundleOptions, repoRoot } from "./browser-bundle.js";
+import { buildWorkerBundle } from "./browser-vitest.js";
+import { WORKER_ENTRY, browserBundleOptions, repoRoot } from "./browser-bundle.js";
 
 /**
  * The size the browser bundle may not exceed: the bytes of its output as esbuild writes it (not minified, no banner), which were
@@ -14,6 +15,14 @@ import { browserBundleOptions, repoRoot } from "./browser-bundle.js";
  * @spec HOST-260
  */
 const BUNDLE_BUDGET_BYTES = 1_305_000;
+
+/**
+ * The same for the Worker's bundle (HOST-276): 1 192 924 bytes when it was added (the engine, the browser API and the Worker's side of
+ * the protocol, without the client), plus 20 %.
+ *
+ * @spec HOST-276
+ */
+const WORKER_BUNDLE_BUDGET_BYTES = 1_432_000;
 
 /**
  * Free identifiers that name Node and have no meaning in a browser. esbuild's `define` replaces a reference to a name that nothing
@@ -92,6 +101,66 @@ describe("the browser bundle", () => {
     expect(browser.ENGINES).toContain("14.0.7");
     expect(typeof browser.ImportExportManager).toBe("function");
     expect(browser.LIBRARY_VERSION).toMatch(/^\d+\.\d+\.\d+/);
+  });
+});
+
+const workerOptions = {
+  ...browserBundleOptions(repoRoot, WORKER_ENTRY),
+  write: false,
+  metafile: true,
+  outfile: "browser-worker.js",
+  define: bundleOptions.define,
+} as const;
+
+// The Worker's bundle is built from `src/browser/worker.ts` as the shipped one is, and is held to the same rules (HOST-276): it loads
+// in a Worker with nothing beside it, and the page's bundle and the Worker's do not carry each other's half of the protocol.
+describe("the Worker bundle", () => {
+  const built = build(workerOptions);
+
+  it("contains no module of Node, and the browser's host in place of the Node host", async () => {
+    const { metafile } = await built;
+    const inputs = Object.keys(metafile.inputs);
+    expect(inputs.filter((input) => input.startsWith("node:"))).toEqual([]);
+    expect(inputs).toContain("src/host/default-host.browser.ts");
+    expect(inputs).not.toContain("src/host/default-host.ts");
+  });
+
+  it("refers to no free Node global", async () => {
+    const { outputFiles } = await built;
+    const text = outputFiles[0]!.text;
+    const found = NODE_GLOBALS.filter((name) => text.includes(FORBIDDEN(name)));
+    expect(found, `The Worker bundle uses these Node globals, which have no meaning in a Worker: ${found.join(", ")}`).toEqual([]);
+  });
+
+  it("imports nothing: it loads in a Worker with nothing beside it", async () => {
+    const { metafile } = await built;
+    expect(Object.values(metafile.outputs).flatMap((output) => output.imports)).toEqual([]);
+  });
+
+  it("stays within its size budget, which is recorded", async () => {
+    const { outputFiles } = await built;
+    const size = outputFiles[0]!.contents.length;
+    console.info(`browser worker bundle: ${size} bytes (budget ${WORKER_BUNDLE_BUDGET_BYTES})`);
+    expect(size, `The Worker bundle is ${size} bytes; the budget is ${WORKER_BUNDLE_BUDGET_BYTES}. See WORKER_BUNDLE_BUDGET_BYTES in tools/browser-bundle.test.ts.`).toBeLessThanOrEqual(
+      WORKER_BUNDLE_BUDGET_BYTES,
+    );
+  });
+
+  it("is the text the browser tests start their Worker from (the workerBundle command)", async () => {
+    const text = await buildWorkerBundle();
+    expect(text).toContain("serveEngine");
+    expect(text.startsWith("/*! Third-party code")).toBe(true);
+    expect(text).not.toMatch(/from\s*"node:/);
+  });
+
+  it("has the Worker's side of the protocol, and the page's bundle has the client and not that side", async () => {
+    const worker = Object.keys((await built).metafile.inputs);
+    expect(worker).toEqual(expect.arrayContaining(["src/browser/worker.ts", "src/browser/worker-host.ts", "src/browser/worker-protocol.ts"]));
+    expect(worker).not.toContain("src/browser/worker-client.ts");
+    const page = Object.keys((await build({ ...bundleOptions, write: false, metafile: true })).metafile.inputs);
+    expect(page).toEqual(expect.arrayContaining(["src/browser/worker-client.ts", "src/browser/worker-protocol.ts"]));
+    expect(page).not.toContain("src/browser/worker-host.ts");
+    expect(page).not.toContain("src/browser/worker.ts");
   });
 });
 

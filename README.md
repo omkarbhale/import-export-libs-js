@@ -67,6 +67,18 @@ await session.close();
 
 A page inside a signed-in Aras client can pass `tokenProvider` instead of `password` to use that session; the library never takes it by itself. `spec/browser-host.md` (HOST-270 to HOST-273) has the options, the results and where abort stops.
 
+To keep a long export or import off the page's thread, run the engine in a Web Worker. `createEngineWorker()` starts `dist/browser-worker.js` (a module Worker, found by `new URL("./browser-worker.js", import.meta.url)`; pass `worker` for another form) and has the same operations as calls. Callbacks (`onProgress`, `onMessage`, `onItemError`, `tokenProvider`, a `transport` of your own) stay on the page and are called as the Worker reports. Inputs are `{zip}`, `{files}`, `{fileList}` or `{directory}`; the bytes of a zip or a map are transferred (your array is empty afterwards unless `transfer: false`), a `File` or a directory handle is read in the Worker. An export resolves with `files` (and `zip` with `zip: true`) as transferred buffers, and an error comes back as an object of the library's class, so `instanceof` works. `abort()` or a `signal` cancels a run; `dispose({force: true})` stops a Worker that does not answer. The password crosses once, in `connect`.
+
+```ts
+const engine = createEngineWorker();
+const session = await engine.connect({ url, database, userName, password });
+const { files, zip } = await engine.exportPackages(session, { packages: ["My Package"], zip: true, onProgress });
+await engine.importPackages(session, { source: { zip: uploadedZipBytes } });
+await engine.dispose();
+```
+
+`spec/browser-host.md` (HOST-274 to HOST-276) has the protocol, the transfer rules and the bundle.
+
 The XML core's loader and item-file writer are public too, for a host that wants to know whether a file is one the engine would write: `readAllText(bytes)` (14.0.7 and 14.35) or `decodeXmlFile(bytes)` (12.0) decodes the bytes of a file, `loadXml(text, { preserveWhitespace })` loads the text, and `encodeItemFile(doc)` gives the bytes of the item file the engine writes for it; compare those with the original bytes. The choice of `preserveWhitespace` is the caller's, and neither setting alone decides whether a file round-trips. With `false` (as the import loads files) whitespace-only element text is dropped, so a file holding `<name> </name>` is reported as not round-tripping. With `true` (as the export loads documents) that value is kept, but so is the indentation, so a file indented with four spaces is reported as round-tripping. `XmlDocument` is the type of the loaded document, and the same one `applyExportTransform` and `applyXsl` take.
 
 ## Verify against the real engine
