@@ -30,6 +30,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`browser-cors-poc.md`](browser-cors-poc.md) records the browser wayfinder's one POC (ticket 15): what a real Aras server (12 SP9, R23, R35) answers a cross-origin page in Chromium, Firefox and WebKit, the server configuration that makes it work, and what the fetch transport must do about credentials, cookies and `statusText`.
 
+[`browser-adapter-tests.md`](browser-adapter-tests.md) records what the zip, directory-handle and file-input adapters do in the real browsers (ticket 27): the result per adapter and browser, why WebKit's origin private file system is tested in a persistent profile, and what a page cannot make (a folder in a `DataTransfer`).
+
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 
 The work itself is tracked as wayfinder tickets outside this repo. Each ticket lands as one PR (see `AGENTS.md`).

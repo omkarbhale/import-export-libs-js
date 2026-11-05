@@ -100,6 +100,11 @@ export interface ReplayOptions {
   parallelism?: number;
   /** What the output folder is compared with. Default: the recorded one. A test that must see a difference fail gives a changed copy. */
   expectedOutput?: ReadonlyMap<string, Uint8Array>;
+  /**
+   * Called when the export has run, before anything is compared, with the tree and the output folder it left. The adapter tests
+   * (HOST-252, HOST-253) commit the folder to a directory handle from here and read it back.
+   */
+  afterRun?: (run: { vfs: MemoryVfs; output: string }) => void | Promise<void>;
 }
 
 /** The virtual file system a run gets, with the working folder in it, and the browser's host over it. */
@@ -166,6 +171,7 @@ async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise
   ]);
   vfs.mkdir(output);
   await manager.exportSolutions(context, selection);
+  await options.afterRun?.({ vfs, output });
 
   expect(connection.consumed, `${name}: the requests of the run`).toBe(connection.total);
   expect(sent.map(({ channel, text }) => ({ channel, text })), `${name}: the messages`).toEqual(
@@ -229,6 +235,7 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
   ]);
   vfs.mkdir(output);
   await manager.exportSolutions(context, selection);
+  await options.afterRun?.({ vfs, output });
 
   // the output folder: the manifest is fixed, the item files are a set (a prefix of the engine's when an item failed)
   const recordedBytes = options.expectedOutput ?? loaded.expectedOutput;

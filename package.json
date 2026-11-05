@@ -34,7 +34,7 @@
     "build": "tsup && tsup --config tsup.browser.config.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit && tsc -p tsconfig.browser-worker.json --noEmit",
     "test": "vitest run --project node",
-    "test:browser": "vitest run --project browser",
+    "test:browser": "vitest run --project \"browser*\"",
     "test:watch": "vitest --project node",
     "oracle": "tsx oracle/src/cli.ts",
     "parity": "tsx oracle/src/parity/cli.ts",
