@@ -511,3 +511,41 @@ describe("MemoryVfs: Node-free (HOST-215)", () => {
     expect(outcome).toEqual([["p/", "p/a.xml", "p/log.txt"], ["p/a.xml", "p/log.txt"], 6 + 1, 2, "ENOENT"]);
   });
 });
+
+describe("MemoryVfs: stubs (HOST-252, HOST-254)", () => {
+  const stub = (fs: MemoryVfs, path: string): void => {
+    fs.mount({ [path]: new Uint8Array(0) });
+    fs.markStub(path);
+  };
+
+  it("lists a stub as a file of no bytes that cannot be read, and counts nothing", () => {
+    const fs = new MemoryVfs({ "/a/real.txt": "abc" });
+    stub(fs, "/a/b/big.bin");
+    expect(fs.toTree()).toEqual(["a/", "a/b/", "a/b/big.bin", "a/real.txt"]);
+    expect(fs.stat("/a/b/big.bin")).toEqual({ isFile: true, isDirectory: false });
+    expect(fs.size).toBe(3);
+    expect(fs.stubs()).toEqual(["/a/b/big.bin"]);
+    expect(() => fs.readFile("/a/b/big.bin")).toThrow(expect.objectContaining({ code: "EIO", syscall: "read", path: "/a/b/big.bin", message: "EIO: i/o error, read '/a/b/big.bin'" }));
+    expect(() => fs.openAppend("/a/b/big.bin")).toThrow(expect.objectContaining({ code: "EIO" }));
+    expect([...fs.snapshot().keys()]).toEqual(["a/real.txt"]);
+  });
+
+  it("refuses a folder, and a path that is not there", () => {
+    const fs = new MemoryVfs({ "/d/": "" });
+    expect(() => fs.markStub("/d")).toThrow(expect.objectContaining({ code: "EISDIR" }));
+    expect(() => fs.markStub("/missing")).toThrow(expect.objectContaining({ code: "ENOENT" }));
+  });
+
+  it("is replaced by a write, and a removal takes it out", () => {
+    const fs = new MemoryVfs();
+    stub(fs, "/s");
+    fs.writeFile("/s", new Uint8Array([1, 2]));
+    expect(fs.stubs()).toEqual([]);
+    expect(fs.readFile("/s")).toEqual(new Uint8Array([1, 2]));
+    expect(fs.size).toBe(2);
+    stub(fs, "/s");
+    expect(fs.size).toBe(0);
+    fs.rm("/s", { recursive: false });
+    expect(fs.exists("/s")).toBe(false);
+  });
+});

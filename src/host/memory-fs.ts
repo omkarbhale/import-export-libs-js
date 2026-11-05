@@ -16,7 +16,7 @@ import type { AppendHandle, HostDirent, HostFs, HostFsError, HostStat } from "./
  * reuse or change what it wrote or read (the price is a transient second copy of each file while it moves; the memory budget of
  * ticket 31 measures it).
  *
- * @spec HOST-200 HOST-201 HOST-214 HOST-215 HOST-254
+ * @spec HOST-200 HOST-201 HOST-214 HOST-215 HOST-252 HOST-254
  */
 
 /** The settings of a {@link MemoryVfs}. */
@@ -35,7 +35,7 @@ interface FileNode {
   data: Uint8Array;
   /** True once the file has been removed from the tree, so that a handle that is still open appends to nothing, as to an unlinked file. */
   detached: boolean;
-  /** True from {@link MemoryVfs.markStub} until something writes the file: its name is in the tree and its content was never read. */
+  /** True from {@link MemoryVfs.markStub} until something writes the file: its name is in the tree, its content was never read, and it cannot be read (HOST-252). */
   stub?: boolean;
 }
 
@@ -70,6 +70,7 @@ const MESSAGES: Record<string, string> = {
   EPERM: "operation not permitted",
   ENOSPC: "no space left on device",
   EBADF: "bad file descriptor",
+  EIO: "i/o error",
 };
 
 /** An error as Node makes it: `CODE: description, syscall 'path'`, with `code`, `syscall` and `path` set. */
@@ -128,6 +129,7 @@ export class MemoryVfs implements HostFs {
     const node = this.#existing(this.#locate(path, "open"), "open", path);
     // Node names no path for a read of a folder: the open succeeds and the read is what fails
     if (node.kind === "dir") throw fsError("EISDIR", "read");
+    if (node.stub === true) throw fsError("EIO", "read", path);
     return copy(node.data);
   }
 
@@ -192,6 +194,7 @@ export class MemoryVfs implements HostFs {
     } else {
       if (found.slash) throw fsError("ENOTDIR", "open", path);
       file = found.node;
+      if (file.stub === true) throw fsError("EIO", "open", path);
     }
     // What is written waits in the handle and joins the file when the handle is closed (HOST-215).
     const chunks: Uint8Array[] = [];
@@ -245,7 +248,7 @@ export class MemoryVfs implements HostFs {
     }
   }
 
-  /** Records that a file of the tree is a stub. It stays one until a write reaches it or it leaves the tree. */
+  /** Records that a file of the tree is a stub. It stays one until a full write replaces it or it leaves the tree; an append cannot open it (HOST-252). */
   markStub(path: string): void {
     const node = this.#existing(this.#locate(path, "open"), "open", path);
     if (node.kind === "dir") throw fsError("EISDIR", "open", path);
@@ -268,12 +271,14 @@ export class MemoryVfs implements HostFs {
 
   /**
    * Every file under `root` (a folder; default the root of the tree) with its bytes, by its path relative to `root`, written with `/`,
-   * in the order of the paths compared by code unit. The bytes are copies. A path that is not there throws `ENOENT`, and one that
-   * is a file `ENOTDIR`.
+   * in the order of the paths compared by code unit. The bytes are copies. A stub (HOST-252) has no content and is
+   * left out. A path that is not there throws `ENOENT`, and one that is a file `ENOTDIR`.
    */
   snapshot(root = "/"): Map<string, Uint8Array> {
     const files = new Map<string, Uint8Array>();
-    for (const [path, file] of this.#files(root).sort(([a], [b]) => compareCodeUnits(a, b))) files.set(path, copy(file.data));
+    for (const [path, file] of this.#files(root).sort(([a], [b]) => compareCodeUnits(a, b))) {
+      if (file.stub !== true) files.set(path, copy(file.data));
+    }
     return files;
   }
 
