@@ -13,12 +13,12 @@ import { build } from "esbuild";
 import { copyFileSync, mkdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { browserBundleOptions, repoRoot } from "../browser-bundle.js";
+import { WORKER_ENTRY, browserBundleOptions, repoRoot } from "../browser-bundle.js";
 
 export const EXAMPLE_DIR = path.join(repoRoot, "examples/browser");
 export const EXAMPLE_DIST = path.join(EXAMPLE_DIR, "dist");
 
-/** Writes `examples/browser/dist/`: `index.html`, `style.css`, `main.js` and its source map. */
+/** Writes `examples/browser/dist/`: `index.html`, `style.css`, `main.js` and `browser-worker.js`, with their source maps. */
 export async function buildExample(outDir: string = EXAMPLE_DIST): Promise<void> {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -30,6 +30,8 @@ export async function buildExample(outDir: string = EXAMPLE_DIST): Promise<void>
     minify: false,
     logLevel: "warning",
   });
+  // the engine's Worker, which the page starts from the file next to its own script (HOST-276)
+  await build({ ...browserBundleOptions(repoRoot, WORKER_ENTRY), outfile: path.join(outDir, "browser-worker.js"), sourcemap: true, minify: false, logLevel: "warning" });
   for (const file of ["index.html", "style.css"]) copyFileSync(path.join(EXAMPLE_DIR, file), path.join(outDir, file));
 }
 

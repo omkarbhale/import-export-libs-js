@@ -1,59 +1,64 @@
-import {
-  type FsaDirectoryHandle,
-  type MemoryVfs,
-  type MountOptions,
-  isFileSystemAccessSupported,
-  mountDataTransfer,
-  mountDirectory,
-  mountFileList,
-  vfsFromZip,
-} from "../../src/browser.js";
+import type { DataTransferItemLike, DataTransferItemsLike, EntryLike, FsaDirectoryHandle, WorkerSource } from "../../src/browser.js";
+import { isFileSystemAccessSupported } from "../../src/browser.js";
+import { sizeText } from "./dom.js";
 
 /**
- * Where a package comes from (HOST-280): the controls of the page hand what a person gave them to the library's adapters, which
- * mount it into a tree in memory (HOST-250, HOST-252, HOST-254, HOST-255). The page owns the controls; the library owns the mount.
+ * Where a package comes from (HOST-280): the controls of the page hand what a person gave them to the engine's Worker as a source,
+ * and the Worker mounts it into its tree (HOST-250, HOST-252, HOST-254, HOST-255, HOST-275). Nothing is read when the file is chosen:
+ * a zip is inflated and a folder is read in the Worker when the run starts, so the page keeps its thread. The page owns the controls;
+ * the library owns the mount.
  *
- * @spec HOST-280 HOST-250 HOST-252 HOST-254 HOST-255
+ * @spec HOST-280 HOST-275
  */
 
 /** The package budget the browser build is designed for (Q5): 500 MiB of package data in memory. */
 export const PACKAGE_BUDGET = 500 * 1024 * 1024;
 
-/** A package that has been mounted, and what to say about it. */
-export interface MountedSource {
+/** A package the person gave, and what to say about it. */
+export interface PackageSource {
   /** What the person gave: a file name or a folder name. */
   label: string;
-  tree: MemoryVfs;
+  /** What is known of its size without reading it. */
+  description: string;
+  source: WorkerSource;
 }
 
-const options = (extra: MountOptions = {}): MountOptions => ({
-  root: "auto",
-  maxBytes: PACKAGE_BUDGET,
-  unzip: (bytes, unzipOptions) => vfsFromZip(bytes, unzipOptions),
-  ...extra,
-});
+const MOUNT = { root: "auto", maxBytes: PACKAGE_BUDGET } as const;
 
-/** A zip from a file input, or a folder from a `webkitdirectory` input: the library tells which from the files themselves. */
-export async function mountFiles(files: FileList | readonly File[], onProgress?: MountOptions["onProgress"]): Promise<MountedSource> {
+/** A zip from a file input, or a folder from a `webkitdirectory` input. */
+export function sourceOfFiles(files: FileList | readonly File[]): PackageSource {
   const list = [...files];
   const first = list[0];
   if (first === undefined) throw new Error("no file was chosen");
   const folder = (first.webkitRelativePath ?? "").split("/")[0] ?? "";
-  const tree = await mountFileList(list, options(onProgress === undefined ? {} : { onProgress }));
-  return { label: folder !== "" ? folder : list.length === 1 ? first.name : `${list.length} files`, tree };
+  const bytes = list.reduce((sum, file) => sum + file.size, 0);
+  if (folder === "" && list.length === 1) {
+    return { label: first.name, description: `${first.name}: a zip of ${sizeText(first.size)}`, source: { zip: first, maxBytes: PACKAGE_BUDGET } };
+  }
+  return { label: folder, description: `${folder === "" ? `${list.length} files` : folder}: ${list.length} files, ${sizeText(bytes)}`, source: { fileList: list, mount: MOUNT } };
 }
 
-/** A drop: the entries are taken here, before the first `await`, as the adapter requires (HOST-255). */
-export function mountDrop(transfer: DataTransfer, onProgress?: MountOptions["onProgress"]): Promise<MountedSource> {
-  const names = [...transfer.items].map((item) => item.webkitGetAsEntry()?.name).filter((name): name is string => name !== undefined);
-  const mounted = mountDataTransfer(transfer.items, options(onProgress === undefined ? {} : { onProgress }));
-  return mounted.then((tree) => ({ label: names.length === 1 ? (names[0] as string) : `${names.length} items`, tree }));
+/**
+ * A drop. The entries are taken now, before the first `await`, because a browser empties the item list when the handler returns
+ * (HOST-255); the run walks them later, in the Worker's reach, from this list.
+ */
+export function sourceOfDrop(transfer: DataTransfer): PackageSource {
+  const entries: EntryLike[] = [];
+  for (const item of Array.from(transfer.items)) {
+    if (item.kind !== "file") continue;
+    const entry = item.webkitGetAsEntry();
+    if (entry !== null) entries.push(entry as EntryLike);
+  }
+  if (entries.length === 0) throw new Error("the drop holds no file or folder");
+  const items: DataTransferItemLike[] = entries.map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry }));
+  const list: DataTransferItemsLike = Object.assign(items, { length: items.length });
+  const label = entries.length === 1 ? (entries[0] as EntryLike).name : `${entries.length} items`;
+  return { label, description: `${label}: dropped`, source: { dataTransfer: list, mount: MOUNT } };
 }
 
 /** A folder behind a handle, picked with `showDirectoryPicker`. */
-export async function mountHandle(handle: FsaDirectoryHandle): Promise<MountedSource> {
-  const tree = await mountDirectory(handle, { maxBytes: PACKAGE_BUDGET });
-  return { label: handle.name, tree };
+export function sourceOfHandle(handle: FsaDirectoryHandle): PackageSource {
+  return { label: handle.name, description: `${handle.name}: a picked folder`, source: { directory: handle, mount: { maxBytes: PACKAGE_BUDGET } } };
 }
 
 /** Whether the page can offer the picker: `showDirectoryPicker` is there (Chromium) (HOST-252). */

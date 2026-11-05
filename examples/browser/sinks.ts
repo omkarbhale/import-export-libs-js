@@ -1,8 +1,9 @@
-import { type FsaDirectoryHandle, type MemoryVfs, commitToDirectory, vfsToZip } from "../../src/browser.js";
+import { type CommitResult, type FsaDirectoryHandle, MemoryVfs, commitToDirectory } from "../../src/browser.js";
 
 /**
- * Where a result goes (HOST-280): a zip the person downloads, or a folder they picked. Both are the library's adapters (HOST-251,
- * HOST-253); the download itself, an anchor on a Blob URL, is the page's.
+ * Where a result goes (HOST-280): a zip the person downloads, or a folder they picked. The zip is made in the Worker (HOST-251,
+ * HOST-275); writing into a folder is the library's adapter (HOST-253), and the download itself, an anchor on a Blob URL, is the
+ * page's.
  *
  * @spec HOST-280 HOST-251 HOST-253
  */
@@ -30,12 +31,11 @@ export function stampedName(prefix: string, extension: string, now: Date = new D
   return `${prefix}-${stamp}.${extension}`;
 }
 
-/** The files of a folder of the tree, as a zip. */
-export function zipOf(tree: MemoryVfs, folder: string): Uint8Array {
-  return vfsToZip(tree, folder);
-}
-
-/** Writes a folder of the tree into a picked folder; nothing that is in it is removed (HOST-253). */
-export function writeToFolder(tree: MemoryVfs, handle: FsaDirectoryHandle, folder: string): ReturnType<typeof commitToDirectory> {
-  return commitToDirectory(tree, handle, { from: folder });
+/** Writes the files of an export, by their paths from the working folder, into a picked folder; nothing that is in it is removed (HOST-253). */
+export function writeToFolder(files: ReadonlyMap<string, Uint8Array>, handle: FsaDirectoryHandle): Promise<CommitResult> {
+  const tree = new MemoryVfs();
+  const mount: Record<string, Uint8Array> = {};
+  for (const [path, bytes] of files) mount[`/${path}`] = bytes;
+  tree.mount(mount);
+  return commitToDirectory(tree, handle);
 }

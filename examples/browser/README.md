@@ -6,10 +6,10 @@ A standalone static page that runs the browser build of `import-export-libs-js`:
 - **Out:** an export as a zip download, or written into a picked folder (Chromium).
 - **Options:** the CLI's flags (`src/cli/usage.ts`); every control shows the flag it stands for, and `options.test.ts` fails when the two drift.
 - **Run:** progress list, message pane, abort button, the run log for download.
-- The engine runs on the page's thread (`engine-client.ts` is the one module the page reaches it through; the Worker replaces that module).
+- The engine runs in a Web Worker, a new one for every run (`engine-client.ts` is the one module the page reaches it through): the page keeps its thread, and the engine's lookup caches, which it never clears (EXP-619), never outlive a run. A package is read in the Worker when the run starts.
 
 ```sh
-npm run example:browser:build   # builds examples/browser/dist/ (esbuild, no other dependency)
+npm run example:browser:build   # builds examples/browser/dist/: main.js and browser-worker.js (esbuild, no other dependency)
 npm run example:browser         # builds it and serves it on http://127.0.0.1:8080/
 npm run example:browser -- --port 8080 --host 127.0.0.1 --no-build
 ```

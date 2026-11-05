@@ -1,12 +1,13 @@
 import { commands, userEvent } from "vitest/browser";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MemoryVfs, type OperationResult, vfsFromZip, vfsToZip } from "../../src/browser.js";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { MemoryVfs, type WorkerExportResult, type WorkerOperationResult, vfsFromZip, vfsToZip } from "../../src/browser.js";
 import { FakeDirectoryHandle } from "../../src/browser/fake-directory-handle.js";
+import { fakeDrop } from "../../src/browser/api-test-support.js";
 import { loadFixtureTree } from "../../src/browser/test-support.browser.js";
 import { packageCaches } from "../../src/client/package-lookups.js";
 import type { StartedReplay, StoppedReplay } from "../../tools/browser-example/replay-types.js";
 import { type App, type AppDeps, mountApp } from "./app.js";
-import type { EngineClient } from "./engine-client.js";
+import { type EngineClient, createWorkerEngine } from "./engine-client.js";
 
 /**
  * The reference page, driven as a person drives it, in each browser (HOST-280, HOST-281). The page is mounted as `main.ts` mounts it
@@ -23,11 +24,20 @@ declare module "vitest/browser" {
   interface BrowserCommands {
     startReplay(id: string): Promise<StartedReplay>;
     stopReplay(handle: string): Promise<StoppedReplay>;
+    workerBundle(): Promise<string>;
   }
 }
 
-// the dependency cache outlives a session (EXP-619), and every recording was made by a process of its own
+// the dependency cache outlives a session (EXP-619), and every recording was made by a process of its own; the page's own run is in a
+// new Worker each time, which has none, and this clears the one of the test's page for the tests that run the engine there
 beforeEach(() => packageCaches.dependsOn.clear());
+
+// the page's engine is the Worker that ships: the text of `dist/browser-worker.js`, built by the Vitest server, started from a Blob URL
+let workerUrl = "";
+beforeAll(async () => {
+  workerUrl = URL.createObjectURL(new Blob([await commands.workerBundle()], { type: "text/javascript" }));
+});
+afterAll(() => URL.revokeObjectURL(workerUrl));
 
 // --------------------------------------------------------------------------------------------------------------- helpers
 
@@ -46,7 +56,7 @@ afterEach(async () => {
 function mount(deps: AppDeps = {}): HTMLElement {
   host = document.createElement("div");
   document.body.append(host);
-  app = mountApp(host, { location: { protocol: "https:", hostname: "tools.example.com" }, ...deps });
+  app = mountApp(host, { engine: createWorkerEngine({ worker: () => workerUrl }), location: { protocol: "https:", hostname: "tools.example.com" }, ...deps });
   return host;
 }
 
@@ -119,38 +129,6 @@ function fileList(files: File[]): FileList {
   const transfer = new DataTransfer();
   for (const file of files) transfer.items.add(file);
   return transfer.files;
-}
-
-/** A dropped file, as the browser's `FileSystemFileEntry` gives it. */
-function fileEntry(file: File): { isFile: true; isDirectory: false; name: string; file(success: (file: File) => void): void } {
-  return { isFile: true, isDirectory: false, name: file.name, file: (success) => success(file) };
-}
-
-/** A dropped folder with all of its files and folders, as the browser's `FileSystemDirectoryEntry` lists them (HOST-255). */
-function folderEntry(name: string, files: Array<{ path: string; bytes: Uint8Array }>): object {
-  const children = new Map<string, { path: string; bytes: Uint8Array }[]>();
-  const direct: object[] = [];
-  for (const file of files) {
-    const [first, ...rest] = file.path.split("/");
-    if (rest.length === 0) direct.push(fileEntry(new File([new Uint8Array(file.bytes)], first as string)));
-    else children.set(first as string, [...(children.get(first as string) ?? []), { path: rest.join("/"), bytes: file.bytes }]);
-  }
-  const listing = [...direct, ...[...children].map(([child, inner]) => folderEntry(child, inner))];
-  return {
-    isFile: false,
-    isDirectory: true,
-    name,
-    createReader() {
-      let done = false;
-      return {
-        readEntries(success: (entries: object[]) => void) {
-          const batch = done ? [] : listing;
-          done = true;
-          success(batch);
-        },
-      };
-    },
-  };
 }
 
 const IMPORT_CASE = "14.0.7/import/s0-mini-defaults";
@@ -250,7 +228,7 @@ describe("import, from a zip, a folder and a drop", () => {
     await connectTo(url, { engine: recipe.engine });
     await openTab("import");
     await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("read when you press Run"));
     await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
     await run();
 
@@ -280,29 +258,48 @@ describe("import, from a zip, a folder and a drop", () => {
     await connectTo(url, { engine: recipe.engine });
     await openTab("import");
     // a browser makes the entries of a real drag; a script cannot, so the drop carries entries written as the browser's are
-    const entries = kind === "zip" ? [fileEntry(await zipFileOf(IMPORT_INPUT, "dropped.zip"))] : [folderEntry("dropped-folder", await loadFixtureTree(IMPORT_INPUT))];
+    const dropped =
+      kind === "zip"
+        ? fakeDrop([{ path: "dropped.zip", bytes: new Uint8Array(await (await zipFileOf(IMPORT_INPUT)).arrayBuffer()) }])
+        : fakeDrop((await loadFixtureTree(IMPORT_INPUT)).map((file) => ({ path: `dropped-folder/${file.path}`, bytes: file.bytes })));
     const drop = new Event("drop", { bubbles: true, cancelable: true });
-    Object.defineProperty(drop, "dataTransfer", { value: { items: entries.map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry })) } });
+    Object.defineProperty(drop, "dataTransfer", { value: { items: dropped } });
     q('[data-panel="import"] [data-source="drop"]').dispatchEvent(drop);
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toMatch(/in memory|Could not read/));
     expect(sourceStatus("import").textContent).toContain(kind === "zip" ? "dropped.zip" : "dropped-folder");
     await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
     await run();
     await expectImportDone();
   });
 
-  it("imports a folder behind a picked directory handle, as recorded", async () => {
-    const handle = new FakeDirectoryHandle("picked");
-    for (const file of await loadFixtureTree(IMPORT_INPUT)) handle.put(file.path, file.bytes);
-    mount({ canPickDirectory: true, pickDirectory: () => Promise.resolve(handle) });
-    const { url, recipe } = await startReplay(IMPORT_CASE);
-    await connectTo(url, { engine: recipe.engine });
-    await openTab("import");
-    await userEvent.click(q('[data-panel="import"] [data-source="picker"]'));
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
-    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
-    await run();
-    await expectImportDone();
+  it("imports a folder behind a picked directory handle, as recorded", async (context) => {
+      // a handle crosses to the Worker, which reads the folder there; only a real one can cross, so the origin private file system stands in for the picker's folder
+      const root = await navigator.storage.getDirectory();
+      await root.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
+      const handle = await root.getDirectoryHandle("ui-test-picked", { create: true });
+      try {
+        for (const file of await loadFixtureTree(IMPORT_INPUT)) {
+          let folder = handle;
+          const parts = file.path.split("/");
+          for (const part of parts.slice(0, -1)) folder = await folder.getDirectoryHandle(part, { create: true });
+          const writable = await (await folder.getFileHandle(parts.at(-1) as string, { create: true })).createWritable();
+          await writable.write(new Uint8Array(file.bytes));
+          await writable.close();
+        }
+      } catch (error) {
+        // WebKit's origin private file system cannot be written from a page's thread (a writable fails as UnknownError); the test has no folder to pick there
+        await root.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
+        context.skip(`this browser cannot make the folder the test would pick: ${String(error)}`);
+      }
+      mount({ canPickDirectory: true, pickDirectory: () => Promise.resolve(handle as never) });
+      const { url, recipe } = await startReplay(IMPORT_CASE);
+      await connectTo(url, { engine: recipe.engine });
+      await openTab("import");
+      await userEvent.click(q('[data-panel="import"] [data-source="picker"]'));
+      await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("ui-test-picked"));
+      await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+      await run();
+      await expectImportDone();
+      await root.removeEntry("ui-test-picked", { recursive: true });
   });
 
   it("asks for the package before it connects", async () => {
@@ -316,11 +313,15 @@ describe("import, from a zip, a folder and a drop", () => {
     expect(runButton().disabled).toBe(false);
   });
 
-  it("says why a zip could not be read", async () => {
+  it("says why a zip could not be read, when the run reads it", async () => {
     mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
     await openTab("import");
     await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), new File([new Uint8Array([1, 2, 3, 4])], "broken.zip", { type: "application/zip" }));
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("Could not read it"));
+    await run();
+    expect(failureText()).toMatch(/^ZipError: /);
+    expect(runButton().disabled).toBe(false);
   });
 });
 
@@ -328,8 +329,7 @@ describe("import, from a zip, a folder and a drop", () => {
 
 /** An engine that stays in the operation until the signal is raised, then ends it as the library does. */
 function waitingEngine(): EngineClient {
-  const cancelled = (): OperationResult => ({
-    vfs: new MemoryVfs(),
+  const cancelled = (): WorkerOperationResult => ({
     log: "",
     messages: [],
     summary: { operation: "import", engine: "14.0.7", server: "14.0.9.1", result: "cancelled", returnCode: 0, aborted: true, messages: { info: 0, warnings: 0, errors: 0, packages: 0 }, packages: [] },
@@ -343,7 +343,7 @@ function waitingEngine(): EngineClient {
         importLanguagePack: () => Promise.reject(new Error("not used")),
         applyDbPatches: () => Promise.reject(new Error("not used")),
         importPackages: (options) =>
-          new Promise<OperationResult>((resolve) => {
+          new Promise<WorkerOperationResult>((resolve) => {
             options.onProgress?.({ operation: "import", phase: "package", package: "P" });
             options.signal?.addEventListener("abort", () => resolve(cancelled()));
           }),
@@ -352,7 +352,7 @@ function waitingEngine(): EngineClient {
   };
 }
 
-/** An engine whose operations all end the way `end` says, after writing `log` where the library writes it. */
+/** An engine whose export ends the way `end` says, after it has said something. */
 function endingEngine(end: "cancelled" | "fails", saved: { exported: number }): EngineClient {
   return {
     connect: () =>
@@ -363,14 +363,10 @@ function endingEngine(end: "cancelled" | "fails", saved: { exported: number }): 
         applyDbPatches: () => Promise.reject(new Error("not used")),
         exportPackages: (options) => {
           saved.exported += 1;
-          const vfs = options.vfs as MemoryVfs;
-          vfs.mkdir("/aras-pkg-logs");
-          vfs.writeFile("/aras-pkg-logs/export.log", new TextEncoder().encode("the engine's log"));
-          vfs.mkdir("/export");
-          vfs.writeFile("/export/partial.xml", new Uint8Array([1]));
+          options.onMessage?.({ source: "engine", channel: "status", level: "info", text: "Item 1 of 2: Permission - a" });
           if (end === "fails") return Promise.reject(new Error("the server refused the item"));
-          return Promise.resolve({
-            vfs,
+          return Promise.resolve<WorkerExportResult>({
+            zip: new Uint8Array([80, 75]),
             files: new Map([["partial.xml", new Uint8Array([1])]]),
             log: "the engine's log",
             messages: [],
@@ -397,7 +393,7 @@ describe("abort and failure", () => {
     expect(q(".summary").textContent).toContain("cancelled");
   });
 
-  it("offers the log of a run that failed, and keeps the password the person typed when the form was refused", async () => {
+  it("offers what the engine said in a run that failed, and keeps the password the person typed when the form was refused", async () => {
     const saved = { exported: 0 };
     const files: Array<{ name: string; text: string }> = [];
     mount({ engine: endingEngine("fails", saved), saveFile: (name, bytes) => files.push({ name, text: new TextDecoder().decode(bytes) }) });
@@ -417,8 +413,8 @@ describe("abort and failure", () => {
     expect(q('[data-key="download-log"]').hidden).toBe(false);
     await userEvent.click(q('[data-key="download-log"]'));
     expect(files).toHaveLength(1);
-    expect(files[0]?.name).toMatch(/^run-log-.*\.log$/);
-    expect(files[0]?.text).toBe("the engine's log");
+    expect(files[0]?.name).toMatch(/^messages-.*\.log$/);
+    expect(files[0]?.text).toBe("Item 1 of 2: Permission - a");
   });
 
   it("raises the run's signal when Abort is pressed, and ends with a cancelled run", async () => {
@@ -426,7 +422,7 @@ describe("abort and failure", () => {
     await connectTo("http://unused.example/x");
     await openTab("import");
     await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("read when you press Run"));
     await userEvent.click(runButton());
     await vi.waitFor(() => expect(q<HTMLButtonElement>('[data-key="abort"]').disabled).toBe(false));
     expect(runButton().disabled).toBe(true);
@@ -444,7 +440,7 @@ describe("abort and failure", () => {
     await connectTo(url, { engine: recipe.engine });
     await openTab("import");
     await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
-    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("read when you press Run"));
     await run();
     expect(failureText()).toMatch(/^CItemException: Failed login to Innovator/);
     expect(failureText()).toContain("HttpRequestException");
