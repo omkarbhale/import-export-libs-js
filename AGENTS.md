@@ -32,6 +32,7 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 - `src/`: the library and CLI. Tests sit beside the code as `*.test.ts`.
 - `spec/`: rule documents, `bugs.md`, `source-map.json` and its schema, the generated `reachable/<engine>.json` sets, and the coverage test.
 - `tools/rea-map/`: the generator of the decompile, the reachable sets and the method locks.
+- `examples/browser/`: the reference page of the browser build, with its tooling in `tools/browser-example/`.
 - `roadmap/`: decision records, and `hold/` records for out-of-scope pieces.
 - `oracle/`: the real engine DLLs and the Windows harness that drives them.
 - `fixtures/`: recorded engine transcripts and outputs that unit tests replay.

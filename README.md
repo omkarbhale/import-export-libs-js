@@ -79,6 +79,8 @@ await engine.dispose();
 
 `spec/browser-host.md` (HOST-274 to HOST-276) has the protocol, the transfer rules and the bundle.
 
+`examples/browser/` is a reference page, a static page that uses this API for all four operations; [its README](examples/browser/README.md) says how to build and serve it.
+
 The XML core's loader and item-file writer are public too, for a host that wants to know whether a file is one the engine would write: `readAllText(bytes)` (14.0.7 and 14.35) or `decodeXmlFile(bytes)` (12.0) decodes the bytes of a file, `loadXml(text, { preserveWhitespace })` loads the text, and `encodeItemFile(doc)` gives the bytes of the item file the engine writes for it; compare those with the original bytes. The choice of `preserveWhitespace` is the caller's, and neither setting alone decides whether a file round-trips. With `false` (as the import loads files) whitespace-only element text is dropped, so a file holding `<name> </name>` is reported as not round-tripping. With `true` (as the export loads documents) that value is kept, but so is the indentation, so a file indented with four spaces is reported as round-tripping. `XmlDocument` is the type of the loaded document, and the same one `applyExportTransform` and `applyXsl` take.
 
 ## Verify against the real engine
