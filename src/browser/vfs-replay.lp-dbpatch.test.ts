@@ -27,10 +27,10 @@ import { CaseCount, logText, virtualHost } from "./vfs-replay-support.js";
 
 /**
  * The recorded language-pack and DB-patch runs replayed on the in-memory file system, under Node (HOST-217): every case the disk replays run (`lp-import.replay.test.ts` and `db-patches/replay.test.ts`) is run again
- * with `fs` a {@link MemoryVfs} and `host` a fake environment, so that the output folder, the log, the manifest and the package folder
+ * with `fs` a {@link MemoryVfs} and `host` a fake environment, so that the log, the input folder and the temporary language package
  * never touch the disk. The recorded answers are served by the same connections, and what a run leaves behind is compared with the
- * same recording by the same comparisons, on the virtual tree: the output folder byte for byte (`assertTreesEqual`), the log, the
- * messages and the return code. The replays are in files of their own (`vfs-replay.*.test.ts`), as the disk replays are, so that
+ * same recording by the same comparisons, on the virtual tree: the input folder, unchanged, and a kept temporary package, byte for byte (`assertTreesEqual`), the log, the
+ * messages and the outcome. The replays are in files of their own (`vfs-replay.*.test.ts`), as the disk replays are, so that
  * each runs in a worker of its own.
  *
  * @spec HOST-217 HOST-215 HOST-203
