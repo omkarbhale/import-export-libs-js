@@ -8,7 +8,7 @@ import { FakeTransport, header, respond } from "../client/fake-transport.js";
 import { CItemException } from "../client/fault.js";
 import { packageCaches } from "../client/package-lookups.js";
 import type { TransportRequest } from "../client/transport.js";
-import { VersionRefusal } from "../client/version.js";
+import { ArasVersion, VersionRefusal } from "../client/version.js";
 import { CASES, type Case } from "../export/replay-cases.js";
 import { MemoryVfs } from "../host/memory-fs.js";
 import { BLOBS, CASES as IMPORT_CASES } from "../import/transcript-replay.js";
@@ -124,7 +124,12 @@ describe("connect through the Worker (HOST-274)", () => {
     expect(session.engine).toBe(engine);
     expect(session.serverVersion.major).toBe(major);
     expect(session.serverVersion.minor).toBe(minor);
-    expect(session.serverVersionText).toBe(session.serverVersion.fullString);
+    const text = major < 14 ? `${major}.${minor} SP0 Build 0` : `${major}.${minor}.9.36073`;
+    expect(session.serverVersionText).toBe(text);
+    expect(session.serverVersion).toBeInstanceOf(ArasVersion);
+    expect(session.serverVersion.fullString).toBe(text);
+    expect(session.versionGate?.server).toBeInstanceOf(ArasVersion);
+    expect(session.versionGate?.server.fullString).toBe(text);
     expect(session.userName).toBe("admin");
     expect(session.closed).toBe(false);
     await session.close();
@@ -134,12 +139,6 @@ describe("connect through the Worker (HOST-274)", () => {
     await session.close();
     expect(transport.requests).toHaveLength(sent);
     await expect(worker.exportPackages(session, { packages: ["x"] })).rejects.toBeInstanceOf(SessionClosedError);
-  });
-
-  it("says where it started from and what library it is", async () => {
-    const { worker } = start();
-    await worker.connect({ ...LOGIN, transport: serverOf(14, 0) });
-    expect(worker.workerLibraryVersion).toMatch(/^\d+\.\d+\.\d+/);
   });
 
   it("asks the page's token provider for each token, on the page, and sends no password grant", async () => {
@@ -232,23 +231,18 @@ describe("importPackages through the Worker (HOST-272, HOST-274)", () => {
     expect(zip.byteLength, "the buffer went to the Worker").toBe(0);
   });
 
-  it("copies the zip when transfer is false, and when the bytes are a view into a larger buffer", async () => {
+  it("copies the zip when the bytes are a view into a larger buffer", async () => {
     const { worker } = start();
-    const { dir, server, transport, osUser } = importServer("s0-mini-defaults");
+    const { dir, transport, osUser } = importServer("s0-mini-defaults");
     const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport });
     const tree = new MemoryVfs();
     loadTreeIntoVfs(join(dir, "input"), tree, "/");
     const zip = vfsToZip(tree, "/");
-    await worker.importPackages(session, { source: { zip, transfer: false }, osUser });
-    expect(zip.byteLength).toBeGreaterThan(0);
-    expect(server.mismatches).toEqual([]);
-
     const again = importServer("s0-mini-defaults");
-    const second = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: again.transport });
     const padded = new Uint8Array(zip.byteLength + 16);
     padded.set(zip, 8);
     const view = padded.subarray(8, 8 + zip.byteLength);
-    await worker.importPackages(second, { source: { zip: view }, osUser });
+    await worker.importPackages(session, { source: { zip: view }, osUser });
     expect(again.server.mismatches).toEqual([]);
     expect(padded.byteLength, "a view into a larger buffer is copied, so the buffer it is in stays whole").toBe(zip.byteLength + 16);
   });
@@ -493,6 +487,37 @@ describe("importLanguagePack through the Worker (HOST-270, HOST-274)", () => {
   });
 });
 
+describe("a failed language-pack import through the Worker (HOST-270, HOST-274)", () => {
+  it("rejects, and the page's session knows the engine's flow closed it", async () => {
+    const { worker } = start();
+    const transport = serverOf(14, 0);
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport });
+    let down = false;
+    const failing = await worker.connect({
+      ...LOGIN,
+      engine: "14.0.7",
+      transport: {
+        send: (request) => {
+          if (down) throw new Error("the server went away");
+          return transport.send(request);
+        },
+      },
+    });
+    down = true;
+    await expect(worker.importLanguagePack(failing, { source: { files: new Map([["/ImportConfig.xml", "<x/>"]]) }, lpPackage: "p" })).rejects.toBeInstanceOf(Error);
+    expect(failing.closed).toBe(true);
+    await expect(worker.exportPackages(failing, { packages: ["x"] })).rejects.toBeInstanceOf(SessionClosedError);
+    expect(session.closed).toBe(false);
+  });
+
+  it("leaves the session open when the failure comes before the engine's flow", async () => {
+    const { worker } = start();
+    const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport: serverOf(14, 0) });
+    await expect(worker.importLanguagePack(session, { source: { zip: new Uint8Array([1, 2, 3]) }, lpPackage: "p" })).rejects.toBeInstanceOf(ZipError);
+    expect(session.closed).toBe(false);
+  });
+});
+
 describe("applyDbPatches through the Worker (HOST-272, HOST-274)", () => {
   it("refuses a DB patch run on an engine that has none, as the library's own error", async () => {
     const { worker } = start();
@@ -580,12 +605,23 @@ describe("dispose and the wire (HOST-274)", () => {
     expect(broken.terminate).toHaveBeenCalled();
   });
 
+  it("a message that cannot be read ends the calls that wait with WorkerCrashedError, and stops the Worker", async () => {
+    const listeners = new Map<string, (event: unknown) => void>();
+    const broken: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
+    const worker = createEngineWorker({ worker: broken });
+    const waiting = worker.connect({ ...LOGIN, transport: serverOf(14, 0) });
+    listeners.get("messageerror")?.({});
+    await expect(waiting).rejects.toMatchObject({ name: "WorkerCrashedError" });
+    expect(broken.terminate).toHaveBeenCalled();
+    await expect(worker.connect({ ...LOGIN, transport: serverOf(14, 0) })).rejects.toBeInstanceOf(WorkerDisposedError);
+  });
+
   it("refuses a Worker of another protocol version, by name, and ends the calls that wait", async () => {
     const listeners = new Map<string, (event: unknown) => void>();
     const other: WorkerLike = { postMessage: () => undefined, addEventListener: (type, listener) => void listeners.set(type, listener), terminate: vi.fn() };
     const worker = createEngineWorker({ worker: other });
     const waiting = worker.connect({ ...LOGIN, transport: serverOf(14, 0) });
-    listeners.get("message")?.({ data: { v: 999, kind: "ready", library: "9.9.9" } });
+    listeners.get("message")?.({ data: { v: 999, kind: "ready" } });
     await expect(waiting).rejects.toBeInstanceOf(WorkerProtocolError);
   });
 

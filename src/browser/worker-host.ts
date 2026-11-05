@@ -1,6 +1,5 @@
 import type { HttpTransport, TransportRequest, TransportResponse } from "../client/transport.js";
 import { MemoryVfs } from "../host/memory-fs.js";
-import { LIBRARY_VERSION } from "../version.js";
 import type { ApiMessage, OnItemErrorOption, OperationResult, ProgressEvent } from "./api-run.js";
 import {
   type ConnectOptions,
@@ -33,7 +32,6 @@ import {
   type WorkerMountOptions,
   fromWorker,
   isEnvelope,
-  proxyTransport,
   rehydrateError,
   serializeError,
 } from "./worker-protocol.js";
@@ -126,11 +124,13 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
 
   async function connectCall(id: number, wire: WireConnectOptions): Promise<WireSession> {
     const transport: HttpTransport | undefined = wire.transport
-      ? proxyTransport(async (request: TransportRequest) => {
-          // the engine may still read its request after the send; the main thread gets a copy, and gives its response's buffer back
-          const copy = { ...request, ...(request.body === undefined ? {} : { body: new Uint8Array(request.body) }) };
-          return (await ask(id, "transport", [copy])) as TransportResponse;
-        })
+      ? {
+          send: async (request: TransportRequest) => {
+            // the engine may still read its request after the send; the main thread gets a copy, and gives its response's buffer back
+            const copy = { ...request, ...(request.body === undefined ? {} : { body: new Uint8Array(request.body) }) };
+            return (await ask(id, "transport", [copy])) as TransportResponse;
+          },
+        }
       : undefined;
     const connectOptions: ConnectOptions = {
       ...defined<Partial<ConnectOptions>>({
@@ -199,10 +199,10 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
           break;
       }
       const bag = new TransferBag();
-      const value: WireResult = { log: result.log, messages: result.messages, summary: result.summary, sessionClosed: session.closed };
+      const value: WireResult = { log: result.log, messages: result.messages, summary: result.summary };
       if (message.op === "export") {
         value.files = new Map([...(result.files ?? new Map<string, Uint8Array>())].map(([path, bytes]) => [path, bag.take(bytes)] as const));
-        if (zipOf !== undefined) value.zip = bag.take(vfsToZip(result.vfs, zipOf.folder, zipOf.options));
+        if (zipOf !== undefined && result.vfs.exists(zipOf.folder)) value.zip = bag.take(vfsToZip(result.vfs, zipOf.folder, zipOf.options));
       }
       return { value, transfer: bag.list };
     } finally {
@@ -222,13 +222,14 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
   }
 
   function call(message: Extract<ToWorker, { kind: "call" }>): void {
+    const closedMark = (): { sessionClosed?: true } => ("session" in message && sessions.get(message.session)?.closed === true ? { sessionClosed: true } : {});
     const task = (async () => {
       try {
         if (disposing) throw new WorkerProtocolError("the Worker is being disposed");
         const { value, transfer } = await perform(message);
-        post({ kind: "result", id: message.id, value }, transfer);
+        post({ kind: "result", id: message.id, value, ...closedMark() }, transfer);
       } catch (error) {
-        post({ kind: "error", id: message.id, error: serializeError(error) });
+        post({ kind: "error", id: message.id, error: serializeError(error), ...closedMark() });
       }
     })();
     running.add(task);
@@ -279,5 +280,5 @@ export function serveEngine(port: ServerPort, options: ServeOptions = {}): void 
 
   port.addEventListener("message", receive);
   port.start?.();
-  post({ kind: "ready", library: LIBRARY_VERSION });
+  post({ kind: "ready" });
 }

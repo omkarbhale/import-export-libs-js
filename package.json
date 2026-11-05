@@ -19,7 +19,8 @@
     "./browser": {
       "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js"
-    }
+    },
+    "./browser-worker.js": "./dist/browser-worker.js"
   },
   "bin": {
     "import-export-libs-js": "./dist/cli.js",

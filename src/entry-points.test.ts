@@ -70,14 +70,15 @@ describe("entry points", () => {
 
   it("has an explicit browser condition and subpath in package.json (HOST-261)", () => {
     const manifest = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
-      exports: Record<string, Record<string, string>>;
+      exports: Record<string, Record<string, string> | string>;
       sideEffects: boolean;
       files: string[];
     };
     expect(manifest.exports["."]).toEqual({ types: "./dist/index.d.ts", browser: "./dist/browser.js", import: "./dist/index.js" });
     // `browser` precedes `import`: conditions match in order, so a bundler for browsers takes it and Node never names it.
-    expect(Object.keys(manifest.exports["."]!)).toEqual(["types", "browser", "import"]);
+    expect(Object.keys(manifest.exports["."] as Record<string, string>)).toEqual(["types", "browser", "import"]);
     expect(manifest.exports["./browser"]).toEqual({ types: "./dist/browser.d.ts", import: "./dist/browser.js" });
+    expect(manifest.exports["./browser-worker.js"]).toBe("./dist/browser-worker.js");
     expect(manifest.sideEffects).toBe(false);
     expect(manifest.files).toEqual(["dist"]);
   });

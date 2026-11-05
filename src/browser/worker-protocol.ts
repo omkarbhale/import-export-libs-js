@@ -4,7 +4,6 @@ import { EngineNotSupportedError } from "../client/engine-support.js";
 import { DiscoveryNotFound, OAuthServerError } from "../client/oauth.js";
 import { UnmappedTimeZoneError } from "../client/timezone.js";
 import { TransportError } from "../client/transport.js";
-import type { HttpTransport, TransportRequest, TransportResponse } from "../client/transport.js";
 import { ArasVersion, VersionRefusal } from "../client/version.js";
 import { SelectionRefused } from "../cli/export-selection.js";
 import { DbPatchesNotInEngineError } from "../db-patches/engines.js";
@@ -133,15 +132,23 @@ export interface WireConnectOptions {
 /** The kinds of call (HOST-274). */
 export type CallOp = "connect" | "close" | "export" | "import" | "language-pack" | "db-patches";
 
+/** An `ArasVersion` as a structured clone leaves it: its fields, without the class's getters. */
+export type WireVersion = Pick<ArasVersion, "major" | "minor" | "servicePack" | "build" | "serviceUpdate">;
+
+/** Builds the `ArasVersion` again from what crossed. */
+export function rehydrateVersion({ major, minor, servicePack, build, serviceUpdate }: WireVersion): ArasVersion {
+  return new ArasVersion(major, minor, servicePack, build, serviceUpdate);
+}
+
 /** The session a call returns, with the fields of `Session` that are data (HOST-274). */
 export interface WireSession {
   engine: Engine;
-  serverVersion: ArasVersion;
+  serverVersion: WireVersion;
   url: string;
   database: string;
   userName: string;
   timeoutMs: number;
-  versionGate: { engine: Engine; server: ArasVersion; accepted: boolean; skipped: boolean; fittingEngines: Engine[] } | undefined;
+  versionGate: { engine: Engine; server: WireVersion; accepted: boolean; skipped: boolean; fittingEngines: Engine[] } | undefined;
 }
 
 /** What an operation returns across the boundary: `OperationResult` with no tree, and the files of an export (HOST-275). */
@@ -150,8 +157,6 @@ export interface WireResult extends Omit<OperationResult, "vfs"> {
   files?: Map<string, Uint8Array>;
   /** The zip of the working directory, when the call asked for it. */
   zip?: Uint8Array;
-  /** True when the operation left the session closed (the language-pack import logs it off, HOST-270). */
-  sessionClosed: boolean;
 }
 
 /** The names of the callbacks the Worker asks the main thread for (HOST-274). */
@@ -171,9 +176,9 @@ export type ToWorkerBody =
 
 /** A message from the Worker to the main thread, without the version that {@link fromWorker} adds. */
 export type FromWorkerBody =
-  | { kind: "ready"; library: string }
-  | { kind: "result"; id: number; value: unknown }
-  | { kind: "error"; id: number; error: WireError }
+  | { kind: "ready" }
+  | { kind: "result"; id: number; value: unknown; sessionClosed?: true }
+  | { kind: "error"; id: number; error: WireError; sessionClosed?: true }
   | { kind: "event"; id: number; event: { type: "message"; message: ApiMessage } | { type: "progress"; progress: ProgressEvent } }
   | { kind: "callback"; callback: number; scope: number; name: CallbackName; args: unknown[] }
   | { kind: "disposed" };
@@ -194,16 +199,6 @@ export function fromWorker(message: FromWorkerBody): FromWorker {
 /** True when the value is a message of this protocol: an object with the version and a kind. */
 export function isEnvelope(data: unknown): data is Versioned & { kind: string } {
   return typeof data === "object" && data !== null && typeof (data as { v?: unknown }).v === "number" && typeof (data as { kind?: unknown }).kind === "string";
-}
-
-// -------------------------------------------------------------------------------------------------------------- the transport
-
-/** What a transport request is as it crosses to the main thread: the engine's own request (a plain object with the body's bytes). */
-export type WireTransportRequest = TransportRequest;
-
-/** The `HttpTransport` the Worker gives the engine when the caller supplied one: each request is asked of the main thread (HOST-274). */
-export function proxyTransport(call: (request: TransportRequest) => Promise<TransportResponse>): HttpTransport {
-  return { send: (request) => call(request) };
 }
 
 // ------------------------------------------------------------------------------------------------------------------ the errors
@@ -310,8 +305,7 @@ function unwireValue(value: unknown): unknown {
   const tagged = value as { $error?: WireError; $class?: string; $plain?: Record<string, unknown>; props?: Record<string, unknown> };
   if (tagged.$error !== undefined) return rehydrateError(tagged.$error);
   if (tagged.$class === "ArasVersion" && tagged.props !== undefined) {
-    const { major, minor, servicePack, build, serviceUpdate } = unwireMembers(tagged.props) as Record<string, number>;
-    return new ArasVersion(major as number, minor as number, servicePack as number, build as number, serviceUpdate as number);
+    return rehydrateVersion(unwireMembers(tagged.props) as unknown as WireVersion);
   }
   if (tagged.$plain !== undefined) return unwireMembers(tagged.$plain);
   return value;
@@ -328,12 +322,10 @@ function unwireMembers(props: Record<string, unknown>): Record<string, unknown> 
  * A `DOMException` is sent as one; a value that is not an `Error` is sent as the value.
  */
 export function serializeError(error: unknown, depth = 0): WireError {
-  if (!(error instanceof Error)) {
-    if (typeof DOMException !== "undefined" && error instanceof DOMException) {
-      return { kind: "error", type: "DOMException", name: error.name, message: error.message, stack: error.stack, props: {} };
-    }
-    return { kind: "value", value: wireValue(error, depth) };
+  if (typeof DOMException !== "undefined" && error instanceof DOMException) {
+    return { kind: "error", type: "DOMException", name: error.name, message: error.message, stack: error.stack, props: {} };
   }
+  if (!(error instanceof Error)) return { kind: "value", value: wireValue(error, depth) };
   const type = CLASSES.find(([, constructor]) => error instanceof constructor)?.[0] ?? "Error";
   const wired: WireError = {
     kind: "error",
@@ -383,9 +375,8 @@ export class TransferBag {
   readonly list: ArrayBuffer[] = [];
   private readonly taken = new Set<ArrayBuffer>();
 
-  /** `transfer: false` always copies. */
-  take(bytes: Uint8Array, transfer = true): Uint8Array {
-    if (!transfer || !ownsItsBuffer(bytes) || this.taken.has(bytes.buffer as ArrayBuffer)) return new Uint8Array(bytes);
+  take(bytes: Uint8Array): Uint8Array {
+    if (!ownsItsBuffer(bytes) || this.taken.has(bytes.buffer as ArrayBuffer)) return new Uint8Array(bytes);
     this.taken.add(bytes.buffer as ArrayBuffer);
     this.list.push(bytes.buffer as ArrayBuffer);
     return bytes;

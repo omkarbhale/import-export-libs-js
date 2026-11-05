@@ -27,6 +27,7 @@ import {
   WorkerProtocolError,
   isEnvelope,
   rehydrateError,
+  rehydrateVersion,
   serializeError,
   toWorker,
 } from "./worker-protocol.js";
@@ -63,12 +64,12 @@ export interface BlobLike {
 
 /**
  * Where the files of a call come from, each as a Worker can take it (HOST-275). The buffers of `zip` and `files` are **transferred**,
- * not copied, unless `transfer` is `false`: after the call starts the caller's `Uint8Array`s are empty. A `File`, a `Blob`, a
+ * not copied: after the call starts the caller's `Uint8Array`s are empty, and a caller who keeps the bytes passes a copy. A `File`, a `Blob`, a
  * `FileSystemDirectoryHandle` is cloned by the browser, which reads the bytes in the Worker and not on the page.
  */
 export type WorkerSource =
-  | { zip: Uint8Array | BlobLike; maxBytes?: number; transfer?: boolean }
-  | { files: Readonly<Record<string, Uint8Array | string>> | ReadonlyMap<string, Uint8Array | string>; transfer?: boolean }
+  | { zip: Uint8Array | BlobLike; maxBytes?: number }
+  | { files: Readonly<Record<string, Uint8Array | string>> | ReadonlyMap<string, Uint8Array | string> }
   | { fileList: Iterable<FileLike & BlobLike>; mount?: WorkerMountOptions }
   | { directory: FsaDirectoryHandle; mount?: WorkerMountOptions };
 
@@ -104,7 +105,7 @@ export interface WorkerExportOptions extends Plain<ExportOptions, never>, Stream
 
 /** What {@link EngineWorker.exportPackages} resolves with: the result of `exportPackages` with the files and the zip as transferred buffers, and no tree. */
 export interface WorkerExportResult extends Omit<ExportResult, "vfs"> {
-  /** The zip of the working directory, when `zip` was asked for. */
+  /** The zip of the working directory, when `zip` was asked for and the run made that folder. */
   zip?: Uint8Array;
 }
 
@@ -159,8 +160,6 @@ export interface EngineWorker {
   dispose(options?: DisposeOptions): Promise<void>;
   /** True from the first `dispose` call. */
   readonly disposed: boolean;
-  /** The version of the library the Worker reported, once it has started. */
-  readonly workerLibraryVersion: string | undefined;
 }
 
 export interface EngineWorkerOptions {
@@ -181,8 +180,8 @@ interface Pending {
   onMessage?: ExportOptions["onMessage"];
   onProgress?: ExportOptions["onProgress"];
   signal?: AbortSignal;
-  /** Why the call was aborted, when this side raised it. */
-  aborted: boolean;
+  /** The Worker said that the call left its session closed. */
+  onSessionClosed?: () => void;
   release: () => void;
 }
 
@@ -204,7 +203,7 @@ function wireSource(source: WorkerSource, bag: TransferBag): WireSource {
     const zip = source.zip;
     return {
       kind: "zip",
-      bytes: zip instanceof Uint8Array ? bag.take(zip, source.transfer !== false) : zip,
+      bytes: zip instanceof Uint8Array ? bag.take(zip) : zip,
       ...(source.maxBytes === undefined ? {} : { maxBytes: source.maxBytes }),
     };
   }
@@ -212,7 +211,7 @@ function wireSource(source: WorkerSource, bag: TransferBag): WireSource {
     const entries = source.files instanceof Map ? [...source.files] : Object.entries(source.files);
     const files: Record<string, Uint8Array | string> = {};
     for (const [path, content] of entries) {
-      files[path.startsWith("/") ? path : `/${path}`] = typeof content === "string" ? content : bag.take(content, source.transfer !== false);
+      files[path.startsWith("/") ? path : `/${path}`] = typeof content === "string" ? content : bag.take(content);
     }
     return { kind: "files", files };
   }
@@ -248,7 +247,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
   let nextId = 1;
   let disposing: Promise<void> | undefined;
   let stopped = false;
-  let libraryVersion: string | undefined;
   let onDisposed: (() => void) | undefined;
 
   const stop = (): void => {
@@ -313,7 +311,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     const message = data as FromWorker;
     switch (message.kind) {
       case "ready":
-        libraryVersion = message.library;
         return;
       case "event": {
         const call = pending.get(message.id);
@@ -334,6 +331,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         if (call === undefined) return;
         pending.delete(message.id);
         call.release();
+        if (message.sessionClosed === true) call.onSessionClosed?.();
         call.resolve(message.value);
         return;
       }
@@ -342,6 +340,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         if (call === undefined) return;
         pending.delete(message.id);
         call.release();
+        if (message.sessionClosed === true) call.onSessionClosed?.();
         call.reject(errorOf(call, message.error));
         return;
       }
@@ -356,15 +355,16 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
 
   worker.addEventListener("message", receive);
   // a Worker that fails to start (a missing file, a script error) or sends what cannot be read ends every call that waits for it
-  worker.addEventListener("error", (event) => {
-    failAll(new WorkerCrashedError(`the Worker failed: ${describe(event)}`));
+  const crash = (text: string): void => {
+    failAll(new WorkerCrashedError(text));
     stop();
-  });
-  worker.addEventListener("messageerror", () => failAll(new WorkerCrashedError("the Worker sent a message that could not be read")));
+  };
+  worker.addEventListener("error", (event) => crash(`the Worker failed: ${describe(event)}`));
+  worker.addEventListener("messageerror", () => crash("the Worker sent a message that could not be read"));
   worker.start?.();
 
   /** Sends one call and returns what it resolves with. `build` makes the message's body and fills the transfer list. */
-  function call<T>(op: CallOp, streams: Streams, build: (id: number, bag: TransferBag) => ToWorkerBody, registered?: Handlers): Promise<T> {
+  function call<T>(op: CallOp, streams: Streams, build: (id: number, bag: TransferBag) => ToWorkerBody, registered?: Handlers, onSessionClosed?: () => void): Promise<T> {
     if (disposing !== undefined || stopped) return Promise.reject(new WorkerDisposedError("the Worker was disposed"));
     const { signal } = streams;
     if (signal?.aborted === true) return Promise.reject(signal.reason);
@@ -373,7 +373,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
       const onAbort = (): void => {
         const entry = pending.get(id);
         if (entry === undefined) return;
-        entry.aborted = true;
         post({ kind: "abort", id });
       };
       signal?.addEventListener("abort", onAbort);
@@ -384,7 +383,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         ...(streams.onMessage === undefined ? {} : { onMessage: streams.onMessage }),
         ...(streams.onProgress === undefined ? {} : { onProgress: streams.onProgress }),
         ...(signal === undefined ? {} : { signal }),
-        aborted: false,
+        ...(onSessionClosed === undefined ? {} : { onSessionClosed }),
         release: () => {
           signal?.removeEventListener("abort", onAbort);
           if (registered !== undefined && op !== "connect") handlers.delete(id);
@@ -414,15 +413,16 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
 
   function makeSession(id: number, wired: WireSession): WorkerSession {
     let closed = false;
+    const serverVersion = rehydrateVersion(wired.serverVersion);
     const session: WorkerSession = {
       engine: wired.engine,
-      serverVersion: wired.serverVersion,
-      serverVersionText: wired.serverVersion.fullString,
+      serverVersion,
+      serverVersionText: serverVersion.fullString,
       url: wired.url,
       database: wired.database,
       userName: wired.userName,
       timeoutMs: wired.timeoutMs,
-      versionGate: wired.versionGate,
+      versionGate: wired.versionGate === undefined ? undefined : { ...wired.versionGate, server: rehydrateVersion(wired.versionGate.server) },
       get closed() {
         return closed;
       },
@@ -453,7 +453,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     if (session.closed) throw new SessionClosedError();
     const answerOf = typeof options.onItemError === "function" ? options.onItemError : undefined;
     const wants: CallWants = { message: options.onMessage !== undefined, progress: options.onProgress !== undefined, onItemError: answerOf !== undefined };
-    const result = await call<T>(
+    return call<T>(
       op,
       options,
       (id, bag) => ({
@@ -466,9 +466,8 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
         wants,
       }),
       answerOf === undefined ? undefined : { onItemError: answerOf },
+      markClosed.get(session),
     );
-    if (result.sessionClosed) markClosed.get(session)?.();
-    return result;
   }
 
   /** The options that cross: everything the caller gave but the functions, the signal and the source, which have their own paths. */
@@ -505,9 +504,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     get disposed() {
       return disposing !== undefined;
     },
-    get workerLibraryVersion() {
-      return libraryVersion;
-    },
 
     async connect(connectOptions) {
       // the password is read here into the message and nowhere else: it is not kept by the client, nor by the session it returns (HOST-274)
@@ -535,8 +531,7 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     },
 
     exportPackages: async (session, exportOptions) => {
-      const { zip } = exportOptions;
-      const result = await operation<WireResult>("export", session, exportOptions, { ...plain(exportOptions), ...(zip === undefined || zip === false ? {} : { zip }) });
+      const result = await operation<WireResult>("export", session, exportOptions, plain(exportOptions));
       return { ...strip(result), files: result.files ?? new Map<string, Uint8Array>(), ...(result.zip === undefined ? {} : { zip: result.zip }) };
     },
     importPackages: async (session, importOptions) => strip(await operation("import", session, importOptions, plain(importOptions))),
@@ -546,7 +541,6 @@ export function createEngineWorker(options: EngineWorkerOptions = {}): EngineWor
     abort() {
       for (const [id, entry] of pending) {
         if (entry.op === "connect" || entry.op === "close") continue;
-        entry.aborted = true;
         post({ kind: "abort", id });
       }
     },

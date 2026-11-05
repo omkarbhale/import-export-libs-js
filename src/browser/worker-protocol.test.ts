@@ -122,7 +122,9 @@ describe("errors across the boundary (HOST-275)", () => {
     expect(strange.name).toBe("Strange");
     expect(strange.message).toBe("odd");
     expect(strange.extra).toEqual({ a: 1 });
-    expect(across(new DOMException("aborted", "AbortError"))).toMatchObject({ name: "AbortError", message: "aborted" });
+    const aborted = across(new DOMException("aborted", "AbortError"));
+    expect(aborted).toBeInstanceOf(DOMException);
+    expect(aborted).toMatchObject({ name: "AbortError", message: "aborted" });
   });
 
   it("sends what is not an error as the value, and leaves out what a message cannot carry", () => {
@@ -194,10 +196,6 @@ describe("buffers across the boundary (HOST-275)", () => {
     expect(bag.take(whole)).toBe(whole);
     const again = new Uint8Array(whole.buffer);
     expect(bag.take(again)).not.toBe(again);
-    expect(bag.list).toHaveLength(1);
-
-    const kept = new Uint8Array([7]);
-    expect(bag.take(kept, false)).not.toBe(kept);
     expect(bag.list).toHaveLength(1);
 
     if (typeof SharedArrayBuffer !== "undefined") {
