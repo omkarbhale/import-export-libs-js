@@ -1,10 +1,11 @@
 import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { fixtureCommands, replaceDefaultHostForVite } from "./tools/browser-vitest.js";
+import { readSelectionFile } from "./tools/browser-test-selection.js";
 
 /**
  * Two projects (HOST-263). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
- * files in headless Chromium, Firefox and WebKit;
+ * files and the unit tests of `src/browser/pure-tests.json` in headless Chromium, Firefox and WebKit;
  * `npm run test:browser` runs it alone, and a browser failure names the browser.
  */
 
@@ -27,7 +28,8 @@ export default defineConfig({
         optimizeDeps: { include: ["buffer/index.js"] },
         test: {
           name: "browser",
-          include: ["src/**/*.browser.test.ts"],
+          // The unit tests whose import closure reaches no Node API run here too, unedited (HOST-264; `npx tsx tools/browser-test-selection.ts --write` writes the list).
+          include: ["src/**/*.browser.test.ts", ...readSelectionFile().files],
           setupFiles: ["src/browser/buffer-setup.browser.ts"],
           // A recorded run is an export or an import over a case of tens of megabytes in a page: slower than on Node.
           testTimeout: 120_000,

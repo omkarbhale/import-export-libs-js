@@ -6,7 +6,9 @@ import { commands } from "vitest/browser";
  * Paths are repository-relative with a `fixtures/` prefix, the same way the commands take them, e.g.
  * `fixtures/14.0.7/import/s0-mini-defaults`.
  *
- * @spec HOST-263
+ * It also serves the browser twins of the unit tests that read fixtures (`engine-compat.browser.test.ts`, HOST-264).
+ *
+ * @spec HOST-263 HOST-264
  */
 declare module "vitest/browser" {
   interface BrowserCommands {
