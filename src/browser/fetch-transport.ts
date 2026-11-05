@@ -32,6 +32,14 @@ export interface FetchTransportOptions {
    * header is a hint that does not change the request. Pass `true` when the server's `Access-Control-Allow-Headers` lists it.
    */
   sendReadOnlyHint?: boolean;
+  /**
+   * Whether to send the `Aras-Set-HttpSessionState-Behavior` header that IOM 12 adds to its discovery request (WIRE-010). Default
+   * `false` (HOST-232), for the same reason as {@link sendReadOnlyHint}: none of the servers lists it in `Access-Control-Allow-Headers`
+   * (`roadmap/browser-cors-poc.md`), so a page that sent it would have the whole discovery, and with it the 12.0 engine's login,
+   * refused at the preflight. The header only asks the server not to hold a session for the request, and the browser sends no session
+   * cookie anyway (HOST-233). Pass `true` when the server's list has it.
+   */
+  sendSessionStateHint?: boolean;
 }
 
 /**
@@ -49,6 +57,7 @@ export const FORBIDDEN_REQUEST_HEADERS: ReadonlySet<string> = new Set([
 ]);
 
 const READ_ONLY_HINT_HEADER = "aras-request-readonly";
+const SESSION_STATE_HINT_HEADER = "aras-set-httpsessionstate-behavior";
 
 /**
  * The reason phrases of the final HTTP statuses (RFC 9110), for a response whose `statusText` is empty (HTTP/2 has no reason
@@ -146,6 +155,7 @@ export function createFetchTransport(options: FetchTransportOptions = {}): HttpT
           const lower = name.toLowerCase();
           if (FORBIDDEN_REQUEST_HEADERS.has(lower)) continue;
           if (lower === READ_ONLY_HINT_HEADER && options.sendReadOnlyHint !== true) continue;
+          if (lower === SESSION_STATE_HINT_HEADER && options.sendSessionStateHint !== true) continue;
           headers.push([name, value]);
         }
         const init: NonNullable<Parameters<typeof fetch>[1]> = {
