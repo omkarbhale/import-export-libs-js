@@ -226,13 +226,22 @@ describe("an import through the Worker equals the direct call (HOST-274, HOST-27
 
   // WebKit writes a file of the origin private file system only from a Worker (`createWritable` is not on the page's thread there),
   // and this test writes the folder from the page: where that cannot be done, the handle cannot be made and the test is not run.
+  // The same goes for a browser that refuses the origin private file system itself (UnknownError). Only that refusal skips: a failure
+  // of the Worker's reading still fails the test.
   const canWriteOnPage = typeof FileSystemFileHandle !== "undefined" && "createWritable" in FileSystemFileHandle.prototype;
-  it.skipIf(!canWriteOnPage)("imports from a directory handle, which the Worker reads: the picker's job stays on the page, the reading does not", async () => {
+  it.skipIf(!canWriteOnPage)("imports from a directory handle, which the Worker reads: the picker's job stays on the page, the reading does not", async ({ skip }) => {
     const worker = await startWorker();
     const { server, osUser, input, recorded } = await importRecording("14.0.7", "s0-mini-defaults");
-    const root = await navigator.storage.getDirectory();
     const name = `worker-test-${crypto.randomUUID()}`;
-    const folder = await root.getDirectoryHandle(name, { create: true });
+    let root: FileSystemDirectoryHandle;
+    let folder: FileSystemDirectoryHandle;
+    try {
+      root = await navigator.storage.getDirectory();
+      folder = await root.getDirectoryHandle(name, { create: true });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "UnknownError") return skip(`this browser refuses the origin private file system: ${error.message}`);
+      throw error;
+    }
     try {
       const tree = new MemoryVfs();
       tree.mount(Object.fromEntries(input.map((file) => [`/${file.path}`, file.bytes])));
@@ -359,7 +368,8 @@ describe("errors and the stop, in the browsers (HOST-274, HOST-275)", () => {
     const session = await worker.connect({ ...LOGIN, engine: "14.0.7", transport });
     const refused = await worker.exportPackages(session, { packages: [] }).catch((error: unknown) => error);
     expect(refused).toBeInstanceOf(OptionError);
-    expect((refused as Error).stack).toContain("OptionError");
+    // the stack text of the Worker, whose frames every browser names, though only some write the class's name there
+    expect((refused as Error).stack).toContain("checkExportOptions");
     const noLogin = await worker.connect({ ...LOGIN, password: "", transport }).catch((error: unknown) => error);
     expect(noLogin).toBeInstanceOf(OptionError);
   });
