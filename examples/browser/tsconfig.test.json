@@ -1,0 +1,8 @@
+{
+  // The test that drives the page in a browser: the page's DOM types and the Node types the fixture commands' tooling brings (the
+  // base project's settings otherwise). tsconfig.json beside it holds the page itself to the browser's typecheck (HOST-280).
+  "extends": "../../tsconfig.json",
+  "compilerOptions": { "lib": ["ES2022", "DOM", "DOM.Iterable"], "noEmit": true },
+  "include": ["ui.browser.test.ts"],
+  "exclude": []
+}

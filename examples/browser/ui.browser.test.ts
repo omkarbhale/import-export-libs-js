@@ -1,0 +1,434 @@
+import { commands, userEvent } from "vitest/browser";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { MemoryVfs, type OperationResult, vfsFromZip, vfsToZip } from "../../src/browser.js";
+import { FakeDirectoryHandle } from "../../src/browser/fake-directory-handle.js";
+import { loadFixtureTree } from "../../src/browser/test-support.browser.js";
+import { packageCaches } from "../../src/client/package-lookups.js";
+import type { StartedReplay, StoppedReplay } from "../../tools/browser-example/replay-types.js";
+import { type App, type AppDeps, mountApp } from "./app.js";
+import type { EngineClient } from "./engine-client.js";
+
+/**
+ * The reference page, driven as a person drives it, in each browser (HOST-280, HOST-281). The page is mounted as `main.ts` mounts it
+ * and talks to a recorded run served over HTTP by a server of the Vitest side, on another origin: the page's own `fetch` transport,
+ * CORS and the browser API are all real. An export is downloaded as a zip and must be the recorded output byte for byte; an import
+ * runs from a zip, from a folder input and from a drop, and the server must see every recorded request, each as recorded. The folder
+ * picker is exercised through a directory handle written in memory, which stands in for the picker's dialog, the one thing a test
+ * cannot drive (the manual run on Chromium is recorded in the pull request).
+ *
+ * @spec HOST-280 HOST-281
+ */
+
+declare module "vitest/browser" {
+  interface BrowserCommands {
+    startReplay(id: string): Promise<StartedReplay>;
+    stopReplay(handle: string): Promise<StoppedReplay>;
+  }
+}
+
+// the dependency cache outlives a session (EXP-619), and every recording was made by a process of its own
+beforeEach(() => packageCaches.dependsOn.clear());
+
+// --------------------------------------------------------------------------------------------------------------- helpers
+
+let app: App | undefined;
+let host: HTMLElement | undefined;
+let replay: { started: StartedReplay } | undefined;
+
+afterEach(async () => {
+  app?.destroy();
+  host?.remove();
+  app = host = undefined;
+  if (replay !== undefined) await commands.stopReplay(String(replay.started.handle));
+  replay = undefined;
+});
+
+function mount(deps: AppDeps = {}): HTMLElement {
+  host = document.createElement("div");
+  document.body.append(host);
+  app = mountApp(host, { location: { protocol: "https:", hostname: "tools.example.com" }, ...deps });
+  return host;
+}
+
+async function startReplay(id: string): Promise<StartedReplay> {
+  const started = await commands.startReplay(id);
+  replay = { started };
+  return started;
+}
+
+/** What the server saw: stops it and answers with what the recording was used for. */
+async function stopReplay(): Promise<StoppedReplay> {
+  const handle = (replay as { started: StartedReplay }).started.handle;
+  replay = undefined;
+  return commands.stopReplay(String(handle));
+}
+
+function q<T extends HTMLElement = HTMLElement>(selector: string): T {
+  const element = (host as HTMLElement).querySelector<T>(selector);
+  if (element === null) throw new Error(`the page has no ${selector}`);
+  return element;
+}
+
+const key = (name: string, panel?: string): HTMLInputElement => q<HTMLInputElement>(`${panel === undefined ? "" : `[data-panel="${panel}"] `}[data-key="${name}"]`);
+const runButton = (): HTMLButtonElement => q<HTMLButtonElement>('[data-key="run"]');
+const sourceStatus = (panel: string): HTMLElement => q(`[data-panel="${panel}"] .source .status`);
+
+async function connectTo(url: string, options: { engine: string; user?: string } = { engine: "14.0.7" }): Promise<void> {
+  await userEvent.fill(key("url"), url);
+  await userEvent.fill(key("database"), "12sp9");
+  await userEvent.fill(key("userName"), options.user ?? "admin");
+  await userEvent.fill(key("password"), "pw-of-the-test-xyz");
+  await userEvent.selectOptions(key("engine"), options.engine);
+}
+
+async function openTab(mode: string): Promise<void> {
+  await userEvent.click(q(`[data-mode="${mode}"]`));
+}
+
+/** Clicks Run and waits for the run to end. */
+async function run(): Promise<void> {
+  await userEvent.click(runButton());
+  await vi.waitFor(() => expect(runButton().disabled).toBe(false), { timeout: 60_000 });
+}
+
+const logText = (): string => q(".log").textContent ?? "";
+const failureText = (): string => q('.run-view [role="alert"]').textContent ?? "";
+
+async function treeOf(dir: string): Promise<MemoryVfs> {
+  const vfs = new MemoryVfs();
+  const files: Record<string, Uint8Array> = {};
+  for (const file of await loadFixtureTree(dir)) files[`/${file.path}`] = file.bytes;
+  vfs.mount(files);
+  return vfs;
+}
+
+async function zipFileOf(dir: string, name = "package.zip"): Promise<File> {
+  return new File([new Uint8Array(vfsToZip(await treeOf(dir), "/"))], name, { type: "application/zip" });
+}
+
+/** A folder as a folder input gives it: every file with its path from the folder's own name. */
+async function folderInput(dir: string, folder: string): Promise<File[]> {
+  return (await loadFixtureTree(dir)).map((file) => {
+    const made = new File([new Uint8Array(file.bytes)], file.path.split("/").at(-1) as string);
+    Object.defineProperty(made, "webkitRelativePath", { value: `${folder}/${file.path}` });
+    return made;
+  });
+}
+
+function fileList(files: File[]): FileList {
+  const transfer = new DataTransfer();
+  for (const file of files) transfer.items.add(file);
+  return transfer.files;
+}
+
+/** A dropped file, as the browser's `FileSystemFileEntry` gives it. */
+function fileEntry(file: File): { isFile: true; isDirectory: false; name: string; file(success: (file: File) => void): void } {
+  return { isFile: true, isDirectory: false, name: file.name, file: (success) => success(file) };
+}
+
+/** A dropped folder with all of its files and folders, as the browser's `FileSystemDirectoryEntry` lists them (HOST-255). */
+function folderEntry(name: string, files: Array<{ path: string; bytes: Uint8Array }>): object {
+  const children = new Map<string, { path: string; bytes: Uint8Array }[]>();
+  const direct: object[] = [];
+  for (const file of files) {
+    const [first, ...rest] = file.path.split("/");
+    if (rest.length === 0) direct.push(fileEntry(new File([new Uint8Array(file.bytes)], first as string)));
+    else children.set(first as string, [...(children.get(first as string) ?? []), { path: rest.join("/"), bytes: file.bytes }]);
+  }
+  const listing = [...direct, ...[...children].map(([child, inner]) => folderEntry(child, inner))];
+  return {
+    isFile: false,
+    isDirectory: true,
+    name,
+    createReader() {
+      let done = false;
+      return {
+        readEntries(success: (entries: object[]) => void) {
+          const batch = done ? [] : listing;
+          done = true;
+          success(batch);
+        },
+      };
+    },
+  };
+}
+
+const IMPORT_CASE = "14.0.7/import/s0-mini-defaults";
+const IMPORT_INPUT = "fixtures/14.0.7/import/s0-mini-defaults/step-1/input";
+const EXPORT_CASE = "14.0.7/export/e27-permission";
+const EXPORT_OUTPUT = "fixtures/14.0.7/export/e27-permission/output";
+
+async function expectImportDone(): Promise<void> {
+  expect(failureText()).toBe("");
+  expect(q(".summary").textContent).toContain("success");
+  const report = await stopReplay();
+  expect(report.mismatches).toEqual([]);
+  expect(report.consumed).toBe(report.total);
+  expect(report.total).toBeGreaterThan(20);
+}
+
+// ------------------------------------------------------------------------------------------------------------------ export
+
+describe("export, from the page to a zip", () => {
+  it("downloads a zip that is the recorded output, byte for byte, and leaves no password behind", async () => {
+    const saved: Array<{ name: string; bytes: Uint8Array }> = [];
+    mount({ saveFile: (name, bytes) => saved.push({ name, bytes }) });
+    const { url, recipe } = await startReplay(EXPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await userEvent.fill(key("packages", "export"), (recipe.packages as string[]).join("\n"));
+    if (recipe.level !== undefined) await userEvent.fill(key("level", "export"), recipe.level);
+    await run();
+
+    expect(failureText()).toBe("");
+    expect(saved).toHaveLength(1);
+    expect(saved[0]?.name).toMatch(/^export-\d{8}-\d{6}\.zip$/);
+    const wanted = new Map((await loadFixtureTree(EXPORT_OUTPUT)).map((file) => [file.path, file.bytes] as const));
+    const unzipped = vfsFromZip(saved[0]?.bytes as Uint8Array).snapshot("/");
+    expect([...unzipped.keys()].sort()).toEqual([...wanted.keys()].sort());
+    for (const [path, bytes] of wanted) expect(unzipped.get(path), path).toEqual(bytes);
+
+    // what the person sees
+    expect(q(".summary").textContent).toContain("success");
+    expect(q(".progress").textContent).toContain(recipe.packages?.[0] as string);
+    expect(logText()).toContain("Exporting package");
+    // the server saw the recorded requests, every one as recorded
+    const report = await stopReplay();
+    expect(report.mismatches).toEqual([]);
+    expect(report.consumed).toBe(report.total);
+    expect(report.requests.some((line) => line.includes("Logoff"))).toBe(true);
+
+    // HOST-281: the password is gone from the field, and was never stored or put in the URL
+    expect(key("password").value).toBe("");
+    expect(localStorage.length).toBe(0);
+    expect(sessionStorage.length).toBe(0);
+    expect(location.href).not.toContain("pw-of-the-test");
+    expect(document.documentElement.outerHTML).not.toContain("pw-of-the-test");
+  });
+
+  it("writes the same files into a folder when the browser has the picker", async () => {
+    const saved: unknown[] = [];
+    const target = new FakeDirectoryHandle("chosen");
+    mount({ canPickDirectory: true, pickDirectory: () => Promise.resolve(target), saveFile: (name) => saved.push(name) });
+    const { url, recipe } = await startReplay(EXPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await userEvent.fill(key("packages", "export"), (recipe.packages as string[]).join("\n"));
+    if (recipe.level !== undefined) await userEvent.fill(key("level", "export"), recipe.level);
+    await userEvent.click(key("sink-pick"));
+    await vi.waitFor(() => expect(host?.querySelector(".sink")?.textContent).toContain("chosen"));
+    await run();
+
+    expect(failureText()).toBe("");
+    expect(saved).toEqual([]);
+    const wanted = await loadFixtureTree(EXPORT_OUTPUT);
+    for (const file of wanted) {
+      let folder: FakeDirectoryHandle = target;
+      const parts = file.path.split("/");
+      for (const part of parts.slice(0, -1)) folder = (await folder.getDirectoryHandle(part)) as FakeDirectoryHandle;
+      const written = await (await folder.getFileHandle(parts.at(-1) as string)).getFile();
+      expect(new Uint8Array(await written.arrayBuffer()), file.path).toEqual(file.bytes);
+    }
+    expect((await stopReplay()).mismatches).toEqual([]);
+  });
+
+  it("shows the library's refusal of a selection, with the type of the error", async () => {
+    mount();
+    const { url, recipe } = await startReplay(EXPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    // no package named: the library refuses before it sends a request
+    await run();
+    expect(failureText()).toMatch(/^OptionError: /);
+    expect((await stopReplay()).consumed).toBe(0);
+  });
+});
+
+// ------------------------------------------------------------------------------------------------------------------ import
+
+describe("import, from a zip, a folder and a drop", () => {
+  it("imports a zip that was chosen, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+    await run();
+
+    await expectImportDone();
+    expect(logText()).toContain("LIBSJS-SCRATCH-MINI");
+    expect(q(".progress").textContent).toContain("completed");
+    expect(q('[data-key="download-log"]').hidden).toBe(false);
+  });
+
+  it("imports a folder that was chosen with a folder input, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    const input = q<HTMLInputElement>('[data-panel="import"] [data-source="folder"]');
+    input.files = fileList(await folderInput(IMPORT_INPUT, "my-package"));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("my-package"));
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+    await run();
+    await expectImportDone();
+  });
+
+  it.for(["zip", "folder"] as const)("imports a %s that was dropped, as recorded", async (kind) => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    // a browser makes the entries of a real drag; a script cannot, so the drop carries entries written as the browser's are
+    const entries = kind === "zip" ? [fileEntry(await zipFileOf(IMPORT_INPUT, "dropped.zip"))] : [folderEntry("dropped-folder", await loadFixtureTree(IMPORT_INPUT))];
+    const drop = new Event("drop", { bubbles: true, cancelable: true });
+    Object.defineProperty(drop, "dataTransfer", { value: { items: entries.map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry })) } });
+    q('[data-panel="import"] [data-source="drop"]').dispatchEvent(drop);
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toMatch(/in memory|Could not read/));
+    expect(sourceStatus("import").textContent).toContain(kind === "zip" ? "dropped.zip" : "dropped-folder");
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+    await run();
+    await expectImportDone();
+  });
+
+  it("imports a folder behind a picked directory handle, as recorded", async () => {
+    const handle = new FakeDirectoryHandle("picked");
+    for (const file of await loadFixtureTree(IMPORT_INPUT)) handle.put(file.path, file.bytes);
+    mount({ canPickDirectory: true, pickDirectory: () => Promise.resolve(handle) });
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    await userEvent.click(q('[data-panel="import"] [data-source="picker"]'));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+    await run();
+    await expectImportDone();
+  });
+
+  it("asks for the package before it connects", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    await userEvent.click(runButton());
+    await vi.waitFor(() => expect(q(".actions ~ .error").hidden).toBe(false));
+    expect(q(".actions ~ .error").textContent).toContain("load the package first");
+    expect(runButton().disabled).toBe(false);
+  });
+
+  it("says why a zip could not be read", async () => {
+    mount();
+    await openTab("import");
+    await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), new File([new Uint8Array([1, 2, 3, 4])], "broken.zip", { type: "application/zip" }));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("Could not read it"));
+  });
+});
+
+// ------------------------------------------------------------------------------------------------------ abort and failure
+
+/** An engine that stays in the operation until the signal is raised, then ends it as the library does. */
+function waitingEngine(): EngineClient {
+  const cancelled = (): OperationResult => ({
+    vfs: new MemoryVfs(),
+    log: "",
+    messages: [],
+    summary: { operation: "import", engine: "14.0.7", server: "14.0.9.1", result: "cancelled", returnCode: 0, aborted: true, messages: { info: 0, warnings: 0, errors: 0, packages: 0 }, packages: [] },
+  });
+  return {
+    connect: () =>
+      Promise.resolve({
+        engine: "14.0.7",
+        serverVersion: "14.0.9.1",
+        exportPackages: () => Promise.reject(new Error("not used")),
+        importLanguagePack: () => Promise.reject(new Error("not used")),
+        applyDbPatches: () => Promise.reject(new Error("not used")),
+        importPackages: (options) =>
+          new Promise<OperationResult>((resolve) => {
+            options.onProgress?.({ operation: "import", phase: "package", package: "P" });
+            options.signal?.addEventListener("abort", () => resolve(cancelled()));
+          }),
+        close: () => Promise.resolve(),
+      }),
+  };
+}
+
+describe("abort and failure", () => {
+  it("raises the run's signal when Abort is pressed, and ends with a cancelled run", async () => {
+    mount({ engine: waitingEngine() });
+    await connectTo("http://unused.example/x");
+    await openTab("import");
+    await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await userEvent.click(runButton());
+    await vi.waitFor(() => expect(q<HTMLButtonElement>('[data-key="abort"]').disabled).toBe(false));
+    expect(runButton().disabled).toBe(true);
+    await vi.waitFor(() => expect(q(".progress").textContent).toContain("P"));
+    await userEvent.click(q('[data-key="abort"]'));
+    await vi.waitFor(() => expect(runButton().disabled).toBe(false));
+    expect(q(".summary").textContent).toContain("cancelled");
+    expect(q<HTMLButtonElement>('[data-key="abort"]').disabled).toBe(true);
+  });
+
+  it("shows a server that cannot be reached as the engine's own error, not as an unhandled rejection", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await stopReplay(); // the port is closed now
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    await userEvent.upload(q('[data-panel="import"] [data-source="zip"]'), await zipFileOf(IMPORT_INPUT));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("in memory"));
+    await run();
+    expect(failureText()).toMatch(/^CItemException: Failed login to Innovator/);
+    expect(failureText()).toContain("HttpRequestException");
+    expect(key("password").value).toBe("");
+    expect(runButton().disabled).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------------------------------------- what the page offers
+
+describe("what the page offers", () => {
+  it("hides the folder picker where the browser has none, and shows it where it has one", () => {
+    mount({ canPickDirectory: false });
+    expect(host?.querySelector('[data-source="picker"]')).toBeNull();
+    expect(host?.querySelector('[data-key="sink-pick"]')).toBeNull();
+    app?.destroy();
+    host?.remove();
+    mount({ canPickDirectory: true });
+    expect(host?.querySelectorAll('[data-source="picker"]')).toHaveLength(4);
+    expect(host?.querySelector('[data-key="sink-pick"]')).not.toBeNull();
+  });
+
+  it("warns on an http: page and on no other (HOST-281)", () => {
+    mount({ location: { protocol: "http:", hostname: "tools.example.com" } });
+    expect(q(".banner").textContent).toContain("served over http:");
+    expect(q(".banner").textContent).toContain("Serve it over https:");
+    app?.destroy();
+    host?.remove();
+    mount({ location: { protocol: "http:", hostname: "localhost" } });
+    expect(q(".banner").textContent).toContain("localhost");
+    app?.destroy();
+    host?.remove();
+    mount({ location: { protocol: "https:", hostname: "tools.example.com" } });
+    expect(host?.querySelector(".banner")).toBeNull();
+  });
+
+  it("has the four operations as tabs, and a password field that is a password field", async () => {
+    mount();
+    const tabs = [...(host as HTMLElement).querySelectorAll('[role="tab"]')].map((tab) => tab.textContent);
+    expect(tabs).toEqual(["Export", "Import", "Language pack", "DB patches"]);
+    expect(key("password").type).toBe("password");
+    await openTab("db-patches");
+    expect(q('[data-panel="db-patches"]').hidden).toBe(false);
+    expect(q('[data-panel="export"]').hidden).toBe(true);
+    expect(q('[data-mode="db-patches"]').getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("shows the CLI's flags as the help of its controls", () => {
+    mount();
+    expect(q('[data-panel="import"]').textContent).toContain("--merge");
+    expect(q('[data-panel="export"]').textContent).toContain("--unknown-references");
+    expect(q('[data-panel="language-pack"]').textContent).toContain("--lp-package");
+    expect(q('[data-panel="db-patches"]').textContent).toContain("--patches-folder");
+  });
+});

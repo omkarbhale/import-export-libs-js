@@ -2,6 +2,7 @@ import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { fixtureCommands, adapterCommands, replaceDefaultHostForVite, workerCommands } from "./tools/browser-vitest.js";
 import { readSelectionFile } from "./tools/browser-test-selection.js";
+import { replayCommands } from "./tools/browser-example/replay-commands.js";
 
 /**
  * Three projects (HOST-263, HOST-268). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
@@ -31,7 +32,7 @@ function browserProject(name: string, instances: Instance[], provider: ReturnTyp
         provider,
         headless: true,
         instances,
-        commands: { ...fixtureCommands, ...workerCommands, ...adapterCommands },
+        commands: { ...fixtureCommands, ...workerCommands, ...adapterCommands, ...replayCommands },
       },
     },
   };
@@ -43,7 +44,7 @@ export default defineConfig({
       {
         test: {
           name: "node",
-          include: ["src/**/*.test.ts", "spec/**/*.test.ts", "tools/**/*.test.ts", "oracle/**/*.test.ts"],
+          include: ["src/**/*.test.ts", "spec/**/*.test.ts", "tools/**/*.test.ts", "oracle/**/*.test.ts", "examples/**/*.test.ts"],
           // A browser test needs a page; it belongs to the project below.
           exclude: [...configDefaults.exclude, "**/*.browser.test.ts"],
           // The replay and coverage tests parse large recorded documents; under a full parallel run they outlast the 5 s default.
@@ -52,6 +53,7 @@ export default defineConfig({
       },
       browserProject("browser", [{ browser: "chromium" }, { browser: "firefox" }, { browser: "webkit" }], playwright(), [
         "src/**/*.browser.test.ts",
+        "examples/**/*.browser.test.ts",
         // The unit tests whose import closure reaches no Node API run here too, unedited (HOST-264; `npx tsx tools/browser-test-selection.ts --write` writes the list).
         ...readSelectionFile().files,
         // The global setup is the HTTP server that the wire tests talk to, in another origin (HOST-234).

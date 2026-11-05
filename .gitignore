@@ -14,3 +14,6 @@ oracle/out/
 # Browser test project: failure screenshots and attachments (HOST-263).
 .vitest-attachments/
 src/browser/__screenshots__/
+
+# The reference page: its build, and its browser test's failure screenshots (HOST-280).
+examples/browser/__screenshots__/

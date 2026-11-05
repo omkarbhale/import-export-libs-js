@@ -1,0 +1,9 @@
+{
+  // The reference page and its tests under the browser's typecheck: DOM and no Node types, as tsconfig.browser.json has it, so that
+  // `process` and `node:*` fail here too (HOST-280). The tests that run in a page are typechecked with the base project's settings
+  // by tsconfig.json at the repository root, which does not include this folder.
+  "extends": "../../tsconfig.browser.json",
+  "compilerOptions": { "noEmit": true },
+  "include": [],
+  "files": ["../../src/browser/globals.d.ts", "main.ts", "model.test.ts", "options.test.ts"]
+}
