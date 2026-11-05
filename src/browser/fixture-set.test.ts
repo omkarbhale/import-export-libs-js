@@ -7,12 +7,14 @@ import { FIXTURE_CASES, fixtureBlobPath, fixtureCasePath, transcriptBlobs } from
 
 /**
  * The most the curated fixtures may weigh, which is every case folder of `fixture-set.ts` and the recorded blobs the transcripts
- * of those folders name, each once. It was 12 718 696 bytes when the set was made (6.8 MB of case folders and 6 blobs, 5.9 MB), plus
- * 20 %. Raise it in a pull request that adds cases on purpose, and amend map decision D10 (`roadmap/browser-host.md`) there.
+ * of those folders name, each once. It was 12 718 696 bytes when the set was made (6.8 MB of case folders and 6 blobs, 5.9 MB), and
+ * 46 422 910 bytes when the import, language-pack and DB-patch replays of the browsers (HOST-266) took their cases (10.7 MB of case
+ * folders and 17 blobs, 35.7 MB: a case whose server had other packages has a list of its own, 2.7 MB), plus 5 %. Raise it in a
+ * pull request that adds cases on purpose, and amend map decision D10 (`roadmap/browser-host.md`) there.
  *
  * @spec HOST-263
  */
-const BUDGET_BYTES = 15_263_000;
+const BUDGET_BYTES = 48_750_000;
 
 const root = process.cwd();
 
