@@ -1,6 +1,5 @@
 import { expect } from "vitest";
 import type { TranscriptCall } from "../../oracle/src/transcript.js";
-import { CItemException } from "../client/fault.js";
 import { CItemHelper } from "../client/item-helper.js";
 import { packageCaches } from "../client/package-lookups.js";
 import { ArasVersion } from "../client/version.js";
@@ -15,13 +14,10 @@ import {
   comparable,
   comparable1435,
   failingItems,
-  failsInConstructor,
   headerValue,
   logParts,
   maskItems,
   messageParts,
-  needsRemoval,
-  needsRemoval1435,
   settingsFrom,
 } from "../export/replay-compare.js";
 import { LOGIN_CALLS, LOGIN_CALLS_12_0, SequentialConnection } from "../import/sequential-connection.js";
@@ -98,15 +94,6 @@ export async function loadExportCase(fixture: FixtureCase): Promise<LoadedExport
   return { fixture, text, calls: await readCaseTranscript(fixture, text("transcript.jsonl")), expectedOutput };
 }
 
-/** What a replay did with a case. */
-export type ReplayOutcome =
-  /** The run was made and everything matched. */
-  | "ran"
-  /** The case removes references to unknown packages, which the engine variants wait for EXP-600 to EXP-699 for (as the disk replays); nothing was run. */
-  | "skipped"
-  /** A run with items in flight is made only where the disk replay makes one (a run that was stopped is replayed one at a time). */
-  | "not-applicable";
-
 export interface ReplayOptions {
   /** Items in flight (14.35 only). Default 1. */
   parallelism?: number;
@@ -130,16 +117,15 @@ function expectNoBom(vfs: MemoryVfs, path: string, name: string): void {
 }
 
 /** Replays a recorded case with the browser's host over a {@link MemoryVfs}, and compares what the run left with the recording. */
-export async function replayExportCase(loaded: LoadedExportCase, options: ReplayOptions = {}): Promise<ReplayOutcome> {
+export async function replayExportCase(loaded: LoadedExportCase, options: ReplayOptions = {}): Promise<void> {
   return loaded.fixture.engine === "14.35" ? replay1435(loaded, options) : replay(loaded, options);
 }
 
 // ------------------------------------------------------------------------------------------------------ 14.0.7 and 12.0
 
-async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise<ReplayOutcome> {
+async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise<void> {
   const { engine, name } = loaded.fixture;
   const input = JSON.parse(loaded.text("case.json")) as Case;
-  if (needsRemoval(engine, input)) return "skipped";
   // each case was recorded by a process of its own, and the dependency cache outlives a helper (EXP-619)
   packageCaches.dependsOn.clear();
 
@@ -175,9 +161,7 @@ async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise
     entry.items.map((item) => [item.id, new ExportItem(item.keyedName, item.id, item.type)] as const),
   ]);
   vfs.mkdir(output);
-  const outcome = manager.exportSolutions(context, selection);
-  if (input.expectsError) await expect(outcome).rejects.toBeInstanceOf(CItemException);
-  else await outcome;
+  await manager.exportSolutions(context, selection);
 
   expect(connection.consumed, `${name}: the requests of the run`).toBe(connection.total);
   expect(sent.map(({ channel, text }) => ({ channel, text })), `${name}: the messages`).toEqual(
@@ -186,43 +170,21 @@ async function replay(loaded: LoadedExportCase, options: ReplayOptions): Promise
   assertFilesEqual(vfs, output, options.expectedOutput ?? loaded.expectedOutput, name);
   expectNoBom(vfs, logPath, name);
   expect(comparable(logText(vfs, logPath), logPath, output), `${name}: the log`).toBe(comparable(recordedLog, logPath, output));
-  return "ran";
 }
 
 // ------------------------------------------------------------------------------------------------------------------ 14.35
 
-async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Promise<ReplayOutcome> {
+async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Promise<void> {
   const { name } = loaded.fixture;
   const parallelism = options.parallelism ?? 1;
   const input = JSON.parse(loaded.text("case.json")) as Case1435;
-  if (needsRemoval1435(input)) return parallelism === 1 ? "skipped" : "not-applicable";
+  // each case was recorded by a process of its own, and the dependency cache outlives a helper (EXP-619)
+  packageCaches.dependsOn.clear();
   const calls = loaded.calls;
   const { vfs, host } = virtualRun();
   const output = `${VFS_WORK}/output`;
   const logPath = `${VFS_WORK}/engine.log`;
 
-  if (failsInConstructor(input)) {
-    if (parallelism > 1) return "not-applicable";
-    const context = new SUExportContext();
-    context.workingDirectory = output;
-    context.logFilePath = logPath;
-    context.action = input.options.engineAction ?? "Export";
-    context.languages = input.options.languages ?? null;
-    const connection = new RecordedConnection(calls);
-    const helper = new CItemHelper(connection, { engine: "14.35" });
-    helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
-    let manager: ImportExportManager | undefined;
-    let error: unknown;
-    try {
-      manager = await ImportExportManager.create(context, createMessagesFactory({ engine: "14.35", onMessage: () => undefined }), helper, { fs: vfs, host });
-    } catch (thrown) {
-      error = thrown;
-    }
-    expect(manager, `${name}: the constructor must refuse`).toBeUndefined();
-    expect(input.result.error, `${name}: the engine's exception`).toContain((error as Error).message);
-    expect(connection.leftover, `${name}: requests the port did not send`).toEqual([]);
-    return "ran";
-  }
   const recordedLog = loaded.text("engine.log");
   const recordedMessages = loaded
     .text("messages.jsonl")
@@ -230,9 +192,6 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
     .filter((line) => line !== "")
     .map((line) => JSON.parse(line) as SentMessage);
   const failed = recordedMessages.some((message) => message.channel === "errorQuestion");
-  const cancelAfter = input.options.cancelAfterStatus;
-  const stoppedRun = failed || cancelAfter !== undefined || input.expectsError || recordedMessages.some((message) => message.channel === "warning");
-  if (parallelism > 1 && stoppedRun) return "not-applicable";
 
   const context = new SUExportContext();
   context.url = headerValue(recordedLog, "URL");
@@ -251,18 +210,9 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
   const helper = new CItemHelper(connection, { engine: "14.35" });
   helper.innovatorVersion = new ArasVersion(12, 0, 9, 24090, 0);
   const sent: SentMessage[] = [];
-  let statuses = 0;
-  let manager: ImportExportManager | undefined;
-  manager = await ImportExportManager.create(
+  const manager = await ImportExportManager.create(
     context,
-    createMessagesFactory({
-      engine: "14.35",
-      onMessage: (message) => {
-        sent.push(message);
-        if (message.channel === "status") statuses += 1;
-        if (cancelAfter !== undefined && message.channel === "status" && statuses === cancelAfter) manager?.cancel();
-      },
-    }),
+    createMessagesFactory({ engine: "14.35", onMessage: (message) => void sent.push(message) }),
     helper,
     { fs: vfs, host, parallelism, now: () => FIXED_NOW },
   );
@@ -272,33 +222,22 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
     entry.items.map((item) => [item.id, new ExportItem(item.keyedName, item.id, item.type)] as const),
   ]);
   vfs.mkdir(output);
-  const outcome = manager.exportSolutions(context, selection);
-  if (input.expectsError) {
-    const thrown = await outcome.then(
-      () => undefined,
-      (error: unknown) => error,
-    );
-    expect(thrown, `${name}: the exception`).toBeInstanceOf(CItemException);
-    expect(input.result.error, `${name}: the engine's exception`).toContain((thrown as CItemException).message);
-  } else {
-    await outcome;
-  }
+  await manager.exportSolutions(context, selection);
 
-  // the output folder: the manifest is fixed, the item files are a set (a prefix of the engine's when the run was stopped)
+  // the output folder: the manifest is fixed, the item files are a set (a prefix of the engine's when an item failed)
   const recordedBytes = options.expectedOutput ?? loaded.expectedOutput;
   const madeBytes = vfs.snapshot(output);
   const made = [...madeBytes.keys()].sort();
   const recordedFiles = [...recordedBytes.keys()].sort();
-  const stopped = failed || cancelAfter !== undefined;
-  if (stopped) expect(recordedFiles, `${name}: the files of items the engine ran`).toEqual(expect.arrayContaining(made));
+  if (failed) expect(recordedFiles, `${name}: the files of items the engine ran`).toEqual(expect.arrayContaining(made));
   else expect(made, `${name}: the files`).toEqual(recordedFiles);
   for (const path of made) {
     expect(bytesEqual(madeBytes.get(path) as Uint8Array, recordedBytes.get(path) as Uint8Array), `${name}: ${path} byte for byte`).toBe(true);
   }
   expect(made.includes("imports.mf") ? "manifest" : "none", name).toBe(recordedFiles.includes("imports.mf") ? "manifest" : "none");
 
-  // the requests: every one of the port's was recorded, and a run that was not stopped sent all of them
-  if (!stopped && !input.expectsError) expect(connection.leftover, `${name}: requests the port did not send`).toEqual([]);
+  // the requests: every one of the port's was recorded, and a run with no failed item sent all of them
+  if (!failed) expect(connection.leftover, `${name}: requests the port did not send`).toEqual([]);
 
   // the messages
   const failing = failed ? failingItems(input, calls) : [];
@@ -307,19 +246,12 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
   const ours = messageParts(sent);
   const theirs = messageParts(recordedMessages);
   expect(ours.currentPackage, `${name}: currentPackage`).toEqual(theirs.currentPackage);
-  expect(ours.warning, `${name}: warning`).toEqual(theirs.warning.length === 0 ? [] : [expect.stringMatching(/^\t\t\*\*\*\*ErrorMessage\*\*\*\*\r\n/)]);
-  if (theirs.warning.length > 0) {
-    // the engine's workers may all have failed; the port's first failure is among them
-    const first = (ours.warning[0] ?? "").split("\r\n").slice(1).join("\r\n");
-    expect(theirs.warning[0]).toContain(first);
-  }
+  expect(ours.warning, `${name}: warning`).toEqual(theirs.warning);
   expect(ours.error, `${name}: error`).toEqual(theirs.error);
   expect(ours.errorQuestion.map(mask), `${name}: errorQuestion`).toEqual(theirs.errorQuestion.map(mask));
-  expect(ours.otherStatus.map(mask), `${name}: the other status texts`).toEqual(
-    (cancelAfter === undefined ? theirs.otherStatus : [...new Set(theirs.otherStatus)]).map(mask),
-  );
+  expect(ours.otherStatus.map(mask), `${name}: the other status texts`).toEqual(theirs.otherStatus.map(mask));
   expect([...caseItems, ...theirs.items], `${name}: the items the port started`).toEqual(expect.arrayContaining([...ours.items]));
-  if (!stopped && !input.expectsError && theirs.warning.length === 0) {
+  if (!failed) {
     expect([...ours.items], `${name}: the items`).toEqual(expect.arrayContaining([...caseItems, ...theirs.items]));
   }
 
@@ -330,16 +262,11 @@ async function replay1435(loaded: LoadedExportCase, options: ReplayOptions): Pro
   expect(ourLog.packages.map((pkg) => pkg.header), `${name}: the packages`).toEqual(theirLog.packages.map((pkg) => pkg.header));
   for (const [index, pkg] of ourLog.packages.entries()) {
     const recorded = theirLog.packages[index];
-    if (theirs.warning.length > 0) {
-      expect(recorded?.rest.join("\r\n"), `${name}: ${pkg.header}`).toContain(pkg.rest.join("\r\n"));
-    } else {
-      expect(pkg.rest.map(mask), `${name}: ${pkg.header}`).toEqual(recorded?.rest.map(mask));
-    }
-    if (stopped || theirs.warning.length > 0) {
+    expect(pkg.rest.map(mask), `${name}: ${pkg.header}`).toEqual(recorded?.rest.map(mask));
+    if (failed) {
       expect(pkg.successes.length, `${name}: the success lines`).toBeLessThanOrEqual(input.packages.flatMap((entry) => entry.items).length);
     } else {
       expect(pkg.successes, `${name}: the success lines of ${pkg.header}`).toEqual(recorded?.successes);
     }
   }
-  return "ran";
 }

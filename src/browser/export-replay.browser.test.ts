@@ -29,13 +29,7 @@ interface Timing {
   ms: number;
 }
 const timings: Timing[] = [];
-const outcomes = new Map<Engine, { ran: number; skipped: number }>();
-
-function tally(engine: Engine, outcome: "ran" | "skipped"): void {
-  const entry = outcomes.get(engine) ?? { ran: 0, skipped: 0 };
-  entry[outcome] += 1;
-  outcomes.set(engine, entry);
-}
+const ran = new Map<Engine, number>();
 
 /** Runs a replay, records its wall time, and fails when it took longer than the alarm. */
 async function timed<T>(label: string, run: () => Promise<T>): Promise<T> {
@@ -53,31 +47,27 @@ describe.each(ENGINES)("HOST-265: the recorded %s export cases, in the browser",
   it.each(cases.map((fixture) => fixture.name))("%s", async (name) => {
     const fixture = cases.find((candidate) => candidate.name === name) as FixtureCase;
     const loaded = await loadExportCase(fixture);
-    const outcome = await timed(`${engine} ${name}`, () => replayExportCase(loaded));
-    if (outcome !== "not-applicable") tally(engine, outcome);
+    await timed(`${engine} ${name}`, () => replayExportCase(loaded));
+    ran.set(engine, (ran.get(engine) ?? 0) + 1);
     if (engine === "14.35" && name === PARALLEL) {
-      const parallel = await timed(`${engine} ${name} (${PARALLELISM} in flight)`, () => replayExportCase(loaded, { parallelism: PARALLELISM }));
-      expect(parallel, `${name}: the run with ${PARALLELISM} items in flight is made`).toBe("ran");
+      await timed(`${engine} ${name} (${PARALLELISM} in flight)`, () => replayExportCase(loaded, { parallelism: PARALLELISM }));
     }
   });
 
-  it("ran every case of the set, but the ones that wait for EXP-600 to EXP-699, which the disk replays leave out too", () => {
-    const { ran, skipped } = outcomes.get(engine) ?? { ran: 0, skipped: 0 };
-    expect(ran + skipped, `${engine}: the cases of the set`).toBe(cases.length);
-    // 14.0.7 removes references to unknown packages (EXP-6xx variants exist for it); 12.0 and 14.35 do not yet
-    expect(skipped, `${engine}: the cases left out`).toBe(engine === "14.0.7" ? 0 : 1);
+  it("ran every case of the set, with none left out", () => {
+    expect(ran.get(engine), `${engine}: the cases of the set`).toBe(cases.length);
   });
 });
 
 describe.each(["14.0.7", "14.35"] as const)("HOST-265: a recorded difference fails the %s browser run", (engine) => {
-  // 14.0.7 and 12.0 compare the folder with one function and 14.35 with another (a stopped run is a prefix of the engine's), so each is held to it
+  // 14.0.7 and 12.0 compare the folder with one function and 14.35 with another (a run with a failed item is a prefix of the engine's), so each is held to it
   const fixture: FixtureCase = { engine, operation: "export", name: "e27-permission", covers: "a package with item files" };
   let loaded: LoadedExportCase;
   const itemFile = (output: ReadonlyMap<string, Uint8Array>): string => [...output.keys()].filter((path) => path.endsWith(".xml")).sort()[0] as string;
 
   it("passes with the recorded output, as the case above does", async () => {
     loaded = await loadExportCase(fixture);
-    expect(await replayExportCase(loaded)).toBe("ran");
+    await replayExportCase(loaded);
   });
 
   it("fails when one byte of one expected output file is flipped, and names the file", async () => {
@@ -103,5 +93,5 @@ describe.each(["14.0.7", "14.35"] as const)("HOST-265: a recorded difference fai
 
 afterAll(() => {
   const rows = [...timings].sort((a, b) => b.ms - a.ms).map(({ label, ms }) => `${ms.toFixed(0).padStart(6)} ms  ${label}`);
-  console.info(`HOST-265 export replay in ${navigator.userAgent}\n${rows.join("\n")}\nran/skipped per engine: ${JSON.stringify(Object.fromEntries(outcomes))}`);
+  console.info(`HOST-265 export replay in ${navigator.userAgent}\n${rows.join("\n")}\ncases run per engine: ${JSON.stringify(Object.fromEntries(ran))}`);
 });

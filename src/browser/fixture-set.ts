@@ -34,7 +34,8 @@ export const FIXTURE_CASES: readonly FixtureCase[] = [
   // export (every such case has its own list) and 14.0.7's language pack (every one holds the list inside its transcript).
   ...each(ALL, "export", "e27-permission", "a package with item files"),
   ...each(ALL, "export", "e04-design-to-goal", "relationships between items"),
-  ...each(ALL, "export", "e40-workflow-promotion-error-yes", "a failing item, answered to continue"),
+  ...each(ALL, "export", "e40-workflow-promotion-error-yes", "a failing item, the question answered true (abort the package; 14.35 does not read it)"),
+  ...each(ALL, "export", "e40-workflow-promotion-error-no", "a failing item, the question answered false (continue; 14.35 does not read it)"),
   ...each(ALL, "export", "e06-scopecachedependency-removewithwarning", "references to unknown packages removed with a warning"),
   ...each(["14.35"], "export", "lang-export-de-instances", "language resources of instances (14.35)"),
   ...each(["14.35"], "export", "x-par-two-packages-run1", "two packages exported in parallel (14.35)"),
