@@ -201,6 +201,21 @@ The browsers decode the labels of the WHATWG Encoding Standard, the same as Node
 
 [14.35] Same as 14.0.7.
 
+## HOST-265: the recorded export cases of the curated set run in the browsers and leave what the engine left, byte for byte
+
+[14.0.7] The export cases of `src/browser/fixture-set.ts` (HOST-263), run in a page of Chromium, Firefox and WebKit with the browser host (`createBrowserHost`, HOST-243) over a `MemoryVfs` (HOST-215) as the host and the file system, with the recorded answers of the server, give the same result as the replays on the in-memory file system under Node (HOST-218), which gave the same as the disk replays:
+
+- the requests, the messages, the log and the output folder compare as HOST-218 says: the folder as the same files and folders that hold a file, each file with the same bytes, and the log after the replacement of the run's own paths and date-times;
+- the case is read only through the fixture commands of HOST-263 (the case folder, and the blobs its transcript names, the 2.7 MB list of package definitions once per page), and the working folder, the log and the output folder are `/work`, `/work/engine.log` and `/work/output` of the virtual tree;
+- the clock is fixed (`now`) and the culture is the one the recorded run had: `en-IN` for the 12.0 engine's date format at the head of a package (EXP-505), which the 14.0.7 cases are given too, as the disk replays give it;
+- the cases are the 14.0.7 and 12.0 ones of the set (a package with item files, relationships, a failing item answered to continue, references to unknown packages removed with a warning), and for 14.35 those and the language resources of instances (`lang-export-de-instances`) and the export of two packages with four items in flight (`x-par-two-packages-run1`, EXP-551), which is run at one item and at four. A 12.0 or 14.35 case that removes references to unknown packages is not run, as in HOST-218, and the test counts it;
+- a case that takes more than 30 s of wall time in a browser fails, as a regression alarm and not as a budget; the wall time of each case is written to the console of the run.
+
+The comparison functions are the ones of HOST-218, `replay-compare.ts` and `tree-compare.ts`, which import nothing from Node, so that the page and the Node replays fail on the same differences by the same code. A single flipped byte in one expected output file, a missing file and an extra one each fail the browser run, and the failure names the file; the test holds both comparisons of the 14.0.7 and 12.0 export and of the 14.35 one to it. The output tree is compared only as a tree: its commit to a zip belongs to the zip adapter's own tests.
+
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
 
 ## HOST-266: the recorded import, language-pack and DB-patch runs replay in the browsers with equal output
 
