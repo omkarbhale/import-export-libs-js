@@ -60,11 +60,6 @@ export class CaptureServer {
     private readonly options: CaptureServerOptions,
   ) {}
 
-  /** The number of recorded exchanges served. */
-  get consumed(): number {
-    return this.served.size;
-  }
-
   private static comparable(body: string): string {
     return body.replace(/password=[^&]*/, "password=SCRUBBED");
   }

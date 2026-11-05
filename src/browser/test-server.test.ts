@@ -181,7 +181,7 @@ describe("CORS as a server configures it (HOST-234)", () => {
     expect((await preflight(created, "/OAuthServer/connect/token")).headers.get("access-control-allow-origin")).toBe("http://page.example");
   });
 
-  it("is not sent the headers that a transport drops by default, and is sent them when the caller asks (HOST-232)", async () => {
+  it("is never sent the session state hint, and is sent the read-only hint only when the caller asks (HOST-232)", async () => {
     const created = await scenario({ engine: "12.0" });
     const hints: [string, string][] = [
       ["Aras-Set-HttpSessionState-Behavior", "switch_to_initial"],
@@ -189,11 +189,11 @@ describe("CORS as a server configures it (HOST-234)", () => {
     ];
     const url = `${created.url}/Server/OAuthServerDiscovery.aspx`;
     await createFetchTransport().send(request(url, { headers: hints }));
-    await createFetchTransport({ sendSessionStateHint: true, sendReadOnlyHint: true }).send(request(url, { headers: hints }));
+    await createFetchTransport({ sendReadOnlyHint: true }).send(request(url, { headers: hints }));
     const [plain, asked] = (await seen(created)).seen;
     expect(plain?.headers.map(([name]) => name.toLowerCase())).not.toContain("aras-set-httpsessionstate-behavior");
     expect(plain?.headers.map(([name]) => name.toLowerCase())).not.toContain("aras-request-readonly");
-    expect(asked?.headers.find(([name]) => name.toLowerCase() === "aras-set-httpsessionstate-behavior")?.[1]).toBe("switch_to_initial");
+    expect(asked?.headers.map(([name]) => name.toLowerCase())).not.toContain("aras-set-httpsessionstate-behavior");
     expect(asked?.headers.find(([name]) => name.toLowerCase() === "aras-request-readonly")?.[1]).toBe("1");
   });
 
@@ -275,9 +275,9 @@ describe("a listener of its own (HOST-234)", () => {
 });
 
 describe("a recorded export run, end to end over HTTP (HOST-234)", () => {
-  it.each(["12.0", "14.0.7", "14.35"] as const)("exports e27-permission on %s through connect, the fetch transport and this server", async (engine) => {
-    const created = await scenario({ engine, recorded: { name: "e27-permission" } });
-    const dir = new URL(`../../fixtures/${engine}/export/e27-permission/`, import.meta.url);
+  it.each(["12.0", "14.0.7", "14.35"] as const)("exports e32-item-report on %s through connect, the fetch transport and this server", async (engine) => {
+    const created = await scenario({ engine, recorded: { name: "e32-item-report" } });
+    const dir = new URL(`../../fixtures/${engine}/export/e32-item-report/`, import.meta.url);
     const input = JSON.parse(readFileSync(new URL("case.json", dir), "utf8")) as { packages: Array<{ name: string }> };
     const level = /^Export level: (.*)\r$/m.exec(readFileSync(new URL("engine.log", dir), "utf8"))?.[1] ?? "";
     const session = await connect({ ...LOGIN, url: created.url, engine, transport: createFetchTransport() });

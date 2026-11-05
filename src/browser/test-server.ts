@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { STATUS_CODES, createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { readTranscript } from "../../oracle/src/transcript.js";
 import { md5Lower, sha256Upper } from "../../tools/wire-digests.js";
 import { MembershipServer, type ServerItem } from "../cli/membership-server.js";
@@ -39,6 +40,8 @@ export * from "./wire-spec.js";
  */
 
 const DATABASE = "12sp9";
+const HOST = "127.0.0.1";
+const FIXTURES = fileURLToPath(new URL("../../fixtures", import.meta.url));
 
 interface Scenario {
   id: string;
@@ -53,10 +56,8 @@ interface Scenario {
 }
 
 interface Context {
-  fixtures: string;
   scenarios: Map<string, Scenario>;
   listeners: Set<Server>;
-  host: string;
 }
 
 
@@ -93,7 +94,6 @@ function versionOf(engine: Engine): Record<string, string> {
 /** What a scenario asks of the fake login: the grant's digest, the header login, the token counter and the IOM 12 user id. */
 function loginOverride(spec: WireScenarioSpec): NonNullable<DevServerOptions["override"]> {
   let tokens = 0;
-  const countTokens = spec.countTokens ?? true;
   return (request) => {
     if (request.url.endsWith("/connect/token")) {
       const form = new URLSearchParams(bodyText(request));
@@ -107,7 +107,7 @@ function loginOverride(spec: WireScenarioSpec): NonNullable<DevServerOptions["ov
         }
       }
       tokens += 1;
-      return respond(`{"access_token":"${countTokens ? `token-${tokens}` : "token-1"}","expires_in":3600,"token_type":"Bearer"}`);
+      return respond(`{"access_token":"token-${tokens}","expires_in":3600,"token_type":"Bearer"}`);
     }
     if (spec.login === "legacy") {
       if (request.url.endsWith("/OAuthServerDiscovery.aspx")) return respond("Not Found", { status: 404, reason: "Not Found" });
@@ -123,10 +123,10 @@ function loginOverride(spec: WireScenarioSpec): NonNullable<DevServerOptions["ov
 }
 
 /** The handler of a scenario, and a way to read what it refused. */
-function handlerOf(spec: WireScenarioSpec, base: string, fixtures: string): { handler: FakeHandler; mismatches: () => string[] } {
+function handlerOf(spec: WireScenarioSpec, base: string): { handler: FakeHandler; mismatches: () => string[] } {
   if (spec.capture !== undefined) {
     // the recorded bodies name the database already (`http://localhost:18169/12sp9/OAuthServer/`), so the address replaced is the scenario's without it
-    const server = new CaptureServer(parseCapture(readFileSync(join(fixtures, "wire", spec.capture), "utf8")), { base: base.slice(0, -`/${DATABASE}`.length) });
+    const server = new CaptureServer(parseCapture(readFileSync(join(FIXTURES, "wire", spec.capture), "utf8")), { base: base.slice(0, -`/${DATABASE}`.length) });
     return { handler: server.handler, mismatches: () => server.mismatches };
   }
   const serverOptions: DevServerOptions = {
@@ -137,8 +137,8 @@ function handlerOf(spec: WireScenarioSpec, base: string, fixtures: string): { ha
   };
   if (spec.recorded === undefined) return { handler: devServer(serverOptions), mismatches: () => [] };
 
-  const dir = join(fixtures, spec.engine, "export", spec.recorded.name);
-  const calls = readTranscript(join(dir, "transcript.jsonl"), join(fixtures, spec.engine, "export", "_blobs"));
+  const dir = join(FIXTURES, spec.engine, "export", spec.recorded.name);
+  const calls = readTranscript(join(dir, "transcript.jsonl"), join(FIXTURES, spec.engine, "export", "_blobs"));
   const server = new RecordedServer(calls, spec.engine, { server: serverOptions, unordered: spec.recorded.unordered ?? false });
   const input = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as {
     packages: Array<{ name: string; items: Array<{ type: string; id: string; keyedName: string }> }>;
@@ -206,7 +206,7 @@ async function send(
   }
 }
 
-async function serveScenario(context: Context, scenario: Scenario, prefix: string, request: IncomingMessage, response: ServerResponse, listener: Server): Promise<void> {
+async function serveScenario(scenario: Scenario, prefix: string, request: IncomingMessage, response: ServerResponse, listener: Server): Promise<void> {
   const origin = request.headers.origin;
   const rest = (request.url ?? "/").slice(prefix.length) || "/";
   const path = rest.startsWith("/") ? rest : `/${rest}`;
@@ -225,7 +225,7 @@ async function serveScenario(context: Context, scenario: Scenario, prefix: strin
   const address = listener.address() as AddressInfo;
   const transportRequest: TransportRequest = {
     method: request.method === "POST" ? "POST" : "GET",
-    url: `http://${context.host}:${address.port}${path}`,
+    url: `http://${HOST}:${address.port}${path}`,
     headers,
     body: new Uint8Array(body),
     responseTimeoutMs: 0,
@@ -241,8 +241,8 @@ async function serveScenario(context: Context, scenario: Scenario, prefix: strin
   const index = scenario.count;
   scenario.count += 1;
   const answer: TransportResponse =
-    action !== undefined && (action.status !== undefined || action.body !== undefined)
-      ? respond(action.body ?? "", { status: action.status ?? 200, reason: action.reason ?? STATUS_CODES[action.status ?? 200] ?? "" })
+    action?.status !== undefined
+      ? respond("", { status: action.status, reason: action.reason ?? STATUS_CODES[action.status] ?? "" })
       : await scenario.handler(transportRequest, index);
   const fixed = action?.reason !== undefined && action.status === undefined ? { ...answer, reason: action.reason } : answer;
   await send(response, fixed, corsHeaders(cors, origin, false), action);
@@ -283,9 +283,9 @@ async function control(context: Context, request: IncomingMessage, response: Ser
     let served = listener;
     if (spec.ownListener === true) served = await listen(context, 0);
     const port = (served.address() as AddressInfo).port;
-    const origin = `http://${context.host}:${port}`;
+    const origin = `http://${HOST}:${port}`;
     const base = `${origin}/s/${id}/${DATABASE}`;
-    const made = handlerOf(spec, base, context.fixtures);
+    const made = handlerOf(spec, base);
     const scenario: Scenario = { id, spec, handler: made.handler, mismatches: made.mismatches, seen: [], matches: [], count: 0 };
     if (spec.ownListener === true) scenario.extra = served;
     context.scenarios.set(id, scenario);
@@ -322,7 +322,7 @@ function listen(context: Context, port: number): Promise<Server> {
         response.end("no such scenario");
         return;
       }
-      return serveScenario(context, scenario, `/s/${scenario.id}`, request, response, listener);
+      return serveScenario(scenario, `/s/${scenario.id}`, request, response, listener);
     };
     run().catch((error: unknown) => {
       if (response.headersSent) response.destroy();
@@ -335,7 +335,7 @@ function listen(context: Context, port: number): Promise<Server> {
   context.listeners.add(listener);
   return new Promise((resolve, reject) => {
     listener.once("error", reject);
-    listener.listen(port, context.host, () => resolve(listener));
+    listener.listen(port, HOST, () => resolve(listener));
   });
 }
 
@@ -347,25 +347,13 @@ export interface WireServer {
   close(): Promise<void>;
 }
 
-export interface WireServerOptions {
-  /** The folder holding `<engine>/export/…` and `wire/…`. Default: this repository's `fixtures/`. */
-  fixtures?: string;
-  /** The interface to listen on. Default `127.0.0.1`. */
-  host?: string;
-}
-
 /** Starts the server on a free port. */
-export async function startWireServer(options: WireServerOptions = {}): Promise<WireServer> {
-  const context: Context = {
-    fixtures: options.fixtures ?? new URL("../../fixtures", import.meta.url).pathname,
-    scenarios: new Map(),
-    listeners: new Set(),
-    host: options.host ?? "127.0.0.1",
-  };
+export async function startWireServer(): Promise<WireServer> {
+  const context: Context = { scenarios: new Map(), listeners: new Set() };
   const main = await listen(context, 0);
   const { port } = main.address() as AddressInfo;
   return {
-    origin: `http://${context.host}:${port}`,
+    origin: `http://${HOST}:${port}`,
     close: async () => {
       await Promise.all([...context.listeners].map((listener) => (listener.listening ? closeListener(listener) : Promise.resolve())));
     },

@@ -5,7 +5,7 @@ import { WINDOWS_ZONE_IDS } from "../client/windows-zones.js";
 import type { Engine } from "../engines.js";
 import { LOGIN, engineMessages, recordedMessages } from "./api-test-support.js";
 import { createFetchTransport } from "./fetch-transport.js";
-import { R35_ALLOW_HEADERS, SP9_ALLOW_HEADERS, type FaultSpec, type SeenRequest, type WireScenarioSpec } from "./wire-spec.js";
+import { R35_ALLOW_HEADERS, SP9_ALLOW_HEADERS, flavourCors, type FaultSpec, type SeenRequest, type WireScenarioSpec } from "./wire-spec.js";
 import { loadFixtureTree, readFixtureText } from "./test-support.browser.js";
 import { type CaptureExchange, clientHeaders, parseCapture } from "./wire-capture-server.js";
 import { type Scenario, actionsOf, headerOf, preflightsOf, requestsOf, soapOf, wireScenario } from "./wire-support.browser.js";
@@ -111,7 +111,7 @@ function alignedWith(requests: readonly SeenRequest[], exchanges: readonly Captu
 /** The headers of a request that are names the page's browser sets itself or refuses to take, which a server sees with the browser's own values. */
 const BROWSER_OWN = new Set(["host", "connection", "content-length", "expect", "cookie"]);
 
-/** The hints of the engine's requests that the transport leaves out unless asked, because no server lists them (HOST-232). */
+/** The hints of the engine's requests that the default transport leaves out, because no server lists them (HOST-232). */
 const HINTS = ["aras-request-readonly", "aras-set-httpsessionstate-behavior"];
 
 const headerLists = new Map<string, string[]>();
@@ -142,7 +142,7 @@ describe.each(SHAPES)("the login of $label, over HTTP to another origin (HOST-26
       // what a browser refuses to take from the engine is not in the request: no cookie (HOST-233), no expectation, and the length is the body's
       expect(headerOf(request, "cookie"), `${where}: no Cookie`).toBeUndefined();
       expect(headerOf(request, "expect"), `${where}: no Expect`).toBeUndefined();
-      for (const hint of HINTS) expect(headerOf(request, hint), `${where}: no ${hint} unless asked for (HOST-232)`).toBeUndefined();
+      for (const hint of HINTS) expect(headerOf(request, hint), `${where}: no ${hint} (HOST-232)`).toBeUndefined();
       if (request.method === "POST") expect(Number(headerOf(request, "content-length")), `${where}: Content-Length`).toBe(new TextEncoder().encode(request.body).length);
     }
     // the protocol: the discovery names the token endpoint of this server, and a 14 server's key set is read
@@ -152,9 +152,14 @@ describe.each(SHAPES)("the login of $label, over HTTP to another origin (HOST-26
     if (engine === "12.0") expect(actionsOf(seen)).toContain("GetCurrentUserID");
     else expect(sent.some((request) => request.path.endsWith("/jwks"))).toBe(true);
 
-    // every custom header the client sent was in the preflight's list, or the browser would have refused the request
-    for (const preflight of preflightsOf(seen)) {
+    // every custom header the client sent was asked for in a preflight, and is in the list of the server's flavour
+    const listLower = (list: string): string[] => list.split(",").map((name) => name.trim().toLowerCase()).filter((name) => name !== "");
+    const allowed = listLower(flavourCors(engine).allowHeaders ?? "");
+    const preflights = preflightsOf(seen);
+    expect(preflights.length, "a SOAP call has custom headers, so a preflight came first").toBeGreaterThan(0);
+    for (const preflight of preflights) {
       expect(headerOf(preflight, "access-control-request-method"), "the preflight asks for POST or GET").toMatch(/^(POST|GET)$/);
+      for (const name of listLower(headerOf(preflight, "access-control-request-headers") ?? "")) expect(allowed, `the preflight of ${preflight.path}`).toContain(name);
     }
     headerLists.set(`${engine} ${capture}`, [...new Set(sent.map((request) => `${request.method} ${request.path.split("/").slice(-1)[0]}${headerOf(request, "SOAPAction") === undefined ? "" : ` ${headerOf(request, "SOAPAction")}`}: ${names(request).join(" ")}`))]);
   });
@@ -280,16 +285,14 @@ describe("the hints that no server lists (HOST-232)", () => {
     expect(answer.errorString).toContain("System.Net.WebException: Unable to connect to the remote server");
   });
 
-  it("leaves IOM 12's Aras-Set-HttpSessionState-Behavior out unless asked, or 12.0's discovery is refused at the preflight", async () => {
-    const withHint = await scenario({ engine: "12.0", cors: { allowOrigin: "echo", allowHeaders: `${SP9_ALLOW_HEADERS},Aras-Set-HttpSessionState-Behavior` } });
-    await (await connect(login(withHint, "12.0", { transport: createFetchTransport({ sendSessionStateHint: true }) }))).close();
-    const discovery = requestsOf((await withHint.log()).seen)[0] as SeenRequest;
-    expect(headerOf(discovery, "Aras-Set-HttpSessionState-Behavior")).toBe("switch_to_initial");
-
+  it("always leaves IOM 12's Aras-Set-HttpSessionState-Behavior out, so 12.0's discovery passes the preflight of a server that does not list it", async () => {
     const plain = await scenario({ engine: "12.0" });
-    const refused = await failureOf(() => connect(login(plain, "12.0", { transport: createFetchTransport({ sendSessionStateHint: true }) })));
-    expect(refused).toContain("System.Net.WebException: Unable to connect to the remote server");
-    expect(requestsOf((await plain.log()).seen), "the preflight failed, so the discovery was never sent").toEqual([]);
+    await (await connect(login(plain, "12.0"))).close();
+    expect(headerOf(requestsOf((await plain.log()).seen)[0] as SeenRequest, "Aras-Set-HttpSessionState-Behavior")).toBeUndefined();
+
+    const listed = await scenario({ engine: "12.0", cors: { allowOrigin: "echo", allowHeaders: `${SP9_ALLOW_HEADERS},Aras-Set-HttpSessionState-Behavior` } });
+    await (await connect(login(listed, "12.0"))).close();
+    expect(headerOf(requestsOf((await listed.log()).seen)[0] as SeenRequest, "Aras-Set-HttpSessionState-Behavior"), "not even to a server that lists it").toBeUndefined();
   });
 });
 
@@ -326,10 +329,10 @@ function expectSameFiles(made: ReadonlyMap<string, Uint8Array>, expected: Readon
 }
 
 describe("an export through HTTP gives what the recorded replay gives (HOST-269)", () => {
-  it.each(["12.0", "14.0.7", "14.35"] as const)("e27-permission on %s: the folder, the messages and every request are the recording's", async (engine) => {
-    const { result, log, expected, base } = await exportOverHttp({ engine, name: "e27-permission" });
+  it.each(["12.0", "14.0.7", "14.35"] as const)("e32-item-report on %s: the folder, the messages and every request are the recording's", async (engine) => {
+    const { result, log, expected, base } = await exportOverHttp({ engine, name: "e32-item-report" });
     expect(log.mismatches, "requests the recording does not hold").toEqual([]);
-    expectSameFiles(result.files, expected, `${engine} e27-permission`);
+    expectSameFiles(result.files, expected, `${engine} e32-item-report`);
     expect(engineMessages(result.messages)).toEqual(recordedMessages(await readFixtureText(`${base}/messages.jsonl`)));
     expect(actionsOf(log.seen)[0]).toBe("ValidateUser");
     expect(actionsOf(log.seen).at(-1)).toBe("Logoff");

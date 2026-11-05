@@ -4,7 +4,7 @@ Browser wayfinder ticket 26. `src/browser/wire.browser.test.ts` runs the client 
 
 ## One defect found, fixed in the transport
 
-12.0's OAuth discovery (IOM 12, WIRE-010) is the one request that carries `Aras-Set-HttpSessionState-Behavior: switch_to_initial`. No server flavour lists that header in `Access-Control-Allow-Headers` (`roadmap/browser-cors-poc.md`, section 2), so a browser sent a preflight for it and refused the discovery, and with it the whole 12.0 login, with the text `System.Net.WebException: Unable to connect to the remote server`. The POC did not see it because its probe called the discovery with its own headers, not the client's. The wire tests did, in all three browsers, on the first run. `createFetchTransport` now leaves the header out unless the caller sets `sendSessionStateHint`, as it already did `Aras-Request-ReadOnly` (HOST-232); the header only asks the server not to hold a session for the request, and a browser sends no session cookie (HOST-233). The case that proves it fails without the change.
+12.0's OAuth discovery (IOM 12, WIRE-010) is the one request that carries `Aras-Set-HttpSessionState-Behavior: switch_to_initial`. No server flavour lists that header in `Access-Control-Allow-Headers` (`roadmap/browser-cors-poc.md`, section 2), so a browser sent a preflight for it and refused the discovery, and with it the whole 12.0 login, with the text `System.Net.WebException: Unable to connect to the remote server`. The POC did not see it because its probe called the discovery with its own headers, not the client's. The wire tests did, in all three browsers, on the first run. `createFetchTransport` now always leaves the header out, with no option to send it (HOST-232); the header only asks the server not to hold a session for the request, and a browser sends no session cookie (HOST-233). The case that proves it fails without the change.
 
 ## The headers the server saw
 
@@ -36,7 +36,7 @@ Plus `content-length` on a `POST`, and `accept` on every request (the client's o
 
 All three browsers agree on every case, so none is a deviation:
 
-- A SOAP endpoint with no CORS, a server with no CORS at all, a server whose preflight does not list a header the client sends (the legacy login's three, `Aras-Request-ReadOnly`, IOM 12's `Aras-Set-HttpSessionState-Behavior`), a wildcard origin with credentials, and a server that went away all end the call with the engine's text for a failed connection (`System.Net.WebException: Unable to connect to the remote server`, or for 14's discovery `System.Net.Http.HttpRequestException: An error occurred while sending the request.`), and no promise is left rejected that nobody handles.
+- A SOAP endpoint with no CORS, a server with no CORS at all, a server whose preflight does not list a header the client sends (the legacy login's three, `Aras-Request-ReadOnly`), a wildcard origin with credentials, and a server that went away all end the call with the engine's text for a failed connection (`System.Net.WebException: Unable to connect to the remote server`, or for 14's discovery `System.Net.Http.HttpRequestException: An error occurred while sending the request.`), and no promise is left rejected that nobody handles.
 - Chromium repeats a request once when a reused connection was dropped before any answer (a fault that drops one connection was answered by the repeat), so the test that drops a connection drops every such request, in all three browsers.
 - The reason phrase is the standard one when the status line has none (HOST-232).
 

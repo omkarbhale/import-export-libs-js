@@ -51,7 +51,6 @@ export interface FaultAction {
   status?: number;
   /** The reason phrase of the status line; `""` is an empty one, which is what HTTP/2 puts on the wire. */
   reason?: string;
-  body?: string;
   /** Waits this long before it answers (the headers do not arrive meanwhile). */
   delayMs?: number;
   /** Sends the headers and `afterBytes` bytes of the body, waits `ms`, and sends the rest. */
@@ -94,8 +93,6 @@ export interface WireScenarioSpec {
   tokenHash?: { password: string; mode: "MD5" | "SHA256" };
   /** For `oauth`: the discovery's `protocol_type`. `Custom` names `X-Aras-Authorization` as the bearer header and 498 as the status of a refused token (WIRE-005). Default `Standard`. */
   oauthProtocol?: "Standard" | "Custom";
-  /** Hands out `token-1`, `token-2`, … so that a renewal shows. Default true. */
-  countTokens?: boolean;
   /** Serves a recorded export run after the login. */
   recorded?: RecordedCase;
   /** Serves the recorded exchanges of a capture file (`fixtures/wire/<folder>/<file>`) in place of the fake login. */
