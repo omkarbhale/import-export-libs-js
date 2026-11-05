@@ -599,14 +599,14 @@ async function heapNow(): Promise<{ source: string; bytes: number } | null> {
 
 describe("HOST-266: the largest recorded import, once, in Chromium (the size smoke that ticket 31 reads)", () => {
   it.skipIf(server.browser !== "chromium")(
-    "holds the whole 14.0.7 import folder (inputs, transcripts and blobs, 38 MB on the disk, 41 MB by du) in the tree and runs its largest case on top of it",
+    "holds the whole 14.0.7 import folder (inputs, transcripts and blobs, 38 MB on the disk, 41 MB by du) in the tree and runs every step of its largest case on that tree",
     async () => {
       const heapBefore = await heapNow();
       const readStart = performance.now();
       const everything = await loadFixtureTree("fixtures/14.0.7/import");
       const readMs = performance.now() - readStart;
 
-      const vfs = new MemoryVfs();
+      const vfs = virtualFs();
       const mountStart = performance.now();
       mountFixtureFiles(everything, vfs, "/packages");
       const mountMs = performance.now() - mountStart;
@@ -616,12 +616,14 @@ describe("HOST-266: the largest recorded import, once, in Chromium (the size smo
 
       // the largest case of the folder, by its input, its transcript and the blobs it names: run on top of the held tree
       const fixture: FixtureCase = { engine: "14.0.7", operation: "import", name: "s1-instances-versionable", covers: "the largest recorded import" };
-      const [step] = await stepsOfCase(fixture);
+      const steps = await stepsOfCase(fixture);
+      expect(steps.length, "the case records four steps").toBe(4);
       const heapMounted = await heapNow();
       const runStart = performance.now();
-      await replayImportStep(fixture, step as Step);
+      for (const step of steps) await replayImportStep(fixture, step, { vfs });
       const runMs = performance.now() - runStart;
       const heapAfter = await heapNow();
+      assertTreeMatchesFiles(vfs, "/packages", everything, "the held folder after the run");
 
       console.info(
         `IMPORT-SIZE-SMOKE ${JSON.stringify({
