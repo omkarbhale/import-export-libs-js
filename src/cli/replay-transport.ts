@@ -1,5 +1,5 @@
 import type { TranscriptCall } from "../../oracle/src/transcript.js";
-import { bodyText, devServer, header, respond, type FakeHandler } from "../client/fake-transport.js";
+import { bodyText, devServer, header, respond, type DevServerOptions, type FakeHandler } from "../client/fake-transport.js";
 import { documentOuterXml, parseXml } from "../client/mini-xml.js";
 import type { TransportRequest } from "../client/transport.js";
 import type { Engine } from "../engines.js";
@@ -26,6 +26,16 @@ const DECLARATION = /^<\?xml[^>]*\?>/;
 /** The requests of the login: the user lookup (WIRE-015) and the four of the version probe (WIRE-020), which the recording took from another server. */
 const LOGIN_REQUEST = /^<Item type="User" action="get" select="default_vault"|<name>Version(Major|Minor|ServicePack|Build|ServiceUpdate)<\/name>/;
 
+export interface RecordedServerOptions {
+  /** How the login side presents itself: the OAuth base the discovery names (a server reached over HTTP names its own address), the version and the like. */
+  server?: DevServerOptions;
+  /**
+   * Answers a request with the first recorded call that has its text and was not answered yet, in any order, instead of requiring each
+   * to be the next one. The requests of a run with items in flight (EXP-551) arrive in no fixed order.
+   */
+  unordered?: boolean;
+}
+
 /**
  * The HTTP side of a recorded run, for the tests of the CLI: a fake Aras server that answers the login and the version probe as
  * `devServer` does (a 12.0 SP9 server), and whose every later request must be the next recorded one, which is answered with its
@@ -34,6 +44,8 @@ const LOGIN_REQUEST = /^<Item type="User" action="get" select="default_vault"|<n
 export class RecordedServer {
   private next: number;
   private readonly loginCalls: number;
+  private readonly unordered: boolean;
+  private readonly used = new Set<number>();
   /** The requests that were not the recorded ones. */
   readonly mismatches: string[] = [];
   private readonly login: FakeHandler;
@@ -42,15 +54,17 @@ export class RecordedServer {
   constructor(
     private readonly calls: readonly TranscriptCall[],
     engine: Engine = "14.0.7",
+    options: RecordedServerOptions = {},
   ) {
     this.loginCalls = engine === "12.0" ? LOGIN_CALLS_12_0 : LOGIN_CALLS;
     this.next = this.loginCalls;
-    this.login = engine === "12.0" ? iom12Login(devServer()) : devServer();
+    this.unordered = options.unordered ?? false;
+    this.login = engine === "12.0" ? iom12Login(devServer(options.server)) : devServer(options.server);
   }
 
   /** How many of the recorded requests after the login were sent. */
   get consumed(): number {
-    return this.next - this.loginCalls;
+    return this.unordered ? this.used.size : this.next - this.loginCalls;
   }
 
   get total(): number {
@@ -62,6 +76,15 @@ export class RecordedServer {
     if (action === undefined || !["ApplyAML", "ApplyItem", "ApplySQL"].includes(action)) return this.login(request, index);
     const wire = documentOuterXml(parseXml(bodyText(request).replace(DECLARATION, "")));
     if (LOGIN_REQUEST.test(wire)) return this.login(request, index);
+    if (this.unordered) {
+      const found = this.calls.findIndex((candidate, at) => at >= this.loginCalls && !this.used.has(at) && candidate.action === action && candidate.request === wire);
+      if (found >= 0) {
+        this.used.add(found);
+        return respond(this.calls[found]?.response ?? "");
+      }
+      this.mismatches.push(`request ${this.consumed + 1}: sent ${action} ${wire.slice(0, 400)}\n  no recorded call left with that text`);
+      return this.login(request, index);
+    }
     const call = this.calls[this.next];
     if (call?.action === action && call.request === wire) {
       this.next += 1;

@@ -31,6 +31,8 @@ export default defineConfig({
           // The unit tests whose import closure reaches no Node API run here too, unedited (HOST-264; `npx tsx tools/browser-test-selection.ts --write` writes the list).
           include: ["src/**/*.browser.test.ts", ...readSelectionFile().files],
           setupFiles: ["src/browser/buffer-setup.browser.ts"],
+          // The HTTP server that the wire tests talk to, in another origin (HOST-234).
+          globalSetup: ["tools/browser-wire-setup.ts"],
           // A recorded run is an export or an import over a case of tens of megabytes in a page: slower than on Node.
           testTimeout: 120_000,
           browser: {
