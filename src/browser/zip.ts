@@ -45,7 +45,7 @@ export interface VfsFromZipOptions {
   into?: MemoryVfs;
   /**
    * The most bytes the kept entries may inflate to, by the central directory; a zip over it is refused before anything is inflated.
-   * Default 500 MiB, the package budget; `Infinity` lifts it.
+   * Default 500 MiB, a guard and not the size that fits (HOST-278); `Infinity` lifts it.
    */
   maxBytes?: number;
 }

@@ -23,7 +23,7 @@ Verbatim: "1b, 2a (or taken from signed in Aras client if we are in aras client,
 - Q2, authentication: (a) username and password in memory, plus an option to take the session from a signed-in Aras client when running inside it. Never automatic: the library exposes it and the caller decides.
 - Q3, public API: (b) high-level operations, progress, `AbortSignal` and a Worker wrapper.
 - Q4, packages in and out: the library has no UI controls and the caller owns the UI. It accepts what a caller's upload, drag-drop or folder selection yields (zip, `FileList` or entries, directory handle) and returns a zip for download or writes into a selected folder. The adapters are adapters only, with no UI; the reference page demonstrates upload then download, and folder selection.
-- Q5, size: a 500 MB budget of package data.
+- Q5, size: a 500 MB budget of package data. (Retired on 2026-11-06 for an import of about 50 MB: `browser-limits.md`.)
 
 ## Design decisions
 
