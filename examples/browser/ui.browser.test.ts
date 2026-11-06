@@ -334,6 +334,7 @@ describe("import, from a zip, a folder and a drop", () => {
     zipInput.files = fileList([new File([new Uint8Array(60_000_000)], "large.zip", { type: "application/zip" })]);
     zipInput.dispatchEvent(new Event("change", { bubbles: true }));
     await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("over the limit of about 50 MB"));
+    expect(sourceStatus("import").textContent).toContain("a zip of 60.0 MB");
     await userEvent.fill(key("osUser", "import"), "someone");
     const notice = q('[data-key="size-notice"]');
     expect(notice.hidden).toBe(true);

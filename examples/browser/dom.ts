@@ -44,7 +44,7 @@ export function field(label: string, control: HTMLElement, help?: string): HTMLE
 
 /** Bytes as `12.3 MB`. */
 export function sizeText(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1e3) return `${bytes} B`;
+  if (bytes < 1e6) return `${(bytes / 1e3).toFixed(1)} kB`;
+  return `${(bytes / 1e6).toFixed(1)} MB`;
 }
