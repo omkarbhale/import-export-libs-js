@@ -274,11 +274,14 @@ describe("import, from a zip, a folder and a drop", () => {
 
   it("imports a folder behind a picked directory handle, as recorded", async (context) => {
       // a handle crosses to the Worker, which reads the folder there; only a real one can cross, so the origin private file system stands in for the picker's folder
-      const root = await navigator.storage.getDirectory();
-      await root.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
-      const handle = await root.getDirectoryHandle("ui-test-picked", { create: true });
+      const tree = await loadFixtureTree(IMPORT_INPUT);
+      let root: FileSystemDirectoryHandle | undefined;
+      let handle: FileSystemDirectoryHandle;
       try {
-        for (const file of await loadFixtureTree(IMPORT_INPUT)) {
+        root = await navigator.storage.getDirectory();
+        await root.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
+        handle = await root.getDirectoryHandle("ui-test-picked", { create: true });
+        for (const file of tree) {
           let folder = handle;
           const parts = file.path.split("/");
           for (const part of parts.slice(0, -1)) folder = await folder.getDirectoryHandle(part, { create: true });
@@ -287,9 +290,9 @@ describe("import, from a zip, a folder and a drop", () => {
           await writable.close();
         }
       } catch (error) {
-        // WebKit's origin private file system cannot be written from a page's thread (a writable fails as UnknownError); the test has no folder to pick there
-        await root.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
-        context.skip(`this browser cannot make the folder the test would pick: ${String(error)}`);
+        // WebKit outside a persistent profile refuses the origin private file system itself (UnknownError, HOST-268), and its page's thread cannot write one (a writable fails); the test has no folder to pick there
+        await root?.removeEntry("ui-test-picked", { recursive: true }).catch(() => undefined);
+        return context.skip(`this browser cannot make the folder the test would pick: ${String(error)}`);
       }
       mount({ canPickDirectory: true, pickDirectory: () => Promise.resolve(handle as never) });
       const { url, recipe } = await startReplay(IMPORT_CASE);
