@@ -33,6 +33,7 @@ export const FIXTURE_CASES: readonly FixtureCase[] = [
   // a case with a list of its own costs 2.7 MB more, so the set keeps only the two a replay cannot do without: 14.35's language-resource
   // export (every such case has its own list) and 14.0.7's language pack (every one holds the list inside its transcript).
   ...each(ALL, "export", "e27-permission", "a package with item files"),
+  ...each(ALL, "export", "e32-item-report", "an item's file, over HTTP (HOST-269)"),
   ...each(ALL, "export", "e04-design-to-goal", "relationships between items"),
   ...each(ALL, "export", "e40-workflow-promotion-error-yes", "a failing item, the question answered true (abort the package; 14.35 does not read it)"),
   ...each(ALL, "export", "e40-workflow-promotion-error-no", "a failing item, the question answered false (continue; 14.35 does not read it)"),

@@ -49,6 +49,8 @@ export const FORBIDDEN_REQUEST_HEADERS: ReadonlySet<string> = new Set([
 ]);
 
 const READ_ONLY_HINT_HEADER = "aras-request-readonly";
+/** Always dropped (HOST-232): no server lists it, so its preflight would refuse 12.0's discovery, and a browser holds no session for it to steer. */
+const SESSION_STATE_HINT_HEADER = "aras-set-httpsessionstate-behavior";
 
 /**
  * The reason phrases of the final HTTP statuses (RFC 9110), for a response whose `statusText` is empty (HTTP/2 has no reason
@@ -145,6 +147,7 @@ export function createFetchTransport(options: FetchTransportOptions = {}): HttpT
         for (const [name, value] of request.headers) {
           const lower = name.toLowerCase();
           if (FORBIDDEN_REQUEST_HEADERS.has(lower)) continue;
+          if (lower === SESSION_STATE_HINT_HEADER) continue;
           if (lower === READ_ONLY_HINT_HEADER && options.sendReadOnlyHint !== true) continue;
           headers.push([name, value]);
         }
