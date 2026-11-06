@@ -1,5 +1,5 @@
 /**
- * What the `browser-size` project of `vitest.config.ts` is made of on the Node side (HOST-278): the packages of the size budget, which a
+ * What the `browser-size` project of `vitest.config.ts` is made of on the Node side (HOST-278): the packages of the size measurements, which a
  * page fetches from the Vitest server and does not carry in a command, the sizes the run is asked for, and the memory of the
  * browser's processes, which only the machine can tell. Test-only tooling: nothing under `src/` imports it.
  *

@@ -133,13 +133,25 @@ function finish(
   return { vfs, log: readLog(vfs, logPath), messages: reporter.messages, summary };
 }
 
-function reporterOf(operation: Operation, options: RunOptions, session: Session): RunReporter {
+/**
+ * The size of a package above which an import in a browser is not known to fit (HOST-278): 50 MB is the largest that completed. The
+ * engine holds about 40 to 70 times the package in parsed documents, so a larger one may run a tab out of memory.
+ */
+const IMPORT_SIZE_WARNING_BYTES = 50_000_000;
+
+function reporterOf(operation: Operation, options: RunOptions, session: Session, packageBytes = 0): RunReporter {
   const reporter = new RunReporter(operation, {
     ...(options.onMessage === undefined ? {} : { onMessage: options.onMessage }),
     ...(options.onProgress === undefined ? {} : { onProgress: options.onProgress }),
   });
   if (session.versionGate?.skipped === true) {
     reporter.note("warning", `Aras server ${session.serverVersionText} is outside the window of engine ${session.engine}; the run goes on because skipVersionCheck is set.`);
+  }
+  if (operation === "import" && packageBytes > IMPORT_SIZE_WARNING_BYTES) {
+    reporter.note(
+      "warning",
+      `The package is ${(packageBytes / 1e6).toFixed(0)} MB. An import in a browser holds about 40 to 70 times the package in memory and 50 MB is the largest size that is known to complete; a larger package may run the tab out of memory. Use the command line tool for packages of this size (HOST-278).`,
+    );
   }
   return reporter;
 }
@@ -188,7 +200,7 @@ export async function importPackages(session: Session, options: ImportOptions): 
     context.languages = languages;
     context.manifestFile = manifestPath;
 
-    const reporter = reporterOf("import", options, session);
+    const reporter = reporterOf("import", options, session, tree.size);
     const manager = new ImportExportManager(context, reporter.factory, session.helper, {
       console: reporter.console,
       osUser: options.osUser ?? session.userName,

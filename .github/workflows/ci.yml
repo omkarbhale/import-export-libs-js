@@ -75,8 +75,8 @@ jobs:
         run: |
           npx playwright install --with-deps chromium firefox webkit
 
-      # The size budget of HOST-278 at 10 MB: the package is generated, imported and exported through the Worker in each browser. The
-      # larger sizes (50 to 500 MB) are run by hand; roadmap/browser-limits.md has what they measured.
+      # The size limit of HOST-278 at 10 MB: the package is generated, imported and exported through the Worker in each browser. The
+      # larger sizes (up to the 50 MB limit) are run by hand; roadmap/browser-limits.md has what they measured.
       - name: Size budget tests
         run: |
           LIBSJS_SIZE_MB=10 npm run test:browser:size -- --reporter=verbose

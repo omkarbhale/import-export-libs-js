@@ -1,5 +1,5 @@
 /**
- * The generator of the synthetic packages of the size budget (HOST-277): `npm run synth-package -- --mb 10 --mb 50` writes each as a zip
+ * The generator of the synthetic packages of the size measurements (HOST-277): `npm run synth-package -- --mb 10 --mb 50` writes each as a zip
  * into `.synth/` (git-ignored, never committed) with a `.json` beside it that names its item count and bytes. The items are made by
  * `src/browser/synth-package.ts` from real fixture item files; this file reads the templates and writes the zip, one item at a
  * time, so that a package of 500 MB is never in memory whole.
@@ -22,7 +22,7 @@ import {
 } from "../src/browser/synth-package.js";
 import { repoRoot } from "./browser-bundle.js";
 
-/** The sizes the budget names, in megabytes (Q5 of the map: 500). */
+/** The sizes the first plan named, in megabytes (500 was Q5 of the map; the limit now is 50, HOST-278). */
 export const SYNTH_SIZES_MB: readonly number[] = [10, 50, 200, 500];
 
 /** The seed a package is made with unless another is asked for. */
@@ -100,7 +100,7 @@ export function writeSynthPackage(mb: number, seed: number = DEFAULT_SEED, dir: 
   return info;
 }
 
-/** `npm run synth-package -- [--mb N]... [--seed S] [--out DIR]`: with no `--mb`, every size of the budget. */
+/** `npm run synth-package -- [--mb N]... [--seed S] [--out DIR]`: with no `--mb`, every size of the list above. */
 function main(argv: readonly string[]): void {
   const sizes: number[] = [];
   let seed = DEFAULT_SEED;

@@ -99,6 +99,26 @@ describe("HOST-278: a package of a few items goes through the engine against the
     expect(server.adds, "every item and the rows around it were added").toBeGreaterThanOrEqual(count);
   }, 60_000);
 
+  it("warns, in the run's own messages, when the package is above the 50 MB that is known to complete", async () => {
+    const files: Record<string, Uint8Array | string> = { "/imports.mf": SYNTH_MANIFEST, "/big.bin": new Uint8Array(51_000_000) };
+    for (const item of synthItems(spec, templates, 20_000)) files[`/${item.path}`] = item.bytes;
+    const vfs = new MemoryVfs();
+    vfs.mount(files);
+    const session = await connect({ ...LOGIN, engine: "14.0.7", transport: synthImportServer().transport });
+    const result = await importPackages(session, { source: vfs, osUser: "size" });
+    const warnings = result.messages.filter((message) => message.source === "host" && message.level === "warning");
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]?.text).toMatch(/51 MB.*40 to 70 times.*50 MB is the largest.*command line tool/);
+    expect(result.summary.messages.warnings).toBe(1);
+    expect(result.summary.result).toBe("success");
+
+    // a package of 50 MB or less is not warned about
+    const small = new MemoryVfs();
+    small.mount({ "/imports.mf": SYNTH_MANIFEST, ...Object.fromEntries([...synthItems(spec, templates, 20_000)].map((item) => [`/${item.path}`, item.bytes])) });
+    const again = await importPackages(await connect({ ...LOGIN, engine: "14.0.7", transport: synthImportServer().transport }), { source: small, osUser: "size" });
+    expect(again.messages.filter((message) => message.source === "host")).toEqual([]);
+  }, 60_000);
+
   it("exports the items it is served, and writes back the files they were made as", async () => {
     const count = 25;
     const server = synthExportServer(spec, templates, count);
