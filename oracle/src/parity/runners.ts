@@ -664,7 +664,7 @@ export async function runDbPatchCase(env: ParityEnv, c: DbPatchCase): Promise<Ca
               "browser",
             ),
             ...relabelDifferences(
-              same(portSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(portSteps.flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(portSteps[i]!, run.outcome),
+              same(portSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(portSteps.slice(0, i + 1).flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(portSteps[i]!, run.outcome),
               "node",
               "browser",
             ),

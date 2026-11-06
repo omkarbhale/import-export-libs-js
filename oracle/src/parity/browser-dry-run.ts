@@ -37,6 +37,8 @@ export interface DryRunOptions {
   cors?: BrowserCors;
   /** Serves another recorded case than the one compared with, so that the comparison must find a difference (a check of the check). */
   serve?: string;
+  /** The password of the run; a test value by default. */
+  password?: string;
   /** An already started server; one is started (and closed) otherwise. */
   server?: WireServer;
   log?: (line: string) => void;
@@ -53,6 +55,10 @@ export interface DryRunReport {
   /** The page's own check that what the engine says it sent is what the transport sent. */
   wire: Difference[];
   calls: { oracle: number; node: number; browser: number };
+  /** The page's outcome, as a live run would keep it. */
+  outcome: RunOutcome;
+  /** The page's URL, cookies and storage after the run (`BrowserRuntime.kept`). */
+  kept: string;
 }
 
 /** The report has no difference in any part. */
@@ -99,7 +105,7 @@ async function dry(options: DryRunOptions, c: DryCase): Promise<DryRunReport> {
       logUrl: run.params.Url,
       database: run.params.Database,
       userName: run.params.User,
-      password: "not-a-real-password",
+      password: options.password ?? "not-a-real-password",
     });
     const served = { ...c.recorded, name: options.serve ?? c.recorded.name };
     const forNode = serverOf(await scenario(server, engine, served));
@@ -119,6 +125,8 @@ async function dry(options: DryRunOptions, c: DryCase): Promise<DryRunReport> {
       browserAgainstNode: relabelDifferences(diffOutcomes(node, browser, { skipCalls }), "node", "browser"),
       wire: ran.wire,
       calls: { oracle: oracle.calls.length, node: node.calls.length, browser: browser.calls.length },
+      outcome: ran.outcome,
+      kept: await runtime.kept(),
     };
   } finally {
     await runtime?.close();

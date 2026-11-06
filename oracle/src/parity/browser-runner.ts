@@ -9,7 +9,6 @@ import type { ExportCaseOptions, ExportCasePackage } from "../export-cases.js";
 import type { ImportOptions } from "../import-cases.js";
 import { DBPATCH_DIR, MANIFEST_FILE, PATCH_FILE, TOOL_NAME, assertTestPatch } from "../dbpatch.js";
 import { manifestPackageNames } from "../record.js";
-import { scrub } from "../scrub.js";
 import type {
   BrowserConsoleMode,
   BrowserRunRequest,
@@ -43,7 +42,7 @@ import { type RunningProxy, startProxy } from "./proxy.js";
 export type BrowserName = "chromium" | "firefox" | "webkit";
 export const BROWSERS: readonly BrowserName[] = ["chromium", "firefox", "webkit"];
 
-/** How the page reaches the server: through the runner's same-origin proxy, or straight, the server answering CORS itself (HOST-277). */
+/** How the page reaches the server: through the runner's same-origin proxy, or straight, from a server already configured for the page's origin (HOST-277). */
 export type BrowserCors = "proxy" | "server";
 export const BROWSER_CORS: readonly BrowserCors[] = ["proxy", "server"];
 
@@ -63,7 +62,7 @@ export type RuntimeChoice = { runtime: "node" } | { runtime: "browser"; browser:
 
 /**
  * Reads the three options of the script. `node` is the default and runs as it always did; `browser` adds the page as a third side, in
- * Chromium unless `--browser` says another, through the proxy unless `--browser-cors=server` says the server answers CORS itself. The
+ * Chromium unless `--browser` says another, through the proxy unless `--browser-cors=server` says the server is already configured to answer CORS. The
  * two browser options mean nothing without `--runtime browser`, and a value that is not one of the choices is refused with the choices.
  */
 export function parseRuntimeOptions(values: { runtime?: string | undefined; browser?: string | undefined; "browser-cors"?: string | undefined }): RuntimeChoice {
@@ -137,6 +136,17 @@ export class BrowserRuntime {
     return this.options.cors === "proxy" ? this.proxy.url : this.options.target;
   }
 
+  /** The page's own origin: in `proxy` mode, the only one its transport may call. */
+  get pageOrigin(): string {
+    return this.proxy.origin;
+  }
+
+  /** What a page keeps after a run: its URL, its cookies and its storage, as text (HOST-277). */
+  async kept(): Promise<string> {
+    const session = await this.page.evaluate<string>("JSON.stringify(sessionStorage)");
+    return JSON.stringify({ url: this.page.url(), storage: await this.context.storageState(), session });
+  }
+
   /** How many requests the proxy forwarded (0 in `server` mode). */
   get forwarded(): number {
     return this.proxy.forwarded();
@@ -173,13 +183,9 @@ export function paddedInputDir(length: number): string {
   return pad < 1 ? "/input" : `/${"p".repeat(pad)}/input`;
 }
 
-/**
- * The page's result as a `RunOutcome`, scrubbed of what the oracle's recorder scrubs (`scrubbedOutcome`, which the Node port's outcome
- * has too, so that the three compare) and then, for the browser's run only, of the password itself wherever it stands. The engine never
- * logs it, so the second pass changes nothing in a run that behaves; it is what lets the folders of a run be kept as evidence.
- */
+/** The page's result as a `RunOutcome`, scrubbed as the Node port's is (`scrubbedOutcome`), so that the three sides compare. */
 export function outcomeOf(result: BrowserRunResult, password: string): RunOutcome {
-  const first = scrubbedOutcome(
+  return scrubbedOutcome(
     {
       side: "browser",
       calls: result.calls,
@@ -192,16 +198,6 @@ export function outcomeOf(result: BrowserRunResult, password: string): RunOutcom
     },
     password,
   );
-  const literal = (text: string): string => scrub(text, [password], { literalSecrets: true }).text;
-  return {
-    ...first,
-    calls: first.calls.map((call) => ({ action: call.action, request: literal(call.request), response: literal(call.response) })),
-    files: first.files === null ? null : new Map([...first.files].map(([path, bytes]) => [path, bytes.length === 0 ? bytes : Buffer.from(literal(bytes.toString("latin1")), "latin1")] as const)),
-    log: literal(first.log),
-    messages: first.messages.map((message) => ({ channel: message.channel, text: literal(message.text) })),
-    console: first.console === null ? null : literal(first.console),
-    termination: first.termination.kind === "exception" ? { kind: "exception", summary: literal(first.termination.summary) } : first.termination,
-  };
 }
 
 // ------------------------------------------------------------------------------------------------------------------- wire check
@@ -235,14 +231,20 @@ export function wireDifferences(calls: readonly { action: string; request: strin
   return out;
 }
 
+/** In `proxy` mode the whole run, the login's discovery included, stays on the page's origin; another origin in the list is a difference. */
+export function originDifferences(origins: readonly string[], pageOrigin: string): Difference[] {
+  return origins
+    .filter((origin) => origin !== pageOrigin)
+    .map((origin) => ({ area: "wire", summary: `the page called ${origin}, not its own origin`, oracle: pageOrigin, port: origin, labels: { oracle: "page", port: "called" } }));
+}
+
 // ---------------------------------------------------------------------------------------------------------------------- runs
 
 export interface BrowserExportRun {
   options: ExportCaseOptions;
   packages?: readonly ExportCasePackage[];
   /** A console mode and the folder of the disk that holds `imports.mf` (or a package folder) it reads. */
-  console?: { mode: BrowserConsoleMode; manifestDir?: string; manifestName?: string };
-  parallelism?: number;
+  console?: { mode: BrowserConsoleMode; manifestDir?: string };
 }
 
 /** What a browser run gives with the outcome: the wire's differences. */
@@ -251,15 +253,15 @@ export interface BrowserOutcome {
   wire: Difference[];
 }
 
-function finish(result: BrowserRunResult, password: string): BrowserOutcome {
-  return { outcome: outcomeOf(result, password), wire: wireDifferences(result.calls, result.wire) };
+function finish(runtime: BrowserRuntime, result: BrowserRunResult, password: string): BrowserOutcome {
+  const strays = runtime.options.cors === "proxy" ? originDifferences(result.origins, runtime.pageOrigin) : [];
+  return { outcome: outcomeOf(result, password), wire: [...wireDifferences(result.calls, result.wire), ...strays] };
 }
 
 const MANIFEST_DIR = "/work/manifest";
 
 /** One export in the page, as `runPortExport` runs it on Node. */
 export async function runBrowserExport(runtime: BrowserRuntime, server: PortServer, run: BrowserExportRun): Promise<BrowserOutcome> {
-  const manifestName = run.console?.manifestName ?? "imports.mf";
   const result = await runtime.run({
     kind: "export",
     server: runtime.serverOf(server),
@@ -267,11 +269,10 @@ export async function runBrowserExport(runtime: BrowserRuntime, server: PortServ
     ...(run.packages === undefined ? {} : { packages: [...run.packages] }),
     ...(run.console === undefined
       ? {}
-      : { console: { mode: run.console.mode, ...(run.console.manifestDir === undefined ? {} : { manifestPath: `${MANIFEST_DIR}/${manifestName}` }) } }),
+      : { console: { mode: run.console.mode, ...(run.console.manifestDir === undefined ? {} : { manifestPath: `${MANIFEST_DIR}/imports.mf` }) } }),
     files: run.console?.manifestDir === undefined ? [] : treeFromDisk(run.console.manifestDir, MANIFEST_DIR),
-    ...(run.parallelism === undefined ? {} : { parallelism: run.parallelism }),
   });
-  return finish(result, server.password);
+  return finish(runtime, result, server.password);
 }
 
 export interface BrowserImportStep {
@@ -317,7 +318,7 @@ export async function runBrowserImport(
     ...(step.only === undefined ? {} : { only: [...step.only] }),
     osUser,
   });
-  const done = finish(result, server.password);
+  const done = finish(runtime, result, server.password);
   return { ...done, created: createdBy(done.outcome.calls), preRunCreated };
 }
 
@@ -342,7 +343,7 @@ export async function runBrowserLanguagePack(runtime: BrowserRuntime, server: Po
     files: treeFromDisk(run.lpDir, "/work/lp"),
     osUser,
   });
-  const done = finish(result, server.password);
+  const done = finish(runtime, result, server.password);
   return { ...done, created: createdBy(done.outcome.calls) };
 }
 
@@ -355,5 +356,5 @@ export async function runBrowserDbPatch(runtime: BrowserRuntime, server: PortSer
     [`${input}/${PATCH_FILE}`, new Uint8Array(readFileSync(join(committed.folder, PATCH_FILE)))],
   ];
   const result = await runtime.run({ kind: "db-patch", server: runtime.serverOf(server), inputDir: input, manifestName: MANIFEST_FILE, toolName: TOOL_NAME, files, osUser });
-  return finish(result, server.password);
+  return finish(runtime, result, server.password);
 }

@@ -2,10 +2,11 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { outcomeOf, paddedInputDir, parseRuntimeOptions, treeFromDisk, wireDifferences } from "./browser-runner.js";
+import { originDifferences, outcomeOf, paddedInputDir, parseRuntimeOptions, treeFromDisk, wireDifferences } from "./browser-runner.js";
 import type { BrowserRunResult } from "./browser-page/protocol.js";
 import { describeDifferences, diffOutcomes, relabelDifferences } from "./diff.js";
 import type { RunOutcome } from "./outcome.js";
+import { scrubbedOutcome } from "./port-run.js";
 import { type StepReport, compare, withBrowser } from "./runners.js";
 
 /** The driver's arguments, its conversion of the page's result, and the three-way comparison, on synthetic runs (HOST-277). No browser starts here. */
@@ -88,10 +89,10 @@ const result = (change: (r: BrowserRunResult) => void = () => undefined): Browse
     termination: { kind: "exported" },
     exitCode: 0,
     wire: [
-      { action: "ApplyItem", body: "<Item a/>", status: 200 },
-      { action: "ApplyItem", body: "<Item b/>", status: 200 },
+      { action: "ApplyItem", body: "<Item a/>" },
+      { action: "ApplyItem", body: "<Item b/>" },
     ],
-    userAgent: "test",
+    origins: ["http://127.0.0.1:1"],
   };
   change(r);
   return r;
@@ -106,18 +107,31 @@ describe("the page's result as a RunOutcome", () => {
     expect(outcome.calls).toHaveLength(2);
   });
 
-  it("is scrubbed of the password, in the log, the messages, the console and the files", () => {
-    const outcome = outcomeOf(
+  it("is scrubbed as the Node port's: a password that is a common word leaves the same text on every side", () => {
+    const text = "com.aras.innovator.history";
+    const browser = outcomeOf(
       result((r) => {
-        r.log = `the password ${PASSWORD} was typed\r\n`;
-        r.messages = [{ channel: "error", text: `bad ${PASSWORD}` }];
-        r.console = `console ${PASSWORD}`;
-        r.files = [["a.xml", new TextEncoder().encode(`<password>${PASSWORD}</password>`)]];
+        r.log = `${text}\r\n`;
+        r.calls = [{ action: "ApplyItem", request: `<Item a="${text}"/>`, response: `<r>${text}</r>` }];
       }),
-      PASSWORD,
+      "innovator",
     );
-    const everything = JSON.stringify({ ...outcome, files: [...(outcome.files ?? [])].map(([path, bytes]) => [path, bytes.toString("latin1")]) });
-    expect(everything).not.toContain(PASSWORD);
+    expect(browser.log).toBe(`${text}\r\n`);
+    expect(browser.calls[0]).toEqual({ action: "ApplyItem", request: `<Item a="${text}"/>`, response: `<r>${text}</r>` });
+    const node = scrubbedOutcome({ ...browser, side: "port" }, "innovator");
+    expect(diffOutcomes(node, browser)).toEqual([]);
+  });
+});
+
+describe("the origins the page called", () => {
+  it("is no difference when each is the page's own", () => {
+    expect(originDifferences(["http://127.0.0.1:1"], "http://127.0.0.1:1")).toEqual([]);
+  });
+
+  it("names any other origin as a difference of the wire", () => {
+    const found = originDifferences(["http://127.0.0.1:1", "http://172.19.0.1"], "http://127.0.0.1:1");
+    expect(found).toHaveLength(1);
+    expect(found[0]).toMatchObject({ area: "wire", summary: "the page called http://172.19.0.1, not its own origin" });
   });
 });
 
@@ -128,12 +142,12 @@ describe("the wire check", () => {
   });
 
   it("allows a request that was sent twice (a renewed token, a changed digest)", () => {
-    const r = result((x) => x.wire.splice(0, 0, { action: "ApplyItem", body: "<Item a/>", status: 401 }));
+    const r = result((x) => x.wire.splice(0, 0, { action: "ApplyItem", body: "<Item a/>" }));
     expect(wireDifferences(r.calls, r.wire)).toEqual([]);
   });
 
   it("reports a call the transport did not send, with what it sent instead", () => {
-    const r = result((x) => (x.wire[1] = { action: "ApplyItem", body: "<Item c/>", status: 200 }));
+    const r = result((x) => (x.wire[1] = { action: "ApplyItem", body: "<Item c/>" }));
     const found = wireDifferences(r.calls, r.wire);
     expect(found).toHaveLength(1);
     expect(found[0]).toMatchObject({ area: "wire", summary: "call 2 (ApplyItem) is not the body of a request that the transport sent", oracle: "<Item b/>", port: "<Item c/>" });
@@ -146,7 +160,7 @@ describe("the wire check", () => {
   });
 
   it("matches the action too", () => {
-    const r = result((x) => (x.wire[0] = { action: "ApplyAML", body: "<Item a/>", status: 200 }));
+    const r = result((x) => (x.wire[0] = { action: "ApplyAML", body: "<Item a/>" }));
     expect(wireDifferences(r.calls, r.wire)).toHaveLength(1);
   });
 });

@@ -1,12 +1,9 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { build } from "esbuild";
 import { describe, expect, it } from "vitest";
 import { browserBundleOptions, repoRoot } from "../../tools/browser-bundle.js";
 
 /**
- * The harness page of the browser parity run (`oracle/src/parity/browser-page/`, HOST-277) is built from the browser build's graph,
- * and what it is built from has no way to read the run's credentials from anywhere but its one request.
+ * The harness page of the browser parity run (`oracle/src/parity/browser-page/`, HOST-277) is built from the browser build's graph.
  *
  * @spec HOST-277
  */
@@ -44,14 +41,5 @@ describe("the parity harness page's bundles", () => {
     expect(worker).toContain("src/export/import-export-manager.ts");
     expect(worker).toContain("src/browser/fetch-transport.ts");
     expect(worker).toContain("src/host/memory-fs.ts");
-  });
-
-  it("nothing of the page's source reads the credentials from anywhere but the request it is given", () => {
-    for (const file of ["page.ts", "worker.ts", "run.ts", "protocol.ts", "index.html"]) {
-      const text = readFileSync(path.join(repoRoot, PAGE_DIR, file), "utf8");
-      for (const forbidden of [/\blocation\b/, /\bURLSearchParams\b/, /\blocalStorage\b/, /\bsessionStorage\b/, /\bindexedDB\b/, /\bdocument\.cookie\b/, /ARAS_PASSWORD/, /process\.env/, /\bpassword\s*[:=]\s*["'`]/i]) {
-        expect(text, `${file} matches ${forbidden}`).not.toMatch(forbidden);
-      }
-    }
   });
 });

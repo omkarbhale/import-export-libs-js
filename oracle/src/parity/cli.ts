@@ -56,9 +56,9 @@ Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it 
 --runtime browser (HOST-277) adds the browser as a third side. Each step of each case also runs in a headless browser (the engine of
 the browser build, in a Worker, over a tree in memory and the fetch transport; Playwright's Chromium unless --browser names another), and
 its request AML, output tree, log, messages, console text and ending are compared with the oracle's and with the Node port's by the same
-diff. --browser-cors proxy (the default) puts a same-origin reverse proxy in front of the server, which works on every flavour;
---browser-cors server has the page call the server directly, so the server must answer CORS itself (R23 and R35 do as shipped;
-roadmap/browser-cors-poc.md). The server's address, database, user and password reach the page in one argument of one call, never in a URL,
+diff. --browser-cors proxy (the default) puts a same-origin reverse proxy in front of the server, and keeps the login chain on its origin;
+--browser-cors server has the page call the server directly, so the lease must already be configured for the page's origin
+(allowedCorsOrigins and the rest of roadmap/browser-cors-poc.md, section 3); the runner does not configure it. The server's address, database, user and password reach the page in one argument of one call, never in a URL,
 a file or the page's source. --list needs no server and no browser.
 
 The server is --url, else ARAS_URL, else the dev instance (${WSL_DEV_URL}), as WSL reaches it, and its database is ARAS_DATABASE

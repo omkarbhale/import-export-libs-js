@@ -1,8 +1,14 @@
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { startWireServer, type WireServer } from "../../../src/browser/test-server.js";
 import { BROWSERS } from "./browser-runner.js";
 import { dryRunExport, dryRunImport, dryRunLanguagePack, isClean, type DryRunReport } from "./browser-dry-run.js";
 import { describeDifferences } from "./diff.js";
+import { readTree } from "./outcome.js";
+import { writePortRun } from "./runners.js";
+import { secretForms } from "../scrub.js";
 
 /**
  * The parity script's browser runtime, end to end with no lease (HOST-277): a recorded export case is served over HTTP by the browser
@@ -54,6 +60,25 @@ describe.each(BROWSERS)("a dry run of one recorded export case in %s", (browser)
     const report = await dryRunExport({ engine: "14.0.7", caseName: "e24-grid", browser, cors: "server", server });
     expect(shown(report).trim(), "the differences").toBe("");
     expect(isClean(report)).toBe(true);
+  });
+});
+
+describe("the dry run keeps no copy of the password", () => {
+  const PASSWORD = "LIBSJS-known-test-password";
+
+  it.each(BROWSERS)("in %s: not in the outcome, the differences, the kept folders or the page", async (browser) => {
+    const report = await dryRunExport({ engine: "14.0.7", caseName: "e24-grid", browser, cors: "proxy", server, password: PASSWORD });
+    const folder = mkdtempSync(join(tmpdir(), "libsjs-kept-"));
+    try {
+      writePortRun(folder, report.outcome);
+      const kept = [...readTree(folder)].flatMap(([path, bytes]) => [path, bytes.toString("latin1")]);
+      const { outcome, ...parts } = report;
+      const everything = [JSON.stringify(parts), JSON.stringify(outcome.calls), outcome.log, ...kept].join("\n");
+      for (const secret of [PASSWORD, ...secretForms(PASSWORD)]) expect(everything).not.toContain(secret);
+      expect(report.kept).toContain("/__parity/index.html");
+    } finally {
+      rmSync(folder, { recursive: true, force: true });
+    }
   });
 });
 

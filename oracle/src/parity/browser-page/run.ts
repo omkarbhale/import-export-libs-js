@@ -73,17 +73,25 @@ export function readVfsTree(fs: HostFs, root: string): TreeFiles {
 
 const logOf = (fs: HostFs, path: string): string => (fs.exists(path) ? textDecoder.decode(fs.readFile(path)) : "");
 
-/** A transport that sends through `fetch` and notes each SOAP request as the wire carried it (HOST-277). */
-function recordingTransport(wire: WireCall[]): HttpTransport {
+interface WireRecord {
+  calls: WireCall[];
+  origins: Set<string>;
+}
+
+const newWireRecord = (): WireRecord => ({ calls: [], origins: new Set() });
+
+/** A transport that sends through `fetch`, notes each SOAP request as the wire carried it, and the origin of every request (HOST-277). */
+function recordingTransport(wire: WireRecord): HttpTransport {
   const inner = createFetchTransport();
   const header = (request: { headers: readonly (readonly [string, string])[] }, name: string): string | undefined =>
     request.headers.find(([key]) => key.toLowerCase() === name.toLowerCase())?.[1];
   return {
     async send(request) {
+      wire.origins.add(new URL(request.url).origin);
       const response = await inner.send(request);
       const action = header(request, "SOAPAction");
       if (action !== undefined && request.body !== undefined) {
-        wire.push({ action, body: textDecoder.decode(request.body).replace(/^<\?xml[^>]*\?>/, ""), status: response.status });
+        wire.calls.push({ action, body: textDecoder.decode(request.body).replace(/^<\?xml[^>]*\?>/, "") });
       }
       return response;
     },
@@ -102,16 +110,14 @@ interface Settled {
   exitCode: number;
 }
 
-function result(settled: Settled, wire: WireCall[]): BrowserRunResult {
-  return { ...settled, wire, userAgent: typeof navigator === "undefined" ? "" : navigator.userAgent };
+function result(settled: Settled, wire: WireRecord): BrowserRunResult {
+  return { ...settled, wire: wire.calls, origins: [...wire.origins] };
 }
-
-declare const navigator: { userAgent: string } | undefined;
 
 // ---------------------------------------------------------------------------------------------------------------------- export
 
 async function runExport(request: ExportRunRequest): Promise<BrowserRunResult> {
-  const wire: WireCall[] = [];
+  const wire = newWireRecord();
   const server = serverOf(request.server, recordingTransport(wire));
   const vfs = treeOf(request.files);
   const host = createBrowserHost({ fs: vfs, cwd: WORK, osUser: "libsjs" }).env;
@@ -142,7 +148,6 @@ async function runExport(request: ExportRunRequest): Promise<BrowserRunResult> {
       host,
       console: collected.sink,
       culture: ORACLE_HOST_CULTURE,
-      ...(request.parallelism === undefined ? {} : { parallelism: request.parallelism }),
     });
     const mode = request.console?.mode;
     let selection;
@@ -188,7 +193,7 @@ async function runExport(request: ExportRunRequest): Promise<BrowserRunResult> {
 
 async function runImport(request: ImportRunRequest): Promise<BrowserRunResult> {
   const options = request.options;
-  const wire: WireCall[] = [];
+  const wire = newWireRecord();
   const server = serverOf(request.server, recordingTransport(wire));
   if (server.engine !== "14.35" && (options.languages !== undefined || options.amlBatch !== undefined || options.collectErrors !== undefined)) {
     throw new Error(`the options ${JSON.stringify(options)} are 14.35's`);
@@ -270,7 +275,7 @@ async function runImport(request: ImportRunRequest): Promise<BrowserRunResult> {
 // ---------------------------------------------------------------------------------------------------------------- language pack
 
 async function runLanguagePack(request: LanguagePackRunRequest): Promise<BrowserRunResult> {
-  const wire: WireCall[] = [];
+  const wire = newWireRecord();
   const server = serverOf(request.server, recordingTransport(wire));
   if (request.languages !== undefined && server.engine !== "14.35") throw new Error("the Languages selection is 14.35's");
   const vfs = treeOf(request.files);
@@ -324,7 +329,7 @@ async function runLanguagePack(request: LanguagePackRunRequest): Promise<Browser
 // -------------------------------------------------------------------------------------------------------------------- DB patch
 
 async function runDbPatch(request: DbPatchRunRequest): Promise<BrowserRunResult> {
-  const wire: WireCall[] = [];
+  const wire = newWireRecord();
   const server = serverOf(request.server, recordingTransport(wire));
   const vfs = treeOf(request.files);
   const host = createBrowserHost({ fs: vfs, cwd: WORK, osUser: request.osUser }).env;

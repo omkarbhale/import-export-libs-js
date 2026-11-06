@@ -9,8 +9,10 @@ import { extname, join, normalize, sep } from "node:path";
  * page needs nothing of the server's own CORS configuration, which a lease may lack (`roadmap/browser-cors-poc.md`). It forwards each
  * request to the server and each response back byte for byte: the body untouched (compressed stays compressed, a 5 MB body is not
  * buffered), the status line and every header as received with their names' case and repeated headers (`Set-Cookie`) kept apart. What it
- * changes is the hop-by-hop headers and `Host`, and it adds the CORS headers of a server that allows the page's origin, so the same
- * code serves a page on another origin too. A preflight is answered here, with the headers the browser asks for, and never forwarded.
+ * changes is the hop-by-hop headers and `Host`, and the CORS headers: the upstream's `Access-Control-*` are replaced by those of a server
+ * that allows the page's origin. A preflight is answered here, with the headers the browser asks for, and never forwarded. One kind of
+ * body does change: the OAuth discovery answers (`OAuthServerDiscovery.aspx`, `.well-known/openid-configuration`) name the server's own
+ * origin in absolute URLs, which the engine follows, so there that origin becomes the proxy's and the login stays on one origin.
  * It also serves the files of the parity page, below `/__parity/`, so that one origin holds both.
  *
  * It reads no credential: the page's requests carry theirs, and nothing is logged.
@@ -26,10 +28,6 @@ export interface ProxyOptions {
   target: string;
   /** A folder of static files served below `/__parity/` (the harness page). */
   staticRoot?: string;
-  /** Listen address; default the loopback interface. */
-  host?: string;
-  /** Listen port; default a free one. */
-  port?: number;
 }
 
 export interface RunningProxy {
@@ -66,6 +64,15 @@ function corsHeaders(request: IncomingMessage, preflight: boolean): Record<strin
   return headers;
 }
 
+const isDiscovery = (url: string): boolean => /\/(?:oauthserverdiscovery\.aspx|\.well-known\/openid-configuration)$/.test((url.split("?")[0] ?? "").toLowerCase());
+
+/** The target's origin in a body: with JSON's optional `\/`, with its default port spelled or not, and not as the prefix of a longer host. */
+function originPattern(target: URL): RegExp {
+  const quote = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const defaultPort = target.port !== "" ? "" : `(?::${target.protocol === "https:" ? 443 : 80})?`;
+  return new RegExp(`${quote(target.protocol)}\\\\?/\\\\?/${quote(target.host)}${defaultPort}(?![\\w.:-])`, "gi");
+}
+
 /** The pairs of a raw header list, with the hop-by-hop ones left out. */
 function forwardable(raw: readonly string[]): [string, string][] {
   const pairs: [string, string][] = [];
@@ -96,6 +103,8 @@ async function serveStatic(root: string, rest: string, response: ServerResponse)
 export async function startProxy(options: ProxyOptions): Promise<RunningProxy> {
   const target = new URL(options.target);
   const send = target.protocol === "https:" ? httpsRequest : httpRequest;
+  const targetOrigin = originPattern(target);
+  let origin = "";
   let count = 0;
   const server: Server = createServer((request, response) => {
     const url = request.url ?? "/";
@@ -109,6 +118,8 @@ export async function startProxy(options: ProxyOptions): Promise<RunningProxy> {
       return;
     }
     count += 1;
+    const discovery = isDiscovery(url);
+    const sent = forwardable(request.rawHeaders).filter(([name]) => !discovery || name.toLowerCase() !== "accept-encoding");
     const upstream = send(
       {
         protocol: target.protocol,
@@ -118,18 +129,31 @@ export async function startProxy(options: ProxyOptions): Promise<RunningProxy> {
         path: url,
         // the raw pairs, so that a header keeps its case and a repeated one stays repeated
         headers: Object.fromEntries(
-          forwardable(request.rawHeaders).reduce<Map<string, string[]>>((map, [name, value]) => map.set(name, [...(map.get(name) ?? []), value]), new Map()),
+          sent.reduce<Map<string, string[]>>((map, [name, value]) => map.set(name, [...(map.get(name) ?? []), value]), new Map()),
         ),
         setHost: false,
         agent: false,
       },
       (answer) => {
-        const out: [string, string][] = [...forwardable(answer.rawHeaders), ...Object.entries(corsHeaders(request, false))];
-        const lines: Record<string, string[]> = {};
-        for (const [name, value] of out) (lines[name] ??= []).push(value);
-        response.writeHead(answer.statusCode ?? 502, answer.statusMessage ?? "", lines);
-        answer.pipe(response);
+        const received = forwardable(answer.rawHeaders).filter(([name]) => !name.toLowerCase().startsWith("access-control-"));
+        const writeHead = (pairs: readonly [string, string][]): void => {
+          const lines: Record<string, string[]> = {};
+          for (const [name, value] of [...pairs, ...Object.entries(corsHeaders(request, false))]) (lines[name] ??= []).push(value);
+          response.writeHead(answer.statusCode ?? 502, answer.statusMessage ?? "", lines);
+        };
         answer.on("error", () => response.destroy());
+        if (!discovery || answer.headers["content-encoding"] !== undefined) {
+          writeHead(received);
+          answer.pipe(response);
+          return;
+        }
+        const chunks: Buffer[] = [];
+        answer.on("data", (chunk: Buffer) => chunks.push(chunk));
+        answer.on("end", () => {
+          const body = Buffer.from(Buffer.concat(chunks).toString("latin1").replace(targetOrigin, () => origin), "latin1");
+          writeHead([...received.filter(([name]) => name.toLowerCase() !== "content-length"), ["Content-Length", String(body.length)]]);
+          response.end(body);
+        });
       },
     );
     // the server sees its own address as the host, as it would from a client that reached it directly
@@ -143,9 +167,9 @@ export async function startProxy(options: ProxyOptions): Promise<RunningProxy> {
   });
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
-    server.listen(options.port ?? 0, options.host ?? "127.0.0.1", resolve);
+    server.listen(0, "127.0.0.1", resolve);
   });
-  const origin = `http://${options.host ?? "127.0.0.1"}:${(server.address() as AddressInfo).port}`;
+  origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   return {
     origin,
     url: `${origin}${target.pathname.replace(/\/$/, "")}`,

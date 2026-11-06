@@ -39,7 +39,6 @@ export interface ExportRunRequest {
   console?: { mode: BrowserConsoleMode; manifestPath?: string };
   /** The files of the tree the run starts with (a console mode's manifest). */
   files: TreeFiles;
-  parallelism?: number;
 }
 
 export interface ImportRunRequest {
@@ -83,7 +82,6 @@ export interface WireCall {
   action: string;
   /** The body as sent, without its XML declaration. */
   body: string;
-  status: number;
 }
 
 /** What a run in the page gives back. The driver turns it into a `RunOutcome`. */
@@ -98,8 +96,8 @@ export interface BrowserRunResult {
   exitCode: number;
   /** The SOAP requests of the transport, in order, for the wire check. */
   wire: WireCall[];
-  /** The browser that ran it, for the report. */
-  userAgent: string;
+  /** The origin of every request of the transport, the login's too, each once. */
+  origins: string[];
 }
 
 /** The Worker's messages. */

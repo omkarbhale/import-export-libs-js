@@ -199,6 +199,68 @@ describe("the parity proxy: what it adds", () => {
   });
 });
 
+describe("the parity proxy: the upstream's CORS headers", () => {
+  it("replaces them, whatever their case, with its own", async () => {
+    answer = (_request, response) => {
+      response.writeHead(200, [
+        ["ACCESS-control-allow-ORIGIN", "*"],
+        ["Access-Control-Allow-Headers", "content-type"],
+        ["X-Kept", "1"],
+      ]);
+      response.end("ok");
+    };
+    const got = await call("/12sp9/Server/InnovatorServer.aspx", { headers: { Origin: "http://page.example" } });
+    expect(headerValues(got.rawHeaders, "access-control-allow-origin")).toEqual(["http://page.example"]);
+    expect(headerValues(got.rawHeaders, "access-control-allow-headers")).toEqual([]);
+    expect(headerValues(got.rawHeaders, "x-kept")).toEqual(["1"]);
+  });
+});
+
+describe("the parity proxy: the OAuth discovery answers", () => {
+  const own = (): string => `http://127.0.0.1:${(upstream.address() as AddressInfo).port}`;
+  const json = (got: { body: Buffer }): Record<string, unknown> => JSON.parse(got.body.toString()) as Record<string, unknown>;
+
+  it("gives the page the locations of OAuthServerDiscovery.aspx on the proxy's origin, with the right Content-Length", async () => {
+    answer = (_request, response) => {
+      const body = JSON.stringify({ locations: [{ uri: `${own()}/12sp9/OAuthServer/` }] });
+      response.writeHead(200, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) }).end(body);
+    };
+    const got = await call("/12sp9/Server/OAuthServerDiscovery.aspx");
+    expect(json(got)).toEqual({ locations: [{ uri: `${proxy.origin}/12sp9/OAuthServer/` }] });
+    expect(headerValues(got.rawHeaders, "content-length")).toEqual([String(got.body.length)]);
+  });
+
+  it("gives the page the endpoints of a chunked OpenID configuration on the proxy's origin, and leaves other hosts alone", async () => {
+    answer = (_request, response) => {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.write(`{"token_endpoint":"${own()}/OAuthServer/connect/token",`);
+      response.end(`"jwks_uri":"${own().replace(/\//g, "\\/")}/jwks","longer":"${own()}0/x","other":"http://elsewhere.example/x"}`);
+    };
+    const got = await call("/12sp9/OAuthServer/.well-known/openid-configuration");
+    expect(json(got)).toEqual({
+      token_endpoint: `${proxy.origin}/OAuthServer/connect/token`,
+      jwks_uri: `${proxy.origin}/jwks`,
+      longer: `${own()}0/x`,
+      other: "http://elsewhere.example/x",
+    });
+    expect(headerValues(got.rawHeaders, "content-length")).toEqual([String(got.body.length)]);
+  });
+
+  it("asks for those answers uncompressed", async () => {
+    seen = [];
+    answer = (_request, response) => response.end("{}");
+    await call("/12sp9/Server/OAuthServerDiscovery.aspx?x=1", { headers: { "Accept-Encoding": "gzip" } });
+    expect(headerValues(seen[0]!.rawHeaders, "accept-encoding")).toEqual([]);
+  });
+
+  it("leaves a SOAP answer and the key set byte for byte, though they name the server's origin", async () => {
+    const body = (): string => `<a href="${own()}/x"/>`;
+    answer = (_request, response) => response.end(body());
+    expect((await call("/12sp9/Server/InnovatorServer.aspx", { method: "POST", body: Buffer.from("<AML/>") })).body.toString()).toBe(body());
+    expect((await call("/12sp9/OAuthServer/.well-known/openid-configuration/jwks")).body.toString()).toBe(body());
+  });
+});
+
 describe("the parity proxy: the page's files", () => {
   it("serves the harness page below /__parity/ and keeps requests out of the folder above it", async () => {
     const page = await call("/__parity/index.html");
