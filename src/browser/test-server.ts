@@ -36,7 +36,7 @@ export * from "./wire-spec.js";
  * Nothing here reads a password or a token from anywhere: the logins are the recorded or fake ones, and every credential is a
  * test value.
  *
- * The parity script's browser runtime serves a recorded export case from it for its dry run, with no lease
+ * The parity script's browser runtime serves a recorded export, import step or language-pack run from it for its dry run, with no lease
  * (`oracle/src/parity/browser-dry-run.ts`, HOST-279).
  *
  * @spec HOST-234 HOST-279

@@ -11,8 +11,8 @@ import { writePortRun } from "./runners.js";
 import { secretForms } from "../scrub.js";
 
 /**
- * The parity script's browser runtime, end to end with no lease (HOST-279): a recorded export case is served over HTTP by the browser
- * tests' server and run by the Node port and by the page's Worker in Chromium, Firefox and WebKit, through the proxy and straight, and
+ * The parity script's browser runtime, end to end with no lease (HOST-279): a recorded case (an export, a step of an import or a language-pack run) is served over HTTP by the browser
+ * tests' server and run by the Node port and by the page's Worker in Chromium, Firefox and WebKit, through the proxy (one export also straight), and
  * the three outcomes and the wire go through the normalisation and the diff that a live run uses. It is the "dry run" of the ticket:
  * it needs the browsers (`npx playwright install chromium firefox webkit`) and no server of Aras.
  */
