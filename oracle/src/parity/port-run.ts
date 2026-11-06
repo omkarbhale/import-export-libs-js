@@ -1,15 +1,9 @@
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { HttpConnectorExtension } from "../../../src/client/connection.js";
+import type { CItemHelper } from "../../../src/client/item-helper.js";
 import { DBUpdateConfig } from "../../../src/db-patches/index.js";
-import { CItemHelper } from "../../../src/client/item-helper.js";
-import { Innovator } from "../../../src/client/innovator.js";
-import { packageCaches } from "../../../src/client/package-lookups.js";
-import type { HttpTransport } from "../../../src/client/transport.js";
-import type { Engine } from "../../../src/engines.js";
 import { SUExportContext, SolutionUpgradeContext } from "../../../src/export/export-context.js";
-import { ExportItem } from "../../../src/export/export-item.js";
 import { ImportExportManager, type SelectionInsertions, type SelectionTable } from "../../../src/export/import-export-manager.js";
 import { createMessagesFactory, type SentMessage } from "../../../src/export/messages.js";
 import { SUImportContext } from "../../../src/import/import-context.js";
@@ -18,94 +12,29 @@ import { languagePackImport } from "../../../src/language-pack/lp-import.js";
 import { exceptionText } from "../../../src/language-pack/exception-text.js";
 import type { ExportCaseOptions, ExportCasePackage } from "../export-cases.js";
 import type { ImportOptions } from "../import-cases.js";
-import { type CallRecord, type RunOutcome, type Termination, exceptionSummary, readTree } from "./outcome.js";
+import { type CallRecord, type RunOutcome, type Termination, readTree } from "./outcome.js";
+import {
+  ORACLE_HOST_CULTURE,
+  type PortServer,
+  type Session,
+  baseContext,
+  collectors,
+  exportContextFor,
+  openSession,
+  openSideConnection,
+  osUserOf,
+  selectionOf,
+  termination,
+} from "./port-core.js";
+
 import { DBPATCH_DIR, MANIFEST_FILE, PATCH_FILE, PATCH_NUMBER, PATCH_RELEASE, TOOL_NAME, assertTestPatch } from "../dbpatch.js";
 import { manifestPackageNames } from "../record.js";
 import { scrub, secretForms } from "../scrub.js";
 import { type CreatedItem, assertScratchImport, createdItems, preRun } from "./scratch.js";
 
-/** Where and as whom the port connects. `url` is the address this machine reaches dev at; the engine logs `logUrl`, what the oracle host logged. */
-export interface PortServer {
-  engine: Engine;
-  url: string;
-  /** The URL the log header shows (the oracle host connects as `http://localhost/12sp9`, WSL reaches the same server as 172.19.0.1). */
-  logUrl: string;
-  database: string;
-  userName: string;
-  password: string;
-  /** Replaces Node's HTTP layer; tests use a fake server. */
-  transport?: HttpTransport;
-}
-
-/** The host's defaults (`oracle/host/engine-<engine>.ps1`): a connection timeout of 600000 ms. */
-const HOST_TIMEOUT = 600_000;
-
-/**
- * The culture the oracle host runs in, which 12.0's log follows for three of its date-times (EXP-505): the Windows machine's own,
- * `en-IN` (`dd-MM-yyyy HH:mm:ss`). The port runs on another OS, so it is told rather than left to its process culture.
- */
-export const ORACLE_HOST_CULTURE = "en-IN";
-
-/** A connection to dev that records every call it makes, as the oracle's `RecordingHttpServerConnection` does. */
-export interface Session {
-  connection: HttpConnectorExtension;
-  helper: CItemHelper;
-  calls: CallRecord[];
-}
-
-/**
- * The oracle host connects with its own subclass of IOM's `HttpServerConnection` (`RecordingHttpServerConnection`), which is not
- * the exact type `HttpConnectorExtension` that `CItemHelper.Logout` logs off (WIRE-040). So the oracle sends no `Logoff`, and the
- * port's session must not either: the connection of a run is a subclass here too.
- */
-class RecordingConnection extends HttpConnectorExtension {}
-
-function newConnection(server: PortServer, calls: CallRecord[]): HttpConnectorExtension {
-  return new RecordingConnection({
-    engine: server.engine,
-    url: server.url,
-    database: server.database,
-    userName: server.userName,
-    password: server.password,
-    onCall: (call) => void calls.push(call),
-    ...(server.transport === undefined ? {} : { transport: server.transport }),
-  });
-}
-
-/** `new CItemHelper(connection)` and `Login()`, as the oracle host does first. */
-export async function openSession(server: PortServer): Promise<Session> {
-  // each oracle run is a process of its own, and the dependency cache outlives a helper within one (EXP-619)
-  packageCaches.dependsOn.clear();
-  const calls: CallRecord[] = [];
-  const connection = newConnection(server, calls);
-  const helper = new CItemHelper(connection, { engine: server.engine });
-  if (server.engine === "12.0") {
-    // 12.0's CItemHelper.Login() logs in only the exact type HttpConnectorExtension (WIRE-017), so the oracle host logs in first
-    const user = await connection.login();
-    if (user.isError) throw new Error(`host login failed: ${user.errorString}`);
-  }
-  await helper.login();
-  return { connection, helper, calls };
-}
-
-/** A logged-in connection for work that must not reach a transcript: the pre-run steps and the cleanup. */
-export async function openSideConnection(server: PortServer): Promise<{ inn: Innovator; close(): Promise<void> }> {
-  const connection = newConnection(server, []);
-  const user = await connection.login();
-  if (user.isError) throw new Error(`login failed: ${user.errorString}`);
-  return { inn: new Innovator(connection), close: () => connection.logout() };
-}
-
-/** What a run keeps of the messages and the console while it goes. */
-function collectors(): { messages: SentMessage[]; console: () => string; sink: ConsoleWriter } {
-  const messages: SentMessage[] = [];
-  let text = "";
-  return {
-    messages,
-    console: () => text,
-    sink: { write: (chunk) => void (text += chunk), writeLine: (line = "") => void (text += `${line}\r\n`) },
-  };
-}
+// what the Worker's runner shares with this one lives in port-core.ts (HOST-279); the names stay importable from here
+export { ORACLE_HOST_CULTURE, exportContextFor, openSession, openSideConnection, osUserOf, selectionOf };
+export type { PortServer, Session };
 
 /**
  * The port's run with the oracle's scrubbing applied (`oracle/src/scrub.ts`), which the oracle's recorder puts on every file it
@@ -130,69 +59,8 @@ export function scrubbedOutcome(outcome: RunOutcome, password: string): RunOutco
   };
 }
 
-function termination(error: unknown): Termination {
-  return { kind: "exception", summary: exceptionSummary(exceptionText(error)) };
-}
-
-/** The value of `os_user` the oracle's import wrote into the audit row, which the port must write the same. */
-export function osUserOf(calls: readonly Pick<CallRecord, "request">[]): string {
-  for (const call of calls) {
-    const found = /<os_user>([^<]*)<\/os_user>/.exec(call.request);
-    if (found) return found[1] ?? "";
-  }
-  return "";
-}
-
 function readLog(path: string): string {
   return existsSync(path) ? readFileSync(path, "utf8") : "";
-}
-
-/**
- * The `SolutionUpgradeContext` the oracle host builds: the connection settings as the oracle logs them, the host's timeout, and no
- * password (the host sets `Password = ""`, and the engine never reads it).
- */
-function baseContext<T extends SolutionUpgradeContext>(context: T, server: PortServer, workingDirectory: string, logFilePath: string, verbose: boolean): T {
-  context.url = server.logUrl;
-  context.dataBase = server.database;
-  context.userName = server.userName;
-  context.password = "";
-  context.timeout = HOST_TIMEOUT;
-  context.logFilePath = logFilePath;
-  context.workingDirectory = workingDirectory;
-  context.verbose = verbose;
-  return context;
-}
-
-/** The host's mapping of an export case's options to the engine's contexts (`oracle/host/common.ps1`, `OracleHost.cs`). */
-export function exportContextFor(
-  server: PortServer,
-  options: ExportCaseOptions,
-  workingDirectory: string,
-  logFilePath: string,
-): { context: SUExportContext; onItemError: "continue" | "abort-package" | undefined } {
-  if (server.engine !== "14.35" && (options.engineAction !== undefined || options.languages !== undefined || options.cancelAfterStatus !== undefined)) {
-    throw new Error(`the options ${JSON.stringify(options)} are 14.35's`);
-  }
-  const context = baseContext(new SUExportContext(), server, workingDirectory, logFilePath, options.verbose === true);
-  // the host sets Action = Export unless the case names one, and leaves Languages null unless it lists some
-  context.action = options.engineAction ?? "Export";
-  context.languages = options.languages ?? null;
-  // the host sets sLevel = "1" and DoNotRemove before it applies the case's options
-  context.level = options.level ?? "1";
-  context.refToUnknownPacks = options.refToUnknownPacks ?? "DoNotRemove";
-  context.exportReferencedItems = options.exportReferencedItems === true;
-  context.useImport = options.useImport === true;
-  if (options.timeout !== undefined) context.timeout = options.timeout;
-  const answer = options.errorQuestionAnswer ?? "no";
-  // 14.35 never reads the answer (EXP-555, EXP-571), and the library refuses an answer for it
-  if (server.engine === "14.35") return { context, onItemError: undefined };
-  if (answer === "none") throw new Error("errorQuestionAnswer 'none' answers the error question with null, which the port's host has no way to say");
-  return { context, onItemError: answer === "yes" ? "abort-package" : "continue" };
-}
-
-/** The host's `Selection`: a package on its first item, each item under its id, in the case's order. */
-export function selectionOf(packages: readonly ExportCasePackage[]): SelectionInsertions {
-  return packages.map((pkg) => [pkg.name, pkg.items.map((item) => [item.id, new ExportItem(item.keyedName, item.id, item.type)] as const)] as const);
 }
 
 export interface PortExport {
@@ -485,7 +353,7 @@ export function dbPatchCreated(calls: readonly CallRecord[]): CreatedItem[] {
 }
 
 /** The oracle host's read-only check before a DB patch run: neither the release row nor the numbered update may exist (DBP-071). */
-async function assertPatchAbsent(server: PortServer): Promise<void> {
+export async function assertPatchAbsent(server: PortServer): Promise<void> {
   const side = await openSideConnection(server);
   try {
     const row = await side.inn.applyItem(`<Item type="DatabaseUpgrade" action="get" select="id"><name>Applied Updates</name><target_release>${PATCH_RELEASE}</target_release><type>0</type></Item>`);

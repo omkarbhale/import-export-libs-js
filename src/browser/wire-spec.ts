@@ -72,8 +72,12 @@ export interface FaultSpec {
 
 /** A fixture export case, served as the recorded server of its run (`RecordedServer`, with the package membership answered). */
 export interface RecordedCase {
-  /** The folder under `fixtures/<engine>/export/`. */
+  /** The folder under `fixtures/<engine>/<kind>/`. */
   name: string;
+  /** Which family of recordings `name` is in. Default `export`; an `import` or `language-pack` case is served from the folder of `step` (the parity script's dry run, HOST-279). */
+  kind?: "export" | "import" | "language-pack";
+  /** For `import`: the step of the case, from 1. */
+  step?: number;
   /** Answers each request with the recorded call that has its text, in any order (EXP-551: items in flight). Default: in the recorded order. */
   unordered?: boolean;
 }

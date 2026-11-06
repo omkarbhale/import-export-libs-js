@@ -6,10 +6,10 @@ import { readSelectionFile } from "./tools/browser-test-selection.js";
 import { serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
 
 /**
- * Four projects (HOST-263, HOST-268, HOST-278). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
+ * Five projects (HOST-263, HOST-268, HOST-278, HOST-279). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
  * files and the unit tests of `src/browser/pure-tests.json` in headless Chromium, Firefox and WebKit, `browser-webkit-opfs` runs
- * the OPFS adapter test in WebKit in a persistent profile, and `size` runs the size budget (`npm run test:browser:size`).
- * `npm run test:browser` runs the browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
+ * the OPFS adapter test in WebKit in a persistent profile, `browser-parity` runs the parity script's browser dry run from Node, and `size` runs the size budget
+ * (`npm run test:browser:size`). `npm run test:browser` runs the three browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
  */
 
 type Instance = { browser: "chromium" | "firefox" | "webkit" };
@@ -71,6 +71,17 @@ export default defineConfig({
         // the size budget has a project of its own (below): its packages are generated and its runs take minutes to hours
         exclude: [...configDefaults.exclude, "src/browser/size.browser.test.ts"],
       }),
+      // The parity script's browser runtime (HOST-279) is driven from Node: a test starts a browser with Playwright itself and runs a recorded
+      // case through the whole pipeline. It has no page of Vitest's own, so it is a project of Node tests that needs the browsers, and runs
+      // with `npm run test:browser` and in the `browser` job of CI, not in `npm test`.
+      {
+        test: {
+          name: "browser-parity",
+          include: ["oracle/src/parity/*.browser.test.ts"],
+          testTimeout: 180_000,
+          hookTimeout: 180_000,
+        },
+      },
       // WebKit as Playwright drives it has no origin private file system in the context it makes for a page (`navigator.storage.getDirectory()` rejects with
       // an `UnknownError`, as in a private window), but has one in a persistent context. The OPFS adapter test (HOST-252, HOST-253) therefore also runs in
       // WebKit here, in a profile folder of its own under `node_modules/.cache` (HOST-268).
