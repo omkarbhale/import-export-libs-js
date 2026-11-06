@@ -34,7 +34,7 @@ import { type RunningProxy, startProxy } from "./proxy.js";
  *
  * The server's address, database, user and password reach the page in one argument of one `page.evaluate`, built here from the
  * values the caller read from the environment. They are never in a URL, a file or the page's source, and the outcome is scrubbed
- * of the password again before anything is kept (`scrubbedOutcome`).
+ * as the Node port's outcome is before anything is kept (`scrubbedOutcome`).
  *
  * @spec HOST-277
  */
