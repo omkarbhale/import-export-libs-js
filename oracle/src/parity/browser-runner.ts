@@ -51,32 +51,43 @@ export interface BrowserRuntimeOptions {
   cors: BrowserCors;
   /** The server as this machine reaches it (a lease's URL, or a test server's): the proxy forwards to it, or the page calls it. */
   target: string;
+  /** The port of the page's origin, `http://127.0.0.1:<port>`; a free one by default. */
+  pagePort?: number;
   /** Where Playwright's browsers are searched is Playwright's own business (`PLAYWRIGHT_BROWSERS_PATH`). */
   log?: (line: string) => void;
 }
 
 export type Runtime = "node" | "browser";
 
-/** What `--runtime`, `--browser` and `--browser-cors` of the parity script mean (HOST-279). */
-export type RuntimeChoice = { runtime: "node" } | { runtime: "browser"; browser: BrowserName; cors: BrowserCors };
+/** What `--runtime`, `--browser`, `--browser-cors` and `--browser-page-port` of the parity script mean (HOST-279). */
+export type RuntimeChoice = { runtime: "node" } | { runtime: "browser"; browser: BrowserName; cors: "proxy" } | { runtime: "browser"; browser: BrowserName; cors: "server"; pagePort: number };
 
 /**
- * Reads the three options of the script. `node` is the default and runs as it always did; `browser` adds the page as a third side, in
- * Chromium unless `--browser` says another, through the proxy unless `--browser-cors=server` says the server is already configured to answer CORS. The
- * two browser options mean nothing without `--runtime browser`, and a value that is not one of the choices is refused with the choices.
+ * Reads the four options of the script. `node` is the default and runs as it always did; `browser` adds the page as a third side, in
+ * Chromium unless `--browser` says another, through the proxy unless `--browser-cors=server` says the server is already configured to answer CORS. That
+ * mode needs `--browser-page-port`, because the server must list the page's origin exactly, and no other mode takes it. The browser
+ * options mean nothing without `--runtime browser`, and a value that is not one of the choices is refused with the choices.
  */
-export function parseRuntimeOptions(values: { runtime?: string | undefined; browser?: string | undefined; "browser-cors"?: string | undefined }): RuntimeChoice {
+export function parseRuntimeOptions(values: { runtime?: string | undefined; browser?: string | undefined; "browser-cors"?: string | undefined; "browser-page-port"?: string | undefined }): RuntimeChoice {
   const runtime = values.runtime ?? "node";
   if (runtime !== "node" && runtime !== "browser") throw new Error(`unknown runtime '${runtime}' (node, browser)`);
   if (runtime === "node") {
-    if (values.browser !== undefined || values["browser-cors"] !== undefined) throw new Error("--browser and --browser-cors need --runtime browser");
+    if (values.browser !== undefined || values["browser-cors"] !== undefined || values["browser-page-port"] !== undefined) throw new Error("--browser, --browser-cors and --browser-page-port need --runtime browser");
     return { runtime };
   }
   const browser = values.browser ?? "chromium";
   if (!(BROWSERS as readonly string[]).includes(browser)) throw new Error(`unknown browser '${browser}' (${BROWSERS.join(", ")})`);
   const cors = values["browser-cors"] ?? "proxy";
   if (!(BROWSER_CORS as readonly string[]).includes(cors)) throw new Error(`unknown --browser-cors '${cors}' (${BROWSER_CORS.join(", ")})`);
-  return { runtime, browser: browser as BrowserName, cors: cors as BrowserCors };
+  const page = values["browser-page-port"];
+  if (cors === "proxy") {
+    if (page !== undefined) throw new Error("--browser-page-port needs --browser-cors server");
+    return { runtime, browser: browser as BrowserName, cors };
+  }
+  if (page === undefined) throw new Error("--browser-cors server needs --browser-page-port <port>: the lease must list the page's origin, http://127.0.0.1:<port>, exactly");
+  const pagePort = /^\d+$/.test(page) ? Number(page) : 0;
+  if (pagePort < 1 || pagePort > 65535) throw new Error(`--browser-page-port '${page}' is not a port (1 to 65535)`);
+  return { runtime, browser: browser as BrowserName, cors: "server", pagePort };
 }
 
 const PAGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "browser-page");
@@ -115,7 +126,7 @@ export class BrowserRuntime {
     let browser: Browser | undefined;
     try {
       await buildPage(dir);
-      proxy = await startProxy({ target: options.target, staticRoot: dir });
+      proxy = await startProxy({ target: options.target, staticRoot: dir, ...(options.pagePort === undefined ? {} : { port: options.pagePort }) });
       browser = await launchers[options.browser].launch({ headless: true });
       const context = await browser.newContext();
       const page = await context.newPage();

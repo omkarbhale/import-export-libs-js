@@ -20,9 +20,8 @@ describe("--runtime, --browser and --browser-cors", () => {
 
   it("takes the three browsers and the two ways to the server", () => {
     for (const browser of ["chromium", "firefox", "webkit"] as const) {
-      for (const cors of ["proxy", "server"] as const) {
-        expect(parseRuntimeOptions({ runtime: "browser", browser, "browser-cors": cors })).toEqual({ runtime: "browser", browser, cors });
-      }
+      expect(parseRuntimeOptions({ runtime: "browser", browser, "browser-cors": "proxy" })).toEqual({ runtime: "browser", browser, cors: "proxy" });
+      expect(parseRuntimeOptions({ runtime: "browser", browser, "browser-cors": "server", "browser-page-port": "8099" })).toEqual({ runtime: "browser", browser, cors: "server", pagePort: 8099 });
     }
   });
 
@@ -33,8 +32,21 @@ describe("--runtime, --browser and --browser-cors", () => {
   });
 
   it("refuses the browser options without the browser runtime", () => {
-    expect(() => parseRuntimeOptions({ browser: "firefox" })).toThrow("--browser and --browser-cors need --runtime browser");
-    expect(() => parseRuntimeOptions({ runtime: "node", "browser-cors": "proxy" })).toThrow("--browser and --browser-cors need --runtime browser");
+    expect(() => parseRuntimeOptions({ browser: "firefox" })).toThrow("--browser, --browser-cors and --browser-page-port need --runtime browser");
+    expect(() => parseRuntimeOptions({ runtime: "node", "browser-cors": "proxy" })).toThrow("--browser, --browser-cors and --browser-page-port need --runtime browser");
+    expect(() => parseRuntimeOptions({ "browser-page-port": "8099" })).toThrow("--browser, --browser-cors and --browser-page-port need --runtime browser");
+  });
+
+  it("refuses server mode without a page port, naming the option and the origin the lease must list", () => {
+    expect(() => parseRuntimeOptions({ runtime: "browser", "browser-cors": "server" })).toThrow("--browser-cors server needs --browser-page-port <port>: the lease must list the page's origin, http://127.0.0.1:<port>, exactly");
+  });
+
+  it("refuses a page port in proxy mode", () => {
+    expect(() => parseRuntimeOptions({ runtime: "browser", "browser-page-port": "8099" })).toThrow("--browser-page-port needs --browser-cors server");
+  });
+
+  it.each(["0", "65536", "80.5", "-1", "abc", ""])("refuses the page port '%s'", (port) => {
+    expect(() => parseRuntimeOptions({ runtime: "browser", "browser-cors": "server", "browser-page-port": port })).toThrow("is not a port (1 to 65535)");
   });
 });
 

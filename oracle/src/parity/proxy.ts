@@ -28,6 +28,8 @@ export interface ProxyOptions {
   target: string;
   /** A folder of static files served below `/__parity/` (the harness page). */
   staticRoot?: string;
+  /** The port to listen on; a free one by default. */
+  port?: number;
 }
 
 export interface RunningProxy {
@@ -167,7 +169,7 @@ export async function startProxy(options: ProxyOptions): Promise<RunningProxy> {
   });
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
-    server.listen(0, "127.0.0.1", resolve);
+    server.listen(options.port ?? 0, "127.0.0.1", resolve);
   });
   origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   return {

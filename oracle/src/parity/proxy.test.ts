@@ -262,6 +262,20 @@ describe("the parity proxy: the OAuth discovery answers", () => {
 });
 
 describe("the parity proxy: the page's files", () => {
+  it("serves the page on the port it is given", async () => {
+    const free = createServer();
+    await new Promise<void>((resolve) => free.listen(0, "127.0.0.1", resolve));
+    const port = (free.address() as AddressInfo).port;
+    await new Promise<void>((resolve) => free.close(() => resolve()));
+    const fixed = await startProxy({ target: "http://127.0.0.1:1/12sp9", staticRoot: folder, port });
+    try {
+      expect(fixed.origin).toBe(`http://127.0.0.1:${port}`);
+      expect(await (await fetch(fixed.pageUrl)).text()).toBe("<p>page</p>");
+    } finally {
+      await fixed.close();
+    }
+  });
+
   it("serves the harness page below /__parity/ and keeps requests out of the folder above it", async () => {
     const page = await call("/__parity/index.html");
     expect(page.status).toBe(200);
