@@ -14,3 +14,4 @@ oracle/out/
 # Browser test project: failure screenshots and attachments (HOST-263).
 .vitest-attachments/
 src/browser/__screenshots__/
+.synth/

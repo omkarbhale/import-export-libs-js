@@ -45,7 +45,9 @@
     "oracle:dbpatch-cases": "tsx oracle/src/record-dbpatch-cases.ts",
     "oracle:lp-cases": "tsx oracle/src/record-lp-cases.ts",
     "prepare": "npm run build",
-    "rea-map": "tsx tools/rea-map/cli.ts"
+    "rea-map": "tsx tools/rea-map/cli.ts",
+    "synth-package": "tsx tools/synth-package.ts",
+    "test:browser:size": "vitest run --project size"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
