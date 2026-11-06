@@ -351,6 +351,30 @@ describe("import, from a zip, a folder and a drop", () => {
     expect(key("password").value).toBe("");
   });
 
+  it("warns of a dropped zip over the limit before the login, and keeps the password", async () => {
+    let connects = 0;
+    mount({
+      engine: {
+        connect: () => {
+          connects += 1;
+          return Promise.reject(new Error("no server in this test"));
+        },
+      },
+    });
+    await connectTo("https://aras.example.com/InnovatorServer");
+    await openTab("import");
+    const drop = new Event("drop", { bubbles: true, cancelable: true });
+    Object.defineProperty(drop, "dataTransfer", { value: { items: fakeDrop([{ path: "large.zip", bytes: new Uint8Array(60_000_000) }]) } });
+    q('[data-panel="import"] [data-source="drop"]').dispatchEvent(drop);
+    expect(sourceStatus("import").textContent).toContain("over the limit of about 50 MB");
+    await userEvent.fill(key("osUser", "import"), "someone");
+
+    await run();
+    expect(q('[data-key="size-notice"]').textContent).toContain("60 MB");
+    expect(connects).toBe(0);
+    expect(key("password").value).toBe("pw-of-the-test-xyz");
+  });
+
   it("says why a zip could not be read, when the run reads it", async () => {
     mount();
     const { url, recipe } = await startReplay(IMPORT_CASE);

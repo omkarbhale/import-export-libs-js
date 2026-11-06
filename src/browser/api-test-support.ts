@@ -62,7 +62,7 @@ export function fakeDrop(files: ReadonlyArray<{ path: string; bytes: Uint8Array 
       },
     })),
   ];
-  const items = entriesOf(root).map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry }));
+  const items = entriesOf(root).map((entry) => ({ kind: "file", webkitGetAsEntry: () => entry, getAsFile: () => root.files.get(entry.name) ?? null }));
   return Object.assign(items, { length: items.length });
 }
 
