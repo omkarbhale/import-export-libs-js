@@ -584,6 +584,31 @@ describe("abort and failure", () => {
     expect(q<HTMLButtonElement>('[data-key="download-log"]').hidden).toBe(false);
   });
 
+  it("offers no Abort once the run has ended and only the logoff is left", async () => {
+    let finishLogoff = (): void => undefined;
+    const logoff = new Promise<void>((resolve) => {
+      finishLogoff = resolve;
+    });
+    const engine: EngineClient = {
+      connect: async (options) => ({
+        ...(await endingEngine("empty", { exported: 0 }).connect(options)),
+        close: () => logoff,
+      }),
+    };
+    mount({ engine });
+    await connectTo("http://unused.example/x");
+    await userEvent.fill(key("packages", "export"), "some.package");
+    await userEvent.click(runButton());
+    const finalStatus = "The export produced no files. Nothing was saved.";
+    await vi.waitFor(() => expect(q(".run-view .status").textContent).toBe(finalStatus));
+
+    expect(q<HTMLButtonElement>('[data-key="abort"]').disabled).toBe(true);
+    expect(runButton().disabled).toBe(true);
+    finishLogoff();
+    await vi.waitFor(() => expect(runButton().disabled).toBe(false));
+    expect(q(".run-view .status").textContent).toBe(finalStatus);
+  });
+
   it("saves nothing when an export produced no files, and says so", async () => {
     const files: string[] = [];
     mount({ engine: endingEngine("empty", { exported: 0 }), saveFile: (name) => files.push(name) });

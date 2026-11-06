@@ -602,6 +602,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
     } finally {
       // a form that was refused never held the password: the person keeps what they typed
       if (handedOver) password.value = "";
+      abortButton.disabled = true;
       if (session !== undefined) await session.close().catch(() => undefined);
       running = undefined;
       setBusy(false);
