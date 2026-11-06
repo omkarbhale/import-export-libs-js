@@ -6,10 +6,10 @@ import { readSelectionFile } from "./tools/browser-test-selection.js";
 import { serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
 
 /**
- * Four projects (HOST-263, HOST-268, HOST-278). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
+ * Five projects (HOST-263, HOST-268, HOST-278, HOST-277). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
  * files and the unit tests of `src/browser/pure-tests.json` in headless Chromium, Firefox and WebKit, `browser-webkit-opfs` runs
- * the OPFS adapter test in WebKit in a persistent profile, and `size` runs the size budget (`npm run test:browser:size`).
- * `npm run test:browser` runs the browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
+ * the OPFS adapter test in WebKit in a persistent profile, `browser-parity` runs the parity script's browser dry run from Node, and `size` runs the size budget
+ * (`npm run test:browser:size`). `npm run test:browser` runs the three browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
  */
 
 type Instance = { browser: "chromium" | "firefox" | "webkit" };
