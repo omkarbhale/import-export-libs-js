@@ -360,7 +360,8 @@ export function loadCoverageInput(root: string): CoverageInput {
     schema: JSON.parse(read("spec/source-map.schema.json").text) as object,
     areaDocs: specDocs.filter((name) => name !== "README.md" && name !== "bugs.md").map((name) => read(`spec/${name}`)),
     bugs: read("spec/bugs.md"),
-    srcFiles: listTs(root, join(root, "src")).map(read),
+    // `examples/` is code of the library's own that cites rules too (HOST-280)
+    srcFiles: [...listTs(root, join(root, "src")), ...listTs(root, join(root, "examples"))].map(read),
     reachable: reachableFiles.map((name) => {
       const path = `spec/reachable/${name}`;
       return { path, data: JSON.parse(read(path).text) as unknown };
@@ -372,6 +373,7 @@ export function loadCoverageInput(root: string): CoverageInput {
 }
 
 function listTs(root: string, dir: string): string[] {
+  if (!existsSync(dir)) return [];
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) return listTs(root, full);
