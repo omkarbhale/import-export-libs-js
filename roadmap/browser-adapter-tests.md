@@ -26,7 +26,7 @@ Browser ticket 27. The adapters were specified and tested under Node in tickets 
 
 ## Not done here
 
-The `showDirectoryPicker` path, which the ticket names for a manual test on Chromium with `chrome-devtools-axi` on the reference page of ticket 30. The page is ticket 30's and does not exist yet, and the picker needs a native dialog that a headless session cannot answer, so the manual check belongs to that ticket.
+The `showDirectoryPicker` path, which the ticket names for a manual test on Chromium with `chrome-devtools-axi` on the reference page of ticket 30. The picker needs a native dialog that a headless session cannot answer, so the manual check belongs to that page (`examples/browser/README.md`).
 
 ## How to run
 

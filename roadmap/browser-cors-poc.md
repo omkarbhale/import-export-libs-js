@@ -297,7 +297,7 @@ Suggested wording for Q1 in `map.md` (not edited by this ticket): "(b) stands. S
 
 - **Ticket 16 (fetch transport):** the five rules of section 5, in particular `credentials: "omit"`, no `Aras-Request-ReadOnly` by default, the reason-phrase table, and a single opaque error class. New host rules to write there (`HOST-23x`): omit credentials, drop forbidden headers, reason phrase from the table, optional read-only hint.
 - **Ticket 26 (wire end to end) and 33 (live parity):** run against leases configured as in section 3; also assert that a write sequence works with no session cookie.
-- **Ticket 30 (reference page):** the prerequisites section and the connection test above.
+- **Ticket 30 (reference page):** the prerequisites section above; there is no connection test (HOST-281).
 - **`spec/wire.md` line 104** names `ASP.NET_SessionId`; R23 and R35 set `Aras.Server.Session`. The engine replays whatever it is given, so no behaviour changes; the sentence could be amended when `spec/` is next touched.
 - Nothing in this result changes the design decisions D1 to D14 or the ticket graph.
 
