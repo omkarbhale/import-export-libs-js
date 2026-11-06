@@ -26,6 +26,26 @@ export function connectFailureHint(failure: string): string | undefined {
   return "The server probably could not be reached, and a browser reports a refused cross-origin request the same way. Check the address, then the likely prerequisite: this page's origin missing from the OAuth server's allowedCorsOrigins, and, on 12 SP9, no CORS headers on the SOAP endpoint. See \"What the server needs\" above.";
 }
 
+/** The largest import in a browser that is known to complete, in MB, and rounded as `importPackages` rounds it (HOST-278). */
+const IMPORT_LIMIT_MB = 50;
+
+/** What a person is told before the login about a package whose known size is over the limit of an import (HOST-280). */
+export function importSizeWarning(bytes: number | undefined): string | undefined {
+  if (bytes === undefined) return undefined;
+  const megabytes = Math.round(bytes / 1e6);
+  if (megabytes <= IMPORT_LIMIT_MB) return undefined;
+  return `This package is ${megabytes} MB, over the limit of about ${IMPORT_LIMIT_MB} MB for an import in a browser: the engine holds about 40 to 70 times the package in memory, so the tab may run out of it. Import a larger package with the command line tool (aras-pkg import). It costs similar memory (about 43 times, measured under Node), so it needs node --max-old-space-size=<MB> and a machine with that much memory.`;
+}
+
+/** What the status under the source control says of the limit of an import, as soon as a package is chosen (HOST-280). */
+export function importLimitNote(bytes: number | undefined, zipped = false): string {
+  const warning = importSizeWarning(bytes);
+  if (warning !== undefined) return warning;
+  const limit = `An import in a browser is limited to about ${IMPORT_LIMIT_MB} MB.`;
+  if (bytes === undefined) return `${limit} The size of this package is known only when the run reads it, and the run's messages warn if it is over.`;
+  return zipped ? `${limit} The limit counts what the zip inflates to, and the run's messages warn if that is over.` : limit;
+}
+
 export class FormError extends Error {
   override name = "FormError";
 }

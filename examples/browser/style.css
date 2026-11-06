@@ -69,7 +69,8 @@ h3 {
   font-size: 0.82rem;
 }
 
-.banner {
+.banner,
+.notice {
   background: var(--warn-bg);
   color: var(--warn);
   border: 1px solid var(--warn);

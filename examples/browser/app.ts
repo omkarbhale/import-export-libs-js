@@ -18,13 +18,15 @@ import {
   connectOptionsOf,
   dbPatchOptionsOf,
   exportOptionsOf,
+  importLimitNote,
   importOptionsOf,
+  importSizeWarning,
   languagePackOptionsOf,
   selectionNeedsSource,
 } from "./model.js";
 import { MODES, type Mode, type OptionSpec, RUN_OPTIONS, optionsOf } from "./options.js";
 import { type SaveFile, downloadFile, stampedName, writeToFolder } from "./sinks.js";
-import { type PackageSource, PACKAGE_BUDGET, canPickDirectory, pickDirectory, sourceOfDrop, sourceOfFiles, sourceOfHandle } from "./sources.js";
+import { type PackageSource, canPickDirectory, pickDirectory, sourceOfDrop, sourceOfFiles, sourceOfHandle } from "./sources.js";
 
 /**
  * The reference page (HOST-280, HOST-281): plain DOM over the browser API. `mountApp` draws the page into an element; everything the
@@ -102,7 +104,7 @@ interface SourceWidget {
   get(): PackageSource | undefined;
 }
 
-function sourceWidget(label: string, canPick: boolean, pick: NonNullable<AppDeps["pickDirectory"]>, busy: () => boolean): SourceWidget {
+function sourceWidget(label: string, canPick: boolean, pick: NonNullable<AppDeps["pickDirectory"]>, busy: () => boolean, noteOf: (chosen: PackageSource) => string, onChange: () => void): SourceWidget {
   let chosen: PackageSource | undefined;
   const status = h("p", { class: "status", role: "status" }, "Nothing chosen.");
   const zip = h("input", { type: "file", accept: ".zip,application/zip", "data-source": "zip" });
@@ -112,10 +114,11 @@ function sourceWidget(label: string, canPick: boolean, pick: NonNullable<AppDeps
   /** Keeps what was given; it is read in the Worker when the run starts, and a zip that cannot be read is reported then. */
   const take = (make: () => PackageSource): void => {
     chosen = undefined;
+    onChange();
     status.className = "status";
     try {
       chosen = make();
-      status.textContent = `${chosen.description}. It is read when you press Run (budget ${sizeText(PACKAGE_BUDGET)}).`;
+      status.textContent = `${chosen.description}. It is read when you press Run.${noteOf(chosen)}`;
     } catch (error) {
       status.className = "status error";
       status.textContent = `Could not use it: ${describeFailure(error)}`;
@@ -273,6 +276,9 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   let sinkHandle: FsaDirectoryHandle | undefined;
 
   const isBusy = (): boolean => running !== undefined;
+  const sizeNotice = h("div", { class: "notice", role: "alert", "data-key": "size-notice", hidden: true });
+  /** The package whose warning the person has seen: the next press of Run goes on with it. */
+  let warnedOf: PackageSource | undefined;
 
   // ------------------------------------------------------------------------------------------------------ connection
 
@@ -317,7 +323,8 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   const panels = new Map<Mode, HTMLElement>();
   const sources = new Map<Mode, SourceWidget>();
   const sourceOf = (which: Mode, label = "Package"): SourceWidget => {
-    const widget = sourceWidget(label, canPick, pick, isBusy);
+    const noteOf = (chosen: PackageSource): string => (which === "import" ? ` ${importLimitNote(chosen.bytes, chosen.zipped)}` : "");
+    const widget = sourceWidget(label, canPick, pick, isBusy, noteOf, () => (sizeNotice.hidden = true));
     sources.set(which, widget);
     return widget;
   };
@@ -436,6 +443,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   }
   const select = (next: Mode): void => {
     mode = next;
+    sizeNotice.hidden = true;
     for (const [which, button] of tabButtons) button.setAttribute("aria-selected", String(which === next));
     for (const [which, panel] of panels) panel.hidden = which !== next;
   };
@@ -526,6 +534,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   const run = async (): Promise<void> => {
     if (isBusy()) return;
     formError.hidden = true;
+    sizeNotice.hidden = true;
     const controller = new AbortController();
     running = controller;
     setBusy(true);
@@ -539,6 +548,15 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
       const form = values();
       const connect = connectOptionsOf(form);
       const plan = planOf(form);
+      const imported = mode === "import" ? sources.get(mode)?.get() : undefined;
+      const warning = importSizeWarning(imported?.bytes);
+      if (warning !== undefined && warnedOf !== imported) {
+        warnedOf = imported;
+        sizeNotice.textContent = `${warning} Press Run again to go on in this tab.`;
+        sizeNotice.hidden = false;
+        view.say("");
+        return;
+      }
       // the password leaves the field and goes to the connection; the field is emptied at once (HOST-281)
       handedOver = true;
       password.value = "";
@@ -605,6 +623,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
     h("div", { class: "actions" }, runButton, abortButton, logButton),
     h("p", { class: "help" }, "Each run starts a new engine Worker and stops it when the run ends. The engine keeps lookup caches that it never clears (a fault it reproduces, EXP-619); a Worker that lived on would let a run read what an earlier run, against this server or another, left in them."),
     formError,
+    sizeNotice,
     view.element,
   );
   root.append(shell);

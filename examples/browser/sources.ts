@@ -11,8 +11,8 @@ import { sizeText } from "./dom.js";
  * @spec HOST-280 HOST-275
  */
 
-/** The package budget the browser build is designed for (Q5): 500 MiB of package data in memory. */
-export const PACKAGE_BUDGET = 500 * 1024 * 1024;
+/** The read guard of the adapters (`maxBytes`, HOST-250): it stops a zip bomb and is not the size that fits, which is HOST-278. */
+const READ_GUARD_BYTES = 500 * 1024 * 1024;
 
 /** A package the person gave, and what to say about it. */
 export interface PackageSource {
@@ -20,10 +20,14 @@ export interface PackageSource {
   label: string;
   /** What is known of its size without reading it. */
   description: string;
+  /** The bytes known without reading it: of the zip itself, or of the files of a folder input. A drop and a picked folder have none. */
+  bytes?: number;
+  /** Whether `bytes` is the size of a zip, which holds more than that. */
+  zipped?: boolean;
   source: WorkerSource;
 }
 
-const MOUNT = { root: "auto", maxBytes: PACKAGE_BUDGET } as const;
+const MOUNT = { root: "auto", maxBytes: READ_GUARD_BYTES } as const;
 
 /** A zip from a file input, or a folder from a `webkitdirectory` input. */
 export function sourceOfFiles(files: FileList | readonly File[]): PackageSource {
@@ -33,9 +37,9 @@ export function sourceOfFiles(files: FileList | readonly File[]): PackageSource 
   const folder = (first.webkitRelativePath ?? "").split("/")[0] ?? "";
   const bytes = list.reduce((sum, file) => sum + file.size, 0);
   if (folder === "" && list.length === 1) {
-    return { label: first.name, description: `${first.name}: a zip of ${sizeText(first.size)}`, source: { zip: first, maxBytes: PACKAGE_BUDGET } };
+    return { label: first.name, description: `${first.name}: a zip of ${sizeText(first.size)}`, bytes: first.size, zipped: true, source: { zip: first, maxBytes: READ_GUARD_BYTES } };
   }
-  return { label: folder, description: `${folder === "" ? `${list.length} files` : folder}: ${list.length} files, ${sizeText(bytes)}`, source: { fileList: list, mount: MOUNT } };
+  return { label: folder, description: `${folder === "" ? `${list.length} files` : folder}: ${list.length} files, ${sizeText(bytes)}`, bytes, source: { fileList: list, mount: MOUNT } };
 }
 
 /**
@@ -58,7 +62,7 @@ export function sourceOfDrop(transfer: DataTransfer): PackageSource {
 
 /** A folder behind a handle, picked with `showDirectoryPicker`. */
 export function sourceOfHandle(handle: FsaDirectoryHandle): PackageSource {
-  return { label: handle.name, description: `${handle.name}: a picked folder`, source: { directory: handle, mount: { maxBytes: PACKAGE_BUDGET } } };
+  return { label: handle.name, description: `${handle.name}: a picked folder`, source: { directory: handle, mount: { maxBytes: READ_GUARD_BYTES } } };
 }
 
 /** Whether the page can offer the picker: `showDirectoryPicker` is there (Chromium) (HOST-252). */

@@ -319,6 +319,38 @@ describe("import, from a zip, a folder and a drop", () => {
     expect(runButton().disabled).toBe(false);
   });
 
+  it("warns of a package over the limit before the login, keeps the password, and goes on at the second press", async () => {
+    let connects = 0;
+    const engine: EngineClient = {
+      connect: () => {
+        connects += 1;
+        return Promise.reject(new Error("no server in this test"));
+      },
+    };
+    mount({ engine });
+    await connectTo("https://aras.example.com/InnovatorServer");
+    await openTab("import");
+    const zipInput = q<HTMLInputElement>('[data-panel="import"] [data-source="zip"]');
+    zipInput.files = fileList([new File([new Uint8Array(60_000_000)], "large.zip", { type: "application/zip" })]);
+    zipInput.dispatchEvent(new Event("change", { bubbles: true }));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("over the limit of about 50 MB"));
+    await userEvent.fill(key("osUser", "import"), "someone");
+    const notice = q('[data-key="size-notice"]');
+    expect(notice.hidden).toBe(true);
+
+    await run();
+    expect(notice.hidden).toBe(false);
+    expect(notice.textContent).toContain("60 MB");
+    expect(notice.textContent).toContain("aras-pkg import");
+    expect(connects).toBe(0);
+    expect(key("password").value).toBe("pw-of-the-test-xyz");
+
+    await run();
+    expect(notice.hidden).toBe(true);
+    expect(connects).toBe(1);
+    expect(key("password").value).toBe("");
+  });
+
   it("says why a zip could not be read, when the run reads it", async () => {
     mount();
     const { url, recipe } = await startReplay(IMPORT_CASE);
