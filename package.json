@@ -32,7 +32,9 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup && tsup --config tsup.browser.config.ts",
-    "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit && tsc -p tsconfig.browser-worker.json --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.browser.json --noEmit && tsc -p tsconfig.browser-worker.json --noEmit && tsc -p examples/browser/tsconfig.json --noEmit && tsc -p examples/browser/tsconfig.test.json --noEmit",
+    "example:browser:build": "tsx tools/browser-example/build.ts",
+    "example:browser": "tsx tools/browser-example/serve.ts",
     "test": "vitest run --project node",
     "test:browser": "vitest run --project \"browser*\"",
     "test:watch": "vitest --project node",

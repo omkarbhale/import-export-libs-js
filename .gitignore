@@ -15,3 +15,6 @@ oracle/out/
 .vitest-attachments/
 src/browser/__screenshots__/
 .synth/
+
+# The reference page: its build, and its browser test's failure screenshots (HOST-280).
+examples/browser/__screenshots__/
