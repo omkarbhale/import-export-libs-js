@@ -157,7 +157,7 @@ export function describeDifferences(differences: readonly Difference[], indent =
 export function relabelDifferences(differences: readonly Difference[], left: string, right: string): Difference[] {
   return differences.map((d) => ({
     ...d,
-    summary: `${right} against ${left}: ${d.summary.replace(/\bthe oracle\b/g, `the ${left}`).replace(/\bthe port\b/g, `the ${right}`).replace(/\bonly the oracle\b/g, `only the ${left}`)}`,
+    summary: `${right} against ${left}: ${d.summary.replace(/\bthe oracle\b/g, `the ${left}`).replace(/\bthe port\b/g, `the ${right}`)}`,
     labels: { oracle: left, port: right },
   }));
 }

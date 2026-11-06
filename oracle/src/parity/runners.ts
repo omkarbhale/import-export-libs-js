@@ -22,6 +22,7 @@ import { dbPatchIds } from "./normalize.js";
 import { type RunOutcome, readOracleOutcome } from "./outcome.js";
 import {
   type BrowserOutcome,
+  BrowserRunCrashed,
   type BrowserRuntime,
   paddedInputDir,
   runBrowserDbPatch,
@@ -160,6 +161,15 @@ export function withBrowser(
     browserEnd: describeEnd(browser.outcome),
   };
 }
+
+/** The comparison of one step of a run of several: the earlier steps' calls and the ids made before it are numbered first on each side. */
+const sameAfter =
+  (earlierLeft: readonly RunOutcome[], earlierRight: readonly RunOutcome[], madeLeft: readonly string[], madeRight: readonly string[]) =>
+  (left: RunOutcome, right: RunOutcome): Difference[] =>
+    diffOutcomes(left, right, {
+      earlier: { oracle: earlierLeft.flatMap((o) => o.calls), port: earlierRight.flatMap((o) => o.calls) },
+      madeBefore: { oracle: madeLeft, port: madeRight },
+    });
 
 const statusOf = (steps: readonly StepReport[]): CaseStatus => (steps.every((s) => s.differences.length === 0) ? "equal" : "different");
 
@@ -387,6 +397,7 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
   // the browser's pass, from fresh copies of the same packages, cleaned up like the port's
   const browserCreated: CreatedItem[] = [];
   let browserDeleted: ItemRef[] = [];
+  let crashed = false;
   if (env.browser !== undefined) {
     const browserSteps: RunOutcome[] = [];
     const browserMadeBefore: string[][] = [];
@@ -410,12 +421,6 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
         writePortRun(dir, run.outcome);
         browserSteps.push(run.outcome);
         browserMadeBefore.push(run.preRunCreated.map((made) => made.id));
-        const same = (earlierLeft: readonly RunOutcome[], earlierRight: readonly RunOutcome[], madeLeft: readonly string[], madeRight: readonly string[]) =>
-          (left: RunOutcome, right: RunOutcome): Difference[] =>
-            diffOutcomes(left, right, {
-              earlier: { oracle: earlierLeft.flatMap((o) => o.calls), port: earlierRight.flatMap((o) => o.calls) },
-              madeBefore: { oracle: madeLeft, port: madeRight },
-            });
         const upTo = i + 1;
         const madeBy = (made: readonly string[][]): string[] => made.slice(0, upTo).flat();
         const step1 = reports[i]!;
@@ -424,20 +429,25 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
           ...step1,
           differences: [
             ...step1.differences,
-            ...relabelDifferences(same(oracleSteps.slice(0, i), browserSteps.slice(0, i), madeBy(oracleMadeBefore), madeBy(browserMadeBefore))(oracleSteps[i]!, run.outcome), "oracle", "browser"),
-            ...relabelDifferences(same(portSteps.slice(0, i), browserSteps.slice(0, i), madeBy(portMadeBefore), madeBy(browserMadeBefore))(portSteps[i]!, run.outcome), "node", "browser"),
+            ...relabelDifferences(sameAfter(oracleSteps.slice(0, i), browserSteps.slice(0, i), madeBy(oracleMadeBefore), madeBy(browserMadeBefore))(oracleSteps[i]!, run.outcome), "oracle", "browser"),
+            ...relabelDifferences(sameAfter(portSteps.slice(0, i), browserSteps.slice(0, i), madeBy(portMadeBefore), madeBy(browserMadeBefore))(portSteps[i]!, run.outcome), "node", "browser"),
             ...run.wire,
           ],
           browserCalls: run.outcome.calls.length,
           browserEnd: describeEnd(run.outcome),
         };
       }
+    } catch (error) {
+      if (!(error instanceof BrowserRunCrashed)) throw error;
+      crashed = true;
+      browserCreated.push(...error.preRunCreated);
+      notes.push(error.message);
     } finally {
       browserDeleted = await portCleanupAll(env, `${c.id}-browser`, browserCreated);
       if (browserDeleted.length === 0 && browserCreated.length > 0) notes.push("the cleanup of the browser's items deleted nothing, though its runs created items");
     }
   }
-  const status = statusOf(reports);
+  const status = crashed ? "failed" : statusOf(reports);
   return {
     id: c.id,
     kind: "import",
@@ -647,24 +657,18 @@ export async function runDbPatchCase(env: ParityEnv, c: DbPatchCase): Promise<Ca
         browserCreated.push(...refs(dbPatchCreated(run.outcome.calls)));
         writePortRun(dir, run.outcome);
         browserSteps.push(run.outcome);
-        const same = (earlierLeft: readonly RunOutcome[], earlierRight: readonly RunOutcome[], madeLeft: readonly string[], madeRight: readonly string[]) =>
-          (left: RunOutcome, right: RunOutcome): Difference[] =>
-            diffOutcomes(left, right, {
-              earlier: { oracle: earlierLeft.flatMap((o) => o.calls), port: earlierRight.flatMap((o) => o.calls) },
-              madeBefore: { oracle: madeLeft, port: madeRight },
-            });
         const step1 = reports[i]!;
         reports[i] = {
           ...step1,
           differences: [
             ...step1.differences,
             ...relabelDifferences(
-              same(oracleSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(oracleSteps.slice(0, i + 1).flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(oracleSteps[i]!, run.outcome),
+              sameAfter(oracleSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(oracleSteps.slice(0, i + 1).flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(oracleSteps[i]!, run.outcome),
               "oracle",
               "browser",
             ),
             ...relabelDifferences(
-              same(portSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(portSteps.slice(0, i + 1).flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(portSteps[i]!, run.outcome),
+              sameAfter(portSteps.slice(0, i), browserSteps.slice(0, i), dbPatchIds(portSteps.slice(0, i + 1).flatMap((o) => o.calls)), dbPatchIds(browserSteps.flatMap((o) => o.calls)))(portSteps[i]!, run.outcome),
               "node",
               "browser",
             ),

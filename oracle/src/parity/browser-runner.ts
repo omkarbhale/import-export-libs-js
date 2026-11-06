@@ -269,6 +269,24 @@ function finish(runtime: BrowserRuntime, result: BrowserRunResult, password: str
   return { outcome: outcomeOf(result, password), wire: [...wireDifferences(result.calls, result.wire), ...strays] };
 }
 
+/** A run that changes the server and rejected in the page (a page or Worker crash, a lost browser): what the engine made is lost with the Worker, and only what Node's side connection made first is known. */
+export class BrowserRunCrashed extends Error {
+  constructor(
+    cause: unknown,
+    readonly preRunCreated: readonly CreatedItem[] = [],
+  ) {
+    super(`the page's run did not finish (${cause instanceof Error ? cause.message : String(cause)}); a crash mid-run may leave LIBSJS-SCRATCH-* items on the server, which assertNoScratchLeft catches on the next start`);
+  }
+}
+
+async function runChanging(runtime: BrowserRuntime, request: BrowserRunRequest, preRunCreated?: readonly CreatedItem[]): Promise<BrowserRunResult> {
+  try {
+    return await runtime.run(request);
+  } catch (error) {
+    throw new BrowserRunCrashed(error, preRunCreated);
+  }
+}
+
 const MANIFEST_DIR = "/work/manifest";
 
 /** One export in the page, as `runPortExport` runs it on Node. */
@@ -320,7 +338,7 @@ export async function runBrowserImport(
       await side.close();
     }
   }
-  const result = await runtime.run({
+  const result = await runChanging(runtime, {
     kind: "import",
     server: runtime.serverOf(server),
     options,
@@ -328,7 +346,7 @@ export async function runBrowserImport(
     files: treeFromDisk(step.inputDir, step.treeDir),
     ...(step.only === undefined ? {} : { only: [...step.only] }),
     osUser,
-  });
+  }, preRunCreated);
   const done = finish(runtime, result, server.password);
   return { ...done, created: createdBy(done.outcome.calls), preRunCreated };
 }
@@ -344,7 +362,7 @@ export interface BrowserLanguagePack {
 /** One `lpimport` in the page, as `runPortLanguagePack` runs it. */
 export async function runBrowserLanguagePack(runtime: BrowserRuntime, server: PortServer, run: BrowserLanguagePack, osUser: string): Promise<PortImportResult & BrowserOutcome> {
   assertScratchImport([run.lpPackage], run.lpDir, run.lpDir);
-  const result = await runtime.run({
+  const result = await runChanging(runtime, {
     kind: "language-pack",
     server: runtime.serverOf(server),
     lpDir: "/work/lp",
@@ -366,6 +384,6 @@ export async function runBrowserDbPatch(runtime: BrowserRuntime, server: PortSer
     [`${input}/${MANIFEST_FILE}`, new Uint8Array(readFileSync(committed.manifest))],
     [`${input}/${PATCH_FILE}`, new Uint8Array(readFileSync(join(committed.folder, PATCH_FILE)))],
   ];
-  const result = await runtime.run({ kind: "db-patch", server: runtime.serverOf(server), inputDir: input, manifestName: MANIFEST_FILE, toolName: TOOL_NAME, files, osUser });
+  const result = await runChanging(runtime, { kind: "db-patch", server: runtime.serverOf(server), inputDir: input, manifestName: MANIFEST_FILE, toolName: TOOL_NAME, files, osUser });
   return finish(runtime, result, server.password);
 }
