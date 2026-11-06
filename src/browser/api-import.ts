@@ -151,7 +151,7 @@ function reporterOf(operation: Operation, options: RunOptions, session: Session,
   if (operation === "import" && packageMb > IMPORT_SIZE_WARNING_MB) {
     reporter.note(
       "warning",
-      `The package is ${packageMb} MB. An import in a browser holds about 40 to 70 times the package in memory and ${IMPORT_SIZE_WARNING_MB} MB is the largest size that is known to complete; a larger package may run the tab out of memory. Use the command line tool for packages of this size (HOST-278).`,
+      `The package is ${packageMb} MB. An import in a browser holds about 40 to 70 times the package in memory and ${IMPORT_SIZE_WARNING_MB} MB is the largest size that is known to complete; a larger package may run the tab out of memory. A package of this size is better imported with the command line tool, given a larger heap (node --max-old-space-size) on a machine with enough memory (HOST-278).`,
     );
   }
   return reporter;

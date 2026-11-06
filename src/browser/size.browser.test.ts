@@ -26,7 +26,7 @@ declare module "vitest/browser" {
  * `LIBSJS_SIZE_OPS` (default `import,export`); one size and one operation to an invocation give a peak that earlier runs of the same
  * page have not touched. Firefox and WebKit run the sizes up to `BROWSER_MAX_MB`.
  *
- * Asserted: the run completes (the limit is an import of 50 MB in Chromium; larger packages go through the Node CLI); in Chromium the
+ * Asserted: the run completes (the limit is an import of 50 MB in Chromium; larger packages go through the Node CLI, given a larger heap); in Chromium the
  * browser's peak memory above its idle level stays under a ceiling that follows the measured peak (a regression alarm, not a budget); the page's
  * thread is never held for longer than 100 ms. The time per MB is recorded, not asserted. The earlier targets of 3 times the package
  * and 500 MB are retired; `roadmap/browser-limits.md` keeps what was measured.
@@ -103,13 +103,11 @@ function longTasks(): { stop(): number | null; startup(): number } {
     else longest = Math.max(longest, entry.duration);
   };
   let observer: PerformanceObserver | undefined;
-  try {
+  if (PerformanceObserver.supportedEntryTypes.includes("longtask")) {
     observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) take(entry);
     });
     observer.observe({ type: "longtask" });
-  } catch {
-    observer = undefined;
   }
   return {
     stop() {
