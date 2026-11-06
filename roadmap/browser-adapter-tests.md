@@ -6,7 +6,7 @@ Browser ticket 27. The adapters were specified and tested under Node in tickets 
 
 | Adapter | What runs | Chromium | Firefox | WebKit |
 |---|---|---|---|---|
-| Zip (`HOST-250`, `HOST-251`) | 10 zips made by Info-ZIP, 7-Zip and Python mount to the expected trees; 12 recorded import cases (4 cases × 3 engines) run on a package carried by a zip, and one on a zip with the Finder's junk; the zip of 61 recorded trees is Node's, byte for byte; a 38 MB package (722 files) is written and mounted | 27 pass | 27 pass | 27 pass |
+| Zip (`HOST-250`, `HOST-251`) | 10 zips made by Info-ZIP, 7-Zip and Python mount to the expected trees; 12 recorded import cases (4 cases × 3 engines) run on a package carried by a zip, and one on a zip with the Finder's junk; the zip of 64 recorded trees is Node's, byte for byte; a 38 MB package (722 files) is written and mounted | 27 pass | 27 pass | 27 pass |
 | OPFS (`HOST-252`, `HOST-253`) | recorded import packages written to the origin private file system, mounted from it, run as recorded, the tree committed to a second folder and mounted again; the output of 5 recorded exports through it; stubs, `maxBytes`, `clean`, refused names, 250 files, abort of a mount and of a commit | 29 pass | 29 pass | 29 pass, in the project `browser-webkit-opfs` (see below); the ordinary WebKit instance records that it has no OPFS |
 | Folder input (`HOST-254`) | `setInputFiles` of a recorded folder in `<input webkitdirectory>` equals the recorded tree; a folder of 250 files; a multiple-file input; a chosen `.zip`; 12 recorded import cases run on the tree of a chosen folder; the files of a synthesized `DataTransfer`; abort | 30 pass | 30 pass | 30 pass |
 | Drop (`HOST-255`) | a real drop of a recorded folder, of a folder of 250 files with an empty one (a reader lists 100 at a time), of a zip, and an abort in the middle | 4 pass | not automatable | not automatable |
@@ -21,7 +21,7 @@ Browser ticket 27. The adapters were specified and tested under Node in tickets 
 - **`webkitEntries` of a folder input is empty in all three browsers**, so the entries of a chosen folder cannot stand in for those of a drop.
 - **The order of a folder input's files differs between the browsers** (Chromium lists `imports.mf` first, Firefox and WebKit last), and the tree is the same whatever the order; the test mounts the list in both directions.
 - **WebKit's `setInputFiles` of a folder now and then does not return** (once or twice in 30 files of a busy machine). The test makes another attempt on a new input, three at most.
-- **The zip is the same in the three browsers and under Node**: the deflate of `fflate` writes the same bytes for 61 recorded trees and for the 38 MB folder, which is the proof that a zip made in a browser is the zip of Node.
+- **The zip is the same in the three browsers and under Node**: the deflate of `fflate` writes the same bytes for 64 recorded trees and for the 38 MB folder, which is the proof that a zip made in a browser is the zip of Node.
 - **OPFS refusals differ by browser**: a name with a backslash is refused by Chromium and written by Firefox and WebKit. A name with a NUL, or of 300 characters, is refused by WebKit alone. The commit reports exactly the refused names in a `CommitError` and writes the rest, as `HOST-253` says; the test holds either outcome to that.
 
 ## Not done here
