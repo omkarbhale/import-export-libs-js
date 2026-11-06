@@ -6,8 +6,10 @@ import {
   connectOptionsOf,
   dbPatchOptionsOf,
   exportOptionsOf,
+  importLimitNote,
   importOptionsOf,
   importSettingsOf,
+  importSizeWarning,
   itemsOf,
   languagePackOptionsOf,
   listOf,
@@ -166,6 +168,24 @@ describe("importOptionsOf and its siblings", () => {
   it("refuses an empty field that has no default, before anything is sent", () => {
     expect(() => languagePackOptionsOf({ lpPackage: "  " })).toThrow(FormError);
     expect(() => dbPatchOptionsOf({ manifestPath: "" })).toThrow(FormError);
+  });
+});
+
+describe("the limit of an import", () => {
+  it("warns above 50 MB, rounded as importPackages rounds it, and names the command line tool and its cost", () => {
+    expect(importSizeWarning(undefined)).toBeUndefined();
+    expect(importSizeWarning(50_499_999)).toBeUndefined();
+    const warning = importSizeWarning(50_500_000);
+    expect(warning).toContain("51 MB");
+    expect(warning).toContain("aras-pkg import");
+    expect(warning).toContain("--max-old-space-size");
+  });
+
+  it("states the limit for a package under it, and what is not known of a zip or an unread folder", () => {
+    expect(importLimitNote(1_000)).toBe("An import in a browser is limited to about 50 MB.");
+    expect(importLimitNote(1_000, true)).toContain("what the zip inflates to");
+    expect(importLimitNote(undefined)).toContain("known only when the run reads it");
+    expect(importLimitNote(60_000_000)).toBe(importSizeWarning(60_000_000));
   });
 });
 
