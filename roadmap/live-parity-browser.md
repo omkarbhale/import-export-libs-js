@@ -80,7 +80,7 @@ Browsers, headless, from Playwright 1.64.1: Chromium 156.0.8078.4, Firefox 157.0
 
 ## Timings
 
-The seconds of the engine's runs alone, one Chromium run on each lease, in the order oracle, Node, browser (`sideSeconds` in `report.json`; the oracle's runs, the cleanups and the diff are not in them). The browser's time includes the same-origin proxy and the crossing of the files and results to the driver, which a real page would not have, so it is an upper bound and not a benchmark. Node's 14.35 exports used its logical processors and the page's used `hardwareConcurrency`.
+The seconds of the engine's runs alone, one Chromium run on each lease, in the order Node, browser (`sideSeconds` in `report.json`; the oracle's runs, the cleanups and the diff are not in them). The browser's time includes the same-origin proxy and the crossing of the files and results to the driver, which a real page would not have, so it is an upper bound and not a benchmark. Node's 14.35 exports used its logical processors and the page's used `hardwareConcurrency`.
 
 | Family | 12.0 Node | 12.0 browser | 14.0.7 Node | 14.0.7 browser | 14.35 Node | 14.35 browser |
 |---|---|---|---|---|---|---|
