@@ -71,6 +71,17 @@ export default defineConfig({
         // the size budget has a project of its own (below): its packages are generated and its runs take minutes to hours
         exclude: [...configDefaults.exclude, "src/browser/size.browser.test.ts"],
       }),
+      // The parity script's browser runtime (HOST-277) is driven from Node: a test starts a browser with Playwright itself and runs a recorded
+      // case through the whole pipeline. It has no page of Vitest's own, so it is a project of Node tests that needs the browsers, and runs
+      // with `npm run test:browser` and in the `browser` job of CI, not in `npm test`.
+      {
+        test: {
+          name: "browser-parity",
+          include: ["oracle/src/parity/*.browser.test.ts"],
+          testTimeout: 180_000,
+          hookTimeout: 180_000,
+        },
+      },
       // WebKit as Playwright drives it has no origin private file system in the context it makes for a page (`navigator.storage.getDirectory()` rejects with
       // an `UnknownError`, as in a private window), but has one in a persistent context. The OPFS adapter test (HOST-252, HOST-253) therefore also runs in
       // WebKit here, in a profile folder of its own under `node_modules/.cache` (HOST-268).

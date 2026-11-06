@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { readTranscript } from "../transcript.js";
+import { exceptionSummary } from "./port-core.js";
 
 /** One call the engine (or the port) made: the SOAP action, the request AML as the connection loaded it, and the answer. */
 export interface CallRecord {
@@ -27,7 +28,7 @@ export interface RecordedMessage {
  * the console text, and how the run ended. Both the oracle's recorded folder and the port's live run are read into this.
  */
 export interface RunOutcome {
-  side: "oracle" | "port";
+  side: "oracle" | "port" | "browser";
   calls: CallRecord[];
   /** Export (and `lpdebug`'s kept package): relative path with `/` to bytes; an empty folder is `name/`. Null when the run has none. */
   files: Map<string, Buffer> | null;
@@ -40,11 +41,7 @@ export interface RunOutcome {
   exitCode: number;
 }
 
-/** The first line of an exception's text, where .NET's `ToString` starts the stack trace after it. */
-export function exceptionSummary(text: string): string {
-  const stack = text.search(/\r?\n\s+at /);
-  return (stack < 0 ? text : text.slice(0, stack)).trim();
-}
+export { exceptionSummary } from "./port-core.js";
 
 /** Every file below `root` as `relative/path` and every empty folder as `relative/path/`, with the bytes of each file. */
 export function readTree(root: string): Map<string, Buffer> {

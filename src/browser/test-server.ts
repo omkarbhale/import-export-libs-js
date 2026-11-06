@@ -36,7 +36,10 @@ export * from "./wire-spec.js";
  * Nothing here reads a password or a token from anywhere: the logins are the recorded or fake ones, and every credential is a
  * test value.
  *
- * @spec HOST-234
+ * The parity script's browser runtime serves a recorded export case from it for its dry run, with no lease
+ * (`oracle/src/parity/browser-dry-run.ts`, HOST-277).
+ *
+ * @spec HOST-234 HOST-277
  */
 
 const DATABASE = "12sp9";
@@ -137,9 +140,13 @@ function handlerOf(spec: WireScenarioSpec, base: string): { handler: FakeHandler
   };
   if (spec.recorded === undefined) return { handler: devServer(serverOptions), mismatches: () => [] };
 
-  const dir = join(FIXTURES, spec.engine, "export", spec.recorded.name);
-  const calls = readTranscript(join(dir, "transcript.jsonl"), join(FIXTURES, spec.engine, "export", "_blobs"));
+  const kind = spec.recorded.kind ?? "export";
+  const caseDir = join(FIXTURES, spec.engine, kind, spec.recorded.name);
+  const dir = kind === "import" ? join(caseDir, `step-${spec.recorded.step ?? 1}`) : caseDir;
+  const calls = readTranscript(join(dir, "transcript.jsonl"), join(FIXTURES, spec.engine, kind, "_blobs"));
   const server = new RecordedServer(calls, spec.engine, { server: serverOptions, unordered: spec.recorded.unordered ?? false });
+  // an import or a language pack is the engine's requests in order, and no package is listed first
+  if (kind !== "export") return { handler: server.handler, mismatches: () => server.mismatches };
   const input = JSON.parse(readFileSync(join(dir, "case.json"), "utf8")) as {
     packages: Array<{ name: string; items: Array<{ type: string; id: string; keyedName: string }> }>;
   };

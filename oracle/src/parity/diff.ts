@@ -2,7 +2,7 @@ import { normalizeOutcome, type NormalizedOutcome } from "./normalize.js";
 import type { CallRecord, RunOutcome } from "./outcome.js";
 
 /** What parity compares, in the order the ticket lists it. */
-export const AREAS = ["calls", "files", "log", "messages", "console", "termination"] as const;
+export const AREAS = ["calls", "files", "log", "messages", "console", "termination", "wire"] as const;
 export type Area = (typeof AREAS)[number];
 
 export interface Difference {
@@ -12,6 +12,8 @@ export interface Difference {
   /** The first values that differ, each cut to a readable length. */
   oracle?: string;
   port?: string;
+  /** What the two sides of a comparison that is not oracle against port are called (HOST-277), for the lines that show `oracle` and `port`. */
+  labels?: { oracle: string; port: string };
 }
 
 const CUT = 700;
@@ -143,7 +145,19 @@ export function diffOutcomes(
 export function describeDifferences(differences: readonly Difference[], indent = "    "): string[] {
   return differences.flatMap((d) => [
     `${indent}[${d.area}] ${d.summary}`,
-    ...(d.oracle === undefined ? [] : [`${indent}  oracle: ${cut(d.oracle)}`]),
-    ...(d.port === undefined ? [] : [`${indent}  port:   ${cut(d.port)}`]),
+    ...(d.oracle === undefined ? [] : [`${indent}  ${`${d.labels?.oracle ?? "oracle"}:`.padEnd(7)} ${cut(d.oracle)}`]),
+    ...(d.port === undefined ? [] : [`${indent}  ${`${d.labels?.port ?? "port"}:`.padEnd(7)} ${cut(d.port)}`]),
   ]);
+}
+
+/**
+ * Differences of a comparison that is not oracle against port, named for what was compared (HOST-277): `left` takes the place of "the
+ * oracle" in each line and `right` of "the port", and the line says which pair it is about.
+ */
+export function relabelDifferences(differences: readonly Difference[], left: string, right: string): Difference[] {
+  return differences.map((d) => ({
+    ...d,
+    summary: `${right} against ${left}: ${d.summary.replace(/\bthe oracle\b/g, `the ${left}`).replace(/\bthe port\b/g, `the ${right}`).replace(/\bonly the oracle\b/g, `only the ${left}`)}`,
+    labels: { oracle: left, port: right },
+  }));
 }

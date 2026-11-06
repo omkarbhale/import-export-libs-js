@@ -10,6 +10,7 @@ import { DEV_SERVER } from "../record.js";
 import { readPassword } from "../cli.js";
 import { DBPATCH_CASES } from "../record-dbpatch-cases.js";
 import { CONSOLE_MODE_CASES, PARITY_ENGINES, catalogue, exportCasesOf, seedGroupsOf, duplicateIds, languagePackCases, type CatalogueEntry, type ParityKind } from "./cases.js";
+import { BrowserRuntime, parseRuntimeOptions, type RuntimeChoice } from "./browser-runner.js";
 import { describeDifferences } from "./diff.js";
 import { KNOWN_DIFFERENCES } from "./known.js";
 import { openSideConnection, type PortServer } from "./port-run.js";
@@ -33,6 +34,7 @@ const WSL_DEV_URL = "http://172.19.0.1/12sp9";
 
 const USAGE = `Usage: npm run parity -- [--engine 12.0|14.0.7|14.35] [--case <id>,<id>...] [--kind <kind>,...] [--include-slow] [--list]
                            [--out <folder>] [--keep-all] [--url <url>]
+                           [--runtime node|browser] [--browser chromium|firefox|webkit] [--browser-cors proxy|server]
 
 Runs the oracle (the vendored Libs.dll through the Windows host) and the port on the same inputs against the dev instance, or
 an arashouse lease, and diffs, for each case:
@@ -50,6 +52,14 @@ Kinds: export (read-only), scratch-export (seeds LIBSJS-SCRATCH-* packages, expo
 copies, deleted again by each side), language-pack (needs the Languages de and fr on dev; skipped otherwise), console-mode
 (--use-import, --from-manifest, --all-packages), dbpatch (14.35 only). A case marked slow runs only when named with --case or with --include-slow.
 Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it created, and the ids are in the report.
+
+--runtime browser (HOST-277) adds the browser as a third side. Each step of each case also runs in a headless browser (the engine of
+the browser build, in a Worker, over a tree in memory and the fetch transport; Playwright's Chromium unless --browser names another), and
+its request AML, output tree, log, messages, console text and ending are compared with the oracle's and with the Node port's by the same
+diff. --browser-cors proxy (the default) puts a same-origin reverse proxy in front of the server, which works on every flavour;
+--browser-cors server has the page call the server directly, so the server must answer CORS itself (R23 and R35 do as shipped;
+roadmap/browser-cors-poc.md). The server's address, database, user and password reach the page in one argument of one call, never in a URL,
+a file or the page's source. --list needs no server and no browser.
 
 The server is --url, else ARAS_URL, else the dev instance (${WSL_DEV_URL}), as WSL reaches it, and its database is ARAS_DATABASE
 (default ${DEV_SERVER.database}); the oracle's Windows side reaches the same path at localhost. Anything but the dev instance or a lease
@@ -78,11 +88,11 @@ async function assertNoScratchLeft(server: PortServer): Promise<void> {
 
 function printCase(report: CaseReport, write: (text: string) => void): void {
   const tag = { equal: "ok       ", different: "DIFFERENT", known: "known    ", skipped: "skipped  ", failed: "FAILED   " }[report.status];
-  write(`${tag} ${report.id} (${report.kind}, ${report.seconds.toFixed(1)} s${report.steps.length === 0 ? "" : `, ${report.steps.map((s) => `${s.oracleCalls}/${s.portCalls} calls`).join(" + ")}`})\n`);
+  write(`${tag} ${report.id} (${report.kind}, ${report.seconds.toFixed(1)} s${report.steps.length === 0 ? "" : `, ${report.steps.map((s) => `${s.oracleCalls}/${s.portCalls}${s.browserCalls === undefined ? "" : `/${s.browserCalls}`} calls`).join(" + ")}`})\n`);
   if (report.note !== undefined) write(`    ${report.note}\n`);
   for (const step of report.steps) {
     if (step.differences.length === 0) continue;
-    write(`  ${step.name}: oracle ${step.oracleEnd}; port ${step.portEnd}\n`);
+    write(`  ${step.name}: oracle ${step.oracleEnd}; port ${step.portEnd}${step.browserEnd === undefined ? "" : `; browser ${step.browserEnd}`}\n`);
     write(`${describeDifferences(step.differences).join("\n")}\n`);
   }
   if (report.created.length > 0) {
@@ -121,6 +131,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         out: { type: "string" },
         "keep-all": { type: "boolean" },
         url: { type: "string" },
+        runtime: { type: "string" },
+        browser: { type: "string" },
+        "browser-cors": { type: "string" },
         help: { type: "boolean", short: "h" },
       },
       strict: true,
@@ -140,6 +153,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 64;
   }
   const engine: Engine = engineValue;
+  let choice: RuntimeChoice;
+  try {
+    choice = parseRuntimeOptions(values);
+  } catch (error) {
+    process.stderr.write(`parity: ${(error as Error).message}\n`);
+    return 64;
+  }
   let entries: CatalogueEntry[];
   try {
     entries = selectEntries(engine, values);
@@ -171,6 +191,8 @@ export async function main(argv: readonly string[]): Promise<number> {
   const out = resolve(values.out ?? join(ORACLE_DIR, "out", `parity-${engine}-${stamp}`));
   mkdirSync(out, { recursive: true });
   const oracleUrl = windowsUrl(portUrl);
+  let browser: BrowserRuntime | undefined;
+  const write = (text: string) => process.stdout.write(text);
   const port: PortServer = { engine, url: portUrl, logUrl: oracleUrl, database, userName: user, password };
   const env: ParityEnv = {
     engine,
@@ -182,9 +204,18 @@ export async function main(argv: readonly string[]): Promise<number> {
     out,
     log: (line) => process.stderr.write(`${line}\n`),
   };
+  if (choice.runtime === "browser") {
+    try {
+      browser = await BrowserRuntime.start({ browser: choice.browser, cors: choice.cors, target: portUrl, log: env.log });
+    } catch (error) {
+      process.stderr.write(`parity: cannot start the browser: ${(error as Error).message}\n`);
+      return 64;
+    }
+    env.browser = browser;
+    write(`parity: browser runtime: ${browser.version}, CORS through ${choice.cors}\n`);
+  }
 
   const reports: CaseReport[] = [];
-  const write = (text: string) => process.stdout.write(text);
   const settle = (report: CaseReport) => {
     const known = KNOWN_DIFFERENCES[report.id];
     if (known !== undefined && report.status === "different") {
@@ -284,12 +315,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
   }
 
+  await browser?.close();
   const count = (status: string) => reports.filter((r) => r.status === status).length;
   write(`\n${reports.length} case(s): ${count("equal")} equal, ${count("different")} different, ${count("known")} known, ${count("failed")} failed, ${count("skipped")} skipped\n`);
   const created = reports.flatMap((r) => r.created);
   const deleted = reports.flatMap((r) => r.deleted);
   write(`dev items created by the runs: ${created.length}; deleted by their cleanups: ${deleted.length}\n`);
-  writeFileSync(join(out, "report.json"), `${JSON.stringify({ engine, startedAt: stamp, reports }, null, 2)}\n`);
+  writeFileSync(join(out, "report.json"), `${JSON.stringify({ engine, startedAt: stamp, runtime: choice.runtime === "browser" ? { ...choice, version: browser?.version, proxied: browser?.forwarded } : choice, reports }, null, 2)}\n`);
   write(`report: ${join(out, "report.json")}\n`);
   if (exitCode === 0 && (count("different") > 0 || count("failed") > 0)) exitCode = 1;
   return exitCode;
