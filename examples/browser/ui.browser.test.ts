@@ -15,7 +15,7 @@ import { type EngineClient, createWorkerEngine } from "./engine-client.js";
  * CORS and the browser API are all real. An export is downloaded as a zip and must be the recorded output byte for byte; an import
  * runs from a zip, from a folder input and from a drop, and the server must see every recorded request, each as recorded. The folder
  * picker is exercised through a directory handle written in memory, which stands in for the picker's dialog, the one thing a test
- * cannot drive (the manual run on Chromium is recorded in the pull request).
+ * cannot drive, so the native picker itself is unproven live.
  *
  * @spec HOST-280 HOST-281
  */
@@ -24,6 +24,7 @@ declare module "vitest/browser" {
   interface BrowserCommands {
     startReplay(id: string): Promise<StartedReplay>;
     stopReplay(handle: string): Promise<StoppedReplay>;
+    replayRequests(handle: string): Promise<string[]>;
     runBuiltPage(id: string): Promise<BuiltPageRun>;
     workerBundle(): Promise<string>;
   }
@@ -66,6 +67,9 @@ async function startReplay(id: string): Promise<StartedReplay> {
   replay = { started };
   return started;
 }
+
+/** What the server has seen so far; it goes on running. */
+const requestsSoFar = (): Promise<string[]> => commands.replayRequests(String((replay as { started: StartedReplay }).started.handle));
 
 /** What the server saw: stops it and answers with what the recording was used for. */
 async function stopReplay(): Promise<StoppedReplay> {
@@ -130,6 +134,21 @@ function fileList(files: File[]): FileList {
   const transfer = new DataTransfer();
   for (const file of files) transfer.items.add(file);
   return transfer.files;
+}
+
+/** The recorded package with an extra file of `size` bytes that do not compress, so that the zip is a valid package over the limit. */
+async function largeZipFileOf(dir: string, size: number): Promise<File> {
+  const vfs = await treeOf(dir);
+  const filler = new Uint8Array(size);
+  for (let at = 0; at < size; at += 65_536) crypto.getRandomValues(filler.subarray(at, at + 65_536));
+  vfs.mount({ "/filler.bin": filler });
+  return new File([new Uint8Array(vfsToZip(vfs, "/"))], "large.zip", { type: "application/zip" });
+}
+
+/** Puts a file in a file input, as choosing it does; a test driver's upload refuses more than 50 MB. */
+function chooseFile(input: HTMLInputElement, file: File): void {
+  input.files = fileList([file]);
+  input.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
 const IMPORT_CASE = "14.0.7/import/s0-mini-defaults";
@@ -319,37 +338,54 @@ describe("import, from a zip, a folder and a drop", () => {
     expect(runButton().disabled).toBe(false);
   });
 
-  it("warns of a package over the limit before the login, keeps the password, and goes on at the second press", async () => {
-    let connects = 0;
-    const engine: EngineClient = {
-      connect: () => {
-        connects += 1;
-        return Promise.reject(new Error("no server in this test"));
-      },
-    };
-    mount({ engine });
-    await connectTo("https://aras.example.com/InnovatorServer");
+  it("warns of a package over the limit before the login, keeps the password, and goes on at the second press, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
     await openTab("import");
-    const zipInput = q<HTMLInputElement>('[data-panel="import"] [data-source="zip"]');
-    zipInput.files = fileList([new File([new Uint8Array(60_000_000)], "large.zip", { type: "application/zip" })]);
-    zipInput.dispatchEvent(new Event("change", { bubbles: true }));
+    chooseFile(q('[data-panel="import"] [data-source="zip"]'), await largeZipFileOf(IMPORT_INPUT, 60_000_000));
     await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("over the limit of about 50 MB"));
-    expect(sourceStatus("import").textContent).toContain("a zip of 60.0 MB");
-    await userEvent.fill(key("osUser", "import"), "someone");
+    expect(sourceStatus("import").textContent).toMatch(/a zip of 60\.\d MB/);
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
     const notice = q('[data-key="size-notice"]');
     expect(notice.hidden).toBe(true);
 
     await run();
     expect(notice.hidden).toBe(false);
-    expect(notice.textContent).toContain("60 MB");
+    expect(notice.textContent).toMatch(/60 MB/);
     expect(notice.textContent).toContain("aras-pkg import");
-    expect(connects).toBe(0);
+    expect(await requestsSoFar()).toEqual([]);
     expect(key("password").value).toBe("pw-of-the-test-xyz");
 
     await run();
     expect(notice.hidden).toBe(true);
-    expect(connects).toBe(1);
     expect(key("password").value).toBe("");
+    await expectImportDone();
+  });
+
+  it("drops the warning when an over-limit zip is swapped for a small one, and runs at once, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay(IMPORT_CASE);
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("import");
+    const zipInput = q<HTMLInputElement>('[data-panel="import"] [data-source="zip"]');
+    chooseFile(zipInput, new File([new Uint8Array(60_000_000)], "large.zip", { type: "application/zip" }));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("over the limit of about 50 MB"));
+    await userEvent.fill(key("osUser", "import"), recipe.osUser as string);
+    await run();
+    const notice = q('[data-key="size-notice"]');
+    expect(notice.hidden).toBe(false);
+    expect(await requestsSoFar()).toEqual([]);
+
+    chooseFile(zipInput, await zipFileOf(IMPORT_INPUT));
+    await vi.waitFor(() => expect(sourceStatus("import").textContent).toContain("package.zip"));
+    expect(sourceStatus("import").textContent).not.toContain("over the limit");
+    expect(notice.hidden).toBe(true);
+
+    await run();
+    expect(notice.hidden).toBe(true);
+    expect(key("password").value).toBe("");
+    await expectImportDone();
   });
 
   it("warns of a dropped zip over the limit before the login, and keeps the password", async () => {
@@ -385,6 +421,45 @@ describe("import, from a zip, a folder and a drop", () => {
     await run();
     expect(failureText()).toMatch(/^ZipError: /);
     expect(runButton().disabled).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------------------------- language packs and DB patches
+
+describe("language packs and DB patches, through their tabs", () => {
+  async function expectAsRecorded(): Promise<void> {
+    expect(failureText()).toBe("");
+    expect(q(".summary").textContent).toContain("success");
+    expect(key("password").value).toBe("");
+    const report = await stopReplay();
+    expect(report.mismatches).toEqual([]);
+    expect(report.total).toBeGreaterThan(0);
+    expect(report.consumed).toBe(report.total);
+    expect(report.requests.some((line) => line.includes("Logoff"))).toBe(true);
+  }
+
+  it("imports a language pack, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay("14.0.7/language-pack/lp01");
+    await connectTo(url, { engine: recipe.engine });
+    await openTab("language-pack");
+    await userEvent.upload(q('[data-panel="language-pack"] [data-source="zip"]'), await zipFileOf("fixtures/14.0.7/language-pack/lp01/lp"));
+    await userEvent.fill(key("lpPackage", "language-pack"), recipe.lpPackage as string);
+    await userEvent.fill(key("osUser", "language-pack"), recipe.osUser as string);
+    await run();
+    await expectAsRecorded();
+  });
+
+  it("applies a DB patch as root, as recorded", async () => {
+    mount();
+    const { url, recipe } = await startReplay("14.35/dbpatch/apply");
+    await connectTo(url, { engine: recipe.engine, user: recipe.userName });
+    await openTab("db-patches");
+    await userEvent.upload(q('[data-panel="db-patches"] [data-source="zip"]'), await zipFileOf("fixtures/14.35/dbpatch/apply/step-1/input"));
+    await userEvent.fill(key("manifestPath", "db-patches"), recipe.manifestPath as string);
+    await userEvent.fill(key("osUser", "db-patches"), recipe.osUser as string);
+    await run();
+    await expectAsRecorded();
   });
 });
 

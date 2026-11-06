@@ -27,6 +27,12 @@ export const replayCommands: Record<string, BrowserCommand<[string]>> = {
     running.set(handle, server);
     return { handle, url: server.url, recipe: replay.recipe };
   },
+  /** What the server has seen so far, without stopping it: a test's proof that a step sent nothing. */
+  replayRequests: (_context, handle): string[] => {
+    const server = running.get(Number(handle));
+    if (server === undefined) throw new Error(`there is no replay server ${handle}`);
+    return [...server.requests];
+  },
   stopReplay: async (_context, handle): Promise<StoppedReplay> => {
     const server = running.get(Number(handle));
     if (server === undefined) throw new Error(`there is no replay server ${handle}`);
