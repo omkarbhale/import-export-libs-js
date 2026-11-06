@@ -72,13 +72,13 @@ equal ones too. Exit status: 0 every case equal or skipped, 1 a difference or a 
 const KINDS: readonly ParityKind[] = ["export", "scratch-export", "import", "language-pack", "console-mode", "dbpatch"];
 
 /** The scratch packages and packages a run starts from: nothing named `LIBSJS-SCRATCH-*` may exist on the server (dev, or a lease). */
-async function assertNoScratchLeft(server: PortServer): Promise<void> {
+export async function assertNoScratchLeft(server: PortServer): Promise<void> {
   const side = await openSideConnection(server);
   try {
     for (const [type, property] of [["PackageDefinition", "name"], ["DatabaseUpgrade", "name"]] as const) {
       const found = await side.inn.applyItem(`<Item type="${type}" action="get" select="id,${property}"><${property} condition="like">LIBSJS-SCRATCH-*</${property}></Item>`);
       if (!found.isError && found.items.length > 0) {
-        throw new CaseFailure(`the server already has ${found.items.length} ${type} item(s) named LIBSJS-SCRATCH-*: an earlier run left them. Clean them up with \`npm run oracle -- cleanup\` first.`);
+        throw new CaseFailure(`the server already has ${found.items.length} ${type} item(s) named LIBSJS-SCRATCH-*: an earlier run left them. On a lease, return it and take a new one. On the dev instance, delete the run's LIBSJS-SCRATCH-* and LIBSJS_SCRATCH_* items by hand (a browser crash leaves no record of them); only an oracle run kept with --keep-created has a record, for \`npm run oracle -- cleanup --from-runs <run.json>\`.`);
       }
     }
   } finally {
