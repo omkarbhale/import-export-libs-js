@@ -37,13 +37,13 @@ declare module "vitest/browser" {
 /** The largest import that is known to complete in a browser, in MB (HOST-278): the size the budget names. */
 const LIMIT_MB = 50;
 /**
- * The ceilings of peak memory above idle, in Chromium, as a fixed part and a multiple of the package's bytes. They sit about 20 to 30 %
- * above what was measured (import 2874 MB at 50 MB, 1030 MB at 25, 730 MB at 10; export 668, 518 and 379 MB), so a change that makes the
- * engine hold more fails here.
+ * The ceilings of peak memory above idle, in Chromium, as a fixed part and a multiple of the package's bytes. Above what was measured they
+ * leave: import 21 % at 10 MB (730 MB), 80 % at 25 (1030 MB) and 21 % at 50 (2881 MB); export 27 % at 10 (379 MB), 22 % at 25 (518 MB) and
+ * 26 % at 50 (698 MB). So a change that makes the engine hold more than that fails here.
  */
 const CEILING: Record<"import" | "export", { fixedBytes: number; factor: number }> = {
-  import: { fixedBytes: 400_000_000, factor: 60 },
-  export: { fixedBytes: 700_000_000, factor: 10 },
+  import: { fixedBytes: 230_000_000, factor: 65 },
+  export: { fixedBytes: 380_000_000, factor: 10 },
 };
 /** The longest the page's thread may be held while the engine runs in the Worker, in ms. */
 const MAX_GAP_MS = 100;
@@ -145,33 +145,6 @@ function ticker(intervalMs: number): { stop(): { longest: number; at: number } }
   };
 }
 
-/** Why `agentMemory` gave no number, for the row of the run. */
-let agentNote = "not asked";
-
-/** What the page can say about its own memory, where the browser says it: the isolated page's agent cluster, the Worker included. */
-async function agentMemory(): Promise<number | null> {
-  const measured = performance as unknown as { measureUserAgentSpecificMemory?: () => Promise<{ bytes: number }> };
-  if (typeof measured.measureUserAgentSpecificMemory !== "function") {
-    agentNote = "the browser has no measureUserAgentSpecificMemory";
-    return null;
-  }
-  if (globalThis.crossOriginIsolated !== true) {
-    agentNote = "the page is not cross-origin isolated";
-    return null;
-  }
-  try {
-    const bytes = await Promise.race([
-      measured.measureUserAgentSpecificMemory().then((result) => result.bytes),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 60_000)),
-    ]);
-    agentNote = bytes === null ? "no answer in 60 s" : "measured";
-    return bytes;
-  } catch (error) {
-    agentNote = `${(error as Error)?.name ?? "error"}: ${String((error as Error)?.message ?? error).slice(0, 120)}`;
-    return null;
-  }
-}
-
 async function templates(): Promise<SynthTemplates> {
   const entries = await Promise.all((Object.entries(SYNTH_TEMPLATES) as Array<[SynthKind, string]>).map(async ([kind, file]) => [kind, await readFixtureText(file)] as const));
   return Object.fromEntries(entries) as SynthTemplates;
@@ -192,10 +165,6 @@ interface Measured {
   peakRssBytes: number | null;
   idleRssBytes: number | null;
   processes: number;
-  agentBefore: number | null;
-  agentAfter: number | null;
-  agentNote: string;
-  isolated: boolean;
 }
 
 /**
@@ -204,7 +173,6 @@ interface Measured {
  * the zip) and holds the page's thread for reasons that are not the engine's.
  */
 async function measure<A, T>(prepare: () => Promise<A>, run: (prepared: A) => Promise<T>): Promise<{ value: T | undefined; error: unknown; measured: Measured }> {
-  const agentBefore = await agentMemory();
   const idle = await commands.memoryResetPeak();
   const prepared = await prepare();
   const watch = ticker(10);
@@ -222,9 +190,7 @@ async function measure<A, T>(prepare: () => Promise<A>, run: (prepared: A) => Pr
   const longTaskMs = tasks.stop();
   const startupHoldMs = tasks.startup();
   const after = await commands.memoryNow();
-  const agentAfter = await agentMemory();
   const known = idle.processes > 0 && after.peakBytes > 0;
-  const isolated = globalThis.crossOriginIsolated === true;
   return {
     value,
     error,
@@ -239,10 +205,6 @@ async function measure<A, T>(prepare: () => Promise<A>, run: (prepared: A) => Pr
       peakRssBytes: known ? after.peakBytes : null,
       idleRssBytes: known ? idle.rssBytes : null,
       processes: after.processes,
-      agentBefore,
-      agentAfter,
-      agentNote,
-      isolated,
     },
   };
 }
@@ -354,29 +316,3 @@ for (const mb of sizes) {
     );
   });
 }
-
-describe("HOST-278: what the browser allows a Worker", () => {
-  it("records the heap limit of a Worker, where the browser says it (Chromium's performance.memory)", async () => {
-    const source = `postMessage(typeof performance.memory === "object" ? performance.memory.jsHeapSizeLimit : null)`;
-    const url = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
-    const limit = await new Promise<number | null>((resolve, reject) => {
-      const worker = new Worker(url);
-      worker.onmessage = (event: MessageEvent<number | null>) => {
-        worker.terminate();
-        resolve(event.data);
-      };
-      worker.onerror = (event) => reject(new Error(event.message));
-    });
-    URL.revokeObjectURL(url);
-    await record({ operation: "worker-heap-limit", jsHeapSizeLimitBytes: limit, memoryOfThePage: (performance as unknown as { memory?: { jsHeapSizeLimit: number } }).memory?.jsHeapSizeLimit ?? null });
-    expect(limit === null || limit > 0).toBe(true);
-  });
-});
-
-describe("HOST-278: the limit's own numbers", () => {
-  it("name the size of the limit and the thread's bound", () => {
-    expect(LIMIT_MB).toBe(50);
-    expect(MAX_GAP_MS).toBe(100);
-    expect(CEILING.import.factor).toBeGreaterThan(CEILING.export.factor);
-  });
-});

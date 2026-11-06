@@ -1,15 +1,15 @@
 /**
- * What the `browser-size` project of `vitest.config.ts` is made of on the Node side (HOST-278): the packages of the size measurements, which a
+ * What the `size` project of `vitest.config.ts` is made of on the Node side (HOST-278): the packages of the size measurements, which a
  * page fetches from the Vitest server and does not carry in a command, the sizes the run is asked for, and the memory of the
  * browser's processes, which only the machine can tell. Test-only tooling: nothing under `src/` imports it.
  *
  * @spec HOST-278
  */
-import { appendFileSync, createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, readlinkSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vitest/config";
-import type { BrowserCommand } from "vitest/node";
+import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 import { repoRoot } from "./browser-bundle.js";
 import { DEFAULT_SEED, SYNTH_DIR, type SynthPackageInfo, synthZipName, writeSynthPackage } from "./synth-package.js";
 
@@ -28,7 +28,7 @@ const ROUTE = /^\/__synth__\/(synth-[0-9.]+mb-s\d+-v\d+\.(?:zip|json))$/;
 
 /**
  * Serves the files of `.synth/` under `/__synth__/`, to the pages of the project. Only the names the generator writes are served, so
- * the route reads nothing else of the disk; the file is streamed, so that a package of 500 MB is not read into the server.
+ * the route reads nothing else of the disk; the file is streamed, so that a large package is not read into the server.
  */
 export function serveSynthPackages(root: string = repoRoot): Plugin {
   return {
@@ -52,9 +52,6 @@ export function serveSynthPackages(root: string = repoRoot): Plugin {
     },
   };
 }
-
-/** The headers that make a page cross-origin isolated, so that `measureUserAgentSpecificMemory()` is allowed (HOST-278). */
-export const ISOLATION_HEADERS = { "Cross-Origin-Opener-Policy": "same-origin", "Cross-Origin-Embedder-Policy": "require-corp" } as const;
 
 /** The packages of the run, written if they are not there (a global setup of the project). */
 export function ensureSynthPackages(sizes: readonly number[] = requestedSizes(), root: string = repoRoot): SynthPackageInfo[] {
@@ -97,27 +94,42 @@ export function descendants(root: number): number[] {
 }
 
 /** The numbers of `/proc/<pid>/status` that are in kilobytes, as bytes. */
-function statusBytes(pid: number): { rss: number; peak: number; name: string } | null {
+function statusBytes(pid: number): { rss: number; peak: number } | null {
   try {
     const text = readFileSync(`/proc/${pid}/status`, "utf8");
     const field = (key: string): number => Number(new RegExp(`^${key}:\\s+(\\d+) kB`, "m").exec(text)?.[1] ?? 0) * 1024;
-    return { rss: field("VmRSS"), peak: field("VmHWM"), name: /^Name:\s+(\S+)/m.exec(text)?.[1] ?? "" };
+    return { rss: field("VmRSS"), peak: field("VmHWM") };
   } catch {
     return null;
   }
 }
 
 /**
- * The memory of the browser the run started: the sum over the processes below this one, the Playwright driver left out (it is Node,
- * and not the browser's). `peak` is each process's high-water mark, so a reset before a run and a read after it give the run's peak.
+ * The processes below `pid` whose executable's path names `browser`. Playwright keeps each browser in a folder of that name
+ * (`chromium_headless_shell-1248`, `firefox-1555`, `webkit-2370`), so the instances of a run, which are all below this process, are told
+ * apart, and the Playwright driver, which is Node, is left out.
  */
-export function browserMemory(pid: number = process.pid): { processes: number; rssBytes: number; peakBytes: number } {
+function browserProcesses(browser: string, pid: number): number[] {
+  return descendants(pid).filter((child) => {
+    try {
+      return readlinkSync(`/proc/${child}/exe`).includes(browser);
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * The memory of one browser of the run: the sum over its processes. `peak` is each process's high-water mark, so a reset before a run
+ * and a read after it give the run's peak.
+ */
+export function browserMemory(browser: string, pid: number = process.pid): { processes: number; rssBytes: number; peakBytes: number } {
   let rss = 0;
   let peak = 0;
   let processes = 0;
-  for (const child of descendants(pid)) {
+  for (const child of browserProcesses(browser, pid)) {
     const status = statusBytes(child);
-    if (status === null || /^(node|MainThread)$/.test(status.name)) continue;
+    if (status === null) continue;
     rss += status.rss;
     peak += status.peak;
     processes += 1;
@@ -125,11 +137,10 @@ export function browserMemory(pid: number = process.pid): { processes: number; r
   return { processes, rssBytes: rss, peakBytes: peak };
 }
 
-/** Sets each browser process's high-water mark to what it holds now (`clear_refs` 5, Linux 4.0 and later); true when every process took it. */
-export function resetPeak(pid: number = process.pid): boolean {
+/** Sets the high-water mark of each process of one browser to what it holds now (`clear_refs` 5, Linux 4.0 and later); true when every process took it. */
+export function resetPeak(browser: string, pid: number = process.pid): boolean {
   let all = true;
-  for (const child of descendants(pid)) {
-    if (/^(node|MainThread)$/.test(statusBytes(child)?.name ?? "")) continue;
+  for (const child of browserProcesses(browser, pid)) {
     try {
       writeFileSync(`/proc/${child}/clear_refs`, "5");
     } catch {
@@ -147,7 +158,10 @@ export type SizeRow = Record<string, unknown>;
 /** Where the rows are kept, one JSON object per line. */
 export const resultsFile = (root: string = repoRoot): string => path.join(synthDir(root), "results.jsonl");
 
-/** The commands the `browser-size` project registers; the page calls them through `vitest/browser`. */
+/** The browser of the instance that called a command. */
+const instanceBrowser = (context: BrowserCommandContext): string => context.project.config.browser.name;
+
+/** The commands the `size` project registers; the page calls them through `vitest/browser`. */
 export const sizeCommands = {
   synthSizes: (() => requestedSizes()) as BrowserCommand<[]>,
   synthOps: (() => (process.env.LIBSJS_SIZE_OPS ?? "import,export").split(",").map((part) => part.trim())) as BrowserCommand<[]>,
@@ -156,8 +170,8 @@ export const sizeCommands = {
     if (!existsSync(info)) throw new Error(`the package of ${mb} MB is not generated: npm run synth-package -- --mb ${mb}`);
     return JSON.parse(readFileSync(info, "utf8")) as SynthPackageInfo;
   }) as BrowserCommand<[number]>,
-  memoryNow: (() => browserMemory()) as BrowserCommand<[]>,
-  memoryResetPeak: (() => ({ reset: resetPeak(), ...browserMemory() })) as BrowserCommand<[]>,
+  memoryNow: ((context) => browserMemory(instanceBrowser(context))) as BrowserCommand<[]>,
+  memoryResetPeak: ((context) => ({ reset: resetPeak(instanceBrowser(context)), ...browserMemory(instanceBrowser(context)) })) as BrowserCommand<[]>,
   recordSizeRow: ((_context, row: SizeRow) => {
     mkdirSync(synthDir(repoRoot), { recursive: true });
     appendFileSync(resultsFile(), `${JSON.stringify(row)}\n`);

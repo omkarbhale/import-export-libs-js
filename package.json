@@ -47,7 +47,7 @@
     "prepare": "npm run build",
     "rea-map": "tsx tools/rea-map/cli.ts",
     "synth-package": "tsx tools/synth-package.ts",
-    "test:browser:size": "vitest run --project browser-size"
+    "test:browser:size": "vitest run --project size"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",

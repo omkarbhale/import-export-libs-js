@@ -2,7 +2,7 @@
  * The generator of the synthetic packages of the size measurements (HOST-277): `npm run synth-package -- --mb 10 --mb 50` writes each as a zip
  * into `.synth/` (git-ignored, never committed) with a `.json` beside it that names its item count and bytes. The items are made by
  * `src/browser/synth-package.ts` from real fixture item files; this file reads the templates and writes the zip, one item at a
- * time, so that a package of 500 MB is never in memory whole.
+ * time, so that a large package is never in memory whole.
  *
  * Node-only tooling: nothing under `src/` imports it.
  *
@@ -22,8 +22,8 @@ import {
 } from "../src/browser/synth-package.js";
 import { repoRoot } from "./browser-bundle.js";
 
-/** The sizes the first plan named, in megabytes (500 was Q5 of the map; the limit now is 50, HOST-278). */
-export const SYNTH_SIZES_MB: readonly number[] = [10, 50, 200, 500];
+/** The sizes written when none is asked for, in megabytes: the default of a run and the limit (HOST-278). */
+export const SYNTH_SIZES_MB: readonly number[] = [10, 50];
 
 /** The seed a package is made with unless another is asked for. */
 export const DEFAULT_SEED = 1;

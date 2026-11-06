@@ -6,7 +6,7 @@ import { afterAll, describe, expect, it } from "vitest";
 import { browserMemory, descendants, requestedSizes, resultsFile, serveSynthPackages, sizeCommands } from "./browser-size.js";
 
 /**
- * The Node side of the `browser-size` project (HOST-278): the sizes of a run, the route that serves the packages and nothing else, and
+ * The Node side of the `size` project (HOST-278): the sizes of a run, the route that serves the packages and nothing else, and
  * the memory of the browser's processes read from `/proc`.
  *
  * @spec HOST-278
@@ -78,13 +78,26 @@ describe.skipIf(process.platform !== "linux")("HOST-278: the memory of the proce
       const below = descendants(process.pid);
       expect(below).toContain(child.pid);
       expect(below.length, "the child's own child is below it").toBeGreaterThanOrEqual(2);
-      const memory = browserMemory(process.pid);
+      const memory = browserMemory("", process.pid);
       expect(memory.processes).toBeGreaterThanOrEqual(2);
       expect(memory.rssBytes).toBeGreaterThan(0);
       expect(memory.peakBytes).toBeGreaterThanOrEqual(memory.rssBytes);
       expect(descendants(process.pid)).not.toContain(process.pid);
     } finally {
       child.kill("SIGKILL");
+    }
+  });
+
+  it("counts only the processes of the browser it is asked about", async () => {
+    const other = spawn("sleep", ["30"], { stdio: "ignore" });
+    const named = spawn(process.execPath, ["-e", "setTimeout(() => {}, 30000)"], { stdio: "ignore" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      expect(browserMemory(path.basename(process.execPath), process.pid).processes).toBe(1);
+      expect(browserMemory("chromium", process.pid)).toEqual({ processes: 0, rssBytes: 0, peakBytes: 0 });
+    } finally {
+      other.kill("SIGKILL");
+      named.kill("SIGKILL");
     }
   });
 });

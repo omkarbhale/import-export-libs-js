@@ -234,7 +234,7 @@ export const synthManifestBytes = (): Uint8Array => utf8Bytes(SYNTH_MANIFEST);
 
 /**
  * The items of a package of at least `targetBytes` of item files: item 0, 1, 2 … until their files hold that many bytes. Yields each
- * item's file; the caller writes it and lets it go, so that a package of 500 MB is never in memory whole here.
+ * item's file; the caller writes it and lets it go, so that a large package is never in memory whole here.
  */
 export function* synthItems(spec: SynthSpec, templates: SynthTemplates, targetBytes: number): Generator<{ info: SynthItemInfo; path: string; bytes: Uint8Array }> {
   let total = 0;

@@ -3,13 +3,13 @@ import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import { fixtureCommands, adapterCommands, replaceDefaultHostForVite, workerCommands } from "./tools/browser-vitest.js";
 import { readSelectionFile } from "./tools/browser-test-selection.js";
-import { ISOLATION_HEADERS, serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
+import { serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
 
 /**
  * Four projects (HOST-263, HOST-268, HOST-278). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
  * files and the unit tests of `src/browser/pure-tests.json` in headless Chromium, Firefox and WebKit, `browser-webkit-opfs` runs
- * the OPFS adapter test in WebKit in a persistent profile, and `browser-size` runs the size budget (`npm run test:browser:size`).
- * `npm run test:browser` runs the browser projects (`browser*`), and a browser failure names the browser.
+ * the OPFS adapter test in WebKit in a persistent profile, and `size` runs the size budget (`npm run test:browser:size`).
+ * `npm run test:browser` runs the browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
  */
 
 type Instance = { browser: "chromium" | "firefox" | "webkit" };
@@ -21,17 +21,15 @@ type ProjectOptions = {
   testTimeout?: number;
   hookTimeout?: number;
   plugins?: Plugin[];
-  server?: { headers: Record<string, string> };
   commands?: Partial<typeof sizeCommands>;
 };
 
 /** A project of the real browsers: the same page, setup and commands for each (HOST-263); `provider`, `include` and the options are what differ. */
-function browserProject(name: string, instances: Instance[], provider: ReturnType<typeof playwright>, include: string[], { plugins = [], server, commands = {}, ...test }: ProjectOptions = {}) {
+function browserProject(name: string, instances: Instance[], provider: ReturnType<typeof playwright>, include: string[], { plugins = [], commands = {}, ...test }: ProjectOptions = {}) {
   return {
     plugins: [replaceDefaultHostForVite(), ...plugins],
     // The page's `Buffer` is the `buffer` package; its CommonJS source is bundled once up front so that the first run does not reload the page.
     optimizeDeps: { include: ["buffer/index.js"] },
-    ...(server ? { server } : {}),
     test: {
       name,
       include,
@@ -79,12 +77,10 @@ export default defineConfig({
       browserProject("browser-webkit-opfs", [{ browser: "webkit" }], playwright({ persistentContext: "./node_modules/.cache/vitest-playwright-webkit-profile" }), [
         "src/browser/opfs-adapter.browser.test.ts",
       ], { env: { LIBSJS_PERSISTENT_PROFILE: "1" } }),
-      browserProject("browser-size", [{ browser: "chromium" }, { browser: "firefox" }, { browser: "webkit" }], playwright(), ["src/browser/size.browser.test.ts"], {
+      browserProject("size", [{ browser: "chromium" }, { browser: "firefox" }, { browser: "webkit" }], playwright(), ["src/browser/size.browser.test.ts"], {
         plugins: [serveSynthPackages()],
-        // cross-origin isolation, so that `performance.measureUserAgentSpecificMemory()` is allowed (HOST-278)
-        server: { headers: { ...ISOLATION_HEADERS } },
         globalSetup: ["tools/browser-size-setup.ts"],
-        // a package of 500 MB takes the engine tens of minutes in a page (HOST-278)
+        // a large package takes the engine minutes to hours in a page (HOST-278)
         testTimeout: 4 * 60 * 60_000,
         hookTimeout: 4 * 60 * 60_000,
         commands: sizeCommands,

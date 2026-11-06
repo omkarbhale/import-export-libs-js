@@ -4,11 +4,11 @@ Browser wayfinder ticket 31 (HOST-277, HOST-278). What the engine costs when it 
 
 ## Result in one paragraph
 
-**The limit is an import of about 50 MB in Chromium; larger packages go through the Node CLI.** The captain decided this on 2026-11-06 after the measurements below showed the memory target unreachable: an import costs about **40 to 70 times** the package's bytes in browser memory (Chromium: 41 times at 25 MB, 58 times at 50 MB; Firefox: 63 times at 10 MB, 54 times at 50 MB), and an export about 6 times the package plus roughly 370 MB that does not grow (Chromium: 21 times at 25 MB, 14 times at 50 MB; Firefox: 18 times at 50 MB). The cost is the engine's parsed documents, not the file bytes. The targets of the map's Q5, 500 MB and at most 3 times the package, are **retired**; the numbers stay here as recorded fact. A 50 MB import completed at 2.9 GB in Chromium and 2.7 GB in Firefox. The page's thread is not held (longest timer gap 31 to 90 ms, one 121 ms reading on a loaded machine). **Not measured:** WebKit (its system libraries are missing on the measuring machine), Firefox between 10 and 50 MB and above 50 MB, Chromium above 50 MB, and any export above 50 MB. Holding the items as text and parsing them one at a time is possible later (section 6) and would raise the limit.
+**The limit is an import of about 50 MB in Chromium; larger packages go through the Node CLI.** The captain decided this on 2026-11-06 after the measurements below showed the memory target unreachable: an import costs about **40 to 70 times** the package's bytes in browser memory (Chromium: 41 times at 25 MB, 58 times at 50 MB; Firefox: 63 times at 10 MB, 54 times at 50 MB), and an export about 6 times the package plus roughly 370 MB that does not grow (Chromium: 21 times at 25 MB, 14 times at 50 MB; Firefox: 18 times at 50 MB). The cost is the engine's parsed documents, not the file bytes. The targets of the map's Q5, 500 MB and at most 3 times the package, are **retired**; the numbers stay here as recorded fact. A 50 MB import completed at 2.9 GB in Chromium and 2.7 GB in Firefox. The page's thread is not held (longest timer gap 26 to 90 ms, one 121 ms reading on a loaded machine). **Not measured:** WebKit (its system libraries are missing on the measuring machine), Firefox between 10 and 50 MB and above 50 MB, Chromium above 50 MB, and any export above 50 MB. Holding the items as text and parsing them one at a time is possible later (section 6) and would raise the limit.
 
 ## 1. What was run, and what was not
 
-`npm run test:browser:size` (`src/browser/size.browser.test.ts`, HOST-278) with `LIBSJS_SIZE_MB` and `LIBSJS_SIZE_OPS`; the packages are made by `npm run synth-package` (HOST-277: real item files of the fixtures, repeated and renamed, from a seed). One size and one operation to an invocation (a second run in the same page starts from the memory the first one left).
+`npm run test:browser:size` (`src/browser/size.browser.test.ts`, HOST-278) with `LIBSJS_SIZE_MB` and `LIBSJS_SIZE_OPS`; the packages are made by `npm run synth-package` (HOST-277: real item files of the fixtures, repeated and renamed, from a seed). One size and one operation to an invocation (a second run in the same page starts from the memory the first one left). The size runs are manual: they are in no job of CI.
 
 | Run | Done |
 |---|---|
@@ -21,7 +21,7 @@ The machine is shared with other workers and was at a load average of about 26 o
 
 ## 2. Measurements
 
-Memory is the browser's own processes summed from `/proc` (`VmRSS` and `VmHWM`, the high-water mark reset before the run), less what the browser held before the page fetched the zip ("peak above idle"). `performance.measureUserAgentSpecificMemory()` was tried in the cross-origin isolated page and Chromium's headless shell refused it with a `SecurityError`, so it gave no number.
+Memory is the browser's own processes (those whose executable is in that browser's Playwright folder) summed from `/proc` (`VmRSS` and `VmHWM`, the high-water mark reset before the run), less what the browser held before the page fetched the zip ("peak above idle"). `performance.measureUserAgentSpecificMemory()` was tried in the cross-origin isolated page and Chromium's headless shell refused it with a `SecurityError`, so it gave no number and the test no longer asks for it.
 
 | Size (MB) | Browser | Operation | Items | Time | ms per MB | Peak above idle | × package | Longest gap of the page's timer |
 |---|---|---|---|---|---|---|---|---|
@@ -38,11 +38,11 @@ Memory is the browser's own processes summed from `/proc` (`VmRSS` and `VmHWM`, 
 
 Notes on the table.
 
-- The 10 and 25 MB Chromium rows and the 10 MB Firefox rows are from earlier runs of the same test, taken with the machine at a load average of about 26 (the 25 MB import's 121 ms gap is from then); the 50 MB rows, and the Chromium 10 MB rows that were repeated for the last version of the test, were taken on a quiet machine. The times move by a factor of two with the load (the 50 MB import took 87 s under load and 67 s without), so the ms per MB column is a trend.
+- The 10 and 25 MB Chromium rows and the 10 MB Firefox rows are from earlier runs of the same test, taken with the machine at a load average of about 26 (the 25 MB import's 121 ms gap is from then); the 50 MB rows, and the Chromium 10 MB rows that were repeated for the last version of the test, were taken on a quiet machine. The times move with the load, so the ms per MB column is a trend.
 - Time per MB is about 1.3 to 3.5 s for an import and 1.8 to 5 s for an export. An export asks the server about 33 times per item (100 497 requests for 3025 items), and each request crosses between the page and the Worker; an import asks about 4 times per item. On the profile of an import under Node, the time is the engine's XPath and XML work (`xpath` compiles each expression anew; the Worker is not the cost).
 - The 6-connection slowdown of a 14.35 export (map risk, ticket 26) is not measured here: the server of these runs is the page's own and answers at once, so there is no connection to cap. Ticket 26 has not landed.
 - The page's thread: the timer gap is the thread's lateness and on a loaded machine includes the scheduler's. The test asserts, in Chromium, the longest long task that the browser reports (the thread's own busy time, 0 ms in the 10 and 50 MB runs repeated for it) and the timer gap elsewhere, and does not count the first second of a run, in which a task of 242 ms was seen once at the start of a 10 MB export (the Worker's first messages and Vitest's reporting share the thread).
-- The Worker's heap limit (`performance.memory.jsHeapSizeLimit` in a Worker) is not available: neither Chromium's headless shell nor Firefox gives it to a Worker (the test records null).
+- The Worker's heap limit (`performance.memory.jsHeapSizeLimit` in a Worker) is not available: neither Chromium's headless shell nor Firefox gave it to a Worker (both null when tried).
 
 ## 3. Where the memory goes
 
@@ -64,10 +64,10 @@ An export's cost is the output tree, the copies the result hands back (`files`, 
 
 | Target (retired) | Result |
 |---|---|
-| Completes at 500 MB | **Import: no, not attempted** (about 40 to 57 times the package is 20 to 28 GB, and a tab's Worker is capped near 4 GB). Export: not run; extrapolated about 3.4 GB above idle, which would fit a machine that has it, and **fails the 3 times** (6.8 times). |
+| Completes at 500 MB | **Import: no, not attempted** (about 41 to 58 times the package is 20 to 29 GB, and a tab's Worker is capped near 4 GB). Export: not run; extrapolated about 3.4 GB above idle, which would fit a machine that has it, and **fails the 3 times** (6.8 times). |
 | Peak memory at most 3 times the package | **Fails at every size measured**: import 41 to 73 times, export 14 to 38 times.  |
-| Page's thread held at most 100 ms | **Holds** wherever measured on a quiet machine (timer gap 25 to 50 ms, no long task); the exception is one 121 ms timer reading under a load average of 26 (25 MB import). The test asserts the thread's own long tasks in Chromium. |
-| Time per MB | Recorded, not asserted: 2 to 3 s (import), 4 to 5 s (export). A 500 MB package would take the engine, at that rate, from 17 minutes (import, if it fitted) to 40 minutes (export). |
+| Page's thread held at most 100 ms | **Holds** at every size measured (timer gap 26 to 90 ms), with one exception: a 121 ms timer reading under a load average of 26 (25 MB import). The test asserts the thread's own long tasks in Chromium. |
+| Time per MB | Recorded, not asserted: 1.3 to 3.5 s (import), 1.8 to 5 s (export). A 500 MB package would take the engine, at that rate, 11 to 29 minutes (import, if it fitted) or 15 to 41 minutes (export). |
 
 ## 5. The ticket's remedies, in its order
 
@@ -84,6 +84,6 @@ The captain lowered the limit instead of building the lazy parsing now:
 
 - An import of about **50 MB** completes in Chromium. A larger package goes through the Node CLI (`aras-pkg import`), which has no such cost.
 - The 500 MB and 3 times targets are retired. Their numbers (sections 2 to 4) are kept as measured fact, not as a goal.
-- `size.browser.test.ts` asserts that a run completes, a regression ceiling on peak memory in Chromium that follows the measured peak (import: 400 MB plus 60 times the package; export: 700 MB plus 10 times; about 20 to 30 % above what was measured, 2.88 GB against 3.4 GB at 50 MB for an import), and the 100 ms bound on the page's thread. A change that makes the engine hold more fails the ceiling.
-- A caller is told: the README says it, and `importPackages` sends a warning of the host (`source: "host"`, level `warning`) when the tree it imports is above 50 MB, naming the size, the 40 to 70 times and the CLI. It does not refuse. The reference page (ticket 30) should show that message.
+- `size.browser.test.ts` asserts that a run completes, a regression ceiling on peak memory in Chromium that follows the measured peak (import: 230 MB plus 65 times the package, 21 %, 80 % and 21 % above what was measured at 10, 25 and 50 MB; export: 380 MB plus 10 times, 27 %, 22 % and 26 % above), and the 100 ms bound on the page's thread. A change that makes the engine hold more fails the ceiling.
+- A caller is told: the README says it, and `importPackages` sends a warning of the host (`source: "host"`, level `warning`) when the tree it imports rounds to more than 50 MB, naming the size, the 40 to 70 times and the CLI. It does not refuse. The reference page (ticket 30) should show that message.
 - **Later, if the limit must rise:** hold the items as text and parse each one when the run reaches it, instead of two whole-package documents and a document per item (section 3). That changes the engine's structure and needs the parity fixtures to hold, so it is a ticket of its own, with a target of about 3 to 5 times that is plausible and unmeasured; an export that hands back one copy of its output is the smaller follow-up.

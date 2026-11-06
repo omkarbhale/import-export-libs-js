@@ -32,7 +32,7 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`browser-adapter-tests.md`](browser-adapter-tests.md) records what the zip, directory-handle and file-input adapters do in the real browsers (ticket 27): the result per adapter and browser, why WebKit's origin private file system is tested in a persistent profile, and what a page cannot make (a folder in a `DataTransfer`).
 
-[`browser-limits.md`](browser-limits.md) records what the engine costs in a browser (browser wayfinder ticket 31, HOST-277 and HOST-278): the size, time and memory of a synthetic package of 10 to 500 MB through the Worker in Chromium, Firefox and WebKit, the budget of Q5 and where it fails, and the practical size of a package.
+[`browser-limits.md`](browser-limits.md) records what the engine costs in a browser (browser wayfinder ticket 31, HOST-277 and HOST-278): the size, time and memory of a synthetic package of 10 to 50 MB through the Worker in Chromium and Firefox (WebKit did not run), the retired targets of Q5 and where they fail, and the limit that replaced them: an import of about 50 MB.
 
 [`hold/`](hold/) holds the pieces of `Libs.dll` that are deliberately out of scope, each with what would bring it in.
 

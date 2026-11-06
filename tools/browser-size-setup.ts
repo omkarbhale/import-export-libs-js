@@ -1,7 +1,7 @@
 import { ensureSynthPackages, requestedSizes } from "./browser-size.js";
 
 /**
- * The global setup of the `browser-size` project (HOST-278): the packages of the sizes asked for (`LIBSJS_SIZE_MB`) are written to
+ * The global setup of the `size` project (HOST-278): the packages of the sizes asked for (`LIBSJS_SIZE_MB`) are written to
  * `.synth/` if they are not there, before any browser starts.
  *
  * @spec HOST-277 HOST-278

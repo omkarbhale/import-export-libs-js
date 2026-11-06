@@ -23,8 +23,8 @@ afterAll(() => {
 });
 
 describe("HOST-277: a package is written as a zip", () => {
-  it("names the sizes of the budget, up to 500 MB", () => {
-    expect(SYNTH_SIZES_MB).toEqual([10, 50, 200, 500]);
+  it("names the sizes of the budget, up to the limit of 50 MB", () => {
+    expect(SYNTH_SIZES_MB).toEqual([10, 50]);
     expect(synthZipName(50, 1)).toBe("synth-50mb-s1-v1.zip");
   });
 

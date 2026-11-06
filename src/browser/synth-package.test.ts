@@ -119,6 +119,14 @@ describe("HOST-278: a package of a few items goes through the engine against the
     expect(again.messages.filter((message) => message.source === "host")).toEqual([]);
   }, 60_000);
 
+  it("does not warn about a package of the measured 50 MB, which a little overshoots it", async () => {
+    const vfs = new MemoryVfs();
+    vfs.mount({ "/imports.mf": SYNTH_MANIFEST, "/big.bin": new Uint8Array(50_080_052), ...Object.fromEntries([...synthItems(spec, templates, 20_000)].map((item) => [`/${item.path}`, item.bytes])) });
+    const session = await connect({ ...LOGIN, engine: "14.0.7", transport: synthImportServer().transport });
+    const result = await importPackages(session, { source: vfs, osUser: "size" });
+    expect(result.messages.filter((message) => message.source === "host")).toEqual([]);
+  }, 60_000);
+
   it("exports the items it is served, and writes back the files they were made as", async () => {
     const count = 25;
     const server = synthExportServer(spec, templates, count);
