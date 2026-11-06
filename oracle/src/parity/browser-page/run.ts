@@ -35,13 +35,13 @@ import type {
 } from "./protocol.js";
 
 /**
- * The browser's counterpart of `port-run.ts` (HOST-277): the same host sequence as the oracle's and the Node port's (the contexts of
+ * The browser's counterpart of `port-run.ts` (HOST-279): the same host sequence as the oracle's and the Node port's (the contexts of
  * `port-core.ts`, the manager, the selection), but over a {@link MemoryVfs} and the browser host, with the engine's calls going out
  * through the `fetch` transport, in a Worker. Each function takes the files of the run as a list, runs, and gives back what the Node
  * driver turns into a `RunOutcome`: the calls the engine made, the output tree, the log, the messages, the console text and how it
  * ended.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 const WORK = "/work";
@@ -80,7 +80,7 @@ interface WireRecord {
 
 const newWireRecord = (): WireRecord => ({ calls: [], origins: new Set() });
 
-/** A transport that sends through `fetch`, notes each SOAP request as the wire carried it, and the origin of every request (HOST-277). */
+/** A transport that sends through `fetch`, notes each SOAP request as the wire carried it, and the origin of every request (HOST-279). */
 function recordingTransport(wire: WireRecord): HttpTransport {
   const inner = createFetchTransport();
   const header = (request: { headers: readonly (readonly [string, string])[] }, name: string): string | undefined =>

@@ -12,7 +12,7 @@ export interface Difference {
   /** The first values that differ, each cut to a readable length. */
   oracle?: string;
   port?: string;
-  /** What the two sides of a comparison that is not oracle against port are called (HOST-277), for the lines that show `oracle` and `port`. */
+  /** What the two sides of a comparison that is not oracle against port are called (HOST-279), for the lines that show `oracle` and `port`. */
   labels?: { oracle: string; port: string };
 }
 
@@ -151,7 +151,7 @@ export function describeDifferences(differences: readonly Difference[], indent =
 }
 
 /**
- * Differences of a comparison that is not oracle against port, named for what was compared (HOST-277): `left` takes the place of "the
+ * Differences of a comparison that is not oracle against port, named for what was compared (HOST-279): `left` takes the place of "the
  * oracle" in each line and `right` of "the port", and the line says which pair it is about.
  */
 export function relabelDifferences(differences: readonly Difference[], left: string, right: string): Difference[] {

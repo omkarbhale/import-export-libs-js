@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import { browserBundleOptions, repoRoot } from "../../tools/browser-bundle.js";
 
 /**
- * The harness page of the browser parity run (`oracle/src/parity/browser-page/`, HOST-277) is built from the browser build's graph.
+ * The harness page of the browser parity run (`oracle/src/parity/browser-page/`, HOST-279) is built from the browser build's graph.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 const PAGE_DIR = "oracle/src/parity/browser-page";

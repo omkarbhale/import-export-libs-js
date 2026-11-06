@@ -32,7 +32,7 @@ import { manifestPackageNames } from "../record.js";
 import { scrub, secretForms } from "../scrub.js";
 import { type CreatedItem, assertScratchImport, createdItems, preRun } from "./scratch.js";
 
-// what the Worker's runner shares with this one lives in port-core.ts (HOST-277); the names stay importable from here
+// what the Worker's runner shares with this one lives in port-core.ts (HOST-279); the names stay importable from here
 export { ORACLE_HOST_CULTURE, exportContextFor, openSession, openSideConnection, osUserOf, selectionOf };
 export type { PortServer, Session };
 

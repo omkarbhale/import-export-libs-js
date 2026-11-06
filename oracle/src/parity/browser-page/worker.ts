@@ -2,10 +2,10 @@ import { runRequest } from "./run.js";
 import type { FromWorker, ToWorker } from "./protocol.js";
 
 /**
- * The Worker of the parity page (HOST-277): it takes one run request at a time from the page and answers with the run's result. The
+ * The Worker of the parity page (HOST-279): it takes one run request at a time from the page and answers with the run's result. The
  * engine, the tree in memory and the `fetch` calls are all here, off the page's thread, as a caller of the shipped library runs them.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 declare const self: {
   onmessage: ((event: { data: ToWorker }) => void) | null;

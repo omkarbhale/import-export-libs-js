@@ -37,9 +37,9 @@ export * from "./wire-spec.js";
  * test value.
  *
  * The parity script's browser runtime serves a recorded export case from it for its dry run, with no lease
- * (`oracle/src/parity/browser-dry-run.ts`, HOST-277).
+ * (`oracle/src/parity/browser-dry-run.ts`, HOST-279).
  *
- * @spec HOST-234 HOST-277
+ * @spec HOST-234 HOST-279
  */
 
 const DATABASE = "12sp9";

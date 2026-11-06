@@ -8,7 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { type RunningProxy, startProxy } from "./proxy.js";
 
 /**
- * The reverse proxy of the browser parity run (HOST-277) against a local server that records what it was sent: the bytes of a body
+ * The reverse proxy of the browser parity run (HOST-279) against a local server that records what it was sent: the bytes of a body
  * both ways, the status line, the headers with their case and the repeated ones, and what the proxy adds and drops.
  */
 

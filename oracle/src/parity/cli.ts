@@ -53,7 +53,7 @@ copies, deleted again by each side), language-pack (needs the Languages de and f
 (--use-import, --from-manifest, --all-packages), dbpatch (14.35 only). A case marked slow runs only when named with --case or with --include-slow.
 Imports use LIBSJS-SCRATCH-* packages and items only; each side deletes what it created, and the ids are in the report.
 
---runtime browser (HOST-277) adds the browser as a third side. Each step of each case also runs in a headless browser (the engine of
+--runtime browser (HOST-279) adds the browser as a third side. Each step of each case also runs in a headless browser (the engine of
 the browser build, in a Worker, over a tree in memory and the fetch transport; Playwright's Chromium unless --browser names another), and
 its request AML, output tree, log, messages, console text and ending are compared with the oracle's and with the Node port's by the same
 diff. --browser-cors proxy (the default) puts a same-origin reverse proxy in front of the server, and keeps the login chain on its origin;

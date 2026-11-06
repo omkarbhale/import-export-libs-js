@@ -12,7 +12,7 @@ import { type PortServer, osUserOf, selectionOf } from "./port-core.js";
 import { runPortExport, runPortImport, runPortLanguagePack } from "./port-run.js";
 
 /**
- * A dry run of the browser parity pipeline (HOST-277), with no lease: one recorded export case is served over HTTP by the browser
+ * A dry run of the browser parity pipeline (HOST-279), with no lease: one recorded export case is served over HTTP by the browser
  * tests' server (`src/browser/test-server.ts`, HOST-234), and the oracle's side is the recording itself. The Node port and the page's
  * Worker each run the case against their own scenario of that server and the three outcomes go through the same normalisation and
  * diff that a live run uses (`diffOutcomes`, the wire check, the relabelling). A recorded case found equal here is known to be found
@@ -20,7 +20,7 @@ import { runPortExport, runPortImport, runPortLanguagePack } from "./port-run.js
  *
  * It reads no credential: the password of the run is a test value.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 const FIXTURES = fileURLToPath(new URL("../../../fixtures", import.meta.url));

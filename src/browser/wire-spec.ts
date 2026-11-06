@@ -74,7 +74,7 @@ export interface FaultSpec {
 export interface RecordedCase {
   /** The folder under `fixtures/<engine>/<kind>/`. */
   name: string;
-  /** Which family of recordings `name` is in. Default `export`; an `import` or `language-pack` case is served from the folder of `step` (the parity script's dry run, HOST-277). */
+  /** Which family of recordings `name` is in. Default `export`; an `import` or `language-pack` case is served from the folder of `step` (the parity script's dry run, HOST-279). */
   kind?: "export" | "import" | "language-pack";
   /** For `import`: the step of the case, from 1. */
   step?: number;

@@ -753,7 +753,7 @@ Asserted: the run completes, with no error message of the engine; in Chromium th
 
 [14.35] Same as 14.0.7.
 
-## HOST-277: the parity script runs a third side, the browser, and compares it with the oracle and with the Node port
+## HOST-279: the parity script runs a third side, the browser, and compares it with the oracle and with the Node port
 
 [14.0.7] `npm run parity -- --engine <v> --runtime browser [--browser chromium|firefox|webkit] [--browser-cors proxy|server]` runs every step of every case of the engine's catalogue a third time, after the oracle's and the Node port's, in a headless browser, and compares what the page's run gave with each of the other two by the diff that compares those two (`oracle/src/parity/diff.ts`, `normalize.ts`; `diff-1435.ts` for 14.35's exports, EXP-558). `--runtime node` is the default and runs as it did before the option existed. `--list` takes the option and needs no server and no browser; the case list is the Node runtime's. A difference is named for the pair it is about, `browser against oracle` (a difference of the engine in a browser) or `browser against node` (a difference of the browser's host), so that a difference of the second kind, which the first would also show, can be told from one the Node port has too.
 

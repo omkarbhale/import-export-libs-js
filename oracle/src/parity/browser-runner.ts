@@ -26,7 +26,7 @@ import { openSideConnection } from "./port-core.js";
 import { type RunningProxy, startProxy } from "./proxy.js";
 
 /**
- * The browser as the third runtime of the parity run (HOST-277). The driver is Node's: it builds the harness page (`browser-page/`:
+ * The browser as the third runtime of the parity run (HOST-279). The driver is Node's: it builds the harness page (`browser-page/`:
  * the engine of `src/browser.ts`'s graph in a Worker, over a `MemoryVfs` and the `fetch` transport), starts one origin that serves it
  * and, by default, proxies the server (`proxy.ts`), launches Chromium, Firefox or WebKit with Playwright, and runs each case's step in
  * the page. What comes back (the calls, the output tree, the log, the messages, the console text, the ending) becomes a `RunOutcome`
@@ -36,13 +36,13 @@ import { type RunningProxy, startProxy } from "./proxy.js";
  * values the caller read from the environment. They are never in a URL, a file or the page's source, and the outcome is scrubbed
  * as the Node port's outcome is before anything is kept (`scrubbedOutcome`).
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 export type BrowserName = "chromium" | "firefox" | "webkit";
 export const BROWSERS: readonly BrowserName[] = ["chromium", "firefox", "webkit"];
 
-/** How the page reaches the server: through the runner's same-origin proxy, or straight, from a server already configured for the page's origin (HOST-277). */
+/** How the page reaches the server: through the runner's same-origin proxy, or straight, from a server already configured for the page's origin (HOST-279). */
 export type BrowserCors = "proxy" | "server";
 export const BROWSER_CORS: readonly BrowserCors[] = ["proxy", "server"];
 
@@ -57,7 +57,7 @@ export interface BrowserRuntimeOptions {
 
 export type Runtime = "node" | "browser";
 
-/** What `--runtime`, `--browser` and `--browser-cors` of the parity script mean (HOST-277). */
+/** What `--runtime`, `--browser` and `--browser-cors` of the parity script mean (HOST-279). */
 export type RuntimeChoice = { runtime: "node" } | { runtime: "browser"; browser: BrowserName; cors: BrowserCors };
 
 /**
@@ -141,7 +141,7 @@ export class BrowserRuntime {
     return this.proxy.origin;
   }
 
-  /** What a page keeps after a run: its URL, its cookies and its storage, as text (HOST-277). */
+  /** What a page keeps after a run: its URL, its cookies and its storage, as text (HOST-279). */
   async kept(): Promise<string> {
     const session = await this.page.evaluate<string>("JSON.stringify(sessionStorage)");
     return JSON.stringify({ url: this.page.url(), storage: await this.context.storageState(), session });
@@ -203,7 +203,7 @@ export function outcomeOf(result: BrowserRunResult, password: string): RunOutcom
 // ------------------------------------------------------------------------------------------------------------------- wire check
 
 /**
- * What the engine says it sent against what the page's transport sent (HOST-277): each call's request, in order, must be the body of a
+ * What the engine says it sent against what the page's transport sent (HOST-279): each call's request, in order, must be the body of a
  * SOAP request on the wire with its action. A request the engine repeated (a renewed token, a changed digest, WIRE-012) is on the wire
  * more than once, so a wire request may be passed over, but a call with none left to match is a difference: the page would have
  * recorded a request it did not send. The engine's record keeps the white space before the root element, which the wire does not carry,

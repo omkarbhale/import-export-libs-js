@@ -4,17 +4,17 @@ import type { ImportOptions } from "../../import-cases.js";
 import type { CallRecord, RecordedMessage, Termination } from "../outcome.js";
 
 /**
- * What the Node-side driver (`browser-runner.ts`) and the page's Worker (`run.ts`) say to each other (HOST-277). It names no global of
+ * What the Node-side driver (`browser-runner.ts`) and the page's Worker (`run.ts`) say to each other (HOST-279). It names no global of
  * Node or of a page, so both sides import it. A request carries the credentials of the run; the driver builds it from the environment
  * and hands it to the page in one `page.evaluate` argument, so no URL, file or source of the page holds them.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 /** The server a run connects to, as the page's Worker reaches it. */
 export interface BrowserServer {
   engine: Engine;
-  /** The address the Worker's `fetch` calls: the lease itself, or the runner's same-origin proxy of it (HOST-277). */
+  /** The address the Worker's `fetch` calls: the lease itself, or the runner's same-origin proxy of it (HOST-279). */
   url: string;
   /** The address the engine writes in its log header: the one the oracle host connected as. */
   logUrl: string;
@@ -77,7 +77,7 @@ export interface DbPatchRunRequest {
 
 export type BrowserRunRequest = ExportRunRequest | ImportRunRequest | LanguagePackRunRequest | DbPatchRunRequest;
 
-/** One request the Worker's transport sent, as the wire carried it: the SOAP action and the body, which the engine's own call record must repeat (HOST-277). */
+/** One request the Worker's transport sent, as the wire carried it: the SOAP action and the body, which the engine's own call record must repeat (HOST-279). */
 export interface WireCall {
   action: string;
   /** The body as sent, without its XML declaration. */

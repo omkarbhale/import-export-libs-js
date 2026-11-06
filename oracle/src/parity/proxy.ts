@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { extname, join, normalize, sep } from "node:path";
 
 /**
- * The same-origin reverse proxy of the browser parity run (HOST-277): the page and the Aras server it talks to are on one origin, so the
+ * The same-origin reverse proxy of the browser parity run (HOST-279): the page and the Aras server it talks to are on one origin, so the
  * page needs nothing of the server's own CORS configuration, which a lease may lack (`roadmap/browser-cors-poc.md`). It forwards each
  * request to the server and each response back byte for byte: the body untouched (compressed stays compressed, a 5 MB body is not
  * buffered), the status line and every header as received with their names' case and repeated headers (`Set-Cookie`) kept apart. What it
@@ -17,7 +17,7 @@ import { extname, join, normalize, sep } from "node:path";
  *
  * It reads no credential: the page's requests carry theirs, and nothing is logged.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 /** The headers a proxy must not forward (RFC 9110, section 7.6.1), and `Host`, which names the proxy. */

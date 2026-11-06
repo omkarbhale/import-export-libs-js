@@ -9,7 +9,7 @@ import type { RunOutcome } from "./outcome.js";
 import { scrubbedOutcome } from "./port-run.js";
 import { type StepReport, compare, withBrowser } from "./runners.js";
 
-/** The driver's arguments, its conversion of the page's result, and the three-way comparison, on synthetic runs (HOST-277). No browser starts here. */
+/** The driver's arguments, its conversion of the page's result, and the three-way comparison, on synthetic runs (HOST-279). No browser starts here. */
 
 describe("--runtime, --browser and --browser-cors", () => {
   it("defaults to the Node runtime, and to Chromium through the proxy for the browser runtime", () => {

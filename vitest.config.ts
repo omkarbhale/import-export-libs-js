@@ -6,7 +6,7 @@ import { readSelectionFile } from "./tools/browser-test-selection.js";
 import { serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
 
 /**
- * Five projects (HOST-263, HOST-268, HOST-278, HOST-277). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
+ * Five projects (HOST-263, HOST-268, HOST-278, HOST-279). `node` is the suite as it always was; `npm test` runs it alone. `browser` runs the `*.browser.test.ts`
  * files and the unit tests of `src/browser/pure-tests.json` in headless Chromium, Firefox and WebKit, `browser-webkit-opfs` runs
  * the OPFS adapter test in WebKit in a persistent profile, `browser-parity` runs the parity script's browser dry run from Node, and `size` runs the size budget
  * (`npm run test:browser:size`). `npm run test:browser` runs the three browser projects (`browser*`), which leaves `size` out, and a browser failure names the browser.
@@ -71,7 +71,7 @@ export default defineConfig({
         // the size budget has a project of its own (below): its packages are generated and its runs take minutes to hours
         exclude: [...configDefaults.exclude, "src/browser/size.browser.test.ts"],
       }),
-      // The parity script's browser runtime (HOST-277) is driven from Node: a test starts a browser with Playwright itself and runs a recorded
+      // The parity script's browser runtime (HOST-279) is driven from Node: a test starts a browser with Playwright itself and runs a recorded
       // case through the whole pipeline. It has no page of Vitest's own, so it is a project of Node tests that needs the browsers, and runs
       // with `npm run test:browser` and in the `browser` job of CI, not in `npm test`.
       {

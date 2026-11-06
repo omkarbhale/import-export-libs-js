@@ -45,7 +45,7 @@ export interface ParityEnv {
   /** The folder of this parity run: one folder per case, one per step, `oracle/` and `port/` inside. */
   out: string;
   log: (line: string) => void;
-  /** The browser as a third runtime (`--runtime browser`, HOST-277): each step also runs in a page, and is compared with both of the others. */
+  /** The browser as a third runtime (`--runtime browser`, HOST-279): each step also runs in a page, and is compared with both of the others. */
   browser?: BrowserRuntime;
 }
 
@@ -91,7 +91,7 @@ export function oracleInputLength(engine: Engine, command: string): number {
   return winJoin(oracleWindowsRoot(), "runs", runId(engine, command), "input").length;
 }
 
-/** The path of the browser's package folder in the Worker's tree: as long as the oracle's `input` folder, for the same reason (HOST-277). */
+/** The path of the browser's package folder in the Worker's tree: as long as the oracle's `input` folder, for the same reason (HOST-279). */
 export function browserInputDir(engine: Engine): string {
   return paddedInputDir(oracleInputLength(engine, "import"));
 }
@@ -137,7 +137,7 @@ export function compare(
 }
 
 /**
- * The page's step, compared with the oracle's and with the Node port's (HOST-277) and added to the step the first two made: a
+ * The page's step, compared with the oracle's and with the Node port's (HOST-279) and added to the step the first two made: a
  * difference between the browser and the Node port is a difference of the browser's host, and one against the oracle is a difference of
  * the engine; the page's own wire check is added too. `same` is the comparison the case's kind uses, called with the left side first.
  */

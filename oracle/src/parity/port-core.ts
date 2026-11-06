@@ -14,11 +14,11 @@ import type { ExportCaseOptions, ExportCasePackage } from "../export-cases.js";
 import type { CallRecord, Termination } from "./outcome.js";
 
 /**
- * What the port's runner (`port-run.ts`, on Node) and the browser's runner (`browser-page/run.ts`, in a Worker) share (HOST-277): the
+ * What the port's runner (`port-run.ts`, on Node) and the browser's runner (`browser-page/run.ts`, in a Worker) share (HOST-279): the
  * server a run connects to, the connection that records its calls, the contexts the oracle host builds, the termination of a run. It
  * imports nothing from Node, so that the Worker's bundle can take it; the file system, the clock and the scrubbing stay with each side.
  *
- * @spec HOST-277
+ * @spec HOST-279
  */
 
 /** Where and as whom the port connects. `url` is the address this machine reaches dev at; the engine logs `logUrl`, what the oracle host logged. */
