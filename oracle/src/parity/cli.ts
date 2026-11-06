@@ -19,6 +19,7 @@ import {
   CaseFailure,
   DevNotClean,
   type ParityEnv,
+  type SideSeconds,
   pruneEqual,
   runConsoleModeCase,
   runDbPatchCase,
@@ -213,11 +214,17 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 64;
     }
     env.browser = browser;
+    env.timing = { node: 0, browser: 0 };
     write(`parity: browser runtime: ${browser.version}, CORS through ${choice.cors}, page at ${browser.pageOrigin}\n`);
   }
 
   const reports: CaseReport[] = [];
+  const counted: SideSeconds = { node: 0, browser: 0 };
   const settle = (report: CaseReport) => {
+    if (env.timing !== undefined) {
+      report.sideSeconds = { node: env.timing.node - counted.node, browser: env.timing.browser - counted.browser };
+      Object.assign(counted, env.timing);
+    }
     const known = KNOWN_DIFFERENCES[report.id];
     if (known !== undefined && report.status === "different") {
       report.status = "known";
@@ -322,6 +329,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   const created = reports.flatMap((r) => r.created);
   const deleted = reports.flatMap((r) => r.deleted);
   write(`dev items created by the runs: ${created.length}; deleted by their cleanups: ${deleted.length}\n`);
+  if (env.timing !== undefined) write(`engine runs took: node ${env.timing.node.toFixed(1)} s, browser ${env.timing.browser.toFixed(1)} s\n`);
   writeFileSync(join(out, "report.json"), `${JSON.stringify({ engine, startedAt: stamp, runtime: choice.runtime === "browser" ? { ...choice, version: browser?.version, proxied: browser?.forwarded } : choice, reports }, null, 2)}\n`);
   write(`report: ${join(out, "report.json")}\n`);
   if (exitCode === 0 && (count("different") > 0 || count("failed") > 0)) exitCode = 1;

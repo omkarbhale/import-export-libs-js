@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { parseXml } from "../../../src/client/mini-xml.js";
 import type { ImportCase } from "../import-cases.js";
-import { type ParityEnv, inputDirLikeOracle, runImportCase } from "./runners.js";
+import { type ParityEnv, inputDirLikeOracle, runImportCase, timed } from "./runners.js";
 
 const sideConnection = vi.hoisted(() => vi.fn());
 const emptyOutcome = vi.hoisted(() => (side: string) => ({ side, calls: [], files: null, log: "", messages: [], console: null, termination: { kind: "returned", value: 0 }, exitCode: 0 }));
@@ -24,6 +24,17 @@ vi.mock("../import-packages.js", async (original) => ({ ...(await original<typeo
 vi.mock("../record-import-cases.js", async (original) => ({ ...(await original<typeof import("../record-import-cases.js")>()), outcomeMatches: () => true }));
 
 const xmlItem = (xml: string) => parseXml(xml).root;
+
+describe("timed", () => {
+  it("adds a run's time to its side, also when the run fails, and needs no counter", async () => {
+    const timing = { node: 0, browser: 0 };
+    await expect(timed({ timing }, "browser", async () => "done")).resolves.toBe("done");
+    await expect(timed({ timing }, "node", () => Promise.reject(new Error("no")))).rejects.toThrow("no");
+    expect(timing.browser).toBeGreaterThan(0);
+    expect(timing.node).toBeGreaterThan(0);
+    await expect(timed({}, "node", async () => 1)).resolves.toBe(1);
+  });
+});
 
 describe("inputDirLikeOracle", () => {
   const made: string[] = [];

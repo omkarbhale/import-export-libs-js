@@ -26,6 +26,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 
 [`live-parity-12.0-on-leases.md`](live-parity-12.0-on-leases.md), [`live-parity-14.0.7-on-leases.md`](live-parity-14.0.7-on-leases.md) and [`live-parity-14.35-on-leases.md`](live-parity-14.35-on-leases.md) record the same runs on arashouse leases of each engine's own server (arashouse map ticket 46): 12.0 on 12.0 SP9, 14.0.7 on Release 23 (14.0.9) and 14.35 on Release 35, the first 14.x servers either engine met. No difference in any of them; every change from the dev records is the server's content, and the 14.35 DB patch met a slot licence without `Aras.ApplyUpdate`.
 
+[`live-parity-browser.md`](live-parity-browser.md) records the live run of the browser as a third side on one lease per engine (browser wayfinder ticket 33): no unexplained difference on any engine in Chromium, and Firefox and WebKit pass their two cases.
+
 [`readiness.md`](readiness.md) is the state when the map ended (wayfinder ticket 65): the final three-engine parity run, what the readiness sweep fixed, and every gap still open with its reason.
 
 [`browser-cors-poc.md`](browser-cors-poc.md) records the browser wayfinder's one POC (ticket 15): what a real Aras server (12 SP9, R23, R35) answers a cross-origin page in Chromium, Firefox and WebKit, the server configuration that makes it work, and what the fetch transport must do about credentials, cookies and `statusText`.

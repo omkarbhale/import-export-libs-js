@@ -136,6 +136,19 @@ describe("the normalisations of the 14.35 runs (ticket 76)", () => {
     expect(messages).toEqual(["status: AML batch time: <elapsed> at <time>"]);
   });
 
+  it("replaces an elapsed time of the AML batch mode that is a whole number of seconds, which a browser's coarse clock can give (HOST-243)", () => {
+    const log = "Working directory: /w\r\n   AML batch time: 00:00:01\r\n   Resolve dependencies time: 00:00:00\r\n";
+    const lines = normalizeLog(log, new Map());
+    expect(lines).toContain("   AML batch time: <elapsed>\r");
+    expect(lines).toContain("   Resolve dependencies time: <elapsed>\r");
+    const messages = normalizeOutcome(outcome({ messages: [{ channel: "status", text: "   Resolve dependencies time: 00:00:00" }] })).messages;
+    expect(messages).toEqual(["status:    Resolve dependencies time: <elapsed>"]);
+  });
+
+  it("keeps a time of day that no elapsed label names", () => {
+    expect(normalizeLog("Working directory: /w\r\nStart time: 10:15:23\r\n", new Map())).toContain("Start time: 10:15:23\r");
+  });
+
   it("reads a path below the working directory the same on Windows and POSIX, in the log and in the messages", () => {
     const log = "Working directory: C:\\run\\input\r\nDB updated manifest file path: C:\\run\\input\\manifest.xml\r\n";
     expect(normalizeLog(log, new Map())).toContain("DB updated manifest file path: <working>/manifest.xml\r");
