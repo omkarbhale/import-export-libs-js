@@ -152,6 +152,11 @@ describe("connectFailureHint", () => {
     }
   });
 
+  it("names them for the discovery failure that an unedited server's CORS refusal ends in", () => {
+    const failure = "Failed login to Innovator; original error: <faultstring>Cannot get OAuthServer discovery document.</faultstring>";
+    expect(connectFailureHint(failure)).toMatch(/allowedCorsOrigins.*12 SP9.*SOAP endpoint/);
+  });
+
   it("says nothing when the server answered", () => {
     expect(connectFailureHint("Failed login to Innovator; original error: Authentication failed for admin")).toBeUndefined();
     expect(connectFailureHint("The remote server returned an error: (500) Internal Server Error.")).toBeUndefined();
