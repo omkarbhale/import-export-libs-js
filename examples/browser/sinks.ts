@@ -32,10 +32,10 @@ export function stampedName(prefix: string, extension: string, now: Date = new D
 }
 
 /** Writes the files of an export, by their paths from the working folder, into a picked folder; nothing that is in it is removed (HOST-253). */
-export function writeToFolder(files: ReadonlyMap<string, Uint8Array>, handle: FsaDirectoryHandle): Promise<CommitResult> {
+export function writeToFolder(files: ReadonlyMap<string, Uint8Array>, handle: FsaDirectoryHandle, signal: AbortSignal): Promise<CommitResult> {
   const tree = new MemoryVfs();
   const mount: Record<string, Uint8Array> = {};
   for (const [path, bytes] of files) mount[`/${path}`] = bytes;
   tree.mount(mount);
-  return commitToDirectory(tree, handle);
+  return commitToDirectory(tree, handle, { signal });
 }

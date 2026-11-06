@@ -539,6 +539,51 @@ describe("abort and failure", () => {
     expect(q(".summary").textContent).toContain("cancelled");
   });
 
+  it("stops writing into the picked folder when Abort is pressed, and says what is already there", async () => {
+    const total = 10;
+    let opened = 0;
+    let release = (): void => undefined;
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    class HeldDirectory extends FakeDirectoryHandle {
+      override async getFileHandle(name: string, options?: { create?: boolean }) {
+        opened += 1;
+        await held;
+        return super.getFileHandle(name, options);
+      }
+    }
+    const target = new HeldDirectory("chosen");
+    const files = new Map(Array.from({ length: total }, (_, index) => [`file-${index}.xml`, new Uint8Array([index])] as const));
+    const engine: EngineClient = {
+      connect: async (options) => ({
+        ...(await endingEngine("empty", { exported: 0 }).connect(options)),
+        exportPackages: () =>
+          Promise.resolve<WorkerExportResult>({
+            files,
+            log: "the engine's log",
+            messages: [],
+            summary: { operation: "export", engine: "14.0.7", server: "14.0.9.1", result: "success", returnCode: 0, aborted: false, messages: { info: 0, warnings: 0, errors: 0, packages: 0 }, packages: [] },
+          }),
+      }),
+    };
+    mount({ engine, canPickDirectory: true, pickDirectory: () => Promise.resolve(target) });
+    await connectTo("http://unused.example/x");
+    await userEvent.fill(key("packages", "export"), "some.package");
+    await userEvent.click(key("sink-pick"));
+    await vi.waitFor(() => expect(host?.querySelector(".sink")?.textContent).toContain("chosen"));
+    await userEvent.click(runButton());
+    await vi.waitFor(() => expect(opened).toBeGreaterThan(0));
+    await userEvent.click(q('[data-key="abort"]'));
+    release();
+    await vi.waitFor(() => expect(runButton().disabled).toBe(false));
+
+    expect(failureText()).toBe("");
+    expect(opened).toBeLessThan(total);
+    expect(q(".run-view .status").textContent).toBe(`The export was cancelled while it was being written. ${opened} of ${total} files are in chosen.`);
+    expect(q<HTMLButtonElement>('[data-key="download-log"]').hidden).toBe(false);
+  });
+
   it("saves nothing when an export produced no files, and says so", async () => {
     const files: string[] = [];
     mount({ engine: endingEngine("empty", { exported: 0 }), saveFile: (name) => files.push(name) });

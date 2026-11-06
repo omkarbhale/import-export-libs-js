@@ -1,5 +1,6 @@
 import {
   type ApiMessage,
+  CommitError,
   type FsaDirectoryHandle,
   type WorkerExportResult,
   type WorkerOperationResult,
@@ -477,7 +478,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
   interface Plan {
     execute(session: EngineSession, callbacks: Callbacks): Promise<WorkerOperationResult | WorkerExportResult>;
     /** Hands the result to the person. */
-    deliver(result: WorkerOperationResult | WorkerExportResult): Promise<void>;
+    deliver(result: WorkerOperationResult | WorkerExportResult, signal: AbortSignal): Promise<void>;
   }
   interface Callbacks {
     signal: AbortSignal;
@@ -496,14 +497,19 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
       return {
         execute: (session, callbacks) =>
           session.exportPackages({ ...options, ...(needsSource && source !== undefined ? { source: source.source } : {}), ...(toFolder ? {} : { zip: true }), ...callbacks }),
-        async deliver(result) {
+        async deliver(result, signal) {
           const exported = result as WorkerExportResult;
           if (exported.summary.aborted) {
             // a cancelled export holds only what was written so far; it is not offered, so it cannot be taken for a whole one
             view.say("The export was cancelled. Nothing was saved.");
           } else if (toFolder && sinkHandle !== undefined) {
-            const written = await writeToFolder(exported.files, sinkHandle);
-            view.say(`Wrote ${written.files} files (${sizeText(written.bytes)}) into ${sinkHandle.name}.`);
+            try {
+              const written = await writeToFolder(exported.files, sinkHandle, signal);
+              view.say(`Wrote ${written.files} files (${sizeText(written.bytes)}) into ${sinkHandle.name}.`);
+            } catch (error) {
+              if (!(error instanceof CommitError && error.aborted)) throw error;
+              view.say(`The export was cancelled while it was being written. ${error.written.files} of ${exported.files.size} files are in ${sinkHandle.name}.`);
+            }
           } else if (exported.zip === undefined) {
             view.say("The export produced no files. Nothing was saved.");
           } else {
@@ -571,7 +577,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
         },
         onProgress: (event) => view.progress(event),
       });
-      await plan.deliver(result);
+      await plan.deliver(result, controller.signal);
       view.showSummary(result);
       lastLog = result.log === "" ? undefined : { name: "run-log", text: result.log };
       logButton.hidden = result.log === "";
