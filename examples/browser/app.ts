@@ -496,10 +496,11 @@ export function mountApp(root: HTMLElement, deps: AppDeps = {}): App {
           } else if (toFolder && sinkHandle !== undefined) {
             const written = await writeToFolder(exported.files, sinkHandle);
             view.say(`Wrote ${written.files} files (${sizeText(written.bytes)}) into ${sinkHandle.name}.`);
+          } else if (exported.zip === undefined) {
+            view.say("The export produced no files. Nothing was saved.");
           } else {
-            const bytes = exported.zip ?? new Uint8Array();
-            save(stampedName("export", "zip"), bytes, "application/zip");
-            view.say(`Exported ${exported.files.size} files; the zip is ${sizeText(bytes.length)}.`);
+            save(stampedName("export", "zip"), exported.zip, "application/zip");
+            view.say(`Exported ${exported.files.size} files; the zip is ${sizeText(exported.zip.length)}.`);
           }
         },
       };

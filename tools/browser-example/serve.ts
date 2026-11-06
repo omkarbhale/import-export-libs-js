@@ -34,7 +34,6 @@ const TYPES: Readonly<Record<string, string>> = {
 
 /**
  * What the page is served with: it loads nothing but its own files and talks to any server the person names (HOST-281).
- * `blob:` is for the downloads the page makes, and nothing else.
  */
 export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Content-Security-Policy": "default-src 'self'; connect-src *; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",

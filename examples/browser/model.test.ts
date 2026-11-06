@@ -138,6 +138,11 @@ describe("importOptionsOf and its siblings", () => {
       osUser: "root",
     });
   });
+
+  it("refuses an empty field that has no default, before anything is sent", () => {
+    expect(() => languagePackOptionsOf({ lpPackage: "  " })).toThrow(FormError);
+    expect(() => dbPatchOptionsOf({ manifestPath: "" })).toThrow(FormError);
+  });
 });
 
 describe("connectFailureHint", () => {

@@ -4,9 +4,9 @@ import { ENGINES } from "../../src/engines.js";
 
 /**
  * What the page's controls hold, and the options of the browser API that they make (HOST-280): pure functions, so that a test can
- * pin them under Node. A value that cannot be read (a number that is not a whole number, an item that is not `Type:id`) is a
- * {@link FormError}, which the page shows next to the Run button; every other check belongs to the library (HOST-272), which refuses
- * an option before the first request.
+ * pin them under Node. A value that cannot be read (a number that is not a whole number, an item that is not `Type:id`) or a required
+ * field left empty is a {@link FormError}, which the page shows next to the Run button; every other check belongs to the library
+ * (HOST-272), which refuses an option before the first request.
  *
  * @spec HOST-280 HOST-281
  */
@@ -74,6 +74,13 @@ export function engineOf(values: Values): Engine | "auto" {
   const engine = ENGINES.find((known) => known === text);
   if (engine === undefined) throw new FormError(`the engine is auto, ${ENGINES.join(", ")}, not '${text}'`);
   return engine;
+}
+
+/** The text of a field that has no default. */
+function requiredOf(values: Values, key: string, label: string): string {
+  const text = textOf(values, key);
+  if (text === "") throw new FormError(`${label} is required`);
+  return text;
 }
 
 /** The connection fields and the run options of the page; `password` is read from its field here and nowhere else (HOST-281). */
@@ -178,7 +185,7 @@ export function languagePackOptionsOf(values: Values): Omit<ImportLanguagePackOp
   const lpPath = textOf(values, "lpPath");
   return {
     ...importSettingsOf(values),
-    lpPackage: textOf(values, "lpPackage"),
+    lpPackage: requiredOf(values, "lpPackage", "the package name"),
     ...(lpPath === "" ? {} : { lpPath }),
     ...(flagOf(values, "lpDebug") ? { lpDebug: true } : {}),
     ...commonOf(values),
@@ -190,7 +197,7 @@ export function dbPatchOptionsOf(values: Values): Omit<DbPatchesOptions, "source
   const patchesFolder = textOf(values, "patchesFolder");
   const toolName = textOf(values, "toolName");
   return {
-    manifestPath: textOf(values, "manifestPath"),
+    manifestPath: requiredOf(values, "manifestPath", "the manifest in the package"),
     ...(patchesFolder === "" ? {} : { patchesFolder }),
     ...(toolName === "" ? {} : { toolName }),
     ...commonOf(values),

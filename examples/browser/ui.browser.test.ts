@@ -354,7 +354,7 @@ function waitingEngine(): EngineClient {
 }
 
 /** An engine whose export ends the way `end` says, after it has said something. */
-function endingEngine(end: "cancelled" | "fails", saved: { exported: number }): EngineClient {
+function endingEngine(end: "cancelled" | "fails" | "empty", saved: { exported: number }): EngineClient {
   return {
     connect: () =>
       Promise.resolve({
@@ -366,6 +366,14 @@ function endingEngine(end: "cancelled" | "fails", saved: { exported: number }): 
           saved.exported += 1;
           options.onMessage?.({ source: "engine", channel: "status", level: "info", text: "Item 1 of 2: Permission - a" });
           if (end === "fails") return Promise.reject(new Error("the server refused the item"));
+          if (end === "empty") {
+            return Promise.resolve<WorkerExportResult>({
+              files: new Map(),
+              log: "",
+              messages: [],
+              summary: { operation: "export", engine: "14.0.7", server: "14.0.9.1", result: "success", returnCode: 0, aborted: false, messages: { info: 0, warnings: 0, errors: 0, packages: 0 }, packages: [] },
+            });
+          }
           return Promise.resolve<WorkerExportResult>({
             zip: new Uint8Array([80, 75]),
             files: new Map([["partial.xml", new Uint8Array([1])]]),
@@ -392,6 +400,16 @@ describe("abort and failure", () => {
     expect(files).toEqual([]);
     expect(q(".run-view .status").textContent).toBe("The export was cancelled. Nothing was saved.");
     expect(q(".summary").textContent).toContain("cancelled");
+  });
+
+  it("saves nothing when an export produced no files, and says so", async () => {
+    const files: string[] = [];
+    mount({ engine: endingEngine("empty", { exported: 0 }), saveFile: (name) => files.push(name) });
+    await connectTo("http://unused.example/x");
+    await userEvent.fill(key("packages", "export"), "some.package");
+    await run();
+    expect(files).toEqual([]);
+    expect(q(".run-view .status").textContent).toBe("The export produced no files. Nothing was saved.");
   });
 
   it("offers what the engine said in a run that failed, and keeps the password the person typed when the form was refused", async () => {
