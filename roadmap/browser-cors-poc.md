@@ -289,6 +289,7 @@ Self-signed certificate on the **server**: `fetch` fails in all three browsers w
 - **Embedded in the Aras client (same origin) needs no configuration and no CORS at all**, and it is the route that works on a server nobody is willing to reconfigure. It is also where the captain's "take the session from a signed-in Aras client" option (Q2) applies.
 - The alternative to editing `OAuth.config` is a **same-origin reverse proxy** in front of the Aras server, that serves the page and the Aras paths from one origin. That needs no Aras edit at all and makes the page same-origin. It is deployment work outside the library, so the reference page should document it as the third option and not build it.
 - The reference page (ticket 30) should therefore ship a short "server prerequisites" section, with the XML of section 3, and a "Test connection" step that makes the discovery GET, so a missing entry is reported as CORS and not as a dead server.
+  - Done differently: the page has no "Test connection" step; a failed connect names the prerequisite, and `examples/browser/README.md` holds the section (HOST-281).
 
 Suggested wording for Q1 in `map.md` (not edited by this ticket): "(b) stands. Standalone works against all three server flavours only once the server lists the page's origin in the OAuth server's `allowedCorsOrigins` (and, on 12 SP9, sends CORS headers from the SOAP endpoint); embedded in the Aras client needs nothing. See `roadmap/browser-cors-poc.md`."
 
@@ -296,7 +297,7 @@ Suggested wording for Q1 in `map.md` (not edited by this ticket): "(b) stands. S
 
 - **Ticket 16 (fetch transport):** the five rules of section 5, in particular `credentials: "omit"`, no `Aras-Request-ReadOnly` by default, the reason-phrase table, and a single opaque error class. New host rules to write there (`HOST-23x`): omit credentials, drop forbidden headers, reason phrase from the table, optional read-only hint.
 - **Ticket 26 (wire end to end) and 33 (live parity):** run against leases configured as in section 3; also assert that a write sequence works with no session cookie.
-- **Ticket 30 (reference page):** the prerequisites section and the connection test above.
+- **Ticket 30 (reference page):** the prerequisites section above; there is no connection test (HOST-281).
 - **`spec/wire.md` line 104** names `ASP.NET_SessionId`; R23 and R35 set `Aras.Server.Session`. The engine replays whatever it is given, so no behaviour changes; the sentence could be amended when `spec/` is next touched.
 - Nothing in this result changes the design decisions D1 to D14 or the ticket graph.
 
