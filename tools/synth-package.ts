@@ -100,23 +100,19 @@ export function writeSynthPackage(mb: number, seed: number = DEFAULT_SEED, dir: 
   return info;
 }
 
-/** `npm run synth-package -- [--mb N]... [--seed S] [--out DIR]`: with no `--mb`, every size of the list above. */
+/** `npm run synth-package -- [--mb N]...`: with no `--mb`, every size of the list above. */
 function main(argv: readonly string[]): void {
   const sizes: number[] = [];
-  let seed = DEFAULT_SEED;
-  let out = path.join(repoRoot, SYNTH_DIR);
   for (let i = 0; i < argv.length; i += 1) {
     const flag = argv[i];
     const value = argv[i + 1];
     if (flag === "--mb" && value !== undefined) sizes.push(Number(value));
-    else if (flag === "--seed" && value !== undefined) seed = Number(value);
-    else if (flag === "--out" && value !== undefined) out = path.resolve(value);
-    else throw new Error(`unknown argument '${String(flag)}': use --mb N (repeatable), --seed S, --out DIR`);
+    else throw new Error(`unknown argument '${String(flag)}': use --mb N (repeatable)`);
     i += 1;
   }
   for (const mb of sizes.length === 0 ? SYNTH_SIZES_MB : sizes) {
     const started = Date.now();
-    const info = writeSynthPackage(mb, seed, out);
+    const info = writeSynthPackage(mb);
     console.log(`${info.zip}: ${info.count} items, ${(info.bytes / 1e6).toFixed(1)} MB of item files, ${(info.zipBytes / 1e6).toFixed(1)} MB zipped, ${((Date.now() - started) / 1000).toFixed(1)} s`);
   }
 }

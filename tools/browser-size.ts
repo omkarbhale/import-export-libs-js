@@ -24,10 +24,10 @@ export function requestedSizes(env: NodeJS.ProcessEnv = process.env): number[] {
 const synthDir = (root: string): string => path.join(root, SYNTH_DIR);
 
 /** The route a page fetches a package from; the name is one the generator writes and nothing else. */
-const ROUTE = /^\/__synth__\/(synth-[0-9.]+mb-s\d+-v\d+\.(?:zip|json))$/;
+const ROUTE = /^\/__synth__\/(synth-[0-9.]+mb-s\d+-v\d+\.zip)$/;
 
 /**
- * Serves the files of `.synth/` under `/__synth__/`, to the pages of the project. Only the names the generator writes are served, so
+ * Serves the files of `.synth/` under `/__synth__/`, to the pages of the project. Only the zip names the generator writes are served, so
  * the route reads nothing else of the disk; the file is streamed, so that a large package is not read into the server.
  */
 export function serveSynthPackages(root: string = repoRoot): Plugin {
@@ -43,7 +43,7 @@ export function serveSynthPackages(root: string = repoRoot): Plugin {
           response.end(`${name} is not generated: npm run synth-package -- --mb <size>`);
           return undefined;
         }
-        response.setHeader("Content-Type", name.endsWith(".json") ? "application/json" : "application/zip");
+        response.setHeader("Content-Type", "application/zip");
         response.setHeader("Content-Length", String(statSync(file).size));
         response.setHeader("Cache-Control", "no-store");
         createReadStream(file).pipe(response);
@@ -178,5 +178,3 @@ export const sizeCommands = {
   }) as BrowserCommand<[SizeRow]>,
 };
 
-/** The commands, as the page sees them (for `declare module "vitest/browser"`). */
-export type SizeCommandNames = keyof typeof sizeCommands;

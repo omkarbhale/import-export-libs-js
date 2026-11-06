@@ -53,7 +53,7 @@ describe("HOST-278: the route of the packages", () => {
     mkdirSync(path.join(root, ".synth"), { recursive: true });
     writeFileSync(path.join(root, ".synth", "secret.txt"), "secret");
     const use = route();
-    for (const url of ["/__synth__/secret.txt", "/__synth__/../package.json", "/__synth__/synth-10mb-s1-v1.zip/../x", "/other/synth-10mb-s1-v1.zip", "/__synth__/synth-x-s1-v1.zip"]) {
+    for (const url of ["/__synth__/secret.txt", "/__synth__/../package.json", "/__synth__/synth-10mb-s1-v1.zip/../x", "/other/synth-10mb-s1-v1.zip", "/__synth__/synth-x-s1-v1.zip", "/__synth__/synth-10mb-s1-v1.json"]) {
       let passed = false;
       use({ url }, fake(), () => (passed = true));
       expect(passed, `${url} is not the route's`).toBe(true);

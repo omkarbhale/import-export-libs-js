@@ -1,4 +1,4 @@
-import { FakeTransport, type FakeHandler, bodyText, devServer, header, respond, soapResult } from "../client/fake-transport.js";
+import { FakeTransport, bodyText, devServer, header, respond, soapResult } from "../client/fake-transport.js";
 import type { TransportRequest } from "../client/transport.js";
 import {
   SYNTH_PACKAGE,
@@ -253,4 +253,3 @@ export function synthExportServer(spec: SynthSpec, templates: SynthTemplates, co
   };
 }
 
-export type { FakeHandler };
