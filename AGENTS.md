@@ -9,7 +9,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Step | Command |
 |---|---|
 | Setup | `npm install` (Node ≥ 20.19 for development; the toolchain needs it) |
-| Build | `npm run build` (tsup, to `dist/`) |
+| Build | `npm run build` (tsup, to `dist/`): the Node bundle `dist/index.js` with the CLI's `dist/cli.js`, then the browser bundle `dist/browser.js` and the Worker's `dist/browser-worker.js` (`tsup.browser.config.ts`) |
 | Typecheck | `npm run typecheck` |
 | Test | `npm test` (vitest, the `node` project only, includes the spec coverage test) |
 | Browser test | `npm run test:browser` (vitest browser mode, the projects `browser*`: `browser` has `src/**/*.browser.test.ts`, `examples/**/*.browser.test.ts` and the unit tests listed in `src/browser/pure-tests.json` (regenerate with `npx tsx tools/browser-test-selection.ts --write`; `npm test` fails when it is stale) in headless Chromium, Firefox and WebKit through Playwright, and `browser-webkit-opfs` runs the OPFS adapter test in WebKit in a persistent profile, because Playwright's ordinary WebKit context has no OPFS (HOST-268), and `browser-parity` runs the dry run of the parity script's browser runtime from Node, which starts the browsers itself (HOST-279)). Not part of the gate. Install the browsers once with `npx playwright install chromium firefox webkit` (`--with-deps` on a fresh Linux machine). Installed browsers are reused from the Playwright cache; `PLAYWRIGHT_BROWSERS_PATH` points at another one. A failure names its browser. Fixtures reach a page only through the `fixtures/`-restricted commands of `tools/browser-vitest.ts`, which also choose files in a page's file input and (in Chromium) drop them (HOST-267). To inspect by hand, run `npx vitest watch --project browser` (it serves the runner on its Vite port, 63315 by default) and `chrome-devtools-axi open http://localhost:63315/__vitest_test__/`. |
@@ -17,7 +17,7 @@ Decision records are in `roadmap/`, and the spec is in `spec/` (start with `spec
 | Lint | There is no separate linter. `npm run typecheck` is the static gate. |
 | Source map | `npm run rea-map -- build <engine> --dll <Libs.dll> --host <exe>...` regenerates `.decomp/<engine>/`, `spec/reachable/<engine>.json` and the build in `spec/source-map.json`; `npm run rea-map -- diff <old.dll> <new.dll>` lists the rule ids whose locks break. It needs `rea` 6.4.0, `ilspycmd` 8.2.0.7535 and a .NET 8 SDK; see `tools/rea-map/README.md`. Not part of the gate. |
 | Oracle | `npm run oracle -- --engine <v> <export, import, lpimport or dbpatch> ...` records a scrubbed fixture from the real DLLs on dev or an arashouse lease (WSL with Windows PowerShell 5.1; see `oracle/README.md`). `xsl` records `export.xsl` or `build.xsl` run on given documents, with no server. `npm run oracle -- verify` checks the vendored toolsets. |
-| Parity | `npm run parity -- --engine 14.0.7 [--case <id>,…]` (or `--engine 12.0`) runs the oracle and the port on the same inputs against dev or an arashouse lease and diffs the request AML, output folders, logs, messages and return codes (`oracle/README.md`, "Live parity"). It needs `ARAS_PASSWORD`, touches only `LIBSJS-SCRATCH-*` items and deletes them again, and is not part of the gate. `--list` needs no server. |
+| Parity | `npm run parity -- --engine 14.0.7 [--case <id>,…]` (or `--engine 12.0`) runs the oracle and the port on the same inputs against dev or an arashouse lease and diffs the request AML, output folders, logs, messages and return codes (`oracle/README.md`, "Live parity"). It needs `ARAS_PASSWORD`, touches only `LIBSJS-SCRATCH-*` items and deletes them again, and is not part of the gate. `--list` needs no server. `--runtime browser [--browser chromium|firefox|webkit]` adds the browser build in a headless browser as a third side (`oracle/README.md`, "Live parity in a browser"). |
 
 The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before a PR.
 
@@ -31,6 +31,8 @@ The CI-equivalent gate is `npm run typecheck && npm test`. Both must pass before
 ## Layout
 
 - `src/`: the library and CLI. Tests sit beside the code as `*.test.ts`.
+- `src/host/`: the host seam (`HostFs`, `HostEnv`, the transport), Node's implementation and the in-memory file system `MemoryVfs`.
+- `src/browser/`: the browser host, the `fetch` transport, the adapters, the browser API and its Web Worker, and the browser tests (`*.browser.test.ts`); `src/browser.ts` is the browser entry.
 - `spec/`: rule documents, `bugs.md`, `source-map.json` and its schema, the generated `reachable/<engine>.json` sets, and the coverage test.
 - `tools/rea-map/`: the generator of the decompile, the reachable sets and the method locks.
 - `examples/browser/`: the reference page of the browser build, with its tooling in `tools/browser-example/`.
@@ -46,7 +48,8 @@ A new `Libs.dll` is a fourth engine, and each step is its own PR (one slice, as 
 2. **Diff against the nearest build.** `npm run rea-map -- diff <old Libs.dll> <new Libs.dll>` lists the methods whose locks break, and the rule ids to re-verify. Then `npm run rea-map -- build <v> --dll … --host … [--entry …]` writes `spec/reachable/<v>.json` and adds the build to `spec/source-map.json` as `inProgress` (`tools/rea-map/README.md`). The new methods arrive `unmapped`.
 3. **Write the rules, then the code.** Add a `[<v>]` variant to each rule the diff touches, and a new id (next free in its document's block, `spec/README.md`) for behaviour that is new. A variant that equals another engine's says so. Put `<v>` in `ENGINES` and `ENGINE_ASSEMBLY_VERSIONS` (`src/engines.ts`); the compiler then points at every `Record<Engine, …>` to fill. Code carries `@spec` tags, and the source map gets the symbols (rule 3). Register each reproduced bug (rule 4).
 4. **Record fixtures.** Read the engine's behaviour from the oracle, never from memory: `npm run oracle:export-cases -- --engine <v>`, `oracle:import-cases`, `oracle:lp-cases`, `oracle:dbpatch-cases` and `oracle -- xsl`, as the engine supports them (`oracle/README.md`). Keep scratch rules from "Live Aras". Unit tests replay the fixtures offline.
-5. **Prove it live and complete it.** `npm run parity -- --engine <v>` (needs `ARAS_PASSWORD`) must have no unexplained difference; record the run in `roadmap/live-parity-<v>.md`. Last, add `<v>` to `COMPLETE_ENGINES` and clear `inProgress` in the same PR, so that `npm test` then fails on any unmapped method of the build.
+5. **Run it in the browsers.** Add the engine's recorded cases to `FIXTURE_CASES` (`src/browser/fixture-set.ts`) and the engine to `BROWSER_REPLAY_ENGINES` (`src/browser/replay-engines.ts`), which the browser replays and the parity dry run's import step run. `npm run test:browser` must pass, and `npm run parity -- --engine <v> --runtime browser` must have no unexplained difference (record it in `roadmap/live-parity-browser.md`). Once the engine is in `COMPLETE_ENGINES`, `tools/browser-readiness.test.ts` fails `npm test` without them.
+6. **Prove it live and complete it.** `npm run parity -- --engine <v>` (needs `ARAS_PASSWORD`) must have no unexplained difference; record the run in `roadmap/live-parity-<v>.md`. Last, add `<v>` to `COMPLETE_ENGINES` and clear `inProgress` in the same PR, so that `npm test` then fails on any unmapped method of the build.
 
 ## Rules
 
@@ -57,6 +60,7 @@ A new `Libs.dll` is a fourth engine, and each step is its own PR (one slice, as 
 5. **No decompiled C# is ever committed.** Regenerate it locally into the gitignored `.decomp/<version>/`. The spec may cite a C# member by name, but it never quotes its code. The XSL logic is re-expressed in TypeScript, not copied.
 6. **Fixtures are scrubbed of credentials.** Never commit a password, auth or access token, or password hash, in fixtures or anywhere else. REA method locks and DLL digests are not credentials and belong in `spec/source-map.json` and `spec/reachable/<engine>.json`.
 7. **Interpolated values are reproduced exactly.** Values interpolated into AML are reproduced exactly as each engine does it, unescaped where the engine does not escape. The library documents this; it does not "fix" it.
+8. **Browser-reachable code stays Node-free.** No module that `src/browser.ts` reaches may import `node:*` or use `process` or Node's types; `npm run typecheck` checks its closure with `tsconfig.browser.json`, and `tools/browser-bundle.test.ts` fails when the bundle's graph names a `node:*` module (`roadmap/browser-host.md`, D7). A host difference goes through the seam (`src/host/`) and is a `HOST-2xx` rule of `spec/browser-host.md`, not an engine bug.
 
 ## Live Aras
 

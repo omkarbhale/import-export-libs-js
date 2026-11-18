@@ -12,9 +12,29 @@ The rules take the block `HOST-200` to `HOST-299`. The decisions behind them are
 | `HOST-240` to `HOST-249` | Digest, clock and time zone |
 | `HOST-250` to `HOST-259` | The adapters that mount and commit a package |
 | `HOST-260` to `HOST-269` | The bundle and its entry points |
-| `HOST-270` to `HOST-299` | The facade and the Worker |
+| `HOST-270` to `HOST-276` | The facade and the Worker |
+| `HOST-277` to `HOST-279` | The size budget and the browser's live parity |
+| `HOST-280` to `HOST-282` | The reference page and the README's snippets |
 
-A later ticket defines a rule in the same pull request as the code that cites it (the coverage test fails on a rule that nothing cites), so only the rules of the code that exists appear below.
+The browser map is closed (`roadmap/browser-host.md`): every rule below is cited by the code that implements it, and every rule has a variant for each of the three engines. The free ids of the block are `HOST-204` to `HOST-209`, `HOST-219` to `HOST-229`, `HOST-235` to `HOST-239`, `HOST-244` to `HOST-249`, `HOST-256` to `HOST-259` and `HOST-283` to `HOST-299`; a rule added later takes the next free id of its area and is defined in the same pull request as the code that cites it (the coverage test fails on a rule that nothing cites).
+
+### Where the browser differs from Node
+
+The engine's behaviour is the same on every host. What a browser does differently is what it does not let a page do, and each such difference is a rule of this document, not an engine bug in `spec/bugs.md` (D12 of `roadmap/browser-host.md`). The list, which the README's "How the browser differs from Node" summarises:
+
+| Difference from the Node build | Rule |
+|---|---|
+| The file system is a tree in memory, case-sensitive, without links; a package is mounted into it and the output taken out of it | HOST-215, HOST-250 to HOST-255 |
+| A drive-letter or UNC path of the engine is refused, as on Linux and macOS | HOST-216 |
+| The transport is `fetch`: a redirect is followed, a compressed answer is decompressed, and the connections to one host are capped by the browser | HOST-230 |
+| A failed connection, a refused CORS request, an unresolved name and a TLS failure are one failure class | HOST-231 |
+| The forbidden request headers are left to the browser, and an empty reason phrase is filled in from the status | HOST-232 |
+| The client's cookie jar is inert; no credentials are sent | HOST-233 |
+| The time zone id is the CLDR mapping of the browser's IANA zone, not `tzutil` | HOST-242 |
+| The platform, current folder, temporary folder, user, parallelism, clock (in the browser's steps) and randomness are the browser's | HOST-243 |
+| The audit row's `os_user` defaults to the login name, and a session may take its token from a provider | HOST-270, HOST-271 |
+| A run on the page's thread holds it; the Worker is how a page keeps its thread | HOST-274 to HOST-276 |
+| An import above about 50 MB is warned about, and its memory is about 40 to 70 times the package | HOST-278 |
 
 ## HOST-200: the host seam
 
@@ -112,6 +132,10 @@ What the host answers is the host's own: a value that a caller sets for a run (t
 
 [14.0.7] Two clocks are in use and they are not the same thing. The elapsed time of a step, which the import writes in the log as a `TimeSpan` (IMP-514), is measured on `HostEnv.monotonicNs`, a clock that never goes back and has an arbitrary origin, so that a change of the system time during a run does not change a duration. The date and time that the log, the audit row and the manifest write are the wall clock, `new Date()` (or the run's `now` option), and stay so: they are not taken from the host, and the host has no member for them.
 
+[12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
 ## HOST-260: the browser entry exposes the portable core and the browser host, and no Node API
 
 [14.0.7] The library has three source entry points, and they differ only in the implementations of the host seam (HOST-200) that they add to one shared surface:
@@ -179,6 +203,8 @@ A test in a page cannot read the disk, so the recorded fixtures reach it through
 The `browser` project has one global setup, `tools/browser-wire-setup.ts`, which starts the HTTP test server of the wire tests once for a run and provides its origin to the pages (HOST-234).
 
 The rule is held by `src/browser/smoke.browser.test.ts` (the bundle's imports, the host, the digests and the XML core and an item-file save, in each browser), by `tools/browser-vitest.test.ts` (the path restriction and the replaced module) and by `src/browser/fixture-set.test.ts`.
+
+**Every complete engine runs in the browsers.** An engine in `COMPLETE_ENGINES` (`src/engines.ts`) has, in `fixture-set.ts`, at least one recorded run of each operation it has recordings of under `fixtures/<engine>/` (export and import always; language pack and DB patch where the engine has them), and is in `BROWSER_REPLAY_ENGINES` (`src/browser/replay-engines.ts`), from which the export replay (HOST-265), the import replay (HOST-266) and the import step of the parity script's browser dry run (HOST-279) take their engines. `tools/browser-readiness.test.ts` checks this in `npm test`, so a fourth engine cannot be completed without its browser replays; it checks that constant and the curated set, and does not run the replays.
 
 [12.0] Same as 14.0.7.
 
@@ -799,5 +825,15 @@ The library draws no control (Q4); this page is a caller of it, and the part of 
 - Taking the session from a signed-in Aras client (Q2) is the embedding page's decision and is not on this page: the page has no token field and reads no cookie, which is what HOST-271 leaves to the caller.
 
 [12.0] Same as 14.0.7.
+
+[14.35] Same as 14.0.7.
+
+## HOST-282: the README's browser snippets run as they are written
+
+[14.0.7] Every `ts` block of the `## Browser` section of `README.md` is code a browser test runs, so that the README cannot fall behind the library. `src/browser/readme-snippets.ts` takes the blocks out of the README's text: a block's `import` lines may name only the package's browser entry (`import-export-libs-js/browser`, or `import-export-libs-js`), in the form `import { a, b } from "…";`, and any other import is refused; its other lines are its body, plain JavaScript (a type annotation would not run). `runSnippet` runs the body in an async function whose parameters are the names the block imports, taken from the bundle's entry (a name the entry does not export is an error that gives the README's line), and the inputs the caller gives; the one line it adds is a `return` of the constants the block declares at its top level, so that the test can look at what the block made.
+
+`src/browser/readme.browser.test.ts` runs each block in Chromium, Firefox and WebKit. The README reaches the page through the command `readmeText` (`tools/browser-vitest.ts`), which reads that one file. Each block gets a server of the HTTP test server (HOST-234) in another origin, a synthetic one (HOST-278; the scenario `synth` of `wire-spec.ts`) because a block names no recorded case: an import is answered yes for every item, and an export is served six synthetic items under the package name the README's export blocks use. The block's inputs are the server's address, the test's login (`admin`, a test password), and for an import a `File` holding the zip of a small synthetic package (HOST-277); `connect` is the entry's, with its default transport, the browser's `fetch` (HOST-230). One library name is given in place of the entry's: `createEngineWorker` starts its Worker from the text of the shipped bundle (as `worker.browser.test.ts` does), because a test page does not serve `dist/browser-worker.js` beside the module that asks for it. A block passes when its run's summary says success, the server saw the login, the items and the logoff, and an export's zip and files are not empty. A block the test does not know how to run fails it, so a new block comes with its run. `src/browser/readme-snippets.test.ts` (Node) holds the extraction, the refusals and the runner, and that every name the README's blocks import is an export of the browser entry.
+
+[12.0] Same as 14.0.7: the blocks run against a 14.0.7 server, and the engine follows the server (HOST-270).
 
 [14.35] Same as 14.0.7.

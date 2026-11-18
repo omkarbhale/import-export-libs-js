@@ -11,6 +11,7 @@ import { pathGetRandomFileName, pathGetTempPath } from "../io/temp-path.js";
 import { exceptionText } from "../language-pack/exception-text.js";
 import { RANDOM, comparable as lpLog, recordedConsole as lpConsole } from "../language-pack/replay-support.js";
 import { FIXTURE_CASES, type FixtureCase, fixtureCasePath } from "./fixture-set.js";
+import { BROWSER_REPLAY_ENGINES } from "./replay-engines.js";
 import {
   type FixtureFile,
   assertTreeMatchesFiles,
@@ -46,7 +47,7 @@ const importCases = operationOf("import");
 const importSteps = new Map<FixtureCase, Step[]>();
 for (const fixture of importCases) importSteps.set(fixture, await stepsOfCase(fixture));
 
-for (const engine of ["12.0", "14.0.7", "14.35"] as const) {
+for (const engine of BROWSER_REPLAY_ENGINES) {
   const cases = importCases.filter((fixture) => fixture.engine === engine);
   describe(`HOST-266: the recorded ${engine} import runs, in the browser (IMP-400 to IMP-471)`, () => {
     // the steps of a case run one after the other on one tree: each leaves its log in the tree, and the next must leave it alone

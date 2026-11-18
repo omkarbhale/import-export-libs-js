@@ -1,4 +1,4 @@
-import { FakeTransport, bodyText, devServer, header, respond, soapResult } from "../client/fake-transport.js";
+import { type DevServerOptions, type FakeHandler, FakeTransport, bodyText, devServer, header, respond, soapResult } from "../client/fake-transport.js";
 import type { TransportRequest } from "../client/transport.js";
 import {
   SYNTH_PACKAGE,
@@ -32,6 +32,12 @@ function notFound(type: string, body: string): ReturnType<typeof respond> {
     ),
   );
 }
+
+/**
+ * What a caller may set of the fake server's login: `base`, the address its OAuth discovery names, which the HTTP test server sets to
+ * the scenario's own (HOST-282). The version is always the one below.
+ */
+export type SynthServerOptions = Pick<DevServerOptions, "base">;
 
 /** The login, version and user answers of every server here: the versions of the engine's default build, 14.0.7 (35492). */
 const VARIABLES = { VersionMajor: "14", VersionMinor: "0", VersionServicePack: "SP7", VersionBuild: "35492", VersionServiceUpdate: "0" };
@@ -67,11 +73,12 @@ function existingDefinition(): string {
   return `<Item type="PackageDefinition" typeId="${itemTypeId("PackageDefinition")}" id="${id}"><generation>1</generation><id keyed_name="com.example.existing" type="PackageDefinition">${id}</id><name>com.example.existing</name></Item>`;
 }
 
-export function synthImportServer(): { transport: FakeTransport; readonly requests: number; readonly adds: number } {
+export function synthImportServer(options: SynthServerOptions = {}): { transport: FakeTransport; readonly handler: FakeHandler; readonly requests: number; readonly adds: number } {
   let added = 0;
   let upgradeId: string | undefined;
   let generated = 0;
   const base = devServer({
+    ...options,
     variables: VARIABLES,
     override: (request: TransportRequest) => {
       if (header(request, "SOAPAction") !== "ApplyItem") return undefined;
@@ -122,6 +129,7 @@ export function synthImportServer(): { transport: FakeTransport; readonly reques
   const transport = new FakeTransport(base);
   return {
     transport,
+    handler: base,
     get requests() {
       return transport.requests.length;
     },
@@ -160,6 +168,8 @@ export function serverForm(kind: SynthKind, info: SynthItemInfo, fileText: strin
 /** The export's view of a synthetic package: its items, in the order the package lists them. */
 export interface SynthExport {
   transport: FakeTransport;
+  /** The handler behind `transport`, for a server that frames it in HTTP (`test-server.ts`). */
+  handler: FakeHandler;
   /** The package's name on the server. */
   readonly packageName: string;
   readonly requests: number;
@@ -170,11 +180,12 @@ export interface SynthExport {
 }
 
 /**
- * The server of an export of the first `count` items of a synthetic package. It answers the package listing with every item as a
- * package element, each `get` of an item with the item, and the engine's other questions (the type's versionability, its
+ * The server of an export of the first `count` items of a synthetic package, named `packageName` (default `SYNTH_PACKAGE`). It
+ * answers the package listing with every item as a package element, each `get` of an item with the item, and the engine's other questions (the type's versionability, its
  * properties, its permissions) with a bare yes.
  */
-export function synthExportServer(spec: SynthSpec, templates: SynthTemplates, count: number): SynthExport {
+export function synthExportServer(spec: SynthSpec, templates: SynthTemplates, count: number, options: SynthServerOptions & { packageName?: string } = {}): SynthExport {
+  const { packageName = SYNTH_PACKAGE, ...server } = options;
   const packageId = synthId(spec.seed, 0xfffffff, 9);
   const byId = new Map<string, SynthItemInfo>();
   const infos: SynthItemInfo[] = [];
@@ -200,9 +211,10 @@ export function synthExportServer(spec: SynthSpec, templates: SynthTemplates, co
     return elements;
   };
   const definition = (): string =>
-    `<Item type="PackageDefinition" typeId="${itemTypeId("PackageDefinition")}" id="${packageId}"><generation>1</generation><id keyed_name="${SYNTH_PACKAGE}" type="PackageDefinition">${packageId}</id><name>${SYNTH_PACKAGE}</name></Item>`;
+    `<Item type="PackageDefinition" typeId="${itemTypeId("PackageDefinition")}" id="${packageId}"><generation>1</generation><id keyed_name="${packageName}" type="PackageDefinition">${packageId}</id><name>${packageName}</name></Item>`;
   let served = 0;
   const base = devServer({
+    ...server,
     variables: VARIABLES,
     override: (request: TransportRequest) => {
       if (header(request, "SOAPAction") !== "ApplyItem") return undefined;
@@ -242,7 +254,8 @@ export function synthExportServer(spec: SynthSpec, templates: SynthTemplates, co
   const transport = new FakeTransport(base);
   return {
     transport,
-    packageName: SYNTH_PACKAGE,
+    handler: base,
+    packageName,
     get requests() {
       return transport.requests.length;
     },

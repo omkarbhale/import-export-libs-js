@@ -10,7 +10,7 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 | [round-4.md](round-4.md) | The 14.35 additions, 14.35's parallel export, build order |
 | [round-5.md](round-5.md) | The confirmed shared understanding, with the captain's corrections |
 
-[`browser-host.md`](browser-host.md) is the decision record for running the library in a browser (D1 to D14, the captain's answers of 2026-11-02, the one POC and the standing acceptance of its tickets). Its rules are `HOST-200` to `HOST-299` in [`spec/browser-host.md`](../spec/browser-host.md).
+[`browser-host.md`](browser-host.md) is the decision record for running the library in a browser (D1 to D14, the captain's answers of 2026-11-02, the one POC, the standing acceptance of its tickets, and what changed during the work up to the map's close). Its rules are `HOST-200` to `HOST-299` in [`spec/browser-host.md`](../spec/browser-host.md). The browser map's other records are the POC ([`browser-cors-poc.md`](browser-cors-poc.md)), the wire tests ([`browser-wire-tests.md`](browser-wire-tests.md)), the adapters ([`browser-adapter-tests.md`](browser-adapter-tests.md)), the limits ([`browser-limits.md`](browser-limits.md)) and the live parity ([`live-parity-browser.md`](live-parity-browser.md)), each described below.
 
 [`lock-diff-12.0.md`](lock-diff-12.0.md) accounts for the REA lock diff between the 12.0 and 14.0.7 builds (wayfinder ticket 46).
 
@@ -31,6 +31,8 @@ Decision records for import-export-libs-js. They were settled in five rounds of 
 [`readiness.md`](readiness.md) is the state when the map ended (wayfinder ticket 65): the final three-engine parity run, what the readiness sweep fixed, and every gap still open with its reason.
 
 [`browser-cors-poc.md`](browser-cors-poc.md) records the browser wayfinder's one POC (ticket 15): what a real Aras server (12 SP9, R23, R35) answers a cross-origin page in Chromium, Firefox and WebKit, the server configuration that makes it work, and what the fetch transport must do about credentials, cookies and `statusText`.
+
+[`browser-wire-tests.md`](browser-wire-tests.md) records the browser's wire against a real HTTP server in another origin (ticket 26, HOST-269): the login of each server shape, an export, the failures, and the 12.0 discovery header that made a browser refuse the login.
 
 [`browser-adapter-tests.md`](browser-adapter-tests.md) records what the zip, directory-handle and file-input adapters do in the real browsers (ticket 27): the result per adapter and browser, why WebKit's origin private file system is tested in a persistent profile, and what a page cannot make (a folder in a `DataTransfer`).
 

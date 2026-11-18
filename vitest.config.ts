@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 import { configDefaults, defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
-import { fixtureCommands, adapterCommands, replaceDefaultHostForVite, workerCommands } from "./tools/browser-vitest.js";
+import { fixtureCommands, adapterCommands, readmeCommands, replaceDefaultHostForVite, workerCommands } from "./tools/browser-vitest.js";
 import { readSelectionFile } from "./tools/browser-test-selection.js";
 import { serveSynthPackages, sizeCommands } from "./tools/browser-size.js";
 import { replayCommands } from "./tools/browser-example/replay-commands.js";
@@ -43,7 +43,7 @@ function browserProject(name: string, instances: Instance[], provider: ReturnTyp
         provider,
         headless: true,
         instances,
-        commands: { ...fixtureCommands, ...workerCommands, ...adapterCommands, ...commands, ...replayCommands },
+        commands: { ...fixtureCommands, ...workerCommands, ...readmeCommands, ...adapterCommands, ...commands, ...replayCommands },
       },
     },
   };
