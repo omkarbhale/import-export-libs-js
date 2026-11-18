@@ -48,6 +48,24 @@ export interface ParityEnv {
   log: (line: string) => void;
   /** The browser as a third runtime (`--runtime browser`, HOST-279): each step also runs in a page, and is compared with both of the others. */
   browser?: BrowserRuntime;
+  /** Where the seconds each port spent running the engine add up; the page's includes the crossing of its files and results. */
+  timing?: SideSeconds;
+}
+
+/** The seconds the Node port and the browser spent on the engine's runs (not the oracle's, the cleanups or the comparison). */
+export interface SideSeconds {
+  node: number;
+  browser: number;
+}
+
+/** Runs one side's engine run and adds its time to `env.timing`, also when it fails. */
+export async function timed<T>(env: Pick<ParityEnv, "timing">, side: keyof SideSeconds, run: () => Promise<T>): Promise<T> {
+  const started = performance.now();
+  try {
+    return await run();
+  } finally {
+    if (env.timing !== undefined) env.timing[side] += (performance.now() - started) / 1000;
+  }
 }
 
 /** One compared run: an export, one import step, or one language-pack import. */
@@ -76,6 +94,8 @@ export interface CaseReport {
   created: ItemRef[];
   deleted: ItemRef[];
   seconds: number;
+  /** With the browser runtime: what the engine's runs of this case took on each side. A seed group's cases share one count, on its first case. */
+  sideSeconds?: SideSeconds;
 }
 
 const describeEnd = (outcome: RunOutcome): string =>
@@ -244,14 +264,15 @@ export async function runExportCase(env: ParityEnv, c: Pick<ExportCase, "id" | "
   const options = c.options ?? {};
   const { out } = await oracleRun(env, label, { command: "export", params: { Items: hostItems(c.packages), ...exportHostOptions(options) } });
   const oracle = readOracleOutcome(out, { filesFrom: "output" });
-  const port = await runPortExport(env.port, { selection: selectionOf(c.packages), options });
+  const port = await timed(env, "node", () => runPortExport(env.port, { selection: selectionOf(c.packages), options }));
   writePortRun(join(env.out, label, "port"), port);
   // 14.35 exports the items of a package in parallel: its runs agree in the parts EXP-558 names
   const same = (left: RunOutcome, right: RunOutcome): Difference[] =>
     env.engine === "14.35" ? diffExportRuns1435(left, right, { packages: c.packages, options }) : diffOutcomes(left, right);
   const step = env.engine === "14.35" ? report(label, oracle, port, same(oracle, port)) : compare(label, oracle, port);
   if (env.browser === undefined) return step;
-  const browser = await runBrowserExport(env.browser, env.port, { options, packages: c.packages });
+  const page = env.browser;
+  const browser = await timed(env, "browser", () => runBrowserExport(page, env.port, { options, packages: c.packages }));
   writePortRun(join(env.out, label, "browser"), browser.outcome);
   return withBrowser(step, oracle, port, browser, same);
 }
@@ -367,11 +388,13 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
       writePackages(input, step.packages);
       let run;
       try {
-        run = await runPortImport(
-          env.port,
-          { inputDir: input, options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
-          osUserOf(oracleSteps[i]!.calls),
-          join(dir, "work"),
+        run = await timed(env, "node", () =>
+          runPortImport(
+            env.port,
+            { inputDir: input, options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
+            osUserOf(oracleSteps[i]!.calls),
+            join(dir, "work"),
+          ),
         );
       } finally {
         rmSync(root, { recursive: true, force: true });
@@ -408,11 +431,14 @@ export async function runImportCase(env: ParityEnv, c: ImportCase): Promise<Case
         let run;
         try {
           writePackages(root, step.packages);
-          run = await runBrowserImport(
-            env.browser,
-            env.port,
-            { inputDir: root, treeDir: browserInputDir(env.engine), options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
-            osUserOf(oracleSteps[i]!.calls),
+          const page = env.browser;
+          run = await timed(env, "browser", () =>
+            runBrowserImport(
+              page,
+              env.port,
+              { inputDir: root, treeDir: browserInputDir(env.engine), options: step.options ?? {}, ...(step.only === undefined ? {} : { only: step.only }) },
+              osUserOf(oracleSteps[i]!.calls),
+            ),
           );
         } finally {
           rmSync(root, { recursive: true, force: true });
@@ -540,7 +566,7 @@ export async function runLanguagePackCase(env: ParityEnv, c: LpCase): Promise<Ca
     throw new DevNotClean(`the oracle's cleanup of ${c.id} left items behind`, [...(report?.kept ?? []).map((k) => `${k.type}:${k.id}`), ...(report?.unverified ?? []).map((u) => `${u.type}:${u.id}`)]);
   }
   const dir = join(env.out, c.id, "port");
-  const run = await runPortLanguagePack(env.port, { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true, ...(c.languages === undefined ? {} : { languages: c.languages }) }, osUserOf(oracle.calls), join(dir, "work"));
+  const run = await timed(env, "node", () => runPortLanguagePack(env.port, { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true, ...(c.languages === undefined ? {} : { languages: c.languages }) }, osUserOf(oracle.calls), join(dir, "work")));
   let portDeleted: ItemRef[] = [];
   try {
     writePortRun(dir, run.outcome);
@@ -553,11 +579,14 @@ export async function runLanguagePackCase(env: ParityEnv, c: LpCase): Promise<Ca
   if (env.browser !== undefined) {
     const browserDir = join(env.out, c.id, "browser");
     try {
-      const browser = await runBrowserLanguagePack(
-        env.browser,
-        env.port,
-        { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true, ...(c.languages === undefined ? {} : { languages: c.languages }) },
-        osUserOf(oracle.calls),
+      const page = env.browser;
+      const browser = await timed(env, "browser", () =>
+        runBrowserLanguagePack(
+          page,
+          env.port,
+          { lpDir: pack, lpPackage: c.lpPackage ?? LP_PACKAGE, lpDebug: c.lpDebug === true, ...(c.languages === undefined ? {} : { languages: c.languages }) },
+          osUserOf(oracle.calls),
+        ),
       );
       browserCreated = browser.created;
       writePortRun(browserDir, browser.outcome);
@@ -628,7 +657,7 @@ export async function runDbPatchCase(env: ParityEnv, c: DbPatchCase): Promise<Ca
   try {
     for (const [i, step] of c.steps.entries()) {
       const dir = join(env.out, c.id, `step-${i + 1}`, "port");
-      const run = await runPortDbPatch(as(step.user).port, { preconditions: i === 0 }, osUserOf(oracleSteps[i]!.calls), join(dir, "work"));
+      const run = await timed(env, "node", () => runPortDbPatch(as(step.user).port, { preconditions: i === 0 }, osUserOf(oracleSteps[i]!.calls), join(dir, "work")));
       portCreated.push(...refs(run.created));
       writePortRun(dir, run.outcome);
       portSteps.push(run.outcome);
@@ -653,7 +682,8 @@ export async function runDbPatchCase(env: ParityEnv, c: DbPatchCase): Promise<Ca
       for (const [i, step] of c.steps.entries()) {
         const dir = join(env.out, c.id, `step-${i + 1}`, "browser");
         if (i === 0) await assertPatchAbsent(as(step.user).port);
-        const run = await runBrowserDbPatch(env.browser, as(step.user).port, osUserOf(oracleSteps[i]!.calls));
+        const page = env.browser;
+        const run = await timed(env, "browser", () => runBrowserDbPatch(page, as(step.user).port, osUserOf(oracleSteps[i]!.calls)));
         browserCreated.push(...refs(dbPatchCreated(run.outcome.calls)));
         writePortRun(dir, run.outcome);
         browserSteps.push(run.outcome);
@@ -749,24 +779,29 @@ export async function runConsoleModeCase(env: ParityEnv, c: ConsoleModeCase): Pr
     });
     const oracle = readOracleOutcome(out, { filesFrom: "output" });
     const manifestPath = join(input, "imports.mf");
-    const port = await runPortExport(env.port, {
-      options: { level: "1", refToUnknownPacks: "DoNotRemove", ...(c.mode === "use-import" ? { useImport: true } : {}) },
-      ...(reads ? { manifestFile: manifestPath } : {}),
-      selection: async (_helper, context, manager): Promise<SelectionTable> => {
-        if (c.mode === "use-import") return useImportTable(manifestPath, { engine: env.engine, logFilePath: context.logFilePath });
-        if (c.mode === "from-manifest") return fromManifestTable(manager, manifestPath, false);
-        return allPackagesTable(manager);
-      },
-    });
+    const port = await timed(env, "node", () =>
+      runPortExport(env.port, {
+        options: { level: "1", refToUnknownPacks: "DoNotRemove", ...(c.mode === "use-import" ? { useImport: true } : {}) },
+        ...(reads ? { manifestFile: manifestPath } : {}),
+        selection: async (_helper, context, manager): Promise<SelectionTable> => {
+          if (c.mode === "use-import") return useImportTable(manifestPath, { engine: env.engine, logFilePath: context.logFilePath });
+          if (c.mode === "from-manifest") return fromManifestTable(manager, manifestPath, false);
+          return allPackagesTable(manager);
+        },
+      }),
+    );
     writePortRun(join(env.out, c.id, "port"), port);
     const same = (left: RunOutcome, right: RunOutcome): Difference[] =>
       env.engine === "14.35" ? diffExportRuns1435(left, right, { packages: [], options: {}, racing: true }) : diffOutcomes(left, right);
     step = env.engine === "14.35" ? report(c.id, oracle, port, same(oracle, port)) : compare(c.id, oracle, port);
     if (env.browser !== undefined) {
-      const browser = await runBrowserExport(env.browser, env.port, {
-        options: { level: "1", refToUnknownPacks: "DoNotRemove", ...(c.mode === "use-import" ? { useImport: true } : {}) },
-        console: { mode: c.mode, ...(reads ? { manifestDir: input } : {}) },
-      });
+      const page = env.browser;
+      const browser = await timed(env, "browser", () =>
+        runBrowserExport(page, env.port, {
+          options: { level: "1", refToUnknownPacks: "DoNotRemove", ...(c.mode === "use-import" ? { useImport: true } : {}) },
+          console: { mode: c.mode, ...(reads ? { manifestDir: input } : {}) },
+        }),
+      );
       writePortRun(join(env.out, c.id, "browser"), browser.outcome);
       step = withBrowser(step, oracle, port, browser, same);
     }

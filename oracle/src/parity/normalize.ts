@@ -59,8 +59,12 @@ export function replaceIds(text: string, assigned: ReadonlyMap<string, string>):
   return text.replace(ID, (id) => assigned.get(id.toUpperCase()) ?? id);
 }
 
-/** The elapsed times 14.35's AML batch mode logs and sends (`AML batch time: 00:00:00.0237003`): a duration is never the same twice. */
-const ELAPSED = /\b\d\d:\d\d:\d\d\.\d{7}\b/g;
+/**
+ * The elapsed times 14.35's AML batch mode logs and sends (`AML batch time: 00:00:00.0237003`): a duration is never the same twice. A
+ * whole number of seconds has no fraction (IMP-514), which only a browser's coarse clock reaches in practice (HOST-243), so without a
+ * fraction a time counts only after the two labels of the batch mode.
+ */
+const ELAPSED = /\b\d\d:\d\d:\d\d\.\d{7}\b|(?<=\b(?:AML batch|Resolve dependencies) time: )\d\d:\d\d:\d\d\b/g;
 
 /** The date-times of a log: invariant (`MM/dd/yyyy`) and en-IN (`dd-MM-yyyy`), as 14.0.7 and 12.0 write them, and the ISO ones of the items a server answers with (`created_on`). */
 const CLOCK = /\d\d[/-]\d\d[/-]\d{4} \d\d:\d\d:\d\d|\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d/g;
