@@ -1,12 +1,50 @@
 # import-export-libs-js
 
-A readable TypeScript re-implementation of Aras Innovator's package import/export engine (`Libs.dll`, `Aras.Tools.SolutionUpgrade`). It runs on any OS with Node ≥ 20, with no .NET, PowerShell or Aras DLLs.
+[![CI](https://github.com/omkarbhale/import-export-libs-js/actions/workflows/ci.yml/badge.svg)](https://github.com/omkarbhale/import-export-libs-js/actions/workflows/ci.yml)
 
-It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341), **14.0.7** (14.0.7.35492, the default) and **14.35** (14.35.0.43890).
+**Aras Innovator's package import/export engine, re-implemented in TypeScript, for Node and the browser.**
 
-**Status: complete.** All three engines are built and complete in `spec/source-map.json` (every reachable method of each build is mapped or held), and each has live parity on the dev instance (`roadmap/live-parity-*.md`, summed up in `roadmap/readiness.md`) and on an arashouse lease of its own server version (`roadmap/live-parity-*-on-leases.md`). The pieces that are deliberately out of scope are in `roadmap/hold/`, and the gaps still open are listed in `roadmap/readiness.md`.
+`import-export-libs-js` is a readable re-implementation of Aras's `Libs.dll` and `Aras.Tools.SolutionUpgrade`, written from a behavioural spec. It exports and imports Aras packages, imports language packs and applies database patches, from a command line tool (`aras-pkg`) or a library. It runs on any OS with Node ≥ 20, or in a web page, with no .NET, PowerShell or Aras DLLs.
 
-| | 12.0 | 14.0.7 (default) | 14.35 |
+It reproduces three builds of the real engine exactly, bugs included, and each one has been compared with the original DLL on a live server.
+
+## Contents
+
+- [Features](#features)
+- [Supported Aras versions](#supported-aras-versions)
+- [Install](#install)
+- [Quick start](#quick-start)
+- [Command line](#command-line)
+- [Library](#library)
+- [Browser](#browser)
+- [Verify against the real engine](#verify-against-the-real-engine)
+- [Documentation](#documentation)
+- [Development](#development)
+- [Licence](#licence)
+
+## Features
+
+- **Export** items or whole packages into a folder with an `imports.mf`, including the console tool's three modes (`--use-import`, `--from-manifest`, `--all-packages`).
+- **Import** the packages of a manifest in dependency order, or **plan** an import offline: the order, the item sequence and every item the engine silently drops.
+- **Language packs**: import an `ImportConfig.xml` language pack as a package.
+- **DB patches**: apply the database update patches an updates manifest lists.
+- **Faithful to the engine**: the AML requests, output files, logs, messages and return codes are the engine's own, bugs included, and each reproduced bug is registered in [`spec/bugs.md`](spec/bugs.md).
+- **Runs in the browser**: the same four operations in Chromium, Firefox and WebKit, with progress events, `AbortSignal` cancellation, a Web Worker wrapper and adapters for zips, folders, drops and directory handles.
+- **Traceable**: every unit that implements a rule carries an `@spec <RULE-ID>` tag, and every reachable method of each engine build is mapped to rules and code in [`spec/source-map.json`](spec/source-map.json).
+
+## Supported Aras versions
+
+Each engine is a separate build of Aras's `Libs.dll`. Choose one with `--engine` (or `ARAS_PKG_ENGINE`); the default is **14.0.7**. The same command on two engines can produce different output, because the library reproduces each build's behaviour.
+
+| Engine | `Libs.dll` build | Server majors it accepts | Live parity run against |
+|---|---|---|---|
+| `12.0` | 12.0.0.13341 | 10 to 12 | 12.0 SP9 |
+| `14.0.7` (default) | 14.0.7.35492 | 12 to 14 | 12.0 SP9, Release 23 (server 14.0.9) |
+| `14.35` | 14.35.0.43890 | 12 to 14 | 12.0 SP9, Release 35 (server 14.35) |
+
+After login, an engine probes the server's version and refuses one outside its window, naming the engines that fit; `--skip-version-check` runs it anyway ([`spec/wire.md`](spec/wire.md)).
+
+| Operation | 12.0 | 14.0.7 | 14.35 |
 |---|---|---|---|
 | Export, console export modes | yes | yes | yes (items of a package in parallel) |
 | Import, offline `plan import` | yes | yes | yes, with `--batch`, `--collect-errors` and `--languages` |
@@ -14,19 +52,50 @@ It reproduces three engine builds exactly, bugs included: **12.0** (12.0.0.13341
 | Language-resource export (`export --language-resources`) | no | no | yes |
 | DB patch application | no | no | yes (`apply-db-patches`, login `root`) |
 
-An engine is chosen with `--engine`. Each one is a separate build of Aras's `Libs.dll`, and the library reproduces its behaviour, bugs included (`spec/bugs.md`). The same command on two engines can produce different output.
+**Status: complete.** All three engines are complete in `spec/source-map.json` (every reachable method of each build is mapped or held) and have live parity with the real engine, on the dev instance ([`roadmap/live-parity-*.md`](roadmap/), summed up in [`roadmap/readiness.md`](roadmap/readiness.md)) and on a disposable instance of their own server version ([`roadmap/live-parity-*-on-leases.md`](roadmap/)). What is deliberately out of scope is in [`roadmap/hold/`](roadmap/hold/), and the gaps still open are listed in `roadmap/readiness.md`.
 
 ## Install
 
-The repo is private, so install it from git:
+Requires Node ≥ 20. The repository is private, so install it from git; the package builds itself on install (`prepare`):
 
 ```sh
 npm install git+ssh://git@github.com/omkarbhale/import-export-libs-js.git
 ```
 
-## CLI
+This gives the `aras-pkg` command (alias `import-export-libs-js`), the Node library `import-export-libs-js` and the browser entry `import-export-libs-js/browser`.
 
-`import-export-libs-js`, alias `aras-pkg`. Run `aras-pkg <command> --help` for every option.
+## Quick start
+
+### With the CLI
+
+```sh
+export ARAS_URL=http://aras.example/InnovatorServer ARAS_DATABASE=InnovatorSolutions ARAS_USER=admin
+
+# Export two packages into ./out
+ARAS_PASSWORD=… aras-pkg export ./out --package "My Package" --package "Other Package"
+
+# See, offline, what an import will do
+aras-pkg plan import ./out/imports.mf
+
+# Import them, reading the password from standard input, and print the summary as JSON
+echo "$PASSWORD" | aras-pkg import ./out/imports.mf --password-stdin --release R1 --json
+```
+
+Run `aras-pkg --help` for the commands and `aras-pkg <command> --help` for every option of one.
+
+### In a browser
+
+From a clone of this repository:
+
+```sh
+npm run example:browser   # builds the reference page and serves it on http://127.0.0.1:8080/
+```
+
+[`examples/browser/`](examples/browser/README.md) is a static page that runs all four operations. To call the library from your own page, start with the snippets in [Browser](#export-and-import), and see [Server configuration (CORS)](#server-configuration-cors) for the two edits an Aras server needs before a page on another origin can log in.
+
+## Command line
+
+`aras-pkg`, alias `import-export-libs-js`.
 
 | Command | What it does |
 |---|---|
@@ -36,24 +105,34 @@ npm install git+ssh://git@github.com/omkarbhale/import-export-libs-js.git
 | `aras-pkg import-language-pack <lppath> --lp-package <name>` | Imports a language pack (`ImportConfig.xml`) as a package. `--lp-debug` keeps the temporary package on disk. Not on `--engine 12.0`. |
 | `aras-pkg apply-db-patches <manifest> [--patches-folder <dir>] [--tool-name <text>]` | Applies the database update patches an updates manifest lists, through the server's `ApplyUpdate` action. Only `--engine 14.35`, and only the login `root`: both are refused before anything is sent. Exit `1` when any patch was refused. |
 
-```sh
-export ARAS_URL=http://aras.example/InnovatorServer ARAS_DATABASE=InnovatorSolutions ARAS_USER=admin
-echo "$PASSWORD" | aras-pkg import ./imports.mf --password-stdin --release R1 --json
-```
+### Options
 
 - **Engine.** `--engine 12.0|14.0.7|14.35`, or `ARAS_PKG_ENGINE`; the default is 14.0.7. The engine used is in the log header and the summary.
 - **Connection and credentials.** `--url`, `--database`, `--user` (or `ARAS_URL`, `ARAS_DATABASE`, `ARAS_USER`; a flag wins). The password comes from `ARAS_PASSWORD`, or from standard input with `--password-stdin`; there is no flag for it, and it is never written to the log, the summary or any file. `apply-db-patches` accepts the login `root` only. `--time-zone` sets the Windows time zone id sent as `TIMEZONE_NAME` for a machine whose zone has no mapping.
-- **Export options.** `--level`, `--export-referenced`, `--unknown-references remove-silently|remove-with-warning|do-not-remove` (default `do-not-remove`) `--on-item-error continue|abort-package`, and, with `--engine 14.35`, `--parallelism <n>` (items of a package exported at once; default one per logical processor) and the language-resource export: `--language-resources only|with-metadata` with `--languages <codes|*>` (`only` writes just the translations of the listed languages, `with-metadata` the whole item with them; the list must include `en` unless it starts with `*`, and each code must be installed). The output folder is used as the engine uses it: it need not exist or be empty, and the engine deletes the subfolder of each package it exports before writing it.
-- **Options.** `--release`, `--description`, `--merge` (`--no-merge`, the default, skips existing items), `--os-user`, `--languages <codes|*>` (`import` and `import-language-pack`, `--engine 14.35` only: import only the nodes of the listed languages, or of every language the packages use with `*`; each must be installed, and every package is scanned for its languages, so a malformed `*.xml` file in any of them fails the run), `--verbose`, `--log <path>` (default `./aras-pkg-<command>-<date>.log`), `--timeout <ms>` (write `--timeout=-1` for no limit) and `--skip-version-check` (run an engine against a server outside its window; a refusal names the engines that fit).
+- **Export.** `--level`, `--export-referenced`, `--unknown-references remove-silently|remove-with-warning|do-not-remove` (default `do-not-remove`), `--on-item-error continue|abort-package`, and, with `--engine 14.35`, `--parallelism <n>` (items of a package exported at once; default one per logical processor) and the language-resource export: `--language-resources only|with-metadata` with `--languages <codes|*>` (`only` writes just the translations of the listed languages, `with-metadata` the whole item with them; the list must include `en` unless it starts with `*`, and each code must be installed). The output folder is used as the engine uses it: it need not exist or be empty, and the engine deletes the subfolder of each package it exports before writing it.
+- **Import.** `--release`, `--description`, `--merge` (`--no-merge`, the default, skips existing items), `--os-user`, and `--languages <codes|*>` (`import` and `import-language-pack`, `--engine 14.35` only: import only the nodes of the listed languages, or of every language the packages use with `*`; each must be installed, and every package is scanned for its languages, so a malformed `*.xml` file in any of them fails the run).
+- **Run.** `--verbose`, `--log <path>` (default `./aras-pkg-<command>-<date>.log`), `--timeout <ms>` (write `--timeout=-1` for no limit) and `--skip-version-check` (run an engine against a server outside its window; a refusal names the engines that fit).
+
+### Output and exit codes
+
 - **Output.** Engine messages go to standard error, one `[INFO]`, `[WARN]`, `[ERROR]` or `[PKG]` line each, with the engine's own console text between them. The summary goes to standard output, as `key: value` lines or as JSON with `--json`, and includes the engine used.
 - **Exit codes.** `0` done; `1` failed (the engine returned failure, the login or the version gate refused, or an exception ended the run); `2` done, but the engine sent at least one error message; `64` usage error (nothing was sent to the server).
 - **Checked before the server is contacted.** The options parse, the manifest exists, every `--package` is in it, and the log folder can be made. For `export`: every item is `Type:id` (or one of the three console modes is chosen, its manifest exists), the output path can be a folder, and the options are valid.
 
 ## Library
 
-`import { … } from "import-export-libs-js"` gives the engines without the CLI. The classes keep the names of the engine's own: `CItemHelper` (login, version probe and gate, the lookups), `ImportExportManager` and `CExportItems` for export, `ImportItems` for import, `LanguagePackPreprocessor` and `languagePackImport`, `DbPatchApplication`, and the manifest reader and writer. The CLI in `src/cli/` is a thin host over them and shows how they fit together (`session.ts` opens the connection). Every unit that implements a rule carries an `@spec <RULE-ID>` tag, so `spec/` explains it.
+`import { … } from "import-export-libs-js"` gives the engines without the CLI. The classes keep the names of the engine's own:
 
-The same library runs in a browser; see [Browser](#browser).
+| Export | Role |
+|---|---|
+| `CItemHelper` | Login, version probe and gate, the lookups |
+| `ImportExportManager`, `CExportItems` | Export |
+| `ImportItems` | Import |
+| `LanguagePackPreprocessor`, `languagePackImport` | Language-pack import |
+| `DbPatchApplication` | DB patch application |
+| `ManifestFile` | The manifest reader and writer |
+
+The CLI in `src/cli/` is a thin host over them and shows how they fit together (`session.ts` opens the connection). Every unit that implements a rule carries an `@spec <RULE-ID>` tag, so `spec/` explains it. The same library runs in a browser; see [Browser](#browser).
 
 The XML core's loader and item-file writer are public too, for a host that wants to know whether a file is one the engine would write: `readAllText(bytes)` (14.0.7 and 14.35) or `decodeXmlFile(bytes)` (12.0) decodes the bytes of a file, `loadXml(text, { preserveWhitespace })` loads the text, and `encodeItemFile(doc)` gives the bytes of the item file the engine writes for it; compare those with the original bytes. The choice of `preserveWhitespace` is the caller's, and neither setting alone decides whether a file round-trips. With `false` (as the import loads files) whitespace-only element text is dropped, so a file holding `<name> </name>` is reported as not round-tripping. With `true` (as the export loads documents) that value is kept, but so is the indentation, so a file indented with four spaces is reported as round-tripping. `XmlDocument` is the type of the loaded document, and the same one `applyExportTransform` and `applyXsl` take.
 
@@ -63,7 +142,7 @@ The library also runs in a web page: export, import, language-pack import and DB
 
 ### Install and import
 
-Install the package as above. In a page, import `"import-export-libs-js/browser"`, or import `"import-export-libs-js"` with a bundler that honours the `browser` condition; both resolve to `dist/browser.js`. `npm run build` writes three bundles: `dist/index.js` (Node, with the CLI's `dist/cli.js`), `dist/browser.js` (one ES2022 module that imports nothing, with its declarations) and `dist/browser-worker.js` (the Web Worker's module). The browser entry has the core of the Node entry, plus the browser API below, the in-memory file system `MemoryVfs`, the adapters and `createBrowserHost` and `createFetchTransport`. It has no Node API.
+[Install](#install) the package as above. In a page, import `"import-export-libs-js/browser"`, or import `"import-export-libs-js"` with a bundler that honours the `browser` condition; both resolve to `dist/browser.js`. `npm run build` writes three bundles: `dist/index.js` (Node, with the CLI's `dist/cli.js`), `dist/browser.js` (one ES2022 module that imports nothing, with its declarations) and `dist/browser-worker.js` (the Web Worker's module). The browser entry has the core of the Node entry, plus the browser API below, the in-memory file system `MemoryVfs`, the adapters and `createBrowserHost` and `createFetchTransport`. It has no Node API.
 
 ### Export and import
 
@@ -171,24 +250,51 @@ The engine's behaviour is the same on both hosts. What differs is what a browser
 
 ## Verify against the real engine
 
-The vendored `Libs.dll` of each engine (`oracle/native/`) can be driven from WSL with Windows PowerShell 5.1, to record fixtures and to compare the port with the DLL on a live dev server:
+The vendored `Libs.dll` of each engine (`oracle/native/`) can be driven from WSL with Windows PowerShell 5.1, to record fixtures and to compare the port with the DLL on a live server:
 
 ```sh
 npm run parity -- --list                      # the catalogue; no server
 ARAS_PASSWORD=… npm run parity -- --engine 14.35
+ARAS_PASSWORD=… npm run parity -- --engine 14.0.7 --runtime browser   # adds the browser build as a third side
 ```
 
-Parity touches only `LIBSJS-SCRATCH-*` items and deletes them again. See `oracle/README.md`; it is not part of `npm test`.
+Parity diffs the request AML, output folders, logs, messages and return codes, touches only `LIBSJS-SCRATCH-*` items and deletes them again. It is not part of `npm test`; [`oracle/README.md`](oracle/README.md) has the setup and the rules.
 
-## Develop
+## Documentation
+
+| Where | What |
+|---|---|
+| [`spec/`](spec/README.md) | The behavioural spec: rule ids with per-engine variants, the bug register [`spec/bugs.md`](spec/bugs.md), the source map and its coverage test |
+| [`spec/browser-host.md`](spec/browser-host.md) | The browser host's rules (`HOST-2xx`) |
+| [`roadmap/`](roadmap/README.md) | Design decisions, live-parity records, [`readiness.md`](roadmap/readiness.md), [`engine-diffs.md`](roadmap/engine-diffs.md), and [`hold/`](roadmap/hold/README.md) for what is out of scope |
+| [`oracle/README.md`](oracle/README.md) | The real engines' harness: recording fixtures and live parity |
+| [`examples/browser/`](examples/browser/README.md) | The reference page of the browser build, and the server prerequisites |
+| [`AGENTS.md`](AGENTS.md) | The rules every change follows, and how to add a new Aras build |
+
+## Development
+
+Development needs Node ≥ 20.19.
 
 ```sh
 npm install
-npm run typecheck
-npm test
-npm run build
+npm run typecheck   # the static gate (there is no separate linter)
+npm test            # vitest, with the spec coverage test
+npm run build       # dist/: the Node bundle, the CLI, the browser bundle and its Worker
 ```
 
-- `AGENTS.md`: the rules every change follows, and how to add a new Aras build.
-- `spec/`: the behavioural spec, rule ids, bug register and source map.
-- `roadmap/`: the design decisions, the live-parity records, `readiness.md`, and `hold/` for what is out of scope.
+`npm run typecheck && npm test` is the gate that CI runs on every pull request.
+
+The browser tests run in headless Chromium, Firefox and WebKit through Playwright; CI runs them too:
+
+```sh
+npx playwright install chromium firefox webkit   # once (add --with-deps on a fresh Linux machine)
+npm run test:browser
+```
+
+`LIBSJS_SIZE_MB=10 npm run test:browser:size` measures the time and memory of an import and an export of a synthetic package in the three browsers; it is run by hand ([`roadmap/browser-limits.md`](roadmap/browser-limits.md)).
+
+Every change follows the rules in [`AGENTS.md`](AGENTS.md): the spec comes before the code, `spec/source-map.json` changes with it, every reproduced engine bug is registered, and no decompiled C# or credential is ever committed.
+
+## Licence
+
+This repository is private and carries no open-source licence (`"license": "UNLICENSED"` in `package.json`).
