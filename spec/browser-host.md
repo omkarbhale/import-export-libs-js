@@ -20,7 +20,7 @@ The browser map is closed (`roadmap/browser-host.md`): every rule below is cited
 
 ### Where the browser differs from Node
 
-The engine's behaviour is the same on every host. What a browser does differently is what it does not let a page do, and each such difference is a rule of this document, not an engine bug in `spec/bugs.md` (D12 of `roadmap/browser-host.md`). The list, which the README's "How the browser differs from Node" summarises:
+The engine's behaviour is the same on every host. What a browser does differently is what it does not let a page do, and each such difference is a rule of this document, not an engine bug in `spec/bugs.md` (D12 of `roadmap/browser-host.md`). The list, which "How the browser differs from Node" in `docs/browser.md` summarises:
 
 | Difference from the Node build | Rule |
 |---|---|
