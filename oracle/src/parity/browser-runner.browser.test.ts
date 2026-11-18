@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { startWireServer, type WireServer } from "../../../src/browser/test-server.js";
+import { BROWSER_REPLAY_ENGINES } from "../../../src/browser/replay-engines.js";
 import { BROWSERS } from "./browser-runner.js";
 import { dryRunExport, dryRunImport, dryRunLanguagePack, isClean, type DryRunReport } from "./browser-dry-run.js";
 import { describeDifferences } from "./diff.js";
@@ -43,7 +44,7 @@ describe.each(BROWSERS)("a dry run of one recorded export case in %s", (browser)
     console.info(`DRY-RUN ${browser} (${report.browser}) ${engine} ${caseName}: ${report.calls.browser} calls, no differences`);
   });
 
-  it.each(["12.0", "14.0.7", "14.35"] as const)("an import step of %s, s0-mini-defaults: no differences", async (engine) => {
+  it.each(BROWSER_REPLAY_ENGINES)("an import step of %s, s0-mini-defaults: no differences", async (engine) => {
     const report = await dryRunImport({ engine, caseName: "s0-mini-defaults", browser, server });
     expect(shown(report).trim(), "the differences").toBe("");
     expect(isClean(report)).toBe(true);

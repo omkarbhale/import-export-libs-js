@@ -204,7 +204,7 @@ The `browser` project has one global setup, `tools/browser-wire-setup.ts`, which
 
 The rule is held by `src/browser/smoke.browser.test.ts` (the bundle's imports, the host, the digests and the XML core and an item-file save, in each browser), by `tools/browser-vitest.test.ts` (the path restriction and the replaced module) and by `src/browser/fixture-set.test.ts`.
 
-**Every complete engine runs in the browsers.** An engine in `COMPLETE_ENGINES` (`src/engines.ts`) has, in `fixture-set.ts`, at least one recorded run of each operation it has recordings of under `fixtures/<engine>/` (export and import always; language pack and DB patch where the engine has them), and is in the engine lists of the export replay (HOST-265), the import replay (HOST-266) and the parity script's browser dry run (HOST-279). `tools/browser-readiness.test.ts` checks this in `npm test`, so a fourth engine cannot be completed without its browser replays; it reads the replay files' engine lists from their text and does not run them.
+**Every complete engine runs in the browsers.** An engine in `COMPLETE_ENGINES` (`src/engines.ts`) has, in `fixture-set.ts`, at least one recorded run of each operation it has recordings of under `fixtures/<engine>/` (export and import always; language pack and DB patch where the engine has them), and is in `BROWSER_REPLAY_ENGINES` (`src/browser/replay-engines.ts`), from which the export replay (HOST-265), the import replay (HOST-266) and the import step of the parity script's browser dry run (HOST-279) take their engines. `tools/browser-readiness.test.ts` checks this in `npm test`, so a fourth engine cannot be completed without its browser replays; it checks that constant and the curated set, and does not run the replays.
 
 [12.0] Same as 14.0.7.
 

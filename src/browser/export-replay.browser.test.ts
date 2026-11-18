@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, it } from "vitest";
 import type { Engine } from "../engines.js";
 import { FIXTURE_CASES, type FixtureCase } from "./fixture-set.js";
+import { BROWSER_REPLAY_ENGINES } from "./replay-engines.js";
 import { type LoadedExportCase, loadExportCase, replayExportCase } from "./export-replay-support.browser.js";
 
 /**
@@ -16,7 +17,7 @@ import { type LoadedExportCase, loadExportCase, replayExportCase } from "./expor
 /** A case that takes longer than this in a browser fails (HOST-265). */
 const BUDGET_MS = 30_000;
 
-const ENGINES: readonly Engine[] = ["12.0", "14.0.7", "14.35"];
+const ENGINES: readonly Engine[] = BROWSER_REPLAY_ENGINES;
 
 const exportCasesOf = (engine: Engine): FixtureCase[] => FIXTURE_CASES.filter((fixture) => fixture.engine === engine && fixture.operation === "export");
 
