@@ -99,6 +99,12 @@ export interface WireScenarioSpec {
   oauthProtocol?: "Standard" | "Custom";
   /** Serves a recorded export run after the login. */
   recorded?: RecordedCase;
+  /**
+   * Answers after the login as a synthetic server of `synth-server.ts` (HOST-278) does, at version 14.0.7: `import` says yes to every
+   * add, `export` serves the first `count` items of the synthetic package of `seed`, under the name `packageName` (default
+   * `SYNTH_PACKAGE`). The README's snippets run against it (HOST-282), because they name no recorded case.
+   */
+  synth?: { operation: "import" } | { operation: "export"; seed: number; count: number; packageName?: string };
   /** Serves the recorded exchanges of a capture file (`fixtures/wire/<folder>/<file>`) in place of the fake login. */
   capture?: string;
   cors?: CorsSpec;

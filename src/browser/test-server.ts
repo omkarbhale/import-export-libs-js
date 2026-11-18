@@ -10,6 +10,8 @@ import { RecordedServer } from "../cli/replay-transport.js";
 import { DEV_VARIABLES, type DevServerOptions, type FakeHandler, bodyText, devServer, header, respond } from "../client/fake-transport.js";
 import type { TransportRequest, TransportResponse } from "../client/transport.js";
 import type { Engine } from "../engines.js";
+import { SYNTH_TEMPLATES, type SynthKind, type SynthTemplates } from "./synth-package.js";
+import { synthExportServer, synthImportServer } from "./synth-server.js";
 import { CaptureServer, parseCapture } from "./wire-capture-server.js";
 import { type CorsSpec, type FaultAction, type ScenarioCreated, type SeenRequest, type WireScenarioSpec, flavourCors } from "./wire-spec.js";
 
@@ -37,9 +39,9 @@ export * from "./wire-spec.js";
  * test value.
  *
  * The parity script's browser runtime serves a recorded export, import step or language-pack run from it for its dry run, with no lease
- * (`oracle/src/parity/browser-dry-run.ts`, HOST-279).
+ * (`oracle/src/parity/browser-dry-run.ts`, HOST-279), and the README's snippets run against a synthetic server of it (HOST-282).
  *
- * @spec HOST-234 HOST-279
+ * @spec HOST-234 HOST-279 HOST-282
  */
 
 const DATABASE = "12sp9";
@@ -125,6 +127,15 @@ function loginOverride(spec: WireScenarioSpec): NonNullable<DevServerOptions["ov
   };
 }
 
+/** A synthetic server (HOST-278) at the scenario's address; its item templates are read from the fixtures here, on Node. */
+function synthHandler(synth: NonNullable<WireScenarioSpec["synth"]>, base: string): FakeHandler {
+  if (synth.operation === "import") return synthImportServer({ base }).handler;
+  const templates = Object.fromEntries(
+    (Object.entries(SYNTH_TEMPLATES) as Array<[SynthKind, string]>).map(([kind, file]) => [kind, readFileSync(join(FIXTURES, "..", file), "utf8")]),
+  ) as SynthTemplates;
+  return synthExportServer({ seed: synth.seed }, templates, synth.count, { base, ...(synth.packageName === undefined ? {} : { packageName: synth.packageName }) }).handler;
+}
+
 /** The handler of a scenario, and a way to read what it refused. */
 function handlerOf(spec: WireScenarioSpec, base: string): { handler: FakeHandler; mismatches: () => string[] } {
   if (spec.capture !== undefined) {
@@ -138,6 +149,7 @@ function handlerOf(spec: WireScenarioSpec, base: string): { handler: FakeHandler
     override: loginOverride(spec),
     ...(spec.oauthProtocol === undefined ? {} : { protocolType: spec.oauthProtocol }),
   };
+  if (spec.synth !== undefined) return { handler: synthHandler(spec.synth, base), mismatches: () => [] };
   if (spec.recorded === undefined) return { handler: devServer(serverOptions), mismatches: () => [] };
 
   const kind = spec.recorded.kind ?? "export";

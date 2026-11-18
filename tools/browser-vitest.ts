@@ -128,6 +128,11 @@ export const workerCommands: Record<string, BrowserCommand<[]>> = {
   workerBundle: () => buildWorkerBundle(),
 };
 
+/** The command through which a page reads the README (`readmeText`, HOST-282): that one file, whose browser snippets a test runs. */
+export const readmeCommands: Record<string, BrowserCommand<[]>> = {
+  readmeText: () => readFileSync(path.join(repoRoot, "README.md"), "utf8"),
+};
+
 // ----------------------------------------------------------------------------------------------------------- file inputs
 
 /** The absolute paths of what a page may put into a file input (HOST-267): a fixture folder alone, or fixture files. Each path is checked like a fixture path. */
