@@ -15,8 +15,9 @@ The rules take the block `HOST-200` to `HOST-299`. The decisions behind them are
 | `HOST-270` to `HOST-276` | The facade and the Worker |
 | `HOST-277` to `HOST-279` | The size budget and the browser's live parity |
 | `HOST-280` to `HOST-282` | The reference page and the README's snippets |
+| `HOST-283` | The page's own built-ins |
 
-The browser map is closed (`roadmap/browser-host.md`): every rule below is cited by the code that implements it, and every rule has a variant for each of the three engines. The free ids of the block are `HOST-204` to `HOST-209`, `HOST-219` to `HOST-229`, `HOST-235` to `HOST-239`, `HOST-244` to `HOST-249`, `HOST-256` to `HOST-259` and `HOST-283` to `HOST-299`; a rule added later takes the next free id of its area and is defined in the same pull request as the code that cites it (the coverage test fails on a rule that nothing cites).
+The browser map is closed (`roadmap/browser-host.md`): every rule below is cited by the code that implements it, and every rule has a variant for each of the three engines. The free ids of the block are `HOST-204` to `HOST-209`, `HOST-219` to `HOST-229`, `HOST-235` to `HOST-239`, `HOST-244` to `HOST-249`, `HOST-256` to `HOST-259` and `HOST-284` to `HOST-299`; a rule added later takes the next free id of its area and is defined in the same pull request as the code that cites it (the coverage test fails on a rule that nothing cites).
 
 ### Where the browser differs from Node
 
@@ -35,6 +36,7 @@ The engine's behaviour is the same on every host. What a browser does differentl
 | The audit row's `os_user` defaults to the login name, and a session may take its token from a provider | HOST-270, HOST-271 |
 | A run on the page's thread holds it; the Worker is how a page keeps its thread | HOST-274 to HOST-276 |
 | An import above about 50 MB is warned about, and its memory is about 40 to 70 times the package | HOST-278 |
+| The page may have replaced built-in methods (the Aras 12 client replaces `startsWith` and `endsWith`); the library does not ask them with a position | HOST-283 |
 
 ## HOST-200: the host seam
 
@@ -835,5 +837,17 @@ The library draws no control (Q4); this page is a caller of it, and the part of 
 `src/browser/readme.browser.test.ts` runs each block in Chromium, Firefox and WebKit. The README reaches the page through the command `readmeText` (`tools/browser-vitest.ts`), which reads that one file. Each block gets a server of the HTTP test server (HOST-234) in another origin, a synthetic one (HOST-278; the scenario `synth` of `wire-spec.ts`) because a block names no recorded case: an import is answered yes for every item, and an export is served six synthetic items under the package name the README's export blocks use. The block's inputs are the server's address, the test's login (`admin`, a test password), and for an import a `File` holding the zip of a small synthetic package (HOST-277); `connect` is the entry's, with its default transport, the browser's `fetch` (HOST-230). One library name is given in place of the entry's: `createEngineWorker` starts its Worker from the text of the shipped bundle (as `worker.browser.test.ts` does), because a test page does not serve `dist/browser-worker.js` beside the module that asks for it. A block passes when its run's summary says success, the server saw the login, the items and the logoff, and an export's zip and files are not empty. A block the test does not know how to run fails it, so a new block comes with its run. `src/browser/readme-snippets.test.ts` (Node) holds the extraction, the refusals and the runner, and that every name the README's blocks import is an export of the browser entry.
 
 [12.0] Same as 14.0.7: the blocks run against a 14.0.7 server, and the engine follows the server (HOST-270).
+
+[14.35] Same as 14.0.7.
+
+## HOST-283: the library does not rely on a string method a page may have replaced: no `startsWith`, `endsWith` or `includes` with a position
+
+[14.0.7] The browser build runs in the realm of the page that loads it, and that page may have replaced built-in methods. The Aras 12 client does: its MicrosoftAjax replaces `String.prototype.startsWith` and `endsWith` with ones that take the text to look for and ignore a position, so `"a</b".startsWith("</", 1)` is `false` there (aras-power-search issue 30; the Aras 14.35 client does not). A call without a position gets the native answer from them; a call with one does not. The XML readers asked `startsWith("</", index)` at every `<`, so in that page every end tag was read as a start tag named `/…`, and the first answer of a login failed with `Name cannot begin with the '/' character, hexadecimal value 0x2F. Line 2, position 17.` (the fault the client then builds in place of the answer it could not read, failing to load in turn).
+
+- No code of either bundle (the page's and the Worker's, HOST-260 and HOST-276, with the packages they inline) calls `startsWith`, `endsWith` or `includes` with a second argument. The two XML readers (`src/client/mini-xml.ts` and `src/xml/parser.ts`) ask `startsWithAt(text, prefix, index)` (`src/xml/starts-with-at.ts`), which compares the characters and answers what the native `startsWith` with a position answers, the position clamped into the text as the native clamps it. `tools/browser-bundle.test.ts` parses both bundles and fails on such a call, and names it.
+- The output is the same with and without the page's methods: `src/xml/starts-with-at.test.ts` loads a SOAP fault with end tags, comments, CDATA and processing instructions through both readers with the methods replaced as the Aras 12 client replaces them (`src/browser/page-patches.ts`) and compares what they write back with the unpatched run, and `src/browser/patched-page.browser.test.ts` runs, with the methods replaced in the page, `connect` and an export over `fetch` against a server in another origin (HOST-269) and the recorded export of a package with item files of each engine (HOST-265), byte for byte.
+- Only these methods and this use of them are covered. A page that replaces other built-ins (the Aras 12 client also replaces `replaceAll`, `trimStart` and `trimEnd`, and adds members to `Array`, `Function`, `Date` and `Number`) is not otherwise guarded against; the Worker (HOST-274) runs in a realm of its own that the page's replacements do not reach.
+
+[12.0] Same as 14.0.7.
 
 [14.35] Same as 14.0.7.

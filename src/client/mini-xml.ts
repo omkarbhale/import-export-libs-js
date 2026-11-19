@@ -18,6 +18,8 @@
  * writers; nothing here is meant for them.
  */
 
+import { startsWithAt } from "../xml/starts-with-at.js";
+
 export interface XmlAttribute {
   name: string;
   value: string;
@@ -96,11 +98,11 @@ class Parser {
       const target = root ? after : before;
       if (space !== "") target.push({ kind: "text", value: space });
       if (this.index >= this.text.length) break;
-      if (this.text.startsWith("<!--", this.index)) {
+      if (startsWithAt(this.text, "<!--", this.index)) {
         target.push(this.readComment());
-      } else if (this.text.startsWith("<?", this.index)) {
+      } else if (startsWithAt(this.text, "<?", this.index)) {
         target.push(this.readProcessingInstruction());
-      } else if (this.text.startsWith("<!", this.index)) {
+      } else if (startsWithAt(this.text, "<!", this.index)) {
         this.fail("A document type declaration is not supported by this reader.", this.index + 2);
       } else if (this.text.charAt(this.index) === "<" && !root) {
         root = this.readElement(undefined);
@@ -159,7 +161,7 @@ class Parser {
 
     for (;;) {
       if (this.index >= this.text.length) this.unclosed(element);
-      if (this.text.startsWith("</", this.index)) {
+      if (startsWithAt(this.text, "</", this.index)) {
         this.index += 2;
         const closeStart = this.index;
         const closeName = this.readName();
@@ -174,14 +176,14 @@ class Parser {
         this.index += 1;
         return element;
       }
-      if (this.text.startsWith("<!--", this.index)) {
+      if (startsWithAt(this.text, "<!--", this.index)) {
         element.children.push(this.readComment());
-      } else if (this.text.startsWith("<![CDATA[", this.index)) {
+      } else if (startsWithAt(this.text, "<![CDATA[", this.index)) {
         const end = this.text.indexOf("]]>", this.index);
         if (end < 0) this.unclosed(element);
         element.children.push({ kind: "cdata", value: this.text.slice(this.index + 9, end) });
         this.index = end + 3;
-      } else if (this.text.startsWith("<?", this.index)) {
+      } else if (startsWithAt(this.text, "<?", this.index)) {
         element.children.push(this.readProcessingInstruction());
       } else if (this.text.charAt(this.index) === "<") {
         element.children.push(this.readElement(element));

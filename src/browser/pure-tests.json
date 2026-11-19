@@ -33,6 +33,7 @@
     "src/import/reference-checks-1435.test.ts",
     "src/import/reference-checks.test.ts",
     "src/language-pack/exception-text.test.ts",
+    "src/xml/starts-with-at.test.ts",
     "src/xml/xelement.test.ts"
   ]
 }

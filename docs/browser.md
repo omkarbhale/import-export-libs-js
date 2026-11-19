@@ -150,6 +150,7 @@ The engine's behaviour is the same on both. What differs is what a browser does 
 - The platform is `"browser"`, the current folder `/` and the temporary folder `/tmp`. A short duration in a log can read `00:00:00`, because the browser's clock moves in steps.
 - The `os_user` of the upgrade records is made from the login name (`browser\<login>` on 12.0 and 14.0.7) unless `osUser` is given.
 - An import above about 50 MB gets a warning.
+- The library runs in a page that has replaced `startsWith` and `endsWith`, as the Aras 12 client does: it never calls them, or `includes`, with a position.
 
 Each difference is a rule of [`spec/browser-host.md`](../spec/browser-host.md), which also specifies every option, result and error of the browser API.
 
