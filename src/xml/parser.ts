@@ -23,6 +23,7 @@ import {
 } from "./dom.js";
 import type { XmlDocument, XmlElement, XmlNode } from "./dom.js";
 import { NotSupportedException, XmlException } from "./errors.js";
+import { startsWithAt } from "./starts-with-at.js";
 
 /**
  * The XML parser behind `XmlDocument.LoadXml` and `InnerXml`. No library parser can stand in for it: .NET reads
@@ -206,7 +207,7 @@ class Parser {
       if (next === 0x3f) {
         i = this.parseProcessingInstruction(i);
       } else if (next === 0x21) {
-        if (text.startsWith("<!--", i)) {
+        if (startsWithAt(text, "<!--", i)) {
           i = this.parseComment(i);
         } else if (text.charCodeAt(i + 2) === 0x5b) {
           this.fail("Data at the root level is invalid.", i);
@@ -261,7 +262,7 @@ class Parser {
     for (;;) {
       while (isXmlWhitespace(text.charCodeAt(i))) i += 1;
       if (i >= text.length) this.fail("Unexpected end of file has occurred.", text.length);
-      if (text.startsWith("?>", i)) {
+      if (startsWithAt(text, "?>", i)) {
         i += 2;
         break;
       }
@@ -388,7 +389,7 @@ class Parser {
     }
     let i = end;
     let data = "";
-    if (text.startsWith("?>", i)) {
+    if (startsWithAt(text, "?>", i)) {
       i += 2;
     } else {
       if (i >= text.length) this.fail("Unexpected end of file while parsing PI has occurred.", text.length);
@@ -474,8 +475,8 @@ class Parser {
       if (next === 0x2f) {
         i = this.parseEndTag(i);
       } else if (next === 0x21) {
-        if (text.startsWith("<!--", i)) i = this.parseComment(i);
-        else if (text.startsWith("<![CDATA[", i)) i = this.parseCData(i);
+        if (startsWithAt(text, "<!--", i)) i = this.parseComment(i);
+        else if (startsWithAt(text, "<![CDATA[", i)) i = this.parseCData(i);
         else {
           const word = this.readWord(i + 2);
           if (word === "DOCTYPE") this.fail("Unexpected DTD declaration.", i + 2);

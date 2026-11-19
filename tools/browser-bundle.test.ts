@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { build } from "esbuild";
+import ts from "typescript";
 import { afterAll, describe, expect, it } from "vitest";
 import { buildWorkerBundle } from "./browser-vitest.js";
 import { WORKER_ENTRY, browserBundleOptions, repoRoot } from "./browser-bundle.js";
@@ -41,6 +42,26 @@ const bundleOptions = {
   define: Object.fromEntries(NODE_GLOBALS.map((name) => [name, FORBIDDEN(name)])),
 } as const;
 
+/**
+ * The string methods a page may have replaced with ones that ignore a position: the Aras 12 client's MicrosoftAjax replaces
+ * `startsWith` and `endsWith` (HOST-283), and `includes` is asked the same way. Returns each call in the bundle's text that gives one
+ * of them a second argument, by its line and its text, so that none of the bundle's code, the packages it inlines included, relies on it.
+ */
+const POSITION_METHODS = new Set(["startsWith", "endsWith", "includes"]);
+function positionCalls(text: string): string[] {
+  const source = ts.createSourceFile("bundle.js", text, ts.ScriptTarget.Latest, false, ts.ScriptKind.JS);
+  const found: string[] = [];
+  const visit = (node: ts.Node): void => {
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && POSITION_METHODS.has(node.expression.name.text) && node.arguments.length > 1) {
+      const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
+      found.push(`${line + 1}: ${node.getText(source)}`);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return found;
+}
+
 const scratch = mkdtempSync(path.join(tmpdir(), "libsjs-browser-bundle-"));
 afterAll(() => rmSync(scratch, { recursive: true, force: true }));
 
@@ -64,6 +85,11 @@ describe("the browser bundle", () => {
     const text = outputFiles[0]!.text;
     const found = NODE_GLOBALS.filter((name) => text.includes(FORBIDDEN(name)));
     expect(found, `The bundle uses these Node globals, which have no meaning in a browser: ${found.join(", ")}`).toEqual([]);
+  });
+
+  it("asks no string method with a position, which a page may have replaced (HOST-283)", async () => {
+    const { outputFiles } = await built;
+    expect(positionCalls(outputFiles[0]!.text)).toEqual([]);
   });
 
   it("imports nothing: every package it needs is inlined", async () => {
@@ -130,6 +156,11 @@ describe("the Worker bundle", () => {
     const text = outputFiles[0]!.text;
     const found = NODE_GLOBALS.filter((name) => text.includes(FORBIDDEN(name)));
     expect(found, `The Worker bundle uses these Node globals, which have no meaning in a Worker: ${found.join(", ")}`).toEqual([]);
+  });
+
+  it("asks no string method with a position, which a page may have replaced (HOST-283)", async () => {
+    const { outputFiles } = await built;
+    expect(positionCalls(outputFiles[0]!.text)).toEqual([]);
   });
 
   it("imports nothing: it loads in a Worker with nothing beside it", async () => {
